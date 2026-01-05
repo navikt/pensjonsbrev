@@ -32,7 +32,6 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på søknad om alderspensjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -48,6 +47,13 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
             )
         }
         outline {
+            title2 {
+                text(
+                    bokmal { + "Vedtak" },
+                    nynorsk { + "Vedtak" },
+                    english { + "Decision" }
+                )
+            }
             paragraph {
                 text(
                     bokmal { +"For å ha rett til alderspensjon må du ha minst fem års trygdetid" },
@@ -88,7 +94,9 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
             }
 
             showIf(trygdeperioderNorge.isNotEmpty()) {
-                includePhrase(Vedtak.TrygdetidOverskrift)
+                title2 {
+                    includePhrase(Vedtak.TrygdetidText)
+                }
 
                 paragraph {
                     text(

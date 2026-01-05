@@ -240,7 +240,7 @@ object Felles {
         }
     }
 
-    object DuHarRettTilAaKlage  : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
                 text(

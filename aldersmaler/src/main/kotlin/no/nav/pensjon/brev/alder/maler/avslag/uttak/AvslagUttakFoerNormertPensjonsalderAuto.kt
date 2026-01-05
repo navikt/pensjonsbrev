@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler
+package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAutoDto
@@ -38,7 +38,6 @@ object AvslagUttakFoerNormertPensjonsalderAuto : AutobrevTemplate<AvslagUttakFoe
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag tidlig uttak av alderspensjon",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )

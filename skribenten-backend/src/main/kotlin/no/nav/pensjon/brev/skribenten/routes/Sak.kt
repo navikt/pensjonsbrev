@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
     dto2ApiService: Dto2ApiService,
+    brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
@@ -23,6 +24,8 @@ fun Route.sakRoute(
     pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
+    p1Service: P1ServiceImpl,
+    pensjonRepresentasjonService: PensjonRepresentasjonService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -44,19 +47,22 @@ fun Route.sakRoute(
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
             val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
-            pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
-                .onError { msg, status -> call.respond(status, msg) }
-                .onOk { person ->
-                    call.respond(
-                        Api.SakContext(
-                            sak = sak,
-                            brevmalKoder = brevmetadata.map { it.id },
-                            adressebeskyttelse = person.adressebeskyttelse,
-                            doedsfall = person.doedsdato,
-                            erSkjermet = erSkjermet
-                        )
+            //val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr) // TODO FIX
+            val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
+            if (person != null) {
+                call.respond(
+                    Api.SakContext(
+                        sak = sak,
+                        brevmalKoder = brevmetadata.map { it.id },
+                        adressebeskyttelse = person.adressebeskyttelse,
+                        doedsfall = person.doedsdato,
+                        erSkjermet = erSkjermet,
+                        vergemaal = false
                     )
-                }
+                )
+            } else {
+                call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
+            }
         }
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
@@ -94,7 +100,13 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            respondWithResult(pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr))
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+
+            if (adresse != null) {
+                call.respond(adresse)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
+            }
         }
 
         get("/foretrukketSpraak") {
@@ -104,13 +116,14 @@ fun Route.sakRoute(
 
         get("/pdf/{journalpostId}") {
             val journalpostId = call.parameters.getOrFail("journalpostId")
-            safService.hentPdfForJournalpostId(journalpostId).onOk {
-                call.respondBytes(it, ContentType.Application.Pdf, HttpStatusCode.OK)
-            }.onError { message, _ ->
-                call.respond(HttpStatusCode.InternalServerError, message)
+            val pdf = safService.hentPdfForJournalpostId(journalpostId)
+            if (pdf != null) {
+                call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)
+            } else {
+                call.respond(HttpStatusCode.NotFound)
             }
         }
 
-        sakBrev(dto2ApiService, brevredigeringService)
+        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service)
     }
 }

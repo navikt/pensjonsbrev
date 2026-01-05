@@ -28,8 +28,6 @@ import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskul
 import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016
-import no.nav.pensjon.brev.maler.alder.omregning.OmregningAlderUfore2016Auto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
@@ -79,6 +77,7 @@ import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettInfo4Aar
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettMidlertidigOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett.HvilendeRettVarselOpphoer
+import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 
@@ -95,7 +94,6 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdKombiDagpengerInntektsavkorting,
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
-        OmregningAlderUfore2016Auto,
         EndretBarnetilleggUfoerertrygd,
         EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
@@ -150,12 +148,12 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         InnvilgelseAvAlderspensjon,
         InnvilgelseAvAlderspensjonTrygdeavtale,
-        OmregningAlderUfore2016,
         OmsorgEgenManuell,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
         OversettelseAvDokumenter,
         SamletMeldingOmPensjonsvedtak,
+        SamletMeldingOmPensjonsvedtakV2,
         TilbakekrevingAvFeilutbetaltBeloep,
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
@@ -175,4 +173,6 @@ object ProductionTemplates : AllTemplates {
     override fun hentAutobrevmaler() = autobrev
 
     override fun hentRedigerbareMaler() = redigerbare
+
+    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
 }

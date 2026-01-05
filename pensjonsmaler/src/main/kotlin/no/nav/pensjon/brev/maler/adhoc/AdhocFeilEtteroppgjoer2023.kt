@@ -16,7 +16,6 @@ object AdhocFeilEtteroppgjoer2023 : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Feil i etteroppgjørsbrev fra Nav",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

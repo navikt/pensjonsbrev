@@ -13,14 +13,14 @@ class PensjonPersonDataServiceTest {
         val expected = KontaktAdresseResponseDto("Eli, Jarl og Raffen", listOf("Portveien 2"), KontaktAdresseResponseDto.Adressetype.VEGADRESSE)
         httpClientTest(expected) {
             val actual = pensjonPersonDataService(it).hentKontaktadresse("1234")
-            assertThat(actual).isEqualTo(ServiceResult.Ok(expected))
+            assertThat(actual).isEqualTo(expected)
         }
     }
 
     @Test
     fun `returerer null om person ikke har adresse`() = httpClientTest(null) { engine ->
         val actual = pensjonPersonDataService(engine).hentKontaktadresse("1234")
-        assertThat(actual).isEqualTo(ServiceResult.Ok(null))
+        assertThat(actual).isEqualTo(null)
     }
 
     private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataService(

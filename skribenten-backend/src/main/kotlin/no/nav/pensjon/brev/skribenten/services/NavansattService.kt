@@ -26,7 +26,7 @@ interface NavansattService {
     suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet>
 }
 
-class NavansattServiceException(message: String) : ServiceError(message)
+class NavansattServiceException(message: String) : ServiceException(message)
 
 class NavansattServiceHttp(config: Config, authService: AuthService, private val cache: Cache) : NavansattService, ServiceStatus {
     private val logger = LoggerFactory.getLogger(NavansattServiceHttp::class.java)
@@ -64,19 +64,22 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
         cache.cached(Cacheomraade.NAVANSATT, ansattId) {
-            client.get("/navansatt/$ansattId").toServiceResult<Navansatt>()
-                .onError { error, statusCode -> logger.error("Fant ikke navansatt $ansattId: $statusCode - $error") }
-                .resultOrNull()
+            val response = client.get("/navansatt/$ansattId")
+
+            return@cached if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                logger.error("Fant ikke navansatt $ansattId: ${response.status} - ${response.bodyAsText()}")
+                null
+            }
         }
     } catch (e: Exception) {
         logger.error("Feil ved henting av navansatt $ansattId", e)
         throw e
     }
 
-    override val name = "Nav Ansatt"
-
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("ping-authenticated").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        ping("NAV Ansatt") { client.get("ping-authenticated") }
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -27,7 +27,7 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -89,7 +89,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           persist-credentials: false
 
@@ -122,11 +122,11 @@ jobs:
 
   "klarTilMerge":
     name: "Klar til merge"
-    if: ${{ github.event_name == 'pull_request' }}
     needs: [analyze-java, analyze-javascript]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: ./.github/pr

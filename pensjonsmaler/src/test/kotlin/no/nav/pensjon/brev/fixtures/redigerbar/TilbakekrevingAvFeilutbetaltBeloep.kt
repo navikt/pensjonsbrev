@@ -24,34 +24,36 @@ fun createTilbakekrevingAvFeilutbetaltBeloepDto() =
                 sakstype = Sakstype.ALDER,
                 brukerUnder18Aar = false
             ),
-            oversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(
-                bruttoTilbakekrevdTotalbeloep = Kroner(25000),
-                nettoUtenRenterTilbakekrevdTotalbeloep = Kroner(20000),
-                rentetilleggSomInnkrevesTotalbeloep = Kroner(0),
-                resultatAvVurderingenForTotalbeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
-                skattefradragSomInnkrevesTotalbeloep = Kroner(0),
-                tilbakekrevingPerMaaned = listOf(
-                    OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = LocalDate.of(2024, 1, 1 ),
-                        bruttobeloepTilbakekrevd = Kroner(2000),
-                        feilutbetaltBeloep = Kroner(2000),
-                        nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
-                        resultatAvVurderingen = null,
-                        skattefradragSomInnkreves = Kroner(0),
-                        ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
-                    ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
-                        maanedOgAar = LocalDate.of(2024, 2, 1 ),
-                        bruttobeloepTilbakekrevd = Kroner(3000),
-                        feilutbetaltBeloep = Kroner(3000),
-                        nettobeloepUtenRenterTilbakekrevd = Kroner(2000),
-                        resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
-                        skattefradragSomInnkreves = Kroner(0),
-                        ytelsenMedFeilutbetaling = KonteringType.AFP_KRONETILLEGG,
-                    )
-                )
-            )
+            oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto()
         ),
         saksbehandlerValg = EmptySaksbehandlerValg,
     )
+
+fun createOversiktOverFeilutbetalingPEDto(): OversiktOverFeilutbetalingPEDto = OversiktOverFeilutbetalingPEDto(
+    bruttoTilbakekrevdTotalbeloep = Kroner(25000),
+    nettoUtenRenterTilbakekrevdTotalbeloep = Kroner(20000),
+    rentetilleggSomInnkrevesTotalbeloep = Kroner(0),
+    resultatAvVurderingenForTotalbeloep = TilbakekrevingResultat.FULL_TILBAKEKREV,
+    skattefradragSomInnkrevesTotalbeloep = Kroner(0),
+    tilbakekrevingPerMaaned = listOf(
+        OversiktOverFeilutbetalingPEDto.Tilbakekreving(
+            maanedOgAar = LocalDate.of(2024, 1, 1),
+            bruttobeloepTilbakekrevd = Kroner(2000),
+            feilutbetaltBeloep = Kroner(2000),
+            nettobeloepUtenRenterTilbakekrevd = Kroner(1800),
+            resultatAvVurderingen = null,
+            skattefradragSomInnkreves = Kroner(0),
+            ytelsenMedFeilutbetaling = KonteringType.AP_GJT,
+        ), OversiktOverFeilutbetalingPEDto.Tilbakekreving(
+            maanedOgAar = LocalDate.of(2024, 2, 1),
+            bruttobeloepTilbakekrevd = Kroner(3000),
+            feilutbetaltBeloep = Kroner(3000),
+            nettobeloepUtenRenterTilbakekrevd = Kroner(2000),
+            resultatAvVurderingen = TilbakekrevingResultat.FULL_TILBAKEKREV,
+            skattefradragSomInnkreves = Kroner(0),
+            ytelsenMedFeilutbetaling = KonteringType.AFP_KRONETILLEGG,
+        )
+    )
+)
 
 

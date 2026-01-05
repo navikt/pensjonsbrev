@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
@@ -25,31 +24,25 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   });
 
   return (
-    <div
-      css={css`
-        h3 {
-          margin-bottom: var(--a-spacing-1);
-        }
-      `}
-    >
+    <div>
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
-        <div>
+        <>
           {adresseQuery.isSuccess && (
             <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} saksId={properties.sakId} />
           )}
           {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
-        </div>
+        </>
       )}
       {properties.samhandlerId && (
-        <div>
+        <>
           {samhandlerAdresse.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {samhandlerAdresse.isSuccess && (
             <MottakerAdresseOppsummering adresse={samhandlerAdresse.data} erSamhandler saksId={properties.sakId} />
           )}
           {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
-        </div>
+        </>
       )}
     </div>
   );
@@ -65,13 +58,13 @@ const MottakerAdresseOppsummering = (properties: {
   erSamhandler?: boolean;
 }) => {
   return (
-    <div>
+    <>
       {erAdresseKontaktAdresse(properties.adresse) ? (
         <ValgtKontaktAdresseOppsummering adresse={properties.adresse} saksId={properties.saksId} />
       ) : (
         <ValgtAdresseOppsummering adresse={properties.adresse} erSamhandler={properties.erSamhandler ?? false} />
       )}
-    </div>
+    </>
   );
 };
 
@@ -81,7 +74,7 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
   return (
     <div>
       <BodyShort size="small">{navn}</BodyShort>
-      <VStack gap="0">
+      <VStack gap="space-0">
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
             {humanizeName(linje)}
@@ -98,7 +91,7 @@ const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: 
       <BodyShort size="small">
         {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
       </BodyShort>
-      <VStack gap="0">
+      <VStack gap="space-0">
         <BodyShort size="small">{properties.adresse.linje1}</BodyShort>
         <BodyShort size="small">
           {properties.adresse.postnr} {properties.adresse.poststed}{" "}

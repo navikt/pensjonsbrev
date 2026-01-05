@@ -39,7 +39,6 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag på uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -530,9 +529,9 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
                     val fomFritekst = fritekst("FOM medlemsperiode Norge")
                     val tomFritekst = fritekst("TOM medlemsperiode Norge")
                     text(
-                        bokmal { + "Du bodde i Norge og var medlem av folketrygden fra " + fomFritekst + " til + " + tomFritekst +  ". Du har ikke vært medlem av folketrygden i 20 år, og oppfyller heller ikke dette kravet. Vi avslår derfor søknaden din om uføretrygd." },
-                        nynorsk { + "Du budde i Noreg og var medlem av folketrygda frå " + fomFritekst + " til + " + tomFritekst +  ". Du har ikkje vore medlem av folketrygda i 20 år før uføretidspunktet ditt, og oppfyller heller ikkje dette kravet. Vi avslår derfor søknaden din om uføretrygd." },
-                        english { + "You lived in Norway, and had national insurance coverage from " + fomFritekst + " to + " + tomFritekst +  ". You have not had national insurance coverage for 20 years prior to your disability, and, consequently, you do not meet this requirement either. We therefore deny your application for disability benefit." },
+                        bokmal { + "Du bodde i Norge og var medlem av folketrygden fra " + fomFritekst + " til + " + tomFritekst + ". Du har ikke vært medlem av folketrygden i 20 år, og oppfyller heller ikke dette kravet. Vi avslår derfor søknaden din om uføretrygd." },
+                        nynorsk { + "Du budde i Noreg og var medlem av folketrygda frå " + fomFritekst + " til + " + tomFritekst + ". Du har ikkje vore medlem av folketrygda i 20 år før uføretidspunktet ditt, og oppfyller heller ikkje dette kravet. Vi avslår derfor søknaden din om uføretrygd." },
+                        english { + "You lived in Norway, and had national insurance coverage from " + fomFritekst + " to + " + tomFritekst + ". You have not had national insurance coverage for 20 years prior to your disability, and, consequently, you do not meet this requirement either. We therefore deny your application for disability benefit." },
                     )
                 }
                 //[TBU2402NN, TBU2402EN, TBU2402]

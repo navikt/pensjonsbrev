@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
-import { BodyShort, CopyButton, HStack, Tag } from "@navikt/ds-react";
+import { BodyShort, BoxNew, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { z } from "zod";
@@ -43,17 +43,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
   errorComponent: ({ error }) => {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
-    return (
-      <div
-        css={css`
-          display: flex;
-          margin: var(--a-spacing-4);
-          justify-content: space-around;
-        `}
-      >
-        <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />
-      </div>
-    );
+    return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
 });
 
@@ -92,22 +82,17 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   }, [sakContext.doedsfall]);
 
   return (
-    <div
-      css={css`
-        position: sticky;
-        top: 48px;
-        z-index: var(--a-z-index-focus);
-      `}
+    <BoxNew
+      asChild
+      background="default"
+      borderColor="neutral-subtle"
+      borderWidth="0 0 1 0"
+      css={{ zIndex: 10 }}
+      top="space-48"
     >
-      <div
+      <HStack
+        align="center"
         css={css`
-          display: flex;
-          padding: var(--a-spacing-2) var(--a-spacing-8);
-          align-items: center;
-          justify-content: space-between;
-          border-bottom: 1px solid var(--a-gray-200);
-          background: var(--a-surface-default);
-
           p {
             display: flex;
             align-items: center;
@@ -115,13 +100,16 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
 
           p::after {
             content: "/";
-            margin: 0 var(--a-spacing-3);
+            margin: 0 var(--ax-space-12);
           }
 
           p:last-child::after {
             content: none;
           }
         `}
+        justify="space-between"
+        paddingBlock="space-8"
+        paddingInline="space-32"
       >
         <HStack>
           <BodyShort size="small">
@@ -135,21 +123,26 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
           {sakContext.erSkjermet && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Egen ansatt
               </Tag>
             </BodyShort>
           )}
           {sakContext.vergemaal && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Vergemål
               </Tag>
             </BodyShort>
           )}
           {sakContext.adressebeskyttelse && (
             <BodyShort>
-              <Tag css={css({ borderRadius: "4px" })} icon={<ParagraphIcon />} size="small" variant="error-filled">
+              <Tag
+                css={{ borderRadius: "var(--ax-radius-4)" }}
+                icon={<ParagraphIcon />}
+                size="small"
+                variant="error-filled"
+              >
                 Diskresjon
               </Tag>
             </BodyShort>
@@ -161,8 +154,8 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
             {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" variant="action" />
           </BodyShort>
         </HStack>
-      </div>
-    </div>
+      </HStack>
+    </BoxNew>
   );
 }
 

@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.BeloepEndring
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
@@ -37,9 +35,10 @@ fun createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() =
             ),
             etterbetaling = true,
             orienteringOmRettigheterOgPlikter = createOrienteringOmRettigheterOgPlikterDto(),
-            maanedligPensjonFoerSkatt = Fixtures.create(MaanedligPensjonFoerSkattDto::class),
-            maanedligPensjonFoerSkattAP2025 = Fixtures.create(MaanedligPensjonFoerSkattAP2025Dto::class),
+            maanedligPensjonFoerSkatt = Fixtures.createVedlegg(),
+            maanedligPensjonFoerSkattAP2025 = Fixtures.createVedlegg(),
             opplysningerBruktIBeregningenAlder = createOpplysningerBruktIBeregningAlderDto(),
-            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto()
+            opplysningerBruktIBeregningenAlderAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+            opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening = null,
         )
     )

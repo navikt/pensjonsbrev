@@ -13,7 +13,6 @@ export type SakDto = {
   readonly foedselsdato: string;
   readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
   readonly sakType: SakType;
-  readonly enhetId: string;
 };
 
 export type SakContextDto = {
@@ -89,13 +88,11 @@ export type BaseLetterRequest = {
 export type OrderDoksysLetterRequest = BaseLetterRequest;
 
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
-  isSensitive: boolean;
   idTSSEkstern: Nullable<string>;
   brevtittel: Nullable<string>;
 };
 
 export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {
-  isSensitive: boolean;
   landkode: string;
   mottakerText: string;
 };

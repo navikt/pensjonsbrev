@@ -53,6 +53,17 @@ public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun formatTelefonnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public final class no/nav/pensjon/brev/template/AlltidValgbartVedlegg : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
+	public fun <init> (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;)V
+	public final fun asIncludeAttachment ()Lno/nav/pensjon/brev/template/IncludeAttachment;
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getKode ()Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;
+	public final fun getVedlegg ()Lno/nav/pensjon/brev/template/AttachmentTemplate;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/template/AttachmentTemplate : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getIncludeSakspart ()Z
@@ -317,6 +328,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size : java/lang/Enum {
+	public static final field FILL Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field LONG Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field NONE Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
 	public static final field SHORT Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;
@@ -610,9 +622,7 @@ public final class no/nav/pensjon/brev/template/IncludeAttachment : no/nav/pensj
 
 public final class no/nav/pensjon/brev/template/IncludeAttachmentKt {
 	public static final fun createAttachment (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
-	public static final fun createAttachment (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
 	public static synthetic fun createAttachment$default (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
-	public static synthetic fun createAttachment$default (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/AttachmentTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/InvalidListDeclarationException : no/nav/pensjon/brev/template/TemplateValidationException {
@@ -694,6 +704,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getPdfAttachments ()Ljava/util/List;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
+	public final fun medEkstraVedlegg (Ljava/util/List;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public fun toString ()Ljava/lang/String;
 }
 
@@ -859,6 +870,24 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public static fun fritekst (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
+}
+
+public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public final fun component1 ()Ljava/lang/String;
+	public final fun component2 ()Ljava/lang/String;
+	public final fun component3 ()Ljava/lang/String;
+	public final fun component4 ()Lkotlin/jvm/functions/Function1;
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/SimpleSelector;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/SimpleSelector;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/SimpleSelector;
+	public fun equals (Ljava/lang/Object;)Z
+	public fun getClassName ()Ljava/lang/String;
+	public fun getPropertyName ()Ljava/lang/String;
+	public fun getPropertyType ()Ljava/lang/String;
+	public fun getSelector ()Lkotlin/jvm/functions/Function1;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/StableHash {
@@ -1119,8 +1148,8 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
 	public fun forEach (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)V
-	public fun formChoice (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)V
-	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;Z)V
+	public fun formChoice (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;)V
+	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;Z)V
 	public fun getArgument ()Lno/nav/pensjon/brev/template/Expression;
 	public fun getElements ()Ljava/util/List;
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
@@ -1141,10 +1170,10 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 
 public abstract interface class no/nav/pensjon/brev/template/dsl/ParagraphScope : no/nav/pensjon/brev/template/dsl/TextScope {
 	public abstract fun addParagraphContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
-	public fun formChoice (Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun formChoice$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;Z)V
-	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZILjava/lang/Object;)V
+	public fun formChoice (Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun formChoice$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;Z)V
+	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)V
 	public fun list (Lkotlin/jvm/functions/Function1;)V
 	public fun table (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
@@ -1153,10 +1182,10 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphScope$DefaultImpls 
 	public static fun bokmal (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public static fun english (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public static fun eval (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)V
-	public static fun formChoice (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;)V
-	public static synthetic fun formChoice$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
-	public static fun formText (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;Z)V
-	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lno/nav/pensjon/brev/template/ContentOrControlStructure;ZILjava/lang/Object;)V
+	public static fun formChoice (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;)V
+	public static synthetic fun formChoice$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;ZLkotlin/jvm/functions/Function1;ILjava/lang/Object;)V
+	public static fun formText (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;Z)V
+	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)V
 	public static fun getArgument (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun list (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)V
@@ -1314,6 +1343,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public static synthetic fun includeAttachment$default (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;ILjava/lang/Object;)V
 	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun includeAttachmentIfNotNull (Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun outline (Lkotlin/jvm/functions/Function1;)V
 	public final fun title (Lkotlin/jvm/functions/Function1;)V
@@ -1376,18 +1406,6 @@ public final class no/nav/pensjon/brev/template/dsl/UtilsKt {
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Single;
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Double;
 	public static final fun languages (Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/LanguageSupport$Triple;
-	public static final fun newText (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newText (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newText (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newText$default (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newTextExpr (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newTextExpr (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static final fun newTextExpr (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newTextExpr$default (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newTextExpr$default (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
-	public static synthetic fun newTextExpr$default (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ContentOrControlStructure;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
@@ -1621,10 +1639,12 @@ public final class no/nav/pensjon/brev/template/vedlegg/Felt {
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
-	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;)V
+	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;)V
+	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;Lno/nav/pensjon/brev/template/Expression;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 	public final fun getData ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun getPredicate ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTemplate ()Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1641,7 +1661,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplateKt {
-	public static final fun createAttachmentPDF (Ljava/util/List;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
+	public static final fun createAttachmentPDF (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/vedlegg/PDFTemplate;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFVedlegg {

@@ -20,7 +20,6 @@ import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormW
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
-import SelectSensitivity from "./components/SelectSensitivity";
 import { byggExstreamOnSubmitRequest, createValidationSchema } from "./TemplateUtils";
 
 export default function BrevmalForExstream({
@@ -36,7 +35,6 @@ export default function BrevmalForExstream({
   preferredLanguage: Nullable<SpraakKode>;
   displayLanguages: SpraakKode[];
   defaultValues: {
-    isSensitive: undefined;
     brevtittel: string;
     spraak: SpraakKode;
     enhetsId: string;
@@ -92,7 +90,6 @@ export default function BrevmalForExstream({
                 vedtaksId: vedtaksId ?? null,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
-                  isSensitive: submittedValues.isSensitive,
                   spraak: submittedValues.spraak ?? null,
                   brevtittel: submittedValues.brevtittel ?? null,
                 },
@@ -102,7 +99,7 @@ export default function BrevmalForExstream({
         >
           {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
           {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
-            <VStack gap="2">
+            <VStack gap="space-8">
               <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
               <EndreMottaker />
             </VStack>
@@ -124,7 +121,6 @@ export default function BrevmalForExstream({
           {letterTemplate.id !== "PE_IY_03_156" && (
             <SelectLanguage preferredLanguage={preferredLanguage} sorterteSpråk={displayLanguages} />
           )}
-          <SelectSensitivity />
         </BrevmalFormWrapper>
 
         <OrderLetterResult data={orderLetterMutation.data} error={orderLetterMutation.error} />

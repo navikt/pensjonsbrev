@@ -36,7 +36,6 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-13",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),

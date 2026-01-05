@@ -41,7 +41,7 @@ on:
       - "gradle/wrapper/gradle-wrapper.properties"
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 permissions:
   contents: read
@@ -75,7 +75,7 @@ jobs:
       pull-requests: write
       packages: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: gradle/actions/setup-gradle@v5
@@ -126,11 +126,11 @@ jobs:
 
   "klarTilMerge":
     name: "Klar til merge"
-    if: ${{ github.event_name == 'pull_request' }}
     needs: [buildBrevbaker, runIntegrationTests]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: ./.github/pr

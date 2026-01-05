@@ -1,18 +1,12 @@
-import { css } from "@emotion/react";
 import { BodyShort, Button, HStack, VStack } from "@navikt/ds-react";
 
 const BekreftAvbrytelse = (properties: { onBekreftAvbryt: () => void; onIkkeAvbryt: () => void }) => {
   return (
-    <VStack gap="5">
+    <VStack gap="space-20">
       <BodyShort size="medium">
         Infoen du har skrevet inn blir ikke lagret. Du kan ikke angre denne handlingen.{" "}
       </BodyShort>
-      <HStack
-        css={css`
-          align-self: flex-end;
-        `}
-        gap="4"
-      >
+      <HStack gap="space-16" justify="end">
         <Button onClick={properties.onIkkeAvbryt} type="button" variant="secondary">
           Nei, ikke avbryt
         </Button>

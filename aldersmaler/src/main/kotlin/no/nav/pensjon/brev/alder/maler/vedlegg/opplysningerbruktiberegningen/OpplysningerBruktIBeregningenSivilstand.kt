@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 
 data class OpplysningerBruktIBeregningenSivilstand(
-    val beregnetSomEnsligPgaInstitusjon : Expression<Boolean>,
+    val beregnetSomEnsligPgaInstitusjon: Expression<Boolean>,
     val epsVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.EPSvedVirk?>,
     val alderspensjonVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonVedVirk>,
     val beregnetPensjonPerManedVedVirk: Expression<OpplysningerBruktIBeregningenAlderDto.AlderspensjonPerManed>

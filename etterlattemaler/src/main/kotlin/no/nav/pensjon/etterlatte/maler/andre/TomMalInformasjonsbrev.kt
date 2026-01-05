@@ -24,7 +24,6 @@ object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hov
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Infomasjonsbrev",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),

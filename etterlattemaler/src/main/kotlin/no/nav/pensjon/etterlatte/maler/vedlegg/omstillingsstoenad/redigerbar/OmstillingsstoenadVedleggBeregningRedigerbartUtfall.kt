@@ -22,7 +22,6 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Utfall beregning",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),

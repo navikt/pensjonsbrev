@@ -23,8 +23,8 @@ import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
@@ -38,7 +38,9 @@ import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.PdfResponseConverter
+import no.nav.pensjon.brev.skribenten.services.P1Exception
+import no.nav.pensjon.brev.skribenten.services.PenDataException
+import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -102,27 +104,27 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 
     install(StatusPages) {
         exception<JacksonException> { call, cause ->
-            call.application.log.info("Bad request, kunne ikke deserialisere json")
+            logger.info("Bad request, kunne ikke deserialisere json")
             call.respond(HttpStatusCode.BadRequest, cause.message ?: "Failed to deserialize json body: unknown cause")
         }
         exception<UnauthorizedException> { call, cause ->
-            call.application.log.info(cause.message, cause)
+            logger.info(cause.message, cause)
             call.respond(HttpStatusCode.Unauthorized, cause.msg)
         }
         exception<BadRequestException> { call, cause ->
             if (cause.cause is JsonConvertException) {
-                call.application.log.info(cause.message, cause)
+                logger.info(cause.message, cause)
                 call.respond(
                     HttpStatusCode.BadRequest,
                     cause.cause?.message ?: "Failed to deserialize json body: unknown reason"
                 )
             } else {
-                call.application.log.info("Bad request, men ikke knytta til deserialisering")
+                logger.info("Bad request, men ikke knytta til deserialisering")
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
         exception<BrevredigeringException> { call, cause ->
-            call.application.log.info(cause.message, cause)
+            logger.info(cause.message, cause)
             when (cause) {
                 is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
@@ -139,8 +141,22 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }
+        exception<P1Exception> { call, cause ->
+            logger.info(cause.message, cause)
+            when(cause) {
+                is P1Exception.ManglerDataException -> call.respond(HttpStatusCode.UnprocessableEntity, cause.message)
+            }
+        }
+        exception<PenDataException> { call, cause ->
+            logger.info("${cause.status} - Feil ved oppdatering av brev: ${cause.message}")
+            call.respond(status = cause.status, cause.feil)
+        }
+        exception<ServiceException> { call, cause ->
+            logger.error(cause.message, cause)
+            call.respond(status = cause.status, message = cause.message)
+        }
         exception<Exception> { call, cause ->
-            call.application.log.error(cause.message, cause)
+            logger.error(cause.message, cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
@@ -156,7 +172,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
         skribentenConfig.getConfig("cors").also {
-            allowHost(it.getString("host"), schemes = it.getStringList("schemes"))
+            val schemes = it.getStringList("schemes")
+            it.getString("host").split(",").forEach { host ->
+                allowHost(host, schemes = schemes)
+            }
         }
     }
 
@@ -176,7 +195,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     configureMetrics()
 
     monitor.subscribe(ServerReady) {
-        async {
+        launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
                 // Sett opp evt. jobber her
@@ -199,7 +218,5 @@ fun Application.skribentenContenNegotiation() {
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
         }
-        // midlertidig løsning frem til frontend er oppdatert til å bruke application/json
-        register(ContentType.Application.Pdf, PdfResponseConverter)
     }
 }

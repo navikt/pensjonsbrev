@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
+import no.nav.pensjon.brev.template.dsl.TextContentCreator.createTextContent
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brev.template.vedlegg.PDFTemplate
@@ -54,6 +56,15 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
         @Suppress("UNCHECKED_CAST")
         attachments.add(IncludeAttachment(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
     }
+
+    fun <AttachmentData : PDFVedleggData> includeAttachmentIfNotNull(
+        template: PDFTemplate<Lang, AttachmentData>,
+        attachmentData: Expression<AttachmentData?>,
+    ) {
+        @Suppress("UNCHECKED_CAST")
+        pdfAttachments.add(IncludeAttachmentPDF(attachmentData as Expression<AttachmentData>, template, attachmentData.notNull()))
+    }
+
 }
 
 
@@ -63,27 +74,27 @@ class TemplateFormChoiceScope<Lang : LanguageSupport, LetterData : Any> internal
 ) : TemplateGlobalScope<LetterData>
 
 fun <Lang1 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Single<Lang1>, LetterData>.choice(
-    lang1: Pair<Lang1, String>,
+    lang1: Pair<Lang1, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType).also { choices.add(it) }
+    createTextContent(lang1, fontType).also { choices.add(it)}
 }
 
 fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.choice(
-    lang1: Pair<Lang1, String>,
-    lang2: Pair<Lang2, String>,
+    lang1: Pair<Lang1, LiteralOrExpression>,
+    lang2: Pair<Lang2, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, fontType).also { choices.add(it) }
+    createTextContent(lang1, lang2, fontType).also { choices.add(it)}
 }
 
 fun <Lang1 : Language, Lang2 : Language, Lang3 : Language, LetterData : Any> TemplateFormChoiceScope<LanguageSupport.Triple<Lang1, Lang2, Lang3>, LetterData>.choice(
-    lang1: Pair<Lang1, String>,
-    lang2: Pair<Lang2, String>,
-    lang3: Pair<Lang3, String>,
+    lang1: Pair<Lang1, LiteralOrExpression>,
+    lang2: Pair<Lang2, LiteralOrExpression>,
+    lang3: Pair<Lang3, LiteralOrExpression>,
     fontType: FontType = FontType.PLAIN,
 ) {
-    Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, lang2, lang3, fontType).also { choices.add(it) }
+    createTextContent(lang1, lang2, lang3, fontType).also { choices.add(it)}
 }
 
 @DslMarker

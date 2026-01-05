@@ -11,7 +11,7 @@ type EditorUndoRedoProps = {
 
 export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canUndo, canRedo }) => (
   <>
-    <HStack gap="2">
+    <HStack gap="space-8">
       <Button
         disabled={!canUndo}
         icon={<ArrowUndoIcon fontSize="1.5rem" title="Angre (Undo)" />}
@@ -22,7 +22,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
         variant="tertiary-neutral"
       ></Button>
     </HStack>
-    <HStack gap="2">
+    <HStack gap="space-8">
       <Button
         disabled={!canRedo}
         icon={<ArrowRedoIcon fontSize="1.5rem" title="Gjør om (Redo)" />}

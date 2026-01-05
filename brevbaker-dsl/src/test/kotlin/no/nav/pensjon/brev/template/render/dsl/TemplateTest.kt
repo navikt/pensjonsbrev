@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
@@ -9,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,11 +58,13 @@ class TemplateTest {
     @Test
     fun `createTemplate adds attachment`() {
         val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-            title = newText(
-                Language.Bokmal to "asdf",
-                Language.Nynorsk to "asdf",
-                Language.English to "asdf",
-            ),
+            title = {
+                text(
+                    bokmal { +"asdf" },
+                    nynorsk { +"asdf" },
+                    english { +"asdf" },
+                )
+            },
         ) {
             paragraph {
                 text(
@@ -182,27 +184,24 @@ class TemplateTest {
 
     @Test
     fun `TemplateContainerScope_formText adds Form$Text element`() {
-        val prompt = newText(Language.Bokmal to "hei")
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, prompt)
+            formText(Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT, { text(bokmal { +"hei" }) })
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(prompt, Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.Text(newText(Language.Bokmal to "hei"), Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT))
 
         assertEquals(expected, element)
     }
 
     @Test
     fun `TemplateContainerScope_formChoice adds Form$MultipleChoice`() {
-        val prompt = newText(Language.Bokmal to "hei")
-
         val element = ParagraphOnlyScope<LangBokmal, SomeDto>().apply {
-            formChoice(prompt) {
-                choice(Language.Bokmal to "velg denne")
+            formChoice({ text( bokmal {+"hei"}) }) {
+                choice(bokmal{+ "velg denne"})
             }
         }.elements.first()
 
-        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(prompt, listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
+        val expected = Content(Element.OutlineContent.ParagraphContent.Form.MultipleChoice(newText(Language.Bokmal to "hei"), listOf(Element.OutlineContent.ParagraphContent.Text.Literal.create(Language.Bokmal to "velg denne"))))
 
         assertEquals(expected, element)
     }

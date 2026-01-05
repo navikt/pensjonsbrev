@@ -2,7 +2,6 @@ package no.nav.pensjon.brev
 
 import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.EnkeltRedigerbartTestbrev
 import no.nav.pensjon.brev.maler.example.LetterExample
@@ -17,6 +16,12 @@ val alleRedigerbareMaler = try {
     pensjonOgUfoereProductionTemplates.hentRedigerbareMaler() + EksempelbrevRedigerbart + EnkeltRedigerbartTestbrev
 } catch(e: ExceptionInInitializerError) {
     formaterOgSkrivUtFeil(e, "Feila under initialisering av redigerbare maler: ")
+}
+
+val alleAlltidValgbareVedlegg = try {
+    pensjonOgUfoereProductionTemplates.hentAlltidValgbareVedlegg()
+} catch(e: ExceptionInInitializerError) {
+    formaterOgSkrivUtFeil(e, "Feila under initialisering av alltid valgbare vedlegg: ")
 }
 
 private fun formaterOgSkrivUtFeil(e: ExceptionInInitializerError, prefiks: String): Nothing =
@@ -35,6 +40,8 @@ fun Application.brevbakerTestModule() = this.brevbakerModule(
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
+
+        override fun hentAlltidValgbareVedlegg() = alleAlltidValgbareVedlegg
     }
 )
 
@@ -45,5 +52,7 @@ fun Application.brevbakerIntegrationTestModule() = this.brevbakerModule(
         override fun hentAutobrevmaler() = alleAutobrevmaler
 
         override fun hentRedigerbareMaler() = alleRedigerbareMaler
+
+        override fun hentAlltidValgbareVedlegg() = alleAlltidValgbareVedlegg
     },
 )

@@ -23,13 +23,13 @@ enum class FeatureToggles(private val key: String) {
     innvilgelseAvAlderspensjonTrygdeavtale("innvilgelseAvAlderspensjonTrygdeavtale"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
+    samletMeldingOmPensjonsvedtakV2("samletMeldingOmPensjonsvedtakV2"),
     vedtakOmFjerningAvOmsorgspoeng("vedtakOmFjerningAvOmsorgspoeng"),
     vedtakEndringOpptjeningEndret("vedtakEndringOpptjeningEndret"),
     vedtakEndringVedFlyttingMellomLand("vedtakEndringVedFlyttingMellomLand"),
     brukertestbrev2025("brukertestbrev2025"),
     vedtakStansFlyttingMellomLand("vedtakStansFlyttingMellomLand"),
     avslagForLiteTrygdetidAP("avslagForLiteTrygdetidAP"),
-    omregningAlderUfore2016("omregningAlderUfore2016"),
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng");
 
     val toggle = FeatureToggle(key)

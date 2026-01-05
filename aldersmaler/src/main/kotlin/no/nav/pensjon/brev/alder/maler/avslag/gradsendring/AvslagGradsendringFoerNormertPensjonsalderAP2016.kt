@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalde
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.totalPensjon
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.virkFom
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016Dto
-import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.afpBruktIBeregning
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016DtoSelectors.pesysData
@@ -36,7 +36,6 @@ object AvslagGradsendringFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<Avs
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

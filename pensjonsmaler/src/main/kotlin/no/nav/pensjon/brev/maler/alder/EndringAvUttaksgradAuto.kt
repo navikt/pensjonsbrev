@@ -61,7 +61,6 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uttaksgrad (auto)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = VEDTAKSBREV
         ),
@@ -92,14 +91,14 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             english { +"You will receive ".expr() + alderspensjonVedVirk.totalPensjon.format() + " every month before tax from ".expr() + kravVirkDatoFom.format() }
                         )
                         showIf(alderspensjonVedVirk.ufoereKombinertMedAlder) {
-                            // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
+                           // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                             text(
                                 bokmal { +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
                                 nynorsk { +". Du får alderspensjon frå folketrygda ved sida av uføretrygda di." },
                                 english { +". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit." }
                             )
                         }.orShow {
-                            // innvilgelseAPInnledn -> Ingen løpende uføretrygd
+                           // innvilgelseAPInnledn -> Ingen løpende uføretrygd
                             text(
                                 bokmal { +" i alderspensjon fra folketrygden." },
                                 nynorsk { +" i alderspensjon frå folketrygda." },
@@ -108,20 +107,20 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         }
                     }
 
-                    // innvilgelseAPogAFPPrivat
+                   // innvilgelseAPogAFPPrivat
                     showIf(alderspensjonVedVirk.privatAFPerBrukt) {
                         includePhrase(AfpPrivatErBrukt(uttaksgrad = alderspensjonVedVirk.uttaksgrad))
                     }
 
-                    // utbetalingsInfoMndUtbet
+                   // utbetalingsInfoMndUtbet
                     includePhrase(Utbetalingsinformasjon)
 
-                    // flereBeregningsperioderVedlegg
+                   // flereBeregningsperioderVedlegg
                     showIf(harFlereBeregningsperioder and alderspensjonVedVirk.totalPensjon.greaterThan(0)) {
                         includePhrase(Felles.FlereBeregningsperioder)
                     }
                 }.orShow {
-                    // stansAPInnledn
+                   // stansAPInnledn
                     paragraph {
                         text(
                             bokmal { +"Vi viser til søknaden din, og stanser utbetalingen av alderspensjonen fra ".expr() + kravVirkDatoFom.format() + "." },
@@ -130,19 +129,19 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         )
                     }
                     showIf(alderspensjonVedVirk.skjermingstilleggInnvilget) {
-                        // fortsattSkjermingstillegg
+                       // fortsattSkjermingstillegg
                         paragraph {
                             text(
-                                bokmal { +"Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdloven §§ 19-9a, 19-10 og 19-12." },
-                                nynorsk { +"Du får fortsatt utbetalt skjermingstillegget til uføre. Vedtaket er gjort etter folketrygdlova §§ 19-9a, 19-10 og 19-12." },
-                                english { +"You will still receive the supplement for disabled people. This decision was made pursuant to the provisions of §§ 19-9a, 19-10 and 19-12 of the National Insurance Act." }
+                                bokmal { +"Du får fortsatt utbetalt skjermingstillegget til uføre." },
+                                nynorsk { +"Du får fortsatt utbetalt skjermingstillegget til uføre." },
+                                english { +"You will still receive the supplement for disabled people." }
                             )
                         }
                     }
                 }
 
                 showIf(regelverkType.equalTo(AP2011) and not(alderspensjonVedVirk.skjermingstilleggInnvilget)) {
-                    // endrUtaksgradAP2011
+                   // endrUtaksgradAP2011
                     paragraph {
                         text(
                             bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
@@ -151,16 +150,28 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                         )
                     }
                 }.orShowIf(regelverkType.equalTo(AP2016)) {
-                    // endrUtaksgradAP2016
+                   // endrUtaksgradAP2016
                     paragraph {
                         text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ " },
+                            english { +"This decision was made pursuant to the provisions of §§ " }
+                        )
+                        showIf(alderspensjonVedVirk.skjermingstilleggInnvilget) {
+                            text(
+                                bokmal { +"19-9a, " },
+                                nynorsk { +"19-9a, " },
+                                english { +"19-9a, " }
+                            )
+                        }
+                        text(
+                            bokmal { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            nynorsk { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                            english { +"19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
                         )
                     }
                 }.orShowIf(regelverkType.equalTo(AP2025)) {
-                    // endrUtaksgradAP2025Soknad
+                   // endrUtaksgradAP2025Soknad
                     paragraph {
                         text(
                             bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-14, 20-16 og 22-13." },
@@ -172,7 +183,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
 
                 showIf(alderspensjonVedVirk.uttaksgrad.lessThan(100)) {
                     val uttaksgradStoerreEnn0 = alderspensjonVedVirk.uttaksgrad.greaterThan(0)
-                    // gradsendrAPSoknadInfo, nySoknadAPInfo
+                   // gradsendrAPSoknadInfo, nySoknadAPInfo
                     paragraph {
                         text(
                             bokmal {
@@ -204,14 +215,14 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 }
 
                 showIf(alderspensjonVedVirk.uttaksgrad.greaterThan(0)) {
-                    // skattAPendring
+                   // skattAPendring
                     includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
 
-                    // arbinntektAP
+                   // arbinntektAP
                     includePhrase(ArbeidsinntektOgAlderspensjonKort)
 
                     showIf(alderspensjonVedVirk.uttaksgrad.equalTo(100)) {
-                        // nyOpptjeningHelAP_001
+                       // nyOpptjeningHelAP_001
                         paragraph {
                             text(
                                 bokmal { +"Hvis du har 100 prosent alderspensjon, gjelder økningen fra 1. januar året etter at skatteoppgjøret ditt er ferdig." },
@@ -220,7 +231,7 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                             )
                         }
                     }.orShow {
-                        // nyOpptjeningGradertAP_001
+                       // nyOpptjeningGradertAP_001
                         paragraph {
                             text(
                                 bokmal { +"Hvis du har lavere enn 100 prosent alderspensjon, blir økningen lagt til hvis du søker om endret grad eller ny beregning av den graden du har nå." },
@@ -237,9 +248,9 @@ object EndringAvUttaksgradAuto : AutobrevTemplate<EndringAvUttaksgradAutoDto> {
                 includePhrase(Felles.RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
                 includePhrase(Felles.HarDuSpoersmaal.alder)
             }
-            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)  // V00002
-            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)  // V00003
-            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto)  // V00010
-            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, opplysningerBruktIBeregningenEndretUttaksgradDto)  // V00005
+            includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto) // V00002
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto) // V00003
+            includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, maanedligPensjonFoerSkattAP2025Dto) // V00010
+            includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenEndretUttaksgrad, opplysningerBruktIBeregningenEndretUttaksgradDto) // V00005
         }
 }

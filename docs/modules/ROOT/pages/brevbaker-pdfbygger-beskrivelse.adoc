@@ -1,0 +1,212 @@
+= Løsningsbeskrivelse av Brevbaker og pdfbygger
+
+Brevbaker er en mikrotjeneste uten state som tar inn informasjon som kreves for ett brev (navn, adresse, saksnummer osv)
+, og gir tilbake en PDF via REST grensesnitt. Brevbakeren bestemmer selve tekstlige innholdet i ett brev basert på brevbestillingen.
+
+
+Datagrunnlaget vil variere pr brev og svarer med en pdf. Brevene vil inneholde ulik informasjon som f.eks
+Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet lagres i brevbaker/pdf-bygger
+
+Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.
+
+== Arkitektur
+
+[plantuml, my-diagram, svg]
+----
+include::../examples/moduldiagram.puml[]
+----
+
+== Prosess / Brukstilfelle
+Overordnet vil en bestilling gå slik:
+[plantuml, target=img/sekvens-diagram, format=svg]
+....
+BestillendeSystem -> Brevbaker: LetterRequest (1)
+Brevbaker -> PDFbygger: LaTeX filer til pdf-rendring(2)
+PDFbygger -> Brevbaker: PDF (3)
+Brevbaker -> BestillendeSystem: PDF + mal-metadata (4)
+....
+=== 1. Bestillersystemet fyller ut en LetterRequest med informasjon som skrives i brevet.
+
+(modell kan være utdatert)
+
+---
+
+[plantuml, target=img/datagrunnlag-letterrequest, format=svg]
+....
+class LetterRequest{
+    template: String
+    letterData: Datagrunnlag for valgt mal med egen klasse
+    felles: Felles
+    language: LanguageCode
+}
+LetterRequest --* Felles
+LetterRequest --* LanguageCode
+
+class LanguageCode {
+    BOKMAL, NYNORSK, ENGLISH
+}
+
+class Felles{
+    dokumentDato: LocalDate
+    saksnummer: String
+    avsenderEnhet: NAVEnhet
+    mottaker: Mottaker
+    signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+}
+
+Felles --* NAVEnhet
+Felles --* SignerendeSaksbehandlere
+Felles --* Mottaker
+
+class SignerendeSaksbehandlere{
+    saksbehandler: String
+    attesterendeSaksbehandler: String
+}
+
+class Mottaker{
+    fornavn: String
+    mellomnavn: String? = null
+    etternavn: String
+    foedselsnummer: String
+    kortnavn: String
+}
+
+class NAVEnhet{
+    nettside: String
+    navn: String
+    telefonnummer: String
+}
+
+....
+
+
+Felles-feltet inneholder data som kreves for bestilling av alle brev. Feltene der det står "? = null" er valgfrie.
+letterData feltet inneholder ulik datastruktur avhengig av hvilket brev som bestilles.
+For eksempel ved bestilling av brevet "Egenerklæring godskriving omsorgspoeng" krever at letterData er inneholder malens unike grunnlag som ser slik ut:
+
+[plantuml, target=img/brevDtoEksempel, format=svg]
+....
+class LetterRequest{
+    template: String
+    letterData: OmsorgEgenAuto
+    felles: Felles
+    language: LanguageCode
+}
+LetterRequest --* OmsorgEgenAuto
+class OmsorgEgenAuto{
+    årEgenerklaringOmsorgspoeng: Number
+    årInnvilgetOmsorgspoeng: Number
+}
+
+
+
+....
+=== 2. Brevbakeren bruker input data sammen med malen for å bestemme innholdet i brevet
+For å bestemme det tekstlige innholdet og elementer i brevet kombinerer vi malen med dataene. Malen er definert ved hjelp av kotlin DSL.
+Malen kan se for eksempel slik ut:
+
+.Eksempel
+[%collapsible]
+====
+
+
+[source, kotlin]
+....
+object EksempelBrev : StaticTemplate {
+    override val template = createTemplate(
+        //ID på brevet
+        name = "EKSEMPEL_BREV",
+
+        //Master-mal for brevet.
+        base = PensjonLatex,
+
+        // Unik datagrunnlag/DTO for brevet
+        letterDataType = EksempelBrevDto::class,
+
+        // Hvilke språk brevet støtter
+        lang = languages(Language.Bokmal),
+
+        // Hovedtittel inne i brevet
+        title = newText(Language.Bokmal to "Eksempelbrev"),
+
+        // Metadata knyttet til en brevmal som ikke påvirker innholdet
+        letterMetadata = LetterMetadata(
+
+            // Visningstittel for ulike systemer.
+            // F.eks saksbehandling brev oversikt, brukerens brev oversikt osv
+            displayTitle = "Dette er ett eksempel-brev",
+        )
+    ) {
+        // Tekst-innholdet i malen
+        outline {
+
+            // Undertittel
+            title1 {
+
+                // Tekst
+                text(Language.Bokmal to "Du har fått innvilget pensjon")
+            }
+
+            // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst
+            eval { argument().select(EksempelBrevDto::pensjonInnvilget).format() }
+
+            // Inkludering av eksisterende frase/mini-mal for gjenbruk av elementer
+            includePhrase(
+                argument().select(EksempelBrevDto::pensjonInnvilget)
+                    .map { TestFraseDto(it.toString()) },
+                TestFrase
+            )
+        }
+    }
+}
+....
+====
+
+Ved bruk av PensjonLatex master-malen vil det genereres en rekke filer som sendes til pdf-byggeren:
+
+. `params.tex` inkluderer alle felles-elementer som kreves i master-malen.
+. `letter.xmpdata` inneholder metadata for pdf-dokumentet
+. `letter.tex` inneholder hoveddelen av brevet med tekst og data fra brevmalen
+. `nav-logo.pdf` logo for master-malen
+. `nav-logo.pdf_tex` tex kode for å bruke nav logoen
+. `pensjonsbrev_v2.cls` fil som beskriver plassering av innhold og utforming av brevet. Fungerer noe likt css.
+
+
+=== 3. PDF-byggeren bygger pdf fra inngående filer
+Pdf-byggeren kjører XeTeX på letter.tex filen og returnerer resulterende PDF til brevbakeren.
+
+=== 4. Brevbaker svarer med brev-metadata og pdf
+Brevbakeren svarer bestillende system med PDF og metadata som hører til brevmalen som produserte brevet definert i LetterMetadata.
+
+== Teknologivalg
+
+=== Github actions
+For CI/CD pipeline (kontinuerlig leveranse/integrasjon) har vi valgt github actions siden det er ett bra verktøy som mange på huset bruker.
+NAIS-plattformen har også tilrettelagt for at vi lett skal kunne bruke github actions for å deploye applikasjoner til ulike miljø.
+
+Vi bruker Github actions for å automatisere en rekke oppgaver:
+
+* Bygge applikasjoner og container images.
+* Unit testing, integrasjonstester og ende til ende tester.
+* Deploye til produksjon ved push til master.
+* Deploye til development ved manuell trigging av action mot branch.
+* Bygge asciidoc til html og deploye automatisk til github pages ved endringer i dokumentasjonen.
+
+=== Ktor
+Ktor er ett moderne og lettvektet rammeverk for å lage http tjenester som fungerer godt sammen med Kotlin.
+Vi valgte Ktor ettersom vi ønsket å bruke Kotlin og ikke har behov for tyngre rammeverk som f.eks Spring.
+
+=== Asciidoc
+Asciidoc er brukt mye i Nav og gir oss muligheten til å legge dokumentasjon nær koden. Dette gjør det lettere å legge ut endringer sammen med dokumentasjon.
+Asciidoc kan også kompileres til HTML på github pages som også gjøres mange andre steder i Nav.
+
+=== LaTeX
+Vi  har valgt LaTeX for å produsere brev/pdf-dokumenter.
+LaTeX er ett typesettingssystem for produksjon av dokumenter. LaTeX er vel-etablert, Open-source, gratis og forbedret over lang tid(lansert i 1980).
+Ettersom LaTeX brukes av de fleste akademiske institusjoner kan man også anta at de fleste utviklere har noe erfaring med eller kjennskap til LaTeX.
+Det er viktig å understreke at vi ikke har sterke knytninger til valget av LaTeX. Vi bruker kun LaTeX for å bestemme hvordan innholdet til ett brev presenteres/vises i en pdf, ikke for å bestemme det tekstlige innholdet.
+Dette gjør det mulig å bytte ut LaTeX med andre representasjoner av det tekstlige innholdet i brevet med f.eks HTML.
+
+=== Kotlin
+Kotlin er ett moderne kodespråk basert på Java som kjører i JVM. Vi bruker Kotlin ettersom det er god støtte og erfaring med Kotlin i Nav. Vi på teamet har også god erfaring med Kotlin.
+

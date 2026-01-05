@@ -34,7 +34,6 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-6",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),

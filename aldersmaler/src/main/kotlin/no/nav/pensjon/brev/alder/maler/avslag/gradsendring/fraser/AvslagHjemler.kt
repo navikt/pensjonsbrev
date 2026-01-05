@@ -44,7 +44,7 @@ data class AvslagHjemler(
         }
 
         showIf(harEOSLand.not() and prorataBruktIBeregningen) {
-            ifNotNull(avtaleland)  { avtaleland ->
+            ifNotNull(avtaleland) { avtaleland ->
                 paragraph {
                     text(
                         bokmal { + "Vedtaket er også gjort etter reglene i trygdeavtalen med " + avtaleland + "." },

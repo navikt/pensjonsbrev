@@ -6,9 +6,9 @@ import java.time.LocalDate
 
 fun createEndretUfoeretrygdPGAInntektDto() =
     EndretUfoeretrygdPGAInntektDto(
-        pe = Fixtures.create(),
-        maanedligUfoeretrygdFoerSkatt = Fixtures.create(),
-        orienteringOmRettigheterUfoere = Fixtures.create(),
+        pe = Fixtures.createVedlegg(),
+        maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg(),
+        orienteringOmRettigheterUfoere = Fixtures.createVedlegg(),
         gammeltBelop = 2000,
         nyttBelop = 2000,
         virkningFom = LocalDate.of(2020, 1, 1),

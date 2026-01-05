@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { ArrowLeftIcon } from "@navikt/aksel-icons";
 import { PencilIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Table, VStack } from "@navikt/ds-react";
@@ -13,17 +12,7 @@ import { humanizeName } from "~/utils/stringUtils";
 
 const BackButton = (properties: { icon: React.ReactNode; text: string; onClick: () => void }) => {
   return (
-    <Button
-      css={css`
-        width: fit-content;
-        align-self: flex-start;
-      `}
-      icon={properties.icon}
-      onClick={properties.onClick}
-      size="small"
-      type="button"
-      variant="tertiary"
-    >
+    <Button icon={properties.icon} onClick={properties.onClick} size="small" type="button" variant="tertiary">
       {properties.text}
     </Button>
   );
@@ -42,20 +31,19 @@ const OppsummeringAvValgtMottaker = (properties: {
   };
 }) => {
   return (
-    <VStack gap="4">
+    <VStack gap="space-16">
       {properties.onTilbake.plassering === "top" && (
-        <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
+        <HStack justify="start">
+          <BackButton icon={<PencilIcon />} onClick={properties.onTilbake.fn} text="Rediger" />
+        </HStack>
       )}
       <OppsummeringAvAdresse adresse={properties.adresse} type={properties.samhandlerType} />
       {properties.onTilbake.plassering === "bottom" && (
-        <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
+        <HStack justify="start">
+          <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
+        </HStack>
       )}
-      <HStack
-        css={css`
-          align-self: flex-end;
-        `}
-        gap="4"
-      >
+      <HStack gap="space-16" justify="end">
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
@@ -69,7 +57,7 @@ const OppsummeringAvValgtMottaker = (properties: {
           Bekreft ny mottaker
         </Button>
       </HStack>
-      {properties.error && <ApiError error={properties.error} title={"En feil skjedde"} />}
+      {properties.error && <ApiError error={properties.error} title="En feil skjedde" />}
     </VStack>
   );
 };

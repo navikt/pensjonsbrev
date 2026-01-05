@@ -1,5 +1,6 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
+import { HGrid } from "@navikt/ds-react";
 import { intlFormat } from "date-fns";
 
 import { SpraakKode } from "~/types/apiTypes";
@@ -16,16 +17,15 @@ export const SakspartView = ({
 }) => {
   const dokumentDato = Date.parse(sakspart.dokumentDato);
   return (
-    <div
+    <HGrid
+      columns="minmax(10rem, max-content) 1fr min-content"
       css={css`
-        display: grid;
-        grid-template-columns: minmax(10rem, max-content) 1fr min-content;
-        gap: var(--a-spacing-1) var(--a-spacing-2);
         opacity: 0.5;
         font-size: 16.5px;
-        line-height: var(--a-font-line-height-heading-xsmall);
+        line-height: var(--ax-font-line-height-large);
         ${wrapperStyles}
       `}
+      gap="space-4 space-8"
     >
       {sakspart.annenMottakerNavn && (
         <>
@@ -42,7 +42,7 @@ export const SakspartView = ({
       <span />
       <span>Saksnummer:</span>
       <span>{sakspart.saksnummer}</span>
-      <span css={css({ alignSelf: "end", textWrap: "nowrap" })}>
+      <span css={{ alignSelf: "end", textWrap: "nowrap" }}>
         {!isNaN(dokumentDato) &&
           intlFormat(
             dokumentDato,
@@ -50,6 +50,6 @@ export const SakspartView = ({
             { locale: spraak === SpraakKode.Engelsk ? "en-GB" : spraak },
           )}
       </span>
-    </div>
+    </HGrid>
   );
 };

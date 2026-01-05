@@ -37,7 +37,6 @@ object VedtakIngenTilbakekreving : RedigerbarTemplate<VedtakFeilutbetalingUforeI
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak- ingen tilbakekreving av feilutbetalt beløp",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

@@ -29,13 +29,13 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("ingen-treff-alert");
 
     cy.focused().type("{esc}");
-    cy.getDataCy("category-item").should("have.length", 9).and("not.have.class", "navds-accordion__item--open");
+    cy.getDataCy("category-item").should("have.length", 9).and("not.have.class", "aksel-accordion__item--open");
   });
 
   it("Favoritter", () => {
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
     cy.visit("/saksnummer/123456/brevvelger");
-    cy.get(".navds-accordion__item").contains("Favoritter").should("not.exist");
+    cy.get(".aksel-accordion__item").contains("Favoritter").should("not.exist");
 
     cy.contains("Informasjonsbrev").click();
     cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 1);
@@ -48,7 +48,7 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["DOD_INFO_RETT_MAN"]).as("1 favoritt");
 
     cy.getDataCy("add-favorite-button").click();
-    cy.get(".navds-accordion__item").contains("Favoritter").should("exist").and("have.length", 1);
+    cy.get(".aksel-accordion__item").contains("Favoritter").should("exist").and("have.length", 1);
     //skal finnes 2 elementer i DOM'en
     cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 2);
     cy.get("p:contains('Informasjon om gjenlevenderettigheter')").filter(":visible").should("have.length", 1);
@@ -60,7 +60,7 @@ describe("Brevvelger spec", () => {
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
     cy.getDataCy("remove-favorite-button").click();
 
-    cy.get(".navds-accordion__item").contains("Favoritter").should("not.exist");
+    cy.get(".aksel-accordion__item").contains("Favoritter").should("not.exist");
   });
 
   it("Bestill Exstream brev", () => {
@@ -69,7 +69,6 @@ describe("Brevvelger spec", () => {
         brevkode: "PE_IY_05_027",
         idTSSEkstern: null,
         spraak: "NN",
-        isSensitive: false,
         brevtittel: "",
         enhetsId: "4405",
       });
@@ -87,8 +86,6 @@ describe("Brevvelger spec", () => {
 
     cy.get("select[name=spraak]").select("Nynorsk");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
@@ -113,8 +110,6 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("brevmal-search").click().type("gjenlevende");
     cy.getDataCy("brevmal-button").click();
 
-    cy.getDataCy("is-sensitive").should("not.exist");
-
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
@@ -129,7 +124,6 @@ describe("Brevvelger spec", () => {
       expect(request.body).contains({
         brevkode: "PE_IY_03_156",
         spraak: "NB",
-        isSensitive: true,
         brevtittel: "GGMU",
         enhetsId: "4405",
       });
@@ -151,10 +145,6 @@ describe("Brevvelger spec", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("order-letter").click();
 
-    cy.getDataCy("is-sensitive").get(".navds-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-
-    cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864212?token=1711023327721&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -168,7 +158,6 @@ describe("Brevvelger spec", () => {
         brevkode: "E001",
         landkode: "GBR",
         mottakerText: "Haaland",
-        isSensitive: true,
         enhetsId: "4405",
       });
       request.reply({ fixture: "bestillBrevEblankett.json" });
@@ -186,17 +175,13 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("order-letter").click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
-    cy.getDataCy("is-sensitive").find(".navds-error-message");
-    cy.getDataCy("is-sensitive").contains("Ja").click({ force: true });
-    cy.getDataCy("is-sensitive").find(".navds-error-message").should("not.exist");
-
-    cy.get("label").contains("Land").parent().find(".navds-error-message");
+    cy.get("label").contains("Land").parent().find(".aksel-error-message");
     cy.get("select[name=landkode]").select("Storbritannia");
-    cy.get("label").contains("Land").parent().find(".navds-error-message").should("not.exist");
+    cy.get("label").contains("Land").parent().find(".aksel-error-message").should("not.exist");
 
-    cy.getDataCy("mottaker-text-textfield").parent().find(".navds-error-message");
+    cy.getDataCy("mottaker-text-textfield").parent().find(".aksel-error-message");
     cy.getDataCy("mottaker-text-textfield").type("Haaland");
-    cy.getDataCy("mottaker-text-textfield").parent().find(".navds-error-message").should("not.exist");
+    cy.getDataCy("mottaker-text-textfield").parent().find(".aksel-error-message").should("not.exist");
 
     cy.getDataCy("order-letter").click();
     cy.get("@window-open").should(

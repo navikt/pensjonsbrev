@@ -5,10 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.notNull
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -16,6 +13,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visInnvilgetPensjonEOSLand
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visSupplerendeStonadUforeFlykninger
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visTekstVedArtikkel57Avslag
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.SaksbehandlervalgSelectors.visVedtakFraAndreLand
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.TrygdetidSelectors.fomDato
@@ -24,12 +22,12 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.artikkel
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.avtaletype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.eosNordisk
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravGjelder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.UforeAvslagPendataSelectors.trygdetidListe
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -50,7 +48,6 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-2 Utland",
-            isSensitiv = false,
             distribusjonstype = VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         ),
@@ -61,7 +58,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
@@ -124,8 +121,8 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                         "Nav må forholde seg til trygdetiden som trygdemyndighetene i andre land har godskrevet etter sin nasjonale lovgivning. "})
             }
 
-            paragraph {
-                text(bokmal { + "Dette er din trygdetid:"})
+            title1 {
+                text(bokmal { + "Slik har vi beregnet trygdetiden"})
             }
 
             paragraph {
@@ -173,7 +170,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                     text(bokmal { + "Fordi du ikke er statsborger i et EØS-land, har du ikke trygderettigheter etter EØS-reglene. " })
                 }
                 paragraph {
-                    text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og 12. Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
+                    text(bokmal { + "Vedtaket har vi gjort etter folketrygdloven kapittel 2 og 12. Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 2 og artikkel 6, og Nordisk konvensjon artikkel 3 og artikkel 4." })
                 }
             }.orShowIf(saksbehandlerValg.visTekstVedArtikkel57Avslag) {
                 paragraph {
@@ -183,16 +180,16 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                     text(bokmal { + "Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet." })
                 }
                 paragraph {
-                    text(bokmal { + "Du har ikke vært medlem av folketrygden før " + fritekst("uføretidspunktet / før dato") + ", og fyller dermed ikke minstekravet til trygdetid i Norge." })
+                    text(bokmal { + "Du har ikke vært medlem av folketrygden før " + fritekst("uføretidspunktet / før dato") + ", og fyller dermed ikke minstekravet til medlemsskap i Norge." })
                 }
                 paragraph {
                     text(bokmal { + "Du har ikke rett til uføretrygd fra Norge etter EØS-avtalen." })
                 }
                 paragraph {
-                    text(bokmal { + "Vedtaket er gjort etter folketrygdloven kapittel 2 og § 12-2." })
+                    text(bokmal { + "Vedtaket har vi gjort etter folketrygdloven kapittel 2 og §§ 12-2 og 12-8." })
                 }
                 paragraph {
-                    text(bokmal { + "Vedtaket er også gjort etter EØS-forordning 883/2004 artikkel 52 og artikkel 57." })
+                    text(bokmal { + "Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 52 og artikkel 57." })
                 }
             }.orShow {
                 paragraph {
@@ -216,16 +213,22 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
 
                 paragraph {
-                    text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven kapittel 2 og § 12-2. "})
+                    text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven kapittel 2 og §§ 12-2 og 12-8. "})
                 }
 
                 showIf(pesysData.eosNordisk) {
                     paragraph {
                         text(bokmal { +"Vedtaket har vi også gjort etter EØS-forordning 883/2004 artikkel 6 og artikkel 51, og forskrift om beregning av uføretrygd etter EØS-avtalen av 12. februar 2015." })
                     }
-                }.orShowIf(pesysData.avtaletype.notNull()) {
-                    paragraph {
-                        text(bokmal { + "Vedtaket er også gjort etter trygdeavtalen med " + pesysData.avtaletype.ifNull("avtaletype") + " artikkel " + pesysData.artikkel.ifNull("X") + "." })
+                }.orShowIf(pesysData.avtaletype.notNull() and pesysData.artikkel.notNull()) {
+                    showIf(pesysData.avtaletype.equalTo("Storbritannia")) {
+                        paragraph {
+                            text(bokmal { + "Vedtaket har vi også gjort etter konvensjonen mellom Island, Liechtenstein, Norge og Storbritannia artikkel 10 og artikkel 46." })
+                        }
+                    }.orShow {
+                        paragraph {
+                            text(bokmal { + "Vedtaket har vi også gjort etter trygdeavtalen med " + pesysData.avtaletype.ifNull("avtaletype") + " artikkel " + pesysData.artikkel.ifNull("X") + "." })
+                        }
                     }
                 }.orShow {
                     paragraph {
@@ -236,17 +239,27 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
 
             showIf(saksbehandlerValg.visVedtakFraAndreLand) {
                 title1 {
-                    text(bokmal { +"Vedtak fra andre land" })
+                    text(bokmal { +"Vedtak fra andre land og P1" })
                 }
 
                 paragraph {
-                    text(bokmal {+"Vi har mottatt melding fra " + fritekst("land") + " om at du har fått " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "."})
+                    text(bokmal {+"Vi har mottatt melding fra " + fritekst("land") + " om at de har " + fritekst("innvilget/avslått") + " " + fritekst("uføreytelse eller alderspensjon") + "."})
                 }
                 paragraph {
-                    text(bokmal { +"Vedtaket er gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg." })
+                    text(bokmal { +"Vedtaket har vi gjort etter landets egen trygdelovgivning. Du kan lese om begrunnelse, rettigheter og plikter i vedtaket som de skal ha sendt til deg." })
                 }
                 paragraph {
                     text(bokmal { +"Du finner oversikt over alle vedtak i vedlegget «P1 - Samlet melding om pensjonsvedtak»." })
+                }
+            }
+
+            showIf( saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+                title1 {
+                    text(bokmal { +"Supplerende stønad for uføre flyktninger" })
+                }
+                paragraph {
+                    text(bokmal { +"Har du godkjent flyktningstatus fra utlendingsmyndighetene, kan du søke om supplerende stønad til uføre flyktninger. " +
+                            "Du kan lese om supplerende stønad til uføre flyktninger på vår nettside ${Constants.NAV_URL}" })
                 }
             }
 

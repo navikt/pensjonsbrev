@@ -46,7 +46,6 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Opphør av omstillingsstønad",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -83,7 +82,7 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         includeAttachment(klageOgAnke(bosattUtland = false), bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true),  bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), bosattUtland)
 
         includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }

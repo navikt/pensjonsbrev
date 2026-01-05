@@ -17,7 +17,6 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak midlertidig opphør hvilende rett 10 år",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

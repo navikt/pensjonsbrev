@@ -41,7 +41,6 @@ object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAlde
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Vedtak - omregning av alderspensjon pga rett til garantitillegg",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),

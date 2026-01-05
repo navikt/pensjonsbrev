@@ -56,7 +56,6 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Vedtak - Revurdering av omstillingsstønad",
-                isSensitiv = true,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),

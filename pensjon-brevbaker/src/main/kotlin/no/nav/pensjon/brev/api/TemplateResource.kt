@@ -1,80 +1,34 @@
 package no.nav.pensjon.brev.api
 
-import io.ktor.server.plugins.BadRequestException
-import io.ktor.server.plugins.NotFoundException
 import io.micrometer.core.instrument.Tag
-import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.Brevbaker
-import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.pensjon.brev.Metrics
+import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.pdfvedlegg.PDFVedleggAppenderImpl
 import no.nav.pensjon.brev.template.BrevTemplate
-import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brev.template.LetterImpl
-import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-private val objectMapper = brevbakerJacksonObjectMapper()
+interface TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>> {
 
-abstract class TemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<BrevbakerBrevdata, Kode>, Request : BrevRequest<Kode>>(
-    val name: String,
-    templates: Set<T>,
-    pdfByggerService: PDFByggerService,
-) {
-    abstract suspend fun renderPDF(brevbestilling: Request): LetterResponse
+    val name: String
 
-    abstract fun renderHTML(brevbestilling: Request): LetterResponse
+    suspend fun renderPDF(brevbestilling: Request): LetterResponse
 
-    protected val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
-    private val templateLibrary: TemplateLibrary<Kode, T> = TemplateLibrary(templates)
+    fun renderHTML(brevbestilling: Request): LetterResponse
 
-    fun listTemplatesWithMetadata() = templateLibrary.listTemplatesWithMetadata()
-    fun listTemplatekeys() = templateLibrary.listTemplatekeys()
+    fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup
 
-    fun getTemplate(kode: Kode) = templateLibrary.getTemplate(kode)
+    fun listTemplatesWithMetadata(): List<TemplateDescription>
+    fun listTemplatekeys(): Set<String>
 
-    fun countLetter(brevkode: Kode): Unit =
-        Metrics.prometheusRegistry.counter(
-            "pensjon_brevbaker_letter_request_count",
-            listOf(Tag.of("brevkode", brevkode.kode()))
-        ).increment()
-
-    protected fun createLetter(
-        brevkode: Kode,
-        brevdata: BrevbakerBrevdata,
-        spraak: LanguageCode,
-        felles: Felles,
-    ): Letter<BrevbakerBrevdata> {
-        val template =
-            getTemplate(brevkode)?.template ?: throw NotFoundException("Template '${brevkode}' doesn't exist")
-
-        val language = spraak.toLanguage()
-        if (!template.language.supports(language)) {
-            throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
-        }
-
-        @OptIn(InterneDataklasser::class)
-        return LetterImpl(
-            template = template,
-            argument = parseArgument(brevdata, template),
-            language = language,
-            felles = felles,
-        )
-    }
-
-    private fun parseArgument(
-        letterData: BrevbakerBrevdata,
-        template: LetterTemplate<*, BrevbakerBrevdata>,
-    ): BrevbakerBrevdata =
-        try {
-            objectMapper.convertValue(letterData, template.letterDataType.java)
-        } catch (e: IllegalArgumentException) {
-            throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
-        }
+    fun getTemplate(kode: Kode): BrevTemplate<BrevbakerBrevdata, out Brevkode<*>>?
 }
+
+fun countLetter(brevkode: Brevkode<*>): Unit =
+    Metrics.prometheusRegistry.counter(
+        "pensjon_brevbaker_letter_request_count",
+        listOf(Tag.of("brevkode", brevkode.kode()))
+    ).increment()

@@ -18,7 +18,6 @@ object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyAutobre
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Toleransebeløpet øker fra januar 2025",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )

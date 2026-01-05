@@ -44,7 +44,6 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - endring av uttaksgrad (stans)",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )

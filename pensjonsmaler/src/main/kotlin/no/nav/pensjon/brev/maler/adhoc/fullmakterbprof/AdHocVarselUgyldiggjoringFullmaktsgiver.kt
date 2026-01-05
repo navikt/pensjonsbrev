@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterTemplate
+import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -20,10 +21,8 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
     override val kode = Pesysbrevkoder.AutoBrev.GEN_ADHOC_INFOBREV_BPROF_FULLMAKTSGIVER
     override val template: LetterTemplate<*, FullmaktsgiverBprofAutoDto> = createTemplate(
         languages = languages(Bokmal),
-        letterDataType = FullmaktsgiverBprofAutoDto::class,
         letterMetadata = LetterMetadata(
             displayTitle = "Informasjon om fullmakter for pensjon eller uføretrygd",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

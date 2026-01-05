@@ -41,7 +41,6 @@ class PensjonLatexITest {
             languages = languages(Bokmal),
             letterMetadata = LetterMetadata(
                 displayTitle = "En fin display tittel",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             )
@@ -108,7 +107,6 @@ class PensjonLatexITest {
                 languages = languages(Bokmal),
                 letterMetadata = LetterMetadata(
                     displayTitle = "En fin display tittel",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 )

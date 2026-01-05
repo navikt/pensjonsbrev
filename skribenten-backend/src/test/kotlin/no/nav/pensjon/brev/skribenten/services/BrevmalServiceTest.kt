@@ -4,7 +4,6 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
@@ -28,7 +27,6 @@ class BrevmalServiceTest {
             languages = listOf(LanguageCode.BOKMAL),
             metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadata(
                 "brevbaker brev",
-                false,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
@@ -175,10 +173,10 @@ class BrevmalServiceTest {
 
         val penService = object : PenServiceStub() {
             override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
-                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(isKravPaaGammeltRegelverk) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
+                if (vedtaksId == TEST_VEDTAKS_ID) isKravPaaGammeltRegelverk else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
 
             override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
-                if (vedtaksId == TEST_VEDTAKS_ID) ServiceResult.Ok(KravStoettetAvDatabyggerResult(emptyMap())) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
+                if (vedtaksId == TEST_VEDTAKS_ID) KravStoettetAvDatabyggerResult(emptyMap()) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
         }
 
         return runBlocking {

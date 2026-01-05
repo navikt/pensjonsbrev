@@ -43,7 +43,6 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
         letterMetadata =
         LetterMetadata(
             displayTitle = "Informasjon om omstillingsstønaden din",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),

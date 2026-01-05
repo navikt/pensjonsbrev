@@ -26,7 +26,6 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Informasjon til deg som har ektefelle/partner/samboer som snart fyller 62 år",
-                    isSensitiv = false,
                     distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

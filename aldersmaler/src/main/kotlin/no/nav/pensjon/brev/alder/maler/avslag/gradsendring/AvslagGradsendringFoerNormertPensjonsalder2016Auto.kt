@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.avslag.gradsendring
 
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDto
-import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerBruktIBeregningenAP2016Vedlegg
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.opplysningerBruktIBeregningenAP2016Vedlegg
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.afpBruktIBeregning
 import no.nav.pensjon.brev.alder.model.avslag.AvslagUttakFoerNormertPensjonsalderAP2016AutoDtoSelectors.avtaleland
@@ -34,7 +34,6 @@ object AvslagGradsendringFoerNormertPensjonsalder2016Auto : AutobrevTemplate<Avs
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag endring av uttaksgrad",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = VEDTAKSBREV,
         )

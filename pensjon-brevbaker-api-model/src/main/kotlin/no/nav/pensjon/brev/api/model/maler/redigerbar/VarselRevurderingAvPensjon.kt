@@ -16,7 +16,7 @@ data class VarselRevurderingAvPensjonDto(
     ) : SaksbehandlerValgBrevdata{
         enum class TittelValg {
             @DisplayText("Revurdering av rett") RevurderingAvRett,
-            @DisplayText("Revurdering reduksjon") RevurderingReduksjon;
+            @DisplayText("Revurdering reduksjon") RevurderingReduksjon
         }
     }
 

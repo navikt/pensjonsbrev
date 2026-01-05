@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
@@ -28,9 +30,11 @@ private val hentBrukerContextQuery = PdlServiceHttp::class.java.getResource(HENT
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>>
-    suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext>
+    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>?
+    suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext?
 }
+
+class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
 
 class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, ServiceStatus {
     private val pdlUrl = config.getString("url")
@@ -82,7 +86,6 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             Pdl.Gradering.UGRADERT -> false
         }
     }
-    data class VergemaalEllerFremtidsfullmakt(val type: String)
     data class Doedsfall(val doedsdato: LocalDate)
 
     private data class DataWrapperPersonMedAdressebeskyttelse(val hentPerson: PersonMedAdressebeskyttelse?) {
@@ -98,80 +101,63 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         )
     }
 
-    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<List<Pdl.Gradering>> {
-        return client.post("") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(
-                PDLQuery(
-                    query = hentAdressebeskyttelseQuery,
-                    variables = FnrVariables(fnr)
-                )
-            )
-            headers {
-                if(behandlingsnummer != null)  {
-                    set("Behandlingsnummer", behandlingsnummer.name)
-                }
+    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>? =
+        postQuery<DataWrapperPersonMedAdressebeskyttelse>(
+            query = PDLQuery<FnrVariables>(hentAdressebeskyttelseQuery, FnrVariables(fnr)),
+            behandlingsnummer = behandlingsnummer,
+        ).handleGraphQLErrors()
+            ?.let {
+                it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering }
             }
-        }.toServiceResult<PDLResponse<DataWrapperPersonMedAdressebeskyttelse>>()
-            .handleGraphQLErrors()
-            .map {
-                it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering } ?: emptyList()
-            }
-    }
 
-    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): ServiceResult<Pdl.PersonContext> {
-        return client.post("") {
-            contentType(ContentType.Application.Json)
-            accept(ContentType.Application.Json)
-            setBody(
-                PDLQuery(
-                    query = hentBrukerContextQuery,
-                    variables = FnrVariables(fnr)
-                )
-            )
-            headers {
-                if(behandlingsnummer != null)  {
-                    set("Behandlingsnummer", behandlingsnummer.name)
-                }
-            }
-        }.toServiceResult<PDLResponse<DataWrapperPersonSakKontekst>>()
-            .handleGraphQLErrors()
-            .map { response ->
+    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext? =
+        postQuery<DataWrapperPersonSakKontekst>(
+            query = PDLQuery(query = hentBrukerContextQuery, variables = FnrVariables(fnr)),
+            behandlingsnummer = behandlingsnummer,
+        ).handleGraphQLErrors()
+            ?.let { response ->
                 val person = response.hentPerson
                 Pdl.PersonContext(
                     adressebeskyttelse = person?.adressebeskyttelse?.any { it.erGradert() }?: false,
                     doedsdato = person?.doedsfall?.firstNotNullOfOrNull { it.doedsdato }
                 )
             }
+
+    private suspend inline fun <reified T : Any> postQuery(query: PDLQuery<*>, behandlingsnummer: Pdl.Behandlingsnummer?): PDLResponse<T> {
+        val response = client.post("") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(query)
+            headers {
+                if (behandlingsnummer != null) {
+                    set("Behandlingsnummer", behandlingsnummer.name)
+                }
+            }
+        }
+        return if (response.status.isSuccess()) {
+            response.body()
+        } else {
+            throw PdlServiceException(response.bodyAsText())
+        }
     }
 
-
-    private fun <T : Any> ServiceResult<PDLResponse<T>>.handleGraphQLErrors(): ServiceResult<T> =
-        when (this) {
-            is ServiceResult.Error -> ServiceResult.Error(error, statusCode)
-            is ServiceResult.Ok ->
-                if (result.errors?.isNotEmpty() == true) {
-                    result.errors.also { it.logErrors() }.first().mapError()
-                } else if (result.data != null) {
-                    ServiceResult.Ok(result.data)
-                } else {
-                    ServiceResult.Error("Fant ikke person", HttpStatusCode.NotFound)
+    private fun <T : Any> PDLResponse<T>.handleGraphQLErrors(): T? =
+        if (errors?.isNotEmpty() == true) {
+            val error = errors.also { it.logErrors() }.first()
+            throw PdlServiceException(
+                message = error.message,
+                status = when (error.extensions?.code) {
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.InternalServerError
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.InternalServerError
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
+                    PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
+                    null -> HttpStatusCode.InternalServerError
                 }
+            )
+        } else {
+            data
         }
-
-    private fun <T> PDLResponse.PDLError.mapError(): ServiceResult.Error<T> =
-        ServiceResult.Error(
-            error = message,
-            statusCode = when (extensions?.code) {
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthenticated -> HttpStatusCode.Unauthorized
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.unauthorized -> HttpStatusCode.Forbidden
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.not_found -> HttpStatusCode.NotFound
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.bad_request -> HttpStatusCode.BadRequest
-                PDLResponse.PDLError.PDLExtensions.ErrorCode.server_error -> HttpStatusCode.InternalServerError
-                null -> HttpStatusCode.InternalServerError
-            }
-        )
 
     private fun List<PDLResponse.PDLError>.logErrors() {
         if (size > 1) {
@@ -181,10 +167,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             .forEach { logger.info("${it.message}: {}", it.extensions) }
     }
 
-    override val name = "PDL"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.options("")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun ping() =
+        ping("PDL") { client.options("") }
 
 }

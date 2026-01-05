@@ -19,7 +19,7 @@ import java.time.LocalDate
 
 class EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO(
     val etteroppgjoersAar: Int,
-    val forhaandsvarselSendtDato: LocalDate,
+    val forhaandsvarselSendtDato: LocalDate?,
     val mottattSvarDato: LocalDate?
 )
 
@@ -36,7 +36,6 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Etteroppgjør Innhold",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
@@ -50,25 +49,25 @@ object EtteroppgjoerVedtakRedigerbartUtfall:
         }
         outline {
 
-            ifNotNull(data.mottattSvarDato){ mottattSvarDato ->
-                paragraph {
-                    text(
-                        bokmal { +"Vi viser til vårt forhåndsvarsel av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjør av din omstillingsstønad og din tilbakemelding vi mottok " + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "." },
-                        nynorsk { +"Vi viser til førehandsvarselet av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjer av din omstillingsstønad og din tilbakemelding som vi mottok " + mottattSvarDato.format() + ". Omstillingsstønaden din er endra for " + data.etteroppgjoersAar.format() + "." },
-                        english { +"We refer to our advance notice dated " + data.forhaandsvarselSendtDato.format() + " regarding the final settlement of your adjustment allowance and your response, which we received on " + mottattSvarDato.format() + ". Your adjustment allowance will change for " + data.etteroppgjoersAar.format() + "."}
-                    )
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"Vi viser til vårt forhåndsvarsel av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjør av din omstillingsstønad. Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "."},
-                        nynorsk { +"Vi viser til førehandsvarselet av " + data.forhaandsvarselSendtDato.format() + " om etteroppgjer av din omstillingsstønad. Omstillingsstønaden din er endra for " + data.etteroppgjoersAar.format() + "."},
-                        english { +"We refer to our advance notice dated " + data.forhaandsvarselSendtDato.format() + " regarding the final settlement of your adjustment allowance. Your adjustment allowance will change for " + data.etteroppgjoersAar.format() + "."}
-                    )
+            ifNotNull(data.forhaandsvarselSendtDato) { varselbrevSendt ->
+                ifNotNull(data.mottattSvarDato){ mottattSvarDato ->
+                    paragraph {
+                        text(
+                            bokmal { +"Vi viser til vårt forhåndsvarsel av " + varselbrevSendt.format() + " om etteroppgjør av din omstillingsstønad og din tilbakemelding vi mottok " + mottattSvarDato.format() + ". Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "." },
+                            nynorsk { +"Vi viser til førehandsvarselet av " + varselbrevSendt.format() + " om etteroppgjer av din omstillingsstønad og din tilbakemelding som vi mottok " + mottattSvarDato.format() + ". Omstillingsstønaden din er endra for " + data.etteroppgjoersAar.format() + "." },
+                            english { +"We refer to our advance notice dated " + varselbrevSendt.format() + " regarding the final settlement of your adjustment allowance and your response, which we received on " + mottattSvarDato.format() + ". Your adjustment allowance will change for " + data.etteroppgjoersAar.format() + "."}
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Vi viser til vårt forhåndsvarsel av " + varselbrevSendt.format() + " om etteroppgjør av din omstillingsstønad. Omstillingsstønaden din er endret for " + data.etteroppgjoersAar.format() + "."},
+                            nynorsk { +"Vi viser til førehandsvarselet av " + varselbrevSendt.format() + " om etteroppgjer av din omstillingsstønad. Omstillingsstønaden din er endra for " + data.etteroppgjoersAar.format() + "."},
+                            english { +"We refer to our advance notice dated " + varselbrevSendt.format() + " regarding the final settlement of your adjustment allowance. Your adjustment allowance will change for " + data.etteroppgjoersAar.format() + "."}
+                        )
+                    }
                 }
             }
-
-
         }
     }
 }

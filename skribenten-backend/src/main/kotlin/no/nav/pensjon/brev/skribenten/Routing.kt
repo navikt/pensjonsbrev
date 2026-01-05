@@ -27,6 +27,7 @@ fun Application.configureRouting(
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
+    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
@@ -36,8 +37,9 @@ fun Application.configureRouting(
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
+    val p1ServiceImpl = P1ServiceImpl(penService)
     val brevredigeringService =
-        BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService)
+        BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService, p1ServiceImpl)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
 
@@ -70,6 +72,7 @@ fun Application.configureRouting(
             kodeverkRoute(penService)
             sakRoute(
                 dto2ApiService,
+                brevbakerService,
                 brevmalService,
                 brevredigeringService,
                 krrService,
@@ -79,6 +82,8 @@ fun Application.configureRouting(
                 pensjonPersonDataService,
                 safService,
                 skjermingService,
+                p1ServiceImpl,
+                pensjonRepresentasjonService,
             )
             brev(brevredigeringService, dto2ApiService, pdlService, penService)
             samhandlerRoute(samhandlerService)

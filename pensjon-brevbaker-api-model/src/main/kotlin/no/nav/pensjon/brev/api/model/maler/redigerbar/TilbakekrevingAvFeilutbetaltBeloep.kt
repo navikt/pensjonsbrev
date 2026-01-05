@@ -16,12 +16,12 @@ data class TilbakekrevingAvFeilutbetaltBeloepDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, TilbakekrevingAvFeilutbetaltBeloepDto.PesysData> {
 // tilbakekrevingTotal data hentes fra v1.TilbakekrevingTotal
     data class PesysData(
-        val feilutbetaltTotalBeloep: Kroner,  // feilutbetalingTotal
-        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat,  // resultatTotalType
-        val sakstype: Sakstype,  // v1.Sak.sakTypeKode
-        val sluttPeriodeForTilbakekreving: LocalDate,  // periodeTom
-        val startPeriodeForTilbakekreving: LocalDate,  // periodeFom
-        val sumTilInnkrevingTotalBeloep: Kroner,  // sumTilInnkreving
+        val feilutbetaltTotalBeloep: Kroner, // feilutbetalingTotal
+        val resultatAvVurderingenForTotalBeloep: TilbakekrevingResultat, // resultatTotalType
+        val sakstype: Sakstype, // v1.Sak.sakTypeKode
+        val sluttPeriodeForTilbakekreving: LocalDate, // periodeTom
+        val startPeriodeForTilbakekreving: LocalDate, // periodeFom
+        val sumTilInnkrevingTotalBeloep: Kroner, // sumTilInnkreving
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
         val oversiktOverFeilutbetalingPEDto: OversiktOverFeilutbetalingPEDto,
     ) : FagsystemBrevdata

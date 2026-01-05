@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.felles
 
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
+import no.nav.pensjon.brev.alder.model.Sivilstand
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
@@ -63,6 +64,9 @@ fun Expression<SivilstandAvdoed>.bestemtForm(storBokstav: Boolean = false) = for
 @JvmName("formatSivilstandAvdodUbestemtForm")
 fun Expression<SivilstandAvdoed>.ubestemtForm(storBokstav: Boolean = false) = format(formatter = SivilstandAvdodUbestemt(storBokstav))
 
+@JvmName("formatSivilstandUbestemtForm")
+fun Expression<Sivilstand>.ubestemtForm(storBokstav: Boolean = false) = format(formatter = SivilstandUbestemt(storBokstav))
+
 class MetaforceSivilstandBestemt(private val storBokstav: Boolean) : LocalizedFormatter<MetaforceSivilstand>() {
     override fun apply(first: MetaforceSivilstand, second: Language): String = metaforceBorMedSivilstand(first, second, true, storBokstav)
     override fun stableHashCode(): Int = "MetaforceSivilstandBestemt($storBokstav)".hashCode()
@@ -93,6 +97,10 @@ class SivilstandAvdodUbestemt(private val storBokstav: Boolean) : LocalizedForma
     override fun stableHashCode(): Int = "BorMedSivilstandUbestemt($storBokstav)".hashCode()
 }
 
+class SivilstandUbestemt(private val storBokstav: Boolean) : LocalizedFormatter<Sivilstand>() {
+    override fun apply(first: Sivilstand, second: Language): String = sivilstand(first, second, storBokstav)
+    override fun stableHashCode(): Int = "SivilstandUbestemt($storBokstav)".hashCode()
+}
 
 private fun metaforceBorMedSivilstand(sivilstand: MetaforceSivilstand, language: Language, bestemtForm: Boolean, storBokstav: Boolean = false): String {
     val borMedSivilstand = when (sivilstand) {
@@ -160,6 +168,32 @@ private fun avdodSivilstand(sivilstand: SivilstandAvdoed, language: Language, be
             Bokmal -> if (bestemtForm) "samboeren" else "samboer"
             Nynorsk -> if (bestemtForm) "sambuaren" else "sambuar"
             English -> "cohabitant"
+        }
+    }.apply {
+        return if(storBokstav) {
+            replaceFirstChar { it.uppercase() }
+        } else this
+    }
+
+private fun sivilstand(sivilstand: Sivilstand, language: Language, storBokstav: Boolean): String =
+    when (sivilstand) {
+        Sivilstand.SEPARERT,
+        Sivilstand.GIFT -> when (language) {
+            Bokmal, Nynorsk -> "gift"
+            English -> "married"
+        }
+
+        Sivilstand.PARTNER,
+        Sivilstand.SEPARERT_PARTNER -> when (language) {
+            Bokmal -> "partner"
+            Nynorsk -> "partnar"
+            English -> "partner"
+        }
+
+        Sivilstand.ENSLIG, Sivilstand.ENKE -> when (language) {
+            Bokmal -> "enslig"
+            Nynorsk -> "einsleg"
+            English -> "single"
         }
     }.apply {
         return if(storBokstav) {

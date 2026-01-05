@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.*
+import io.ktor.client.call.body
 import io.ktor.client.engine.*
 import io.ktor.client.engine.cio.*
 import io.ktor.client.plugins.*
@@ -35,6 +36,7 @@ data class KontaktAdresseResponseDto(
         VERGE_SAMHANDLER_POSTADRESSE,
     }
 }
+class PensjonPersonDataServiceException(message: String) : ServiceException(message)
 
 class PensjonPersonDataService(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -53,22 +55,21 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    suspend fun hentKontaktadresse(pid: String): ServiceResult<KontaktAdresseResponseDto?> =
-        client.get("/api/adresse/kontaktadresse") {
+    suspend fun hentKontaktadresse(pid: String): KontaktAdresseResponseDto? {
+        val response = client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid)
             }
-        }.toServiceResult<KontaktAdresseResponseDto?> {
-            when (it.status) {
-                HttpStatusCode.NotFound -> ServiceResult.Ok(null)
-                else -> ServiceResult.Error(it.bodyAsText(), it.status)
-            }
         }
 
-    override val name = "Pensjon PersonData"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/actuator/health/liveness")
-            .toServiceResult<String>()
-            .map { true }
+        return when {
+            response.status.isSuccess() -> response.body()
+            response.status == HttpStatusCode.NotFound -> null
+            else -> throw PensjonPersonDataServiceException("Feil ved henting av kontaktadresse fra Pensjon Persondata: ${response.status}, ${response.bodyAsText()}")
+        }
+    }
+
+    override suspend fun ping() =
+        ping("Pensjon Persondata") { client.get("/actuator/health/liveness") }
 }

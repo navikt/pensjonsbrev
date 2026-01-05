@@ -40,7 +40,6 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
             displayTitle = "Varsel om revurdering av pensjon",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
@@ -119,7 +118,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
                                 "eller logge deg inn på $BESKJED_TIL_NAV_URL og velge " + quoted("Send beskjed til Nav") +". Du kan også sende uttalelsen din til oss i posten. " +
                                 "Adressen finner du på $ETTERSENDELSE_URL." },
                         nynorsk { + "Du kan sende uttalen din ved å logge deg inn på $DIN_PENSJON_URL og velje " + quoted("Kontakt Nav om pensjon") + ", " +
-                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " +  quoted("Send beskjed til Nav") + ". Du kan også sende uttalen din til oss i posten. " +
+                                "eller logge deg inn på $BESKJED_TIL_NAV_URL og velje " + quoted("Send beskjed til Nav") + ". Du kan også sende uttalen din til oss i posten. " +
                                 "Adressa finn du på $ETTERSENDELSE_URL." },
                         english { + "You can submit your statement by logging in to your personal $DIN_PENSJON_URL pension page and selecting " + quoted("Kontakt Nav om pensjon") +", " +
                                 "or by logging in to $BESKJED_TIL_NAV_URL and selecting " + quoted("Send beskjed til Nav") +". You can also send us your statement by post. " +

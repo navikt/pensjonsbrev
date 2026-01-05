@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Pesysbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -24,7 +25,6 @@ object Pesysbrevkoder {
         PE_AP_ENDRING_PGA_OPPTJENING_AUTO,
         PE_AP_ENDRING_UTTAKSGRAD_AUTO,
         PE_AP_INNVILGELSE_AUTO,
-        PE_AP_OMREGNING_ALDER_UFORE_2016_AUTO,
         PE_OMSORG_EGEN_AUTO,
         PE_OMSORG_HJELPESTOENAD_AUTO,
         PE_UT_ADHOC_2024_INFO_HVILENDE_RETT_4_AAR,
@@ -59,6 +59,7 @@ object Pesysbrevkoder {
         BRUKERTEST_BREV_PENSJON_2025,
         INFORMASJON_OM_SAKSBEHANDLINGSTID,
         P1_SAMLET_MELDING_OM_PENSJONSVEDTAK,
+        P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2,
         PE_AP_AVSLAG_FOR_LITE_TRYGDETID,
         PE_AP_AVSLAG_GJENLEVENDERETT,
         PE_AP_ENDRET_UTTAKSGRAD,
@@ -73,7 +74,6 @@ object Pesysbrevkoder {
         PE_AP_INNHENTING_OPPLYSNINGER_FRA_BRUKER,
         PE_AP_INNVILGELSE,
         PE_AP_INNVILGELSE_TRYGDEAVTALE,
-        PE_AP_OMREGNING_ALDER_UFORE_2016,
         PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS,
         PE_BEKREFTELSE_PAA_PENSJON,
         PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER,
@@ -95,6 +95,12 @@ object Pesysbrevkoder {
         UT_ORIENTERING_OM_SAKSBEHANDLINGSTID;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        ;
+
+        override fun kode(): String = name
     }
 }
 

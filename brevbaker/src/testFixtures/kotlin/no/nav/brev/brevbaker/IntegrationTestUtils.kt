@@ -26,7 +26,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.HTMLDocument
 import no.nav.pensjon.brev.template.render.HTMLDocumentRenderer
@@ -100,7 +99,9 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
         .let {
             pdfVedleggAppender?.leggPaaVedlegg(
                 it,
-                this.template.pdfAttachments.map { a -> a.eval(this.toScope()) },
+                this.template.pdfAttachments
+                    .filter { a-> a.predicate.eval(this.toScope()) }
+                    .map { a -> a.eval(this.toScope()) },
                 this.language.toCode()
             ) ?: it
         }
@@ -118,7 +119,7 @@ fun writeTestHTML(letterName: String, htmlLetter: HTMLDocument, buildSubDir: Str
         }
 }
 
-fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestHtml(htmlFileName: String): Letter<ParameterType> {
+fun <ParameterType : Any> Letter<ParameterType>.renderTestHtml(htmlFileName: String, buildSubDir: String = "test_html"): Letter<ParameterType> {
     Letter2Markup.render(this)
         .let {
             HTMLDocumentRenderer.render(
@@ -129,7 +130,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestHtml(htm
                 template.letterMetadata.brevtype
             )
         }
-        .also { writeTestHTML(htmlFileName, it) }
+        .also { writeTestHTML(htmlFileName, it, buildSubDir) }
 
     return this
 }
@@ -143,7 +144,6 @@ fun <AttachmentData : VedleggData, Lang : LanguageSupport> createVedleggTestTemp
     languages = languages,
     letterMetadata = LetterMetadata(
         "test mal",
-        isSensitiv = false,
         distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
     ),
@@ -176,7 +176,6 @@ val bokmalTittel = newText(Bokmal to "test brev")
 
 val testLetterMetadata = LetterMetadata(
     displayTitle = "En fin display tittel",
-    isSensitiv = false,
     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
 )
@@ -192,9 +191,7 @@ object VedleggPDFTestUtils {
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         val vedlegg: AttachmentTemplate<LangBokmal, EmptyVedleggData> = createAttachment(
-            title = newText(
-                Bokmal to (title ?: testName)
-            ),
+            title = { text(bokmal { +(title ?: testName) }) },
             includeSakspart = includeSakspart,
         ) {
             outlineInit()
@@ -217,7 +214,6 @@ object VedleggPDFTestUtils {
             languages(Bokmal),
             LetterMetadata(
                 testName,
-                false,
                 LetterMetadata.Distribusjonstype.VEDTAK,
                 brevtype
             )

@@ -3,27 +3,15 @@ package no.nav.pensjon.brev.template.render
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.OutlinePhrase
-import no.nav.pensjon.brev.template.ParagraphPhrase
-import no.nav.pensjon.brev.template.TextOnlyPhrase
-import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
-import no.nav.pensjon.brev.template.dsl.TextOnlyScope
+import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
-import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
@@ -46,7 +34,6 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
         languages = languages(Bokmal, Nynorsk), // Data class containing the required data of this letter
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
-            isSensitiv = false, // If this letter contains sensitive information requiring level 4 log-in
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -252,10 +239,12 @@ data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : Vedl
 
 @TemplateModelHelpers
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
-    title = newText(
-        Bokmal to "Test vedlegg",
-        Nynorsk to "Test vedlegg",
-    ),
+    title = {
+        text(
+            bokmal { +"Test vedlegg" },
+            nynorsk { +"Test vedlegg" },
+        )
+    },
     includeSakspart = true
 ) {
     paragraph {

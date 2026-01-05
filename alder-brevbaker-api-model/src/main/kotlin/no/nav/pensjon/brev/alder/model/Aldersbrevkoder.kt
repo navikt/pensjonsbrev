@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.model
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -27,8 +28,10 @@ object Aldersbrevkoder {
         PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND_AUTO,
         PE_AP_ENDRING_FORDI_DU_FYLLER_75_AAR_AUTO,
         PE_AP_INFO_ALDERSOVERGANG_67_AAR_AUTO,
+        PE_AP_OMREGNING_ALDER_UFORE_2016_AUTO,
         VEDTAK_ALDERSOVERGANG_67_AAR_GARANTITILLEGG_AUTO,
         VEDTAK_ENDRING_AV_AFP_ENDRET_OPPTJENING_AUTO,
+        VEDTAK_OMREGNING_AFP_TIL_ENSLIG_PENSJONIST_AUTO,
         VEDTAK_OMREGNING_GJP_TIL_ALDER_AUTO,
         ;
 
@@ -44,9 +47,18 @@ object Aldersbrevkoder {
         PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR,
         PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER,
         PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016,
+        PE_AP_OMREGNING_ALDER_UFORE_2016,
         PE_AP_STANS_FLYTTING_MELLOM_LAND
         ;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER,
+        UTTAKSSKJEMA
+        ;
+
+        override fun kode() = name
     }
 }

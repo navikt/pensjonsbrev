@@ -28,7 +28,6 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Oversettelse av dokumenter",
-            isSensitiv = false,
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )

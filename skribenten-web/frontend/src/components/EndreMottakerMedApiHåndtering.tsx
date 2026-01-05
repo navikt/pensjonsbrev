@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -45,7 +44,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
 
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   return (
-    <VStack gap={props.withGap ? "2" : "0"}>
+    <VStack gap={props.withGap ? "space-8" : "space-0"}>
       {modalÅpen && (
         <EndreMottakerModal
           error={mottakerMutation.error}
@@ -58,15 +57,12 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           åpen={modalÅpen}
         />
       )}
-      <HStack align={"center"} gap="2">
+      <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
             <div>
               {props.endreAsIcon && (
                 <Button
-                  css={css`
-                    padding: 0;
-                  `}
                   icon={<PencilIcon fontSize="24px" />}
                   onClick={() => setModalÅpen(true)}
                   size="xsmall"
@@ -94,9 +90,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
         {props.brev.mottaker && props.kanTilbakestilleMottaker && (
           <HStack>
             <Button
-              css={css`
-                padding: 0.5rem 0;
-              `}
+              css={{ padding: "var(--ax-space-8) 0" }}
               loading={fjernMottakerMutation.isPending}
               onClick={() => fjernMottakerMutation.mutate()}
               size="small"
@@ -107,10 +101,10 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
             </Button>
             {fjernMottakerMutation.isError && (
               <XMarkOctagonFillIcon
-                css={css`
-                  align-self: center;
-                  color: var(--a-nav-red);
-                `}
+                css={{
+                  alignSelf: "center",
+                  color: "var(--ax-text-logo)",
+                }}
                 title="error"
               />
             )}
