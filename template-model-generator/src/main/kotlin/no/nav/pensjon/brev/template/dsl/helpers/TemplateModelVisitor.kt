@@ -8,8 +8,10 @@ import com.google.devtools.ksp.visitor.KSDefaultVisitor
 
 private val SKIPPED_NO_WARN_PACKAGES: Set<String> = setOf("kotlin", "java.util", "java.time", "kotlin.collections", "kotlin.ranges")
 private val SKIPPED_NO_WARN_CLASSES: Set<String> = setOf(
-    "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
+    "no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata",
     "no.nav.pensjon.brev.api.model.maler.EmptyBrevdata",
+    "no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata",
+    "no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata",
     "no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg",
     "no.nav.pensjon.brev.api.model.maler.EmptyVedleggData"
 )
