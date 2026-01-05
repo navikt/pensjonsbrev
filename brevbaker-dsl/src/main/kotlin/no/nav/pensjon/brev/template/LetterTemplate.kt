@@ -422,7 +422,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
 
 
-                    companion object {
+                    internal companion object {
                         internal fun <Lang1 : Language> create(
                             lang1: Pair<Lang1, String>,
                             fontType: FontType = FontType.PLAIN

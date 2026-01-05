@@ -449,7 +449,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;
 	public synthetic fun <init> (Ljava/util/Map;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getFontType ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;
@@ -459,9 +458,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun stableHashCode ()I
 	public final fun text (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion {
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$NewLine : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
