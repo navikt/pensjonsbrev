@@ -1070,12 +1070,6 @@ public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$L
 	public final fun getStr ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilderKt {
-	public static final fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-	public static final fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-	public static final fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-}
-
 public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/OutlineScope {
 	public fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun addOutlineContent (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
