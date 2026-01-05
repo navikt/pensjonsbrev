@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
@@ -41,7 +42,7 @@ object Fixtures : LetterDataFactory {
     }
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
-        pesysData = EmptyFagsystemdata,
+        pesysData = VarselFeilutbetalingPesysData(100),
         saksbehandlerValg = EmptySaksbehandlerValg,
     )
 
