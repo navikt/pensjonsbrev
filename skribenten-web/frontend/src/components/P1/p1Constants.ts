@@ -29,5 +29,3 @@ export const AVSLAGSBEGRUNNELSE_OPTIONS = [
   { value: "PensjonsalderErIkkeNaadd", label: "Pensjonsalder ikke nådd" },
   { value: "AndreAarsaker", label: "Andre årsaker" },
 ] as const;
-
-export const SOFT_HYPHEN = "\u00ad";

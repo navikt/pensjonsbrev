@@ -2,15 +2,11 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
+import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
-import {
-  GRUNNLAG_INNVILGET_OPTIONS,
-  PENSJONSTYPE_OPTIONS,
-  REDUKSJONSGRUNNLAG_OPTIONS,
-  SOFT_HYPHEN,
-} from "./p1Constants";
+import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string; navn: string }> }) => {
@@ -56,12 +52,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
         3. Innvilget pensjon
       </Heading>
 
-      <Table
-        border={2}
-        className="p1-table p1-table--zebra-stripes"
-        css={{ minWidth: "1200px", tableLayout: "fixed" }}
-        size="small"
-      >
+      <Table className="p1-table p1-table--zebra-stripes" css={{ minWidth: "1200px" }} size="small">
         <BoxNew asChild background="accent-soft">
           <Table.Header>
             <Table.Row>

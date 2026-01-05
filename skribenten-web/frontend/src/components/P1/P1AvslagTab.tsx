@@ -3,10 +3,11 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
+import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow } from "./emptyP1";
-import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS, SOFT_HYPHEN } from "./p1Constants";
+import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
@@ -47,12 +48,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
         4. Avslått pensjon
       </Heading>
 
-      <Table
-        border={2}
-        className="p1-table p1-table--zebra-stripes"
-        css={{ minWidth: "988px", tableLayout: "fixed" }}
-        size="small"
-      >
+      <Table className="p1-table p1-table--zebra-stripes" css={{ minWidth: "988px" }} size="small">
         <BoxNew asChild background="accent-soft">
           <Table.Header>
             <Table.Row>
@@ -119,7 +115,6 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                     margin-bottom: 0.5rem;
                   `}
                 />
-                {/* TODO(stw): Skal det være vedtaksdato på avslag? */}
                 <Controller
                   control={control}
                   name={`avslaattePensjoner.${index}.institusjon.vedtaksdato` as const}
@@ -184,7 +179,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.vurderingsperiode?.message}
-                  hideLabel
+                  // hideLabel
                   label={`Vurderings${SOFT_HYPHEN}periode`}
                   size="small"
                   {...register(`avslaattePensjoner.${index}.vurderingsperiode` as const)}
@@ -196,7 +191,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.adresseNyVurdering?.message}
-                  hideLabel
+                  // hideLabel
                   label="Adresse for ny vurdering"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.adresseNyVurdering` as const)}

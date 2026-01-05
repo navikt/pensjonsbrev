@@ -35,22 +35,14 @@
  * Multi-column Tables (Tab 3 & 4)
  * =========================================== */
 .p1-table {
-  /* border-collapse: collapse; */
   border: 1px solid var(--ax-border-neutral);
-  margin-bottom: 1rem;
   table-layout: fixed;
-  width: 100%;
 }
 
 .p1-table th,
 .p1-table td {
   border: 1px solid var(--ax-border-neutral);
   vertical-align: top;
-  text-align: left;
-  /* padding: 0.5rem; */
-  /* font-size: 1rem; */
-  word-break: break-word;
-  overflow-wrap: anywhere;
 }
 
 .p1-table th span {
@@ -67,20 +59,9 @@
   background-color: var(--ax-bg-default);
 }
 
-.p1-table .cell-seamless {
+.cell-seamless {
   padding: 0;
   height: 242px;
-}
-
-.p1-table td :where(.aksel-radio-group) {
-  /* margin: 0;
-  gap: 0.25rem; */
-}
-
-.p1-table td :where(.aksel-error-message) {
-  /* font-size: 1rem; */
-  /* margin-top: 0.15rem; */
-  /* white-space: normal; */
 }
 
 /* ===========================================
@@ -106,7 +87,7 @@
   padding-block: var(--ax-space-4) 0;
 }
 
-.p1-seamless-textarea :where(textarea, .aksel-textarea__input) {
+.p1-seamless-textarea :where(textarea) {
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -116,7 +97,7 @@
   resize: none;
 }
 
-.p1-seamless-textarea :where(textarea, .aksel-textarea__input):focus {
+.p1-seamless-textarea :where(textarea):focus {
   outline: none;
   box-shadow: inset 0 0 0 2px var(--ax-border-focus);
 }
