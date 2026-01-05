@@ -1523,22 +1523,6 @@ public final class no/nav/pensjon/brev/template/expression/ExpressionMapper$Defa
 	public static fun stableHashCode (Lno/nav/pensjon/brev/template/expression/ExpressionMapper;)I
 }
 
-public final class no/nav/pensjon/brev/template/expression/IntToKroner : no/nav/pensjon/brev/template/expression/ExpressionMapper {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/expression/IntToKroner;
-	public synthetic fun getApply ()Lkotlin/jvm/functions/Function1;
-	public fun getApply ()Lkotlin/reflect/KFunction;
-	public fun getName ()Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/expression/IntToYear : no/nav/pensjon/brev/template/expression/ExpressionMapper {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/expression/IntToYear;
-	public synthetic fun getApply ()Lkotlin/jvm/functions/Function1;
-	public fun getApply ()Lkotlin/reflect/KFunction;
-	public fun getName ()Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/expression/SelectorUsage {
 	public fun <init> ()V
 	public final fun getPropertyUsage ()Ljava/util/Set;
