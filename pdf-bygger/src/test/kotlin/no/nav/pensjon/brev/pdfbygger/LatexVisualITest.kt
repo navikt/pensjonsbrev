@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081")
+    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     private fun render(
         overrideName: String? = null,
