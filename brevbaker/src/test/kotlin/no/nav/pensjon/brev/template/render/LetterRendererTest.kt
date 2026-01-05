@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.LiteralFactory.createByLanguage
 import no.nav.brev.brevbaker.LiteralFactory.createText
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
@@ -124,7 +125,7 @@ class LetterRendererTest {
             }
         }
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to nextExpression + " person"),
+            createByLanguage(Bokmal to nextExpression + " person"),
             createText(Bokmal to "jadda")
         )
 

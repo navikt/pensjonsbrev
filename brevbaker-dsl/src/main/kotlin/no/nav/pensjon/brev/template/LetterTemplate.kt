@@ -491,19 +491,19 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                                 ?: throw IllegalArgumentException("Text.Expression.ByLanguage doesn't contain language: ${language::class.qualifiedName}")
 
 
-                        companion object {
-                            fun <Lang1 : Language> create(
+                        internal companion object {
+                            internal fun <Lang1 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 fontType: FontType = FontType.PLAIN
                             ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), LanguageCombination.Single(lang1.first), fontType)
 
-                            fun <Lang1 : Language, Lang2 : Language> create(
+                            internal fun <Lang1 : Language, Lang2 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 lang2: Pair<Lang2, StringExpression>,
                                 fontType: FontType = FontType.PLAIN,
                             ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), LanguageCombination.Double(lang1.first, lang2.first), fontType)
 
-                            fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                            internal fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 lang2: Pair<Lang2, StringExpression>,
                                 lang3: Pair<Lang3, StringExpression>,

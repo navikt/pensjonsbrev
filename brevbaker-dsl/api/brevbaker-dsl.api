@@ -418,7 +418,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;
 	public synthetic fun <init> (Ljava/util/Map;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun expr (Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
@@ -428,15 +427,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion {
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public final fun create (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType : java/lang/Enum {

@@ -5,10 +5,13 @@ import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.IncludeAttachment
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.ParagraphContentElement
+import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.TextElement
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brevbaker.api.model.ElementTags
@@ -33,8 +36,13 @@ fun <Lang : LanguageSupport, LetterData : Any> createTextOnlyScope() = TextOnlyS
 
 
 object LiteralFactory {
-    fun <Lang1 : no.nav.pensjon.brev.template.Language> createText(
+    fun <Lang1 : Language> createText(
         lang1: Pair<Lang1, String>,
-        fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
+        fontType: FontType = FontType.PLAIN,
     ) = Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType)
+
+    fun <Lang1 : Language> createByLanguage(
+        lang1: Pair<Lang1, StringExpression>,
+        fontType: FontType = FontType.PLAIN
+    ) = Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(lang1, fontType)
 }
