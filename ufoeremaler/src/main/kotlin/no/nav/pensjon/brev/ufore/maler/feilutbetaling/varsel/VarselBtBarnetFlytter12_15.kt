@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
@@ -28,7 +28,7 @@ object VarselBtBarnetFlytter12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVar
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_BARN_FLYTTER
     override val kategori = FEILUTBETALING
-    override val brevkontekst = ALLE
+    override val brevkontekst = VEDTAK
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
