@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTBETALING_VARSEL_DODSBO
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalgSelectors.kjentBobestyrer
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalgSelectors.ukjentBobestyrer
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDtoSelectors.saksbehandlerValg
@@ -140,8 +139,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
                         nynorsk { + "Vi har fått opplysningar om at skifteattest er utstedt til deg. Derfor får du dette varselet på vegner av buet."}
                         )
                 }
-            }
-            showIf(saksbehandlerValg.ukjentBobestyrer) {
+            }.orShow {
                 paragraph {
                     text(
                         bokmal { + "Vi mangler opplysninger om hvem som er arvinger / representant for dødsboet / hvem som har fått utstedt skifteattest. Vi ber deg om å sende oss disse opplysningene. " },
