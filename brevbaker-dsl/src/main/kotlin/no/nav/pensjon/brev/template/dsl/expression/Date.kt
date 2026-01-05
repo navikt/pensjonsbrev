@@ -19,9 +19,6 @@ fun Expression<LocalDate>.formatMonthYear(): Expression<String> = this.format(Lo
 fun Expression<Month>.format(short: Boolean = false): Expression<String> =
     if (short) this.format(LocalizedFormatter.MonthFormatterShort) else this.format(LocalizedFormatter.MonthFormatter)
 
-@JvmName("formatYearMonth")
-fun Expression<YearMonth>.formatYearMonth(): Expression<String> = this.format(LocalizedFormatter.YearMonthFormatter)
-
 private object LocalDateSelectors {
     val yearSelector = object : TemplateModelSelector<LocalDate, Int> {
         override val className = "java.time.LocalDate"

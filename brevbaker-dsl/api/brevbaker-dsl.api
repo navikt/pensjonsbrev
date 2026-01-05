@@ -776,13 +776,6 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$Telefonnummer
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/LocalizedFormatter$YearMonthFormatter : no/nav/pensjon/brev/template/LocalizedFormatter {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$YearMonthFormatter;
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/time/YearMonth;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/LocalizedFormatterKt {
 	public static final field NON_BREAKING_SPACE C
 }
@@ -1416,7 +1409,6 @@ public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
 	public static final fun formatLocalDateNullable (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun formatLocalDateNullable$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatMonthYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun formatYearMonth (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getDay (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getFirstDayOfYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getLastDayOfYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
