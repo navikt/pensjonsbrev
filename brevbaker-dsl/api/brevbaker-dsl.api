@@ -1207,8 +1207,6 @@ public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun orShow (Lkotlin/jvm/functions/Function1;)V
 	public final fun orShowIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
