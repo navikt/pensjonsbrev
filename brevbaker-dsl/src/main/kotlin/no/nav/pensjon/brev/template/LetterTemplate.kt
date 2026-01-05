@@ -423,7 +423,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
 
                     companion object {
-                        fun <Lang1 : Language> create(
+                        internal fun <Lang1 : Language> create(
                             lang1: Pair<Lang1, String>,
                             fontType: FontType = FontType.PLAIN
                         ) = Literal<LanguageSupport.Single<Lang1>>(
@@ -432,7 +432,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             fontType = fontType
                         )
 
-                        fun <Lang1 : Language, Lang2 : Language> create(
+                        internal fun <Lang1 : Language, Lang2 : Language> create(
                             lang1: Pair<Lang1, String>,
                             lang2: Pair<Lang2, String>,
                             fontType: FontType = FontType.PLAIN,
@@ -442,7 +442,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             fontType = fontType
                         )
 
-                        fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                        internal fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                             lang1: Pair<Lang1, String>,
                             lang2: Pair<Lang2, String>,
                             lang3: Pair<Lang3, String>,

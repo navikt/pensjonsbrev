@@ -462,12 +462,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion {
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public final fun create (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$NewLine : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {

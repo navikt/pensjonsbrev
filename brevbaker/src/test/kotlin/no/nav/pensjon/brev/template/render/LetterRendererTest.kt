@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.LiteralFactory.createText
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
@@ -26,7 +27,6 @@ import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.dsl.bokmal
 import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -83,12 +83,12 @@ class LetterRendererTest {
             createParagraph(
                 listOf(
                     createContent(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                        createText(
                             Bokmal to "hei"
                         )
                     ),
                     createContent(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                        createText(
                             Bokmal to "jadda"
                         )
                     ),
@@ -125,7 +125,7 @@ class LetterRendererTest {
         }
         val expectedElements = listOf(
             Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to nextExpression + " person"),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "jadda")
+            createText(Bokmal to "jadda")
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
@@ -155,8 +155,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            createText(Bokmal to "hei "),
+            createText(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -185,8 +185,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            createText(Bokmal to "hei "),
+            createText(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()

@@ -30,3 +30,11 @@ fun <Lang : LanguageSupport, AttachmentData : VedleggData> createIncludeAttachme
 fun <Out> createExpressionLiteral(value: Out, tags: Set<ElementTags> = emptySet()) = Expression.Literal(value, tags)
 
 fun <Lang : LanguageSupport, LetterData : Any> createTextOnlyScope() = TextOnlyScope<Lang, LetterData>()
+
+
+object LiteralFactory {
+    fun <Lang1 : no.nav.pensjon.brev.template.Language> createText(
+        lang1: Pair<Lang1, String>,
+        fontType: Element.OutlineContent.ParagraphContent.Text.FontType = Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN,
+    ) = Element.OutlineContent.ParagraphContent.Text.Literal.create(lang1, fontType)
+}
