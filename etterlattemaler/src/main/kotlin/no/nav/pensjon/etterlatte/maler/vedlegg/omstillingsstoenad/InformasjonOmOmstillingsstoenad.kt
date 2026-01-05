@@ -4,11 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadDataSelectors.bosattUtland
@@ -22,11 +20,13 @@ data class InformasjonOmOmstillingsstoenadData(
 
 fun informasjonOmOmstillingsstoenad(): AttachmentTemplate<LangBokmalNynorskEnglish, InformasjonOmOmstillingsstoenadData> {
     return createAttachment(
-        title = newText(
-            Bokmal to "Informasjon til deg som mottar omstillingsstønad",
-            Nynorsk to "Informasjon til deg som får omstillingsstønad",
-            English to "Information for recipients of adjustment allowance",
-        ),
+        title = {
+            text(
+                bokmal { +"Informasjon til deg som mottar omstillingsstønad" },
+                nynorsk { +"Informasjon til deg som får omstillingsstønad" },
+                english { +"Information for recipients of adjustment allowance" },
+            )
+        },
         includeSakspart = false,
     ) {
         aktivitet(argument.tidligereFamiliepleier)

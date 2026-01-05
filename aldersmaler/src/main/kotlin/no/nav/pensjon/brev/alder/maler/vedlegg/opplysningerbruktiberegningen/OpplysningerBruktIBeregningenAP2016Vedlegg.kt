@@ -1,11 +1,11 @@
-package no.nav.pensjon.brev.alder.maler.vedlegg
+package no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen
 
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.felles.aarOgMaanederFormattert
-import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.DelingstallVed67Aar
 import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
+import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningen
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelGammeltRegelverk
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.andelNyttRegelverk
 import no.nav.pensjon.brev.alder.model.avslag.OpplysningerBruktIBeregningenKap19Selectors.avslattKap19
@@ -40,22 +40,23 @@ import no.nav.pensjon.brev.alder.model.avslag.TrygdeperiodeUtlandSelectors.land
 import no.nav.pensjon.brev.alder.model.avslag.TrygdeperiodeUtlandSelectors.tom
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 
 
 val opplysningerBruktIBeregningenAP2016Vedlegg =
-    createAttachment(
-        title = newText(
-            Bokmal to "Opplysninger brukt i beregningen",
-            Nynorsk to "Opplysningar brukt i berekninga",
-            English to "Information used in the calculation"
-        ),
+    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningen>(
+        title = {
+            text(
+                bokmal { +"Opplysninger brukt i beregningen" },
+                nynorsk { +"Opplysningar brukt i berekninga" },
+                english { +"Information used in the calculation" }
+            )
+        },
     ) {
         ifNotNull(opplysningerKap19) { opplysningerKap19 ->
             showIf(opplysningerKap19.avslattKap19.not()) {

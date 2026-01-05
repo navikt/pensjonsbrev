@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.vedlegg
 import org.junit.jupiter.api.Nested
@@ -31,9 +30,11 @@ class IncludeAttachmentTest {
     @Nested
     inner class IncludeIfNotNull {
         private val testVedlegg = createAttachment<LangNynorsk, VedleggData>(
-            title = newText(
-                Nynorsk to "Test vedlegg",
-            ),
+            title = {
+                text(
+                    nynorsk { +"Test vedlegg" },
+                )
+            },
             includeSakspart = true
         ) {
             paragraph {

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
@@ -12,18 +12,18 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
+import java.util.*
 
 private const val RADER_PER_SIDE = 5
 
 object P1PDFDto {
     val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1Dto>(
-        title = listOf(
-            newText(
-                Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                Language.English to "P1 – Summary of Pension Decisions"
+        title = {
+            text(
+                bokmal { +"P1 – Samlet melding om pensjonsvedtak" },
+                english { +"P1 – Summary of Pension Decisions" },
             )
-        )
+        }
     ) { data, felles ->
         with(data) {
 

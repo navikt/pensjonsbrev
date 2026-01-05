@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
-import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellAP2025
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto.Pensjonsopptjening.Merknad
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
@@ -37,17 +33,19 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderA
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vedtak
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025DtoSelectors.vilkarsVedtak
+import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningTabellAP2025
 import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenGarantipensjon
+import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -56,11 +54,13 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025Dto>(
         //vedleggBeregnAP2025Tittel_001
-        title = newText(
-            Bokmal to "Slik har vi beregnet pensjonen din",
-            Nynorsk to "Slik har vi berekna pensjonen din",
-            English to "This is how we have calculated your pension",
-        ),
+        title = {
+            text(
+                bokmal { +"Slik har vi beregnet pensjonen din" },
+                nynorsk { +"Slik har vi berekna pensjonen din" },
+                english { +"This is how we have calculated your pension" },
+            )
+        },
         includeSakspart = false
     ) {
         //vedleggBeregnInnlednAP2025_001

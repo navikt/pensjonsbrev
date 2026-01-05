@@ -179,13 +179,13 @@ private fun sivilstand(sivilstand: Sivilstand, language: Language, storBokstav: 
     when (sivilstand) {
         Sivilstand.SEPARERT,
         Sivilstand.GIFT -> when (language) {
-            Bokmal, Nynorsk ->  "gift"
+            Bokmal, Nynorsk -> "gift"
             English -> "married"
         }
 
         Sivilstand.PARTNER,
         Sivilstand.SEPARERT_PARTNER -> when (language) {
-            Bokmal ->  "partner"
+            Bokmal -> "partner"
             Nynorsk -> "partnar"
             English -> "partner"
         }

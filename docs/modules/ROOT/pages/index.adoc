@@ -1,0 +1,12 @@
+= Dokumentasjon fra Team Pensjonsbrev
+
+== Meningen bak denne nettsiden
+
+Dette er stedet hvor Team Pensjonsbrev publiserer diverse informasjon knyttet til produktfamilien vi bygger, utvikler og forvalter.
+
+Familien inkluderer følgende applikasjoner:
+
+* Brevbaker
+* Skribenten
+* PDFbygger
+* Brevoppskriften

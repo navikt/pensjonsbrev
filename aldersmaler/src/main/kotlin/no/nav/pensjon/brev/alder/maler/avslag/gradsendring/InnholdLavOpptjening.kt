@@ -28,7 +28,7 @@ data class InnholdLavOpptjening(
     val totalPensjon: Expression<Kroner>,
     val borINorge: Expression<Boolean>,
     val harEOSLand: Expression<Boolean>,
-    val regelverkType : Expression<AlderspensjonRegelverkType>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>,
     val avtaleland: Expression<String?>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

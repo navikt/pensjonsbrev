@@ -1,33 +1,35 @@
 [versions]
-kotlinVersion = "2.2.21"
-kotlinKspVersion = "2.3.3"
+kotlinVersion = "2.3.0"
+kotlinKspVersion = "2.3.4"
 ktorVersion = "3.3.3"
 assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.20.0"
-commonVersion = "2.16.0"
+commonVersion = "2.18.0"
 exposedVersion = "0.61.0"
-flywayVersion = "11.17.1"
+flywayVersion = "11.20.0"
 hamkrestVersion = "1.8.0.1"
 hikariVersion = "7.0.2"
 jacksonJsr310Version = "2.20.1"
 jupiterVersion = "6.0.1"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
-logbackVersion = "1.5.21"
+ktlintVersion = "14.0.1"
+logbackVersion = "1.5.23"
 logstashVersion = "9.0"
-micrometerVersion = "1.16.0"
+micrometerVersion = "1.16.1"
 pdfboxVersion = "3.0.6"
 postgresqlVersion = "42.7.8"
-testcontainersCoreVersion = "2.0.2"
-testcontainersPostgresqlVersion = "2.0.2"
-unleashVersion = "11.1.1"
+testcontainersCoreVersion = "2.0.3"
+testcontainersPostgresqlVersion = "2.0.3"
+unleashVersion = "11.2.1"
 valkeyVersion = "5.5.0"
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "kotlinKspVersion" }
 binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibility-validator", version.ref="binaryCompatibilityValidatorVersion" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
 
 [libraries]
 brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }

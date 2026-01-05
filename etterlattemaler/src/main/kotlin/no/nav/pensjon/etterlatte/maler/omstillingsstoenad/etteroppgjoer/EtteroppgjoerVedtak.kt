@@ -143,9 +143,9 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                     paragraph {
                         text(
-                            bokmal { +"Om fire uker får du et brev fra Skatteetatens avdeling “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. I brevet finner du faktura og informasjon om når og hvordan du kan betale tilbake beløpet." },
-                            nynorsk { +"Om fire veker får du eit brev frå Skatteetaten si avdeling “Innkrevingssentralen for bidrag og tilbakebetalingskrav”. I brevet finn du faktura og informasjon om når og korleis du kan betale tilbake beløpet." },
-                            english { +"In four weeks, you will receive a letter from the Tax Administration’s department “Innkrevingsentralen for bidrag og tilbakebetalingskrav”. The letter will include an invoice and information about when and how to repay the amount." },
+                            bokmal { +"Om fire uker får du et brev fra Skatteetatens avdeling “Innkrevingsmyndigheten i Skatteetaten”. I brevet finner du faktura og informasjon om når og hvordan du kan betale tilbake beløpet." },
+                            nynorsk { +"Om fire veker får du eit brev frå Skatteetaten si avdeling “Innkrevingsmyndigheten i Skatteetaten”. I brevet finn du faktura og informasjon om når og korleis du kan betale tilbake beløpet." },
+                            english { +"In four weeks, you will receive a letter from the Tax Administration’s department “Innkrevingsmyndigheten i Skatteetaten”. The letter will include an invoice and information about when and how to repay the amount." },
                         )
                     }
                     paragraph {

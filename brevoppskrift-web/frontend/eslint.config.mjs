@@ -1,4 +1,4 @@
-import { fixupConfigRules, fixupPluginRules } from "@eslint/compat";
+import { fixupConfigRules } from "@eslint/compat";
 import react from "eslint-plugin-react";
 import prettier from "eslint-plugin-prettier";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
@@ -37,13 +37,13 @@ export default [
   {
     files: ["**/*.ts", "**/*.tsx"],
     plugins: {
-      react,
       prettier,
-      unicorn,
-      "@typescript-eslint": fixupPluginRules(typescriptEslint),
-      "testing-library": fixupPluginRules(testingLibrary),
-      "react-hooks": fixupPluginRules(reactHooks),
+      react,
+      reactHooks,
       "simple-import-sort": simpleImportSort,
+      testingLibrary,
+      typescriptEslint,
+      unicorn,
     },
 
     languageOptions: {

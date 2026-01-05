@@ -54,7 +54,7 @@ class PensjonRepresentasjonService(
     }
 
 
-    suspend fun harVerge(fnr: String) : Boolean =
+    suspend fun harVerge(fnr: String): Boolean =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
             fnr,

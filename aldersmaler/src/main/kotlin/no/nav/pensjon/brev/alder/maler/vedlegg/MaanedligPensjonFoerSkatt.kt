@@ -1,23 +1,10 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
-import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattGrunnpensjon
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattPensjonstillegg
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattSaertillegg
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.MaanedligPensjonFoerSkattTilleggsPensjon
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonFlerePerioderInnledning
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19
-import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.TabellMaanedligPensjonKap19og20
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP1967
-import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
-import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GIFT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GLAD_EKT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.GLAD_PART
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.PARTNER
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SEPARERT
-import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.SEPARERT_PARTNER
+import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
+import no.nav.pensjon.brev.alder.maler.vedlegg.maanedligPensjonFoerSkatt.*
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.*
+import no.nav.pensjon.brev.alder.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap19
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.AlderspensjonGjeldendeSelectors.andelKap20
@@ -71,25 +58,9 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattTabellSe
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.safe
-import no.nav.pensjon.brev.template.dsl.expression.size
-import no.nav.pensjon.brev.template.dsl.expression.toYear
-import no.nav.pensjon.brev.template.dsl.expression.year
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -97,11 +68,13 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 // V00003 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattDto>(
-    title = newText(
-        Bokmal to "Dette er din månedlige pensjon før skatt",
-        Nynorsk to "Dette er den månadlege pensjonen din før skatt",
-        English to "This is your monthly pension before tax",
-    ),
+    title = {
+        text(
+            bokmal { +"Dette er din månedlige pensjon før skatt" },
+            nynorsk { +"Dette er den månadlege pensjonen din før skatt" },
+            english { +"This is your monthly pension before tax" },
+        )
+    },
     includeSakspart = false,
     outline = {
 

@@ -10,25 +10,26 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterAfpDtoSelec
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brev.template.dsl.text
 
 // Conditional for showing the attachment is: sakstype = AFP && vedtakResultat = INNVL
 
 @TemplateModelHelpers
 val dineRettigheterOgPlikterAFP = createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterAfpDto>(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Dine rettar og plikter",
-        English to "Your rights and obligations"
-    ),
+    title = {
+        text(
+            bokmal { +"Dine rettigheter og plikter" },
+            nynorsk { +"Dine rettar og plikter" },
+            english { +"Your rights and obligations" }
+        )
+    },
     includeSakspart = false,
 ) {
     includePhrase(VedleggPlikterAFP)

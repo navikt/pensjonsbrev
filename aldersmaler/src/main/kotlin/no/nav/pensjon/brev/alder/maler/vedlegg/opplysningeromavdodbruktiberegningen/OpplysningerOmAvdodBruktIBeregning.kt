@@ -32,13 +32,11 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregni
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.bruker
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDtoSelectors.tilleggspensjonVedVirk
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
@@ -47,11 +45,13 @@ import java.time.LocalDate
 @TemplateModelHelpers
 val vedleggOpplysningerOmAvdoedBruktIBeregning =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerOmAvdoedBruktIBeregningDto>(
-        title = newText(
-            Bokmal to "Opplysninger om avdøde brukt i beregningen",
-            Nynorsk to "Opplysningar om avdøde brukte i berekninga",
-            English to "Information regarding the deceased that provides the basis for the calculation",
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger om avdøde brukt i beregningen" },
+                nynorsk { +"Opplysningar om avdøde brukte i berekninga" },
+                english { +"Information regarding the deceased that provides the basis for the calculation" },
+            )
+        },
         includeSakspart = false,
     ) {
         val regelverkstype = alderspensjonVedVirk.regelverkType
