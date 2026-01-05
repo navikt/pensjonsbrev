@@ -21,12 +21,12 @@ class LiteralOrExpressionBuilder internal constructor(private val quotation: Quo
     sealed class LiteralOrExpression {
         abstract val expr: StringExpression
     }
-    class LiteralWrapper(val str: String) : LiteralOrExpression() {
+    class LiteralWrapper internal constructor(val str: String) : LiteralOrExpression() {
         override val expr: StringExpression
             get() = str.expr()
     }
 
-    class ExpressionWrapper(override val expr: StringExpression) : LiteralOrExpression()
+    class ExpressionWrapper internal constructor(override val expr: StringExpression) : LiteralOrExpression()
 
     operator fun StringExpression.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this).also { previous = it }
 

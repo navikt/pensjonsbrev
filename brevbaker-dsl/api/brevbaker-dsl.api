@@ -1055,7 +1055,6 @@ public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper : no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression {
-	public fun <init> (Lno/nav/pensjon/brev/template/Expression;)V
 	public fun getExpr ()Lno/nav/pensjon/brev/template/Expression;
 }
 
@@ -1064,7 +1063,6 @@ public abstract class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilde
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralWrapper : no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression {
-	public fun <init> (Ljava/lang/String;)V
 	public fun getExpr ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getStr ()Ljava/lang/String;
 }
