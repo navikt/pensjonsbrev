@@ -31,11 +31,16 @@
 \setmainfont{Source Sans 3}
 \addfontfeature{VerticalPosition = Inferior }
 \newfontface{\primaryFont}[
+    Path = /usr/share/fonts/opentype/sourcesans3/,
+    Extension = .otf,
     LetterSpace=0.2,
     Color=000000,
-    BoldFont={Source Sans 3 Bold},
-    SemiBoldFont={Source Sans 3 SemiBold},
-    ItalicFont={Source Sans 3 Italic}]{Source Sans 3}
+    SemiBoldFont = SourceSans3-Semibold,
+    UprightFont = SourceSans3-Regular,
+    BoldFont = SourceSans3-Bold,
+    ItalicFont = SourceSans3-It,
+    BoldItalicFont = SourceSans3-BoldIt
+]{SourceSans3-Regular}
 
 
 % Global font commands.
