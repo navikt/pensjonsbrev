@@ -134,7 +134,7 @@ class BrevredigeringServiceTest {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet()) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,

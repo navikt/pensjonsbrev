@@ -5,6 +5,7 @@ import java.time.LocalDate
 interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
+    val brevtype: LetterMetadata.Brevtype
 
     interface Property {
         val typeName: String
