@@ -26,6 +26,7 @@ object Fixtures : LetterDataFactory {
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
             UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
             UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
+            UforeAvslagSupplerendeStonadEnkelDto::class -> lagUforeAvslagSupplerendeStonadEnkelDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
@@ -76,6 +77,17 @@ object Fixtures : LetterDataFactory {
         )
     )
 
+    private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
+        pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
+            kravMottattDato = vilkaarligDato,
+            vurdering = "Vurdering 1"
+        ),
+        saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true,
+            visSupplerendeStonadUforeFlykninger = true,
+        )
+    )
+
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
@@ -108,6 +120,7 @@ object Fixtures : LetterDataFactory {
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
             uforetidspunkt = vilkaarligDato,
+            uforegrad = 50,
             inntektForUforhet = 1,
             inntektEtterUforhet = 2,
             vurderingIFU = "Vurdering IFU",

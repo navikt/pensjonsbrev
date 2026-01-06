@@ -26,6 +26,7 @@ data class UforeAvslagInntektDto(
         val kravMottattDato: LocalDate,
         val vurdering: String,
         val uforetidspunkt: LocalDate,
+        val uforegrad: Int,
         val inntektForUforhet: Int,
         val inntektEtterUforhet: Int,
         val vurderingIFU: String,
