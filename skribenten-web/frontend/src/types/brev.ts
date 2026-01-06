@@ -22,18 +22,21 @@ export type BrevResponse = {
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
   propertyUsage: Nullable<PropertyUsage[]>;
+  valgteVedlegg: Nullable<VedleggKode[]>;
 };
 
 export interface DelvisOppdaterBrevRequest {
   laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
+  alltidValgbareVedlegg?: Nullable<VedleggKode[]>;
 }
 
 export interface DelvisOppdaterBrevResponse {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   saksbehandlerValg: SaksbehandlerValg;
+  valgteVedlegg: Nullable<VedleggKode[]>;
 }
 
 export interface BestillBrevResponse {
@@ -136,4 +139,12 @@ export interface NAVEnhet {
   navn: string;
 }
 
-export type VedleggKode = string;
+export enum VedleggKode {
+  SKJEMA_FOR_BANKOPPLYSNINGER = "SKJEMA_FOR_BANKOPPLYSNINGER",
+  UTTAKSSKJEMA = "UTTAKSSKJEMA",
+}
+
+export const VEDLEGG_KODE_TO_TEXT: Record<VedleggKode, string> = {
+  [VedleggKode.SKJEMA_FOR_BANKOPPLYSNINGER]: "Skjema for bankopplysninger",
+  [VedleggKode.UTTAKSSKJEMA]: "Uttaksskjema",
+};

@@ -1,14 +1,17 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PlusCircleIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
   BodyShort,
   Button,
+  Checkbox,
+  CheckboxGroup,
   Detail,
   HStack,
   Label,
   Loader,
+  Modal,
   Radio,
   RadioGroup,
   Switch,
@@ -18,6 +21,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
@@ -26,7 +30,7 @@ import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMott
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type BrevInfo, Distribusjonstype, VEDLEGG_KODE_TO_TEXT, VedleggKode } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
@@ -202,7 +206,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           )}
           saksId={props.saksId}
         />
-        <Vedlegg brevId={props.brev.id} saksId={props.saksId} />
+        <Vedlegg brev={props.brev} saksId={props.saksId} />
         <Switch
           checked={erLaast}
           loading={laasForRedigeringMutation.isPending}
@@ -278,21 +282,64 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
   );
 };
 
-const Vedlegg = (props: { saksId: string; brevId: number }) => {
+type VedleggFormData = {
+  valgteVedlegg: VedleggKode[];
+};
+
+const getVedleggLabel = (kode: string): string => {
+  if (kode in VedleggKode) {
+    return VEDLEGG_KODE_TO_TEXT[kode as VedleggKode];
+  }
+  return kode;
+};
+
+const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [savedVedlegg, setSavedVedlegg] = useState<VedleggKode[]>([]);
+
+  const form = useForm<VedleggFormData>({
+    defaultValues: { valgteVedlegg: [] },
+  });
+
   const {
     data: vedleggKoder,
     isLoading,
     isError,
     error,
   } = useQuery({
-    queryKey: getBrevVedlegg.queryKey(props.saksId, props.brevId),
-    queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brevId),
+    queryKey: getBrevVedlegg.queryKey(props.saksId, props.brev.id),
+    queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brev.id),
+  });
+
+  const leggTilVedleggMutation = useMutation({
+    mutationFn: (vedlegg: VedleggKode[]) =>
+      delvisOppdaterBrev(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
+    onSuccess: (response) => {
+      setSavedVedlegg((response.valgteVedlegg as VedleggKode[]) ?? []);
+      handleCloseModal();
+    },
+  });
+
+  const handleOpenModal = () => {
+    form.reset({ valgteVedlegg: savedVedlegg });
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    form.reset({ valgteVedlegg: [] });
+  };
+
+  const handleLeggTil = form.handleSubmit((data) => {
+    leggTilVedleggMutation.mutate(data.valgteVedlegg);
   });
 
   if (isLoading) {
     return (
       <div>
-        <Detail textColor="subtle">Vedlegg</Detail>
+        <HStack align="center" gap="space-8">
+          <Detail textColor="subtle">Vedlegg</Detail>
+        </HStack>
         <Loader size="small" />
       </div>
     );
@@ -301,7 +348,9 @@ const Vedlegg = (props: { saksId: string; brevId: number }) => {
   if (isError) {
     return (
       <div>
-        <Detail textColor="subtle">Vedlegg</Detail>
+        <HStack align="center" gap="space-8">
+          <Detail textColor="subtle">Vedlegg</Detail>
+        </HStack>
         <Alert size="small" variant="error">
           {getErrorMessage(error)}
         </Alert>
@@ -309,20 +358,68 @@ const Vedlegg = (props: { saksId: string; brevId: number }) => {
     );
   }
 
-  if (!vedleggKoder || vedleggKoder.length === 0) {
-    return null;
-  }
-
   return (
     <div>
-      <Detail textColor="subtle">Vedlegg</Detail>
-      <VStack gap="space-4">
-        {vedleggKoder.map((kode) => (
-          <BodyShort key={kode} size="small">
-            {kode}
-          </BodyShort>
-        ))}
-      </VStack>
+      <HStack align="center" gap="space-8">
+        <Detail textColor="subtle">Vedlegg</Detail>
+        <Button
+          css={css`
+            margin-left: auto;
+          `}
+          icon={<PlusCircleIcon aria-hidden />}
+          onClick={handleOpenModal}
+          size="xsmall"
+          title="Legg til vedlegg"
+          variant="tertiary"
+        />
+      </HStack>
+
+      {savedVedlegg.length > 0 && (
+        <VStack gap="space-4">
+          {savedVedlegg.map((kode) => (
+            <BodyShort key={kode} size="small">
+              {getVedleggLabel(kode)}
+            </BodyShort>
+          ))}
+        </VStack>
+      )}
+
+      <Modal header={{ heading: "Legg til vedlegg/skjema" }} onClose={handleCloseModal} open={isModalOpen}>
+        <Modal.Body>
+          {vedleggKoder && vedleggKoder.length > 0 ? (
+            <Controller
+              control={form.control}
+              name="valgteVedlegg"
+              render={({ field }) => (
+                <CheckboxGroup hideLegend legend="Velg vedlegg" onChange={field.onChange} value={field.value}>
+                  {vedleggKoder.map((kode) => (
+                    <Checkbox key={kode} value={kode}>
+                      {getVedleggLabel(kode)}
+                    </Checkbox>
+                  ))}
+                </CheckboxGroup>
+              )}
+            />
+          ) : (
+            <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>
+          )}
+          {leggTilVedleggMutation.isError && (
+            <Alert size="small" variant="error">
+              {getErrorMessage(leggTilVedleggMutation.error)}
+            </Alert>
+          )}
+        </Modal.Body>
+        <Modal.Footer>
+          <HStack gap="space-8" justify="space-between" width="100%">
+            <Button onClick={handleCloseModal} variant="tertiary">
+              Avbryt
+            </Button>
+            <Button loading={leggTilVedleggMutation.isPending} onClick={handleLeggTil} variant="primary">
+              Legg til
+            </Button>
+          </HStack>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
