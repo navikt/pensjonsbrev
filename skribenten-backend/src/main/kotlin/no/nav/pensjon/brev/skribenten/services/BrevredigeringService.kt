@@ -104,6 +104,7 @@ class BrevredigeringService(
                     sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     sistRedigertAvNavIdent = principal.navIdent
                     redigertBrev = rendretBrev.markup.toEdit()
+                    brevtype = rendretBrev.brevtype
                 }.also {
                     if (mottaker != null) {
                         Mottaker.new(it.id.value) { oppdater(mottaker) }
