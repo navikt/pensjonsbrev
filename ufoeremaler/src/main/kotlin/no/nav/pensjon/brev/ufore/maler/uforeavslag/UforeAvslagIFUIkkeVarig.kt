@@ -53,8 +53,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Du får ikke endring i inntektsgrensen din, fordi du ikke har hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."})
             }
             paragraph {
-                text(bokmal { +"For å ha rett til en høyere inntektsgrense, " +
-                        "må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " }
+                text(bokmal { +"For å ha rett til en høyere inntektsgrense, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " }
                 )
             }
             paragraph {

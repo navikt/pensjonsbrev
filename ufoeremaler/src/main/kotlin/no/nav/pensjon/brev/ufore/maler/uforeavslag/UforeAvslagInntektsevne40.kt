@@ -92,7 +92,7 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
 
             paragraph {
-                text(bokmal { + "For å få uføretrygd må inntektsevnen din som hovedregel være varig nedsatt med minst 40 prosent. " +
+                text(bokmal { + "For å få uføretrygd må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent. " +
                         "Fordi du fikk arbeidsavklaringspenger da du søkte om uføretrygd, må inntektsevnen din være nedsatt med minst 40 prosent."})
             }
             paragraph {

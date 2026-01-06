@@ -44,13 +44,19 @@ object UforegradAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslag
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt hensiktsmessig arbeidsrettede tiltak." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt arbeidsrettede tiltak." })
+            }
+            paragraph {
+                text(bokmal { +"Arbeidsrettede tiltak betyr alle former for tiltak som kan øke din inntektsevne, og hjelpe deg med å skaffe arbeid, øke arbeidsinnsatsen din eller beholde lønnet arbeid." })
+            }
+            paragraph {
+                text(bokmal { +"Du kan bare la være å prøve ut tiltak hvis det er klare grunner til at du ikke bør gjennomføre dette, eller tiltak ikke er hensiktsmessig. Unntaksregelen er streng, og det skal mye til for å ikke måtte gjennomføre tiltak." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -63,16 +69,15 @@ object UforegradAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslag
             }
 
             paragraph {
-                text(bokmal { +
-                "Vi vurderer at du ikke har forsøkt nødvendige arbeidsrettede tiltak eller forsøkt annet arbeid som kan bedre inntektsevnen din. " +
+                text(bokmal { + "Vi vurderer at du ikke har forsøkt hensiktsmessige arbeidsrettede tiltak eller annet arbeid som kan bedre inntektsevnen din. " +
                         "Fordi du ikke har forsøkt arbeidsrettede tiltak, " +
-                        "er det for tidlig å ta stilling til om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
+                        "er det for tidlig å vurdere om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)
