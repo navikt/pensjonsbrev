@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -13,16 +12,19 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_INNTEKTSEVNE_50
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visUnntaksregelFremtidigInntekt
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visVurderingIEU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visVurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektEtterUforhet
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektForUforhet
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.uforetidspunkt
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurderingIEU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -49,46 +51,74 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er nedsatt med mindre enn 50 prosent." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er varig nedsatt med mindre enn 50 prosent." })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                paragraph {
-                    text(bokmal { +pesysData.vurdering })
-                }
+            title1 {
+                text(bokmal { +"Slik har vi beregnet inntektsevnen din" })
             }
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
+                text(bokmal { +"Vi sammenligner inntekten din før og etter at du ble ufør for å avgjøre i hvor stor grad inntektsevnen din er nedsatt." })
+            }
+            paragraph {
+                text(bokmal { +"Uføretidspunktet ditt er satt til " + pesysData.uforetidspunkt.format() + ". " +
+                        "På dette tidspunktet vurderer vi at dine helseutfordringer førte til at din arbeidsevne ble varig nedsatt. " })
             }
 
             paragraph {
-                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
-                    pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." })
+                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." })
                 showIf(saksbehandlerValg.visVurderingIFU) {
                     text( bokmal { + pesysData.vurderingIFU })
                 }.orShow {
-                    text( bokmal { + fritekst("Begrunnelse for fastsatt IFU.") })
+                    text( bokmal { + fritekst("Begrunnelse for IFU") })
                 }
                 text(bokmal { + " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
-                    "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
-                    "og vi har derfor fastsatt din nedsatte inntektsevne til " +
-                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " +
-                    "For å få uføretrygd, må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent."})
+                    "Inntekt etter uførhet er satt til " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner. " }
+                )
+                showIf(saksbehandlerValg.visVurderingIEU) {
+                    text( bokmal { + pesysData.vurderingIEU })
+                }.orShow {
+                    text( bokmal { + fritekst("Begrunnelse for IEU") })
+                }
             }
             paragraph {
-                text(bokmal { + "Du omfattes heller ikke av unntaksreglene for yrkesskade, yrkessykdom eller personer som har fått arbeidsavklaringspenger."})
+                text(bokmal { + "For å få uføretrygd må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent."})
             }
+            paragraph {
+                text(bokmal { + "Vi har sammenlignet inntekt din før og etter at du ble ufør og kommet til at din uføregrad er " + fritekst("grad før avrunding") + " prosent."})
+            }
+            paragraph {
+                text(bokmal { + "Uføregraden din er under 50 prosent, og du omfattes heller ikke av unntaksreglene ved yrkesskade, yrkessykdom eller for personer som mottar arbeidsavklaringspenger på søknadstidspunktet."})
+            }
+
+            showIf(saksbehandlerValg.visUnntaksregelFremtidigInntekt) {
+                title1 {
+                    text(bokmal { +"Unntaksregel om fremtidig inntekt" })
+                }
+                paragraph {
+                    text(bokmal { +"Etter unntaksregel kan inntekt før uførhet settes ut fra den fremtidige inntekten. " +
+                            "Unntaksbestemmelsen skal sikre at personen får korrekt uføregrad ut fra hvilken stillingsandel vedkommende klarer å arbeide i. " })
+                }
+                paragraph {
+                    text(bokmal { +"Arbeidsforholdet må være dokumentert med en arbeidsavtale med en klart angitt stillingsprosent og oppstartsdato. " })
+                }
+                paragraph {
+                    text(bokmal { +"Vi vurderer at denne unntaksbestemmelsen ikke kan brukes i ditt tilfelle, fordi " + fritekst("X (begrunnelse, " +
+                            "f.eks. ikke klart angitt stillingsprosent, jobber utover stillingsprosenten, ekstravakter/overtid, bonus, selvstendig næringsdrivende etc)") + ". " })
+                }
+            }
+
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-7." })
             }
 
             includePhrase(Felles.HvaSkjerNa)

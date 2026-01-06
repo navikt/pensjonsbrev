@@ -44,33 +44,33 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling som kan bedre inntektsevnen din." })
             }
             paragraph {
                 text(bokmal { +"Å ha gjennomført «all hensiktsmessig behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskere og kommer i arbeid, skal være forsøkt." })
             }
             paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " })
+                text(bokmal { +"Som hovedregel vil vi vurdere at all hensiktsmessig behandling ikke er gjennomført dersom " })
                 list {
                     item {
                         text(
-                            bokmal { +"du er i behandling" },
+                            bokmal { +"du er i behandling eller under utredning" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"du er henvist til behandling" },
+                            bokmal { +"du er henvist til utredning/behandling" },
                         )
                     }
                     item {
                         text(
-                            bokmal { +"du er anbefalt behandling" },
+                            bokmal { +"du er anbefalt utredning/behandling" },
                         )
                     }
                 }
@@ -87,9 +87,8 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
 
             paragraph {
                 text(bokmal {
-                    +"Vi kan ikke utelukke at behandlingen kan bedre funksjons- og inntektsevnen din. " +
-                            "Derfor vurderer vi at du må gjennomføre hensiktsmessig behandling. " +
-                            "Før du har gått gjennom all hensiktsmessig behandling, er det for tidlig å ta stilling til om arbeidsrettede tiltak er prøvd. "
+                    +"Vi kan ikke utelukke at behandling kan bedre funksjons- og inntektsevnen din. " +
+                            "Før du har forsøkt all hensiktsmessig behandling, er det for tidlig å ta stilling til om arbeidsrettede tiltak er prøvd. "
                 })
             }
             paragraph {
@@ -104,7 +103,7 @@ object UforegradAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagE
                 })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

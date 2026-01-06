@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagUngUfor36.fritekst
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -41,20 +42,20 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om rettighet som ung ufør"})
+            text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke rettighet som ung ufør" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi uføretidspunktet ditt er fastsatt til etter at du fylte 26 år." })
+                text(bokmal { +"Du får ikke beregning som ung ufør fordi uføretidspunktet ditt er fastsatt til etter at du fylte 26 år." })
             }
             paragraph {
-                text(bokmal { +"For å bli innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." })
+                text(bokmal { +"For å få uføretrygden beregnet med rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {

@@ -44,16 +44,16 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til at din funksjonsevne er nedsatt i større grad. " })
+                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til at inntektsevnen din er nedsatt utover den uføregraden som du har fra før. " })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
+                text(bokmal { +"For å få innvilget økt uføregrad, må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -66,14 +66,13 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { +"Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men vi vurderer at det er andre forhold som er hovedårsak til at din funksjons- og inntektsevne i større grad er nedsatt. " +
-                        "Før andre forhold er rettet, kan vi ikke vurdere om inntektsevnen din er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
+                text(bokmal { +"Vi vurderer derfor at inntektsevnen din ikke er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-6, 12-7 og 12-10." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

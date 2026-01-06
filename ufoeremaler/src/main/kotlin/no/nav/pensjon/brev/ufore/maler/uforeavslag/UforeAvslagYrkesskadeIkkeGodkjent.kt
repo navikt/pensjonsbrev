@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurde
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagYrkesskadeGodkjent.fritekst
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -37,26 +38,26 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få beregnet uføretrygden etter reglene for yrkessykdom eller yrkesskade"})
+            text (bokmal { + "Nav har vurdert at vi ikke kan beregne uføretrygden din etter reglene for yrkesskade og yrkessykdom"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
             }
             paragraph {
-                text(bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom." })
+                text(bokmal { + "Du får ikke beregning etter regler for yrkesskade eller yrkessykdom fordi du ikke har en godkjent yrkesskade eller yrkessykdom." })
             }
             paragraph {
-                text(bokmal { + "For å ha rett til uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, må uførheten din skyldes en godkjent yrkesskade eller yrkessykdom." })
+                text(bokmal { + "For å ha rett til uføretrygd etter reglende for yrkesskade eller yrkessykdom, må uførheten din skyldes en yrkesskade eller yrkessykdom som er godkjent av Nav." })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

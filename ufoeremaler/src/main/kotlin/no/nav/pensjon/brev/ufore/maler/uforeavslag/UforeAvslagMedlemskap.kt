@@ -12,18 +12,19 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.SaksbehandlervalgSelectors.visSupplerendeStonadUforeFlykninger
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
 @TemplateModelHelpers
-object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
+object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEnkelDto> {
 
     override val featureToggle = FeatureToggles.avslagMedlemskap.toggle
 
@@ -47,13 +48,13 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Du var ikke medlem av folketrygden i de fem siste årene før du ble ufør. Du oppfyller heller ingen av unntaksreglene." })
+                text(bokmal { +"Vi avslår søknaden din fordi du ikke var medlem av folketrygden i de fem siste årene før du ble ufør. Du oppfyller heller ingen av unntaksreglene." })
             }
             paragraph {
                 text(bokmal { +"For å ha rett til uføretrygd, må du som hovedregel ha vært medlem av folketrygden i de siste fem årene fram til uføretidspunktet. " +
@@ -84,8 +85,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +"Du flyttet til Norge " + fritekst("innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. " +
-                        "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". Da ble inntektsevnen din varig nedsatt med minst halvparten. " })
+                text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. "})
             }
 
             paragraph {
@@ -98,16 +98,34 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
 
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, vi avslår derfor søknaden din om uføretrygd. Vedtaket er gjort etter folketrygdloven § 12-2. " })
+                text(bokmal { + "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". " +
+                        "Vi har vurdert at inntektsevnen din ble varig nedsatt med minst halvparten fra dette tidspunktet." }
+                )
             }
-            title1 {
-                text(bokmal { +"Supplerende stønad til uføre flyktninger " })
+
+            paragraph {
+                text(bokmal { + fritekst("Individuell vurdering") })
+            }
+
+            paragraph {
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { +"Hvis du har godkjent flyktningstatus etter § 28 i utlendingsloven gitt i vedtak fra Utlendingsnemnda (UDI), " +
-                        "kan du søke om supplerende stønad til uføre flyktninger. Stønaden er behovsprøvd og all inntekt/formue fra Norge og utlandet blir regnet med. " +
-                        "Inntekten/formuen til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
-                        "Du kan lese mer om supplerende stønad til uføre flyktninger på vår nettside nav.no. " })
+                text(bokmal { + "Vedtaket har vi gjort etter folketrygdloven § 12-2. " })
+            }
+
+            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+                title1 {
+                    text(bokmal { +"Supplerende stønad til uføre flyktninger " })
+                }
+                paragraph {
+                    text(bokmal {
+                        +"Hvis du har godkjent flyktningstatus etter § 28 i utlendingsloven gitt i vedtak fra Utlendingsnemnda (UDI), " +
+                                "kan du søke om supplerende stønad til uføre flyktninger. Stønaden er behovsprøvd og all inntekt/formue fra Norge og utlandet blir regnet med. " +
+                                "Inntekten/formuen til eventuell ektefelle, samboer eller registrert partner blir også regnet med. " +
+                                "Du kan lese mer om supplerende stønad til uføre flyktninger på vår nettside nav.no. "
+                    })
+                }
             }
 
             includePhrase(Felles.RettTilAKlageLang)

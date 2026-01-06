@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrel
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26DtoSelectors.SaksbehandlervalgSelectors.visForverrelseEtter26
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagUngUfor36.fritekst
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -41,17 +42,17 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om rettighet som ung ufør"})
+            text (bokmal { + "Nav har vurdert at du ikke har rett til beregning som ung ufør"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din om rettighet som ung ufør som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke rettigheter som ung ufør" })
+                text(bokmal { +"Derfor får du ikke rettighet som ung ufør" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden fordi vi ikke har dokumentasjon som viser at du hadde en varig og alvorlig sykdom før fylte 26 år." })
+                text(bokmal { +"Du får ikke beregning som ung ufør fordi det ikke er dokumentert at du hadde en varig og alvorlig sykdom før fylte 26 år. " })
             }
             paragraph {
                 text(bokmal { + "Kravet til alvorlighet er strengere enn for vanlig uføretrygd. Det betyr at du må ha en " +
@@ -63,10 +64,14 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                         ", men sykdommen er ikke vurdert som alvorlig nok til å oppfylle vilkårene for ung ufør. " })
                 showIf(saksbehandlerValg.visForverrelseEtter26) {
                     text(bokmal {
-                        +"Selv om sykdommen din har blitt betydelig forverret etter at du fylte 26 år, " +
-                                "vil ikke det gjøre at du oppfyller vilkårene for å få ung ufør."
+                        +"Vi ser at sykdommen din har blitt betydelig forverret etter at du fylte 26 år. " +
+                                "Det er helsesituasjonen din før du fylte 26 år som avgjør om du kan få rettighet som ung ufør."
                     })
                 }
+            }
+
+            paragraph {
+                text(bokmal { + "I vurderingen har vi lagt vekt på: " + fritekst("Sett inn konkret argument med kilde og dato") })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -74,19 +79,15 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                     text(bokmal { +pesysData.vurdering })
                 }
             }
-            paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
-            }
 
             paragraph {
-                text(bokmal { + "Den medisinske dokumentasjonen viser ikke at sykdommen var både alvorlig og varig nok før fylte 26 år, " +
-                        ", til å oppfylle kravene til ung ufør" })
+                text(bokmal { + "Vi har kommet frem til at det ikke er klart dokumentert at du hadde varig og alvorlig sykdom før fylte 26 år." })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om rettighet som ung ufør." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-13 tredje ledd." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

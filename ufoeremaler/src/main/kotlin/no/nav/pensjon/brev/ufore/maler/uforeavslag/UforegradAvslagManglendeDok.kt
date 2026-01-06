@@ -44,15 +44,14 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Begrunnelse for vedtaket" })
+                text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"For at vi skal kunne ta stilling til søknaden din om økt uføregrad, må du gi oss de opplysningene vi trenger. " +
-                        "Vi sendte deg et brev " + fritekst("dato") + " der vi ba deg sende oss dokumentene som manglet, " +
-                        "og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen." })
+                text(bokmal { +"Vi har ikke fått de opplysningene som er nødvendige for å vurdere saken din. " +
+                        "I vårt brev av " + fritekst("dato") + " varslet vi deg om at søknaden din ville bli avslått dersom vi ikke fikk opplysningene innen fristen." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -68,7 +67,7 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om økt uføregrad." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 21-3 " +
                 fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 

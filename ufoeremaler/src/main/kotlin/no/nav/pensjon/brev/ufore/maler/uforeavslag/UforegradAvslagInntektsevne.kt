@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -13,16 +12,18 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.VisVurderingFraVilkarvedtak
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visVurderingIEU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.SaksbehandlervalgInntektSelectors.visVurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektEtterUforhet
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.inntektForUforhet
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.kravMottattDato
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurdering
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.uforegrad
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurderingIEU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -49,44 +50,49 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + ". " +
+                        "Du beholder uføregraden din på " + pesysData.uforegrad.format() + " prosent." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi vi mener at inntektsevnen din ikke er ytterligere varig nedsatt." })
+                text(bokmal { +"Vi avslår søknaden din fordi inntektsevnen din ikke er varig nedsatt i større grad enn den uføregraden du allerede har." })
             }
             paragraph {
-                text(bokmal { +"Vi har sammenliknet inntektsmulighetene dine før og etter at du ble ufør, og har vurdert hvor mye inntektsevnen din er varig nedsatt." })
+                text(bokmal { +"Uføretidspunktet ditt før var " + fritekst("dato for tidligere uføretidspunkt") +
+                        ". Vi har fått opplysninger om at arbeidsevnen din er mer nedsatt fra " + fritekst("X (nytt alternativt uføretidspunkt)" + ".")
+                })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
-                paragraph {
-                    text(bokmal { + pesysData.vurdering })
+            paragraph {
+                text(bokmal {
+                    +"Inntekten din før du ble ufør er fastsatt til " +
+                            pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner. "
                 }
-            }
-            paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
-            }
-
-            paragraph {
-                text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " +
-                    pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." }
-                    )
+                )
 
                 showIf(saksbehandlerValg.visVurderingIFU) {
-                    text( bokmal { + pesysData.vurderingIFU })
+                    text(bokmal { +pesysData.vurderingIFU })
                 }.orShow {
-                    text( bokmal { + fritekst("Begrunnelse for fastsatt IFU.") })
+                    text(bokmal { +fritekst("Begrunnelse for fastsatt IFU.") })
                 }
-                text( bokmal { + " Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
-                    "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner, " +
-                    "og vi har derfor fastsatt din nedsatte inntektsevne til " +
-                    fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent. " })
+                text(bokmal {
+                    +" Oppjustert til dagens verdi tilsvarer dette en inntekt på " + fritekst("oppjustert IFU") + " kroner. " +
+                            "Du har en inntekt på " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner. "
+                })
+
+                showIf(saksbehandlerValg.visVurderingIEU) {
+                    text(bokmal { +pesysData.vurderingIEU })
+                }.orShow {
+                    text(bokmal { +fritekst("Begrunnelse for fastsatt IEU.") })
+                }
             }
             paragraph {
-                text(bokmal { + "Du får i dag " + fritekst("sett inn fastsatt uføregrad før avrunding") + " prosent uføretrygd, og derfor vurderer vi at inntektsevnen din ikke er mer nedsatt."})
+                text(bokmal {+"Vi har sammenlignet inntekten før og etter at du ble ufør. " +
+                        "Vi har kommet fram til at uføregraden din er " + pesysData.uforegrad.format() + " prosent. " +
+                        "Det viser at inntektsevnen din ikke er mer nedsatt enn det vi tidligere har vurdert."
+                })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."})
