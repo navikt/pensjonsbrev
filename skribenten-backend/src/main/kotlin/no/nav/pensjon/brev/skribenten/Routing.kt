@@ -48,54 +48,53 @@ fun Application.configureRouting(
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
-    context(dto2ApiService) {
-        routing {
-            healthRoute()
-            swaggerUI("/swagger", "openapi/external-api.yaml")
+    routing {
+        healthRoute()
+        swaggerUI("/swagger", "openapi/external-api.yaml")
 
-            authenticate(authConfig.name) {
-                install(PrincipalInContext)
-                install(PrincipalHasGroup) {
-                    requireOneOf(ADGroups.alleBrukergrupper)
-                }
-
-                setupServiceStatus(
-                    safService,
-                    penService,
-                    pensjonPersonDataService,
-                    pdlService,
-                    krrService,
-                    brevbakerService,
-                    brevmetadataService,
-                    samhandlerService,
-                    navansattService
-                )
-
-                landRoute()
-                brevmal(brevbakerService, brevmalService)
-                kodeverkRoute(penService)
-                sakRoute(
-                    brevbakerService,
-                    brevmalService,
-                    brevredigeringService,
-                    krrService,
-                    legacyBrevService,
-                    pdlService,
-                    penService,
-                    pensjonPersonDataService,
-                    safService,
-                    skjermingService,
-                    p1ServiceImpl,
-                    pensjonRepresentasjonService,
-                    brevredigeringFacade,
-                )
-                brev(brevredigeringService, pdlService, penService, brevredigeringFacade)
-                samhandlerRoute(samhandlerService)
-                meRoute(navansattService)
-
+        authenticate(authConfig.name) {
+            install(PrincipalInContext)
+            install(PrincipalHasGroup) {
+                requireOneOf(ADGroups.alleBrukergrupper)
             }
 
-            externalAPI(authConfig, externalAPIService)
+            setupServiceStatus(
+                safService,
+                penService,
+                pensjonPersonDataService,
+                pdlService,
+                krrService,
+                brevbakerService,
+                brevmetadataService,
+                samhandlerService,
+                navansattService
+            )
+
+            landRoute()
+            brevmal(brevbakerService, brevmalService)
+            kodeverkRoute(penService)
+            sakRoute(
+                brevbakerService,
+                brevmalService,
+                brevredigeringService,
+                krrService,
+                legacyBrevService,
+                pdlService,
+                penService,
+                pensjonPersonDataService,
+                safService,
+                skjermingService,
+                p1ServiceImpl,
+                pensjonRepresentasjonService,
+                brevredigeringFacade,
+                dto2ApiService,
+            )
+            brev(brevredigeringService, pdlService, penService, brevredigeringFacade, dto2ApiService)
+            samhandlerRoute(samhandlerService)
+            meRoute(navansattService)
+
         }
+
+        externalAPI(authConfig, externalAPIService)
     }
 }

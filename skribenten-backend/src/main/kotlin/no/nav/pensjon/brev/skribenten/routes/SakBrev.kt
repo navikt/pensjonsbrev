@@ -20,12 +20,12 @@ import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-context(dto2ApiService: Dto2ApiService)
 fun Route.sakBrev(
     brevbakerService: BrevbakerService,
     brevredigeringService: BrevredigeringService,
     p1Service: P1ServiceImpl,
     brevredigeringFacade: BrevredigeringFacade,
+    dto2ApiService: Dto2ApiService,
 ) =
     route("/brev") {
         suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
@@ -69,7 +69,7 @@ fun Route.sakBrev(
                 )
             )
 
-            apiRespond(result)
+            apiRespond(dto2ApiService, result)
         }
 
         patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
