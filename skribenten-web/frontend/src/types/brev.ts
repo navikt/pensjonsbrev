@@ -135,3 +135,5 @@ export interface NAVEnhet {
   enhetNr: string;
   navn: string;
 }
+
+export type VedleggKode = string;

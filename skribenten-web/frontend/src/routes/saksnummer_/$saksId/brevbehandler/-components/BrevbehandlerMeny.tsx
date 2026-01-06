@@ -15,13 +15,13 @@ import {
   Tag,
   VStack,
 } from "@navikt/ds-react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, getBrevVedlegg, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -202,6 +202,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           )}
           saksId={props.saksId}
         />
+        <Vedlegg brevId={props.brev.id} saksId={props.saksId} />
         <Switch
           checked={erLaast}
           loading={laasForRedigeringMutation.isPending}
@@ -274,6 +275,55 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
     >
       {text}
     </Tag>
+  );
+};
+
+const Vedlegg = (props: { saksId: string; brevId: number }) => {
+  const {
+    data: vedleggKoder,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: getBrevVedlegg.queryKey(props.saksId, props.brevId),
+    queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brevId),
+  });
+
+  if (isLoading) {
+    return (
+      <div>
+        <Detail textColor="subtle">Vedlegg</Detail>
+        <Loader size="small" />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div>
+        <Detail textColor="subtle">Vedlegg</Detail>
+        <Alert size="small" variant="error">
+          {getErrorMessage(error)}
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!vedleggKoder || vedleggKoder.length === 0) {
+    return null;
+  }
+
+  return (
+    <div>
+      <Detail textColor="subtle">Vedlegg</Detail>
+      <VStack gap="space-4">
+        {vedleggKoder.map((kode) => (
+          <BodyShort key={kode} size="small">
+            {kode}
+          </BodyShort>
+        ))}
+      </VStack>
+    </div>
   );
 };
 
