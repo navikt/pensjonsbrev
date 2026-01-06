@@ -26,8 +26,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LatexVisualITest {
 
-    //private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081")
+    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
 
     private fun render(
         overrideName: String? = null,
@@ -89,21 +89,10 @@ class LatexVisualITest {
     }
 
     @Test
-    fun test(){
+    fun `skal ha riktig bindestrek i url(liten forskjell)`(){
         render {
             paragraph {
                 text(bokmal { +"https://www.nav.no/ufore-ettersende-post" }, FontType.PLAIN)
-                table(header = {
-                    column(columnSpan = 2) { text(bokmal { +"Tekst" }) }
-                    column(alignment = RIGHT) { text(bokmal { +"Kroner" }) }
-                }) {
-                    for (i in 1..100) {
-                        row {
-                            cell { text(bokmal { +"Rad $i" }) }
-                            cell { text(bokmal { +"$i Kroner" }) }
-                        }
-                    }
-                }
             }
         }
     }
