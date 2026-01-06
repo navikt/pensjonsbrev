@@ -5,20 +5,12 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 
-fun Route.brev(
-    brevredigeringService: BrevredigeringService,
-    pdlService: PdlService,
-    penService: PenService,
-    brevredigeringFacade: BrevredigeringFacade,
-    dto2ApiService: Dto2ApiService,
-) {
+fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService, pdlService: PdlService, penService: PenService) {
 
     suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
         if (brevResponse != null) {
@@ -48,30 +40,28 @@ fun Route.brev(
 
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+            respond(
+                brevredigeringService.oppdaterBrev(
+                    saksId = null,
                     brevId = call.parameters.getOrFail<Long>("brevId"),
-                    saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
                 )
             )
-            apiRespond(dto2ApiService, resultat)
         }
 
         put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+            respond(
+                brevredigeringService.oppdaterBrev(
+                    saksId = null,
                     brevId = call.parameters.getOrFail<Long>("brevId"),
-                    saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = request,
                     nyttRedigertbrev = null,
                     frigiReservasjon = frigiReservasjon,
                 )
             )
-            apiRespond(dto2ApiService, resultat)
         }
 
         put<String>("/signatur") { signatur ->

@@ -14,8 +14,6 @@ import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 
 fun Application.configureRouting(
     authConfig: JwtConfig,
@@ -44,7 +42,6 @@ fun Application.configureRouting(
         BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService, p1ServiceImpl)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
-    val brevredigeringFacade = BrevredigeringFacade(RenderService(brevbakerService), BrevdataService(penService))
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -74,6 +71,7 @@ fun Application.configureRouting(
             brevmal(brevbakerService, brevmalService)
             kodeverkRoute(penService)
             sakRoute(
+                dto2ApiService,
                 brevbakerService,
                 brevmalService,
                 brevredigeringService,
@@ -86,10 +84,8 @@ fun Application.configureRouting(
                 skjermingService,
                 p1ServiceImpl,
                 pensjonRepresentasjonService,
-                brevredigeringFacade,
-                dto2ApiService,
             )
-            brev(brevredigeringService, pdlService, penService, brevredigeringFacade, dto2ApiService)
+            brev(brevredigeringService, dto2ApiService, pdlService, penService)
             samhandlerRoute(samhandlerService)
             meRoute(navansattService)
 

@@ -7,7 +7,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
@@ -98,11 +97,11 @@ class BrevredigeringService(
                     this.saksbehandlerValg = saksbehandlerValg
                     laastForRedigering = false
                     distribusjonstype = Distribusjonstype.SENTRALPRINT
-                    redigeresAv = principal.navIdent.takeIf { reserverForRedigering }
+                    redigeresAvNavIdent = principal.navIdent.takeIf { reserverForRedigering }
                     sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS).takeIf { reserverForRedigering }
                     opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                    sistRedigertAv = principal.navIdent
+                    sistRedigertAvNavIdent = principal.navIdent
                     redigertBrev = rendretBrev.markup.toEdit()
                 }.also {
                     if (mottaker != null) {
@@ -135,9 +134,9 @@ class BrevredigeringService(
                             (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
                         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                         saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                        sistRedigertAv = principal.navIdent
+                        sistRedigertAvNavIdent = principal.navIdent
                         if (frigiReservasjon) {
-                            redigeresAv = null
+                            redigeresAvNavIdent = null
                         }
                     }.toDto(rendretBrev.letterDataUsage)
                 }
@@ -179,7 +178,7 @@ class BrevredigeringService(
                     brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) }
                 }
 
-                brevDb.redigeresAv = null
+                brevDb.redigeresAvNavIdent = null
 
                 Brevredigering.reload(brevDb, true)?.toDto(null)
             }
@@ -376,10 +375,10 @@ class BrevredigeringService(
                     redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
                     sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                    sistRedigertAv = principal.navIdent
+                    sistRedigertAvNavIdent = principal.navIdent
                     this.attestertAvNavIdent = principal.navIdent
                     if (frigiReservasjon) {
-                        redigeresAv = null
+                        redigeresAvNavIdent = null
                     }
                 }.toDto(rendretBrev.letterDataUsage)
             }
@@ -479,8 +478,8 @@ class BrevredigeringService(
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
             Brevredigering.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
-                    if (redigeresAv == null || redigeresAv == principal.navIdent || erReservasjonUtloept()) {
-                        redigeresAv = principal.navIdent
+                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == principal.navIdent || erReservasjonUtloept()) {
+                        redigeresAvNavIdent = principal.navIdent
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     }
                 }?.let { ReservertBrevScope(it) }
@@ -720,7 +719,7 @@ private class ReservertBrevScope(val brevDb: Brevredigering) {
     val brevDto = brevDb.toDto(null)
 }
 
-fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+private fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
     Dto.Brevredigering(
         info = toBrevInfo(),
         redigertBrev = redigertBrev,
@@ -737,9 +736,9 @@ private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
         vedtaksId = vedtaksId,
         opprettetAv = opprettetAvNavIdent,
         opprettet = opprettet,
-        sistredigertAv = sistRedigertAv,
+        sistredigertAv = sistRedigertAvNavIdent,
         sistredigert = sistredigert,
-        redigeresAv = redigeresAv.takeIf { !erReservasjonUtloept() },
+        redigeresAv = redigeresAvNavIdent.takeIf { !erReservasjonUtloept() },
         brevkode = brevkode,
         laastForRedigering = laastForRedigering,
         distribusjonstype = distribusjonstype,

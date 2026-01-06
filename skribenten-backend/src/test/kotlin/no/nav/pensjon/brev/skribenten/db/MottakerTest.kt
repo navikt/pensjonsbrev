@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -102,7 +101,7 @@ class MottakerTest {
             this.saksbehandlerValg = Api.GeneriskBrevdata()
             laastForRedigering = false
             distribusjonstype = Distribusjonstype.SENTRALPRINT
-            redigeresAv = principal
+            redigeresAvNavIdent = principal
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
@@ -123,7 +122,7 @@ class MottakerTest {
                 ),
                 emptySet(),
             )
-            sistRedigertAv = principal
+            sistRedigertAvNavIdent = principal
         }
     }
 

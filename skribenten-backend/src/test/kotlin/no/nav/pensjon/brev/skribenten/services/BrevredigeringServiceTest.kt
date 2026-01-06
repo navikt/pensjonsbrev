@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -968,7 +967,7 @@ class BrevredigeringServiceTest {
 
         assertThat(brev.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
         assertThat(brev.info.sistReservert).isBetween(Instant.now() - 10.minutes.toJavaDuration(), Instant.now())
-        assertThat(transaction { Brevredigering[brev.info.id].redigeresAv }).isEqualTo(saksbehandler1Principal.navIdent)
+        assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isEqualTo(saksbehandler1Principal.navIdent)
     }
 
     @Test
@@ -1004,7 +1003,7 @@ class BrevredigeringServiceTest {
                     )
                 }
             }
-            assertThat(transaction { Brevredigering[brev.info.id].redigeresAv }).isEqualTo(
+            assertThat(transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }).isEqualTo(
                 saksbehandler1Principal.navIdent
             )
         }
@@ -1034,7 +1033,7 @@ class BrevredigeringServiceTest {
                 }
             }
             val awaited = hentBrev.awaitAll()
-            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAv }!!
+            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAvNavIdent }!!
 
             assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
             assertThat(awaited).areExactly(
