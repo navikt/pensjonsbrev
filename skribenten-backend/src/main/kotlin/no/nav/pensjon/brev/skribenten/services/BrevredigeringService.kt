@@ -641,7 +641,7 @@ class BrevredigeringService(
     private suspend fun beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId: Long?, brevkode: Brevkode.Redigerbart): Long? {
         val template = brevbakerService.getRedigerbarTemplate(brevkode)
 
-        return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+        return if (template?.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK) {
             vedtaksId
                 ?: throw VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
         } else {
