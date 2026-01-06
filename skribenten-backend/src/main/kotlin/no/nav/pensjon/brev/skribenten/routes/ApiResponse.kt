@@ -11,8 +11,7 @@ import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.usecase.Result
 
 
-context(dto2ApiService: Dto2ApiService)
-suspend fun RoutingContext.apiRespond(result: Result<Dto.Brevredigering, BrevedigeringError>?) {
+suspend fun RoutingContext.apiRespond(dto2ApiService: Dto2ApiService, result: Result<Dto.Brevredigering, BrevedigeringError>?) {
     when (result) {
         is Result.Success -> call.respond(dto2ApiService.toApi(result.value))
         is Result.Failure -> when (result.error) {

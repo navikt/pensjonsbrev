@@ -33,11 +33,6 @@ tasks {
         compileTestKotlin {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
         }
-        compileKotlin {
-            compilerOptions {
-                freeCompilerArgs.set(listOf("-Xcontext-parameters"))
-            }
-        }
     }
     build {
         dependsOn(installDist)

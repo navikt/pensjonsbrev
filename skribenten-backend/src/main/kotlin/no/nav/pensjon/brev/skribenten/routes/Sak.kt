@@ -12,7 +12,6 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
-context(dto2ApiService: Dto2ApiService)
 fun Route.sakRoute(
     brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
@@ -27,6 +26,7 @@ fun Route.sakRoute(
     p1Service: P1ServiceImpl,
     pensjonRepresentasjonService: PensjonRepresentasjonService,
     brevredigeringFacade: BrevredigeringFacade,
+    dto2ApiService: Dto2ApiService,
 ) {
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
@@ -125,6 +125,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevbakerService, brevredigeringService, p1Service, brevredigeringFacade)
+        sakBrev(brevbakerService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
     }
 }
