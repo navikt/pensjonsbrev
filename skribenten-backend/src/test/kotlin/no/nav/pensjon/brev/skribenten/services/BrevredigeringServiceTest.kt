@@ -110,7 +110,7 @@ class BrevredigeringServiceTest {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
-        brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+        brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )
     private val letterResponse =
