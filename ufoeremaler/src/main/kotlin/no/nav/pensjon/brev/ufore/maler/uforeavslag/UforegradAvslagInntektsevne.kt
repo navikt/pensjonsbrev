@@ -68,7 +68,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
             paragraph {
                 text(bokmal {
                     +"Inntekten din før du ble ufør er fastsatt til " +
-                            pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner."
+                            pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner. "
                 }
                 )
 
