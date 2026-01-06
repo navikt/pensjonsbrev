@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.fraser
 
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -142,16 +141,18 @@ class Felles {
         }
     }
 
-    object RettTilInnsyn : OutlinePhrase<LangBokmal>() {
-        override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+    object RettTilInnsyn : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
                     bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via nav.no for å se dokumenter i saken din."}
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Du kan logge deg inn via nav.no for å se dokumenter i saken din."},
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Du kan logge deg inn via nav.no for å sjå dokument i saka di. "}
                 )
             }
         }
@@ -162,7 +163,7 @@ class Felles {
             title1 {
                 text(
                     bokmal { + "Har du spørsmål?" },
-                    nynorsk { + "Har du spørsmål?" }
+                    nynorsk { + "Har du spørsmål?" },
                 )
             }
             paragraph {

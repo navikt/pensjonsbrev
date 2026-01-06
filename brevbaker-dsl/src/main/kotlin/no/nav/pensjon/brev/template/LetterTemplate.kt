@@ -147,7 +147,7 @@ sealed class Expression<out Out> : StableHash {
         val application: Expression<Out?>,
     ) : Expression<Out?>(), StableHash by StableHash.of(input, assigned, application) {
 
-        companion object {
+        internal companion object {
             operator fun <In: Any, Out> invoke(value: Expression<In?>, block: Expression<In>.() -> Expression<Out>): NullSafeApplication<In, Out> =
                 FromScope.Assigned<In>(value.stableHashCode()).let {
                     NullSafeApplication(value, it, it.block())
@@ -422,8 +422,8 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             ?: throw IllegalArgumentException("Text.Literal doesn't contain language: ${language::class.qualifiedName}")
 
 
-                    companion object {
-                        fun <Lang1 : Language> create(
+                    internal companion object {
+                        internal fun <Lang1 : Language> create(
                             lang1: Pair<Lang1, String>,
                             fontType: FontType = FontType.PLAIN
                         ) = Literal<LanguageSupport.Single<Lang1>>(
@@ -432,7 +432,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             fontType = fontType
                         )
 
-                        fun <Lang1 : Language, Lang2 : Language> create(
+                        internal fun <Lang1 : Language, Lang2 : Language> create(
                             lang1: Pair<Lang1, String>,
                             lang2: Pair<Lang2, String>,
                             fontType: FontType = FontType.PLAIN,
@@ -442,7 +442,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                             fontType = fontType
                         )
 
-                        fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                        internal fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                             lang1: Pair<Lang1, String>,
                             lang2: Pair<Lang2, String>,
                             lang3: Pair<Lang3, String>,
@@ -491,19 +491,19 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                                 ?: throw IllegalArgumentException("Text.Expression.ByLanguage doesn't contain language: ${language::class.qualifiedName}")
 
 
-                        companion object {
-                            fun <Lang1 : Language> create(
+                        internal companion object {
+                            internal fun <Lang1 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 fontType: FontType = FontType.PLAIN
                             ) = ByLanguage<LanguageSupport.Single<Lang1>>(mapOf(lang1), LanguageCombination.Single(lang1.first), fontType)
 
-                            fun <Lang1 : Language, Lang2 : Language> create(
+                            internal fun <Lang1 : Language, Lang2 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 lang2: Pair<Lang2, StringExpression>,
                                 fontType: FontType = FontType.PLAIN,
                             ) = ByLanguage<LanguageSupport.Double<Lang1, Lang2>>(mapOf(lang1, lang2), LanguageCombination.Double(lang1.first, lang2.first), fontType)
 
-                            fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
+                            internal fun <Lang1 : Language, Lang2 : Language, Lang3 : Language> create(
                                 lang1: Pair<Lang1, StringExpression>,
                                 lang2: Pair<Lang2, StringExpression>,
                                 lang3: Pair<Lang3, StringExpression>,
