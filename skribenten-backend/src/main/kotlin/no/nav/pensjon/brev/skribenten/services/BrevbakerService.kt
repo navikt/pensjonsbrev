@@ -193,7 +193,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for sak $brevId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
                 )
             }
         }

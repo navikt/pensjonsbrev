@@ -36,7 +36,7 @@ fun Route.redigerbarRoutes(
         }
 
         get("/alltidValgbareVedlegg") {
-            call.respond(redigerbareBrev.alltidValgbareVedlegg)
+            call.respond(redigerbareBrev.alltidValgbareVedlegg.map { it.kode })
         }
     }
 }
