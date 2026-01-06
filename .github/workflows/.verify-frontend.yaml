@@ -31,7 +31,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READ_PACKAGES_TEMP }}
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Run ESLint
         working-directory: ${{ inputs.workingDir }}/bff
