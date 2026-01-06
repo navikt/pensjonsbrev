@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.IncludeAttachment
@@ -13,7 +14,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDto
 import no.nav.pensjon.brev.template.render.dsl.testLetterMetadata
@@ -24,9 +24,7 @@ class IncludeAttachmentTest {
     @Test
     fun `attachment is included in template`() {
         val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
-            title = newText(
-                Nynorsk to "Test vedlegg",
-            ),
+            title = { text(nynorsk { +"Test vedlegg" }) },
             includeSakspart = true
         ) {
             paragraph {
@@ -65,9 +63,11 @@ class IncludeAttachmentTest {
     @Nested
     inner class IncludeIfNotNull{
         private val testVedlegg = createAttachment<LangNynorsk, EmptyVedleggData>(
-            title = newText(
-                Nynorsk to "Test vedlegg",
-            ),
+            title = {
+                text(
+                    nynorsk { +"Test vedlegg" },
+                )
+            },
             includeSakspart = true
         ) {
             paragraph {

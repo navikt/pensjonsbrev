@@ -34,7 +34,7 @@ on:
 
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 jobs:
   build:
@@ -80,7 +80,7 @@ jobs:
           salsa: false
       - name: "Upload jar"
         if: ${{ inputs.uploadJar }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: ${{inputs.path}}-jar
           path: ${{ inputs.path }}/build/install/${{ inputs.path }}/lib

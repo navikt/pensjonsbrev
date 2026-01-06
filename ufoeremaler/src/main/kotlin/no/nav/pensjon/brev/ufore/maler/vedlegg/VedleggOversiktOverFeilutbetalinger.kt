@@ -1,12 +1,9 @@
 package no.nav.pensjon.brev.ufore.maler.vedlegg
 
-import no.nav.pensjon.brev.ufore.maler.fraser.KonteringTypeYtelseTextMappingStorBokstav
-import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
@@ -15,7 +12,6 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.formatMonthYear
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.TilbakekrevingSelectors.bruttobelopTilbakekrevd
@@ -30,11 +26,13 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbe
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.rentetilleggSomInnkrevesTotalbelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.skattefradragSomInnkrevesTotalbelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDtoSelectors.tilbakekrevingPerManed
+import no.nav.pensjon.brev.ufore.maler.fraser.KonteringTypeYtelseTextMappingStorBokstav
+import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 
 @TemplateModelHelpers
 val oversiktOverFeilutbetalinger =
     createAttachment<LangBokmal, OversiktOverFeilutbetalingPEDto>(
-        title = newText(Bokmal to "Oversikt over feilutbetalinger"),
+        title = { text(bokmal { +"Oversikt over feilutbetalinger" }) },
         includeSakspart = true,
     ) {
         includePhrase(

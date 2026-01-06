@@ -16,19 +16,9 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSe
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.krav
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDtoSelectors.opptjeningType
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -36,12 +26,13 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkattAFP =
     createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattAFPDto>(
-        title =
-            newText(
-                Bokmal to "Dette får du i AFP før skatt",
-                Nynorsk to "Dette får du i AFP før skatt",
-                English to "This is your monthly AFP before tax",
-            ),
+        title = {
+            text(
+                bokmal { +"Dette får du i AFP før skatt" },
+                nynorsk { +"Dette får du i AFP før skatt" },
+                english { +"This is your monthly AFP before tax" },
+            )
+        },
         outline = {
 
             includePhrase(

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.render.dsl
 import com.natpryce.hamkrest.assertion.assertThat
 import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
@@ -10,7 +11,6 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.pensjonInnvilget

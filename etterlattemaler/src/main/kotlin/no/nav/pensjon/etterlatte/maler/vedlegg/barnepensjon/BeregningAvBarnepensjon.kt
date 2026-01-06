@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.*
@@ -41,11 +40,13 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 @TemplateModelHelpers
 val beregningAvBarnepensjonGammeltOgNyttRegelverk: AttachmentTemplate<LangBokmalNynorskEnglish, BarnepensjonBeregning> = createAttachment(
-    title = newText(
-        Bokmal to "Beregning av barnepensjon",
-        Nynorsk to "Utrekning av barnepensjon",
-        English to "Calculation of Children’s Pension",
-    ),
+    title = {
+        text(
+            bokmal { +"Beregning av barnepensjon" },
+            nynorsk { +"Utrekning av barnepensjon" },
+            english { +"Calculation of Children’s Pension" },
+        )
+    },
     includeSakspart = false
 ) {
     paragraph {
@@ -82,11 +83,13 @@ val beregningAvBarnepensjonGammeltOgNyttRegelverk: AttachmentTemplate<LangBokmal
 
 @TemplateModelHelpers
 val beregningAvBarnepensjonNyttRegelverk: AttachmentTemplate<LangBokmalNynorskEnglish, BarnepensjonBeregning> = createAttachment(
-    title = newText(
-        Bokmal to "Beregning av barnepensjon",
-        Nynorsk to "Utrekning av barnepensjon",
-        English to "Calculation of Children’s Pension",
-    ),
+    title = {
+        text(
+            bokmal { +"Beregning av barnepensjon" },
+            nynorsk { +"Utrekning av barnepensjon" },
+            english { +"Calculation of Children’s Pension" },
+        )
+    },
     includeSakspart = false
 ) {
     paragraph {
@@ -221,9 +224,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
 
     paragraph {
         text(
-            bokmal { +"Folketrygdens grunnbeløp er per i dag "  + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år." },
-            nynorsk { +"Grunnbeløpet i folketrygda er per i dag "  + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år." },
-            english { +"The national insurance basic amount currently amounts to "  + grunnbeloep.format() + ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year." },
+            bokmal { +"Folketrygdens grunnbeløp er per i dag " + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai hvert år. Økningen etterbetales vanligvis i juni hvert år." },
+            nynorsk { +"Grunnbeløpet i folketrygda er per i dag " + grunnbeloep.format() + ". Grunnbeløpet blir regulert 1. mai kvart år. Auken blir vanlegvis etterbetalt i juni kvart år." },
+            english { +"The national insurance basic amount currently amounts to " + grunnbeloep.format() + ". The basic amount is adjusted on 1 May each year. You will receive payment of any increase in June of each year." },
         )
     }
 }
@@ -337,11 +340,11 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 "Pensjonen din er beregnet etter " + foersteNavn + " fra " +
                                 foersteVirkningsdato + ". Fra " + senereVirkningsdato + " er pensjonen din beregnet " +
                                 "etter trygdetiden til " + nesteNavn + ". Avdødes samlede " +
-                                "trygdetid er beregnet til " + aarTrygdetid.format() +  " år. " },
+                                "trygdetid er beregnet til " + aarTrygdetid.format() + " år. " },
                         nynorsk { +"For å få full pensjon må den utrekna trygdetida til avdøde vere minst 40 år. " +
                                 "For at det skal kunne betalast ut full pensjon når begge foreldra er død, må minst éin " +
                                 "av foreldra ha hatt minimum 40 års trygdetid. " +
-                                "Pensjonen din er rekna ut etter trygdetida til " + foersteNavn  + " frå " +
+                                "Pensjonen din er rekna ut etter trygdetida til " + foersteNavn + " frå " +
                                 foersteVirkningsdato + ". Frå " + senereVirkningsdato + " er pensjonen rekna ut etter " +
                                 "trygdetida til " + nesteNavn + ". " +
                                 "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år." },
@@ -367,7 +370,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                                 "beregnet til " + aarTrygdetid.format() + " år." },
                         nynorsk { +"For at det skal kunne betalast ut full pensjon, må minst éin av foreldra " +
                                 "ha hatt minimum 40 års trygdetid. Trygdetid over 40 år blir ikkje teken med i utrekninga. " +
-                                "Pensjonen din er rekna ut etter trygdetida til " + navnAvdoed  + ". " +
+                                "Pensjonen din er rekna ut etter trygdetida til " + navnAvdoed + ". " +
                                 "Avdøde hadde ei samla trygdetid på " + aarTrygdetid.format() + " år" },
                         english { +"To achieve a full pension, at least one of the parents must have accumulated 40 years " +
                                 "of contribution time. Contribution time above 40 years of coverage is not included in the calculation. " +
@@ -947,9 +950,9 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 text(
-                    bokmal { +"Barnepensjonen per år er beregnet ut fra at det er "  + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet fordeles på 12 utbetalinger i året." },
-                    nynorsk { +"Utrekninga av barnepensjonen tek utgangspunkt i at det er "  + antallBarn.format() + " søsken som blir oppdregne saman, med 0,4 G til første barn, og 0,25 G til påfølgjande barn. Beløpet blir fordelt likt på kvart barn, og blir gonga med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet blir fordelt på 12 utbetalingar i året." },
-                    english { +"The children's pension per year is calculated according to the assumption that there are "  + antallBarn.format() + " siblings being raised together, with 0,4G going to the first child, and 0,25G to subsequent children. This amount is distributed equally to each child and multiplied by " + aarTrygdetid.format() + "/40 contribution time.  This amount is distributed in 12 payments a year. " },
+                    bokmal { +"Barnepensjonen per år er beregnet ut fra at det er " + antallBarn.format() + " søsken som oppdras sammen, med 0,4 G til første barn, og 0,25 G til påfølgende barn. Beløpet fordeles likt på hvert barn, og blir ganget med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet fordeles på 12 utbetalinger i året." },
+                    nynorsk { +"Utrekninga av barnepensjonen tek utgangspunkt i at det er " + antallBarn.format() + " søsken som blir oppdregne saman, med 0,4 G til første barn, og 0,25 G til påfølgjande barn. Beløpet blir fordelt likt på kvart barn, og blir gonga med " + aarTrygdetid.format() + "/40 trygdetid.  Beløpet blir fordelt på 12 utbetalingar i året." },
+                    english { +"The children's pension per year is calculated according to the assumption that there are " + antallBarn.format() + " siblings being raised together, with 0,4G going to the first child, and 0,25G to subsequent children. This amount is distributed equally to each child and multiplied by " + aarTrygdetid.format() + "/40 contribution time.  This amount is distributed in 12 payments a year. " },
                 )
             }
             paragraph {
@@ -961,7 +964,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 text(
-                    bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
+                    bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },
                     english { +"The children's pension per year is calculated at " + barnepensjonssats() + "G x " + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year." },
                 )
@@ -976,7 +979,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 text(
-                    bokmal { +"Barnepensjonen per år er beregnet til 0,4 G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
+                    bokmal { +"Barnepensjonen per år er beregnet til 0,4 G ganget med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til 0,4 G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },
                     english { +"The children's pension per year is calculated at 0,4 G x " + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year." },
                 )
@@ -990,7 +993,7 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, B
                 )
                 newline()
                 text(
-                    bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med "  + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
+                    bokmal { +"Barnepensjonen per år er beregnet til " + barnepensjonssats() + " G ganget med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet fordeles på 12 utbetalinger i året." },
                     nynorsk { +"Barnepensjonen per år er rekna ut til " + barnepensjonssats() + " G gonga med " + aarTrygdetid.format() + "/40 trygdetid. Beløpet blir fordelt på 12 utbetalingar i året." },
                     english { +"The children's pension per year is calculated at " + barnepensjonssats() + "G x " + aarTrygdetid.format() + "/40 contribution time. This amount is distributed in 12 payments a year." },
                 )

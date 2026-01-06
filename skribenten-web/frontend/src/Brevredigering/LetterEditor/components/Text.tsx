@@ -1,6 +1,3 @@
-import { css } from "@emotion/react";
-import { BodyShort } from "@navikt/ds-react";
-
 import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
 import { FontType, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
@@ -24,20 +21,20 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     }
     case VARIABLE: {
       return (
-        <BodyShort
-          as="span"
-          css={css`
-            background: var(--ax-bg-neutral-moderate);
-            border-radius: var(--ax-radius-4);
-            cursor: default;
-            display: inline-block;
-            ${content.fontType === FontType.BOLD && "font-weight: var(--ax-font-weight-bold);"}
-            ${content.fontType === FontType.ITALIC && "font-style: italic;"}
-            line-height: var(--ax-font-line-height-large);
-            margin: 0 var(--ax-space-1);
-            outline: ${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"};
-            padding: var(--ax-space-1) var(--ax-space-4);
-          `}
+        <span
+          css={{
+            background: "var(--ax-bg-neutral-moderate)",
+            borderRadius: "var(--ax-radius-2)",
+            cursor: "default",
+            display: "inline-block",
+            lineHeight: "var(--ax-font-line-height-medium)",
+            margin: "0 var(--ax-space-1)",
+            outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
+            padding: "0 var(--ax-space-2)",
+
+            ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
+            ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
+          }}
           data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
             setEditorState((oldState) => ({
@@ -47,7 +44,7 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
           }}
         >
           {content.text}
-        </BodyShort>
+        </span>
       );
     }
   }

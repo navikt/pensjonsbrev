@@ -10,11 +10,11 @@ Verken PDF dokumentet eller informasjonen som brukes til å generere dokumentet 
 Pdf-bygger er en tjeneste som mottar en liste med filer, og kompilerer de som ett LaTeX prosjekt.
 
 == Arkitektur
-[plantuml, moduldiagram, format=svg]
-....
-include::moduldiagram.puml[]
-....
 
+[plantuml, my-diagram, svg]
+----
+include::../examples/moduldiagram.puml[]
+----
 
 == Prosess / Brukstilfelle
 Overordnet vil en bestilling gå slik:

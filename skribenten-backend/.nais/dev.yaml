@@ -82,7 +82,7 @@ externalHosts:
 
 env:
   - name: CORS_ALLOW_HOST
-    value: "pensjon-skribenten-web-q2.intern.dev.nav.no"
+    value: "pensjon-skribenten-web-q2.intern.dev.nav.no,pensjon-skribenten-web-q2.ansatt.dev.nav.no"
 
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/api/"

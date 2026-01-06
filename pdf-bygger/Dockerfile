@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM --platform=linux/amd64 eclipse-temurin:21 AS jre-build
+FROM --platform=linux/amd64 eclipse-temurin:25 AS jre-build
 RUN $JAVA_HOME/bin/jlink \
          --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management,jdk.localedata \
          --strip-debug \

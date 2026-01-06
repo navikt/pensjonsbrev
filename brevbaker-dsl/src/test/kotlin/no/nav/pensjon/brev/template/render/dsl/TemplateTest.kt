@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
@@ -9,7 +10,6 @@ import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.choice
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -58,11 +58,13 @@ class TemplateTest {
     @Test
     fun `createTemplate adds attachment`() {
         val attachment = createAttachment<LangBokmalNynorskEnglish, EmptyVedleggData>(
-            title = newText(
-                Language.Bokmal to "asdf",
-                Language.Nynorsk to "asdf",
-                Language.English to "asdf",
-            ),
+            title = {
+                text(
+                    bokmal { +"asdf" },
+                    nynorsk { +"asdf" },
+                    english { +"asdf" },
+                )
+            },
         ) {
             paragraph {
                 text(

@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.template.render.dsl
 
 import no.nav.brev.brevbaker.createTemplate
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
