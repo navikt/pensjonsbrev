@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -32,7 +33,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Language.Nynorsk),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-5",
             distribusjonstype = VEDTAK,

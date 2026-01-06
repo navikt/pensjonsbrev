@@ -77,7 +77,7 @@ class Felles {
             paragraph {
                 text(
                     bokmal { +"Hvis du sender klage i posten, må du signere klagen."},
-                    nynorsk { +"Dersom du sender klage i posten, må du signere klagan." }
+                    nynorsk { +"Dersom du sender klage i posten, må du signere klagen." }
                 )
             }
             paragraph {

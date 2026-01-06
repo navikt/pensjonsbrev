@@ -64,7 +64,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                 }
             }
             paragraph {
-                text(bokmal { +"Grunnbeløpet er per i dag " + fritekst("X") + " kroner. " })
+                text(bokmal { +"Grunnbeløpet er per i dag " + fritekst("beløp") + " kroner. " })
             }
             paragraph {
                 text(bokmal { +"Hvis du ikke oppfyller ett av de to vilkårene over, kan du likevel få uføretrygd hvis du ikke har rett til hel alderspensjon. " })
