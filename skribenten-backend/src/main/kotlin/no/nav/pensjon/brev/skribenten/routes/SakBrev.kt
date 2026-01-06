@@ -5,19 +5,28 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevbakerService: BrevbakerService, brevredigeringService: BrevredigeringService, p1Service: P1ServiceImpl) =
+fun Route.sakBrev(
+    brevbakerService: BrevbakerService,
+    brevredigeringService: BrevredigeringService,
+    p1Service: P1ServiceImpl,
+    brevredigeringFacade: BrevredigeringFacade,
+    dto2ApiService: Dto2ApiService,
+) =
     route("/brev") {
         suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
             if (brevResponse != null) {
@@ -48,18 +57,19 @@ fun Route.sakBrev(dto2ApiService: Dto2ApiService, brevbakerService: BrevbakerSer
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val sak: Pen.SakSelection = call.attributes[SakKey]
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-            val brev = brevredigeringService.oppdaterBrev(
-                saksId = sak.saksId,
-                brevId = brevId,
-                nyeSaksbehandlerValg = request.saksbehandlerValg,
-                nyttRedigertbrev = request.redigertBrev,
-                frigiReservasjon = frigiReservasjon,
+            val result = brevredigeringFacade.oppdaterBrev(
+                UpdateLetterHandler.Request(
+                    brevId = brevId,
+                    saksbehandler = PrincipalInContext.require().navIdent,
+                    nyeSaksbehandlerValg = request.saksbehandlerValg,
+                    nyttRedigertbrev = request.redigertBrev,
+                    frigiReservasjon = frigiReservasjon,
+                )
             )
 
-            respond(brev)
+            apiRespond(dto2ApiService, result)
         }
 
         patch<Api.DelvisOppdaterBrevRequest>("/{brevId}") { request ->
