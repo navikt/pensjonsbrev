@@ -23,12 +23,6 @@ describe("P1 med forsidebrev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([p1BrevInfo, annetBrev]);
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      request.reply(p1BrevInfo);
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/2", (request) => {
-      request.reply(annetBrev);
-    });
 
     cy.contains(annetBrev.brevtittel).click();
     cy.contains("Vedlegg").should("not.be.visible");
@@ -42,9 +36,6 @@ describe("P1 med forsidebrev", () => {
   it("viser og lagrer data i henholdsvis visningformat og api format", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([p1BrevInfo]);
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      request.reply(p1BrevInfo);
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
       request.reply(p1BrevData);
