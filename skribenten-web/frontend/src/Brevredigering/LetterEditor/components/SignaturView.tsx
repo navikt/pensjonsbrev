@@ -1,19 +1,11 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
-import { BoxNew, HStack, VStack } from "@navikt/ds-react";
+import { BoxNew, HGrid, VStack } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
-const Saksbehandler = ({ navn }: { navn?: string }) => {
-  if (!navn) {
-    return <></>;
-  }
-  return (
-    <BoxNew data-cy="brev-editor-saksbehandler" flexGrow="1" marginBlock="0 space-24">
-      {navn}
-    </BoxNew>
-  );
-};
+const Saksbehandler = ({ navn }: { navn?: string }) =>
+  navn ? <BoxNew data-cy="brev-editor-saksbehandler">{navn}</BoxNew> : <></>;
 
 export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; wrapperStyles?: SerializedStyles }) => (
   <VStack
@@ -24,11 +16,11 @@ export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; 
       ${wrapperStyles}
     `}
   >
-    <div>{signatur.hilsenTekst}</div>
-    <HStack gap="space-32" justify="space-between">
+    <span>{signatur.hilsenTekst}</span>
+    <HGrid columns="1fr 1fr" gap="space-32" marginBlock="0 space-24">
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />
       <Saksbehandler navn={signatur.saksbehandlerNavn} />
-    </HStack>
+    </HGrid>
     <div>{signatur.navAvsenderEnhet}</div>
   </VStack>
 );
