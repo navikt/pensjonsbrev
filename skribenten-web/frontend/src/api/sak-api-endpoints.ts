@@ -11,6 +11,7 @@ import type {
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
   OppdaterBrevRequest,
+  VedleggKode,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -27,6 +28,13 @@ export const hentAlleBrevForSak = {
 
 const hentAlleBrevForSakFunction = async (saksId: string) =>
   (await axios.get<BrevInfo[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`)).data;
+
+export const getBrevVedlegg = {
+  queryKey: (saksId: string, brevId: number) => ["brevVedlegg", saksId, brevId] as const,
+  queryFn: async (saksId: string, brevId: number) =>
+    (await axios.get<VedleggKode[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`))
+      .data,
+};
 
 export const hentPdfForBrev = {
   queryKey: (brevId: number) => ["hentPdfForBrev", brevId],
