@@ -21,7 +21,6 @@ object Edit {
         val title: Title,
         val sakspart: Sakspart,
         val blocks: List<Block>,
-        // TODO: Lag egen edit-modell for signatur slik at saksbehandlerNavn kan påkreves
         val signatur: Signatur,
         val deletedBlocks: Set<Int>
     ) {
