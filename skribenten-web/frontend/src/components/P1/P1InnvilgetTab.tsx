@@ -131,11 +131,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                   control={control}
                   name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <ManagedDatePicker
-                      dateField={dateField}
-                      fieldState={fieldState}
-                      label={`Vedtaks${SOFT_HYPHEN}dato`}
-                    />
+                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Vedtaksdato" />
                   )}
                 />
               </Table.DataCell>
@@ -193,7 +189,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                   render={({ field: radioField, fieldState }) => (
                     <RadioGroup
                       error={fieldState.error?.message}
-                      legend="Innvilget"
+                      legend={`Beregnings${SOFT_HYPHEN}grunnlag`}
                       onChange={(val) => {
                         radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
                       }}
@@ -218,7 +214,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                   render={({ field: radioField, fieldState }) => (
                     <RadioGroup
                       error={fieldState.error?.message}
-                      legend="Redusert"
+                      legend="Årsak til reduksjon"
                       onChange={(val) => {
                         radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
                       }}

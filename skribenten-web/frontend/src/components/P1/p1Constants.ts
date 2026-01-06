@@ -14,7 +14,7 @@ export const GRUNNLAG_INNVILGET_OPTIONS = [
 export const REDUKSJONSGRUNNLAG_OPTIONS = [
   { value: "PaaGrunnAvAndreYtelserEllerAnnenInntekt", label: "Andre ytelser/inntekt" },
   { value: "PaaGrunnAvOverlappendeGodskrevnePerioder", label: "Overlappende perioder" },
-  { value: "IKKE_RELEVANT", label: "Ikke relevant" },
+  { value: "IKKE_RELEVANT", label: "Ikke redusert" },
 ] as const;
 
 export const AVSLAGSBEGRUNNELSE_OPTIONS = [

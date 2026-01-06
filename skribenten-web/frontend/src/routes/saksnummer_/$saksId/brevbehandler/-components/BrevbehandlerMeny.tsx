@@ -217,6 +217,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               {!erLaast && (
                 <BoxNew asChild borderRadius="4">
                   <Button
+                    data-cy="p1-edit-button"
                     icon={<PencilIcon />}
                     onClick={() => setModalopen(true)}
                     size="xsmall"
