@@ -418,7 +418,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;
 	public synthetic fun <init> (Ljava/util/Map;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun expr (Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
@@ -428,15 +427,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion {
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public final fun create (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage$Companion;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Expression$ByLanguage;
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType : java/lang/Enum {
@@ -449,7 +439,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;
 	public synthetic fun <init> (Ljava/util/Map;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getFontType ()Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;
@@ -459,15 +448,6 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 	public fun stableHashCode ()I
 	public final fun text (Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion {
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public final fun create (Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public final fun create (Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
-	public static synthetic fun create$default (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal$Companion;Lkotlin/Pair;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$FontType;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$Literal;
 }
 
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text$NewLine : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Text, no/nav/pensjon/brev/template/StableHash {
@@ -564,7 +544,6 @@ public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pens
 }
 
 public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
-	public static final field Companion Lno/nav/pensjon/brev/template/Expression$NullSafeApplication$Companion;
 	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
@@ -573,10 +552,6 @@ public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication :
 	public final fun getInput ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication$Companion {
-	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/Expression$NullSafeApplication;
 }
 
 public final class no/nav/pensjon/brev/template/Expression$UnaryInvoke : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
@@ -798,13 +773,6 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$Telefonnummer
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$TelefonnummerFormat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply-OO461GQ (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/LocalizedFormatter$YearMonthFormatter : no/nav/pensjon/brev/template/LocalizedFormatter {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$YearMonthFormatter;
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/time/YearMonth;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -1032,7 +1000,6 @@ public abstract interface class no/nav/pensjon/brev/template/dsl/ControlStructur
 	public abstract fun getElements ()Ljava/util/List;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public abstract fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public fun showIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1045,7 +1012,6 @@ public final class no/nav/pensjon/brev/template/dsl/ControlStructureScope$Defaul
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public static fun ifNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public static fun showIf (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1060,7 +1026,6 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun item (Lkotlin/jvm/functions/Function1;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1069,7 +1034,6 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
-	public fun <init> (Lno/nav/pensjon/brev/template/dsl/QuotationMarks;)V
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun quoted (Ljava/lang/String;)Ljava/lang/String;
@@ -1081,7 +1045,6 @@ public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper : no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression {
-	public fun <init> (Lno/nav/pensjon/brev/template/Expression;)V
 	public fun getExpr ()Lno/nav/pensjon/brev/template/Expression;
 }
 
@@ -1090,15 +1053,8 @@ public abstract class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilde
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralWrapper : no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression {
-	public fun <init> (Ljava/lang/String;)V
 	public fun getExpr ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getStr ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilderKt {
-	public static final fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-	public static final fun english (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
-	public static final fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope, no/nav/pensjon/brev/template/dsl/OutlineScope {
@@ -1112,7 +1068,6 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
@@ -1155,7 +1110,6 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/ParagraphPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
@@ -1205,7 +1159,6 @@ public final class no/nav/pensjon/brev/template/dsl/PlainTextOnlyScope : no/nav/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1247,8 +1200,6 @@ public final class no/nav/pensjon/brev/template/dsl/QuotationMarks$English : no/
 public final class no/nav/pensjon/brev/template/dsl/ShowElseScope {
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public final fun orIfNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun orShow (Lkotlin/jvm/functions/Function1;)V
 	public final fun orShowIf (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
@@ -1284,7 +1235,6 @@ public final class no/nav/pensjon/brev/template/dsl/TableScope : no/nav/pensjon/
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public final fun row (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
@@ -1374,7 +1324,6 @@ public final class no/nav/pensjon/brev/template/dsl/TextOnlyScope : no/nav/pensj
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
-	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function4;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/PlainTextOnlyPhrase;)V
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
 	public fun newline ()V
@@ -1460,7 +1409,6 @@ public final class no/nav/pensjon/brev/template/dsl/expression/DateKt {
 	public static final fun formatLocalDateNullable (Lno/nav/pensjon/brev/template/Expression;Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun formatLocalDateNullable$default (Lno/nav/pensjon/brev/template/Expression;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun formatMonthYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun formatYearMonth (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getDay (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getFirstDayOfYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun getLastDayOfYear (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -1555,22 +1503,6 @@ public abstract interface class no/nav/pensjon/brev/template/expression/Expressi
 
 public final class no/nav/pensjon/brev/template/expression/ExpressionMapper$DefaultImpls {
 	public static fun stableHashCode (Lno/nav/pensjon/brev/template/expression/ExpressionMapper;)I
-}
-
-public final class no/nav/pensjon/brev/template/expression/IntToKroner : no/nav/pensjon/brev/template/expression/ExpressionMapper {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/expression/IntToKroner;
-	public synthetic fun getApply ()Lkotlin/jvm/functions/Function1;
-	public fun getApply ()Lkotlin/reflect/KFunction;
-	public fun getName ()Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/expression/IntToYear : no/nav/pensjon/brev/template/expression/ExpressionMapper {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/expression/IntToYear;
-	public synthetic fun getApply ()Lkotlin/jvm/functions/Function1;
-	public fun getApply ()Lkotlin/reflect/KFunction;
-	public fun getName ()Ljava/lang/String;
-	public fun stableHashCode ()I
 }
 
 public final class no/nav/pensjon/brev/template/expression/SelectorUsage {
