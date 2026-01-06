@@ -1,0 +1,19 @@
+% vurder å bytte ut denne implementasjonen med url-tagging (hyperref/accsup)
+\ExplSyntaxOn
+
+% symbol brukt som minus/bindestrek byttes ut med
+\tl_const:Nn \hyphen_replacement
+  {
+    \group_begin:
+      \fontencoding{OT1}\fontfamily{cmr}\selectfont\char45
+    \group_end:
+  }
+
+\NewDocumentCommand{\lettertext}{m}
+  {
+    \tl_set:Nn \textinput { #1 }                                    %make variable "textinput" from input
+    \tl_replace_all:Nnn \textinput { - } { \hyphen_replacement }    %replace all - in textinput with replacement constant
+    \textinput                                                      %return "textinput"
+  }
+
+\ExplSyntaxOff

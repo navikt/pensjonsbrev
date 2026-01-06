@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
-import no.nav.pensjon.brev.pdfbygger.latex.LatexDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
