@@ -165,7 +165,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                   control={control}
                   name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
                   render={({ field: dateField, fieldState }) => (
-                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Første utbetaling" />
+                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Dato" />
                   )}
                 />
               </Table.DataCell>
@@ -174,7 +174,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.utbetalt?.message}
-                  // hideLabel
+                  hideLabel
                   label={`Brutto${SOFT_HYPHEN}beløp og hyppighet`}
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.utbetalt` as const)}
@@ -236,7 +236,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.vurderingsperiode?.message}
-                  // hideLabel
+                  hideLabel
                   label={`Vurderings${SOFT_HYPHEN}periode`}
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.vurderingsperiode` as const)}
@@ -248,7 +248,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.innvilgedePensjoner?.[index]?.adresseNyVurdering?.message}
-                  // hideLabel
+                  hideLabel
                   label="Adresse ny vurdering"
                   size="small"
                   {...register(`innvilgedePensjoner.${index}.adresseNyVurdering` as const)}

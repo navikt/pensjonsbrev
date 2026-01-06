@@ -179,7 +179,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.vurderingsperiode?.message}
-                  // hideLabel
+                  hideLabel
                   label={`Vurderings${SOFT_HYPHEN}periode`}
                   size="small"
                   {...register(`avslaattePensjoner.${index}.vurderingsperiode` as const)}
@@ -191,7 +191,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                 <Textarea
                   className="p1-seamless-textarea"
                   error={errors.avslaattePensjoner?.[index]?.adresseNyVurdering?.message}
-                  // hideLabel
+                  hideLabel
                   label="Adresse for ny vurdering"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.adresseNyVurdering` as const)}

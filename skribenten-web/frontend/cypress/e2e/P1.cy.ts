@@ -39,17 +39,6 @@ describe("P1 med forsidebrev", () => {
     cy.contains("Overstyring av vedlegg - P1").should("be.visible");
   });
 
-  it("forhåndsviser tilgjengelige data i P1", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
-      request.reply([p1BrevInfo]);
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      request.reply(p1BrevInfo);
-    });
-    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
-    // verifiser forhåndsutfylling gitt data?
-  });
-
   it("viser og lagrer data i henholdsvis visningformat og api format", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([p1BrevInfo]);
@@ -70,7 +59,6 @@ describe("P1 med forsidebrev", () => {
     cy.contains("Land").parent().find("input").should("have.value", "Bulgaria");
     // verifiser at datoformat vises som dd.MM.yyyy selv om payload fra backend er string på formatet yyyy-MM-dd
     cy.contains("Vedtaksdato").parent().find("input").should("have.value", "23.09.2022");
-    cy.contains("Første utbetaling").parent().find("input").should("have.value", "01.03.2022");
 
     // verifiser at land satt til blank sender null til backend
     // verifiser at dato satt til 31.12.2021 sender 2021-12-31 til backend
