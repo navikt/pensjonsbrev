@@ -92,7 +92,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             paragraph {
                 text(bokmal {+"Vi har sammenlignet inntekten før og etter at du ble ufør. " +
-                        "Vi har kommet fram til at uføregraden din er " + fritekst("xx") + " prosent. " +
+                        "Vi har kommet fram til at uføregraden din er " +  pesysData.uforegrad.format() + " prosent. " +
                         "Det viser at inntektsevnen din ikke er mer nedsatt enn det vi tidligere har vurdert."
                 })
             }
