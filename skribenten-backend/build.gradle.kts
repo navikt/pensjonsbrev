@@ -83,7 +83,7 @@ dependencies {
     implementation(libs.unleash)
 
     // Domenemodell
-     implementation(libs.brevbaker.common)
+    implementation(libs.brevbaker.common)
 
     implementation(libs.bundles.logging)
 
