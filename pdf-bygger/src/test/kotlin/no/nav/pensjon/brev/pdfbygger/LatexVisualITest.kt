@@ -89,10 +89,16 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `skal ha riktig bindestrek i url(liten forskjell)`(){
+    fun bindestrek() {
         render {
             paragraph {
                 text(bokmal { +"https://www.nav.no/ufore-ettersende-post" }, FontType.PLAIN)
+            }
+            val testString = (50..200).joinToString(" ") {
+                Char(it) + "-" + Char(it + 1)
+            }
+            paragraph {
+                text(bokmal { +testString }, FontType.PLAIN)
             }
         }
     }
