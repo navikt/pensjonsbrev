@@ -57,11 +57,11 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." },
-                    nynorsk { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." })
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-17." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)
