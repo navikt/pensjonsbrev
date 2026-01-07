@@ -66,9 +66,9 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 paragraph {
                     text(
-                        bokmal { + "Dette er et varsel om at vi vurderer om du fortsatt har rett til " .expr() + sakstypeText + "." },
-                        nynorsk { + "Dette er eit varsel om at vi vurderer om du framleis har rett til " .expr() + sakstypeText + "." },
-                        english { + "This letter is a notification that we are considering if you are still entitled to receive " .expr() + sakstypeText + "." },
+                        bokmal { + "Dette er et varsel om at vi vurderer om du fortsatt har rett til ".expr() + sakstypeText + "." },
+                        nynorsk { + "Dette er eit varsel om at vi vurderer om du framleis har rett til ".expr() + sakstypeText + "." },
+                        english { + "This letter is a notification that we are considering if you are still entitled to receive ".expr() + sakstypeText + "." },
                     )
 
                 }

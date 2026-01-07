@@ -533,7 +533,7 @@ data class TabellMaanedligPensjonKap19og20(
                 }
             }
             showIf(
-                (beregnetPensjon.ektefelletillegg .ifNull(Kroner(0)).greaterThan(0)
+                (beregnetPensjon.ektefelletillegg.ifNull(Kroner(0)).greaterThan(0)
                         or beregnetPensjon.barnetilleggSB.ifNull(Kroner(0)).greaterThan(0)
                         or beregnetPensjon.barnetilleggFB.ifNull(Kroner(0)).greaterThan(0))
                         and beregnetPensjon.virkDatoFom.year.lessThan(2025)
