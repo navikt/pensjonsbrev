@@ -33,7 +33,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensj
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.SaksbehandlerValgSelectors.informasjonOmSivilstandVedInstitusjonsopphold
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InfoPensjonFraAndreAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
@@ -64,8 +63,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 // 000122 i doksys
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto> {
-
-    override val featureToggle = FeatureToggles.vedtakEndringAvAlderspensjonInstitusjonsopphold.toggle
 
     override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
