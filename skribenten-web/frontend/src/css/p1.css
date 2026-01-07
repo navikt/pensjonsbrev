@@ -70,6 +70,7 @@
 .p1-table--two-column td:first-of-type {
   font-weight: 600;
   font-size: 1rem;
+  vertical-align: middle;
 }
 
 /* ===========================================
@@ -111,13 +112,7 @@
   margin: 0;
 }
 
-.p1-seamless-textfield :where(.aksel-form-field) {
-  width: 100%;
-  height: 100%;
-  margin: 0;
-}
-
-.p1-seamless-textfield :where(input, .aksel-text-field__input) {
+.p1-seamless-textfield :where(input) {
   border: none;
   border-radius: 0;
   box-shadow: none;
@@ -126,7 +121,7 @@
   height: 100%;
 }
 
-.p1-seamless-textfield :where(input, .aksel-text-field__input):focus {
+.p1-seamless-textfield :where(input):focus {
   outline: none;
   box-shadow: inset 0 0 0 2px var(--ax-border-focus);
 }
