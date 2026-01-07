@@ -14,7 +14,7 @@ sealed interface ExpressionScope<Argument : Any> {
     fun markUsage(selector: TemplateModelSelector<*, *>)
 
     companion object {
-        operator fun <Argument : Any> invoke(argument: Argument, felles: Felles, language: Language, selectorUsage: SelectorUsage? = null): ExpressionScope<Argument > =
+        operator fun <Argument : Any> invoke(argument: Argument, felles: Felles, language: Language, selectorUsage: SelectorUsage? = null): ExpressionScope<Argument> =
             RootExpressionScope(argument, felles, language, selectorUsage)
     }
 }
