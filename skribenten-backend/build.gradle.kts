@@ -83,8 +83,7 @@ dependencies {
     implementation(libs.unleash)
 
     // Domenemodell
-    implementation("no.nav.pensjon.brevbaker:brevbaker-api-model-common:2.18.0") // Midlertidig fram til neste PR
-    // implementation(libs.brevbaker.common)
+     implementation(libs.brevbaker.common)
 
     implementation(libs.bundles.logging)
 
