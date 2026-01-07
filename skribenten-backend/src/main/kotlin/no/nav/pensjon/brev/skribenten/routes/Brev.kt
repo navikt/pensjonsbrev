@@ -5,7 +5,6 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -51,7 +50,6 @@ fun Route.brev(
             val resultat = brevredigeringFacade.oppdaterBrev(
                 UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
-                    saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
@@ -65,7 +63,6 @@ fun Route.brev(
             val resultat = brevredigeringFacade.oppdaterBrev(
                 UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
-                    saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = request,
                     nyttRedigertbrev = null,
                     frigiReservasjon = frigiReservasjon,

@@ -17,9 +17,9 @@ class BrevreservasjonPolicy {
         val eksisterende = brev.reservasjon
 
         return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || eksisterende.timestamp.plus(timeout).isBefore(fra)) {
-            Result.Companion.success(true)
+            Result.success(true)
         } else {
-            Result.Companion.failure(ReservertAvAnnen(eksisterende))
+            Result.failure(ReservertAvAnnen(eksisterende))
         }
     }
 

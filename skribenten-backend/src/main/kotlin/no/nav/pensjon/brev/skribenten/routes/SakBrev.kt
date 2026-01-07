@@ -5,7 +5,6 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -62,7 +61,6 @@ fun Route.sakBrev(
             val result = brevredigeringFacade.oppdaterBrev(
                 UpdateLetterHandler.Request(
                     brevId = brevId,
-                    saksbehandler = PrincipalInContext.require().navIdent,
                     nyeSaksbehandlerValg = request.saksbehandlerValg,
                     nyttRedigertbrev = request.redigertBrev,
                     frigiReservasjon = frigiReservasjon,

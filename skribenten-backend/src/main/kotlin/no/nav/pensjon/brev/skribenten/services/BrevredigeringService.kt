@@ -112,40 +112,6 @@ class BrevredigeringService(
             }
         }
 
-    suspend fun oppdaterBrev(
-        saksId: Long?,
-        brevId: Long,
-        nyeSaksbehandlerValg: SaksbehandlerValg?,
-        nyttRedigertbrev: Edit.Letter?,
-        frigiReservasjon: Boolean = false,
-    ): Dto.Brevredigering? =
-        hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            if (!brevDto.info.laastForRedigering || PrincipalInContext.require().isAttestant()) {
-                val rendretBrev = rendreBrev(
-                    brev = brevDto,
-                    saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                    signaturSignerende = nyttRedigertbrev?.signatur?.saksbehandlerNavn,
-                    signaturAttestant = nyttRedigertbrev?.signatur?.attesterendeSaksbehandlerNavn,
-                )
-                val principal = PrincipalInContext.require()
-
-                transaction {
-                    brevDb.apply {
-                        redigertBrev =
-                            (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
-                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                        sistRedigertAv = principal.navIdent
-                        if (frigiReservasjon) {
-                            redigeresAv = null
-                        }
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            } else {
-                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.")
-            }
-        }
-
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
