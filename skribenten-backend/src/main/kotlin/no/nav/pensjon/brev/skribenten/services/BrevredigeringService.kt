@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -103,6 +104,7 @@ class BrevredigeringService(
                     sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     sistRedigertAvNavIdent = principal.navIdent
                     redigertBrev = rendretBrev.markup.toEdit()
+                    brevtype = rendretBrev.brevtype
                 }.also {
                     if (mottaker != null) {
                         Mottaker.new(it.id.value) { oppdater(mottaker) }

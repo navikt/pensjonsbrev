@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggBrevkode
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -100,6 +101,7 @@ object BrevredigeringTable : LongIdTable() {
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
+    val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
@@ -126,6 +128,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
     val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
+    var brevtype by BrevredigeringTable.brevtype
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
