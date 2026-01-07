@@ -216,10 +216,10 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string;
                       error={fieldState.error?.message}
                       legend="Årsak til reduksjon"
                       onChange={(val) => {
-                        radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
+                        radioField.onChange(val === "IKKE_REDUSERT" ? null : val || null);
                       }}
                       size="small"
-                      value={radioField.value ?? "IKKE_RELEVANT"}
+                      value={radioField.value ?? "IKKE_REDUSERT"}
                     >
                       {REDUKSJONSGRUNNLAG_OPTIONS.map((option) => (
                         <Radio key={option.value} value={option.value}>
