@@ -101,12 +101,12 @@ object BrevredigeringTable : LongIdTable() {
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
-    val brevtype: Column<LetterMetadata.Brevtype?> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name).nullable()
+    val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
-    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
+    // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
     var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
@@ -139,7 +139,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             }
     }
 
-    val isVedtaksbrev get() = vedtaksId != null
+    val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
 }
 
 object DocumentTable : LongIdTable() {
