@@ -101,7 +101,7 @@ object BrevredigeringTable : LongIdTable() {
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
     val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
-    val brevtype: Column<LetterMetadata.Brevtype?> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name).nullable()
+    val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }
 
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
