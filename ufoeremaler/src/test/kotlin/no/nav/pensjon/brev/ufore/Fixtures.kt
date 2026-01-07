@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
@@ -36,6 +37,7 @@ object Fixtures : LetterDataFactory {
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
             FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
+            EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
@@ -44,6 +46,8 @@ object Fixtures : LetterDataFactory {
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
+
+    private fun lagEmptyRedigerbarBrevdata() = EmptyRedigerbarBrevdata
 
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
