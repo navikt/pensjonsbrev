@@ -24,7 +24,6 @@ ktlint_standard_class-signature = disabled
 ktlint_standard_colon-spacing = disabled
 ktlint_standard_comma-spacing = disabled
 ktlint_standard_comment-spacing = disabled
-ktlint_standard_comment-wrapping = disabled
 ktlint_standard_condition-wrapping = disabled
 ktlint_standard_curly-spacing = disabled
 ktlint_standard_dot-spacing = disabled

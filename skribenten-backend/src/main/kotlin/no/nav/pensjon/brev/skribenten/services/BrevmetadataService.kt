@@ -110,7 +110,7 @@ data class BrevdataDto(
 
     @Suppress("unused")
     enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
-    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
+    enum class BrevSystem { DOKSYS, GAMMEL, } // Gammel er exstream
     enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
 
     @Suppress("unused")
