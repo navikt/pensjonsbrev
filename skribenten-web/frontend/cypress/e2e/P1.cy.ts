@@ -16,6 +16,15 @@ describe("P1 med forsidebrev", () => {
         });
       });
     });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([p1BrevInfo]);
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      request.reply(p1BrevData);
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
+      request.reply(countriesSubset);
+    });
     cy.visit("/saksnummer/123456/brevbehandler");
   });
 
@@ -34,15 +43,6 @@ describe("P1 med forsidebrev", () => {
   });
 
   it("viser og lagrer data i henholdsvis visningformat og api format", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
-      request.reply([p1BrevInfo]);
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
-      request.reply(p1BrevData);
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
-      request.reply(countriesSubset);
-    });
     cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
     cy.contains("3. Innvilget pensjon").should("be.visible");
 
@@ -61,6 +61,85 @@ describe("P1 med forsidebrev", () => {
     cy.contains("Land").parent().find("input").type("{selectAll}{backspace}{downArrow}{enter}");
     cy.contains("Vedtaksdato").parent().find("input").type("{selectall}{backspace}31.12.2021");
     cy.contains("Lagre").click();
+  });
+
+  it("viser valideringsfeil når påkrevde felt mangler", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      request.reply(p1BrevDataWithMissingFields);
+    });
+
+    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    // Forsøk å lagre uten å fylle ut påkrevde felt
+    cy.contains("Lagre").click();
+
+    // Verifiser at valideringsfeil vises i alert
+    cy.contains("Skjemaet har feil som må rettes").should("be.visible");
+
+    // Verifiser at individuelle feilmeldinger vises
+    cy.contains("Institusjonsnavn er obligatorisk").should("be.visible");
+    cy.contains("Pensjonstype må velges").should("be.visible");
+  });
+
+  it("viser valideringsfeil for ugyldig datoformat", () => {
+    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    // Skriv inn ugyldig dato
+    cy.contains("Vedtaksdato").parent().find("input").type("{selectall}{backspace}32.13.2022");
+    cy.contains("Lagre").click();
+    cy.contains("Skjemaet har feil som må rettes").should("exist");
+    cy.contains("Ugyldig dato").should("be.visible");
+  });
+
+  it("viser valideringsfeil når tekstfelt overskrider makslengde", () => {
+    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    const veryLongText = "A".repeat(300);
+    cy.contains("Land")
+      .closest("td")
+      .contains("PIN")
+      .parent()
+      .find("input")
+      .type("{selectall}{backspace}" + veryLongText, { delay: 0 })
+      .press(Cypress.Keyboard.Keys.TAB);
+    cy.contains("PIN kan ikke være lengre enn").should("be.visible");
+    cy.contains("Skjemaet har feil som må rettes").should("not.exist");
+    cy.contains("Lagre").click();
+    cy.contains("Skjemaet har feil som må rettes").should("exist");
+  });
+
+  it("navigerer til fane med første feil ved validering", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      request.reply(p1BrevDataWithMissingFields);
+    });
+
+    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    cy.contains("4. Avslag på pensjon").click();
+    cy.contains("Institusjon som har avslått").should("be.visible");
+
+    // Forsøk å lagre med feil i fane 3 (Innvilget)
+    cy.contains("Lagre").click();
+
+    // Verifiser at vi blir navigert tilbake til fane 3
+    cy.contains("Institusjon som gir pensjonen").should("be.visible");
+    cy.contains("Skjemaet har feil som må rettes").should("be.visible");
+    cy.contains("Institusjonsnavn er obligatorisk").should("be.visible");
+  });
+
+  it("viser suksessmelding ved vellykket lagring", () => {
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      request.reply("200");
+    });
+
+    cy.contains(p1BrevInfo.brevtittel).click().get('[data-cy="p1-edit-button"]').click();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+    cy.contains("Lagre").click();
+    cy.contains("Endringene ble lagret").should("be.visible");
   });
 });
 
@@ -180,3 +259,28 @@ const countriesSubset = [
   { kode: "BG", navn: "Bulgaria" },
   { kode: "NO", navn: "Norge" },
 ];
+
+const p1BrevDataWithMissingFields = {
+  ...p1BrevData,
+  ...{
+    innvilgedePensjoner: [
+      {
+        institusjon: {
+          institusjonsnavn: "", // Mangler påkrevd felt
+          pin: "123456",
+          saksnummer: "",
+          vedtaksdato: null,
+          land: null,
+        },
+        pensjonstype: null,
+        datoFoersteUtbetaling: null,
+        utbetalt: "",
+        grunnlagInnvilget: null,
+        reduksjonsgrunnlag: null,
+        vurderingsperiode: "",
+        adresseNyVurdering: "",
+      },
+    ],
+    avslaattePensjoner: [],
+  },
+};
