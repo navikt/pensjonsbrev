@@ -49,6 +49,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -360,7 +361,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget
                         and (
-                        beregnetPensjonPerManed.garantiPensjon.greaterThan(0)
+                        beregnetPensjonPerManed.garantiPensjon.ifNull(Kroner(0)).greaterThan(0)
                         )
             ) {
                 paragraph {
