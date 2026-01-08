@@ -94,7 +94,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 text(
                     bokmal { +"Søknaden er avslått, fordi vilkårene for å få omsorgsopptjening ikke er oppfylt i ditt tilfelle." },
                     nynorsk { +"Søknaden er avslått, fordi vilkåra for å få omsorgsopptening ikkje er oppfylte i ditt tilfelle." },
-                    english { +"The application has been denied because you do not meet the requirements for receiving acquired rights for care work." }
+                    english { +"The application has been denied because you do not meet the requirements for receiving acquired pension rights for care work." }
                 )
             }
 
@@ -105,7 +105,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     text(
                         bokmal { +"Vedtaket er gjort etter forskriften til folketrygdloven paragraf 3-16 fjerdeledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for en syk, en funksjonshemmet eller en eldre person." },
                         nynorsk { +"Vedtaket er gjort etter forskrifta til folketrygdlova paragraf 3-16 fjerde ledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for ein sjuk, ein funksjonshemma eller ein eldre person." },
-                        english { +"The decision is made inn accordance with the National Insurance Act paragraph 3-16 fourth sub-section on the accreditng of acquired rights for care work for an ill, disabled or old person." }
+                        english { +"The decision is made in accordance with the National Insurance Act paragraph 3-16, fourth subsection, concerning the accreditation of acquired pension rights for care work performed for an ill, disabled, or elderly person." }
                     )
                 }
                 paragraph {
