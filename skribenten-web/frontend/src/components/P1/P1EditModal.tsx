@@ -40,6 +40,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const formMethods = useForm<P1RedigerbarForm>({
     resolver: zodResolver(p1RedigerbarFormSchema),
     mode: "onBlur",
+    reValidateMode: "onBlur",
   });
 
   const {
