@@ -159,6 +159,16 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                         english { +"" }
                     )
                 }
+
+                showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Hvis du jobber minst 50 prosent eller deltar i annen aktivitet med mål om å komme i arbeid, og mener du kan forsørge deg selv med den inntekten du har i nåværende stillingsprosent (uten å regne med omstillingsstønad), må du sende oss informasjon om dette." },
+                            nynorsk { +"Dersom du jobbar minst 50 prosent, eller deltek i annan aktivitet med mål om å kome i arbeid, og meiner du kan forsørgje deg sjølv med inntekta du har i noverande stillingsprosent (utan å rekne med omstillingsstønad), må du sende oss informasjon om dette." },
+                            english { +"If you work at least 50 percent or participate in another activity with the goal of obtaining employment, and believe you can support yourself with the income you have in your current position (without considering adjustment allowance), you must send us information about this." },
+                        )
+                    }
+                }
             }
 
             showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
