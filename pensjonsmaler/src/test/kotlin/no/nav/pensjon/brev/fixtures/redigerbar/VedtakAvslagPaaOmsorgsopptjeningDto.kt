@@ -14,7 +14,7 @@ fun createVedtakAvslagPaaOmsorgsopptjeningDto() =
             omsorgsarbeidMindreEnn6Maaneder = false,
             privatAFPavslaat = false,
             omsorgsarbeidForBarnUnder7aarFoer1992 = false,
-            omsorgsopptjeningenGodskrevetEktefellen = false,
+            omsorgsopptjeningenGodskrevetEktefellen = true,
             brukerFoedtFoer1948 = false
         ),
         pesysData = VedtakAvslagPaaOmsorgsopptjeningDto.PesysData(
