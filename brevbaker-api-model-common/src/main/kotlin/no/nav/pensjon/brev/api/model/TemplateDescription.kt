@@ -59,22 +59,22 @@ interface TemplateDescription {
     }
 
     // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
-    enum class Brevkategori {
-        ETTEROPPGJOER,
-        FEILUTBETALING,
-        FOERSTEGANGSBEHANDLING,
-        FRITEKSTBREV,
-        INFORMASJONSBREV,
-        INNHENTE_OPPLYSNINGER,
-        KLAGE_OG_ANKE,
-        LEVEATTEST,
-        OMSORGSOPPTJENING,
-        POSTERINGSGRUNNLAG,
-        SLUTTBEHANDLING,
-        UFOEREPENSJON,
-        VARSEL,
-        VEDTAK_EKSPORT,
-        VEDTAK_ENDRING_OG_REVURDERING,
-        VEDTAK_FLYTTE_MELLOM_LAND,
+    enum class Brevkategori(val kategoritekst: String) {
+        ETTEROPPGJOER("Etteroppgjør"),
+        FEILUTBETALING("Feilutbetaling"),
+        FOERSTEGANGSBEHANDLING("Førstegangsbehandling"),
+        FRITEKSTBREV("Fritekstbrev"),
+        INFORMASJONSBREV("Informasjonsbrev"),
+        INNHENTE_OPPLYSNINGER("Innhente opplysninger"),
+        KLAGE_OG_ANKE("Klage og anke"),
+        LEVEATTEST("Leveattest"),
+        OMSORGSOPPTJENING("Omsorgsopptjening"),
+        POSTERINGSGRUNNLAG("Posteringsgrunnlag"),
+        SLUTTBEHANDLING("Sluttbehandling"),
+        UFOEREPENSJON("Uførepensjon"),
+        VARSEL("Varsel"),
+        VEDTAK_EKSPORT("Vedtak - eksport"),
+        VEDTAK_ENDRING_OG_REVURDERING("Vedtak - endring og revurdering"),
+        VEDTAK_FLYTTE_MELLOM_LAND("Vedtak - flytte mellom land"),
     }
 }

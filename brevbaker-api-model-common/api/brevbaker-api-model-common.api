@@ -146,6 +146,7 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkategor
 	public static final field VEDTAK_ENDRING_OG_REVURDERING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static final field VEDTAK_FLYTTE_MELLOM_LAND Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public final fun getKategoritekst ()Ljava/lang/String;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 	public static fun values ()[Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
 }

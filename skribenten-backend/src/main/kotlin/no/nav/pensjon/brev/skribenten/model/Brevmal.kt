@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.model
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -65,7 +64,7 @@ interface LetterMetadata {
                     BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                     BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
                 },
-                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.toKategoriTekst() ?: this.brevkategori?.toKategoriTekst(),
+                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.kategoritekst ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
@@ -94,7 +93,7 @@ interface LetterMetadata {
                 id = name,
                 brevsystem = BrevSystem.BREVBAKER,
                 spraak = this.languages.map { it.toSpraakKode() },
-                brevkategori = kategori.toKategoriTekst(),
+                brevkategori = kategori.kategoritekst,
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,
@@ -121,23 +120,3 @@ interface LetterMetadata {
             }
     }
 }
-
-private fun Brevkategori.toKategoriTekst() =
-    when (this) {
-        Brevkategori.ETTEROPPGJOER -> "Etteroppgjør"
-        Brevkategori.FOERSTEGANGSBEHANDLING -> "Førstegangsbehandling"
-        Brevkategori.VEDTAK_ENDRING_OG_REVURDERING -> "Vedtak - endring og revurdering"
-        Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND -> "Vedtak - flytte mellom land"
-        Brevkategori.SLUTTBEHANDLING -> "Sluttbehandling"
-        Brevkategori.INFORMASJONSBREV -> "Informasjonsbrev"
-        Brevkategori.VARSEL -> "Varsel"
-        Brevkategori.VEDTAK_EKSPORT -> "Vedtak - eksport"
-        Brevkategori.OMSORGSOPPTJENING -> "Omsorgsopptjening"
-        Brevkategori.UFOEREPENSJON -> "Uførepensjon"
-        Brevkategori.INNHENTE_OPPLYSNINGER -> "Innhente opplysninger"
-        Brevkategori.LEVEATTEST -> "Leveattest"
-        Brevkategori.FEILUTBETALING -> "Feilutbetaling"
-        Brevkategori.KLAGE_OG_ANKE -> "Klage og anke"
-        Brevkategori.POSTERINGSGRUNNLAG -> "Posteringsgrunnlag"
-        Brevkategori.FRITEKSTBREV -> "Fritekstbrev"
-    }
