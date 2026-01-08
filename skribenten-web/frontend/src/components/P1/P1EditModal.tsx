@@ -51,7 +51,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
   // Load P1 data when modal is open
   const {
-    data: p1Override,
+    data: p1Data,
     isLoading: isP1Loading,
     isError: isP1Error,
     error: p1Error,
@@ -59,10 +59,10 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
   // When P1 data arrives, reset form with mapped values
   useEffect(() => {
-    if (p1Override) {
-      reset(mapP1DtoToForm(p1Override));
+    if (p1Data) {
+      reset(mapP1DtoToForm(p1Data));
     }
-  }, [p1Override, reset]);
+  }, [p1Data, reset]);
 
   const { data: landListe } = useLandData();
 
@@ -121,7 +121,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const hasAvslagError = !!errors.avslaattePensjoner;
   const hasInstitusjonError = !!errors.utfyllendeInstitusjon;
 
-  const isInitialLoading = isP1Loading && !p1Override;
+  const isInitialLoading = isP1Loading && !p1Data;
 
   return (
     <VStack asChild height="85vh" maxHeight="85vh" maxWidth="85vw" width="85vw">
