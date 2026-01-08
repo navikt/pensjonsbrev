@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.pdfbygger.LetterMarkupBlocksBuilder
 import no.nav.pensjon.brev.pdfbygger.ParagraphBuilder
+import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brevbaker.api.model.LanguageCode

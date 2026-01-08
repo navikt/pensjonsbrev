@@ -27,6 +27,7 @@ import org.junit.jupiter.params.provider.MethodSource
 class LatexVisualITest {
 
     private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
 
     private fun render(
         overrideName: String? = null,
@@ -83,6 +84,21 @@ class LatexVisualITest {
                 text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.PLAIN)
                 text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.ITALIC)
                 text(bokmal { +"The quick brown fox jumps over the lazy dog. " }, FontType.BOLD)
+            }
+        }
+    }
+
+    @Test
+    fun bindestrek() {
+        render {
+            paragraph {
+                text(bokmal { +"https://www.nav.no/ufore-ettersende-post" }, FontType.PLAIN)
+            }
+            val testString = (50..200).joinToString(" ") {
+                Char(it) + "-" + Char(it + 1)
+            }
+            paragraph {
+                text(bokmal { +testString }, FontType.PLAIN)
             }
         }
     }
