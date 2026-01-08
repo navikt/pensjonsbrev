@@ -152,7 +152,7 @@ interface LetterMarkup {
                 override val type: Type
                     get() = Type.FORM_TEXT
 
-                enum class Size { NONE, SHORT, LONG }
+                enum class Size { NONE, SHORT, LONG, FILL }
             }
 
             interface MultipleChoice : Form {

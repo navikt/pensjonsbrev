@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
     dto2ApiService: Dto2ApiService,
+    brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
@@ -136,6 +137,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(dto2ApiService, brevredigeringService, p1Service)
+        sakBrev(dto2ApiService, brevbakerService, brevredigeringService, p1Service)
     }
 }

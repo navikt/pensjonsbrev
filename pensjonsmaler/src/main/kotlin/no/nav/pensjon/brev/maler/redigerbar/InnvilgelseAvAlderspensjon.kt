@@ -226,7 +226,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     showIf(uforeKombinertMedAlder and innvilgetFor67) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                         text(
-                            bokmal {  +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
+                            bokmal { +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
                             nynorsk { +". Du får alderspensjon frå folketrygda ved sida av uføretrygda di." },
                             english { +". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit." }
                         )

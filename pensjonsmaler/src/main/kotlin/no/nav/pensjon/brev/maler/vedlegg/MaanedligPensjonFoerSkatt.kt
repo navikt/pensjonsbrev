@@ -23,10 +23,10 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelecto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.alderspensjonPerManed
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.barnetilleggGjeldende
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
-import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.beregnetPensjonPerManedGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.bruker
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.ektefelletilleggGjeldende
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.epsGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.krav
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDtoSelectors.saerskiltSatsGjeldende
@@ -56,23 +56,25 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.vedlegg.maanedligPensjonFoerSkatt.*
 import no.nav.pensjon.brev.model.bestemtForm
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
 // V00003 i metaforce
 @TemplateModelHelpers
 val vedleggMaanedligPensjonFoerSkatt = createAttachment<LangBokmalNynorskEnglish, MaanedligPensjonFoerSkattDto>(
-    title = newText(
-        Bokmal to "Dette er din månedlige pensjon før skatt",
-        Nynorsk to "Dette er den månadlege pensjonen din før skatt",
-        English to "This is your monthly pension before tax",
-    ),
+    title = {
+        text(
+            bokmal { +"Dette er din månedlige pensjon før skatt" },
+            nynorsk { +"Dette er den månadlege pensjonen din før skatt" },
+            english { +"This is your monthly pension before tax" },
+        )
+    },
     includeSakspart = false,
     outline = {
 

@@ -9,6 +9,7 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - ".github/workflows/cleanup.yml"
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
@@ -22,6 +23,7 @@ on:
       - "pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - ".github/workflows/cleanup.yml"
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
@@ -32,7 +34,7 @@ env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
   "IMAGE_BRANCH": "ghcr.io/${{ github.repository }}/pdf-bygger:main"
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 permissions:
   contents: read
@@ -215,8 +217,8 @@ jobs:
 
   "klarTilMerge":
     name: "Klar til merge"
-    if: ${{ github.event_name == 'pull_request' }}
     needs: [buildPdfbygger, pushPdfByggerToGithubRegistry, runIntegrationTests]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v6

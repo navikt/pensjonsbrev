@@ -45,6 +45,7 @@ sealed class FinnSamhandlerRequestDto {
     ) : FinnSamhandlerRequestDto()
 }
 
+@Suppress("ktlint:standard:no-multi-spaces")
 enum class SamhandlerTypeCode {
     AA,    // Ambulansearbeider
     ADVO,  // Advokat / Jurist

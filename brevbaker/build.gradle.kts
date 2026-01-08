@@ -64,6 +64,11 @@ kotlin {
         }
     }
 }
+
+java {
+    targetCompatibility = JavaVersion.toVersion(apiModelJavaTarget)
+}
+
 tasks {
     kotlin {
         jvmToolchain(apiModelJavaTarget.toInt())
@@ -78,12 +83,6 @@ tasks {
             compilerOptions.optIn.add("no.nav.brev.InterneDataklasser")
             compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")
         }
-    }
-    compileJava {
-        targetCompatibility = apiModelJavaTarget
-    }
-    compileTestJava {
-        targetCompatibility = apiModelJavaTarget
     }
 }
 

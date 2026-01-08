@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import com.natpryce.hamkrest.*
 import com.natpryce.hamkrest.assertion.assertThat
+import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*

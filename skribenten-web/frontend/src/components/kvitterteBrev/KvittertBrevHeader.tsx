@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Accordion, Label, Tag } from "@navikt/ds-react";
+import { Accordion, Label, Tag, VStack } from "@navikt/ds-react";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
@@ -16,16 +15,10 @@ const AccordionHeader = (props: {
 
   return (
     <Accordion.Header>
-      <div
-        css={css`
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-        `}
-      >
+      <VStack align="start" justify="start">
         {tag}
         <Label>{tittel}</Label>
-      </div>
+      </VStack>
     </Accordion.Header>
   );
 };
@@ -40,7 +33,7 @@ const hentTagOgTittelForHeader = (args: {
   switch (args.apiStatus) {
     case "error": {
       const tag = (
-        <Tag size="small" variant={"error"}>
+        <Tag size="small" variant="error">
           Kunne ikke sende brev
         </Tag>
       );
@@ -49,7 +42,7 @@ const hentTagOgTittelForHeader = (args: {
     case "success": {
       if (args.context === "attestering") {
         const tag = (
-          <Tag size="small" variant={"alt2"}>
+          <Tag size="small" variant="alt2">
             Klar til attestering
           </Tag>
         );
@@ -58,7 +51,7 @@ const hentTagOgTittelForHeader = (args: {
         switch (args.brevInfo.distribusjonstype) {
           case Distribusjonstype.SENTRALPRINT: {
             const tag = (
-              <Tag size="small" variant={"success"}>
+              <Tag size="small" variant="success">
                 Sendt til mottaker
               </Tag>
             );
@@ -66,7 +59,7 @@ const hentTagOgTittelForHeader = (args: {
           }
           case Distribusjonstype.LOKALPRINT: {
             const tag = (
-              <Tag size="small" variant={"info"}>
+              <Tag size="small" variant="info">
                 Lokalprint - sendt til joark
               </Tag>
             );

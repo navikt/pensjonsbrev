@@ -55,7 +55,7 @@ class PensjonRepresentasjonService(
         PENSJON_VERGE_PENGEMOTTAKER,
     }
 
-    suspend fun harVerge(fnr: String) : Boolean? =
+    suspend fun harVerge(fnr: String): Boolean? =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
             fnr,

@@ -215,13 +215,13 @@ internal object LatexDocumentRenderer {
 
             is LetterMarkup.Block.Title2 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitletwo", titleText, escape = false)  // allerede escapet over.
+                    appendCmd("lettersectiontitletwo", titleText, escape = false) // allerede escapet over.
                 }
             }
 
             is LetterMarkup.Block.Title3 -> renderTitleIfNonEmptyText(block.content) { titleText ->
                 if (!next.startsWithTable()) {
-                    appendCmd("lettersectiontitlethree", titleText, escape = false)  // allerede escapet over.
+                    appendCmd("lettersectiontitlethree", titleText, escape = false) // allerede escapet over.
                 }
             }
 
@@ -252,7 +252,7 @@ internal object LatexDocumentRenderer {
             when (current) {
                 is Form -> renderForm(current)
                 is ItemList -> renderList(current)
-                is Table -> renderTable(current, previous.takeIf {  index == 0})
+                is Table -> renderTable(current, previous.takeIf { index == 0})
                 is Text -> continousTextContent.add(current)
             }
         }
@@ -374,9 +374,14 @@ internal object LatexDocumentRenderer {
                             Form.Text.Size.NONE -> 0
                             Form.Text.Size.SHORT -> 25
                             Form.Text.Size.LONG -> 60
+                            Form.Text.Size.FILL -> null
                         }
                         renderText(element.prompt)
-                        append(" ${".".repeat(size)}")
+                        if (size != null) {
+                            append(" ${". ".repeat(size)}")
+                        } else {
+                            appendCmd("dotfill")
+                        }
                     }
                 }
             }

@@ -1,8 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.Institusjon.FENGSEL
-import no.nav.pensjon.brev.api.model.Institusjon.HELSE
-import no.nav.pensjon.brev.api.model.Institusjon.SYKEHJEM
+import no.nav.pensjon.brev.api.model.Institusjon.*
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand.*
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
@@ -15,46 +13,12 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDt
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggHjelpFraAndre
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakPensjon
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUfoeretrygdPesysNoenDokumenter
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggInnsynSakUnder18
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggKlagePaaVedtaket
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikter
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP1
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP2
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP3
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterAFP4
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterTittel
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT1
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT10
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT11
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT12
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT2
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT3
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT4
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT5
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT8
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggPlikterUT9
-import no.nav.pensjon.brev.maler.fraser.vedlegg.VedleggVeiledning
+import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.model.ubestemtForm
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.notNull
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
@@ -65,11 +29,13 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
 @TemplateModelHelpers
 val vedleggOrienteringOmRettigheterOgPlikter =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterOgPlikterDto>(
-        title = newText(
-            Bokmal to "Dine rettigheter og plikter",
-            Nynorsk to "Dine rettar og plikter",
-            English to "Your rights and obligations",
-        ),
+        title = {
+            text(
+                bokmal { +"Dine rettigheter og plikter" },
+                nynorsk { +"Dine rettar og plikter" },
+                english { +"Your rights and obligations" },
+            )
+        },
         includeSakspart = false
     ) {
         val erIkkePaaInstitusjon = institusjonsoppholdGjeldende.isNotAnyOf(FENGSEL, HELSE, SYKEHJEM)

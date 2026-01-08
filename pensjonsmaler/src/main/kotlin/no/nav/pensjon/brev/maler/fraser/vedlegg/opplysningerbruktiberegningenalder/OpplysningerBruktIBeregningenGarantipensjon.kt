@@ -236,7 +236,7 @@ data class OpplysningerBruktIBeregningenGarantipensjon(
                         )
                     }
                     showIf(erBeregnetSomEnsligPgaInstitusjonsopphold) {
-                        paragraph {                        //vedleggGiftLeverAdskilt&&Institusjonsopphold_002
+                        paragraph { //vedleggGiftLeverAdskilt&&Institusjonsopphold_002
                             text(
                                 bokmal { + "Du og ektefellen din er registrert med forskjellig bosted da en av dere bor på institusjon. Pensjonen din er derfor beregnet som om du var enslig. Satsen vi bruker er derfor " },
                                 nynorsk { + "Du og ektefellen din er registrerte med forskjellig bustad da ein av dykk bur på institusjon. Pensjonen din er derfor berekna som om du var einsleg. Satsen vi brukar er difor " },

@@ -357,6 +357,6 @@ object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<
         includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAp2025, pesysData.maanedligPensjonFoerSkattAP2025)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder, pesysData.opplysningerBruktIBeregningenAlder)
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025, pesysData.opplysningerBruktIBeregningenAlderAP2025)
-        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening,  pesysData.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening)
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening, pesysData.opplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening)
     }
 }

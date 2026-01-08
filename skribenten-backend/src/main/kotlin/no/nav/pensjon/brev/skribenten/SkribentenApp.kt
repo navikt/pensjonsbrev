@@ -172,7 +172,10 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         allowHeader(HttpHeaders.ContentType)
         allowHeader("X-Request-ID")
         skribentenConfig.getConfig("cors").also {
-            allowHost(it.getString("host"), schemes = it.getStringList("schemes"))
+            val schemes = it.getStringList("schemes")
+            it.getString("host").split(",").forEach { host ->
+                allowHost(host, schemes = schemes)
+            }
         }
     }
 

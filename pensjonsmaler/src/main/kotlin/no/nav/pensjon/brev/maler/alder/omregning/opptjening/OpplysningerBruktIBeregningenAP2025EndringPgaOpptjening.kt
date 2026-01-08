@@ -29,24 +29,24 @@ import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 // Spesialtilpasset V00011 i metaforce for endring pga. opptjening.
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjening =
-    createAttachment(
-        title = newText(
-            Bokmal to "Slik har vi beregnet pensjonen din",
-            Nynorsk to "Slik har vi berekna pensjonen din",
-            English to "This is how we have calculated your pension",
-        ),
+    createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto>(
+        title = {
+            text(
+                bokmal { +"Slik har vi beregnet pensjonen din" },
+                nynorsk { +"Slik har vi berekna pensjonen din" },
+                english { +"This is how we have calculated your pension" },
+            )
+        },
         includeSakspart = false
     ) {
         paragraph {

@@ -10,7 +10,7 @@ function SelectEnhet() {
 
   return (
     <Controller
-      name={"enhetsId"}
+      name="enhetsId"
       render={({ field, fieldState }) => (
         <Select
           data-cy="avsenderenhet-select"
@@ -19,7 +19,7 @@ function SelectEnhet() {
           size="small"
           {...field}
         >
-          <option value={""}>Velg enhet</option>
+          <option value="">Velg enhet</option>
           {options.map((option) => (
             <option key={option.id} value={option.id}>
               {option.navn}
