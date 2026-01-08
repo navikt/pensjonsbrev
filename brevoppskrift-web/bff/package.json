@@ -14,23 +14,23 @@
   "license": "MIT",
   "dependencies": {
     "@navikt/vite-mode": "0.13.6",
-    "express": "5.1.0",
+    "express": "5.2.1",
     "http-proxy-middleware": "3.0.5"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.39.1",
-    "@types/express": "5.0.5",
-    "@typescript-eslint/eslint-plugin": "8.48.0",
-    "@typescript-eslint/parser": "8.48.0",
-    "eslint": "9.39.1",
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "9.39.2",
+    "@types/express": "5.0.6",
+    "@typescript-eslint/eslint-plugin": "8.51.0",
+    "@typescript-eslint/parser": "8.51.0",
+    "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-unicorn": "62.0.0",
-    "prettier": "3.7.0",
+    "prettier": "3.7.4",
     "typescript": "5.9.3"
   }
 }

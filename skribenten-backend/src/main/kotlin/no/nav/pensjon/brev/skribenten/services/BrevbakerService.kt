@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brevbaker.api.model.*
@@ -71,6 +72,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupJacksonModule)
+                registerModule(BrevkodeJacksonModule)
                 registerModule(TemplateModelSpecificationJacksonModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -186,14 +188,14 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
 
     override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
-            val response = client.get("/templates/redigerbar/alltidValgbareVedlegg")
+            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 
             if (response.status.isSuccess()) {
                 response.body()
             } else {
                 throw BrevbakerServiceException(
                     response.bodyAsText().takeIf { it.isNotBlank() }
-                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for sak $brevId"
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
                 )
             }
         }

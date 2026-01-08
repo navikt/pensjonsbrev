@@ -13,7 +13,7 @@
   "author": "Nav",
   "license": "MIT",
   "dependencies": {
-    "@navikt/oasis": "^4.1.0",
+    "@navikt/oasis": "^4.1.1",
     "@navikt/vite-mode": "0.13.6",
     "cookie-parser": "^1.4.7",
     "express": "5.2.1",
@@ -22,22 +22,22 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "3.3.1",
-    "@eslint/js": "9.39.1",
+    "@eslint/eslintrc": "3.3.3",
+    "@eslint/js": "9.39.2",
     "@types/cookie-parser": "^1.4.10",
-    "@types/express": "5.0.5",
+    "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
-    "@typescript-eslint/eslint-plugin": "8.48.0",
-    "@typescript-eslint/parser": "8.48.0",
-    "eslint": "9.39.1",
+    "@typescript-eslint/eslint-plugin": "8.51.0",
+    "@typescript-eslint/parser": "8.51.0",
+    "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-import": "2.32.0",
     "eslint-plugin-prettier": "5.5.4",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "eslint-plugin-unicorn": "62.0.0",
-    "prettier": "3.7.0",
+    "prettier": "3.7.4",
     "typescript": "5.9.3"
   }
 }

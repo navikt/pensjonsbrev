@@ -110,7 +110,20 @@ class BrevredigeringServiceTest {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
-        brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+        brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
+        sakstyper = Sakstype.all,
+    )
+    private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
+        name = Testbrevkoder.VEDTAKSBREV.kode(),
+        letterDataClass = "template letter data class",
+        languages = listOf(LanguageCode.ENGLISH),
+        metadata = LetterMetadata(
+            displayTitle = "Et vedtaksbrev",
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+        ),
+        kategori = TemplateDescription.Brevkategori.VARSEL,
+        brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )
     private val letterResponse =
@@ -134,7 +147,7 @@ class BrevredigeringServiceTest {
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
-                .let { LetterMarkupWithDataUsageImpl(it, emptySet()) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
 
         override suspend fun renderPdf(
             brevkode: Brevkode.Redigerbart,
@@ -378,6 +391,20 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er KLAR om brev er laast`(): Unit = runBlocking {
         val brev = opprettBrev()
+        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.delvisOppdaterBrev(
+                saksId = brev.info.saksId,
+                brevId = brev.info.id,
+                laastForRedigering = true
+            )!!
+        }
+
+        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+    }
+
+    @Test
+    fun `status er KLAR om brev er laast for varselbrev i vedtakskontekst`(): Unit = runBlocking {
+        val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV)
         val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.delvisOppdaterBrev(
                 saksId = brev.info.saksId,

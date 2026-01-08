@@ -137,11 +137,18 @@ data class OmregningAlderUfore2016Felles(
 
         ifNotNull(avdodNavn) { avdodNavn ->
             showIf(gjenlevendetilleggKap19Innvilget) {
+                title2 {
+                    text(
+                        bokmal { +"Gjenlevenderett i alderspensjon" },
+                        nynorsk { +"Attlevenderett i alderspensjon" },
+                        english { +"Survivor's rights in retirement pension" }
+                    )
+                }
                 paragraph {
                     text(
-                        bokmal { +"Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter " + avdodNavn },
-                        nynorsk { +"Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter " + avdodNavn },
-                        english { +"You receive a survivor’s supplement in the retirement pension because you have pension rights after " + avdodNavn }
+                        bokmal { +"Du får et gjenlevendetillegg i alderspensjonen fordi du har pensjonsrettigheter etter " + avdodNavn + "."},
+                        nynorsk { +"Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter " + avdodNavn + "." },
+                        english { +"You receive a survivor’s supplement in the retirement pension because you have pension rights after " + avdodNavn + "." }
 
                     )
                 }
@@ -177,9 +184,9 @@ data class OmregningAlderUfore2016Felles(
                 }
                 paragraph {
                     text(
-                        bokmal { +"I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter " + avdodNavn },
-                        nynorsk { +"I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter " + avdodNavn },
-                        english { +"We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after " + avdodNavn }
+                        bokmal { +"I beregningen vår har vi tatt utgangspunkt i din egen opptjening. Dette gir deg en høyere pensjon enn om vi hadde tatt utgangspunkt i pensjonsrettighetene du har etter " + avdodNavn + "." },
+                        nynorsk { +"I vår berekning har vi teke utgangspunkt i di eiga opptening. Dette gir deg ein høgare pensjon enn om vi hadde teke utgangspunkt i pensjonsrettane du har etter " + avdodNavn + "."},
+                        english { +"We have based our calculation on your own earnings. This gives you a higher pension than if we had based it on the pension rights you have after " + avdodNavn + "." }
                     )
                 }
             }

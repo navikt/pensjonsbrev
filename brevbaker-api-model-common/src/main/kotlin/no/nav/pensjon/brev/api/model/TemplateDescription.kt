@@ -48,7 +48,15 @@ interface TemplateDescription {
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
     }
 
-    enum class Brevkontekst { ALLE, SAK, VEDTAK }
+    enum class Brevkontekst {
+        // Saksbrev som også skal være tilgjengelige hvis du kommer inn fra et vedtak
+        ALLE,
+        // Brev som ikke trenger informasjon fra et vedtak
+        SAK,
+        // Brev som er knytta til et vedtak. Ikke nødvendigvis vedtaksbrev, kan også være for eksempel varselbrev.
+        // Styrer ikke attestering, det blir styrt gjennom brevtype i lettermetadata
+        VEDTAK
+    }
 
     // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
     enum class Brevkategori {
