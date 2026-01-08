@@ -103,7 +103,7 @@ import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakV2Dto
 import no.nav.pensjon.brev.fixtures.createUfoerOmregningEnsligDto
 import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
-import no.nav.pensjon.brev.fixtures.createVedtakAvslagPaaOmsorgsopptjeningDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAlderspensjon
