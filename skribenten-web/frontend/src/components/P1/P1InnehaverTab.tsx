@@ -2,14 +2,14 @@ import { PadlockLockedIcon } from "@navikt/aksel-icons";
 import { Heading, HStack, Table, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
-import type { P1Redigerbar } from "~/types/p1";
+import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 type P1InnehaverTabProps = {
   disabled?: boolean;
 };
 
 export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
-  const { register } = useFormContext<P1Redigerbar>();
+  const { register } = useFormContext<P1RedigerbarForm>();
 
   const tabContent = (
     <>
