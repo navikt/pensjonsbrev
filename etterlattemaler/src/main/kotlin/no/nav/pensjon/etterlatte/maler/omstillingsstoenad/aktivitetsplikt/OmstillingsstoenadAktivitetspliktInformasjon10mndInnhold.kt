@@ -186,15 +186,23 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                     english { +"You will find more information about how to notify us in the section “You must notify us about any changes”." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
-                            "og senest innen tre uker fra datoen på dette brevet." },
-                    nynorsk { +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
-                            "og seinast innan tre veker frå datoen på dette brevet." },
-                    english { +"If you need more time to obtain documentation, you must contact us as soon as possible " +
-                            "and no later than three weeks from the date of this letter." },
-                )
+            showIf(utbetaling) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
+                                    "og senest innen tre uker fra datoen på dette brevet."
+                        },
+                        nynorsk {
+                            +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
+                                    "og seinast innan tre veker frå datoen på dette brevet."
+                        },
+                        english {
+                            +"If you need more time to obtain documentation, you must contact us as soon as possible " +
+                                    "and no later than three weeks from the date of this letter."
+                        },
+                    )
+                }
             }
 
             title2 {
