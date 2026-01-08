@@ -141,11 +141,11 @@ export const p1OverrideKeys = {
   id: (brevId: number) => [...p1OverrideKeys.all, brevId] as const,
 };
 
-export const getP1OverrideQuery = (saksId: string, brevId: number) => ({
-  queryKey: p1OverrideKeys.id(brevId),
-  queryFn: async () =>
+export const getP1Override = {
+  queryKey: p1OverrideKeys.id,
+  queryFn: async (saksId: string, brevId: number) =>
     (await axios.get<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`)).data,
-});
+};
 
 export async function saveP1Override(saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> {
   return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`, payload)).data;

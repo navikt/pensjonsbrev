@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
-import { getBrev, p1OverrideKeys, saveP1Override } from "~/api/brev-queries";
+import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { useLandData } from "~/hooks/useLandData";
 import type { P1Redigerbar } from "~/types/p1";
@@ -73,7 +73,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
-      queryClient.invalidateQueries({ queryKey: p1OverrideKeys.id(brevId) });
+      queryClient.invalidateQueries({ queryKey: getP1Override.queryKey(brevId) });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
       setSaveSuccess(true);
       // Auto-hide success message after 3 seconds
