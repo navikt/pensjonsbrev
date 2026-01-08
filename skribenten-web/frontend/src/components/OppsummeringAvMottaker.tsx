@@ -1,7 +1,7 @@
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 
-import { useLandData } from "~/hooks/useLandData";
 import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
+import { useLandData } from "~/hooks/useLandData";
 import type { Mottaker } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { getCountryNameByKode } from "~/utils/countryUtils";

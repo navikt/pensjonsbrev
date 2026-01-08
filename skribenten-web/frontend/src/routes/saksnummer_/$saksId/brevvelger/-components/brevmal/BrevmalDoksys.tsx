@@ -7,11 +7,11 @@ import type { z } from "zod";
 
 import { orderDoksysLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
-import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";

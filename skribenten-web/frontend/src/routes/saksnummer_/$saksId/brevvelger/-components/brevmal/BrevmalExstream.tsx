@@ -8,6 +8,7 @@ import type { z } from "zod";
 
 import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import type { SpraakKode } from "~/types/apiTypes";
 import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
@@ -15,7 +16,6 @@ import type { Nullable } from "~/types/Nullable";
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";
-import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";

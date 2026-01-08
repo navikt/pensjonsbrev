@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BoxNew, Button, HStack, Modal, Tabs } from "@navikt/ds-react";
+import { BoxNew, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
