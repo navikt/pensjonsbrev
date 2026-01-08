@@ -14,21 +14,11 @@ import type {
   P1RedigerbarForm,
   P1UtfyllendeInstitusjonForm,
 } from "~/types/p1FormTypes";
-import { formatDateWithoutTimezone } from "~/utils/dateUtils";
 
 import { emptyAvslaattRow, emptyInnvilgetRow } from "./emptyP1";
 
 const emptyIfNull = (v: string | null | undefined): string => v ?? "";
 const nullIfEmpty = (v: string): string | null => (v.trim() === "" ? null : v);
-const parseDateElseUndefined = (dateString: string | null | undefined): Date | undefined => {
-  if (!dateString) return undefined;
-  const date = new Date(dateString);
-  return Number.isNaN(date.getTime()) ? undefined : date;
-};
-const formatDateElseNull = (date: Date | null | undefined): string | null => {
-  if (!date || Number.isNaN(date.getTime())) return null;
-  return formatDateWithoutTimezone(date);
-};
 
 export const createDefaultRows = <T>(factory: () => T, count: number): T[] =>
   Array.from({ length: count }, () => factory());
@@ -40,7 +30,7 @@ const mapPersonDtoToForm = (p: P1Person): P1PersonForm => ({
   fornavn: emptyIfNull(p.fornavn),
   etternavn: emptyIfNull(p.etternavn),
   etternavnVedFoedsel: emptyIfNull(p.etternavnVedFoedsel),
-  foedselsdato: parseDateElseUndefined(p.foedselsdato),
+  foedselsdato: emptyIfNull(p.foedselsdato),
   adresselinje: emptyIfNull(p.adresselinje),
   poststed: emptyIfNull(p.poststed),
   postnummer: emptyIfNull(p.postnummer),
@@ -51,7 +41,7 @@ const mapPersonFormToDto = (p: P1PersonForm): P1Person => ({
   fornavn: nullIfEmpty(p.fornavn),
   etternavn: nullIfEmpty(p.etternavn),
   etternavnVedFoedsel: nullIfEmpty(p.etternavnVedFoedsel),
-  foedselsdato: formatDateElseNull(p.foedselsdato),
+  foedselsdato: nullIfEmpty(p.foedselsdato),
   adresselinje: nullIfEmpty(p.adresselinje),
   poststed: nullIfEmpty(p.poststed),
   postnummer: nullIfEmpty(p.postnummer),
@@ -63,12 +53,13 @@ const mapInstitusjonDtoToForm = (i: P1Institusjon | null): P1InstitusjonForm => 
   institusjonsnavn: emptyIfNull(i?.institusjonsnavn),
   pin: emptyIfNull(i?.pin),
   saksnummer: emptyIfNull(i?.saksnummer),
-  vedtaksdato: parseDateElseUndefined(i?.vedtaksdato),
+  vedtaksdato: emptyIfNull(i?.vedtaksdato),
   land: emptyIfNull(i?.land),
 });
 
 const mapInstitusjonFormToDto = (i: P1InstitusjonForm): P1Institusjon | null => {
-  const hasAny = i.institusjonsnavn.trim() || i.pin.trim() || i.saksnummer.trim() || i.vedtaksdato || i.land.trim();
+  const hasAny =
+    i.institusjonsnavn.trim() || i.pin.trim() || i.saksnummer.trim() || i.vedtaksdato.trim() || i.land.trim();
 
   if (!hasAny) return null;
 
@@ -76,7 +67,7 @@ const mapInstitusjonFormToDto = (i: P1InstitusjonForm): P1Institusjon | null => 
     institusjonsnavn: nullIfEmpty(i.institusjonsnavn),
     pin: nullIfEmpty(i.pin),
     saksnummer: nullIfEmpty(i.saksnummer),
-    vedtaksdato: formatDateElseNull(i.vedtaksdato),
+    vedtaksdato: nullIfEmpty(i.vedtaksdato),
     land: nullIfEmpty(i.land),
   };
 };
@@ -85,7 +76,7 @@ const mapInstitusjonFormToDto = (i: P1InstitusjonForm): P1Institusjon | null => 
 const mapInnvilgetDtoToForm = (p: P1InnvilgetPensjon): P1InnvilgetPensjonForm => ({
   institusjon: mapInstitusjonDtoToForm(p.institusjon),
   pensjonstype: p.pensjonstype ?? null,
-  datoFoersteUtbetaling: parseDateElseUndefined(p.datoFoersteUtbetaling),
+  datoFoersteUtbetaling: emptyIfNull(p.datoFoersteUtbetaling),
   utbetalt: emptyIfNull(p.utbetalt),
   grunnlagInnvilget: p.grunnlagInnvilget ?? null,
   reduksjonsgrunnlag: p.reduksjonsgrunnlag ?? null,
@@ -96,7 +87,7 @@ const mapInnvilgetDtoToForm = (p: P1InnvilgetPensjon): P1InnvilgetPensjonForm =>
 const mapInnvilgetFormToDto = (p: P1InnvilgetPensjonForm): P1InnvilgetPensjon => ({
   institusjon: mapInstitusjonFormToDto(p.institusjon),
   pensjonstype: p.pensjonstype,
-  datoFoersteUtbetaling: formatDateElseNull(p.datoFoersteUtbetaling),
+  datoFoersteUtbetaling: nullIfEmpty(p.datoFoersteUtbetaling),
   utbetalt: nullIfEmpty(p.utbetalt),
   grunnlagInnvilget: p.grunnlagInnvilget,
   reduksjonsgrunnlag: p.reduksjonsgrunnlag,
@@ -132,7 +123,7 @@ const mapUtfyllendeDtoToForm = (u: P1UtfyllendeInstitusjon): P1UtfyllendeInstitu
   faksnummer: emptyIfNull(u.faksnummer),
   telefonnummer: emptyIfNull(u.telefonnummer),
   epost: emptyIfNull(u.epost),
-  dato: parseDateElseUndefined(u.dato),
+  dato: emptyIfNull(u.dato),
 });
 
 const mapUtfyllendeFormToDto = (u: P1UtfyllendeInstitusjonForm): P1UtfyllendeInstitusjon => ({
@@ -145,7 +136,7 @@ const mapUtfyllendeFormToDto = (u: P1UtfyllendeInstitusjonForm): P1UtfyllendeIns
   faksnummer: nullIfEmpty(u.faksnummer),
   telefonnummer: nullIfEmpty(u.telefonnummer),
   epost: nullIfEmpty(u.epost),
-  dato: formatDateElseNull(u.dato),
+  dato: nullIfEmpty(u.dato),
 });
 
 // Helpers to check if a row has meaningful data
@@ -155,10 +146,10 @@ const isInnvilgetRowFilled = (p: P1InnvilgetPensjonForm): boolean => {
     i.institusjonsnavn.trim() ||
     i.pin.trim() ||
     i.saksnummer.trim() ||
-    i.vedtaksdato ||
+    i.vedtaksdato.trim() ||
     i.land.trim() ||
     p.pensjonstype ||
-    p.datoFoersteUtbetaling ||
+    p.datoFoersteUtbetaling.trim() ||
     p.utbetalt.trim() ||
     p.grunnlagInnvilget ||
     p.reduksjonsgrunnlag ||
@@ -173,7 +164,7 @@ const isAvslaattRowFilled = (p: P1AvslaattPensjonForm): boolean => {
     i.institusjonsnavn.trim() ||
     i.pin.trim() ||
     i.saksnummer.trim() ||
-    i.vedtaksdato ||
+    i.vedtaksdato.trim() ||
     i.land.trim() ||
     p.pensjonstype ||
     p.avslagsbegrunnelse ||

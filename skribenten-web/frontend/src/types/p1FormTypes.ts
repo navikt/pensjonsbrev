@@ -7,7 +7,7 @@ export type P1PersonForm = {
   fornavn: string;
   etternavn: string;
   etternavnVedFoedsel: string;
-  foedselsdato?: Date;
+  foedselsdato: string;
   adresselinje: string;
   poststed: string;
   postnummer: string;
@@ -18,7 +18,7 @@ export type P1InstitusjonForm = {
   institusjonsnavn: string;
   pin: string;
   saksnummer: string;
-  vedtaksdato?: Date;
+  vedtaksdato: string;
   land: string;
 };
 
@@ -39,7 +39,7 @@ export type Avslagsbegrunnelse =
 export type P1InnvilgetPensjonForm = {
   institusjon: P1InstitusjonForm;
   pensjonstype: Pensjonstype | null;
-  datoFoersteUtbetaling?: Date;
+  datoFoersteUtbetaling: string;
   utbetalt: string;
   grunnlagInnvilget: GrunnlagInnvilget | null;
   reduksjonsgrunnlag: Reduksjonsgrunnlag | null;
@@ -64,7 +64,7 @@ export type P1UtfyllendeInstitusjonForm = {
   faksnummer: string;
   telefonnummer: string;
   epost: string;
-  dato?: Date;
+  dato: string;
 };
 
 export type P1RedigerbarForm = {
