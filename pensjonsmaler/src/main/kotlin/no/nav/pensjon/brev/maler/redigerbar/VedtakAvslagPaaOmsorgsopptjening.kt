@@ -100,18 +100,6 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
-            /*            paragraph {
-                            val hjemmel = fritekst(
-                                "Velg et alternativ eller fyller inn tekst selv. "
-                                        + "Vær oppmerksom på at hjemmelen for avslag kan være § 3-16 og tilhørende forskrift, "
-                                        + "men også § 20-21 (for personer født etter 1953 og opptjeningsår før 2009) "
-                                        + "eller § 20-8 (for personer født etter 1953 og opptjeningsår fom 2010). "
-                                        + "Benyttes hjemlene i kapittel 20 skal OMSORGSPOENG erstattes med OMSORGSOPPTJENING. "
-                                        + "Hjemmelen kan også være AFP-tilskottsloven hvis vedtaket gjelder pensjonsopptjening for omsorg for barn under 7 år før 1992."
-                            )
-                        }
-             */
-
             showIf(saksbehandlerValg.omsorgsarbeidFoer1992) {
                 paragraph {
                     text(
