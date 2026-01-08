@@ -289,7 +289,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     }
                 }
 
-                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992 or saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen or saksbehandlerValg.brukerFoedtFoer1948) {
+                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
                     paragraph {
                         text(
                             bokmal {
@@ -306,24 +306,37 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                             }
                         )
                     }
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Vi kan ikke se at du har søkt om AFP i privat sektor. " +
+                                        "Søknaden din om pensjonsopptjening for omsorg for barn under 7 år før 1992 kan derfor ikke innvilges."
+                            },
+                            nynorsk {
+                                +"Vi kan ikkje sjå at du har søkt om AFP i privat sektor. " +
+                                        "Søknaden din om pensjonsopptening for omsorg for barn under 7 år før 1992 kan difor ikkje innvilgast."
+                            },
+                            english {
+                                +"We have no information indicating that you have applied for AFP in the private sector. " +
+                                        "Your application to be accredited with acquired pension rights for the care of children under the age of 7 before 1992 cannot be granted."
+                            },
+                        )
+                    }
+                }
 
-                    showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
-                        paragraph {
-                            text(
-                                bokmal {
-                                    +"Vi kan ikke se at du har søkt om AFP i privat sektor. " +
-                                            "Søknaden din om pensjonsopptjening for omsorg for barn under 7 år før 1992 kan derfor ikke innvilges."
-                                },
-                                nynorsk {
-                                    +"Vi kan ikkje sjå at du har søkt om AFP i privat sektor. " +
-                                            "Søknaden din om pensjonsopptening for omsorg for barn under 7 år før 1992 kan difor ikkje innvilgast."
-                                },
-                                english {
-                                    +"We have no information indicating that you have applied for AFP in the private sector. " +
-                                            "Your application to be accredited with acquired pension rights for the care of children under the age of 7 before 1992 cannot be granted."
-                                },
-                            )
-                        }
+                showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen or saksbehandlerValg.brukerFoedtFoer1948) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"For personer som er født i 1948 eller senere kan pensjonsopptjening for omsorg for barn under 7 år før 1992 benyttes i beregning av avtalefestet pensjon (AFP) i privat sektor. "
+                            },
+                            nynorsk {
+                                +"or personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast i utrekning av avtalefesta pensjon (AFP) i privat sektor. "
+                            },
+                            english {
+                                +"If you were born in or after 1948, care for children under the age of 7 before 1992 may be included in calculating a contractual pension in the private sector. "
+                            }
+                        )
                     }
 
                     showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
@@ -376,14 +389,14 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
-                includePhrase(Felles.RettTilAAKlage)
-                includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(Felles.HarDuSpoersmaal.omsorg)
-            }
-
-            includeAttachment(
-                vedleggDineRettigheterOgMulighetTilAaKlage,
-                pesysData.dineRettigheterOgMulighetTilAaKlageDto
-            )
+            includePhrase(Felles.RettTilAAKlage)
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(Felles.HarDuSpoersmaal.omsorg)
         }
+
+        includeAttachment(
+            vedleggDineRettigheterOgMulighetTilAaKlage,
+            pesysData.dineRettigheterOgMulighetTilAaKlageDto
+        )
     }
+}
