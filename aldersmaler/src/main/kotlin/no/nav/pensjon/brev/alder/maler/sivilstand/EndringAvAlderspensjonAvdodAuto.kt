@@ -329,7 +329,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget.not()
                         and (
-                        beregnetPensjonPerManed.garantiPensjon.greaterThan(0)
+                        beregnetPensjonPerManed.garantiPensjon.ifNull(Kroner(0)).greaterThan(0)
                         )
             ) {
                 paragraph {
