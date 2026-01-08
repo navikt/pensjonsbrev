@@ -14,6 +14,8 @@ import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
+import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 
 fun Application.configureRouting(
     authConfig: JwtConfig,
@@ -27,6 +29,7 @@ fun Application.configureRouting(
     val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
+    val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)
     val brevbakerService = BrevbakerServiceHttp(servicesConfig.getConfig("brevbaker"), authService, cache)
@@ -41,6 +44,7 @@ fun Application.configureRouting(
         BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService, p1ServiceImpl)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
+    val brevredigeringFacade = BrevredigeringFacade(RenderService(brevbakerService), BrevdataService(penService))
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -70,7 +74,7 @@ fun Application.configureRouting(
             brevmal(brevbakerService, brevmalService)
             kodeverkRoute(penService)
             sakRoute(
-                dto2ApiService,
+                brevbakerService,
                 brevmalService,
                 brevredigeringService,
                 krrService,
@@ -81,8 +85,11 @@ fun Application.configureRouting(
                 safService,
                 skjermingService,
                 p1ServiceImpl,
+                pensjonRepresentasjonService,
+                brevredigeringFacade,
+                dto2ApiService,
             )
-            brev(brevredigeringService, dto2ApiService, pdlService, penService)
+            brev(brevredigeringService, pdlService, penService, brevredigeringFacade, dto2ApiService)
             samhandlerRoute(samhandlerService)
             meRoute(navansattService)
 

@@ -56,7 +56,6 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.SaksbehandlerValgSelectors.vanligSkattetrekk
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
@@ -121,8 +120,6 @@ hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
-
-    override val featureToggle = FeatureToggles.innvilgelseAvAlderspensjon.toggle
 
     override val kategori: TemplateDescription.Brevkategori = FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -226,7 +223,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                     showIf(uforeKombinertMedAlder and innvilgetFor67) {
                         // innvilgelseAPogUTInnledn -> Hvis løpende uføretrygd
                         text(
-                            bokmal {  +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
+                            bokmal { +". Du får alderspensjon fra folketrygden i tillegg til uføretrygden din." },
                             nynorsk { +". Du får alderspensjon frå folketrygda ved sida av uføretrygda di." },
                             english { +". You will receive retirement pension through the National Insurance Scheme in addition to your disability benefit." }
                         )

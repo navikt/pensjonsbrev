@@ -30,16 +30,6 @@ class LocalizedFormatterTest {
     }
 
     @Test
-    fun `yearMonth-formatting er lik localdate sin yearmonth-formatting`() {
-        val date = LocalDate.of(2023, Month.JANUARY, 15)
-        val formattedDate = MonthYearFormatter.apply(date, Language.Nynorsk)
-        assertEquals("januar 2023", formattedDate)
-
-        val formattedDate2 = LocalizedFormatter.YearMonthFormatter.apply(YearMonth.of(2023, Month.JANUARY), Language.Nynorsk)
-        assertEquals(formattedDate, formattedDate2)
-    }
-
-    @Test
     fun `månedsformatering på bokmål, nynorsk og engelsk`() {
         val date = LocalDate.of(2023, Month.JANUARY, 15)
         val formattedDateBokmal = LocalizedFormatter.MonthFormatter.apply(date.month, Language.Bokmal)

@@ -167,10 +167,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             .forEach { logger.info("${it.message}: {}", it.extensions) }
     }
 
-    override val name = "PDL"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.options("")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun ping() =
+        ping("PDL") { client.options("") }
 
 }

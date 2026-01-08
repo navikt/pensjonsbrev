@@ -5,8 +5,13 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
@@ -26,9 +31,13 @@ object Fixtures : LetterDataFactory {
             UforeAvslagUforetidspunkt26Dto::class -> lagUforeAvslagUforetidspunkt26Dto() as T
             UforeAvslagForverrelseEtter26Dto::class -> lagUforeAvslagForverrelseEtter26Dto() as T
             UforeAvslagUtlandDto::class -> lagUforeAvslagUtlandDto() as T
+            UforeAvslagSupplerendeStonadEnkelDto::class -> lagUforeAvslagSupplerendeStonadEnkelDto() as T
             VarselFeilutbetalingUforeDto::class -> lagVarselFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeDto::class -> lagVedtakFeilutbetalingUforeDto() as T
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
+            FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
+            FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
+            EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
@@ -37,6 +46,13 @@ object Fixtures : LetterDataFactory {
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
+
+    private fun lagEmptyRedigerbarBrevdata() = EmptyRedigerbarBrevdata
+
+    private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
+        pesysData = VarselFeilutbetalingPesysData(100),
+        saksbehandlerValg = EmptySaksbehandlerValg,
+    )
 
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(
         pesysData = UforeAvslagUtenVurderingDto.UforeAvslagPendata(
@@ -76,13 +92,24 @@ object Fixtures : LetterDataFactory {
         )
     )
 
+    private fun lagUforeAvslagSupplerendeStonadEnkelDto() = UforeAvslagSupplerendeStonadEnkelDto(
+        pesysData = UforeAvslagSupplerendeStonadEnkelDto.UforeAvslagPendata(
+            kravMottattDato = vilkaarligDato,
+            vurdering = "Vurdering 1"
+        ),
+        saksbehandlerValg = UforeAvslagSupplerendeStonadEnkelDto.Saksbehandlervalg(
+            VisVurderingFraVilkarvedtak = true,
+            visSupplerendeStonadUforeFlykninger = true,
+        )
+    )
+
     private fun lagUforeAvslagUtlandDto() = UforeAvslagUtlandDto(
         pesysData = UforeAvslagUtlandDto.UforeAvslagPendata(
             kravMottattDato = LocalDate.now(),
             kravGjelder = UforeAvslagUtlandDto.KravGjelder.MELLOMBH,
             eosNordisk = false,
             avtaletype = "USA",
-            artikkel =  "8",
+            artikkel = "8",
             trygdetidListe = listOf(
                 UforeAvslagUtlandDto.Trygdetid(
                     land = "Norge",
@@ -99,6 +126,7 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = UforeAvslagUtlandDto.Saksbehandlervalg(
             visInnvilgetPensjonEOSLand = true,
             visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning = true,
+            visSupplerendeStonadUforeFlykninger = true,
         )
     )
 
@@ -106,13 +134,16 @@ object Fixtures : LetterDataFactory {
         pesysData = UforeAvslagInntektDto.UforeAvslagInntektPendata(
             kravMottattDato = vilkaarligDato,
             vurdering = "Vurdering 1",
+            uforetidspunkt = vilkaarligDato,
+            uforegrad = 50,
             inntektForUforhet = 1,
             inntektEtterUforhet = 2,
-            vurderingIFU = "Vurdering 2"
+            vurderingIFU = "Vurdering IFU",
+            vurderingIEU = "Vurdering IEU"
         ),
         saksbehandlerValg = UforeAvslagInntektDto.SaksbehandlervalgInntekt(
-            VisVurderingFraVilkarvedtak = true,
-            visVurderingIFU = true
+            VisVurderingFraVilkarvedtak = false,
+            visVurderingIFU = false
         )
     )
 
@@ -237,5 +268,10 @@ object Fixtures : LetterDataFactory {
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
             )),
         feilutbetalingPerArListe = lagFeilutbetalingPerAr(),
+    )
+
+    fun lagFeilutbetalingVarselDodsbo() = FeilutbetalingVarselDodsboDto(
+        saksbehandlerValg = FeilutbetalingDodsboSaksbehandlervalg(),
+        pesysData = VarselFeilutbetalingPesysData(feilutbetaltBrutto = 100)
     )
 }

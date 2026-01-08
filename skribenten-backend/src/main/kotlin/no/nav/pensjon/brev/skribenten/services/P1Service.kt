@@ -1,17 +1,13 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.slf4j.LoggerFactory
-import kotlin.math.log
 
 // Disse må være i sync med api-modellen
 const val P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2"
@@ -34,9 +30,8 @@ interface P1Service {
 }
 
 class P1ServiceImpl(private val penService: PenService) : P1Service {
-    private val logger = LoggerFactory.getLogger(P1ServiceImpl::class.java)
 
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data? = transaction {
+    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data = transaction {
         val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
@@ -48,20 +43,10 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
     }
 
     override suspend fun hentP1Data(brevId: Long, saksId: Long): Api.GeneriskBrevdata? = newSuspendedTransaction {
-        val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
-        if (brevredigering != null) {
-            brevredigering.p1Data?.p1data
-                ?: penService.hentP1VedleggData(saksId, brevredigering.spraak)
-                    .onError { msg, status, tittel ->
-                        val message = "$tittel $msg"
-                        if(status == HttpStatusCode.UnprocessableEntity) {
-                            throw P1Exception.ManglerDataException(message)
-                        } else {
-                            logger.error("Ukjent feil ved henting av P1 Data. Status: $status $message")
-                            throw IllegalStateException(message)
-                        }
-                    }.resultOrNull()
-        } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
+        Brevredigering.findByIdAndSaksId(brevId, saksId)?.let {
+            it.p1Data?.p1data
+                ?: penService.hentP1VedleggData(saksId, it.spraak)
+        }
     }
 
     override suspend fun patchMedP1DataOmP1(

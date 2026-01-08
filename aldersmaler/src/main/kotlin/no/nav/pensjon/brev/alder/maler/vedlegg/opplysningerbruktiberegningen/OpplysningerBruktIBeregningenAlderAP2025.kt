@@ -39,12 +39,10 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
@@ -52,11 +50,13 @@ import no.nav.pensjon.brevbaker.api.model.Kroner
 val vedleggOpplysningerBruktIBeregningenAlderAP2025 =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderAP2025Dto>(
         //vedleggBeregnAP2025Tittel_001
-        title = newText(
-            Bokmal to "Slik har vi beregnet pensjonen din",
-            Nynorsk to "Slik har vi berekna pensjonen din",
-            English to "This is how we have calculated your pension",
-        ),
+        title = {
+            text(
+                bokmal { +"Slik har vi beregnet pensjonen din" },
+                nynorsk { +"Slik har vi berekna pensjonen din" },
+                english { +"This is how we have calculated your pension" },
+            )
+        },
         includeSakspart = false
     ) {
         //vedleggBeregnInnlednAP2025_001

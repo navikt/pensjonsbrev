@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
@@ -40,7 +41,8 @@ object Api {
     data class DelvisOppdaterBrevRequest(
         val laastForRedigering: Boolean? = null,
         val distribusjonstype: Distribusjonstype? = null,
-        val mottaker: OverstyrtMottaker? = null
+        val mottaker: OverstyrtMottaker? = null,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     )
 
     data class OppdaterAttesteringRequest(
@@ -118,6 +120,7 @@ object Api {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
     )
 
     data class ReservasjonResponse(
@@ -159,6 +162,14 @@ object Api {
         val adressebeskyttelse: Boolean,
         val doedsfall: LocalDate?,
         val erSkjermet: Boolean,
+        val vergemaal: Boolean,
+    )
+
+    data class BrukerStatus(
+        val adressebeskyttelse: Boolean,
+        val doedsfall: LocalDate?,
+        val erSkjermet: Boolean,
+        val vergemaal: Boolean,
     )
 
     data class Brevmal(

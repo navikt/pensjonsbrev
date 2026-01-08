@@ -23,10 +23,13 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_PENSJONIST
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import java.time.LocalDate
 import java.time.Month
 
@@ -62,22 +65,23 @@ data class AvsnittBeskrivelse(
                         english { +"The pension earnings have been changed." }
                     )
                 }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Pensjonsopptjeningen din er endret for: " },
-                    nynorsk { +"Pensjonsoppteninga di er endra for: " },
-                    english { +"Your pension earnings have been changed for the following income year(-s): " }
-                )
-                newline()
-                list {
-                    forEach(opptjening.endretOpptjeningsAar) { aar ->
-                        item {
-                            text(
-                                bokmal { +aar.format() },
-                                nynorsk { +aar.format() },
-                                english { +aar.format() }
-                            )
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Pensjonsopptjeningen din er endret for: " },
+                        nynorsk { +"Pensjonsoppteninga di er endra for: " },
+                        english { +"Your pension earnings have been changed for the following income year(-s): " }
+                    )
+                    newline()
+                    list {
+                        forEach(opptjening.endretOpptjeningsAar) { aar ->
+                            item {
+                                text(
+                                    bokmal { +aar.format() },
+                                    nynorsk { +aar.format() },
+                                    english { +aar.format() }
+                                )
+                            }
                         }
                     }
                 }
@@ -602,12 +606,18 @@ class AvsnittLesMerOmAlderspensjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
 
         paragraph {
             text(
-                bokmal { +"Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON. " +
-                        "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
-                nynorsk { +"Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON. " +
-                        "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt." },
-                english { +"There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $$ALDERSPENSJON. " +
-                        "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number." }
+                bokmal {
+                    +"Du finner mer informasjon om hvordan alderspensjon er satt sammen og oversikter over grunnbeløp og aktuelle satser på $ALDERSPENSJON. " +
+                            "Informasjon om utbetalingene dine finner du på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                },
+                nynorsk {
+                    +"Du finn meir informasjon om korleis alderspensjonen er sett saman, og oversikter over grunnbeløp og aktuelle satsar på $ALDERSPENSJON. " +
+                            "Informasjon om utbetalingane dine finn du på $DITT_NAV. Her kan du også endre kontonummeret ditt."
+                },
+                english {
+                    +"There is more information on how retirement pension is calculated, with overviews of basic amounts and relevant rates, at $$ALDERSPENSJON. " +
+                            "You can find more detailed information on what you will receive at $DITT_NAV. Here you can also change your bank account number."
+                }
             )
         }
     }

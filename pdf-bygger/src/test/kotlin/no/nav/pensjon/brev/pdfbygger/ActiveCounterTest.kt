@@ -45,7 +45,7 @@ class ActiveCounterTest {
         val hasStarted = Channel<Int>()
 
         // fill counter with slow jobs
-        val jobs = (0 ..< jobCount).map {
+        val jobs = (0..<jobCount).map {
             scope.launch {
                 this@runAfterJobsStarted.count {
                     hasStarted.send(it)

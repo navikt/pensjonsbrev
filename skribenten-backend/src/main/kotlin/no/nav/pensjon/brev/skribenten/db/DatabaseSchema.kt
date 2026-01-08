@@ -17,15 +17,19 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -52,6 +56,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
+    registerModule(BrevkodeJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 }
@@ -88,50 +93,15 @@ object BrevredigeringTable : LongIdTable() {
     val redigertBrevKryptertHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevKryptertHash")
     val laastForRedigering: Column<Boolean> = bool("laastForRedigering")
     val distribusjonstype: Column<Distribusjonstype> = varchar("distribusjonstype", length = 50).transform(Distribusjonstype::valueOf, Distribusjonstype::name)
-    val redigeresAvNavIdent: Column<String?> = varchar("redigeresAvNavIdent", length = 50).nullable()
-    val sistRedigertAvNavIdent: Column<String> = varchar("sistRedigertAvNavIdent", length = 50)
-    val opprettetAvNavIdent: Column<String> = varchar("opprettetAvNavIdent", length = 50).index()
+    val redigeresAvNavIdent: Column<NavIdent?> = varchar("redigeresAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
+    val sistRedigertAvNavIdent: Column<NavIdent> = varchar("sistRedigertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id)
+    val opprettetAvNavIdent: Column<NavIdent> = varchar("opprettetAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).index()
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
     val journalpostId: Column<Long?> = long("journalpostId").nullable()
-    val attestertAvNavIdent: Column<String?> = varchar("attestertAvNavIdent", length = 50).nullable()
-}
-
-class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
-    var saksId by BrevredigeringTable.saksId
-    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
-    var vedtaksId by BrevredigeringTable.vedtaksId
-    var brevkode by BrevredigeringTable.brevkode
-    var spraak by BrevredigeringTable.spraak
-    var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
-    var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-    val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
-    var laastForRedigering by BrevredigeringTable.laastForRedigering
-    var distribusjonstype by BrevredigeringTable.distribusjonstype
-    var redigeresAvNavIdent by BrevredigeringTable.redigeresAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var sistRedigertAvNavIdent by BrevredigeringTable.sistRedigertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent.wrap(::NavIdent, NavIdent::id)
-    var opprettet by BrevredigeringTable.opprettet
-    var sistredigert by BrevredigeringTable.sistredigert
-    var sistReservert by BrevredigeringTable.sistReservert
-    var journalpostId by BrevredigeringTable.journalpostId
-    val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
-    val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
-    val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
-    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent.wrap(::NavIdent, NavIdent::id)
-
-    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: Long?) =
-            if (saksId == null) {
-                findById(id)
-            } else {
-                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
-            }
-    }
-
-    val isVedtaksbrev get() = vedtaksId != null
+    val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
+    val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }
 
 object DocumentTable : LongIdTable() {
@@ -207,6 +177,19 @@ object OneShotJobTable : IdTable<String>() {
     val completedAt: Column<Instant> = timestamp("completedAt")
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
+
+object ValgteVedleggTable : IdTable<Long>() {
+    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
+
+    override val primaryKey: PrimaryKey = PrimaryKey(id)
+}
+
+class ValgteVedlegg(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+    var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
+    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable)
+}
+
 
 fun initDatabase(config: Config) =
     config.getConfig("database").let {

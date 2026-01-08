@@ -4,13 +4,9 @@ import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
@@ -21,11 +17,13 @@ fun klageOgAnke(
 	tilbakekreving: Boolean = false,
 ): AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> {
 	return createAttachment(
-		title = newText(
-			Bokmal to "Informasjon om klage og anke",
-			Nynorsk to "Informasjon om klage og anke",
-			English to "Information on Complaints and Appeals"
-		),
+        title = {
+            text(
+                bokmal { +"Informasjon om klage og anke" },
+                nynorsk { +"Informasjon om klage og anke" },
+                english { +"Information on Complaints and Appeals" }
+            )
+        },
 		includeSakspart = false,
 	) {
 		veiledning()

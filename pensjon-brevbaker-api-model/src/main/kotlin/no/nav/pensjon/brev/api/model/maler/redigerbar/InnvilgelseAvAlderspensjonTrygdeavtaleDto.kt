@@ -34,17 +34,17 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
 
     data class PesysData(
 
-        val afpPrivatResultatFellesKontoret: Boolean?,  // v1.afpPrivat
+        val afpPrivatResultatFellesKontoret: Boolean?, // v1.afpPrivat
         val alderspensjonVedVirk: AlderspensjonVedVirk,
-        val avtalelandNavn: String?,  // v1.Land
-        val borIAvtaleland: Boolean,  // v3.Person
-        val borINorge: Boolean,  // v3.Person
-        val erEOSLand: Boolean,  // v1.Land
-        val erMellombehandling: Boolean,  // v3.Krav
-        val erSluttbehandlingNorgeUtland: Boolean,  // v3.Krav
+        val avtalelandNavn: String?, // v1.Land
+        val borIAvtaleland: Boolean, // v3.Person
+        val borINorge: Boolean, // v3.Person
+        val erEOSLand: Boolean, // v1.Land
+        val erMellombehandling: Boolean, // v3.Krav
+        val erSluttbehandlingNorgeUtland: Boolean, // v3.Krav
         val beloepEndring: BeloepEndring?,
-        val fullTrygdtid: Boolean,  // v4.AlderspensjonPerManed
-        val harFlereBeregningsperioder: Boolean,  // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
+        val fullTrygdtid: Boolean, // v4.AlderspensjonPerManed
+        val harFlereBeregningsperioder: Boolean, // Har flere enn 1 beregningsperiode > v2.BeregnetPensjonPerManed / v1.BeregnetPensjonPerManedKap20
         val inngangOgEksportVurdering: InngangOgEksportVurdering?,
         val kravVirkDatoFom: LocalDate,
         val regelverkType: AlderspensjonRegelverkType,
@@ -58,7 +58,7 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val opplysningerOmAvdodBruktIBeregning: OpplysningerOmAvdoedBruktIBeregningDto?
     ) : FagsystemBrevdata
 
-    // v5.Alderspensjon / v1.AlderspensjonKap20
+   // v5.Alderspensjon / v1.AlderspensjonKap20
     data class AlderspensjonVedVirk(
         val garantipensjonInnvilget: Boolean,
         val garantitilleggInnvilget: Boolean,
@@ -74,15 +74,15 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
         val uttaksgrad: Int,
     )
 
-    // v1.InngangOgEksportVurdering / v1.InngangOgEksportVurderingAvdod
+   // v1.InngangOgEksportVurdering / v1.InngangOgEksportVurderingAvdod
     data class InngangOgEksportVurdering(
-        //val eksportForbud: Boolean,
+       //val eksportForbud: Boolean,
         val eksportTrygdeavtaleAvtaleland: Boolean,
         val eksportTrygdeavtaleEOS: Boolean,
-        val harOppfyltVedSammenlegging: Boolean,  // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
+        val harOppfyltVedSammenlegging: Boolean, // If (oppfyltVedSammenleggingKap19 or oppfyltVedSammenleggingKap20 or oppfyltVedSammenleggingFemArKap19 or oppfyltVedSammenleggingFemArKap20) = true
     )
 
-    // v1.VedtaksresultatUtland
+   // v1.VedtaksresultatUtland
     data class VedtaksresultatUtland(
         val antallLandVilkarsprovd: Int,
         val landNavn: List<String>,

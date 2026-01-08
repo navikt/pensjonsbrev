@@ -2,6 +2,9 @@ package no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2011
+import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.AP2016
+import no.nav.pensjon.brev.alder.model.Beregningsmetode
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonPerManedSelectors.tilleggspensjon
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.AlderspensjonVedVirkSelectors.andelKap19
@@ -30,38 +33,25 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap19VedVirk
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.trygdetidsdetaljerKap20VedVirk
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDtoSelectors.yrkesskadeDetaljerVedVirk
-import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType.*
-import no.nav.pensjon.brev.alder.model.Beregningsmetode
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.isNull
-import no.nav.pensjon.brev.template.dsl.expression.isOneOf
-import no.nav.pensjon.brev.template.dsl.expression.or
-import no.nav.pensjon.brev.template.dsl.expression.size
-import no.nav.pensjon.brev.template.dsl.expression.year
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningenAlder =
     createAttachment<LangBokmalNynorskEnglish, OpplysningerBruktIBeregningenAlderDto>(
-        title = newText(
-            Bokmal to "Opplysninger brukt i beregningen",
-            Nynorsk to "Opplysningar brukte i berekninga",
-            English to "Information about your calculation",
-        ),
+        title = {
+            text(
+                bokmal { +"Opplysninger brukt i beregningen" },
+                nynorsk { +"Opplysningar brukte i berekninga" },
+                english { +"Information about your calculation" },
+            )
+        },
         includeSakspart = false,
         outline = {
 
@@ -211,7 +201,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         text(
                             bokmal { + "Pensjonsopptjening etter kapittel 19 (gamle regler)" },
                             nynorsk { + "Pensjonsopptening etter kapittel 19 (gamle reglar)" },
-                            english { + "Accumulation of pension rights on the basis of the old provisions of Chapter 19)" },
+                            english { + "Accumulation of pension rights on the basis of the old provisions of Chapter 19" },
                         )
                     }
 
@@ -254,7 +244,7 @@ val vedleggOpplysningerBruktIBeregningenAlder =
                         text(
                             bokmal { + "Pensjonsopptjening etter kapittel 20 (nye regler)" },
                             nynorsk { + "Pensjonsopptening etter kapittel 20 (nye reglar)" },
-                            english { + "Accumulation of pension rights on the basis of the new provisions of Chapter 20)" },
+                            english { + "Accumulation of pension rights on the basis of the new provisions of Chapter 20" },
                         )
                     }
                     paragraph {

@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
 import no.nav.brev.brevbaker.FellesFactory.felles
+import no.nav.brev.brevbaker.LiteralFactory.createByLanguage
+import no.nav.brev.brevbaker.LiteralFactory.createText
 import no.nav.brev.brevbaker.createContent
 import no.nav.brev.brevbaker.createIncludeAttachment
 import no.nav.brev.brevbaker.createParagraph
@@ -23,7 +25,6 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.render.TestVedleggDtoSelectors.testVerdi1
 import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
@@ -83,12 +84,12 @@ class LetterRendererTest {
             createParagraph(
                 listOf(
                     createContent(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                        createText(
                             Bokmal to "hei"
                         )
                     ),
                     createContent(
-                        Element.OutlineContent.ParagraphContent.Text.Literal.create(
+                        createText(
                             Bokmal to "jadda"
                         )
                     ),
@@ -124,8 +125,8 @@ class LetterRendererTest {
             }
         }
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Expression.ByLanguage.create(Bokmal to nextExpression + " person"),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "jadda")
+            createByLanguage(Bokmal to nextExpression + " person"),
+            createText(Bokmal to "jadda")
         )
 
         val actualElements = mutableListOf<Element.OutlineContent.ParagraphContent<*>>()
@@ -155,8 +156,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            createText(Bokmal to "hei "),
+            createText(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -185,8 +186,8 @@ class LetterRendererTest {
 
         val expectedScope = ExpressionScope(Unit, felles, Bokmal)
         val expectedElements = listOf(
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "hei "),
-            Element.OutlineContent.ParagraphContent.Text.Literal.create(Bokmal to "person"),
+            createText(Bokmal to "hei "),
+            createText(Bokmal to "person"),
         )
 
         val actualScopes = mutableListOf<ExpressionScope<*>>()
@@ -204,10 +205,10 @@ class LetterRendererTest {
 
     @Test
     fun `render attachments will only render attachments where predicate is true`() {
-        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel"}}, false) {
             paragraph { text(bokmal { + "Attachment #1"}) }
         }
-        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(newText(Bokmal to "tittel2"), false) {
+        val attachment2 = createAttachment<LangBokmal, EmptyVedleggData>(title = {bokmal {+"tittel2"}}, false) {
             paragraph { text(bokmal { + "Attachment #2"}) }
         }
         val attachments = listOf(
@@ -233,7 +234,7 @@ class LetterRendererTest {
     @Test
     fun `render attachments will receive scope based on letterScope and data Expression and can evaluate attachment expressions`() {
         var attachmentScopedExpr: Expression<String>? = null
-        val attachment1 = createAttachment(newText(Bokmal to "tittel"), false) {
+        val attachment1 = createAttachment(title = { text(bokmal { +"tittel" }) }, false) {
             paragraph { text(bokmal { +testVerdi1 }) }
             attachmentScopedExpr = testVerdi1
         }

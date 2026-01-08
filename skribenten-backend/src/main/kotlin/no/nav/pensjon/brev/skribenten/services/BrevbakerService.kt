@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateModelSpecificationJacksonModule
 import no.nav.pensjon.brevbaker.api.model.*
@@ -47,9 +48,11 @@ interface BrevbakerService {
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
+    suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -69,6 +72,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             jackson {
                 registerModule(JavaTimeModule())
                 registerModule(LetterMarkupJacksonModule)
+                registerModule(BrevkodeJacksonModule)
                 registerModule(TemplateModelSpecificationJacksonModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
                 disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -84,7 +88,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         val response = client.get("/templates/redigerbar/${brevkode.kode()}/modelSpecification")
 
         return when (response.status) {
-            HttpStatusCode.OK -> return response.body()
+            HttpStatusCode.OK -> response.body()
             HttpStatusCode.NotFound -> null
             else -> throw BrevbakerServiceException(
                 response.bodyAsText().takeIf { it.isNotBlank() }
@@ -128,6 +132,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevdata: RedigerbarBrevdata<*, *>,
         felles: Felles,
         redigertBrev: LetterMarkup,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): LetterResponse {
         val response = client.post("/letter/redigerbar/pdf") {
             contentType(ContentType.Application.Json)
@@ -137,7 +142,8 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
                     letterData = brevdata,
                     felles = felles,
                     language = spraak,
-                    letterMarkup = redigertBrev
+                    letterMarkup = redigertBrev,
+                    alltidValgbareVedlegg = alltidValgbareVedlegg,
                 )
             )
         }
@@ -180,11 +186,20 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override val name = "Brevbaker"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/ping_authorized")
-            .toServiceResult<String>()
-            .map { true }
+    override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
+        cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
+            val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 
+            if (response.status.isSuccess()) {
+                response.body()
+            } else {
+                throw BrevbakerServiceException(
+                    response.bodyAsText().takeIf { it.isNotBlank() }
+                        ?: "Ukjent feil oppstod ved henting av alltid valgbare vedlegg for brev $brevId"
+                )
+            }
+        }
+
+    override suspend fun ping() = ping("Brevbaker") { client.get("/ping_authorized") }
 }
 

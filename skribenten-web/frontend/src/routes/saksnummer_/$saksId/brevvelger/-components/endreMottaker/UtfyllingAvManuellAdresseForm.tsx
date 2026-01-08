@@ -96,15 +96,13 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         />
         {isNorge && (
-          <HStack gap="space-16">
+          <HStack align="start" gap="space-16">
             <Controller
               control={properties.control}
               name="manuellAdresse.adresse.postnr"
               render={({ field, fieldState }) => (
                 <TextField
-                  css={css`
-                    width: 25%;
-                  `}
+                  htmlSize={15}
                   label="Postnummer"
                   {...field}
                   error={fieldState.error?.message}
@@ -118,9 +116,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
               name="manuellAdresse.adresse.poststed"
               render={({ field, fieldState }) => (
                 <TextField
-                  css={css`
-                    width: 25%;
-                  `}
+                  htmlSize={15}
                   label="Poststed"
                   {...field}
                   error={fieldState.error?.message}

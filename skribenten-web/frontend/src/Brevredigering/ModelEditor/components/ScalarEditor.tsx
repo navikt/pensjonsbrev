@@ -28,7 +28,7 @@ export const ScalarEditor = ({
           prependName={prependName}
           step={1}
           timeoutTimer={2000}
-          type={"number"}
+          type="number"
         />
       );
     }
@@ -74,7 +74,7 @@ export const ScalarEditor = ({
           prependName={prependName}
           step={1}
           timeoutTimer={2000}
-          type={"number"}
+          type="number"
         />
       );
     }

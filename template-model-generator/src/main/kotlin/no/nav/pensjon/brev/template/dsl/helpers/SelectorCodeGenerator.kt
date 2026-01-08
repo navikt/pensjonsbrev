@@ -3,11 +3,8 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
-import no.nav.pensjon.brev.template.TemplateModelSelector
 import java.io.PrintWriter
 
-private val templateModelSelectorName = TemplateModelSelector::class.qualifiedName
-    ?: throw InitializationError("Couldn't determine qualified name of ${TemplateModelSelector::class.simpleName}")
 private const val INDENT = "    "
 
 internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>>) {
@@ -57,35 +54,48 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
             writer.println("${indent}}")
         }
 
-        private fun generateSelectors(property: KSPropertyDeclaration, indent: String, writer: PrintWriter) {
+        private fun generateSelectors(
+            property: KSPropertyDeclaration,
+            indent: String,
+            writer: PrintWriter
+        ) {
             val propertyName = property.simpleName.asString()
             val selectorName = "${propertyName}Selector"
-            val declaringClass = property.closestClassDeclaration() ?: throw InvalidVisitorState("Couldn't find class of $propertyName: but we came here from a class...")
-            val dataClassName = declaringClass.qualifiedName?.asString() ?: throw InvalidModel("Couldn't find qualified name of class: $declaringClass")
+
+            val declaringClass =
+                property.closestClassDeclaration()
+                    ?: throw InvalidVisitorState("Couldn't find class of $propertyName")
+
+            val dataClassName =
+                declaringClass.qualifiedName?.asString()
+                    ?: throw InvalidModel("Couldn't find qualified name of $declaringClass")
+
             val type = property.type.resolveWithTypeParameters()
 
             writer.println(
                 """
-            |val $selectorName = object : TemplateModelSelector<$dataClassName, $type> {
-            |   override val className: String = "$dataClassName"
-            |   override val propertyName: String = "$propertyName"
-            |   override val propertyType: String = "$type"
-            |   override val selector = $dataClassName::$propertyName
-            |}
-            |
-            |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
-            |   get() = Expression.UnaryInvoke(
-            |       Expression.FromScope.Argument(),
-            |       UnaryOperation.Select($selectorName)
-            |   )
-            |
-            |val Expression<$dataClassName>.$propertyName: Expression<$type>
-            |   get() = Expression.UnaryInvoke(
-            |       this,
-            |       UnaryOperation.Select($selectorName)
-            |   )
-            |
-            """.replaceIndentByMargin(indent)
+                |@JvmField
+                |val $selectorName =
+                |    SimpleSelector<$dataClassName, $type>(
+                |        className = "$dataClassName",
+                |        propertyName = "$propertyName",
+                |        propertyType = "$type",
+                |        selector = $dataClassName::$propertyName
+                |    )
+                |
+                |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>
+                |    get() = Expression.UnaryInvoke(
+                |        Expression.FromScope.Argument(),
+                |        UnaryOperation.Select($selectorName)
+                |    )
+                |
+                |val Expression<$dataClassName>.$propertyName: Expression<$type>
+                |    get() = Expression.UnaryInvoke(
+                |        this,
+                |        UnaryOperation.Select($selectorName)
+                |    )
+                |
+                """.trimMargin().prependIndent(indent)
             )
         }
 
@@ -98,12 +108,11 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                     """
                 ${if (pkg.isNotBlank()) "package $pkg" else ""}
 
-                import $templateModelSelectorName
                 import no.nav.pensjon.brev.template.Expression
                 import no.nav.pensjon.brev.template.UnaryOperation
                 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
-                import no.nav.pensjon.brev.template.ExpressionScope
                 import no.nav.brev.InternKonstruktoer
+                import no.nav.pensjon.brev.template.SimpleSelector
 
                 @OptIn(InternKonstruktoer::class)
                 """.trimIndent()
@@ -128,6 +137,5 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 }
             }
 
-        private fun nullable(type: String): String = if (type.endsWith('?')) type else "$type?"
     }
 }

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
@@ -12,17 +12,18 @@ import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
-import java.util.Locale
+import java.util.*
 
 private const val RADER_PER_SIDE = 5
 object P1pdfV2Dto {
     val p1Vedlegg = createAttachmentPDF<LangBokmalEnglish, P1RedigerbarDto>(
-        title = listOf(
-            newText(
-                Language.Bokmal to "P1 – Samlet melding om pensjonsvedtak",
-                Language.English to "P1 – Summary of Pension Decisions"
+        title = {
+            text(
+                bokmal { +"P1 – Samlet melding om pensjonsvedtak" },
+                english { +"P1 – Summary of Pension Decisions" },
             )
-        )
+        }
+
     ) { data, felles ->
         with(data) {
 
@@ -146,12 +147,12 @@ object P1pdfV2Dto {
         return mapOf(
             "Institution_awarding_the_pension[$radnummer]" to innvilgelse.institusjon?.let { formatInstitusjon(it) },
             "Pensjonstype[$radnummer]" to innvilgelse.pensjonstype?.nummer?.toString()?.let { "[$it]" },
-            "Date_of_first_payment[$radnummer]" to innvilgelse.datoFoersteUtbetaling,
+            "Date_of_first_payment[$radnummer]" to formaterDato(innvilgelse.datoFoersteUtbetaling),
             "Gross_amount[$radnummer]" to innvilgelse.utbetalt,
             "PensjonInnvilget[$radnummer]" to innvilgelse.grunnlagInnvilget?.nummer?.let { "[$it]" },
             "PensjonRedusert[$radnummer]" to innvilgelse.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
             "Review_period[${radnummer * 2}]" to innvilgelse.vurderingsperiode,
-            "Where_to_adress_the_request[$radnummer]" to innvilgelse.vurderingsperiode,
+            "Where_to_adress_the_request[$radnummer]" to innvilgelse.adresseNyVurdering,
         )
     }
 

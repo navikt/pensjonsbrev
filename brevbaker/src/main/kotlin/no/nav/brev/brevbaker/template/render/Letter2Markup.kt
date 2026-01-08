@@ -129,6 +129,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                     Element.OutlineContent.ParagraphContent.Form.Text.Size.NONE -> ParagraphContent.Form.Text.Size.NONE
                     Element.OutlineContent.ParagraphContent.Form.Text.Size.SHORT -> ParagraphContent.Form.Text.Size.SHORT
                     Element.OutlineContent.ParagraphContent.Form.Text.Size.LONG -> ParagraphContent.Form.Text.Size.LONG
+                    Element.OutlineContent.ParagraphContent.Form.Text.Size.FILL -> ParagraphContent.Form.Text.Size.FILL
                 },
                 vspace = form.vspace,
             )

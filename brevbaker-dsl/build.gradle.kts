@@ -39,15 +39,14 @@ kotlin {
         jvmTarget.set(JvmTarget.fromTarget(apiModelJavaTarget))
     }
 }
+
+java {
+    targetCompatibility = JavaVersion.toVersion(apiModelJavaTarget)
+}
+
 tasks {
     test {
         useJUnitPlatform()
-    }
-    compileJava {
-        targetCompatibility = apiModelJavaTarget
-    }
-    compileTestJava {
-        targetCompatibility = apiModelJavaTarget
     }
     compileKotlin {
         compilerOptions.optIn.add("no.nav.brev.InternKonstruktoer")

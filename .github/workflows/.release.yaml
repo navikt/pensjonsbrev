@@ -23,7 +23,7 @@ on:
 
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 jobs:
   release:

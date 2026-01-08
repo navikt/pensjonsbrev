@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.ufore.api.model
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Ufoerebrevkoder {
     enum class AutoBrev : Automatisk {
@@ -39,8 +40,22 @@ object Ufoerebrevkoder {
         UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET,
         UT_VARSEL_FEILUTBETALING,
         UT_AVSLAG_MEDLEMSKAP_UTLAND,
+        UT_FEILUTBETALING_VARSEL_SIVILSTAND,
+        UT_FEILUTBETALING_VARSEL_SIVILSTAND_UU,
+        UT_FEILUTBETALING_VARSEL_BARN_FLYTTER,
+        UT_FEILUTBETALING_VARSEL_BARN_UTLAND,
+        UT_FEILUTBETALING_VARSEL_INSTITUSJON,
+        UT_FEILUTBETALING_VARSEL_SONING,
+        UT_FEILUTBETALING_VARSEL_DODSBO,
+        UT_INNH_OPPL_SOKNAD_BARNETILLEGG,
         ;
 
         override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        ;
+
+        override fun kode() = name
     }
 }

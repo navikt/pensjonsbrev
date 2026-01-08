@@ -13,12 +13,16 @@ import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.adresseLinje1
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postNr
 import no.nav.pensjon.brev.api.model.vedlegg.ReturAdresseSelectors.postSted
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
-import no.nav.pensjon.brev.template.Language.*
-import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.choice
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
@@ -26,11 +30,13 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
 
 @TemplateModelHelpers
 val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEnglish, EgenerklaeringOmsorgsarbeidDto>(
-    title = newText(
-        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
-        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
-        English to "Personal declaration that nursing and care work has been provided",
-    ),
+    title = {
+        text(
+            bokmal { +"Egenerklæring om pleie- og omsorgsarbeid" },
+            nynorsk { +"Eigenmelding om pleie- og omsorgsarbeid" },
+            english { +"Personal declaration that nursing and care work has been provided" },
+        )
+    },
     includeSakspart = true
 ) {
     vedlegg(returadresse, aarEgenerklaringOmsorgspoeng.format())
@@ -40,11 +46,13 @@ val egenerklaeringPleieOgOmsorgsarbeid = createAttachment<LangBokmalNynorskEngli
 
 @TemplateModelHelpers
 val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynorskEnglish, OmsorgEgenManuellDto>(
-    title = newText(
-        Bokmal to "Egenerklæring om pleie- og omsorgsarbeid",
-        Nynorsk to "Eigenmelding om pleie- og omsorgsarbeid",
-        English to "Personal declaration that nursing and care work has been provided",
-    ),
+    title = {
+        text(
+            bokmal { +"Egenerklæring om pleie- og omsorgsarbeid" },
+            nynorsk { +"Eigenmelding om pleie- og omsorgsarbeid" },
+            english { +"Personal declaration that nursing and care work has been provided" },
+        )
+    },
     includeSakspart = true
 ) {
     vedlegg(pesysData.returadresse, saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format())
@@ -70,29 +78,29 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
 
     paragraph {
         formText(
-            Size.LONG, newText(
-                Bokmal to "Navn på pleietrengende:",
-                Nynorsk to "Namn på pleietrengande:",
-                English to "I have provided care work for:",
-            )
+            Size.LONG, { text(
+                bokmal { +"Navn på pleietrengende:" },
+                nynorsk { +"Namn på pleietrengande:" },
+                english { +"I have provided care work for:" }
+            ) }
         )
 
         formChoice(
-            newText(
-                Bokmal to "Arbeidet har vart i:",
-                Nynorsk to "Arbeidet har vart i:",
-                English to "The work has lasted for:"
-            )
+            { text(
+                bokmal { +"Arbeidet har vart i:" },
+                nynorsk { +"Arbeidet har vart i:" },
+                english { +"The work has lasted for:" }
+            ) }
         ) {
             choice(
-                Bokmal to "minst seks måneder",
-                Nynorsk to "minst seks månader",
-                English to "at least six months"
+                bokmal { +"minst seks måneder" },
+                nynorsk { +"minst seks månader" },
+                english { +"at least six months" }
             )
             choice(
-                Bokmal to "under seks måneder",
-                Nynorsk to "under seks månader",
-                English to "less than six months"
+                bokmal { +"under seks måneder" },
+                nynorsk { +"under seks månader" },
+                english { +"less than six months" }
             )
         }
     }
@@ -108,27 +116,29 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: 
         formText(
             size = Size.SHORT,
             vspace = false,
-            prompt = newText(
-                Bokmal to "Oppgi dato for opphøret:",
-                Nynorsk to "Dato for opphøyr:",
-                English to "State date if ceased:"
-            )
+            prompt = {
+                text (
+                    bokmal { +"Oppgi dato for opphøret:" },
+                    nynorsk { +"Dato for opphøyr:" },
+                    english { +"State date if ceased:" }
+                )
+            }
         )
         formText(
             size = Size.LONG,
             vspace = false,
-            prompt = newText(
-                Bokmal to "Oppgi årsaken til opphøret:",
-                Nynorsk to "Grunnen til opphøyr: ",
-                English to "State reason if ceased"
-            )
+            prompt = { text(
+                bokmal { +"Oppgi årsaken til opphøret:" },
+                nynorsk { +"Grunnen til opphøyr: " },
+                english { +"State reason if ceased" }
+            ) }
         )
 
-        formText(size = Size.SHORT, prompt = newText(Bokmal to "Dato:", Nynorsk to "Dato:", English to "Date"))
+        formText(size = Size.SHORT, prompt = { text(bokmal { +"Dato:" }, nynorsk { +"Dato:" }, english { +"Date" }) })
         formText(
             size = Size.LONG,
             vspace = false,
-            prompt = newText(Bokmal to "Underskrift:", Nynorsk to "Underskrift:", English to "Signature:")
+            prompt = { text(bokmal { +"Underskrift:" }, nynorsk { +"Underskrift:" }, english { +"Signature:" }) }
         )
     }
 

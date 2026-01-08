@@ -22,7 +22,7 @@ export default defineConfig({
     origin: "http://localhost:5173",
   },
   test: {
-    environment: 'jsdom',
-    globals: true // Enables Vitest to automatically cleanup after each test
+    environment: "jsdom",
+    globals: true, // Enables Vitest to automatically cleanup after each test
   },
 });
