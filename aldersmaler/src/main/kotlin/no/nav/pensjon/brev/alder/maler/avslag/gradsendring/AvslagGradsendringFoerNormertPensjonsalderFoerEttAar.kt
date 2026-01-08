@@ -47,8 +47,7 @@ object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
 
-    override val kategori: TemplateDescription.Brevkategori =
-        TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 
