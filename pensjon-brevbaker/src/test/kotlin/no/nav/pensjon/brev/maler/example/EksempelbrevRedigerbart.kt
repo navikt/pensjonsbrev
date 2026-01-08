@@ -44,7 +44,7 @@ enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
 object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
     override val kode: Brevkode.Redigerbart = EksempelbrevRedigerbartBrevkode.TESTBREV_REDIGERBART
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 
@@ -297,4 +297,13 @@ data class EksempelRedigerbartDto(
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
     ) : FagsystemBrevdata
+}
+
+
+
+enum class Brevkategori(override val kategoritekst: String) : TemplateDescription.IBrevkategori {
+    INNHENTE_OPPLYSNINGER("Innhente opplysninger"),
+    VARSEL("Varsel");
+
+    override fun kode(): String = name
 }

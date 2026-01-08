@@ -33,7 +33,7 @@ interface TemplateDescription {
         override val letterDataClass: String,
         override val languages: List<LanguageCode>,
         override val metadata: LetterMetadata,
-        val kategori: Brevkategori,
+        val kategori: IBrevkategori,
         val brevkontekst: Brevkontekst,
         val sakstyper: Set<Sakstype>,
     ): TemplateDescription {
@@ -58,23 +58,8 @@ interface TemplateDescription {
         VEDTAK
     }
 
-    // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
-    enum class Brevkategori(val kategoritekst: String) {
-        ETTEROPPGJOER("Etteroppgjør"),
-        FEILUTBETALING("Feilutbetaling"),
-        FOERSTEGANGSBEHANDLING("Førstegangsbehandling"),
-        FRITEKSTBREV("Fritekstbrev"),
-        INFORMASJONSBREV("Informasjonsbrev"),
-        INNHENTE_OPPLYSNINGER("Innhente opplysninger"),
-        KLAGE_OG_ANKE("Klage og anke"),
-        LEVEATTEST("Leveattest"),
-        OMSORGSOPPTJENING("Omsorgsopptjening"),
-        POSTERINGSGRUNNLAG("Posteringsgrunnlag"),
-        SLUTTBEHANDLING("Sluttbehandling"),
-        UFOEREPENSJON("Uførepensjon"),
-        VARSEL("Varsel"),
-        VEDTAK_EKSPORT("Vedtak - eksport"),
-        VEDTAK_ENDRING_OG_REVURDERING("Vedtak - endring og revurdering"),
-        VEDTAK_FLYTTE_MELLOM_LAND("Vedtak - flytte mellom land"),
+    interface IBrevkategori {
+        fun kode(): String
+        val kategoritekst: String
     }
 }

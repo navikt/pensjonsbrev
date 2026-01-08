@@ -128,29 +128,6 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Autobrev : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori : java/lang/Enum {
-	public static final field ETTEROPPGJOER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field FEILUTBETALING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field FOERSTEGANGSBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field FRITEKSTBREV Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field INFORMASJONSBREV Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field INNHENTE_OPPLYSNINGER Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field KLAGE_OG_ANKE Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field LEVEATTEST Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field OMSORGSOPPTJENING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field POSTERINGSGRUNNLAG Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field SLUTTBEHANDLING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field UFOEREPENSJON Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field VARSEL Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field VEDTAK_EKSPORT Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field VEDTAK_ENDRING_OG_REVURDERING Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static final field VEDTAK_FLYTTE_MELLOM_LAND Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public final fun getKategoritekst ()Ljava/lang/String;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-	public static fun values ()[Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
-}
-
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst : java/lang/Enum {
 	public static final field ALLE Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
 	public static final field SAK Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
@@ -160,11 +137,16 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkonteks
 	public static fun values ()[Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
+	public abstract fun getKategoritekst ()Ljava/lang/String;
+	public abstract fun kode ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar : no/nav/pensjon/brev/api/model/TemplateDescription {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
-	public final fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public final fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
 	public fun getLanguages ()Ljava/util/List;
 	public fun getLetterDataClass ()Ljava/lang/String;
 	public fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
