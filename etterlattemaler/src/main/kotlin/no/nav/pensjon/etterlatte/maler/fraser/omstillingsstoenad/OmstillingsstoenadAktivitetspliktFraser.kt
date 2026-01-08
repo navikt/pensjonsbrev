@@ -403,7 +403,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     item {
                         text(
                             bokmal { +"har sykdom eller helseutfordringer som hindrer deg fra å være i minst 50 " +
-                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne." },
+                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne" },
                             nynorsk { +"har sjukdom eller helseutfordringar som hindrar deg i å vere i minst 50 " +
                                     "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne" },
                             english { +"have an illness or health problems that hinder you from working at least 50 " +
