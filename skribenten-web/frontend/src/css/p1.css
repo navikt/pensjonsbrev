@@ -39,23 +39,23 @@
   table-layout: fixed;
 }
 
-.p1-table th,
-.p1-table td {
+.p1-table > thead > tr > th,
+.p1-table > tbody > tr > td {
   border: 1px solid var(--ax-border-neutral);
   vertical-align: top;
 }
 
-.p1-table th span {
+.p1-table > thead > tr > th span {
   display: block;
   font-weight: 600;
   font-size: 1rem;
 }
 
-.p1-table--zebra-stripes tbody tr:nth-of-type(even) {
+.p1-table--zebra-stripes > tbody > tr:nth-of-type(even) {
   background-color: var(--ax-bg-neutral-soft);
 }
 
-.p1-table--zebra-stripes tbody tr:nth-of-type(odd) {
+.p1-table--zebra-stripes > tbody > tr:nth-of-type(odd) {
   background-color: var(--ax-bg-default);
 }
 
@@ -129,7 +129,7 @@
 /* ===========================================
  * Validation error styling
  * =========================================== */
-.p1-table tbody td.p1-cell-error {
+.p1-table .p1-cell-error {
   border: 2px solid var(--ax-border-danger-strong);
   background-color: var(--ax-bg-danger-soft);
 }
@@ -148,10 +148,16 @@
  * =========================================== */
 
 .p1-date-picker-full-width {
+  /* Expand the outer wrapper */
   width: 100%;
-  div:has(input) {
+  margin-bottom: var(--ax-space-8);
+
+  /* Expand the inner wrapper (immediately surrounding the input field) */
+  div:has(> input) {
     width: 100%;
   }
+
+  /* Expand the datepicker input field */
   input {
     width: 100%;
   }
