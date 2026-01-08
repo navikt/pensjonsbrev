@@ -1,17 +1,16 @@
-import { css } from "@emotion/react";
 import { PlusIcon } from "@navikt/aksel-icons";
 import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
-import type { P1RedigerbarForm } from "~/types/p1FormTypes";
+import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow } from "./emptyP1";
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 
-export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; navn: string }> }) => {
+export const P1AvslagTab = ({ landListe }: { landListe: LandOption[] }) => {
   const {
     control,
     register,
@@ -93,27 +92,21 @@ export const P1AvslagTab = ({ landListe }: { landListe: Array<{ kode: string; na
                   label="Institusjon"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.institusjonsnavn` as const)}
-                  css={css`
-                    margin-bottom: 0.5rem;
-                  `}
+                  css={{ marginBottom: "var(--ax-space-8)" }}
                 />
                 <TextField
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.pin?.message}
                   label="PIN"
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.pin` as const)}
-                  css={css`
-                    margin-bottom: 0.5rem;
-                  `}
+                  css={{ marginBottom: "var(--ax-space-8)" }}
                 />
                 <TextField
                   error={errors.avslaattePensjoner?.[index]?.institusjon?.saksnummer?.message}
                   label={`Saks${SOFT_HYPHEN}nummer`}
                   size="small"
                   {...register(`avslaattePensjoner.${index}.institusjon.saksnummer` as const)}
-                  css={css`
-                    margin-bottom: 0.5rem;
-                  `}
+                  css={{ marginBottom: "var(--ax-space-8)" }}
                 />
                 <Controller
                   control={control}
