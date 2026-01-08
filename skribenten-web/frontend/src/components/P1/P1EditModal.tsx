@@ -46,7 +46,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const {
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty, isValid },
   } = formMethods;
 
   // Load P1 data when modal is open
@@ -239,7 +239,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                     Avbryt
                   </Button>
                   <Button
-                    disabled={isInitialLoading || isP1Error}
+                    disabled={isInitialLoading || !isDirty || !isValid}
                     loading={lagreMutation.isPending}
                     size="medium"
                     type="submit"
