@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.avslag.gradsendring
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
