@@ -3,13 +3,14 @@ import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField 
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
-import type { P1RedigerbarForm } from "~/types/p1FormTypes";
+import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
 import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
-export const P1InnvilgetTab = ({ landListe }: { landListe: Array<{ kode: string; navn: string }> }) => {
+
+export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
   const {
     control,
     register,
