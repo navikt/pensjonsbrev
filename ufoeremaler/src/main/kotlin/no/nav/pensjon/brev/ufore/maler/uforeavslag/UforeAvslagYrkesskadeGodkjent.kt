@@ -2,22 +2,21 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_YRKESSKADE_GODKJENT
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -31,7 +30,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-17",
             distribusjonstype = VEDTAK,
@@ -40,35 +39,43 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om å få uføretrygden beregnet etter reglene for yrkessykdom eller yrkesskade"})
+            text (bokmal { + "Nav har vurdert at vi ikke kan beregne uføretrygden din etter reglene for yrkesskade og yrkessykdom"},
+                nynorsk { + "Nav har vurdert at vi ikkje kan berekne uføretrygda di etter reglane for yrkesskade og yrkessjukdom"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått søknaden din som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i måneden, slik det står i vedtaket av " + fritekst("dato") + "." },
+                    nynorsk { +"Du får utbetalt " + fritekst("beløp uføretrygd") + " kroner i månaden, slik det står i vedtaket av " + fritekst("dato") + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" })
+                text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" },
+                    nynorsk { +"Difor får du ikkje uføretrygd berekna etter dette regelverket" })
             }
-
             paragraph {
-                text( bokmal { + "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaksbrevet fra " + fritekst("dato") + ". " +
-                        "Vi har vurdert at den nedsatte inntektsevnen din ikke skyldes den godkjente yrkesskaden eller yrkessykdommen din. Det er andre sykdomsforhold som er årsaken til den nedsatte inntektsevnen din."})
+                text( bokmal { + "Du får ikke beregning etter regler for yrkesskade eller yrkessykdom fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
+                        "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaket ditt av " + fritekst("dato") + ". " },
+                    nynorsk { + "Du får ikkje berekning etter reglar for yrkesskade eller yrkessjukdom fordi det er andre sjukdomsforhold enn den godkjende yrkesskaden din som er årsaka til den reduserte inntektsevna di. " +
+                            "Du har ei godkjent yrkesskade eller yrkessjukdom, dette finn du i vedtaket ditt av " + fritekst("dato") + ". " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering })
+                    text(bokmal { +pesysData.vurdering },
+                        nynorsk { +pesysData.vurdering })
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
+                text(bokmal { + fritekst("Individuell vurdering") },
+                    nynorsk { + fritekst("Individuell vurdering") } )
             }
 
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."},
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-17." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-17." })
             }
 
             includePhrase(Felles.RettTilAKlageLang)

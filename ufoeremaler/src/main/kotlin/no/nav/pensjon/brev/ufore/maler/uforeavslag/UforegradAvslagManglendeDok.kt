@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -31,7 +32,7 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 21-3",
             distribusjonstype = VEDTAK,
@@ -40,35 +41,44 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"})
+            text (bokmal { + "Nav har avslått søknaden din om økt uføregrad"},
+                nynorsk { + "Nav har avslått søknaden din om auka uføregrad"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om auka uføregrad som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Begrunnelse for vedtaket" })
+                text(bokmal { +"Derfor får du ikke økt uføregrad" },
+                    nynorsk { +"Difor får du ikkje auka uføregrad" })
             }
             paragraph {
-                text(bokmal { +"For at vi skal kunne ta stilling til søknaden din om økt uføregrad, må du gi oss de opplysningene vi trenger. " +
-                        "Vi sendte deg et brev " + fritekst("dato") + " der vi ba deg sende oss dokumentene som manglet, " +
-                        "og varslet deg om at søknaden din ville bli avslått dersom vi ikke fikk dem innen fristen." })
+                text(bokmal { +"Vi har ikke fått de opplysningene som er nødvendige for å vurdere saken din. " +
+                        "I vårt brev av " + fritekst("dato") + " varslet vi deg om at søknaden din ville bli avslått dersom vi ikke fikk opplysningene innen fristen." },
+                    nynorsk { +"Vi har ikkje fått dei opplysningane som er nødvendige for å vurdere saka di. " +
+                            "I brevet vårt av " + fritekst("dato") + " varsla vi deg om at søknaden din ville bli avslått dersom vi ikkje fekk opplysningane innan fristen." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering })
+                    text(bokmal { +pesysData.vurdering },
+                        nynorsk { +pesysData.vurdering })
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
+                text(bokmal { + fritekst("Individuell vurdering") },
+                    nynorsk { + fritekst("Individuell vurdering") })
             }
 
             paragraph {
-                text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om økt uføregrad." })
+                text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om økt uføregrad." },
+                    nynorsk { + "Vi har ikkje fått desse dokumenta og avslår derfor søknaden din om auka uføregrad." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 21-3 " +
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 21-3 " +
+                fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")},
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 21-3 " +
                 fritekst("Vurdere om det skal henvises til bestemmelser i kap 12, og hvis 21-7 er brukt, må du angi hvilken bokstav som er vurdert.")})
             }
 

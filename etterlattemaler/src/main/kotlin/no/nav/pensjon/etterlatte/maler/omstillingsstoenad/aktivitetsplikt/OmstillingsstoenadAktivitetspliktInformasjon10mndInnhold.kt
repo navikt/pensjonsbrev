@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -20,6 +21,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.aktivitetsgrad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.halvtGrunnbeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.nasjonalEllerUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.redusertEtterInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.utbetaling
@@ -28,7 +30,8 @@ data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
     val aktivitetsgrad: Aktivitetsgrad,
     val utbetaling: Boolean,
     val redusertEtterInntekt: Boolean,
-    val nasjonalEllerUtland: NasjonalEllerUtland
+    val nasjonalEllerUtland: NasjonalEllerUtland,
+    val halvtGrunnbeloep: Kroner
 ) : RedigerbartUtfallBrevDTO
 
 
@@ -125,9 +128,9 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
             showIf(utbetaling) {
                 paragraph {
                     text(
-                        bokmal { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
-                        nynorsk { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
-                        english { +"It is registered in your adjustment allowance that you FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
+                        bokmal { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
+                        nynorsk { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
+                        english { +"It is registered in your adjustment allowance that you FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
                     )
                 }
             }
@@ -135,8 +138,8 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
             showIf(aktivitetsgrad.notEqualTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
-                        bokmal { +"For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos NAV. Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktivt med å søke jobber, samt deltar på de kurs som Nav tilbyr. Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}." },
-                        nynorsk { +"For å kunne få omstillingsstønad vidare bør du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?».  Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, bør du melde deg som reell arbeidssøkjar hos NAV. Dette inneber at du bekrefte at du vil stå som arbeidssøkjar, være aktiv med å søkje jobbar, og delta på kursa som Nav tilbyr. Du kan lese meir om å være arbeidssøkjar på ${Constants.REGISTRER_ARBEIDSSOKER}." },
+                        bokmal { +"For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos Nav. Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktivt med å søke jobber, samt deltar på de kurs som Nav tilbyr. Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}." },
+                        nynorsk { +"For å kunne få omstillingsstønad vidare bør du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?».  Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, bør du melde deg som reell arbeidssøkjar hos Nav. Dette inneber at du må bekrefte at du vil stå som arbeidssøkjar, vere aktiv med å søkje jobbar, og delta på kursa som Nav tilbyr. Du kan lese meir om å være arbeidssøkjar på ${Constants.REGISTRER_ARBEIDSSOKER}." },
                         english { +"To receive an adjustment allowance in the future, you should increase your level of activity. See “How do I comply with the activity obligation?”.  If you are not doing any of the other activities mentioned, you must register as a genuine job seeker with Nav. This means that you confirm that you want to be a job seeker, actively be looking for work, and participate in the courses offered by Nav. You can read more about being a job seeker at ${Constants.Engelsk.REGISTRER_ARBEIDSSOKER}." },
                     )
                 }
@@ -217,7 +220,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 )
             }
 
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt, halvtGrunnbeloep))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(nasjonalEllerUtland, true.expr()))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseUnntakFraAktivitetsplikt)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.TrengerDuHjelpTilAaFaaNyJobb)

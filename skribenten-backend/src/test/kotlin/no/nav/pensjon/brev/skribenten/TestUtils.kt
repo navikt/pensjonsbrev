@@ -38,6 +38,7 @@ object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")
     val INFORMASJONSBREV = RedigerbarBrevkode("INFORMASJONSBREV")
     val VEDTAKSBREV = RedigerbarBrevkode("VEDTAKSBREV")
+    val VARSELBREV = RedigerbarBrevkode("VARSELBREV")
 }
 
 data class EksempelRedigerbartDto(

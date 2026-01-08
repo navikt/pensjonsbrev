@@ -4,6 +4,8 @@ import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
@@ -65,6 +67,28 @@ fun Route.sakRoute(
                 call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
             }
         }
+
+        get("/brukerstatus") {
+            coroutineScope {
+                val sak: Pen.SakSelection = call.attributes[SakKey]
+                val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
+                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
+                val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
+                if (person != null) {
+                    call.respond(
+                        Api.BrukerStatus(
+                            adressebeskyttelse = person.adressebeskyttelse,
+                            doedsfall = person.doedsdato,
+                            erSkjermet = erSkjermet.await(),
+                            vergemaal = harVerge.await()
+                        )
+                    )
+                } else {
+                    call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
+                }
+            }
+        }
+
         route("/bestillBrev") {
             post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
                 val sak = call.attributes[SakKey]

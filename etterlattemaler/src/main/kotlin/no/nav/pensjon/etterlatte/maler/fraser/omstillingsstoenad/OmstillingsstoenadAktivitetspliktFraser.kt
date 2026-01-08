@@ -1,17 +1,14 @@
 package no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad
 
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.NasjonalEllerUtland
 
@@ -231,6 +228,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
 
     data class FellesInfoOmInntektsendring(
         val redusertEtterInntekt: Expression<Boolean>,
+        val halvtGrunnbeloep: Expression<Kroner>
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title2 {
@@ -250,19 +248,18 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     )
                 }
             } orShow {
-
-                // Grunnbeløpe = 0.5 av G
+                // 0.5 av G
                 paragraph {
                     text(
                         bokmal { +"For at du skal motta korrekt utbetaling, er det viktig at du informerer oss hvis " +
-                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
-                                "Grunnbeløpet blir justert hvert år fra 1. mai." },
+                                "du får en forventet årsinntekt som vil overstige et halvt grunnbeløp. Dette er per i dag " + halvtGrunnbeloep.format() +
+                                ". Grunnbeløpet blir justert hvert år fra 1. mai." },
                         nynorsk { +"For at du skal få rett utbetaling, er det viktig at du gir oss beskjed viss du får ei " +
-                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag 65 080 kroner. " +
-                                "Grunnbeløpet blir justert kvart år frå 1. mai." },
+                                "forventa årsinntekt som vil overstige eit halvt grunnbeløp. Dette er per i dag " + halvtGrunnbeloep.format() +
+                                ". Grunnbeløpet blir justert kvart år frå 1. mai." },
                         english { +"To receive the correct amount, you are obligated to inform us about any changes to " +
                                 "your anticipated annual income that exceeds one half of the basic amount. This is currently " +
-                                "NOK 65 080. The basic amount is adjusted on 1 May each year." },
+                                 halvtGrunnbeloep.format() +". The basic amount is adjusted on 1 May each year." },
                     )
                 }
             }
@@ -406,7 +403,7 @@ class OmstillingsstoenadAktivitetspliktFraser {
                     item {
                         text(
                             bokmal { +"har sykdom eller helseutfordringer som hindrer deg fra å være i minst 50 " +
-                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne." },
+                                    "prosent arbeid eller arbeidsrettet aktivitet, og du benytter din gjenværende arbeidsevne" },
                             nynorsk { +"har sjukdom eller helseutfordringar som hindrar deg i å vere i minst 50 " +
                                     "prosent arbeid eller arbeidsretta aktivitet, og du nyttar di attverande arbeidsevne" },
                             english { +"have an illness or health problems that hinder you from working at least 50 " +

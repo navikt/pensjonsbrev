@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.usecase.Result
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
 import org.jetbrains.exposed.dao.id.EntityID
@@ -28,7 +29,7 @@ import java.time.temporal.ChronoUnit
 class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var saksId by BrevredigeringTable.saksId
 
-    // Det er forventet at vedtaksId kun har verdi om brevet er Vedtaksbrev
+    // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
     var vedtaksId by BrevredigeringTable.vedtaksId
     var brevkode by BrevredigeringTable.brevkode
     var spraak by BrevredigeringTable.spraak
@@ -50,6 +51,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     val p1Data by P1Data.Companion optionalBackReferencedOn P1DataTable.id
     val valgteVedlegg by ValgteVedlegg.Companion optionalBackReferencedOn ValgteVedleggTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
+    var brevtype by BrevredigeringTable.brevtype
 
     companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
@@ -60,7 +62,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             }
     }
 
-    val isVedtaksbrev get() = vedtaksId != null
+    val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
     val reservasjon: Reservasjon?
         get() {
             val reservertAv = this.redigeresAv ?: return null

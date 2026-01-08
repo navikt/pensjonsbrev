@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -104,6 +105,7 @@ class BrevredigeringService(
                     sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     sistRedigertAv = principal.navIdent
                     redigertBrev = rendretBrev.markup.toEdit()
+                    brevtype = rendretBrev.brevtype
                 }.also {
                     if (mottaker != null) {
                         Mottaker.new(it.id.value) { oppdater(mottaker) }
@@ -606,7 +608,7 @@ class BrevredigeringService(
     private suspend fun beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId: Long?, brevkode: Brevkode.Redigerbart): Long? {
         val template = brevbakerService.getRedigerbarTemplate(brevkode)
 
-        return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
+        return if (template?.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK) {
             vedtaksId
                 ?: throw VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
         } else {
