@@ -18,7 +18,7 @@ import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
-import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";

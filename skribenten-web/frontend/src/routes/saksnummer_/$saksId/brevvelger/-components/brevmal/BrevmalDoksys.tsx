@@ -11,7 +11,7 @@ import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/typ
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
-import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
+import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
