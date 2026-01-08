@@ -1,3 +1,8 @@
+export type LandOption = {
+  kode: string;
+  navn: string;
+};
+
 export type P1PersonForm = {
   fornavn: string;
   etternavn: string;
