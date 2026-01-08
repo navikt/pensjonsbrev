@@ -46,10 +46,10 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
     var journalpostId by BrevredigeringTable.journalpostId
-    val document by Document.Companion referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
-    val mottaker by Mottaker.Companion optionalBackReferencedOn MottakerTable.id
-    val p1Data by P1Data.Companion optionalBackReferencedOn P1DataTable.id
-    val valgteVedlegg by ValgteVedlegg.Companion optionalBackReferencedOn ValgteVedleggTable.id
+    val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
+    val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
+    val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
     var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     var brevtype by BrevredigeringTable.brevtype
 
