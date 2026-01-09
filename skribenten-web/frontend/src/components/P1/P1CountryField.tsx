@@ -24,7 +24,11 @@ export const P1CountryField = ({ control, name, index, landListe, error }: P1Cou
 
         return (
           <UNSAFE_Combobox
-            css={{ marginBottom: "var(--ax-space-8)" }}
+            css={{
+              "& *": {
+                fontSize: "var(--ax-font-size-medium)",
+              },
+            }}
             data-cy={`land-combobox-${index}`}
             error={error}
             label="Land"
