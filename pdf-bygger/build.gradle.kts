@@ -81,7 +81,9 @@ dependencies {
     }
 
     testImplementation(libs.assertJ)
-    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.ktor.server.test.host) {
+        exclude("org.jetbrains.kotlin", "kotlin-test")
+    }
     testImplementation(testFixtures(project(":brevbaker")))
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 }
