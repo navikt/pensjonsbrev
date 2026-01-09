@@ -5,7 +5,12 @@ import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import {
+  delvisOppdaterBrev,
+  fjernOverstyrtMottaker,
+  hentAlleBrevForSak,
+  hentPdfForBrev,
+} from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
@@ -29,6 +34,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
       );
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
       setModalÅpen(false);
     },
   });
@@ -39,6 +45,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? { ...props.brev, mottaker: null } : brev)),
       );
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
     },
   });
 

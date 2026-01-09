@@ -1,11 +1,12 @@
 import { css } from "@emotion/react";
-import { Alert, BodyLong, BodyShort, Button, Heading, HStack, Loader, VStack } from "@navikt/ds-react";
+import { Alert, BodyLong, BodyShort, Button, Heading, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
@@ -67,12 +68,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
   return queryFold({
     query: hentPdfQuery,
     initial: () => <></>,
-    pending: () => (
-      <VStack align="center" gap="space-4" justify="center">
-        <Loader size="3xlarge" title="henter brev..." />
-        <Heading size="large">Henter brev....</Heading>
-      </VStack>
-    ),
+    pending: () => <CenteredLoader label="Henter brev..." />,
     error: () => (
       <>
         <PDFViewerTopBar brevId={properties.brevId} sakId={properties.saksId} utenSlettKnapp={false} />
@@ -95,7 +91,11 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
           Fant ikke PDF for brev med id {properties.brevId}
         </VStack>
       ) : (
-        <PDFViewer brevId={properties.brevId} pdf={pdfResponse.pdf} sakId={properties.saksId}>
+        <PDFViewer
+          brevId={properties.brevId}
+          pdf={hentPdfQuery.isRefetching ? undefined : pdfResponse.pdf}
+          sakId={properties.saksId}
+        >
           {pdfResponse.rendretBrevErEndret && showBrevDataEndringAlert ? (
             <Alert fullWidth variant="warning">
               <Heading size="xsmall">Brevet må oppdateres</Heading>
