@@ -15,7 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.junit.jupiter.api.Test
 
-private val aScope = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
 class EvaluatesMatcher<in T>(private val matcher: Matcher<T>, private val scope: ExpressionScope<*>) :
     Matcher<Expression<T>> {
     override fun invoke(actual: Expression<T>): MatchResult = matcher(actual.eval(scope))
