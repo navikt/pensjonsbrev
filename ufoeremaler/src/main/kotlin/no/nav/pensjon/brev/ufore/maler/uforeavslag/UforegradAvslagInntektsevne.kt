@@ -55,7 +55,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + ". " +
                         "Du beholder uføregraden din på " + pesysData.uforegrad.format() + " prosent." },
                     nynorsk { +"Vi har avslått søknaden din om auka uføregrad som vi fekk den " + pesysData.kravMottattDato.format() + ". " +
-                            "Du behaldar uføregraden din på " + pesysData.uforegrad.format() + " prosent." })
+                            "Du beheld uføregraden din på " + pesysData.uforegrad.format() + " prosent." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" },
