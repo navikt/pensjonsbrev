@@ -93,7 +93,6 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 

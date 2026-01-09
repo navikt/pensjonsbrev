@@ -16,8 +16,8 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.CreateAttachmentTestSelectors.LittInnholdSelectors.test1
 import no.nav.pensjon.brev.template.render.CreateAttachmentTestSelectors.LittInnholdSelectors.test2
-import kotlin.test.Test
-import kotlin.test.assertEquals
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
 
 class CreateAttachmentTest {
     @TemplateModelHelpers

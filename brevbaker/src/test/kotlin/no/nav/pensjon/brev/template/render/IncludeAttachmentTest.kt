@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.vedlegg
 import org.junit.jupiter.api.Nested
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 class IncludeAttachmentTest {
     data class NullData(val vedlegg: VedleggData?) : AutobrevData
