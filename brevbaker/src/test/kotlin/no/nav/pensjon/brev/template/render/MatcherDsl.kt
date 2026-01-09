@@ -17,15 +17,18 @@ internal fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAsser
 @DslMarker
 annotation class LetterMarkupMatcherDsl
 
+private typealias Matcher<T> = (T) -> Unit
+
 @LetterMarkupMatcherDsl
 class AttachmentsAssert(private val matchSize: Boolean) {
-    private val attachmentAssertions = mutableListOf<(LetterMarkup.Attachment) -> Unit>()
+
+    private val attachmentAssertions = mutableListOf<Matcher<LetterMarkup.Attachment>>()
 
     fun attachment(builder: AttachmentAssert.() -> Unit) {
         attachmentAssertions.add(AttachmentAssert().apply(builder).build())
     }
 
-    fun build(): (List<LetterMarkup.Attachment>) -> Unit = { actual ->
+    fun build(): Matcher<List<LetterMarkup.Attachment>> = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(attachmentAssertions)
         }
@@ -36,7 +39,7 @@ class AttachmentsAssert(private val matchSize: Boolean) {
 }
 
 class AttachmentAssert {
-    private val assertions = mutableListOf<(LetterMarkup.Attachment) -> Unit>()
+    private val assertions = mutableListOf<Matcher<LetterMarkup.Attachment>>()
 
     fun title(that: ContentAssert.() -> Unit) {
         assertions.add({ assertThat(it.title).satisfies(ContentAssert().apply(that).build()) })
@@ -46,14 +49,14 @@ class AttachmentAssert {
         assertions.add({ assertThat(it.blocks).satisfies(BlocksAssert(matchSize).apply(that).build()) })
     }
 
-    fun build(): (LetterMarkup.Attachment) -> Unit = { actual ->
+    fun build(): Matcher<LetterMarkup.Attachment> = { actual ->
         assertions.forEach { it(actual) }
     }
 }
 
 @LetterMarkupMatcherDsl
 class BlocksAssert(private val matchSize: Boolean) {
-    private val blockAssertions = mutableListOf<(Block) -> Unit>()
+    private val blockAssertions = mutableListOf<Matcher<Block>>()
 
     fun paragraph(that: ContentAssert.() -> Unit) {
         blockAssertions.add({
@@ -83,7 +86,7 @@ class BlocksAssert(private val matchSize: Boolean) {
         })
     }
 
-    fun build(): (List<Block>) -> Unit = { actual ->
+    fun build(): Matcher<List<Block>> = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(blockAssertions)
         }
