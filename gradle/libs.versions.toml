@@ -97,6 +97,6 @@ testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgr
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
 [bundles]
-junit = ["junit-jupiter", "junit-platform-launcher"]
+junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
 logging = ["logback-classic", "logback-encoder"]
 metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]
