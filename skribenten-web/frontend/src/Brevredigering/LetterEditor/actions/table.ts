@@ -6,7 +6,7 @@ import { PARAGRAPH } from "~/types/brevbakerTypes";
 import { type Action, withPatches } from "../lib/actions";
 import type { Focus, LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
-import { isEmptyTableHeader, isTableCellIndex } from "../model/utils";
+import { isEmptyTableHeader, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addElements,
   cleanseText,
@@ -29,12 +29,12 @@ import {
  * “Kolonne 1  Kolonne 2  Kolonne 3”.
  *
  * • Only overwrites cells that are blank or still have the default pattern
- *   /^Kolonne \d+$/ – customised header text is preserved.
+ *   /^Kolonne \d+$/ - customised header text is preserved.
  */
 
 const updateDefaultHeaderLabels = (table: Draft<Table>) => {
   const isDefault = (s: string) => /^Kolonne\s+\d+$/i.test(s);
-  const stripZWSP = (s: string) => s.replace(/\u200B/g, "");
+  const stripZWSP = (s: string) => s.replaceAll(ZERO_WIDTH_SPACE, "");
 
   table.header.colSpec.forEach((col, idx) => {
     const headerCellText = stripZWSP(cleanseText(col.headerContent.text.map((txt) => text(txt) ?? "").join(""))).trim();

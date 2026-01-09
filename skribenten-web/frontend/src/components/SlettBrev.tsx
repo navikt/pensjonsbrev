@@ -94,7 +94,7 @@ const SlettBrevModal = (properties: {
             </Button>
           ) : (
             <Button onClick={() => properties.onSlettSuccess()} type="button" variant="primary">
-              "Gå til brevbehandler"
+              Gå til brevbehandler
             </Button>
           )}
         </HStack>

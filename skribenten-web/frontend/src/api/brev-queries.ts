@@ -12,6 +12,7 @@ import type {
   ReservasjonResponse,
 } from "~/types/brev";
 import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
+import type { P1Redigerbar } from "~/types/p1";
 
 export const brevmetadataKeys = {
   all: ["BREVMETADATA"] as const,
@@ -133,4 +134,19 @@ export function useModelSpecification<T>(brevkode: string, select: (data: Letter
   });
 
   return { status, specification: data, error };
+}
+
+export const p1OverrideKeys = {
+  all: ["P1_OVERRIDE"] as const,
+  id: (brevId: number) => [...p1OverrideKeys.all, brevId] as const,
+};
+
+export const getP1Override = {
+  queryKey: p1OverrideKeys.id,
+  queryFn: async (saksId: string, brevId: number) =>
+    (await axios.get<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`)).data,
+};
+
+export async function saveP1Override(saksId: string, brevId: number, payload: P1Redigerbar): Promise<P1Redigerbar> {
+  return (await axios.post<P1Redigerbar>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/p1`, payload)).data;
 }

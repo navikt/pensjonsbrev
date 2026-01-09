@@ -43,7 +43,7 @@ export const SakspartView = ({
       <span>Saksnummer:</span>
       <span>{sakspart.saksnummer}</span>
       <span css={{ alignSelf: "end", textWrap: "nowrap" }}>
-        {!isNaN(dokumentDato) &&
+        {!Number.isNaN(dokumentDato) &&
           intlFormat(
             dokumentDato,
             { year: "numeric", month: "long", day: "numeric" },

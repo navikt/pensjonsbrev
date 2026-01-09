@@ -21,7 +21,8 @@ import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE }
 
 import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state";
 
-export const ZERO_WIDTH_SPACE = "​";
+export const SOFT_HYPHEN = "\u00ad";
+export const ZERO_WIDTH_SPACE = "\u200B";
 
 export function isTextContent(obj: Draft<Identifiable | null | undefined>): obj is Draft<TextContent>;
 export function isTextContent(obj: Content | null | undefined): obj is TextContent;
