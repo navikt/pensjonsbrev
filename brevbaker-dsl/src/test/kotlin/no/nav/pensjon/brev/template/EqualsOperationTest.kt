@@ -22,10 +22,9 @@ class EvaluatesMatcher<in T>(private val matcher: Matcher<T>, private val scope:
 }
 
 fun <T> evalsTo(
-    expected: T,
-    scope: ExpressionScope<*> = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
+    expected: T
 ): EvaluatesMatcher<T> =
-    EvaluatesMatcher(equalTo(expected), scope)
+    EvaluatesMatcher(equalTo(expected), ExpressionScope(Unit, FellesFactory.felles, Bokmal))
 
 
 class EqualsOperationTest {
