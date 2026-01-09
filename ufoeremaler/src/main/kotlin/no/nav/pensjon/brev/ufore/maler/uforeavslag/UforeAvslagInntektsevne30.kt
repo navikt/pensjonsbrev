@@ -59,7 +59,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi har avslått søknaden din om uføretrygd fordi inntektsevnen din er varig nedsatt med mindre enn 30 prosent." },
@@ -72,19 +72,19 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             paragraph {
                 text(bokmal { +"Vi sammenligner inntekten din før og etter at du ble ufør for å avgjøre i hvor stor grad inntektsevnen din er nedsatt." },
-                    nynorsk { +"Vi samanliknar inntekta di før og etter at du vart ufør for å avgjere i kor stor grad inntektsevna di er nedsett." })
+                    nynorsk { +"Vi samanliknar inntekta di før og etter at du blei ufør for å avgjere i kor stor grad inntektsevna di er nedsett." })
             }
 
             paragraph {
                 text(bokmal { +"Uføretidspunktet ditt er satt til " + pesysData.uforetidspunkt.format() + ". " +
                         "På dette tidspunktet vurderer vi at dine helseutfordringer førte til at din arbeidsevne ble varig nedsatt. " },
                     nynorsk { +"Uføretidspunktet ditt er sett til " + pesysData.uforetidspunkt.format() + ". " +
-                            "På dette tidspunktet vurderer vi at dine helseutfordringar førte til at arbeidsevna di vart varig nedsett. " })
+                            "På dette tidspunktet vurderer vi at dine helseutfordringar førte til at arbeidsevna di blei varig nedsett. " })
             }
 
             paragraph {
                 text(bokmal { +"Inntekten din før du ble ufør er fastsatt til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." },
-                    nynorsk { +"Inntekta di før du vart ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." }
+                    nynorsk { +"Inntekta di før du blei ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." }
                 )
                 showIf(saksbehandlerValg.visVurderingIFU) {
                     text( bokmal { + pesysData.vurderingIFU },
@@ -109,17 +109,17 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
 
             paragraph {
                 text(bokmal { + "Vi har sammenlignet inntekten din før og etter at du ble ufør og kommet til at din uføregrad er " + fritekst("grad før avrunding") + " prosent."},
-                    nynorsk { + "Vi har samanlikna inntekta di før og etter at du vart ufør og kome til at uføregraden din er " + fritekst("grad før avrunding") + " prosent." })
+                    nynorsk { + "Vi har samanlikna inntekta di før og etter at du blei ufør og kome til at uføregraden din er " + fritekst("grad før avrunding") + " prosent." })
             }
             paragraph {
                 text(bokmal { + "For å få uføretrygd må inntektsevnen din som hovedregel være varig nedsatt med minst 50 prosent. " +
                         "Når du har en godkjent yrkesskade eller yrkessykdom, som er årsaken til uførheten, må inntektsevnen være varig nedsatt med minst 30 prosent."},
                     nynorsk { + "For å få uføretrygd må inntektsevna di som hovudregel vere varig nedsett med minst 50 prosent. " +
-                            "Når du har ein godkjend yrkesskade eller yrkjesjukdom, som er årsaka til uførleiken, må inntektsevna vere varig nedsett med minst 30 prosent." })
+                            "Når du har ein godkjent yrkesskade eller yrkjesjukdom, som er årsaka til uførleiken, må inntektsevna vere varig nedsett med minst 30 prosent." })
             }
             paragraph {
                 text(bokmal { + "Du har en godkjent yrkesskade/yrkessykdom, men inntektsevnen din er ikke er nedsatt med minst 30 prosent. "},
-                    nynorsk { + "Du har ein godkjend yrkesskade eller yrkessjukdom, men inntektsevna di er ikkje nedsett med minst 30 prosent. " })
+                    nynorsk { + "Du har ein godkjent yrkesskade eller yrkessjukdom, men inntektsevna di er ikkje nedsett med minst 30 prosent. " })
             }
 
             showIf(saksbehandlerValg.visUnntaksregelFremtidigInntekt) {
@@ -143,7 +143,7 @@ object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-7 og 12-17." },

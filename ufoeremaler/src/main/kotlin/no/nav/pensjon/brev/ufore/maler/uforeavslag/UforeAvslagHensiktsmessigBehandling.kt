@@ -52,7 +52,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført all hensiktsmessig behandling, som kan bedre inntektsevnen din." },
@@ -105,7 +105,7 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
             }
             paragraph {
                 text(bokmal { +"Vi kan derfor ikke vurdere om sykdom eller skade har ført til at inntektsevnen din er varig nedsatt. Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
-                    nynorsk { +"Vi kan difor ikkje vurdere om sjukdom eller skade har ført til at inntektsevna di er varig nedsett. Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
+                    nynorsk { +"Vi kan derfor ikkje vurdere om sjukdom eller skade har ført til at inntektsevna di er varig nedsett. Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." },

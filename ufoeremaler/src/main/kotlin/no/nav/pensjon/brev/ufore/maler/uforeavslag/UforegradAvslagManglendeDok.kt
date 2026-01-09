@@ -51,7 +51,7 @@ object UforegradAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" },
-                    nynorsk { +"Difor får du ikkje auka uføregrad" })
+                    nynorsk { +"Derfor får du ikkje auka uføregrad" })
             }
             paragraph {
                 text(bokmal { +"Vi har ikke fått de opplysningene som er nødvendige for å vurdere saken din. " +

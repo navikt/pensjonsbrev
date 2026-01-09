@@ -51,7 +51,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført hensiktsmessige arbeidsrettede tiltak, eller forsøkt annet arbeid som kan bedre inntektsevnen din." },
@@ -79,11 +79,11 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
 
             paragraph {
                 text(bokmal { +"Før vi kan ta stilling til om inntektsevnen din er varig nedsatt, må du gjennomføre flere tiltak. Det er derfor for tidlig å vurdere til om inntektsevnen din er varig nedsatt som følge av sykdom eller skade. "},
-                    nynorsk { +"Før vi kan ta stilling til om inntektsevna di er varig nedsett, må du gjennomføre fleire tiltak. Det er difor for tidleg å vurdere til om inntektsevna di er varig nedsett som følgje av sjukdom eller skade. " })
+                    nynorsk { +"Før vi kan ta stilling til om inntektsevna di er varig nedsett, må du gjennomføre fleire tiltak. Det er derfor for tidleg å vurdere til om inntektsevna di er varig nedsett som følgje av sjukdom eller skade. " })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." },

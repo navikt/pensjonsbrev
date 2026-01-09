@@ -51,7 +51,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har forsøkt arbeidsrettede tiltak." },
@@ -87,7 +87,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7." },

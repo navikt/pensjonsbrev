@@ -50,7 +50,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke rettighet som ung ufør" },
-                    nynorsk { +"Difor får du ikkje rett som ung ufør" })
+                    nynorsk { +"Derfor får du ikkje rett som ung ufør" })
             }
             paragraph {
                 text(bokmal { +"Du får ikke beregning som ung ufør fordi uføretidspunktet ditt er fastsatt til etter at du fylte 26 år." },
@@ -58,7 +58,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             paragraph {
                 text(bokmal { +"For å få uføretrygden beregnet med rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." },
-                    nynorsk { +"For å få uføretrygda berekna med rett som ung ufør, er det eit krav at du vart ufør før du fylte 26 år på grunn av ei alvorleg og varig sjukdom eller skade, som er tydeleg dokumentert." })
+                    nynorsk { +"For å få uføretrygda berekna med rett som ung ufør, er det eit krav at du blei ufør før du fylte 26 år på grunn av ei alvorleg og varig sjukdom eller skade, som er tydeleg dokumentert." })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -74,7 +74,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { +"Du var over 26 år på uføretidspunktet og kan derfor ikke innvilges rettighet som ung ufør." },
-                    nynorsk { +"Du var over 26 år på uføretidspunktet og kan difor ikkje få rett som ung ufør." })
+                    nynorsk { +"Du var over 26 år på uføretidspunktet og kan derfor ikkje få rett som ung ufør." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-13 tredje ledd." },
