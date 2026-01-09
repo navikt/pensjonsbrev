@@ -24,6 +24,13 @@ export type SakContextDto = {
   readonly adressebeskyttelse?: boolean;
 };
 
+export type BrukerStatusDto = {
+  readonly adressebeskyttelse: boolean;
+  readonly doedsfall: string;
+  readonly erSkjermet: boolean;
+  readonly vergemaal: boolean;
+};
+
 export type SakType =
   | "AFP"
   | "AFP_PRIVAT"
