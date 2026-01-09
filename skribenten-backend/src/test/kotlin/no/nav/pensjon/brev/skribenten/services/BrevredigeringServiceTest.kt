@@ -41,6 +41,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -49,7 +50,6 @@ import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
 import kotlin.test.assertContains
-import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration

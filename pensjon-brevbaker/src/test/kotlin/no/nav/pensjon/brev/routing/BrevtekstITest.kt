@@ -25,11 +25,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.He
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.text.PDFTextStripper
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 @Tag(TestTags.INTEGRATION_TEST)
 class BrevtekstITest {
