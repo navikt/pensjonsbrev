@@ -40,7 +40,7 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
-                cache.cached(Cacheomraade.NORG, "k") {
+                val i1 = cache.cached(Cacheomraade.NORG, "k") {
                     counter++
                     123
                 }
