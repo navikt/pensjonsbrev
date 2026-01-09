@@ -50,7 +50,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke rettighet som ung ufør" },
-                    nynorsk { +"Difor får du ikkje rett som ung ufør" })
+                    nynorsk { +"Derfor får du ikkje rett som ung ufør" })
             }
             paragraph {
                 text(bokmal { +"Du får ikke beregning som ung ufør fordi det ikke er dokumentert at du hadde en varig og alvorlig sykdom før fylte 26 år. " },
@@ -101,7 +101,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om rettighet som ung ufør." },
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om rett som ung ufør." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om rett som ung ufør." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-13 tredje ledd." },

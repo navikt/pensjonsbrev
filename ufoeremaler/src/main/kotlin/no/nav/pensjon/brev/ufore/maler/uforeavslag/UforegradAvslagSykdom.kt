@@ -51,7 +51,7 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" },
-                    nynorsk { +"Difor får du ikkje auka uføregrad" })
+                    nynorsk { +"Derfor får du ikkje auka uføregrad" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til at inntektsevnen din er nedsatt utover den uføregraden som du har fra før. " },
@@ -75,11 +75,11 @@ object UforegradAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { +"Vi vurderer derfor at inntektsevnen din ikke er varig nedsatt med mer enn " + fritekst("Nåværende uføregrad") + " prosent."},
-                    nynorsk { +"Vi vurderer difor at inntektsevna di ikkje er varig nedsett med meir enn " + fritekst("Nåværende uføregrad") + " prosent."})
+                    nynorsk { +"Vi vurderer derfor at inntektsevna di ikkje er varig nedsett med meir enn " + fritekst("Nåværende uføregrad") + " prosent."})
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om auka uføregrad."})
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføregrad."})
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-6, 12-7 og 12-10." },

@@ -49,13 +49,13 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" },
-                    nynorsk { +"Difor får du ikkje uføretrygd berekna etter dette regelverket" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd berekna etter dette regelverket" })
             }
             paragraph {
                 text( bokmal { + "Du får ikke beregning etter regler for yrkesskade eller yrkessykdom fordi det er andre sykdomsforhold enn din godkjente yrkesskade som er årsaken til den nedsatte inntektsevnen din. " +
                         "Du har en godkjent yrkesskade eller yrkessykdom, dette finner du i vedtaket ditt av " + fritekst("dato") + ". " },
-                    nynorsk { + "Du får ikkje berekning etter reglar for yrkesskade eller yrkessjukdom fordi det er andre sjukdomsforhold enn den godkjende yrkesskaden din som er årsaka til den reduserte inntektsevna di. " +
-                            "Du har ei godkjent yrkesskade eller yrkessjukdom, dette finn du i vedtaket ditt av " + fritekst("dato") + ". " })
+                    nynorsk { + "Du får ikkje berekning etter reglar for yrkesskade eller yrkessjukdom fordi det er andre sjukdomsforhold enn den godkjente yrkesskaden din som er årsaka til den reduserte inntektsevna di. " +
+                            "Du har ein godkjent yrkesskade eller yrkessjukdom, dette finn du i vedtaket ditt av " + fritekst("dato") + ". " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
@@ -71,7 +71,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." },

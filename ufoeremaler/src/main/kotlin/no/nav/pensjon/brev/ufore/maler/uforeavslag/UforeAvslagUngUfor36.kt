@@ -49,7 +49,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke rettighet som ung ufør" },
-                    nynorsk { +"Difor får du ikkje rett som ung ufør" })
+                    nynorsk { +"Derfor får du ikkje rett som ung ufør" })
             }
             paragraph {
                 text(bokmal { +"Du får ikke beregning som ung ufør fordi du har jobbet mer enn 50 prosent etter du fylte 26 år og du søkte om rettighet som ung ufør etter at du fylte 36 år." },

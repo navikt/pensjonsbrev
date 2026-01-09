@@ -45,19 +45,19 @@ object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVur
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd beregnet etter dette regelverket" },
-                    nynorsk { +"Difor får du ikkje uføretrygd berekna etter dette regelverket" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd berekna etter dette regelverket" })
             }
             paragraph {
                 text(bokmal { + "Du får ikke beregning etter regler for yrkesskade eller yrkessykdom fordi du ikke har en godkjent yrkesskade eller yrkessykdom." },
-                    nynorsk { + "Du får ikkje berekning etter reglar for yrkesskade eller yrkessjukdom fordi du ikkje har ei godkjend yrkesskade eller yrkessjukdom." })
+                    nynorsk { + "Du får ikkje berekning etter reglar for yrkesskade eller yrkessjukdom fordi du ikkje har ein godkjent yrkesskade eller yrkessjukdom." })
             }
             paragraph {
                 text(bokmal { + "For å ha rett til uføretrygd etter reglende for yrkesskade eller yrkessykdom, må uførheten din skyldes en yrkesskade eller yrkessykdom som er godkjent av Nav." },
-                    nynorsk { + "For å ha rett til uføretrygd etter reglane for yrkesskade eller yrkessjukdom, må uførleiken din skuldast ei yrkesskade eller yrkessjukdom som er godkjend av Nav." })
+                    nynorsk { + "For å ha rett til uføretrygd etter reglane for yrkesskade eller yrkessjukdom, må uførleiken din skuldast ein yrkesskade eller yrkessjukdom som er godkjent av Nav." })
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-17." },

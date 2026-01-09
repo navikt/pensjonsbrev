@@ -51,7 +51,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { + "Derfor endrer vi ikke inntektsgrensen din"},
-                    nynorsk { + "Difor endrar vi ikkje inntektsgrensa di"})
+                    nynorsk { + "Derfor endrar vi ikkje inntektsgrensa di"})
             }
             paragraph {
                 text(bokmal { + "Du får ikke endring i inntektsgrensen din, fordi du ikke har hatt en varig inntektsøkning i din stilling på " + fritekst("prosentandel") + " prosent."},
@@ -65,8 +65,8 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             paragraph {
                 text( bokmal { +"Inntektsgrensen din er beregnet ut fra den inntekten du hadde før du ble ufør. " +
                         "Når du søker om å endre inntektsgrensen din, må vi se om inntekten i dag er høyere enn inntekten du hadde før du ble ufør." },
-                    nynorsk { +"Inntektsgrensa di er berekna ut frå den inntekta du hadde før du vart ufør. " +
-                        "Når du søkjer om å endre inntektsgrensa di, må vi sjå om inntekta i dag er høgare enn inntekta du hadde før du vart ufør." }
+                    nynorsk { +"Inntektsgrensa di er berekna ut frå den inntekta du hadde før du blei ufør. " +
+                        "Når du søkjer om å endre inntektsgrensa di, må vi sjå om inntekta i dag er høgare enn inntekta du hadde før du blei ufør." }
                 )
             }
 
@@ -83,7 +83,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkåret for å endre inntektsgrensen, og vi avslår derfor søknaden din."},
-                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre inntektsgrensa, og vi avslår difor søknaden din." })
+                    nynorsk { + "Du oppfyller ikkje vilkåret for å endre inntektsgrensa, og vi avslår derfor søknaden din." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 12-9 og forskrift om uføretrygd fra folketrygden § 2-2." },
