@@ -40,6 +40,7 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
+                // Her må vi tilordne til variabel, elles fungerer det ikkje
                 val i1 = cache.cached(Cacheomraade.NORG, "k") {
                     counter++
                     123
