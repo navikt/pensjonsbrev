@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.render.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
@@ -14,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.pensjonInnvilget
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {
@@ -57,7 +56,7 @@ class ShowIfTest {
             }
         }
 
-        assertThat(expected, equalTo(actual))
+        assertThat(expected).isEqualTo(actual)
     }
 
     @Test
@@ -106,7 +105,7 @@ class ShowIfTest {
             }
         }
 
-        assertThat(expected, equalTo(actual))
+        assertThat(expected).isEqualTo(actual)
     }
 
     @Test
@@ -157,6 +156,6 @@ class ShowIfTest {
             }
         }
 
-        assertThat(expected, equalTo(actual))
+        assertThat(expected).isEqualTo(actual)
     }
 }
