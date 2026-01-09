@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.render
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
@@ -17,6 +15,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.dsl.SomeDto
 import no.nav.pensjon.brev.template.render.dsl.testLetterMetadata
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -53,7 +52,7 @@ class IncludeAttachmentTest {
             includeAttachment(testVedlegg, EmptyVedleggData.expr(), false.expr())
         }
 
-        assertThat(actual, equalTo(expected))
+        assertThat(actual).isEqualTo(expected)
     }
 
     data class NullData(val testVedleggData: VedleggData?)
@@ -100,7 +99,7 @@ class IncludeAttachmentTest {
                     IncludeAttachment(selector as Expression<EmptyVedleggData>, testVedlegg, selector.notNull())
                 ), letterMetadata = testLetterMetadata
             )
-            assertThat(testTemplate, equalTo(expected))
+            assertThat(testTemplate).isEqualTo(expected)
         }
     }
 
