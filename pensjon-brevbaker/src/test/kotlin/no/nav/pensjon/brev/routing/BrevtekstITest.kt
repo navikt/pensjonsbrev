@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.routing
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.containsSubstring
 import io.ktor.client.call.body
 import io.ktor.client.request.accept
 import io.ktor.client.request.post
