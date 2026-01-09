@@ -3,7 +3,7 @@ import "~/css/p1.css";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
 import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
@@ -35,7 +35,17 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const [activeTab, setActiveTab] = useState<P1TabKey>("innvilget");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
+  const successTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const queryClient = useQueryClient();
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const formMethods = useForm<P1RedigerbarForm>({
     resolver: zodResolver(p1RedigerbarFormSchema),
@@ -76,8 +86,12 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       queryClient.invalidateQueries({ queryKey: getP1Override.queryKey(brevId) });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
       setSaveSuccess(true);
+      // Clear any existing timeout before setting a new one
+      if (successTimeoutRef.current) {
+        clearTimeout(successTimeoutRef.current);
+      }
       // Auto-hide success message after 3 seconds
-      setTimeout(() => setSaveSuccess(false), 3000);
+      successTimeoutRef.current = setTimeout(() => setSaveSuccess(false), 3000);
     },
   });
 
