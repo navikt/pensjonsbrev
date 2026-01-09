@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.render.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.*
@@ -35,17 +34,14 @@ class ForEachViewTest {
             }
         }
 
-        assertThat(
-            Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    listen.forEach { variable(it) }
-                }
-                repeat(3) {
-                    title1 { variable("5") }
-                }
-            },
-        )
+        hasBlocks {
+            paragraph {
+                listen.forEach { variable(it) }
+            }
+            repeat(3) {
+                title1 { variable("5") }
+            }
+        }(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
     }
 
     @Test
@@ -63,18 +59,15 @@ class ForEachViewTest {
             }
         }
 
-        assertThat(
-            Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    listen.forEach { nestedList ->
-                        nestedList.forEach { str ->
-                            variable(str)
-                        }
+        hasBlocks {
+            paragraph {
+                listen.forEach { nestedList ->
+                    nestedList.forEach { str ->
+                        variable(str)
                     }
                 }
             }
-        )
+        }(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
     }
 
     data class Argument(val value: String) : AutobrevData
@@ -100,17 +93,15 @@ class ForEachViewTest {
         }
 
         val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
-        assertThat(
-            render.letterMarkup,
-            hasBlocks {
-                paragraph {
-                    listen.forEach { str ->
-                        variable("Tja:")
-                        variable(str)
-                    }
+
+        hasBlocks {
+            paragraph {
+                listen.forEach { str ->
+                    variable("Tja:")
+                    variable(str)
                 }
             }
-        )
+        }(render.letterMarkup)
     }
 
     @Test
@@ -128,21 +119,18 @@ class ForEachViewTest {
         }
         val expected = "1,1;1,2;2,1;2,2;"
 
-        assertThat(
-            Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    list.forEach { outer ->
-                        list.forEach { inner ->
-                            variable(outer)
-                            literal(",")
-                            variable(inner)
-                            literal(";")
-                        }
+        hasBlocks {
+            paragraph {
+                list.forEach { outer ->
+                    list.forEach { inner ->
+                        variable(outer)
+                        literal(",")
+                        variable(inner)
+                        literal(";")
                     }
                 }
             }
-        )
+        }(Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
     }
 
     data class ListArgument(val liste: List<String>)

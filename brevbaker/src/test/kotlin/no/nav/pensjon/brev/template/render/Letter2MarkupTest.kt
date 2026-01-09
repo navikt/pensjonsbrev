@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.render
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.outlineTestTemplate
@@ -18,6 +16,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.Year
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -34,14 +33,11 @@ class Letter2MarkupTest {
             paragraph { text(bokmal { +"hei paragraph2" }) }
         }
 
-        assertThat(
-            result.letterMarkup,
-            hasBlocks {
+        hasBlocks {
                 title1 { literal("hei tittel") }
                 paragraph { literal("hei paragraph") }
                 paragraph { literal("hei paragraph2") }
-            }
-        )
+        }(result.letterMarkup)
     }
 
     @Test
@@ -67,15 +63,12 @@ class Letter2MarkupTest {
             }
         }
 
-        assertThat(
-            result.letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("first")
+        hasBlocks {
+            paragraph {
+                literal("first")
                     literal("second")
                 }
-            }
-        )
+        }(result.letterMarkup)
     }
 
     @Test
@@ -86,16 +79,12 @@ class Letter2MarkupTest {
                 text(bokmal { +"second" })
             }
         }
-
-        assertThat(
-            result.letterMarkup,
-            hasBlocks {
-                title1 {
-                    literal("first")
-                    literal("second")
-                }
+        hasBlocks {
+            title1 {
+                literal("first")
+                literal("second")
             }
-        )
+        }(result.letterMarkup)
     }
 
     @Test
@@ -106,15 +95,12 @@ class Letter2MarkupTest {
             }
         }
 
-        assertThat(
-            result.letterMarkup,
-            hasBlocks {
-                title1 {
-                    literal("noe tekst ")
-                    variable("2024")
-                }
+        hasBlocks {
+            title1 {
+                literal("noe tekst ")
+                variable("2024")
             }
-        )
+        }(result.letterMarkup)
     }
 
     @Test
@@ -133,10 +119,8 @@ class Letter2MarkupTest {
         }
         val result = Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Bokmal, felles))
 
-        assertThat(
-            result.letterMarkup.title.joinToString("") { it.text },
-            equalTo("noe tekst 2024")
-        )
+        assertThat(result.letterMarkup.title.joinToString("") { it.text })
+            .isEqualTo("noe tekst 2024")
     }
 
     @Test
@@ -149,16 +133,13 @@ class Letter2MarkupTest {
             }
         }
 
-        assertThat(
-            result.letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("hei")
-                    newLine()
-                    literal("ha det bra")
-                }
+        hasBlocks {
+            paragraph {
+                literal("hei")
+                newLine()
+                literal("ha det bra")
             }
-        )
+        }(result.letterMarkup)
     }
 
 }

@@ -1,16 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.helpers
 
 import com.google.devtools.ksp.impl.KotlinSymbolProcessing
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.*
 import no.nav.pensjon.brev.template.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-
-private fun hasSelectorFile(name: String) =
-    anyElement(has(KotlinSourceFile::name, equalTo("${name}Selectors.kt")))
 
 class TemplateModelHelpersAnnotationProcessorTest {
 
@@ -85,12 +80,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
         ).generateSelectors()
 
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
-        assertThat(
-            result.generatedSources, allOf(
-                hasSelectorFile("ParentModel"),
-                hasSelectorFile("UncleModel"),
-            )
-        )
+        assertThat(result.generatedSources.any { it.name == "ParentModelSelectors.kt" }).isTrue
+        assertThat(result.generatedSources.any { it.name == "UncleModelSelectors.kt" }).isTrue
     }
 
 
@@ -131,14 +122,11 @@ class TemplateModelHelpersAnnotationProcessorTest {
         ).generateSelectors()
 
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
-        assertThat(
-            result.generatedSources, allOf(
-                hasSelectorFile("AMother"),
-                hasSelectorFile("ParentModel"),
-                hasSelectorFile("UncleModel").not(),
-                hasSelectorFile("ChildModel").not(),
-            )
-        )
+
+        assertThat(result.generatedSources.any { it.name == "AMotherSelectors.kt" }).isTrue
+        assertThat(result.generatedSources.any { it.name == "ParentModelSelectors.kt" }).isTrue
+        assertThat(result.generatedSources.any { it.name == "ChildModelSelectors.kt" }).isFalse
+        assertThat(result.generatedSources.any { it.name == "UncleModelSelectors.kt" }).isFalse
     }
 
     @Test

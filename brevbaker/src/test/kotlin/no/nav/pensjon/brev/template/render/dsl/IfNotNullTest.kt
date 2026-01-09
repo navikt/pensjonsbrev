@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.render.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.pensjon.brev.template.HasModel
@@ -57,28 +56,22 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull renders successfully for non-null value`() {
-        assertThat(
-            Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("alltid med")
-                    literal("hei: ")
-                    variable("Ole")
-                }
+        hasBlocks {
+            paragraph {
+                literal("alltid med")
+                literal("hei: ")
+                variable("Ole")
             }
-        )
+        }(Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup)
     }
 
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
-        assertThat(
-            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("alltid med")
-                }
+        hasBlocks {
+            paragraph {
+                literal("alltid med")
             }
-        )
+        }(Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup)
     }
 
     @Nested
@@ -86,42 +79,33 @@ class IfNotNullTest {
     inner class AbsoluteValue {
         @Test
         fun `renders when preceding condition is not met and orShowIf condition is met`() {
-            assertThat(
-                Letter2Markup.render(LetterImpl(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup,
-                hasBlocks {
-                    paragraph {
-                        literal("alltid med")
-                        literal("tall: ")
-                        variable("138513")
-                    }
+            hasBlocks {
+                paragraph {
+                    literal("alltid med")
+                    literal("tall: ")
+                    variable("138513")
                 }
-            )
+            }(Letter2Markup.render(LetterImpl(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup)
         }
 
         @Test
         fun `does not render when preceding condition met`() {
-            assertThat(
-                Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup,
-                hasBlocks {
-                    paragraph {
-                        literal("alltid med")
-                        literal("hei: ")
-                        variable("Ole")
-                    }
+            hasBlocks {
+                paragraph {
+                    literal("alltid med")
+                    literal("hei: ")
+                    variable("Ole")
                 }
-            )
+            }(Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup)
         }
 
         @Test
         fun `does not render when preceding condition is not met and orShowIf condition is not met`() {
-            assertThat(
-                Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup,
-                hasBlocks {
-                    paragraph {
-                        literal("alltid med")
-                    }
+            hasBlocks {
+                paragraph {
+                    literal("alltid med")
                 }
-            )
+            }(Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup)
         }
     }
 
