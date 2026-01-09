@@ -51,7 +51,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din om uføretrygd fordi vi ikke har fått de opplysningene vi trenger for å behandle søknaden. " +
@@ -75,7 +75,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             paragraph {
                 text(bokmal { + "Vi har ikke fått disse dokumentene og avslår derfor søknaden din om uføretrygd." },
-                    nynorsk { + "Vi har ikkje fått desse dokumenta og avslår difor søknaden din om uføretrygd." })
+                    nynorsk { + "Vi har ikkje fått desse dokumenta og avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven § 21-3 " +

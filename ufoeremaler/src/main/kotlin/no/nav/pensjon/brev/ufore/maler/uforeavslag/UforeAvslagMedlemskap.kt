@@ -55,7 +55,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke uføretrygd" },
-                    nynorsk { +"Difor får du ikkje uføretrygd" })
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke var medlem av folketrygden i de fem siste årene før du ble ufør. Du oppfyller heller ingen av unntaksreglene." },
@@ -69,7 +69,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                 list {
                     item {
                         text(bokmal { + "uførheten din skyldes en godkjent yrkesskade eller yrkessykdom " },
-                            nynorsk { + "uførleiken din skuldast ein godkjend yrkesskade eller yrkessjukdom " })
+                            nynorsk { + "uførleiken din skuldast ein godkjent yrkesskade eller yrkessjukdom " })
                     }
                 }
             }
@@ -79,7 +79,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                 list {
                     item {
                         text(bokmal { + "ble ufør før du fylte 26 år og da var medlem av trygden eller " },
-                            nynorsk { + "vart ufør før du fylte 26 år og då var medlem av trygda eller " })
+                            nynorsk { + "blei ufør før du fylte 26 år og då var medlem av trygda eller " })
                     }
                     item {
                         text(bokmal { + "etter fylte 16 år har vært medlem i trygden med unntak av maksimum fem år " },
@@ -99,7 +99,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
             }
             paragraph {
                 text(bokmal { +"Du flyttet til Norge " + fritekst("siste innflyttingsdato til Norge") + ", og ble da medlem av folketrygden. "},
-                    nynorsk { +"Du flytta til Noreg " + fritekst("siste innflyttingsdato til Norge") + ", og vart då medlem av folketrygda. " })
+                    nynorsk { +"Du flytta til Noreg " + fritekst("siste innflyttingsdato til Norge") + ", og blei då medlem av folketrygda. " })
             }
 
             paragraph {
@@ -117,7 +117,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                 text(bokmal { + "Vi har fastsatt uføretidspunktet ditt til " + fritekst("dato") + ". " +
                         "Vi har vurdert at inntektsevnen din ble varig nedsatt med minst halvparten fra dette tidspunktet." },
                     nynorsk { + "Vi har fastsett uføretidspunktet ditt til " + fritekst("dato") + ". " +
-                            "Vi har vurdert at inntektsevna di vart varig nedsett med minst halvparten frå dette tidspunktet." }
+                            "Vi har vurdert at inntektsevna di blei varig nedsett med minst halvparten frå dette tidspunktet." }
                 )
             }
 
@@ -128,7 +128,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
 
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd." },
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om uføretrygd." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
                 text(bokmal { + "Vedtaket har vi gjort etter folketrygdloven § 12-2. " },
@@ -148,7 +148,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                                 "Du kan lese mer om supplerende stønad til uføre flyktninger på vår nettside nav.no. "
                     },
                         nynorsk {
-                            +"Dersom du har godkjend flyktningstatus etter § 28 i utlendingslova gitt i vedtak frå Utlendingsnemnda (UDI), " +
+                            +"Dersom du har godkjent flyktningstatus etter § 28 i utlendingslova gitt i vedtak frå Utlendingsnemnda (UDI), " +
                                     "kan du søkje om supplerande stønad til uføre flyktningar. Stønaden er behovsprøvd og all inntekt/formue frå Noreg og utlandet blir rekna med. " +
                                     "Inntekten/formua til eventuell ektefelle, sambuar eller registrert partnar blir òg rekna med. " +
                                     "Du kan lese meir om supplerande stønad til uføre flyktningar på vår nettside nav.no. "
