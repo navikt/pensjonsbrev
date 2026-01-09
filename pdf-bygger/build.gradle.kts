@@ -80,7 +80,6 @@ dependencies {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
 
-    testImplementation(libs.kotlin.test.junit)
     testImplementation(libs.assertJ)
     testImplementation(libs.ktor.server.test.host)
     testImplementation(testFixtures(project(":brevbaker")))
