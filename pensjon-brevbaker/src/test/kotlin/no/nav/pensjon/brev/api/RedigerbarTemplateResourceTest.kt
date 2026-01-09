@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.api
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.containsSubstring
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.PDFByggerService
@@ -18,6 +16,7 @@ import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class RedigerbarTemplateResourceTest {
@@ -68,8 +67,8 @@ class RedigerbarTemplateResourceTest {
             EksempelbrevRedigerbart.template
         ).first().title.joinToString { it.text }
 
-        assertThat(result, containsSubstring(letterTitle))
+        assertThat(result).contains(letterTitle)
 
-        assertThat(result, containsSubstring(anAttachmentTitle))
+        assertThat(result).contains(anAttachmentTitle)
     }
 }

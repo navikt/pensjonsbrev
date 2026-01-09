@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.template.dsl
 
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.*
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -68,7 +67,7 @@ class TextOnlyScopeTest {
         }.elements.first()
 
         when (element) {
-            is Content -> assertThat(element.content, isA<Element.OutlineContent.ParagraphContent.Text.NewLine<LangBokmal>>())
+            is Content -> assertThat(element.content).isExactlyInstanceOf(Element.OutlineContent.ParagraphContent.Text.NewLine::class.java)
             else -> fail("Element should be Content")
         }
     }

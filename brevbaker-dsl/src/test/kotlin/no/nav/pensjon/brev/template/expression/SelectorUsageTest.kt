@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template.expression
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.hasElement
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -10,6 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage.Property
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class SelectorUsageTest {
@@ -48,7 +47,7 @@ class SelectorUsageTest {
         scope: RootExpressionScope<*>,
         expectedSelector: TemplateModelSelector<*, *>
     ) {
-        assertThat(scope.selectorUsage!!.propertyUsage, hasElement(expectedSelector.usageId()))
+        assertThat(scope.selectorUsage!!.propertyUsage).contains(expectedSelector.usageId())
     }
 
     @Test
@@ -62,7 +61,7 @@ class SelectorUsageTest {
     fun `markerer et felt som brukt naar parent er null`() {
         val scope = RootExpressionScope(RotModel(null), FellesFactory.felles, Language.Bokmal, SelectorUsage())
         argument.aModel.testFeltSafe.eval(scope)
-        assertThat(scope.selectorUsage!!.propertyUsage, hasElement(testFeltSelector.usageId()))
+        assertThat(scope.selectorUsage!!.propertyUsage).contains(testFeltSelector.usageId())
         assertUsage(scope, testFeltSelector)
     }
 

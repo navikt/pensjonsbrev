@@ -1,7 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -14,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
@@ -54,9 +53,7 @@ private class BrevTemplateTest {
                 val text = "fritekst"
                 assertThat(
                     null.expr<String?>().ifNull(fritekst(text))
-                        .eval(testExpressionScope),
-                    equalTo(text)
-                )
+                        .eval(testExpressionScope)).isEqualTo(text)
             }
         }
     }
@@ -87,8 +84,7 @@ private class BrevTemplateTest {
                 val text = "ikkeFriTekst"
                 assertThat(
                     text.expr<String?>().ifNull(fritekst("bla"))
-                        .eval(testExpressionScope), equalTo(text)
-                )
+                        .eval(testExpressionScope)).isEqualTo(text)
             }
         }
     }

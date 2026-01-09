@@ -1,9 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import com.natpryce.hamkrest.MatchResult
-import com.natpryce.hamkrest.Matcher
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.equalTo
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -13,21 +9,10 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.Percent
 import no.nav.pensjon.brevbaker.api.model.Year
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-private val aScope = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
-class EvaluatesMatcher<in T>(private val matcher: Matcher<T>, private val scope: ExpressionScope<*>) :
-    Matcher<Expression<T>> {
-    override fun invoke(actual: Expression<T>): MatchResult = matcher(actual.eval(scope))
-    override val description: String get() = "evaluates and ${matcher.description}"
-}
-
-fun <T> evalsTo(
-    expected: T,
-    scope: ExpressionScope<*> = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
-): EvaluatesMatcher<T> =
-    EvaluatesMatcher(equalTo(expected), scope)
-
+private val scope = ExpressionScope(Unit, FellesFactory.felles, Bokmal)
 
 class EqualsOperationTest {
 
@@ -39,14 +24,14 @@ class EqualsOperationTest {
         val nullExpr: Expression<String?> = null.expr()
         val nullExpr2: Expression<String?> = null.expr()
 
-        assertThat(testExpr equalTo testExpr2, evalsTo(true))
-        assertThat(testExpr equalTo anotherExpr, evalsTo(false))
-        assertThat(testExpr notEqualTo anotherExpr, evalsTo(true))
-        assertThat(testExpr notEqualTo testExpr2, evalsTo(false))
-        assertThat(testExpr equalTo nullExpr, evalsTo(false) )
-        assertThat(testExpr notEqualTo nullExpr, evalsTo(true) )
-        assertThat(nullExpr equalTo nullExpr2, evalsTo(true))
-        assertThat(nullExpr notEqualTo nullExpr2, evalsTo(false))
+        assertThat((testExpr equalTo testExpr2).eval(scope)).isTrue
+        assertThat((testExpr equalTo anotherExpr).eval(scope)).isFalse
+        assertThat((testExpr notEqualTo anotherExpr).eval(scope)).isTrue
+        assertThat((testExpr notEqualTo testExpr2).eval(scope)).isFalse
+        assertThat((testExpr equalTo nullExpr).eval(scope)).isFalse
+        assertThat((testExpr notEqualTo nullExpr).eval(scope)).isTrue
+        assertThat((nullExpr equalTo nullExpr2).eval(scope)).isTrue
+        assertThat((nullExpr notEqualTo nullExpr2).eval(scope)).isFalse
     }
 
     @Test
@@ -54,14 +39,14 @@ class EqualsOperationTest {
         val testExpr = "test".expr()
         val nullExpr: Expression<String?> = null.expr()
 
-        assertThat(testExpr equalTo "test", evalsTo(true))
-        assertThat(testExpr equalTo "another", evalsTo(false))
-        assertThat(testExpr notEqualTo "another", evalsTo(true))
-        assertThat(testExpr notEqualTo "test", evalsTo(false))
-        assertThat(testExpr equalTo nullExpr, evalsTo(false) )
-        assertThat(testExpr notEqualTo nullExpr, evalsTo(true) )
-        assertThat(nullExpr equalTo null, evalsTo(true))
-        assertThat(nullExpr notEqualTo null, evalsTo(false))
+        assertThat((testExpr equalTo "test").eval(scope)).isTrue
+        assertThat((testExpr equalTo "another").eval(scope)).isFalse
+        assertThat((testExpr notEqualTo "another").eval(scope)).isTrue
+        assertThat((testExpr notEqualTo "test").eval(scope)).isFalse
+        assertThat((testExpr equalTo nullExpr).eval(scope)).isFalse
+        assertThat((testExpr notEqualTo nullExpr).eval(scope)).isTrue
+        assertThat((nullExpr equalTo null).eval(scope)).isTrue
+        assertThat((nullExpr notEqualTo null).eval(scope)).isFalse
     }
 
     @Test
@@ -71,17 +56,17 @@ class EqualsOperationTest {
         val kroner2 = Kroner(2).expr()
         val kronerNull: Expression<Kroner?> = null.expr()
 
-        assertThat(kroner5 equalTo kroner5Other, evalsTo(true))
-        assertThat(kroner5 notEqualTo kroner5Other, evalsTo(false))
-        assertThat(kroner5 equalTo kroner2, evalsTo(false))
-        assertThat(kroner5 notEqualTo kroner2, evalsTo(true))
-        assertThat(kroner5 equalTo kronerNull, evalsTo(false))
-        assertThat(kroner5 notEqualTo kronerNull, evalsTo(true))
+        assertThat((kroner5 equalTo kroner5Other).eval(scope)).isTrue
+        assertThat((kroner5 notEqualTo kroner5Other).eval(scope)).isFalse
+        assertThat((kroner5 equalTo kroner2).eval(scope)).isFalse
+        assertThat((kroner5 notEqualTo kroner2).eval(scope)).isTrue
+        assertThat((kroner5 equalTo kronerNull).eval(scope)).isFalse
+        assertThat((kroner5 notEqualTo kronerNull).eval(scope)).isTrue
 
-        assertThat(kroner5 equalTo Kroner(5), evalsTo(true))
-        assertThat(kroner5 notEqualTo Kroner(5), evalsTo(false))
-        assertThat(kroner5 equalTo Kroner(2), evalsTo(false))
-        assertThat(kroner5 notEqualTo Kroner(2), evalsTo(true))
+        assertThat((kroner5 equalTo Kroner(5)).eval(scope)).isTrue
+        assertThat((kroner5 notEqualTo Kroner(5)).eval(scope)).isFalse
+        assertThat((kroner5 equalTo Kroner(2)).eval(scope)).isFalse
+        assertThat((kroner5 notEqualTo Kroner(2)).eval(scope)).isTrue
     }
 
     @Test
@@ -91,17 +76,17 @@ class EqualsOperationTest {
         val year2022 = Year(2022).expr()
         val yearNull: Expression<Year?> = null.expr()
 
-        assertThat(year2025 equalTo year2025Other, evalsTo(true))
-        assertThat(year2025 notEqualTo year2025Other, evalsTo(false))
-        assertThat(year2025 equalTo year2022, evalsTo(false))
-        assertThat(year2025 notEqualTo year2022, evalsTo(true))
-        assertThat(year2025 equalTo yearNull, evalsTo(false))
-        assertThat(year2025 notEqualTo yearNull, evalsTo(true))
+        assertThat((year2025 equalTo year2025Other).eval(scope)).isTrue
+        assertThat((year2025 notEqualTo year2025Other).eval(scope)).isFalse
+        assertThat((year2025 equalTo year2022).eval(scope)).isFalse
+        assertThat((year2025 notEqualTo year2022).eval(scope)).isTrue
+        assertThat((year2025 equalTo yearNull).eval(scope)).isFalse
+        assertThat((year2025 notEqualTo yearNull).eval(scope)).isTrue
 
-        assertThat(year2025 equalTo Year(2025), evalsTo(true))
-        assertThat(year2025 notEqualTo Year(2025), evalsTo(false))
-        assertThat(year2025 equalTo Year(2022), evalsTo(false))
-        assertThat(year2025 notEqualTo Year(2022), evalsTo(true))
+        assertThat((year2025 equalTo Year(2025)).eval(scope)).isTrue
+        assertThat((year2025 notEqualTo Year(2025)).eval(scope)).isFalse
+        assertThat((year2025 equalTo Year(2022)).eval(scope)).isFalse
+        assertThat((year2025 notEqualTo Year(2022)).eval(scope)).isTrue
     }
 
     @Test
@@ -111,17 +96,17 @@ class EqualsOperationTest {
         val percent20 = Percent(20).expr()
         val percentNull: Expression<Percent?> = null.expr()
 
-        assertThat(percent50 equalTo percent50Other, evalsTo(true))
-        assertThat(percent50 notEqualTo percent50Other, evalsTo(false))
-        assertThat(percent50 equalTo percent20, evalsTo(false))
-        assertThat(percent50 notEqualTo percent20, evalsTo(true))
-        assertThat(percent50 equalTo percentNull, evalsTo(false))
-        assertThat(percent50 notEqualTo percentNull, evalsTo(true))
+        assertThat((percent50 equalTo percent50Other).eval(scope)).isTrue
+        assertThat((percent50 notEqualTo percent50Other).eval(scope)).isFalse
+        assertThat((percent50 equalTo percent20).eval(scope)).isFalse
+        assertThat((percent50 notEqualTo percent20).eval(scope)).isTrue
+        assertThat((percent50 equalTo percentNull).eval(scope)).isFalse
+        assertThat((percent50 notEqualTo percentNull).eval(scope)).isTrue
 
-        assertThat(percent50 equalTo Percent(50), evalsTo(true))
-        assertThat(percent50 notEqualTo Percent(50), evalsTo(false))
-        assertThat(percent50 equalTo Percent(20), evalsTo(false))
-        assertThat(percent50 notEqualTo Percent(20), evalsTo(true))
+        assertThat((percent50 equalTo Percent(50)).eval(scope)).isTrue
+        assertThat((percent50 notEqualTo Percent(50)).eval(scope)).isFalse
+        assertThat((percent50 equalTo Percent(20)).eval(scope)).isFalse
+        assertThat((percent50 notEqualTo Percent(20)).eval(scope)).isTrue
     }
 
     @Test
@@ -131,16 +116,16 @@ class EqualsOperationTest {
         val languageNynorsk = Nynorsk.expr()
         val languageNull: Expression<Language?> = null.expr()
 
-        assertThat(languageBokmal equalTo languageBokmal, evalsTo(true))
-        assertThat(languageBokmal notEqualTo languageBokmal, evalsTo(false))
+        assertThat((languageBokmal equalTo languageBokmal).eval(scope)).isTrue
+        assertThat((languageBokmal notEqualTo languageBokmal).eval(scope)).isFalse
 
-        assertThat(languageBokmal notEqualTo languageEnglish, evalsTo(true))
-        assertThat(languageBokmal equalTo languageEnglish, evalsTo(false))
-        assertThat(languageBokmal notEqualTo languageNynorsk, evalsTo(true))
-        assertThat(languageBokmal equalTo languageNynorsk, evalsTo(false))
+        assertThat((languageBokmal notEqualTo languageEnglish).eval(scope)).isTrue
+        assertThat((languageBokmal equalTo languageEnglish).eval(scope)).isFalse
+        assertThat((languageBokmal notEqualTo languageNynorsk).eval(scope)).isTrue
+        assertThat((languageBokmal equalTo languageNynorsk).eval(scope)).isFalse
 
-        assertThat(languageBokmal equalTo languageNull, evalsTo(false))
-        assertThat(languageBokmal notEqualTo languageNull, evalsTo(true))
+        assertThat((languageBokmal equalTo languageNull).eval(scope)).isFalse
+        assertThat((languageBokmal notEqualTo languageNull).eval(scope)).isTrue
     }
 
     @Test
@@ -148,28 +133,28 @@ class EqualsOperationTest {
         val languageBokmal = Bokmal.expr()
         val languageNull: Expression<Language?> = null.expr()
 
-        assertThat(languageBokmal equalTo Bokmal, evalsTo(true))
-        assertThat(languageBokmal notEqualTo Bokmal, evalsTo(false))
+        assertThat((languageBokmal equalTo Bokmal).eval(scope)).isTrue
+        assertThat((languageBokmal notEqualTo Bokmal).eval(scope)).isFalse
 
-        assertThat(languageBokmal notEqualTo English, evalsTo(true))
-        assertThat(languageBokmal equalTo English, evalsTo(false))
-        assertThat(languageBokmal notEqualTo Nynorsk, evalsTo(true))
-        assertThat(languageBokmal equalTo Nynorsk, evalsTo(false))
+        assertThat((languageBokmal notEqualTo English).eval(scope)).isTrue
+        assertThat((languageBokmal equalTo English).eval(scope)).isFalse
+        assertThat((languageBokmal notEqualTo Nynorsk).eval(scope)).isTrue
+        assertThat((languageBokmal equalTo Nynorsk).eval(scope)).isFalse
 
-        assertThat(languageNull equalTo null, evalsTo(true))
-        assertThat(languageNull notEqualTo null, evalsTo(false))
-        assertThat(languageNull equalTo Bokmal, evalsTo(false))
-        assertThat(languageNull notEqualTo Bokmal, evalsTo(true))
+        assertThat((languageNull equalTo null).eval(scope)).isTrue
+        assertThat((languageNull notEqualTo null).eval(scope)).isFalse
+        assertThat((languageNull equalTo Bokmal).eval(scope)).isFalse
+        assertThat((languageNull notEqualTo Bokmal).eval(scope)).isTrue
     }
 
     @Test
     fun `equals of IntValue and literal`() {
         val kroner5 = Kroner(5).expr()
 
-        assertThat(kroner5 equalTo 5, evalsTo(true))
-        assertThat(kroner5 notEqualTo 5, evalsTo(false))
-        assertThat(kroner5 equalTo 2, evalsTo(false))
-        assertThat(kroner5 notEqualTo 2, evalsTo(true))
+        assertThat((kroner5 equalTo 5).eval(scope)).isTrue
+        assertThat((kroner5 notEqualTo 5).eval(scope)).isFalse
+        assertThat((kroner5 equalTo 2).eval(scope)).isFalse
+        assertThat((kroner5 notEqualTo 2).eval(scope)).isTrue
     }
 
 }

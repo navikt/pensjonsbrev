@@ -52,7 +52,6 @@ updates:
           - "com.fasterxml.jackson*"
           - "com.google*"
           - "commons-codec:commons-codec"
-          - "com.natpryce:hamkrest"
           - "com.zaxxer:HikariCP"
           - "dev.zacsweers.kctfork:ksp"
           - "io.getunleash*"

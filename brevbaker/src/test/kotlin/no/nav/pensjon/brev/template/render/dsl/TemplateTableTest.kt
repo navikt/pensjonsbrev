@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.render.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
@@ -42,13 +41,10 @@ class TemplateTableTest {
         }
 
         val actual = Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup
-        assertThat(
-            actual,
-            hasBlocks {
-                title1 { literal("THIS TEXT SHOULD RENDER") }
-                paragraph { }
-            }
-        )
+        hasBlocks {
+            title1 { literal("THIS TEXT SHOULD RENDER") }
+            paragraph { }
+        }(actual)
     }
 
     @Test
@@ -77,16 +73,13 @@ class TemplateTableTest {
             }
         }
 
-        assertThat(
-            Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    table {
-                        header { column { literal("This text should render 1") } }
-                        row { cell { literal("This text should render 2") } }
-                    }
+        hasBlocks {
+            paragraph {
+                table {
+                    header { column { literal("This text should render 1") } }
+                    row { cell { literal("This text should render 2") } }
                 }
             }
-        )
+        }(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup)
     }
 }

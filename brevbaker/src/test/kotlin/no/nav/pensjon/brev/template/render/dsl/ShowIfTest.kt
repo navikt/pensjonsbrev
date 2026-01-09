@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template.render.dsl
 
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
@@ -16,59 +15,50 @@ class ShowIfTest {
 
     @Test
     fun `showIf renders when condition evaluates to true`() {
-        assertThat(
-            Letter2Markup.render(
-                LetterImpl(
-                    showIfTemplate,
-                    SomeDto("showIf", false),
-                    Language.Bokmal,
-                    felles
-                )
-            ).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("showIf tekst")
-                }
+        hasBlocks {
+            paragraph {
+                literal("showIf tekst")
             }
-        )
+        }(Letter2Markup.render(
+            LetterImpl(
+                showIfTemplate,
+                SomeDto("showIf", false),
+                Language.Bokmal,
+                felles
+            )
+        ).letterMarkup)
     }
 
     @Test
     fun `orShowIf renders when condition evaluates to true`() {
-        assertThat(
-            Letter2Markup.render(
-                LetterImpl(
-                    showIfTemplate,
-                    SomeDto("orShowIf", false),
-                    Language.Bokmal,
-                    felles
-                )
-            ).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("orShowIf tekst")
-                }
+        hasBlocks {
+            paragraph {
+                literal("orShowIf tekst")
             }
-        )
+        }(Letter2Markup.render(
+            LetterImpl(
+                showIfTemplate,
+                SomeDto("orShowIf", false),
+                Language.Bokmal,
+                felles
+            )
+        ).letterMarkup)
     }
 
     @Test
     fun `orShow renders when condition evaluates to true`() {
-        assertThat(
-            Letter2Markup.render(
-                LetterImpl(
-                    showIfTemplate,
-                    SomeDto("orShow", false),
-                    Language.Bokmal,
-                    felles
-                )
-            ).letterMarkup,
-            hasBlocks {
-                paragraph {
-                    literal("orShow tekst")
-                }
+        hasBlocks {
+            paragraph {
+                literal("orShow tekst")
             }
-        )
+        }(Letter2Markup.render(
+            LetterImpl(
+                showIfTemplate,
+                SomeDto("orShow", false),
+                Language.Bokmal,
+                felles
+            )
+        ).letterMarkup)
     }
 
     private val showIfTemplate = outlineTestTemplate<SomeDto> {

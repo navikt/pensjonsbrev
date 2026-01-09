@@ -26,7 +26,6 @@ dependencies {
     implementation(libs.kotlinx.html)
 
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.hamkrest)
 
     testImplementation(testFixtures(project(":brevbaker-dsl")))
 
