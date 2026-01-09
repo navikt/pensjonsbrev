@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.routing
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.natpryce.hamkrest.containsSubstring
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.http.*
@@ -29,7 +31,6 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import kotlin.test.assertContains
 
 @Tag(TestTags.INTEGRATION_TEST)
 class BrevtekstITest {
@@ -140,3 +141,5 @@ private fun finnTekstForHeader(header: Header): String =
 private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { it.content.tekst() }
 
 private fun List<ParagraphContent.Text>.tekst() = joinToString("") { it.text }
+
+private fun assertContains(tekst: String, matches: String) = assertThat(tekst, containsSubstring(matches))
