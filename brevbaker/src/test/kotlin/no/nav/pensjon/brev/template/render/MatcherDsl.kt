@@ -7,7 +7,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import org.assertj.core.api.Assertions.assertThat
-import java.util.function.Consumer
 
 internal fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit): ((LetterMarkup) -> Unit) =
     { assertThat(it.blocks).satisfies(BlocksAssert(matchSize).apply(builder).build()) }
@@ -20,13 +19,13 @@ annotation class LetterMarkupMatcherDsl
 
 @LetterMarkupMatcherDsl
 class AttachmentsAssert(private val matchSize: Boolean) {
-    private val attachmentAssertions = mutableListOf<Consumer<LetterMarkup.Attachment>>()
+    private val attachmentAssertions = mutableListOf<(LetterMarkup.Attachment) -> Unit>()
 
     fun attachment(builder: AttachmentAssert.() -> Unit) {
         attachmentAssertions.add(AttachmentAssert().apply(builder).build())
     }
 
-    fun build(): Consumer<List<LetterMarkup.Attachment>> = Consumer { actual ->
+    fun build(): (List<LetterMarkup.Attachment>) -> Unit = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(attachmentAssertions)
         }
@@ -37,54 +36,54 @@ class AttachmentsAssert(private val matchSize: Boolean) {
 }
 
 class AttachmentAssert {
-    private val assertions = mutableListOf<Consumer<LetterMarkup.Attachment>>()
+    private val assertions = mutableListOf<(LetterMarkup.Attachment) -> Unit>()
 
     fun title(that: ContentAssert.() -> Unit) {
-        assertions.add(Consumer { assertThat(it.title).satisfies(ContentAssert().apply(that).build()) })
+        assertions.add({ assertThat(it.title).satisfies(ContentAssert().apply(that).build()) })
     }
 
     fun blocks(matchSize: Boolean = true, that: BlocksAssert.() -> Unit) {
-        assertions.add(Consumer { assertThat(it.blocks).satisfies(BlocksAssert(matchSize).apply(that).build()) })
+        assertions.add({ assertThat(it.blocks).satisfies(BlocksAssert(matchSize).apply(that).build()) })
     }
 
-    fun build(): Consumer<LetterMarkup.Attachment> = Consumer { actual ->
-        assertions.forEach { it.accept(actual) }
+    fun build(): (LetterMarkup.Attachment) -> Unit = { actual ->
+        assertions.forEach { it(actual) }
     }
 }
 
 @LetterMarkupMatcherDsl
 class BlocksAssert(private val matchSize: Boolean) {
-    private val blockAssertions = mutableListOf<Consumer<Block>>()
+    private val blockAssertions = mutableListOf<(Block) -> Unit>()
 
     fun paragraph(that: ContentAssert.() -> Unit) {
-        blockAssertions.add(Consumer {
+        blockAssertions.add({
             assertThat(it).isInstanceOf(Block.Paragraph::class.java)
             assertThat((it as Block.Paragraph).content).satisfies(ContentAssert().apply(that).build())
         })
     }
 
     fun title1(that: ContentAssert.() -> Unit) {
-        blockAssertions.add(Consumer {
+        blockAssertions.add({
             assertThat(it).isInstanceOf(Block.Title1::class.java)
             assertThat((it as Block.Title1).content).satisfies(ContentAssert().apply(that).build())
         })
     }
 
     fun title2(that: ContentAssert.() -> Unit) {
-        blockAssertions.add(Consumer {
+        blockAssertions.add({
             assertThat(it).isInstanceOf(Block.Title2::class.java)
             assertThat((it as Block.Title2).content).satisfies(ContentAssert().apply(that).build())
         })
     }
 
     fun title3(that: ContentAssert.() -> Unit) {
-        blockAssertions.add(Consumer {
+        blockAssertions.add({
             assertThat(it).isInstanceOf(Block.Title3::class.java)
             assertThat((it as Block.Title3).content).satisfies(ContentAssert().apply(that).build())
         })
     }
 
-    fun build(): Consumer<List<Block>> = Consumer { actual ->
+    fun build(): (List<Block>) -> Unit = { actual ->
         if (matchSize) {
             assertThat(actual).hasSameSizeAs(blockAssertions)
         }
@@ -96,12 +95,12 @@ class BlocksAssert(private val matchSize: Boolean) {
 
 @LetterMarkupMatcherDsl
 class ContentAssert {
-    private val contentAssertions = mutableListOf<Consumer<ParagraphContent>>()
+    private val contentAssertions = mutableListOf<(ParagraphContent) -> Unit>()
 
     fun variable(that: TextAssert<ParagraphContent.Text.Variable>.() -> Unit) {
-        contentAssertions.add(Consumer {
+        contentAssertions.add({
             assertThat(it).isInstanceOf(ParagraphContent.Text.Variable::class.java)
-            TextAssert<ParagraphContent.Text.Variable>().apply(that).build().accept(it as ParagraphContent.Text.Variable)
+            TextAssert<ParagraphContent.Text.Variable>().apply(that).build()(it as ParagraphContent.Text.Variable)
         })
     }
 
@@ -110,9 +109,9 @@ class ContentAssert {
     }
 
     fun literal(that: TextAssert<ParagraphContent.Text.Literal>.() -> Unit) {
-        contentAssertions.add(Consumer {
+        contentAssertions.add({
             assertThat(it).isInstanceOf(ParagraphContent.Text.Literal::class.java)
-            TextAssert<ParagraphContent.Text.Literal>().apply(that).build().accept(it as ParagraphContent.Text.Literal)
+            TextAssert<ParagraphContent.Text.Literal>().apply(that).build()(it as ParagraphContent.Text.Literal)
         })
     }
 
@@ -121,26 +120,26 @@ class ContentAssert {
     }
 
     fun newLine() {
-        contentAssertions.add(Consumer {
+        contentAssertions.add({
             assertThat(it.type).isEqualTo(ParagraphContent.Type.NEW_LINE)
         })
     }
 
     fun table(that: TableAssert.() -> Unit) {
-        contentAssertions.add(Consumer {
+        contentAssertions.add({
             assertThat(it).isInstanceOf(Table::class.java)
-            TableAssert().apply(that).build().accept(it as Table)
+            TableAssert().apply(that).build()(it as Table)
         })
     }
 
     fun list(that: ListAssert.() -> Unit) {
-        contentAssertions.add(Consumer {
+        contentAssertions.add({
             assertThat(it).isInstanceOf(ItemList::class.java)
-            ListAssert().apply(that).build().accept(it as ItemList)
+            ListAssert().apply(that).build()(it as ItemList)
         })
     }
 
-    fun build(): Consumer<List<ParagraphContent>> = Consumer { actual ->
+    fun build(): (List<ParagraphContent>) -> Unit = { actual ->
         assertThat(actual).hasSameSizeAs(contentAssertions)
         contentAssertions.forEachIndexed { index, assertion ->
             assertThat(actual[index]).satisfies(assertion)
@@ -149,15 +148,15 @@ class ContentAssert {
 }
 
 class ListAssert {
-    private val itemAssertions = mutableListOf<Consumer<ItemList.Item>>()
+    private val itemAssertions = mutableListOf<(ItemList.Item) -> Unit>()
 
     fun item(that: ContentAssert.() -> Unit) {
-        itemAssertions.add(Consumer {
+        itemAssertions.add({
             assertThat(it.content).satisfies(ContentAssert().apply(that).build())
         })
     }
 
-    fun build(): Consumer<ItemList> = Consumer { actual ->
+    fun build(): (ItemList) -> Unit = { actual ->
         assertThat(actual.items).hasSameSizeAs(itemAssertions)
         itemAssertions.forEachIndexed { index, assertion ->
             assertThat(actual.items[index]).satisfies(assertion)
@@ -166,11 +165,11 @@ class ListAssert {
 }
 
 class TableAssert {
-    private val tableAssertions = mutableListOf<Consumer<Table>>()
-    private val rowAssertions = mutableListOf<Consumer<Table.Row>>()
+    private val tableAssertions = mutableListOf<(Table) -> Unit>()
+    private val rowAssertions = mutableListOf<(Table.Row) -> Unit>()
 
     fun header(that: HeaderAssert.() -> Unit) {
-        tableAssertions.add(Consumer {
+        tableAssertions.add({
             assertThat(it.header).satisfies(HeaderAssert().apply(that).build())
         })
     }
@@ -179,8 +178,8 @@ class TableAssert {
         rowAssertions.add(RowAssert().apply(that).build())
     }
 
-    fun build(): Consumer<Table> = Consumer { actual ->
-        tableAssertions.forEach { it.accept(actual) }
+    fun build(): (Table) -> Unit = { actual ->
+        tableAssertions.forEach { it(actual) }
         assertThat(actual.rows).hasSameSizeAs(rowAssertions)
         rowAssertions.forEachIndexed { index, assertion ->
             assertThat(actual.rows[index]).satisfies(assertion)
@@ -188,13 +187,13 @@ class TableAssert {
     }
 
     class RowAssert {
-        private val cellAssertions = mutableListOf<Consumer<Table.Cell>>()
+        private val cellAssertions = mutableListOf<(Table.Cell) -> Unit>()
         fun cell(that: ContentAssert.() -> Unit) {
-            cellAssertions.add(Consumer {
+            cellAssertions.add({
                 assertThat(it.text).satisfies(ContentAssert().apply(that).build())
             })
         }
-        fun build(): Consumer<Table.Row> = Consumer { actual ->
+        fun build(): (Table.Row) -> Unit = { actual ->
             assertThat(actual.cells).hasSameSizeAs(cellAssertions)
             cellAssertions.forEachIndexed { index, assertion ->
                 assertThat(actual.cells[index]).satisfies(assertion)
@@ -203,13 +202,13 @@ class TableAssert {
     }
 
     class HeaderAssert {
-        private val columnAssertions = mutableListOf<Consumer<Table.ColumnSpec>>()
+        private val columnAssertions = mutableListOf<(Table.ColumnSpec) -> Unit>()
         fun column(that: ContentAssert.() -> Unit) {
-            columnAssertions.add(Consumer {
+            columnAssertions.add({
                 assertThat(it.headerContent.text).satisfies(ContentAssert().apply(that).build())
             })
         }
-        fun build(): Consumer<Table.Header> = Consumer { actual ->
+        fun build(): (Table.Header) -> Unit = { actual ->
             assertThat(actual.colSpec).hasSameSizeAs(columnAssertions)
             columnAssertions.forEachIndexed { index, assertion ->
                 assertThat(actual.colSpec[index]).satisfies(assertion)
@@ -220,13 +219,13 @@ class TableAssert {
 
 @LetterMarkupMatcherDsl
 class TextAssert<T : ParagraphContent.Text> {
-    private val textAssertions = mutableListOf<Consumer<String>>()
+    private val textAssertions = mutableListOf<(String) -> Unit>()
 
     fun text(str: String) {
-        textAssertions.add(Consumer { assertThat(it).isEqualTo(str) })
+        textAssertions.add( { assertThat(it).isEqualTo(str) })
     }
 
-    fun build(): Consumer<T> = Consumer { actual ->
-        textAssertions.forEach { it.accept(actual.text) }
+    fun build(): (T) -> Unit = { actual ->
+        textAssertions.forEach { it(actual.text) }
     }
 }
