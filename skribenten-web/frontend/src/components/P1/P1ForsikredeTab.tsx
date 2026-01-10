@@ -36,6 +36,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Etternavn"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.etternavn")}
               />
@@ -48,6 +49,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Fornavn"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.fornavn")}
               />
@@ -60,6 +62,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Etternavn ved fødsel"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.etternavnVedFoedsel")}
               />
@@ -74,7 +77,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
           <Table.Row>
             <Table.DataCell>2.5 Sist kjente adresse</Table.DataCell>
             <Table.DataCell>
-              <TextField className="p1-seamless-textfield" hideLabel label="Sist kjente adresse" />
+              <TextField className="p1-seamless-textfield" hideLabel label="Sist kjente adresse" readOnly={disabled} />
             </Table.DataCell>
           </Table.Row>
           <Table.Row>
@@ -84,6 +87,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Gatenavn og -nummer"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.adresselinje")}
               />
@@ -96,6 +100,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Poststed"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.poststed")}
               />
@@ -108,6 +113,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Postnummer"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.postnummer")}
               />
@@ -120,6 +126,7 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Landskode"
+                readOnly={disabled}
                 size="small"
                 {...register("forsikrede.landkode")}
               />

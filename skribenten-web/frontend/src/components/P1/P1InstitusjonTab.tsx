@@ -37,6 +37,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Navn"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.navn")}
               />
@@ -49,6 +50,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Gatenavn og -nummer"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.adresselinje")}
               />
@@ -61,6 +63,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Poststed"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.poststed")}
               />
@@ -73,6 +76,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Postnummer"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.postnummer")}
               />
@@ -85,6 +89,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Landskode"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.landkode")}
               />
@@ -97,6 +102,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Institusjons-ID"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.institusjonsID")}
               />
@@ -109,6 +115,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Faksnummer"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.faksnummer")}
               />
@@ -121,6 +128,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Telefonnummer"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.telefonnummer")}
               />
@@ -133,6 +141,7 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="E-post"
+                readOnly={disabled}
                 size="small"
                 {...register("utfyllendeInstitusjon.epost")}
               />

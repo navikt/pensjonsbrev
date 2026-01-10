@@ -35,6 +35,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield"
                 hideLabel
                 label="Etternavn"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.etternavn")}
               />
@@ -47,6 +48,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Fornavn"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.fornavn")}
               />
@@ -59,6 +61,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Etternavn ved fødsel"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.etternavnVedFoedsel")}
               />
@@ -67,7 +70,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
           <Table.Row>
             <Table.DataCell>1.4 Gjeldende adresse</Table.DataCell>
             <Table.DataCell>
-              <TextField className="p1-seamless-textfield " hideLabel label="Gjeldende adresse" />
+              <TextField className="p1-seamless-textfield " hideLabel label="Gjeldende adresse" readOnly={disabled} />
             </Table.DataCell>
           </Table.Row>
           <Table.Row>
@@ -77,6 +80,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Gatenavn og -nummer"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.adresselinje")}
               />
@@ -89,6 +93,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Poststed"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.poststed")}
               />
@@ -101,6 +106,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Postnummer"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.postnummer")}
               />
@@ -113,6 +119,7 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
                 className="p1-seamless-textfield "
                 hideLabel
                 label="Landskode"
+                readOnly={disabled}
                 size="small"
                 {...register("innehaver.landkode")}
               />

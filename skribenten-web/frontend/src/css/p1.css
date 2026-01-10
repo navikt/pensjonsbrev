@@ -143,6 +143,15 @@
   user-select: none;
 }
 
+/* 
+  Prevent "double opacity" when using readOnly inputs inside a disabled tab.
+  The styling is handled by the parent .p1-tab-disabled class.
+*/
+.p1-tab-disabled .p1-seamless-textfield input[readonly] {
+  opacity: 1;
+  color: inherit;
+}
+
 /* ===========================================
  * Aksel DatePicker width-override
  * =========================================== */
