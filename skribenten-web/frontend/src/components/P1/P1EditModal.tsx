@@ -69,10 +69,10 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
   // When P1 data arrives, reset form with mapped values
   useEffect(() => {
-    if (p1Data) {
+    if (p1Data && !isDirty) {
       reset(mapP1DtoToForm(p1Data));
     }
-  }, [p1Data, reset]);
+  }, [p1Data, reset, isDirty]);
 
   const { data: landListe } = useLandData();
 
@@ -81,7 +81,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       const dto: P1Redigerbar = mapP1FormToDto(formValues);
       return saveP1Override(saksId, brevId, dto);
     },
-    onSuccess: () => {
+    onSuccess: (_, savedFormValues) => {
+      // Reset form with the values we just saved to mark it as clean (not dirty)
+      // ie makes the isDirty false again
+      reset(savedFormValues);
+
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
       queryClient.invalidateQueries({ queryKey: getP1Override.queryKey(brevId) });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
