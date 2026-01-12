@@ -6,7 +6,7 @@ assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.20.0"
-commonVersion = "2.19.0"
+commonVersion = "2.20.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.20.0"
 hamkrestVersion = "1.8.0.1"
@@ -32,7 +32,7 @@ binary-compatibility-validator = { id = "org.jetbrains.kotlinx.binary-compatibil
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintVersion" }
 
 [libraries]
-brevbaker-common = { module = "no.nav.pensjon.brevbaker:brevbaker-api-model-common", version.ref = "commonVersion" }
+brevbaker-common = { module = "no.nav.brev.brevbaker:api-model-common", version.ref = "commonVersion" }
 commons-codec = { module = "commons-codec:commons-codec", version.ref = "commonsCodecVersion" }
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }

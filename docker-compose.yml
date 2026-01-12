@@ -1,7 +1,7 @@
 #Used for local testing purposes
 services:
   pdf-bygger:
-    build: ./pdf-bygger
+    build: ./brevbaker/pdf-bygger
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
       - PDF_COMPILE_TIMEOUT_SECONDS=200
@@ -19,12 +19,12 @@ services:
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf
-    build: ./pensjon-brevbaker
+    build: ./pensjon/brevbaker
     ports:
       - "8080:8080"
       - "5015:5015" # debug port
     env_file:
-      - ./pensjon-brevbaker/secrets/unleash.env
+      - ./pensjon/brevbaker/secrets/unleash.env
   skribenten-backend:
     profiles:
       - skribenten

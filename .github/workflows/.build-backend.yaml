@@ -11,6 +11,11 @@ on:
         description: "Path to build"
         required: true
         type: string
+      gradlePath:
+        description: "gradle build path"
+        required: false
+        type: string
+        default: ""
       extraModulesToBuild:
         description: "Modules to build"
         required: false
@@ -24,6 +29,11 @@ on:
         required: false
         type: boolean
         default: false
+      publishedJarName:
+        description: "published jar file name"
+        required: false
+        type: string
+        default: ""
     outputs:
       image:
         description: "Image name"
@@ -59,14 +69,14 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "publish common to Maven local"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
       - name: "publish extra modules to Maven local"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |
           ./gradlew ${{ inputs.extraModulesToBuild }}
       - name: "compile and run tests"
         run: |
-          ./gradlew :${{ inputs.path }}:buildNeeded
+          ./gradlew :${{ inputs.gradlePath != '' && inputs.gradlePath || inputs.path }}:buildNeeded
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -79,9 +89,9 @@ jobs:
           dockerfile: ${{ inputs.path }}/Dockerfile
           salsa: false
       - name: "Upload jar"
-        if: ${{ inputs.uploadJar }}
+        if: ${{ inputs.uploadJar && publishedJarName != '' }}
         uses: actions/upload-artifact@v6
         with:
-          name: ${{inputs.path}}-jar
+          name: ${{inputs.publishedJarName}}-jar
           path: ${{ inputs.path }}/build/install/${{ inputs.path }}/lib
           if-no-files-found: 'error'

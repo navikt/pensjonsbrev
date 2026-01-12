@@ -8,12 +8,11 @@ on:
       - "gradle/libs.versions.toml"
       - "template-model-generator/**"
       - "brevbaker/**"
-      - "brevbaker-dsl/**"
       - "etterlattemaler/**"
-      - "pensjonsmaler/**"
-      - "aldersmaler/**"
-      - "ufoeremaler/**"
-      - "pensjon-brevbaker/**"
+      - "pensjon/maler/**"
+      - "alder/maler/**"
+      - "ufoere/maler/**"
+      - "pensjon/brevbaker/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
@@ -26,14 +25,12 @@ on:
       - "build.gradle.kts"
       - "gradle.properties"
       - "gradle/libs.versions.toml"
-      - "template-model-generator/**"
       - "brevbaker/**"
-      - "brevbaker-dsl/**"
+      - "pensjon/brevbaker/**"
+      - "alder/maler/**"
+      - "ufoere/maler/**"
       - "etterlattemaler/**"
-      - "pensjonsmaler/**"
-      - "aldersmaler/**"
-      - "ufoeremaler/**"
-      - "pensjon-brevbaker/**"
+      - "pensjon/maler/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker.yml"
       - "!**/**.md"
@@ -54,8 +51,9 @@ jobs:
     secrets: inherit
     with:
       image_suffix: brevbaker
-      path: pensjon-brevbaker
-      extraModulesToBuild: ':pensjon-brevbaker-api-model:publishToMavenLocal :alder-brevbaker-api-model:publishToMavenLocal :ufoere-brevbaker-api-model:publishToMavenLocal'
+      path: pensjon/brevbaker
+      gradlePath: pensjon:brevbaker
+      extraModulesToBuild: ':pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal'
       buildImage: true
 
   salsa-brevbaker:
@@ -87,11 +85,11 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal 
-          ./gradlew :pensjon-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :alder-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :ufoere-brevbaker-api-model:publishToMavenLocal
-          ./gradlew :pensjon-brevbaker:integrationTest
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal 
+          ./gradlew :pensjon:api-model:publishToMavenLocal
+          ./gradlew :alder:api-model:publishToMavenLocal
+          ./gradlew :ufoere:api-model:publishToMavenLocal
+          ./gradlew :pensjon:brevbaker:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
       - name: Publish Test Report
@@ -109,9 +107,9 @@ jobs:
     needs: [runIntegrationTests, buildBrevbaker]
     with:
       cluster: "dev-gcp"
-      resource: "pensjon-brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      resource: "pensjon/brevbaker/.nais/unleash-api-token-dev-q2.yaml,pensjon/brevbaker/.nais/nais.yaml"
       image: ${{needs.buildBrevbaker.outputs.image}}
-      vars: "pensjon-brevbaker/.nais/dev.yaml"
+      vars: "pensjon/brevbaker/.nais/dev.yaml"
 
   deployBrevbakerToProduction:
     name: "Deploy brevbaker to production"
@@ -120,9 +118,9 @@ jobs:
     needs: [runIntegrationTests, buildBrevbaker]
     with:
       cluster: "prod-gcp"
-      resource: "pensjon-brevbaker/.nais/unleash-api-token-prod.yaml,pensjon-brevbaker/.nais/nais.yaml"
+      resource: "pensjon/brevbaker/.nais/unleash-api-token-prod.yaml,pensjon/brevbaker/.nais/nais.yaml"
       image: ${{needs.buildBrevbaker.outputs.image}}
-      vars: "pensjon-brevbaker/.nais/prod.yaml"
+      vars: "pensjon/brevbaker/.nais/prod.yaml"
 
   "klarTilMerge":
     name: "Klar til merge"

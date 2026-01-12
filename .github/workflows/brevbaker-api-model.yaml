@@ -5,9 +5,9 @@ on:
     branches:
       - "main"
     paths:
-      - "pensjon-brevbaker-api-model/**"
-      - "alder-brevbaker-api-model/**"
-      - "ufoere-brevbaker-api-model/**"
+      - "pensjon/api-model/**"
+      - "alder/api-model/**"
+      - "ufoere/api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
@@ -17,9 +17,9 @@ on:
     branches:
       - "main"
     paths:
-      - "pensjon-brevbaker-api-model/**"
-      - "alder-brevbaker-api-model/**"
-      - "ufoere-brevbaker-api-model/**"
+      - "pensjon/api-model/**"
+      - "alder/api-model/**"
+      - "ufoere/api-model/**"
       - "brevbaker-api-model-common/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
@@ -50,11 +50,11 @@ jobs:
             common:
               - 'brevbaker-api-model-common/**'
             pensjonsbrev:
-              - 'pensjon-brevbaker-api-model/**'
+              - 'pensjon/api-model/**'
             aldersbrev:
-              - 'alder-brevbaker-api-model/**'
+              - 'alder/api-model/**'
             ufoerebrev:
-              - 'ufoere-brevbaker-api-model/**'
+              - 'ufoere/api-model/**'
 
   "release-common":
     name: "brevbaker-api-model-common"
@@ -73,27 +73,27 @@ jobs:
     secrets: inherit
     needs: [ release-common, changes ]
     with:
-      path: 'pensjon-brevbaker-api-model'
+      path: 'pensjon-api-model'
       release-common-result: ${{ needs.release-common.result }}
       changes: ${{ needs.changes.outputs.pensjonsbrev }}
 
   "release-alder":
-    name: "alder-brevbaker-api-model"
+    name: "alder-api-model"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
     needs: [ release-common, changes ]
     with:
-      path: 'alder-brevbaker-api-model'
+      path: 'alder/api-model'
       release-common-result: ${{ needs.release-common.result }}
       changes: ${{ needs.changes.outputs.aldersbrev }}
 
   "release-ufoere":
-    name: "ufoere-brevbaker-api-model"
+    name: "ufoere-api-model"
     uses: ./.github/workflows/.release.yaml
     secrets: inherit
     needs: [ release-common, changes ]
     with:
-      path: 'ufoere-brevbaker-api-model'
+      path: 'ufoere/api-model'
       release-common-result: ${{ needs.release-common.result }}
       changes: ${{ needs.changes.outputs.ufoerebrev }}
 
