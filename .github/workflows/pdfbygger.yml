@@ -77,7 +77,7 @@ jobs:
           password: ${{ github.token }}
       - name: "Build Docker image"
         run: | 
-          docker build --pull --tag ${IMAGE_PDF_BYGGER} pdf-bygger
+          docker build --pull --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
       - name: "Push image with sha"
         run: |
           docker push ${IMAGE_PDF_BYGGER}
@@ -174,7 +174,7 @@ jobs:
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
         with:
-          command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 pdf-bygger/build/test_visual/pdf/*.pdf
+          command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v6
         with:
           node-version: '22'
