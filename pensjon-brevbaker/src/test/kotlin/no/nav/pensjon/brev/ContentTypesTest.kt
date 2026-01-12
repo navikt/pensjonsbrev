@@ -3,8 +3,8 @@ package no.nav.pensjon.brev
 import io.ktor.http.ContentType
 import io.ktor.http.withCharset
 import no.nav.brev.brevbaker.ContentTypes
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import kotlin.test.assertEquals
 
 class ContentTypesTest {
 

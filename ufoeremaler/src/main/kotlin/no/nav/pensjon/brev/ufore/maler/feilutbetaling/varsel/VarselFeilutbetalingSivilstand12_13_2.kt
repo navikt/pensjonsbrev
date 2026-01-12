@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
@@ -28,7 +28,7 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
 
     override val kode = UT_FEILUTBETALING_VARSEL_SIVILSTAND
     override val kategori = FEILUTBETALING
-    override val brevkontekst = ALLE
+    override val brevkontekst = VEDTAK
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
@@ -54,17 +54,17 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " +  dato + " til og med " +  dato + ". " +
+                    bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " + dato + " til og med " + dato + ". " +
                             "Grunnen til det, er at vi har fått opplysninger om at du har fått en samboer eller ektefelle." },
-                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " +  dato + " til og med " +  dato + ". Grunnen til det er at vi har fått opplysningar om at du har fått ein sambuar eller ektefelle. " }
+                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " + dato + " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at du har fått ein sambuar eller ektefelle. " }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Din sivilstand påvirker beregningen av din uføretrygd, og er årsaken til at vi vurderer at du har fått utbetalt for mye. " +
-                            "I vedtaket av " +  dato + ", informerte vi deg om at endringen i din sivilstand kan ha ført til feilutbetalinger tilbake i tid. " },
+                            "I vedtaket av " + dato + ", informerte vi deg om at endringen i din sivilstand kan ha ført til feilutbetalinger tilbake i tid. " },
                     nynorsk { + "Sivilstanden din påverkar berekninga av uføretrygda di, og er årsaka til at vi vurderer at du har fått utbetalt for mykje. " +
-                            "I vedtaket av " +  dato + " informerte vi deg om at endringa i sivilstanden din kan ha ført til feilutbetalingar tilbake i tid. " }
+                            "I vedtaket av " + dato + " informerte vi deg om at endringa i sivilstanden din kan ha ført til feilutbetalingar tilbake i tid. " }
                 )
             }
             includePhrase(FeilutbetalingFraser.FeilOpplysninger)
@@ -76,16 +76,16 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
             }
             paragraph {
                 text(
-                    bokmal { + "Vi har den " +  dato + " mottatt opplysninger fra " +  kilde +
-                            " om at du " +  handling + " den " +  dato + ". " },
-                    nynorsk { + "Vi har den " +  dato + " mottatt opplysningar frå " +  kilde +
-                            " om at du " +  handling + " den " +  dato + ". " }
+                    bokmal { + "Vi har den " + dato + " mottatt opplysninger fra " + kilde +
+                            " om at du " + handling + " den " + dato + ". " },
+                    nynorsk { + "Vi har den " + dato + " mottatt opplysningar frå " + kilde +
+                            " om at du " + handling + " den " + dato + ". " }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Den " + dato + " fikk du vedtak om innvilgelse av " + prosent + " prosent uføretrygd. I søknaden dato fylte du ut at du var enslig. " },
-                    nynorsk { + "" +  dato + " fekk du vedtak om innvilging av " + prosent + " prosent uføretrygd. I søknaden dato fylte du ut at du var einsleg. " }
+                    nynorsk { + "" + dato + " fekk du vedtak om innvilging av " + prosent + " prosent uføretrygd. I søknaden dato fylte du ut at du var einsleg. " }
                 )
             }
             paragraph {
@@ -102,12 +102,12 @@ object VarselFeilutbetalingSivilstand12_13_2: RedigerbarTemplate<FeilutbetalingS
             }
             paragraph {
                 text(
-                    bokmal { + "Du fikk utbetalt uføretrygd som enslig i perioden " +  dato + " til " +
-                            dato + " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt  + ". " +
-                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " +  handling + ". " },
-                    nynorsk { + "Du fekk utbetalt uføretrygd som einsleg i perioden " +  dato + " til " +
-                            dato + ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt  + ". " +
-                            " kroner. Utbetalinga di skulle vore endra frå månaden etter at du " +  handling + ". "}
+                    bokmal { + "Du fikk utbetalt uføretrygd som enslig i perioden " + dato + " til " +
+                            dato + " , og her har det oppstått en feilutbetaling på " + bruttoFeilutbetalt + ". " +
+                            " kroner. Utbetalingen din skulle vært endret fra måneden etter at du " + handling + ". " },
+                    nynorsk { + "Du fekk utbetalt uføretrygd som einsleg i perioden " + dato + " til " +
+                            dato + ", og her har det oppstått ei feilutbetaling på " + bruttoFeilutbetalt + ". " +
+                            " kroner. Utbetalinga di skulle vore endra frå månaden etter at du " + handling + ". "}
                 )
             }
             paragraph {

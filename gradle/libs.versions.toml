@@ -6,7 +6,7 @@ assertJVersion = "3.27.6"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.20.0"
-commonVersion = "2.18.0"
+commonVersion = "2.19.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.20.0"
 hamkrestVersion = "1.8.0.1"
@@ -93,7 +93,6 @@ assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" 
 hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 

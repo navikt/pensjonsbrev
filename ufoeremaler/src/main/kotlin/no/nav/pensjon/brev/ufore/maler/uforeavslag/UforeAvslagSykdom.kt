@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
 
@@ -31,7 +32,7 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Avslag uføretrygd - 12-6",
             distribusjonstype = VEDTAK,
@@ -40,40 +41,52 @@ object UforeAvslagSykdom : RedigerbarTemplate<UforeAvslagEnkelDto> {
     )
     {
         title {
-            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"})
+            text (bokmal { + "Nav har avslått søknaden din om uføretrygd"},
+                nynorsk { + "Nav har avslått søknaden din om uføretrygd"})
         }
         outline {
             paragraph {
-                text(bokmal { +"Vi har avslått din søknad om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." })
+                text(bokmal { +"Vi har avslått søknaden din om uføretrygd som vi fikk den " + pesysData.kravMottattDato.format() + "." },
+                    nynorsk { +"Vi har avslått søknaden din om uføretrygd som vi fekk den " + pesysData.kravMottattDato.format() + "." })
             }
             title1 {
-                text(bokmal { +"Derfor får du ikke uføretrygd" })
+                text(bokmal { +"Derfor får du ikke uføretrygd" },
+                    nynorsk { +"Derfor får du ikkje uføretrygd" })
             }
             paragraph {
-                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til din nedsatte funksjonsevne. " })
+                text(bokmal { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sykdom eller skade som er hovedårsaken til din nedsatte inntektsevne. " },
+                    nynorsk { +"Vi avslår søknaden din fordi vi vurderer at det er andre forhold enn sjukdom eller skade som er hovudårsaka til den reduserte inntektsevna di. " })
             }
             paragraph {
-                text(bokmal { +"For å få innvilget uføretrygd må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " })
+                text(bokmal { +"For å få innvilget uføretrygd, må den varige nedsatte inntektsevnen din i hovedsak skyldes varig sykdom eller skade. " },
+                    nynorsk { +"For å få innvilga uføretrygd, må den varige reduserte inntektsevna di i hovudsak skuldast varig sjukdom eller skade. " })
             }
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering })
+                    text(bokmal { +pesysData.vurdering },
+                        nynorsk { +pesysData.vurdering } )
                 }
             }
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering") })
+                text(bokmal { + fritekst("Individuell vurdering") },
+                    nynorsk { + fritekst("Individuell vurdering") } )
             }
 
             paragraph {
                 text(bokmal { +"Vi har vurdert at sykdom eller skade har bidratt til nedsatt funksjonsevne, men vi vurderer at det er andre forhold som er hovedårsak til at din funksjons- og inntektsevne er nedsatt. " +
-                        "Før andre forhold er rettet, kan vi ikke ta stilling til i hvor stor grad inntektsevnen din er varig nedsatt."})
+                        "Vi kan derfor ikke vurdere i hvor stor grad inntektsevnen din er varig nedsatt." },
+                    nynorsk { +"Vi har vurdert at sjukdom eller skade har bidrege til nedsett funksjonsevne, men vi vurderer at det er andre forhold som er hovudårsak til at funksjons- og inntektsevna di er nedsett. " +
+                        "Vi kan derfor ikkje vurdere i kor stor grad inntektsevna di er varig nedsett." })
+
             }
             paragraph {
-                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."})
+                text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om uføretrygd."},
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om uføretrygd." })
             }
             paragraph {
-                text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-5 til 12-7." })
+                text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-6." },
+                    nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-6." })
             }
 
             includePhrase(Felles.HvaSkjerNa)

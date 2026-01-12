@@ -127,7 +127,7 @@ object EksempelBrev : StaticTemplate {
         lang = languages(Language.Bokmal),
 
         // Hovedtittel inne i brevet
-        title = newText(Language.Bokmal to "Eksempelbrev"),
+        title = newText(bokmal { + "Eksempelbrev" }),
 
         // Metadata knyttet til en brevmal som ikke påvirker innholdet
         letterMetadata = LetterMetadata(
@@ -144,7 +144,7 @@ object EksempelBrev : StaticTemplate {
             title1 {
 
                 // Tekst
-                text(Language.Bokmal to "Du har fått innvilget pensjon")
+                text(bokmal { +"Du har fått innvilget pensjon" })
             }
 
             // Inkluder data fra datagrunnlaget til malen inn i brevet som tekst

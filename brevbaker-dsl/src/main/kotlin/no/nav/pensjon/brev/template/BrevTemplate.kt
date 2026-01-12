@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
 
-interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
+sealed interface BrevTemplate<out LetterData : BrevbakerBrevdata, Kode : Brevkode<Kode>> : HasModel<LetterData> {
     val template: LetterTemplate<*, LetterData>
     val kode: Kode
     fun description(): TemplateDescription

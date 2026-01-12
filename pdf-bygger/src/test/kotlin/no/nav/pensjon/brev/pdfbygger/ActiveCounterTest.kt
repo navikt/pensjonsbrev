@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.pdfbygger
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.Channel
 import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 

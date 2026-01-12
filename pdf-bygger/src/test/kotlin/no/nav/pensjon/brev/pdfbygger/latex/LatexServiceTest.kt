@@ -7,15 +7,15 @@ import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse.Success
 import no.nav.pensjon.brev.pdfbygger.getScriptPath
 import no.nav.pensjon.brev.template.render.DocumentFile
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertInstanceOf
+import org.junit.jupiter.api.assertNotNull
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
 import kotlin.io.path.readText
 import kotlin.system.measureTimeMillis
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertIs
-import kotlin.test.assertNotNull
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
@@ -266,7 +266,7 @@ class LatexServiceTest {
         result: PDFCompilationResponse?,
         assertBody: (ToBe) -> Unit = {}
     ) {
-        assertIs<ToBe>(result)
+        assertInstanceOf<ToBe>(result)
         assertBody(result)
     }
 

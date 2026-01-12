@@ -5,13 +5,14 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.pdfbygger.LetterMarkupBlocksBuilder
 import no.nav.pensjon.brev.pdfbygger.ParagraphBuilder
+import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brev.template.render.DocumentFile
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 class LatexDocumentRendererTest {
     @Test
@@ -175,7 +176,7 @@ class LatexDocumentRendererTest {
             )
         )
         val tex = latexDocument.files.find { it.fileName == "letter.tex" } as DocumentFile
-        assertThat(tex.content.lines().count { it.contains(expectedText) }).isEqualTo(expectedOccurrences)
+        assertThat(tex.content.split("\\").count { it.contains(expectedText) }).isEqualTo(expectedOccurrences)
     }
 
 

@@ -24,7 +24,6 @@ internal class LatexAppendable(private val output: Appendable) {
     internal fun appendCmd(cmd: String, argBuilder: CommandBuilder.() -> Unit) {
         output.append("""\$cmd""")
         CommandBuilder(this).argBuilder()
-        output.appendLine()
     }
 
     internal fun appendNewCmd(name: String, body: String, escape: Boolean = true) {

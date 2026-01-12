@@ -35,7 +35,9 @@ allprojects {
         }
     }
     tasks.withType<KtLintCheckTask> {
-        dependsOn("ktlintFormat")
+        if (System.getenv("CI")?.toBoolean() != true) {
+            dependsOn("ktlintFormat")
+        }
     }
     tasks.withType<Test>{
         testLogging {

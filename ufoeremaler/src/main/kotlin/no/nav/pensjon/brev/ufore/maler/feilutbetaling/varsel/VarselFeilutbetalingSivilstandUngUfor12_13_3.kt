@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter
@@ -28,7 +28,7 @@ object VarselFeilutbetalingSivilstandUngUfor12_13_3: RedigerbarTemplate<Feilutbe
 
     override val kode = UT_FEILUTBETALING_VARSEL_SIVILSTAND_UU
     override val kategori = FEILUTBETALING
-    override val brevkontekst = ALLE
+    override val brevkontekst = VEDTAK
     override val sakstyper = setOf(UFOREP)
 
     override val template = createTemplate(
@@ -57,15 +57,15 @@ object VarselFeilutbetalingSivilstandUngUfor12_13_3: RedigerbarTemplate<Feilutbe
                 text(
                     bokmal { + "Vi vurderer at du kan ha fått utbetalt for mye i uføretrygd fra og med " + dato +
                         " til og med " + dato + ". Grunnen til det, er at vi har fått opplysninger om at du har fått en samboer eller ektefelle. "},
-                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " +  dato +
-                            " til og med " +  dato + ". Grunnen til det er at vi har fått opplysningar om at du har fått ein sambuar eller ektefelle. "})
+                    nynorsk { + "Vi vurderer at du kan ha fått utbetalt for mykje i uføretrygd frå og med " + dato +
+                            " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at du har fått ein sambuar eller ektefelle. "})
             }
             paragraph {
                 text(
                     bokmal { + "Din sivilstand påvirker beregningen av din uføretrygd, og er årsaken til at vi vurderer at du har fått utbetalt for mye. " +
                         "I vedtaket av " + dato + ", informerte vi deg om at endringen i din sivilstand kan ha ført til feilutbetalinger tilbake i tid. "},
                     nynorsk { + "Sivilstanden din påverkar berekninga av uføretrygda di, og er årsaka til at vi vurderer at du har fått utbetalt for mykje. " +
-                            "I vedtaket av " +  dato + " informerte vi deg om at endringa i sivilstanden din kan ha ført til feilutbetalingar tilbake i tid. "}
+                            "I vedtaket av " + dato + " informerte vi deg om at endringa i sivilstanden din kan ha ført til feilutbetalingar tilbake i tid. "}
                     )
             }
             includePhrase(FeilutbetalingFraser.FeilOpplysninger)

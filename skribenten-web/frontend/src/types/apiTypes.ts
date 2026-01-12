@@ -1,8 +1,4 @@
-import type {
-  Identtype,
-  InnOgUtland,
-  Søketype,
-} from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottakerUtils";
+import type { Identtype, InnOgUtland, Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
 
 import type { ManueltAdressertTil } from "./brev";
 import type { Nullable } from "./Nullable";
@@ -22,6 +18,13 @@ export type SakContextDto = {
   readonly erSkjermet?: boolean;
   readonly vergemaal?: boolean;
   readonly adressebeskyttelse?: boolean;
+};
+
+export type BrukerStatusDto = {
+  readonly adressebeskyttelse: boolean;
+  readonly doedsfall: string;
+  readonly erSkjermet: boolean;
+  readonly vergemaal: boolean;
 };
 
 export type SakType =
