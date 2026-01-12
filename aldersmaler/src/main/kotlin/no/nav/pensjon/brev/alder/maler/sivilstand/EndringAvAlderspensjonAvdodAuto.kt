@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
+import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_GJENLEVENDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -507,19 +508,19 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                             +"Samboere som tidligere har vært gift, eller som har eller har hatt felles barn, " +
                                     "kan ha rett til høyere alderspensjon hvis avdødes pensjonsopptjening tas med i beregningen. " +
                                     "Du finner mer informasjon og søknadsskjema for gjenlevende ektefelle, " +
-                                    "partner eller samboer på nav.no/gjenlevendeektefelle."
+                                    "partner eller samboer på $ALDERSPENSJON_GJENLEVENDE_URL."
                         },
                         nynorsk {
                             +"Sambuarar som tidlegare har vore gift, eller som har eller har hatt felles barn, " +
                                     "kan ha rett til høgare alderspensjon viss avdøde si pensjonsopptening blir tatt med i utrekninga. " +
                                     "Du finn meir informasjon og søknadsskjema for attlevande ektefelle, " +
-                                    "partnar eller sambuar på nav.no/gjenlevendeektefelle."
+                                    "partnar eller sambuar på $ALDERSPENSJON_GJENLEVENDE_URL."
                         },
                         english {
                             +"Cohabitants who have previously been married, " +
                                     "or who have or have had children together, may be entitled to a higher retirement pension if the deceased's earned pension is included in the calculation. " +
                                     "You will find more information and the application form for benefits for surviving spouse, " +
-                                    "partner or cohabitant at nav.no/gjenlevendeektefelle."
+                                    "partner or cohabitant at $ALDERSPENSJON_GJENLEVENDE_URL."
                         }
                     )
                 }
