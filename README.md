@@ -112,7 +112,7 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Endringer i biblioteks-koden
 
-Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker-api-model-common`, `brevbaker:dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
+Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:api-model-common`, `brevbaker:dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
 
 Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle apiDump` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle apiCheck`-kommandoen.
 

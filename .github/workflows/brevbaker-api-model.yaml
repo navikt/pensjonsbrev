@@ -8,7 +8,7 @@ on:
       - "pensjon/api-model/**"
       - "alder/api-model/**"
       - "ufoere/api-model/**"
-      - "brevbaker-api-model-common/**"
+      - "brevbaker/api-model-common/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/brevbaker-api-model.yaml"
       - "gradle/wrapper/gradle-wrapper.jar"

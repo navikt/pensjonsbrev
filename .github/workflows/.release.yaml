@@ -45,7 +45,7 @@ jobs:
       - name: "publish common to Maven local"
         if: ${{ inputs.dependsOnCommon }}
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
       - name: "compile and run tests"
         run: |
           ./gradlew :${{ inputs.gradleTarget }}:build
