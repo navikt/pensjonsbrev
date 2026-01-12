@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.assertj.core.api.Assertions.assertThat
@@ -33,7 +34,7 @@ class Letter2MarkupTest {
             paragraph { text(bokmal { +"hei paragraph2" }) }
         }
 
-        result.letterMarkup.assertHasBlocks {
+        assertThat(result.letterMarkup).hasBlocks {
             title1 { literal("hei tittel") }
             paragraph { literal("hei paragraph") }
             paragraph { literal("hei paragraph2") }
@@ -63,7 +64,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.assertHasBlocks {
+        assertThat(result.letterMarkup).hasBlocks {
             paragraph {
                 literal("first")
                     literal("second")
@@ -79,7 +80,7 @@ class Letter2MarkupTest {
                 text(bokmal { +"second" })
             }
         }
-        result.letterMarkup.assertHasBlocks {
+        assertThat(result.letterMarkup).hasBlocks {
             title1 {
                 literal("first")
                 literal("second")
@@ -95,7 +96,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.assertHasBlocks {
+        assertThat(result.letterMarkup).hasBlocks {
             title1 {
                 literal("noe tekst ")
                 variable("2024")
@@ -133,7 +134,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.assertHasBlocks {
+        assertThat(result.letterMarkup).hasBlocks {
             paragraph {
                 literal("hei")
                 newLine()

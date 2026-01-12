@@ -7,22 +7,22 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
+import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.render.assertHasBlocks
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {
 
     @Test
     fun `showIf renders when condition evaluates to true`() {
-        Letter2Markup.render(
+        assertThat(Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("showIf", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.assertHasBlocks {
+        ).letterMarkup).hasBlocks {
             paragraph {
                 literal("showIf tekst")
             }
@@ -31,14 +31,14 @@ class ShowIfTest {
 
     @Test
     fun `orShowIf renders when condition evaluates to true`() {
-        Letter2Markup.render(
+        assertThat(Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("orShowIf", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.assertHasBlocks {
+        ).letterMarkup).hasBlocks {
             paragraph {
                 literal("orShowIf tekst")
             }
@@ -47,14 +47,14 @@ class ShowIfTest {
 
     @Test
     fun `orShow renders when condition evaluates to true`() {
-        Letter2Markup.render(
+        assertThat(Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("orShow", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.assertHasBlocks {
+        ).letterMarkup).hasBlocks {
             paragraph {
                 literal("orShow tekst")
             }

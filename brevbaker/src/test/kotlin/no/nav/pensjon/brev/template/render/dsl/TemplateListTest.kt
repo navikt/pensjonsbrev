@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.template.render.assertHasBlocks
+import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import org.junit.jupiter.api.Test
 
 class TemplateListTest {
@@ -26,7 +26,7 @@ class TemplateListTest {
             }
         }
 
-        Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup.assertHasBlocks {
+        assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
             title1 { literal("this text should render") }
             paragraph { }
         }

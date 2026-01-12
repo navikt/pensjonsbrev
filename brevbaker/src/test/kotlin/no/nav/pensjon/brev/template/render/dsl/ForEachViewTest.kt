@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.template.render.assertHasBlocks
+import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
 import org.junit.jupiter.api.Test
 
 class ForEachViewTest {
@@ -34,7 +34,7 @@ class ForEachViewTest {
             }
         }
 
-        Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.assertHasBlocks {
+        assertThat(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
             paragraph {
                 listen.forEach { variable(it) }
             }
@@ -59,7 +59,7 @@ class ForEachViewTest {
             }
         }
 
-        Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.assertHasBlocks {
+        assertThat(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
             paragraph {
                 listen.forEach { nestedList ->
                     nestedList.forEach { str ->
@@ -94,7 +94,7 @@ class ForEachViewTest {
 
         val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
 
-        render.letterMarkup.assertHasBlocks {
+        assertThat(render.letterMarkup).hasBlocks {
             paragraph {
                 listen.forEach { str ->
                     variable("Tja:")
@@ -119,7 +119,7 @@ class ForEachViewTest {
         }
         val expected = "1,1;1,2;2,1;2,2;"
 
-        Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.assertHasBlocks {
+        assertThat(Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup).hasBlocks {
             paragraph {
                 list.forEach { outer ->
                     list.forEach { inner ->

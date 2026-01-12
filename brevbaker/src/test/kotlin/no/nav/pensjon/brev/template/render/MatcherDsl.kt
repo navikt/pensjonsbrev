@@ -6,13 +6,27 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
+import org.assertj.core.api.AbstractAssert
 import org.assertj.core.api.Assertions.assertThat
 
-internal fun LetterMarkup.assertHasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit) =
-    assertThat(blocks).satisfies(BlocksAssert(matchSize).apply(builder).build())
+class MatcherDslAsserter(actual: LetterWithAttachmentsMarkup) : AbstractAssert<MatcherDslAsserter, LetterWithAttachmentsMarkup>(
+    actual, MatcherDslAsserter::class.java
+) {
+    fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit) =
+        assertThat(actual.attachments).satisfies(AttachmentsAssert(matchSize).apply(builder).build())
 
-internal fun LetterWithAttachmentsMarkup.assertHasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit) =
-    assertThat(attachments).satisfies(AttachmentsAssert(matchSize).apply(builder).build())
+    companion object {
+        fun assertThat(actual: LetterWithAttachmentsMarkup) = MatcherDslAsserter(actual)
+    }
+}
+
+class LetterMarkupAsserter(actual: LetterMarkup) : AbstractAssert<LetterMarkupAsserter, LetterMarkup>(actual, LetterMarkupAsserter::class.java) {
+    fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit) = assertThat(actual.blocks).satisfies(BlocksAssert(matchSize).apply(builder).build())
+
+    companion object {
+        fun assertThat(actual: LetterMarkup) = LetterMarkupAsserter(actual)
+    }
+}
 
 @DslMarker
 annotation class LetterMarkupMatcherDsl

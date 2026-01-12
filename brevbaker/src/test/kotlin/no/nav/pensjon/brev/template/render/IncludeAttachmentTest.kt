@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.vedlegg
+import no.nav.pensjon.brev.template.render.MatcherDslAsserter.Companion.assertThat
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -57,7 +58,7 @@ class IncludeAttachmentTest {
 
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`() {
-            Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)).assertHasAttachments {
+            assertThat(Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles))).hasAttachments {
                 attachment {
                     title { literal("Test vedlegg") }
                     blocks {
