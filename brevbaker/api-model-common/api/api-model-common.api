@@ -77,7 +77,12 @@ public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/ISakstype {
+	public fun isRelevantRegelverk (Ljava/lang/Object;Ljava/lang/Object;)Z
 	public abstract fun kode ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/ISakstype$DefaultImpls {
+	public static fun isRelevantRegelverk (Lno/nav/pensjon/brev/api/model/ISakstype;Ljava/lang/Object;Ljava/lang/Object;)Z
 }
 
 public final class no/nav/pensjon/brev/api/model/LetterResponse {

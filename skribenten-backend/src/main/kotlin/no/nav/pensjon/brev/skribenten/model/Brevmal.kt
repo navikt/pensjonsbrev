@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.model
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
-import no.nav.pensjon.brev.skribenten.model.Pen.BrevbakerSakstype.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -44,18 +43,7 @@ interface LetterMetadata {
         override val isRedigerbart: Boolean get() = data.redigerbart
         override fun isForSakstype(sakstype: ISakstype) = sakstype == hasSakstype
 
-        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean =
-            when (sakstype) {
-                ALDER -> if (forGammeltRegelverk == true) {
-                    data.brevregeltype?.gjelderGammeltRegelverk() ?: true
-                } else {
-                    data.brevregeltype?.gjelderNyttRegelverk() ?: true
-                }
-
-                UFOREP -> data.brevregeltype?.gjelderGammeltRegelverk() ?: true
-                BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
-                else -> throw IllegalArgumentException("Ukjent sakstype: $sakstype")
-            }
+        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean = sakstype.isRelevantRegelverk(data.brevregeltype, forGammeltRegelverk)
 
         override fun toApi(): Api.Brevmal = with(data) {
             Api.Brevmal(
