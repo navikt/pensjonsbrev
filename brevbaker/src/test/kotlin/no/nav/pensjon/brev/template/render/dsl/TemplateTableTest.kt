@@ -41,10 +41,10 @@ class TemplateTableTest {
         }
 
         val actual = Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup
-        hasBlocks {
+        actual.hasBlocks {
             title1 { literal("THIS TEXT SHOULD RENDER") }
             paragraph { }
-        }(actual)
+        }
     }
 
     @Test
@@ -73,13 +73,13 @@ class TemplateTableTest {
             }
         }
 
-        hasBlocks {
+        Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup.hasBlocks {
             paragraph {
                 table {
                     header { column { literal("This text should render 1") } }
                     row { cell { literal("This text should render 2") } }
                 }
             }
-        }(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup)
+        }
     }
 }

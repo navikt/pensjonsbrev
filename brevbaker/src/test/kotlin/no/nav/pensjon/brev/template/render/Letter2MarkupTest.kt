@@ -33,11 +33,11 @@ class Letter2MarkupTest {
             paragraph { text(bokmal { +"hei paragraph2" }) }
         }
 
-        hasBlocks {
-                title1 { literal("hei tittel") }
-                paragraph { literal("hei paragraph") }
-                paragraph { literal("hei paragraph2") }
-        }(result.letterMarkup)
+        result.letterMarkup.hasBlocks {
+            title1 { literal("hei tittel") }
+            paragraph { literal("hei paragraph") }
+            paragraph { literal("hei paragraph2") }
+        }
     }
 
     @Test
@@ -63,12 +63,12 @@ class Letter2MarkupTest {
             }
         }
 
-        hasBlocks {
+        result.letterMarkup.hasBlocks {
             paragraph {
                 literal("first")
                     literal("second")
                 }
-        }(result.letterMarkup)
+        }
     }
 
     @Test
@@ -79,12 +79,12 @@ class Letter2MarkupTest {
                 text(bokmal { +"second" })
             }
         }
-        hasBlocks {
+        result.letterMarkup.hasBlocks {
             title1 {
                 literal("first")
                 literal("second")
             }
-        }(result.letterMarkup)
+        }
     }
 
     @Test
@@ -95,12 +95,12 @@ class Letter2MarkupTest {
             }
         }
 
-        hasBlocks {
+        result.letterMarkup.hasBlocks {
             title1 {
                 literal("noe tekst ")
                 variable("2024")
             }
-        }(result.letterMarkup)
+        }
     }
 
     @Test
@@ -133,13 +133,13 @@ class Letter2MarkupTest {
             }
         }
 
-        hasBlocks {
+        result.letterMarkup.hasBlocks {
             paragraph {
                 literal("hei")
                 newLine()
                 literal("ha det bra")
             }
-        }(result.letterMarkup)
+        }
     }
 
 }

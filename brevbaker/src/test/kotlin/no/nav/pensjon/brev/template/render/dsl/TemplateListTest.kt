@@ -26,9 +26,9 @@ class TemplateListTest {
             }
         }
 
-        hasBlocks {
+        Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup.hasBlocks {
             title1 { literal("this text should render") }
             paragraph { }
-        }(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup)
+        }
     }
 }

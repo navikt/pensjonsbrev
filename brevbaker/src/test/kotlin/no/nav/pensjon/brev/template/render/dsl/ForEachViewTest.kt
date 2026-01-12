@@ -34,14 +34,14 @@ class ForEachViewTest {
             }
         }
 
-        hasBlocks {
+        Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.hasBlocks {
             paragraph {
                 listen.forEach { variable(it) }
             }
             repeat(3) {
                 title1 { variable("5") }
             }
-        }(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
+        }
     }
 
     @Test
@@ -59,7 +59,7 @@ class ForEachViewTest {
             }
         }
 
-        hasBlocks {
+        Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.hasBlocks {
             paragraph {
                 listen.forEach { nestedList ->
                     nestedList.forEach { str ->
@@ -67,7 +67,7 @@ class ForEachViewTest {
                     }
                 }
             }
-        }(Letter2Markup.render(LetterImpl(actual, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
+        }
     }
 
     data class Argument(val value: String) : AutobrevData
@@ -94,14 +94,14 @@ class ForEachViewTest {
 
         val render = Letter2Markup.render(LetterImpl(actual, Argument("Tja:"), Language.Bokmal, felles))
 
-        hasBlocks {
+        render.letterMarkup.hasBlocks {
             paragraph {
                 listen.forEach { str ->
                     variable("Tja:")
                     variable(str)
                 }
             }
-        }(render.letterMarkup)
+        }
     }
 
     @Test
@@ -119,7 +119,7 @@ class ForEachViewTest {
         }
         val expected = "1,1;1,2;2,1;2,2;"
 
-        hasBlocks {
+        Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup.hasBlocks {
             paragraph {
                 list.forEach { outer ->
                     list.forEach { inner ->
@@ -130,7 +130,7 @@ class ForEachViewTest {
                     }
                 }
             }
-        }(Letter2Markup.render(LetterImpl(template, EmptyAutobrevdata, Language.Bokmal, felles)).letterMarkup)
+        }
     }
 
     data class ListArgument(val liste: List<String>)

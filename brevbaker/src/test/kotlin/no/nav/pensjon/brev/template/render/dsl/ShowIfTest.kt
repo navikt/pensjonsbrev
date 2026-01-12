@@ -15,50 +15,50 @@ class ShowIfTest {
 
     @Test
     fun `showIf renders when condition evaluates to true`() {
-        hasBlocks {
-            paragraph {
-                literal("showIf tekst")
-            }
-        }(Letter2Markup.render(
+        Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("showIf", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup)
+        ).letterMarkup.hasBlocks {
+            paragraph {
+                literal("showIf tekst")
+            }
+        }
     }
 
     @Test
     fun `orShowIf renders when condition evaluates to true`() {
-        hasBlocks {
-            paragraph {
-                literal("orShowIf tekst")
-            }
-        }(Letter2Markup.render(
+        Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("orShowIf", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup)
+        ).letterMarkup.hasBlocks {
+            paragraph {
+                literal("orShowIf tekst")
+            }
+        }
     }
 
     @Test
     fun `orShow renders when condition evaluates to true`() {
-        hasBlocks {
-            paragraph {
-                literal("orShow tekst")
-            }
-        }(Letter2Markup.render(
+        Letter2Markup.render(
             LetterImpl(
                 showIfTemplate,
                 SomeDto("orShow", false),
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup)
+        ).letterMarkup.hasBlocks {
+            paragraph {
+                literal("orShow tekst")
+            }
+        }
     }
 
     private val showIfTemplate = outlineTestTemplate<SomeDto> {
