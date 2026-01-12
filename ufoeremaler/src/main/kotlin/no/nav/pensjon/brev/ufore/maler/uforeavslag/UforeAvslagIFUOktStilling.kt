@@ -51,7 +51,7 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             title1 {
                 text(bokmal { + "Derfor endrer vi ikke inntektsgrensen din"},
-                    nynorsk { + "Difor endrar vi ikkje inntektsgrensa di"})
+                    nynorsk { + "Derfor endrar vi ikkje inntektsgrensa di"})
             }
             paragraph {
                 text(bokmal { + "Du får ikke endret inntektsgrensen din, fordi økningen du har hatt i inntekt skyldes at du har jobbet mer. " +

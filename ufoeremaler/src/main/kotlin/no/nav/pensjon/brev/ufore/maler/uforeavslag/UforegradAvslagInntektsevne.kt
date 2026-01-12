@@ -55,11 +55,11 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 text(bokmal { +"Vi har avslått søknaden din om økt uføregrad som vi fikk den " + pesysData.kravMottattDato.format() + ". " +
                         "Du beholder uføregraden din på " + pesysData.uforegrad.format() + " prosent." },
                     nynorsk { +"Vi har avslått søknaden din om auka uføregrad som vi fekk den " + pesysData.kravMottattDato.format() + ". " +
-                            "Du behaldar uføregraden din på " + pesysData.uforegrad.format() + " prosent." })
+                            "Du beheld uføregraden din på " + pesysData.uforegrad.format() + " prosent." })
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" },
-                    nynorsk { +"Difor får du ikkje auka uføregrad" })
+                    nynorsk { +"Derfor får du ikkje auka uføregrad" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi inntektsevnen din ikke er varig nedsatt i større grad enn den uføregraden du allerede har." },
@@ -107,7 +107,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                         "Vi har kommet fram til at uføregraden din er " + pesysData.uforegrad.format() + " prosent. " +
                         "Det viser at inntektsevnen din ikke er mer nedsatt enn det vi tidligere har vurdert."
                 },
-                    nynorsk {+"Vi har samanlikna inntekta før og etter at du vart ufør. " +
+                    nynorsk {+"Vi har samanlikna inntekta før og etter at du blei ufør. " +
                             "Vi har kome fram til at uføregraden din er " + pesysData.uforegrad.format() + " prosent. " +
                             "Det viser at inntektsevna di ikkje er meir nedsett enn det vi tidlegare har vurdert."
                     }
@@ -115,7 +115,7 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om auka uføregrad." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføregrad." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-7 og 12-10." },

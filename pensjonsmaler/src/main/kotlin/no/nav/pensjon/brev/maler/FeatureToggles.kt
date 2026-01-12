@@ -11,8 +11,6 @@ enum class FeatureToggles(private val key: String) {
     oversettelseAvDokumenter("oversettelseAvDokumenter"),
     brevmalUtAvslag("brevmalUtAvslag"),
     brevmalUtInnvilgelse("brevmalUtInnvilgelse"),
-    informasjonOmGjenlevenderettigheter("informasjonOmGjenlevenderettigheter"),
-    vedtakEndringAvUttaksgradStans("vedtakEndringAvUttaksgradStans"),
     orienteringOmForlengetSaksbehandlingstid("orienteringOmForlengetSaksbehandlingstid"),
     samletMeldingOmPensjonsvedtak("samletMeldingOmPensjonsvedtak"),
     samletMeldingOmPensjonsvedtakV2("samletMeldingOmPensjonsvedtakV2"),

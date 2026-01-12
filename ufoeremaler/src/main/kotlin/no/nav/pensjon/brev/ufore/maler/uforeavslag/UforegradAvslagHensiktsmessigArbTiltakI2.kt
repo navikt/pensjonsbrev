@@ -51,7 +51,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
             }
             title1 {
                 text(bokmal { +"Derfor får du ikke økt uføregrad" },
-                    nynorsk { +"Difor får du ikkje auka uføregrad" })
+                    nynorsk { +"Derfor får du ikkje auka uføregrad" })
             }
             paragraph {
                 text(bokmal { +"Vi avslår søknaden din fordi du ikke har gjennomført alle hensiktsmessige arbeidsrettede tiltak." },
@@ -89,7 +89,7 @@ object UforegradAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslag
             }
             paragraph {
                 text(bokmal { + "Du oppfyller ikke vilkårene, og vi avslår derfor søknaden din om økt uføregrad."},
-                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår difor søknaden din om auka uføregrad." })
+                    nynorsk { + "Du oppfyller ikkje vilkåra, og vi avslår derfor søknaden din om auka uføregrad." })
             }
             paragraph {
                 text(bokmal { +"Vedtaket har vi gjort etter folketrygdloven §§ 12-5 til 12-7 og 12-10." },

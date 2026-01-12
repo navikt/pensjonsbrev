@@ -102,7 +102,9 @@ dependencies {
 
     // Test
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.ktor.server.test.host)
+    testImplementation(libs.ktor.server.test.host) {
+        exclude("org.jetbrains.kotlin", "kotlin-test")
+    }
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)

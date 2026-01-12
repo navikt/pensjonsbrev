@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import org.assertj.core.api.Assertions.assertThat
-import kotlin.test.Test
+import org.junit.jupiter.api.Test
 
 @OptIn(InterneDataklasser::class)
 class CleanseMarkupTest {
