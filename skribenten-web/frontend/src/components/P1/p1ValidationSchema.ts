@@ -35,7 +35,7 @@ const isoDateStringField = () =>
       const date = new Date(val + "T00:00:00");
       return !Number.isNaN(date.getTime());
     },
-    { message: "Ugyldig dato." },
+    { message: "Ugyldig dato" },
   );
 
 /* Tab 1 & 2: Person validation (Innehaver & Forsikrede) - all fields optional for now */
