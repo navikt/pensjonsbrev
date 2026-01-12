@@ -1,19 +1,35 @@
 import { UNSAFE_Combobox } from "@navikt/ds-react";
-import type { Control, FieldPath } from "react-hook-form";
+import { useMemo } from "react";
+import type { Control, FieldPath, FieldValues } from "react-hook-form";
 import { Controller } from "react-hook-form";
 
-import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
+import type { LandOption } from "~/types/p1FormTypes";
 
-interface P1CountryFieldProps {
-  control: Control<P1RedigerbarForm>;
-  name: FieldPath<P1RedigerbarForm>;
+interface P1CountryFieldProps<
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+> {
+  control: Control<TFieldValues>;
+  name: TName;
   index: number;
   landListe: LandOption[];
   error?: string;
 }
 
-export const P1CountryField = ({ control, name, index, landListe, error }: P1CountryFieldProps) => {
-  const sortedOptions = landListe.toSorted((a, b) => a.navn.localeCompare(b.navn, "no")).map((land) => land.navn);
+export const P1CountryField = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  control,
+  name,
+  index,
+  landListe,
+  error,
+}: P1CountryFieldProps<TFieldValues, TName>) => {
+  const sortedOptions = useMemo(
+    () => landListe.toSorted((a, b) => a.navn.localeCompare(b.navn, "no")).map((land) => land.navn),
+    [landListe],
+  );
 
   return (
     <Controller

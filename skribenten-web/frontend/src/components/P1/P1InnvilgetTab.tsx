@@ -1,14 +1,12 @@
 import { PlusIcon } from "@navikt/aksel-icons";
-import { BoxNew, Button, Heading, Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { BoxNew, Button, Heading, Table } from "@navikt/ds-react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
-import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
-import { P1CountryField } from "./P1CountryField";
-import { ManagedDatePicker } from "./P1ManagedDatePicker";
+import { P1InnvilgetTabRow } from "./P1InnvilgetTabRow";
 
 export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
   const {
@@ -23,29 +21,6 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
   });
 
   const addRow = () => append(emptyInnvilgetRow());
-
-  const hasInstitusjonError = (index: number) =>
-    !!(
-      errors.innvilgedePensjoner?.[index]?.institusjon?.land ||
-      errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn ||
-      errors.innvilgedePensjoner?.[index]?.institusjon?.pin ||
-      errors.innvilgedePensjoner?.[index]?.institusjon?.saksnummer ||
-      errors.innvilgedePensjoner?.[index]?.institusjon?.vedtaksdato
-    );
-
-  const hasPensjonstypeError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.pensjonstype;
-
-  const hasDatoError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.datoFoersteUtbetaling;
-
-  const hasUtbetaltError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.utbetalt;
-
-  const hasGrunnlagError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.grunnlagInnvilget;
-
-  const hasReduksjonsgrunnlagError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.reduksjonsgrunnlag;
-
-  const hasVurderingsperiodeError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.vurderingsperiode;
-
-  const hasAdresseError = (index: number) => !!errors.innvilgedePensjoner?.[index]?.adresseNyVurdering;
 
   return (
     <>
@@ -97,165 +72,14 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
 
         <Table.Body>
           {fields.map((field, index) => (
-            <Table.Row key={field.id}>
-              {/* 3.1 Institusjon */}
-              <Table.DataCell className={hasInstitusjonError(index) ? "p1-cell-error" : ""}>
-                <P1CountryField
-                  control={control}
-                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.land?.message}
-                  index={index}
-                  landListe={landListe}
-                  name={`innvilgedePensjoner.${index}.institusjon.land` as const}
-                />
-                <TextField
-                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.institusjonsnavn?.message}
-                  label="Institusjon"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.institusjon.institusjonsnavn` as const)}
-                  css={{ marginBottom: "var(--ax-space-8)" }}
-                />
-                <TextField
-                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.pin?.message}
-                  label="PIN"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.institusjon.pin` as const)}
-                  css={{ marginBottom: "var(--ax-space-8)" }}
-                />
-                <TextField
-                  error={errors.innvilgedePensjoner?.[index]?.institusjon?.saksnummer?.message}
-                  label={`Saks${SOFT_HYPHEN}nummer`}
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.institusjon.saksnummer` as const)}
-                  css={{ marginBottom: "var(--ax-space-8)" }}
-                />
-                <Controller
-                  control={control}
-                  name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
-                  render={({ field: dateField, fieldState }) => (
-                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Vedtaksdato" />
-                  )}
-                />
-              </Table.DataCell>
-
-              {/* 3.2 Pensjonstype */}
-              <Table.DataCell className={hasPensjonstypeError(index) ? "p1-cell-error" : ""}>
-                <Controller
-                  control={control}
-                  name={`innvilgedePensjoner.${index}.pensjonstype` as const}
-                  render={({ field: radioField, fieldState }) => (
-                    <RadioGroup
-                      error={fieldState.error?.message}
-                      legend="Pensjonstype"
-                      onChange={(val) => radioField.onChange(val || null)}
-                      size="small"
-                      value={radioField.value ?? ""}
-                    >
-                      {PENSJONSTYPE_OPTIONS.map((option) => (
-                        <Radio key={option.value} value={option.value}>
-                          {option.label}
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-              </Table.DataCell>
-
-              {/* 3.3 Dato første utbetaling */}
-              <Table.DataCell className={hasDatoError(index) ? "p1-cell-error" : ""}>
-                <Controller
-                  control={control}
-                  name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
-                  render={({ field: dateField, fieldState }) => (
-                    <ManagedDatePicker dateField={dateField} fieldState={fieldState} label="Dato" />
-                  )}
-                />
-              </Table.DataCell>
-              {/* 3.4 Bruttobeløp */}
-              <Table.DataCell className={`cell-seamless ${hasUtbetaltError(index) ? "p1-cell-error" : ""}`}>
-                <Textarea
-                  className="p1-seamless-textarea"
-                  error={errors.innvilgedePensjoner?.[index]?.utbetalt?.message}
-                  hideLabel
-                  label={`Brutto${SOFT_HYPHEN}beløp og hyppighet`}
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.utbetalt` as const)}
-                />
-              </Table.DataCell>
-
-              {/* 3.5 Grunnlag innvilget */}
-              <Table.DataCell className={hasGrunnlagError(index) ? "p1-cell-error" : ""}>
-                <Controller
-                  control={control}
-                  name={`innvilgedePensjoner.${index}.grunnlagInnvilget` as const}
-                  render={({ field: radioField, fieldState }) => (
-                    <RadioGroup
-                      error={fieldState.error?.message}
-                      legend={`Beregnings${SOFT_HYPHEN}grunnlag`}
-                      onChange={(val) => {
-                        radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
-                      }}
-                      size="small"
-                      value={radioField.value ?? "IKKE_RELEVANT"}
-                    >
-                      {GRUNNLAG_INNVILGET_OPTIONS.map((option) => (
-                        <Radio key={option.value} value={option.value}>
-                          {option.label}
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-              </Table.DataCell>
-
-              {/* 3.6 Reduksjonsgrunnlag */}
-              <Table.DataCell className={hasReduksjonsgrunnlagError(index) ? "p1-cell-error" : ""}>
-                <Controller
-                  control={control}
-                  name={`innvilgedePensjoner.${index}.reduksjonsgrunnlag` as const}
-                  render={({ field: radioField, fieldState }) => (
-                    <RadioGroup
-                      error={fieldState.error?.message}
-                      legend="Årsak til reduksjon"
-                      onChange={(val) => {
-                        radioField.onChange(val === "IKKE_REDUSERT" ? null : val || null);
-                      }}
-                      size="small"
-                      value={radioField.value ?? "IKKE_REDUSERT"}
-                    >
-                      {REDUKSJONSGRUNNLAG_OPTIONS.map((option) => (
-                        <Radio key={option.value} value={option.value}>
-                          {option.label}
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  )}
-                />
-              </Table.DataCell>
-
-              {/* 3.7 Vurderingsperiode */}
-              <Table.DataCell className={`cell-seamless ${hasVurderingsperiodeError(index) ? "p1-cell-error" : ""}`}>
-                <Textarea
-                  className="p1-seamless-textarea"
-                  error={errors.innvilgedePensjoner?.[index]?.vurderingsperiode?.message}
-                  hideLabel
-                  label={`Vurderings${SOFT_HYPHEN}periode`}
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.vurderingsperiode` as const)}
-                />
-              </Table.DataCell>
-
-              {/* 3.8 Adresse ny vurdering */}
-              <Table.DataCell className={`cell-seamless ${hasAdresseError(index) ? "p1-cell-error" : ""}`}>
-                <Textarea
-                  className="p1-seamless-textarea"
-                  error={errors.innvilgedePensjoner?.[index]?.adresseNyVurdering?.message}
-                  hideLabel
-                  label="Adresse ny vurdering"
-                  size="small"
-                  {...register(`innvilgedePensjoner.${index}.adresseNyVurdering` as const)}
-                />
-              </Table.DataCell>
-            </Table.Row>
+            <P1InnvilgetTabRow
+              control={control}
+              error={errors.innvilgedePensjoner?.[index]}
+              index={index}
+              key={field.id}
+              landListe={landListe}
+              register={register}
+            />
           ))}
         </Table.Body>
       </Table>
