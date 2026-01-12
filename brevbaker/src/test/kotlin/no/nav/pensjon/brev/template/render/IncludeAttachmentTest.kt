@@ -57,14 +57,14 @@ class IncludeAttachmentTest {
 
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`() {
-            hasAttachments {
+            Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)).hasAttachments {
                 attachment {
                     title { literal("Test vedlegg") }
                     blocks {
                         paragraph { literal("test") }
                     }
                 }
-            }(Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)))
+            }
         }
     }
 

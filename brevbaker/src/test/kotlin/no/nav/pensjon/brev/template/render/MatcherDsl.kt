@@ -11,8 +11,8 @@ import org.assertj.core.api.Assertions.assertThat
 internal fun hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit): ((LetterMarkup) -> Unit) =
     { assertThat(it.blocks).satisfies(BlocksAssert(matchSize).apply(builder).build()) }
 
-internal fun hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit): ((LetterWithAttachmentsMarkup) -> Unit) =
-    { assertThat(it.attachments).satisfies(AttachmentsAssert(matchSize).apply(builder).build()) }
+internal fun LetterWithAttachmentsMarkup.hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit) =
+    assertThat(attachments).satisfies(AttachmentsAssert(matchSize).apply(builder).build())
 
 @DslMarker
 annotation class LetterMarkupMatcherDsl
