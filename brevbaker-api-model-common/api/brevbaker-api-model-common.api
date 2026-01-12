@@ -644,6 +644,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkupImpl$Paragraph
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage {
+	public abstract fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public abstract fun getLetterDataUsage ()Ljava/util/Set;
 	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 }

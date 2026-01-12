@@ -18,7 +18,8 @@ internal object BrevbakerLetterMarkup {
         SelectorUsage().let { usage ->
             LetterMarkupWithDataUsageImpl(
             Letter2Markup.renderLetterOnly(letter.toScope(usage), letter.template),
-                usage.propertyUsage
+                usage.propertyUsage,
+                letter.template.letterMetadata.brevtype
             )
         }
 }

@@ -6,7 +6,7 @@ import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottaker";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 

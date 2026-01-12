@@ -28,7 +28,6 @@ dependencies {
 
     // JUnit 5
     testImplementation(libs.bundles.junit)
-    testImplementation(libs.hamkrest)
     testImplementation(kotlin("reflect"))
 
     testFixturesImplementation(libs.brevbaker.common)

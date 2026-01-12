@@ -20,22 +20,24 @@ import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class PensjonRepresentasjonService(
     config: Config,
     authService: AuthService,
     private val cache: Cache,
-    clientEngine: HttpClientEngine = CIO.create(),
 ) {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
 
-    private val client = HttpClient(clientEngine) {
+    private val client = HttpClient(CIO) {
         defaultRequest {
             url(pensjonPersondataURL)
         }
-        installRetry(logger)
+        engine {
+            requestTimeout = 10.seconds.inWholeMilliseconds
+        }
         install(ContentNegotiation) { jackson() }
         callIdAndOnBehalfOfClient(scope, authService)
     }
@@ -53,22 +55,26 @@ class PensjonRepresentasjonService(
         PENSJON_VERGE_PENGEMOTTAKER,
     }
 
-
-    suspend fun harVerge(fnr: String): Boolean =
+    suspend fun harVerge(fnr: String): Boolean? =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
             fnr,
             ttl = { 10.minutes }
         ){
-            val response = client.post("/representasjon/hasRepresentant") {
-                contentType(ContentType.Application.Json)
-                setBody(HasRepresentantRequest(fnr, RelevanteRepresentasjonstyper.entries))
-            }
-            return@cached if(response.status.isSuccess()) {
-                response.body<HasRepresentantResponse>().value
-            } else {
-                logger.error("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
-                false
+            try {
+                val response = client.post("/representasjon/hasRepresentant") {
+                    contentType(ContentType.Application.Json)
+                    setBody(HasRepresentantRequest(fnr, RelevanteRepresentasjonstyper.entries))
+                }
+                return@cached if (response.status.isSuccess()) {
+                    response.body<HasRepresentantResponse>().value
+                } else {
+                    logger.error("Klarte ikke å hente representasjonsforhold Status: ${response.status} Response: ${response.bodyAsText()}")
+                    null
+                }
+            } catch (e: Exception) {
+                logger.error("Klarte ikke å hente representasjonsforhold: ${e.message}")
+                null
             }
 
         }

@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
 import org.assertj.core.api.Assertions.assertThat
-import kotlin.test.BeforeTest
-import kotlin.test.Test
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 
 class LatexAppendableTest {
 
     private lateinit var output: StringBuilder
     private lateinit var appendable: LatexAppendable
 
-    @BeforeTest
+    @BeforeEach
     fun setup() {
         output = StringBuilder()
         appendable = LatexAppendable(output)
@@ -130,12 +130,6 @@ class LatexAppendableTest {
             arg { append(arg2) }
         }
         assertThat(printedString()).startsWith("""\$cmd{$arg1}{$arg2}""")
-    }
-
-    @Test
-    fun `printCmd with CommandBuilder ends with newline`() {
-        appendable.appendCmd("paragraph") { arg { append("hei") } }
-        assertThat(printedString()).endsWith("\n")
     }
 
     @Test

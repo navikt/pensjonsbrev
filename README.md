@@ -190,7 +190,7 @@ Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av end
 For å se at du kun har endret det du skal, så kan du kjøre følgende script etterpå:
 
 ```bash
-folder=./pensjon-brevbaker/build/test_visual
+folder=./pdf-bygger/build/test_visual
 original_files=$folder/image_old
 compare_to_folder=$folder/pdf
 mogrify_folder=$folder/image_new

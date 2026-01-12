@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
-import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 class Dto2ApiService(
@@ -57,6 +58,16 @@ class Dto2ApiService(
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
+        )
+    }
+
+    suspend fun toApi(reservasjon: Reservasjon): Api.ReservasjonResponse = with(reservasjon) {
+        Api.ReservasjonResponse(
+            vellykket = vellykket,
+            reservertAv = NavAnsatt(reservertAv, navansattService.hentNavansatt(reservertAv.id)!!.navn),
+            timestamp = timestamp,
+            expiresIn = expiresIn,
+            redigertBrevHash = redigertBrevHash,
         )
     }
 

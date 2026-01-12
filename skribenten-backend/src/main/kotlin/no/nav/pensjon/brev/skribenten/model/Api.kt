@@ -165,6 +165,13 @@ object Api {
         val vergemaal: Boolean,
     )
 
+    data class BrukerStatus(
+        val adressebeskyttelse: Boolean,
+        val doedsfall: LocalDate?,
+        val erSkjermet: Boolean,
+        val vergemaal: Boolean,
+    )
+
     data class Brevmal(
         val name: String,
         val id: String,

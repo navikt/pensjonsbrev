@@ -107,7 +107,7 @@ env:
     value: "api://prod-fss.pensjon-person.pensjon-persondata/.default"
 
   - name: PENSJON_REPRESENTASJON_URL
-    value: "https://pensjon-representasjon.intern.nav.no"
+    value: "https://pensjon-representasjon.prod-fss-pub.nais.io"
   - name: PENSJON_REPRESENTASJON_SCOPE
     value: "api://prod-fss.pensjon-person.pensjon-representasjon/.default"
 

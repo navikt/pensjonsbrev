@@ -1,8 +1,5 @@
 package no.nav.pensjon.brev
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.containsSubstring
-import com.natpryce.hamkrest.equalTo
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -18,6 +15,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
@@ -42,8 +40,8 @@ class ApplicationITest {
             contentType(ContentType.Application.Json)
             setBody(reqValue)
         }
-        assertThat(response.bodyAsText(), containsSubstring("file"))
-        assertThat(response.status, equalTo(HttpStatusCode.OK))
+        assertThat(response.bodyAsText()).contains("file")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Tag(TestTags.MANUAL_TEST)
@@ -53,8 +51,8 @@ class ApplicationITest {
             contentType(ContentType.Application.Json)
             setBody(reqWrapped)
         }
-        assertThat(response.bodyAsText(), containsSubstring("file"))
-        assertThat(response.status, equalTo(HttpStatusCode.OK))
+        assertThat(response.bodyAsText()).contains("file")
+        assertThat(response.status).isEqualTo(HttpStatusCode.OK)
     }
 
     @Test
@@ -69,7 +67,7 @@ class ApplicationITest {
             """.trimIndent()
             )
         }
-        assertThat(response.bodyAsText(), containsSubstring("value failed for JSON property "))
+        assertThat(response.bodyAsText()).contains("value failed for JSON property ")
     }
 
     @Test
@@ -85,7 +83,7 @@ class ApplicationITest {
                 )
             )
         }
-        assertThat(response.bodyAsText(), containsSubstring("Missing required creator property"))
+        assertThat(response.bodyAsText()).contains("Missing required creator property")
     }
 }
 

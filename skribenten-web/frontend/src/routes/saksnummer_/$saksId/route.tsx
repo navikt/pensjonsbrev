@@ -1,11 +1,13 @@
 import { css } from "@emotion/react";
 import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
 import { BodyShort, BoxNew, CopyButton, HStack, Tag } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { z } from "zod";
 
 import {
+  getBrukerStatusQuery,
   getFavoritterQuery,
   getKontaktAdresseQuery,
   getPreferredLanguageQuery,
@@ -36,6 +38,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
     queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
     queryClient.prefetchQuery(getFavoritterQuery);
     queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
+    queryClient.prefetchQuery(getBrukerStatusQuery(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
@@ -66,6 +69,8 @@ function SakLayout() {
 function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const sak = sakContext.sak;
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
+  const { data: brukerStatus } = useQuery(getBrukerStatusQuery(sak.saksId.toString()));
+
   const dateOfBirth = useMemo(() => {
     if (!sak.foedselsdato) return undefined;
     const date = new Date(sak.foedselsdato);
@@ -74,12 +79,12 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
   }, [sak.foedselsdato]);
   const dateOfDeath = useMemo(() => {
-    if (!sakContext.doedsfall) return undefined;
-    const date = new Date(sakContext.doedsfall);
-    return Number.isNaN(date.getTime())
+    if (!brukerStatus?.doedsfall) return undefined;
+    const date = new Date(brukerStatus.doedsfall);
+    return isNaN(date.valueOf())
       ? undefined
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
-  }, [sakContext.doedsfall]);
+  }, [brukerStatus]);
 
   return (
     <BoxNew
@@ -121,21 +126,21 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           {/* Vil ikke vises for ugyldig dato, f.eks. dummy pnr med ugyldig månedsledd */}
           {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
-          {sakContext.erSkjermet && (
+          {brukerStatus?.erSkjermet && (
             <BodyShort>
               <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Egen ansatt
               </Tag>
             </BodyShort>
           )}
-          {sakContext.vergemaal && (
+          {brukerStatus?.vergemaal && (
             <BodyShort>
               <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Vergemål
               </Tag>
             </BodyShort>
           )}
-          {sakContext.adressebeskyttelse && (
+          {brukerStatus?.adressebeskyttelse && (
             <BodyShort>
               <Tag
                 css={{ borderRadius: "var(--ax-radius-4)" }}

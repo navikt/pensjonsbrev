@@ -220,12 +220,14 @@ describe("Brevvelger spec", () => {
       request.reply({
         ...sak,
         sak: { ...sak.sak, ...{ foedselsdato: "1999-12-31" } },
-        ...{
-          doedsfall: "2014-12-31",
-          erSkjermet: true,
-          vergemaal: true,
-          adressebeskyttelse: true,
-        },
+      });
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brukerstatus", (request) => {
+      request.reply({
+        doedsfall: "2014-12-31",
+        erSkjermet: true,
+        vergemaal: true,
+        adressebeskyttelse: true,
       });
     });
 
