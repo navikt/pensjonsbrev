@@ -12,7 +12,7 @@ import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test1
 import no.nav.pensjon.brev.template.render.dsl.NullBrevDtoSelectors.test2
-import no.nav.pensjon.brev.template.render.hasBlocks
+import no.nav.pensjon.brev.template.render.assertHasBlocks
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Nested
@@ -56,7 +56,7 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull renders successfully for non-null value`() {
-        Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup.hasBlocks {
+        Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", null), Bokmal, felles)).letterMarkup.assertHasBlocks {
             paragraph {
                 literal("alltid med")
                 literal("hei: ")
@@ -67,7 +67,7 @@ class IfNotNullTest {
 
     @Test
     fun `ifNotNull renders successfully but without null-block`() {
-        Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup.hasBlocks {
+        Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup.assertHasBlocks {
             paragraph {
                 literal("alltid med")
             }
@@ -79,7 +79,7 @@ class IfNotNullTest {
     inner class AbsoluteValue {
         @Test
         fun `renders when preceding condition is not met and orShowIf condition is met`() {
-            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup.hasBlocks {
+            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, "138513"), Bokmal, felles)).letterMarkup.assertHasBlocks {
                 paragraph {
                     literal("alltid med")
                     literal("tall: ")
@@ -90,7 +90,7 @@ class IfNotNullTest {
 
         @Test
         fun `does not render when preceding condition met`() {
-            Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup.hasBlocks {
+            Letter2Markup.render(LetterImpl(template, NullBrevDto("Ole", "138513"), Bokmal, felles)).letterMarkup.assertHasBlocks {
                 paragraph {
                     literal("alltid med")
                     literal("hei: ")
@@ -101,7 +101,7 @@ class IfNotNullTest {
 
         @Test
         fun `does not render when preceding condition is not met and orShowIf condition is not met`() {
-            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup.hasBlocks {
+            Letter2Markup.render(LetterImpl(template, NullBrevDto(null, null), Bokmal, felles)).letterMarkup.assertHasBlocks {
                 paragraph {
                     literal("alltid med")
                 }

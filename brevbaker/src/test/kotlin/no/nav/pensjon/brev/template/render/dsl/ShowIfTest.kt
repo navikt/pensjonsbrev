@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.template.render.dsl.SomeDtoSelectors.name
-import no.nav.pensjon.brev.template.render.hasBlocks
+import no.nav.pensjon.brev.template.render.assertHasBlocks
 import org.junit.jupiter.api.Test
 
 class ShowIfTest {
@@ -22,7 +22,7 @@ class ShowIfTest {
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.hasBlocks {
+        ).letterMarkup.assertHasBlocks {
             paragraph {
                 literal("showIf tekst")
             }
@@ -38,7 +38,7 @@ class ShowIfTest {
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.hasBlocks {
+        ).letterMarkup.assertHasBlocks {
             paragraph {
                 literal("orShowIf tekst")
             }
@@ -54,7 +54,7 @@ class ShowIfTest {
                 Language.Bokmal,
                 felles
             )
-        ).letterMarkup.hasBlocks {
+        ).letterMarkup.assertHasBlocks {
             paragraph {
                 literal("orShow tekst")
             }

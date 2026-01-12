@@ -33,7 +33,7 @@ class Letter2MarkupTest {
             paragraph { text(bokmal { +"hei paragraph2" }) }
         }
 
-        result.letterMarkup.hasBlocks {
+        result.letterMarkup.assertHasBlocks {
             title1 { literal("hei tittel") }
             paragraph { literal("hei paragraph") }
             paragraph { literal("hei paragraph2") }
@@ -63,7 +63,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.hasBlocks {
+        result.letterMarkup.assertHasBlocks {
             paragraph {
                 literal("first")
                     literal("second")
@@ -79,7 +79,7 @@ class Letter2MarkupTest {
                 text(bokmal { +"second" })
             }
         }
-        result.letterMarkup.hasBlocks {
+        result.letterMarkup.assertHasBlocks {
             title1 {
                 literal("first")
                 literal("second")
@@ -95,7 +95,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.hasBlocks {
+        result.letterMarkup.assertHasBlocks {
             title1 {
                 literal("noe tekst ")
                 variable("2024")
@@ -133,7 +133,7 @@ class Letter2MarkupTest {
             }
         }
 
-        result.letterMarkup.hasBlocks {
+        result.letterMarkup.assertHasBlocks {
             paragraph {
                 literal("hei")
                 newLine()

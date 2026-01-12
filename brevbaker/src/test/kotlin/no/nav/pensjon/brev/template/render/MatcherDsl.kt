@@ -8,10 +8,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import org.assertj.core.api.Assertions.assertThat
 
-internal fun LetterMarkup.hasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit) =
+internal fun LetterMarkup.assertHasBlocks(matchSize: Boolean = true, builder: BlocksAssert.() -> Unit) =
     assertThat(blocks).satisfies(BlocksAssert(matchSize).apply(builder).build())
 
-internal fun LetterWithAttachmentsMarkup.hasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit) =
+internal fun LetterWithAttachmentsMarkup.assertHasAttachments(matchSize: Boolean = true, builder: AttachmentsAssert.() -> Unit) =
     assertThat(attachments).satisfies(AttachmentsAssert(matchSize).apply(builder).build())
 
 @DslMarker
