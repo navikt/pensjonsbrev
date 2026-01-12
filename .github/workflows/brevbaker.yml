@@ -52,7 +52,8 @@ jobs:
     with:
       image_suffix: brevbaker
       path: pensjon/brevbaker
-      gradlePath: pensjon:brevbaker
+      target: brevbaker
+      gradleTarget: pensjon:brevbaker
       extraModulesToBuild: ':pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal'
       buildImage: true
 

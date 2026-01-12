@@ -48,7 +48,8 @@ jobs:
     with:
       image_suffix: pdf-bygger
       path: brevbaker/pdf-bygger
-      gradlePath: brevbaker:pdf-bygger
+      target: pdf-bygger
+      gradleTarget: brevbaker:pdf-bygger
       buildImage: true
       uploadJar: true
 

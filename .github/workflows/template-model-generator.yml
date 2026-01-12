@@ -23,5 +23,7 @@ jobs:
     secrets: inherit
     with:
       image_suffix: ''
-      path: 'template-model-generator'
+      path: brevbaker/template-model-generator
+      target: template-model-generator
+      gradleTarget: brevbaker:template-model-generator
       buildImage: false

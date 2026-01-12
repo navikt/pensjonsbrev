@@ -15,7 +15,7 @@ Se [seksjonen under for oppsett av read token i gradle](#for-gradle).
 Bruk følgende for å bygge og kjøre:
 
 ```bash
-./gradlew :pensjon/brevbaker:build :brevbaker:pdf-bygger:build
+./gradlew :pensjon:brevbaker:build :brevbaker:pdf-bygger:build
 ```
 
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
@@ -183,7 +183,7 @@ For å fort kunne oppdatere latex filene i pdf-byggeren under kjøring, anbefale
 docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && docker cp .brevbaker/pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
 ```
 
-Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av endringen fort.
+Da vil du kunne se på pensjon/brevbaker/build/test_visual/pdf resultatet av endringen fort.
 
 ## Se forskjell mellom endringer og gammel versjon
 
