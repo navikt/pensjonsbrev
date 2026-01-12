@@ -2,11 +2,10 @@
 
 package no.nav.pensjon.brev.template
 
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.assertThat
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 import java.time.LocalDate
 
@@ -31,62 +30,61 @@ class TemplateModelSpecificationFactoryTest {
 
     @Test
     fun `letterModelTypeName matches input class`() {
-        assertThat(spec.letterModelTypeName, equalTo(AModel::class.qualifiedName))
+        assertThat(spec.letterModelTypeName).isEqualTo(AModel::class.qualifiedName)
     }
 
     @Test
     fun `has an entry for all fields`() {
-        assertThat(aModelSpec.keys, Set<String>::containsAll, listOf("enBool", "tekst", "tall", "strenger", "doubles", "etTall", "etDesimal", "dato", "sub"))
+        assertThat(aModelSpec.keys).containsAll(listOf("enBool", "tekst", "tall", "strenger", "doubles", "etTall", "etDesimal", "dato", "sub"))
     }
 
     @Test
     fun `string is a scalar value with type`() {
-        assertThat(aModelSpec["tekst"], equalTo(FieldType.Scalar(false, Kind.STRING)))
+        assertThat(aModelSpec["tekst"]).isEqualTo(FieldType.Scalar(false, Kind.STRING))
     }
 
     @Test
     fun `handles display text`() {
-        assertThat(aModelSpec["dato"], equalTo(FieldType.Scalar(false, Kind.DATE, "viktig dato")))
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
     }
 
     @Test
     fun `int is a scalar value with type`() {
-        assertThat(aModelSpec["etTall"], equalTo(FieldType.Scalar(false, Kind.NUMBER)))
+        assertThat(aModelSpec["etTall"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
     }
 
     @Test
     fun `double is a scalar value with type`() {
-        assertThat(aModelSpec["etDesimal"], equalTo(FieldType.Scalar(false, Kind.DOUBLE)))
+        assertThat(aModelSpec["etDesimal"]).isEqualTo(FieldType.Scalar(false, Kind.DOUBLE))
     }
 
     @Test
     fun `boolean is a scalar value with boolean as type`() {
-        assertThat(aModelSpec["enBool"], equalTo(FieldType.Scalar(false, Kind.BOOLEAN)))
+        assertThat(aModelSpec["enBool"]).isEqualTo(FieldType.Scalar(false, Kind.BOOLEAN))
     }
 
     @Test
     fun `date is a scalar value with type`() {
-        assertThat(aModelSpec["dato"], equalTo(FieldType.Scalar(false, Kind.DATE, "viktig dato")))
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
     }
 
     @Test
     fun `list fields have Array type with scalars as items`() {
-        assertThat(aModelSpec["tall"], equalTo(FieldType.Array(false, FieldType.Scalar(false, Kind.NUMBER))))
-        assertThat(aModelSpec["strenger"], equalTo(FieldType.Array(false, FieldType.Scalar(false, Kind.STRING))))
-        assertThat(aModelSpec["doubles"], equalTo(FieldType.Array(false, FieldType.Scalar(false, Kind.DOUBLE))))
+        assertThat(aModelSpec["tall"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.NUMBER)))
+        assertThat(aModelSpec["strenger"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.STRING)))
+        assertThat(aModelSpec["doubles"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.DOUBLE)))
     }
 
     @Test
     fun `object fields have Object type and name can be looked up in specification types`() {
-        assertThat(aModelSpec["sub"], equalTo(FieldType.Object(false, AModel.SubModel::class.qualifiedName!!)))
+        assertThat(aModelSpec["sub"]).isEqualTo(FieldType.Object(false, AModel.SubModel::class.qualifiedName!!))
         assertThat(
-            spec.types[AModel.SubModel::class.qualifiedName!!]!!, equalTo(
+            spec.types[AModel.SubModel::class.qualifiedName!!]!!).isEqualTo(
                 mapOf(
                     "navn" to FieldType.Scalar(false, Kind.STRING),
                     "alder" to FieldType.Scalar(false, Kind.NUMBER),
                 )
             )
-        )
     }
 
     class NoPrimaryConstructor {
@@ -120,7 +118,7 @@ class TemplateModelSpecificationFactoryTest {
     @Test
     fun `enum fields have Enum type with all enum-values`() {
         val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
-        assertThat(spec["anEnum"], equalTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2")))))
+        assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
     }
 
     data class WithValueClass(val navn: String, val aValueClass: TheValue) {
@@ -132,8 +130,8 @@ class TemplateModelSpecificationFactoryTest {
     fun `value class fields have Scalar type`() {
         val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
         val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
-        assertThat(withValueClassSpec["aValueClass"], equalTo(FieldType.Scalar(false, Kind.NUMBER)))
-        assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!, equalTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER))))
+        assertThat(withValueClassSpec["aValueClass"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
+        assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!).isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER)))
     }
 
     data class WithNullable(val scalar: String?, val objekt: AModel.SubModel?, val listNullable: List<String>?, val listWithNullable: List<String?>, val list: List<String?>?)
@@ -143,8 +141,8 @@ class TemplateModelSpecificationFactoryTest {
         val spec = TemplateModelSpecificationFactory(WithNullable::class).build()
 
         assertThat(
-            spec.types[WithNullable::class.qualifiedName!!]!!,
-            equalTo(
+            spec.types[WithNullable::class.qualifiedName!!]!!)
+            .isEqualTo(
                 mapOf(
                     "scalar" to FieldType.Scalar(true, Kind.STRING),
                     "objekt" to FieldType.Object(true, AModel.SubModel::class.qualifiedName!!),
@@ -153,12 +151,10 @@ class TemplateModelSpecificationFactoryTest {
                     "list" to FieldType.Array(true, FieldType.Scalar(true, Kind.STRING))
                 )
             )
-        )
 
         assertThat(
-            spec.types[AModel.SubModel::class.qualifiedName!!]!!,
-            equalTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "alder" to FieldType.Scalar(false, Kind.NUMBER)))
-        )
+            spec.types[AModel.SubModel::class.qualifiedName!!]!!)
+            .isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "alder" to FieldType.Scalar(false, Kind.NUMBER)))
     }
 
     data class Recursive(val next: Recursive?)

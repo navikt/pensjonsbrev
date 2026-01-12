@@ -106,7 +106,6 @@ dependencies {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
     testImplementation(libs.ktor.client.mock)
-    testImplementation(libs.assertJ)
     testImplementation(libs.testcontainers.postgresql)
 
 }

@@ -80,7 +80,7 @@ dependencies {
         because("we require deserialization/serialization of java.time.LocalDate")
     }
 
-    testImplementation(libs.assertJ)
+    testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }

@@ -1,12 +1,8 @@
 package no.nav.pensjon.brev.template.render
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.has
-import com.natpryce.hamkrest.isEmpty
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.createTemplate
 import no.nav.brev.brevbaker.template.render.Letter2Markup
-import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.HasModel
 import no.nav.pensjon.brev.template.LangNynorsk
@@ -17,6 +13,8 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.IncludeAttachmentTestSelectors.NullDataSelectors.vedlegg
+import no.nav.pensjon.brev.template.render.MatcherDslAsserter.Companion.assertThat
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
@@ -55,25 +53,19 @@ class IncludeAttachmentTest {
         @Test
         fun `attachment is not included when using includeAttachmentIfNotNull and attachmentData is null`() {
             val actual = Letter2Markup.render(LetterImpl(testTemplate, NullData(null), Nynorsk, FellesFactory.felles))
-            assertThat(
-                actual,
-                has(LetterWithAttachmentsMarkup::attachments, isEmpty)
-            )
+            assertThat(actual.attachments).isEmpty()
         }
 
         @Test
         fun `attachment is included when using includeAttachmentIfNotNull and attachmentData is not null`() {
-            assertThat(
-                Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles)),
-                hasAttachments {
-                    attachment {
-                        title { literal("Test vedlegg") }
-                        blocks {
-                            paragraph { literal("test") }
-                        }
+            assertThat(Letter2Markup.render(LetterImpl(testTemplate, NullData(VedleggData("testtekst")), Nynorsk, FellesFactory.felles))).hasAttachments {
+                attachment {
+                    title { literal("Test vedlegg") }
+                    blocks {
+                        paragraph { literal("test") }
                     }
                 }
-            )
+            }
         }
     }
 
