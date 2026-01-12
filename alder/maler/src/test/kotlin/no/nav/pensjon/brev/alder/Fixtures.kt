@@ -47,6 +47,8 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlde
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.fixtures.alder.*
 import kotlin.reflect.KClass
 
@@ -67,6 +69,7 @@ object Fixtures : LetterDataFactory {
             AvslagUttakFoerNormertPensjonsalderDto::class -> createAvslagUttakFoerNormertPensjonsalderDto() as T
             AvslagUnder5AarTrygdetidAutoDto::class -> createUnder5AarTrygdetidAutoDto() as T
             EmptyAutobrevdata::class -> EmptyAutobrevdata as T
+            EmptyRedigerbarBrevdata::class -> EmptyRedigerbarBrevdata as T
             EndringAvAlderspensjonFordiDuFyller75AarAutoDto::class -> createEndringAvAlderspensjonFordiDuFyller75AarAutoDto() as T
             EndringAvAlderspensjonGarantitilleggDto::class -> createEndringAvAlderspensjonGarantitilleggDto() as T
             EndringAvAlderspensjonSivilstandAutoDto::class -> createEndringAvAlderspensjonSivilstandAutoDto() as T

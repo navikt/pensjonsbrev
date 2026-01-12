@@ -1,15 +1,11 @@
 package no.nav.pensjon.brev.template.dsl.helpers
 
 import com.google.devtools.ksp.impl.KotlinSymbolProcessing
-import com.natpryce.hamkrest.*
-import com.natpryce.hamkrest.assertion.*
 import no.nav.pensjon.brev.template.*
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-
-private fun hasSelectorFile(name: String) =
-    anyElement(has(KotlinSourceFile::name, equalTo("${name}Selectors.kt")))
 
 class TemplateModelHelpersAnnotationProcessorTest {
 
@@ -34,7 +30,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                 """.trimIndent()
             ).generateSelectors()
         }
-        assertThat(result.msg, containsSubstring("@$ANNOTATION_NAME does not support target class kind CLASS (only supports OBJECT): MyClass"))
+        assertThat(result.msg).contains("@$ANNOTATION_NAME does not support target class kind CLASS (only supports OBJECT): MyClass")
     }
 
     @Test
@@ -51,7 +47,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
             ).generateSelectors()
         }
 
-        assertThat(result.msg, containsSubstring("@$ANNOTATION_NAME annotated target OBJECT must extend $HAS_MODEL_INTERFACE_NAME"))
+        assertThat(result.msg).contains("@$ANNOTATION_NAME annotated target OBJECT must extend $HAS_MODEL_INTERFACE_NAME")
     }
 
     @Test
@@ -83,13 +79,10 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     """.trimIndent()
         ).generateSelectors()
 
-        assertThat(result.exitCode, equalTo(KotlinSymbolProcessing.ExitCode.OK))
-        assertThat(
-            result.generatedSources, allOf(
-                hasSelectorFile("ParentModel"),
-                hasSelectorFile("UncleModel"),
-            )
-        )
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("ParentModelSelectors.kt")
+        assertThat(generatedSources).contains("UncleModelSelectors.kt")
     }
 
 
@@ -129,15 +122,13 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     """.trimIndent()
         ).generateSelectors()
 
-        assertThat(result.exitCode, equalTo(KotlinSymbolProcessing.ExitCode.OK))
-        assertThat(
-            result.generatedSources, allOf(
-                hasSelectorFile("AMother"),
-                hasSelectorFile("ParentModel"),
-                hasSelectorFile("UncleModel").not(),
-                hasSelectorFile("ChildModel").not(),
-            )
-        )
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("AMotherSelectors.kt")
+        assertThat(generatedSources).contains("ParentModelSelectors.kt")
+        assertThat(generatedSources).doesNotContain("ChildModelSelectors.kt")
+        assertThat(generatedSources).doesNotContain("UncleModelSelectors.kt")
     }
 
     @Test
@@ -153,8 +144,8 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     """.trimIndent()
         ).generateSelectors()
 
-        assertThat(result.exitCode, equalTo(KotlinSymbolProcessing.ExitCode.OK))
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
         // Neither List nor String should get generators
-        assertThat(result.generatedSources, isEmpty)
+        assertThat(result.generatedSources).isEmpty()
     }
 }

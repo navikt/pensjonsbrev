@@ -59,7 +59,7 @@ object UforeAvslagIFUIkkeVarig : RedigerbarTemplate<UforeAvslagEnkelDto> {
             }
             paragraph {
                 text(bokmal { +"For å ha rett til en høyere inntektsgrense, må du ha hatt en varig økning av inntekten din, uten at stillingsprosenten din har økt. " },
-                    nynorsk { +"For å ha rett til ein høgare inntektsgrense, må du ha hatt ein varig auke av inntekta di, utan at stillingsprosenten din har auka. " }
+                    nynorsk { +"For å ha rett til ei høgare inntektsgrense, må du ha hatt ein varig auke av inntekta di, utan at stillingsprosenten din har auka. " }
                 )
             }
             paragraph {

@@ -25,8 +25,7 @@ dependencies {
     ksp(project(":brevbaker:template-model-generator"))
     implementation(libs.kotlinx.html)
 
-    testImplementation(kotlin("test"))
-    testImplementation(libs.hamkrest)
+    testImplementation(libs.bundles.junit)
 
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 

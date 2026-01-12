@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.routing
 
-import io.ktor.client.call.*
-import io.ktor.client.request.*
-import io.ktor.http.*
+import io.ktor.client.call.body
+import io.ktor.client.request.accept
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.TestTags
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
@@ -16,20 +18,25 @@ import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title1
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title2
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title3
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.*
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.NewLine
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Variable
 import org.apache.pdfbox.Loader
 import org.apache.pdfbox.text.PDFTextStripper
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 @Tag(TestTags.INTEGRATION_TEST)
 class BrevtekstITest {
@@ -140,3 +147,5 @@ private fun finnTekstForHeader(header: Header): String =
 private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { it.content.tekst() }
 
 private fun List<ParagraphContent.Text>.tekst() = joinToString("") { it.text }
+
+private fun assertContains(tekst: String, matches: String) = assertThat(tekst).contains(matches)

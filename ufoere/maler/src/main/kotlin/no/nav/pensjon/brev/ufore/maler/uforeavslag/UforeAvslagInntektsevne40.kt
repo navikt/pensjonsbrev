@@ -68,7 +68,7 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
 
             title1 {
                 text(bokmal { +"Slik har vi beregnet inntektsevnen din" },
-                    nynorsk { +"Slik har vi rekna ut inntektsevna di" })
+                    nynorsk { +"Slik har vi berekna inntektsevna di" })
             }
             paragraph {
                 text(bokmal { +"Vi sammenligner inntekten din før og etter at du ble ufør for å avgjøre i hvor stor grad inntektsevnen din er nedsatt." },

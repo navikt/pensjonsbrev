@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
-import kotlin.test.assertEquals
 
 class KrrServiceTest {
     private val config = ConfigFactory.parseMap(mapOf("scope" to "test-scope", "url" to "http://krr.test"))

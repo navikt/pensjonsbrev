@@ -10,9 +10,9 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.context.CoroutineContextValueException
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import kotlin.test.assertEquals
 
 class AzureAdOnBehalfOfTest {
 

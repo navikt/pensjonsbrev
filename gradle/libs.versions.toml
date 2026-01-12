@@ -9,7 +9,6 @@ commonsCodecVersion = "1.20.0"
 commonVersion = "2.20.0"
 exposedVersion = "0.61.0"
 flywayVersion = "11.20.0"
-hamkrestVersion = "1.8.0.1"
 hikariVersion = "7.0.2"
 jacksonJsr310Version = "2.20.1"
 jupiterVersion = "6.0.1"
@@ -90,14 +89,12 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
-hamkrest = { module = "com.natpryce:hamkrest", version.ref = "hamkrestVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
-kotlin-test-junit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlinVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
 [bundles]
-junit = ["junit-jupiter", "junit-platform-launcher"]
+junit = ["junit-jupiter", "junit-platform-launcher", "assertJ"]
 logging = ["logback-classic", "logback-encoder"]
 metrics = ["micrometer-prometheus", "ktor-server-metrics", "ktor-server-metrics-micrometer"]

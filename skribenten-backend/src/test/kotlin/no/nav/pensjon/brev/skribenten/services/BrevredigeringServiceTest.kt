@@ -41,6 +41,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -48,8 +49,6 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
-import kotlin.test.assertContains
-import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
@@ -237,15 +236,14 @@ class BrevredigeringServiceTest {
             brevkode: Brevkode.Redigerbart,
             avsenderEnhetsId: String?,
         ) {
-            assertContains(utfoerteHentPesysBrevdataKall.distinct(), PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+            assertThat(utfoerteHentPesysBrevdataKall.distinct()).contains(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
         }
 
         fun verifySendBrev(
             sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
         ) {
-            assertContains(utfoerteSendBrevKall.distinct(), Pair(sendRedigerbartBrevRequest, distribuer))
+            assertThat(utfoerteSendBrevKall.distinct()).contains(Pair(sendRedigerbartBrevRequest, distribuer))
         }
-
     }
 
     private val navAnsattService = FakeNavansattService(

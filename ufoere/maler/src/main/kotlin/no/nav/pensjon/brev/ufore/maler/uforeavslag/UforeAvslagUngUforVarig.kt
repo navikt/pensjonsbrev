@@ -60,7 +60,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                 text(bokmal { + "Kravet til alvorlighet er strengere enn for vanlig uføretrygd. Det betyr at du må ha en " +
                         "betydelig mer alvorlig sykdom enn det som normalt gir rett til uføretrygd." },
                     nynorsk { + "Kravet til alvorlegheit er strengare enn for vanleg uføretrygd. Det betyr at du må ha ein " +
-                            "betydelig meir alvorleg sjukdom enn det som normalt gir rett til uføretrygd." })
+                            "betydeleg meir alvorleg sjukdom enn det som normalt gir rett til uføretrygd." })
             }
             paragraph {
                 text(bokmal { + "Vi har vurdert all dokumentasjon i saken din, med særlig vekt på opplysninger fra tiden før du fylte 26 år. " +

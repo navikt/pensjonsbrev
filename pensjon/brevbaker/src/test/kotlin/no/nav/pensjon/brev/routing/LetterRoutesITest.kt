@@ -2,9 +2,6 @@ package no.nav.pensjon.brev.routing
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.contains
-import com.natpryce.hamkrest.containsSubstring
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
@@ -27,6 +24,7 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -73,7 +71,7 @@ class LetterRoutesITest {
         }
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
+        assertThat(response.bodyAsText()).containsPattern("<html.*>")
     }
 
     @Test
@@ -85,7 +83,7 @@ class LetterRoutesITest {
         }
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8), response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsText(), contains(Regex("<html.*>")))
+        assertThat(response.bodyAsText()).containsPattern("<html.*>")
     }
 
     @Test
@@ -96,7 +94,7 @@ class LetterRoutesITest {
         }.body<LetterResponse>()
 
         assertEquals(ContentType.Text.Html.withCharset(Charsets.UTF_8).toString(), responseBody.contentType)
-        assertThat(String(responseBody.file, Charsets.UTF_8), contains(Regex("<html.*>")))
+        assertThat(String(responseBody.file, Charsets.UTF_8)).containsPattern("<html.*>")
     }
 
     @Test
@@ -157,7 +155,7 @@ class LetterRoutesITest {
 
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterResponse>()
-        assertThat(String(body.file, Charsets.UTF_8), containsSubstring(redigertBestilling.letterMarkup.title.joinToString("") { it.text }))
+        assertThat(String(body.file, Charsets.UTF_8)).contains(redigertBestilling.letterMarkup.title.joinToString("") { it.text })
     }
 
     @Test
