@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import io.ktor.http.*
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
@@ -125,7 +124,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = Sakstype.all,
+            sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
         )
 
         val vedtaksbrev = TemplateDescription.Redigerbar(
@@ -139,7 +138,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = Sakstype.all,
+            sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
         )
 
         val stagetPDF = "nesten en pdf".encodeToByteArray()

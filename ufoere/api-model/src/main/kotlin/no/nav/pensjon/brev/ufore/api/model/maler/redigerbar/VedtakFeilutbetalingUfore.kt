@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -75,7 +75,7 @@ data class FeilutbetalingManed(
 )
 
 data class DineRettigheterOgMulighetTilAKlageDto(
-    val sakstype: Sakstype,
+    val sakstype: ISakstype,
     val brukerUnder18Ar: Boolean?,
 )
 

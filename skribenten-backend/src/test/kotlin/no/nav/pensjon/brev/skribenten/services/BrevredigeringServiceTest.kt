@@ -4,7 +4,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.*
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -107,7 +106,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-        sakstyper = Sakstype.all,
+        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
     )
     private val vedtaksbrev = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VEDTAKSBREV.kode(),
@@ -120,7 +119,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Sakstype.all,
+        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
     )
     private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VEDTAKSBREV.kode(),
@@ -133,7 +132,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.VARSEL,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Sakstype.all,
+        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
     )
     private val letterResponse =
         LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = informasjonsbrev.metadata)

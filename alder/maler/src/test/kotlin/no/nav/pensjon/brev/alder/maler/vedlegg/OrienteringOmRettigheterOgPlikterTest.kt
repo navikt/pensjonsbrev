@@ -5,11 +5,11 @@ import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.pensjon.brev.alder.Fixtures
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.AFP
-import no.nav.pensjon.brev.api.model.Sakstype.ALDER
-import no.nav.pensjon.brev.api.model.Sakstype.BARNEP
-import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
+import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype.AFP
+import no.nav.pensjon.brev.alder.model.Sakstype.ALDER
+import no.nav.pensjon.brev.alder.model.Sakstype.BARNEP
+import no.nav.pensjon.brev.alder.model.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand

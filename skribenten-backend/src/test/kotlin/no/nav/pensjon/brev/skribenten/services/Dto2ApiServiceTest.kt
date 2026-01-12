@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -9,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -34,7 +34,7 @@ class Dto2ApiServiceTest {
                     ),
                     kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
                     brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                    sakstyper = Sakstype.all,
+                    sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
                 ))),
             navansattService = navansattService,
             norg2Service = norg2Service,

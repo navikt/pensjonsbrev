@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -12,6 +11,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.Feilu
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
+import no.nav.pensjon.brev.ufore.maler.Sakstype
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass

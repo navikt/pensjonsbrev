@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model
 
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 enum class AlderspensjonRegelverkType {
@@ -123,4 +124,27 @@ enum class YtelseForAldersovergangKode {
     UT,
     UT_AP_GRAD,
     UT_GRAD,
+}
+
+enum class Sakstype : ISakstype {
+    AFP,
+    AFP_PRIVAT,
+    ALDER,
+    BARNEP,
+    FAM_PL,
+    GAM_YRK,
+    GENRL,
+    GJENLEV,
+    GRBL,
+    KRIGSP,
+    OMSORG,
+    UFOREP,
+    ;
+
+    override fun kode() = name
+
+    companion object {
+        val all: Set<Sakstype> = entries.toSet()
+        val pensjon: Set<Sakstype> = setOf(AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG)
+    }
 }

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
@@ -10,7 +11,6 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import java.time.LocalDate
 import java.time.LocalDateTime
-import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
     enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
@@ -165,5 +165,11 @@ object Pen {
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
+
+    enum class BrevbakerSakstype : ISakstype {
+        AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG, UFOREP;
+
+        override fun kode(): String = name
     }
 }
