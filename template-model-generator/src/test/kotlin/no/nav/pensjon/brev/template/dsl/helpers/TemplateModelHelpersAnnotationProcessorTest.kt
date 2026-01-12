@@ -80,8 +80,9 @@ class TemplateModelHelpersAnnotationProcessorTest {
         ).generateSelectors()
 
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
-        assertThat(result.generatedSources.any { it.name == "ParentModelSelectors.kt" }).isTrue
-        assertThat(result.generatedSources.any { it.name == "UncleModelSelectors.kt" }).isTrue
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("ParentModelSelectors.kt")
+        assertThat(generatedSources).contains("UncleModelSelectors.kt")
     }
 
 
@@ -123,10 +124,11 @@ class TemplateModelHelpersAnnotationProcessorTest {
 
         assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
 
-        assertThat(result.generatedSources.any { it.name == "AMotherSelectors.kt" }).isTrue
-        assertThat(result.generatedSources.any { it.name == "ParentModelSelectors.kt" }).isTrue
-        assertThat(result.generatedSources.any { it.name == "ChildModelSelectors.kt" }).isFalse
-        assertThat(result.generatedSources.any { it.name == "UncleModelSelectors.kt" }).isFalse
+        val generatedSources = result.generatedSources.map { it.name }
+        assertThat(generatedSources).contains("AMotherSelectors.kt")
+        assertThat(generatedSources).contains("ParentModelSelectors.kt")
+        assertThat(generatedSources).doesNotContain("ChildModelSelectors.kt")
+        assertThat(generatedSources).doesNotContain("UncleModelSelectors.kt")
     }
 
     @Test
