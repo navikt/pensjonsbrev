@@ -143,7 +143,14 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
   return (
     <VStack asChild height="85vh" maxHeight="85vh" maxWidth="85vw" width="85vw">
-      <Modal aria-label="Rediger vedlegg P1" className="p1-modal" onClose={handleCancel} open={open} size="medium">
+      <Modal
+        aria-label="Rediger vedlegg P1"
+        className="p1-modal"
+        data-cy="p1-edit-modal"
+        onClose={handleCancel}
+        open={open}
+        size="medium"
+      >
         <Modal.Header>
           <Heading size="small">Overstyring av vedlegg - P1 samlet melding om pensjonsvedtak</Heading>
         </Modal.Header>

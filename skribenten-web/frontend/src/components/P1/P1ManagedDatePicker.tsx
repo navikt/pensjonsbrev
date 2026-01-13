@@ -20,6 +20,7 @@ interface ManagedDatePickerProps<
   fieldState: ControllerFieldState;
   hideLabel?: boolean;
   label: string;
+  "data-cy"?: string;
 }
 
 export const ManagedDatePicker = <
@@ -30,6 +31,7 @@ export const ManagedDatePicker = <
   fieldState,
   hideLabel = false,
   label,
+  "data-cy": dataCy,
 }: ManagedDatePickerProps<TFieldValues, TName>) => {
   const currentYear = new Date().getFullYear();
 
@@ -58,6 +60,7 @@ export const ManagedDatePicker = <
     <DatePicker dropdownCaption {...datepickerProps} wrapperClassName="p1-date-picker-full-width">
       <DatePicker.Input
         {...inputProps}
+        data-cy={dataCy}
         error={fieldState.error?.message}
         hideLabel={hideLabel}
         label={label}
