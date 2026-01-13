@@ -1,4 +1,5 @@
 import { DatePicker, useDatepicker } from "@navikt/ds-react";
+import { useMemo } from "react";
 import type { ControllerFieldState, ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
 
 import { formatDateWithoutTimezone, parseIsoDateToDate } from "~/utils/dateUtils";
@@ -23,6 +24,11 @@ interface ManagedDatePickerProps<
   "data-cy"?: string;
 }
 
+// Constants moved outside component to prevent recreation on each render
+const currentYear = new Date().getFullYear();
+const FROM_DATE = new Date(currentYear - 50, 0, 1);
+const TO_DATE = new Date(currentYear + 5, 11, 31);
+
 export const ManagedDatePicker = <
   TFieldValues extends FieldValues = FieldValues,
   TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
@@ -33,14 +39,12 @@ export const ManagedDatePicker = <
   label,
   "data-cy": dataCy,
 }: ManagedDatePickerProps<TFieldValues, TName>) => {
-  const currentYear = new Date().getFullYear();
-
-  const selectedDate = parseIsoDateToDate(dateField.value as string);
+  const selectedDate = useMemo(() => parseIsoDateToDate(dateField.value as string), [dateField.value]);
 
   const { datepickerProps, inputProps } = useDatepicker({
     defaultSelected: selectedDate,
-    fromDate: new Date(currentYear - 50, 0, 1),
-    toDate: new Date(currentYear + 5, 11, 31),
+    fromDate: FROM_DATE,
+    toDate: TO_DATE,
     onDateChange: (date) => {
       if (date) {
         dateField.onChange(formatDateWithoutTimezone(date));

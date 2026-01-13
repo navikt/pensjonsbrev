@@ -9,11 +9,7 @@ import { emptyAvslaattRow } from "./emptyP1";
 import { P1AvslagTabRow } from "./P1AvslagTabRow";
 
 export const P1AvslagTab = ({ landListe }: { landListe: LandOption[] }) => {
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = useFormContext<P1RedigerbarForm>();
+  const { control, register } = useFormContext<P1RedigerbarForm>();
 
   const { fields, append } = useFieldArray<P1RedigerbarForm>({
     control,
@@ -58,14 +54,7 @@ export const P1AvslagTab = ({ landListe }: { landListe: LandOption[] }) => {
 
         <Table.Body>
           {fields.map((field, index) => (
-            <P1AvslagTabRow
-              control={control}
-              error={errors.avslaattePensjoner?.[index]}
-              index={index}
-              key={field.id}
-              landListe={landListe}
-              register={register}
-            />
+            <P1AvslagTabRow control={control} index={index} key={field.id} landListe={landListe} register={register} />
           ))}
         </Table.Body>
       </Table>

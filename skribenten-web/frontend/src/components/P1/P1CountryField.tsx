@@ -13,7 +13,6 @@ interface P1CountryFieldProps<
   name: TName;
   index: number;
   landListe: LandOption[];
-  error?: string;
 }
 
 export const P1CountryField = <
@@ -24,7 +23,6 @@ export const P1CountryField = <
   name,
   index,
   landListe,
-  error,
 }: P1CountryFieldProps<TFieldValues, TName>) => {
   const sortedOptions = useMemo(
     () =>
@@ -38,7 +36,7 @@ export const P1CountryField = <
     <Controller
       control={control}
       name={name}
-      render={({ field }) => {
+      render={({ field, fieldState }) => {
         const selectedCountry = sortedOptions.find((land) => land.value === field.value);
 
         return (
@@ -47,7 +45,7 @@ export const P1CountryField = <
               marginBottom: "var(--ax-space-8)",
             }}
             data-cy={`land-${index}`}
-            error={error}
+            error={fieldState.error?.message}
             label="Land"
             onToggleSelected={(landCode, isSelected) => (isSelected ? field.onChange(landCode) : field.onChange(""))}
             options={sortedOptions}

@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
 import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
+import { type FieldErrors, FormProvider, useForm, useFormState } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
@@ -56,8 +56,12 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
   const {
     handleSubmit,
     reset,
-    formState: { errors, isDirty },
+    formState: { errors },
+    control,
   } = formMethods;
+
+  // Track if form has been initialized with data
+  const formInitializedRef = useRef(false);
 
   // Load P1 data when modal is open
   const {
@@ -67,12 +71,20 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     error: p1Error,
   } = useP1Override(saksId, brevId, open);
 
-  // When P1 data arrives, reset form with mapped values
+  // When P1 data arrives, reset form with mapped values (only once)
   useEffect(() => {
-    if (p1Data && !isDirty) {
+    if (p1Data && !formInitializedRef.current) {
       reset(mapP1DtoToForm(p1Data));
+      formInitializedRef.current = true;
     }
-  }, [p1Data, reset, isDirty]);
+  }, [p1Data, reset]);
+
+  // Reset the ref when modal closes
+  useEffect(() => {
+    if (!open) {
+      formInitializedRef.current = false;
+    }
+  }, [open]);
 
   const { data: landListe } = useLandData();
 
@@ -263,15 +275,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   <Button disabled={lagreMutation.isPending} onClick={handleCancel} type="button" variant="tertiary">
                     Avbryt
                   </Button>
-                  <Button
-                    disabled={isInitialLoading || !isDirty}
-                    loading={lagreMutation.isPending}
-                    size="medium"
-                    type="submit"
-                    variant="primary"
-                  >
-                    Lagre
-                  </Button>
+                  <SubmitButton
+                    control={control}
+                    isInitialLoading={isInitialLoading}
+                    isLoading={lagreMutation.isPending}
+                  />
                 </Modal.Footer>
               </HStack>
             </form>
@@ -293,3 +301,20 @@ const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => 
     )}
   </>
 );
+
+// Isolated submit button that subscribes to isDirty - prevents parent re-renders
+interface SubmitButtonProps {
+  control: ReturnType<typeof useForm<P1RedigerbarForm>>["control"];
+  isLoading: boolean;
+  isInitialLoading: boolean;
+}
+
+const SubmitButton = ({ control, isLoading, isInitialLoading }: SubmitButtonProps) => {
+  const { isDirty } = useFormState({ control });
+
+  return (
+    <Button disabled={isInitialLoading || !isDirty} loading={isLoading} size="medium" type="submit" variant="primary">
+      Lagre
+    </Button>
+  );
+};

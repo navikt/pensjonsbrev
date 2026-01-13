@@ -1,12 +1,10 @@
-import { Table, Textarea, TextField } from "@navikt/ds-react";
-import { RadioGroup } from "@navikt/ds-react";
-import { Radio } from "@navikt/ds-react";
-import React, { memo } from "react";
-import type { Control, FieldErrors, UseFormRegister } from "react-hook-form";
-import { Controller } from "react-hook-form";
+import { Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
+import { memo } from "react";
+import type { Control, UseFormRegister } from "react-hook-form";
+import { Controller, useFormState } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
-import type { LandOption, P1AvslaattPensjonForm, P1RedigerbarForm } from "~/types/p1FormTypes";
+import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
@@ -17,11 +15,17 @@ interface P1AvslagTabRowProps {
   landListe: LandOption[];
   control: Control<P1RedigerbarForm>;
   register: UseFormRegister<P1RedigerbarForm>;
-  error?: FieldErrors<P1AvslaattPensjonForm>;
 }
 
-export const P1AvslagTabRow = memo(({ index, landListe, control, register, error }: P1AvslagTabRowProps) => {
-  const rowErrors = error;
+export const P1AvslagTabRow = memo(({ index, landListe, control, register }: P1AvslagTabRowProps) => {
+  // Subscribe only to this row's errors - prevents re-renders from other rows
+  const fieldName = `avslaattePensjoner.${index}` as const;
+  const { errors } = useFormState({
+    control,
+    name: [fieldName],
+  });
+
+  const rowErrors = errors.avslaattePensjoner?.[index];
   const institusjonErrors = rowErrors?.institusjon;
 
   const hasInstitusjonError = !!(
@@ -38,7 +42,6 @@ export const P1AvslagTabRow = memo(({ index, landListe, control, register, error
       <Table.DataCell className={hasInstitusjonError ? "p1-cell-error" : ""}>
         <P1CountryField
           control={control}
-          error={institusjonErrors?.land?.message}
           index={index}
           landListe={landListe}
           name={`avslaattePensjoner.${index}.institusjon.land` as const}

@@ -9,11 +9,7 @@ import { emptyInnvilgetRow } from "./emptyP1";
 import { P1InnvilgetTabRow } from "./P1InnvilgetTabRow";
 
 export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
-  const {
-    control,
-    register,
-    formState: { errors },
-  } = useFormContext<P1RedigerbarForm>();
+  const { control, register } = useFormContext<P1RedigerbarForm>();
 
   const { fields, append } = useFieldArray<P1RedigerbarForm>({
     control,
@@ -74,7 +70,6 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
           {fields.map((field, index) => (
             <P1InnvilgetTabRow
               control={control}
-              error={errors.innvilgedePensjoner?.[index]}
               index={index}
               key={field.id}
               landListe={landListe}
