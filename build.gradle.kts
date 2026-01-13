@@ -19,8 +19,12 @@ allprojects {
         maven {
             url = uri("https://github-package-registry-mirror.gc.nav.no/cached/maven-release")
             content {
-                includeGroup("no.nav.pensjon.brev") // api-model
-                includeGroup("no.nav.pensjon.brevbaker") // api-model-common
+                // api-model
+                includeGroup("no.nav.pensjon.alder.brev")
+                includeGroup("no.nav.pensjon.ufoere.brev")
+                includeGroup("no.nav.pensjon.brev")
+                // api-model-common
+                includeGroup("no.nav.brev.brevbaker")
             }
         }
     }
