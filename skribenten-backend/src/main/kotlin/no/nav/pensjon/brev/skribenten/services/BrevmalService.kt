@@ -57,7 +57,7 @@ class BrevmalService(
 
     private suspend fun hentMaler(sakstype: ISakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevakerMaler().asSequence().filter { sakstype.isIn(it.sakstyper) }.map { LetterMetadata.Brevbaker(it) } }
+            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { sakstype.isIn(it.sakstyper) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
@@ -70,7 +70,7 @@ class BrevmalService(
 
     private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevakerMaler() }
+            val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
                     .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
@@ -84,7 +84,7 @@ class BrevmalService(
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
 
-    private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
+    private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
         brevbakerService.getTemplates() ?: emptyList()
 
 }
