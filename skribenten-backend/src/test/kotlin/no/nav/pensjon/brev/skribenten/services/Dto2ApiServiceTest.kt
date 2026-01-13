@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -32,7 +33,7 @@ class Dto2ApiServiceTest {
                         LetterMetadata.Distribusjonstype.VIKTIG,
                         LetterMetadata.Brevtype.INFORMASJONSBREV
                     ),
-                    kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+                    kategori = Pen.Brevkategori.INFORMASJONSBREV,
                     brevkontekst = TemplateDescription.Brevkontekst.ALLE,
                     sakstyper = Sakstype.all,
                 ))),
