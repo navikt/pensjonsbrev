@@ -46,7 +46,7 @@ export const P1CountryField = <
             css={{
               marginBottom: "var(--ax-space-8)",
             }}
-            data-cy={`land-combobox-${index}`}
+            data-cy={`land-${index}`}
             error={error}
             label="Land"
             onToggleSelected={(landCode, isSelected) => (isSelected ? field.onChange(landCode) : field.onChange(""))}

@@ -62,14 +62,18 @@ describe("P1 med forsidebrev", () => {
     cy.wait("@getP1Data");
     cy.wait("@getLand");
     cy.contains("3. Innvilget pensjon").should("be.visible");
-    // verifiser at datoformat vises som dd.MM.yyyy selv om payload fra backend er string på formatet yyyy-MM-dd
+
+    // verifiser at land vises med fullt norsk navn, mens to-bokstavskode brukes fra/til backend
+    // verifiser at dato vises som dd.MM.yyyy, mens formatet yyyy-MM-dd brukes fra/til backend
+    cy.contains("Bulgaria").should("be.visible");
+    cy.get(`[data-cy="land-0"]`).type("{selectall}{backspace}Frankrike{enter}");
     getInnvilgetFelt(0, "vedtaksdato").should("have.value", "23.09.2022");
-    // verifiser at dato satt til 31.12.2021 sender 2021-12-31 til backend
+    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
-      expect(request.body.innvilgedePensjoner[0].institusjon.vedtaksdato).to.eq("2021-12-31");
+      expect(request.body.innvilgedePensjoner[0].institusjon.land).to.eq("FR");
+      expect(request.body.innvilgedePensjoner[0].institusjon.vedtaksdato).to.eq("2025-01-01");
       request.reply("200");
     });
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}31.12.2021");
     cy.contains("Lagre").click();
   });
 
