@@ -65,22 +65,15 @@ tasks {
             excludeTags = setOf("integration-test", "manual-test")
         }
     }
-
     val test by testing.suites.existing(JvmTestSuite::class)
-    register<Test>("integrationTest") {
+
+
+    named<Test>("integrationTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("integration-test")
-        }
     }
-    register<Test>("manualTest") {
+    named<Test>("manualTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("manual-test")
-        }
     }
 }

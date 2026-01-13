@@ -61,4 +61,31 @@ subprojects {
             }
         }
     }
+
+    tasks {
+        register<Test>("integrationTest") {
+            outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
+            systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+            systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+            systemProperties["junit.jupiter.execution.parallel.mode.classes.default"] = "concurrent"
+            systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
+            systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            useJUnitPlatform {
+                includeTags = setOf("integration-test")
+            }
+        }
+        register<Test>("manualTest") {
+            outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
+            systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+            systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+            systemProperties["junit.jupiter.execution.parallel.mode.classes.default"] = "concurrent"
+            systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
+            systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            useJUnitPlatform {
+                includeTags = setOf("manual-test")
+            }
+        }
+    }
 }
