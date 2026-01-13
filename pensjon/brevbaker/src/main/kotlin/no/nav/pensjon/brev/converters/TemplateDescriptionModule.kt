@@ -24,7 +24,7 @@ object TemplateDescriptionModule : SimpleModule() {
     }
 
     private class BrevkategoriDeserializer : JsonDeserializer<TemplateDescription.IBrevkategori>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): TemplateDescription.IBrevkategori = parser.readValueAs(Brevkategori::class.java)
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): TemplateDescription.IBrevkategori = Brevkategori(parser.readValueAs(String::class.java))
     }
 
 }
