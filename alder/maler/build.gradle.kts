@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val alderApiModelVersion = 48
+
 val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
@@ -7,8 +9,9 @@ plugins {
     alias(libs.plugins.ksp) apply true
 }
 
-group = "no.nav.etterlatte.brev"
+group = "no.nav.pensjon.alder.brev"
 version = "0.0.1-SNAPSHOT"
+base.archivesName.set("alder-maler")
 
 repositories {
     mavenCentral()
@@ -19,17 +22,11 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
+    api("no.nav.pensjon.alder.brev:api-model:${alderApiModelVersion}")
 
 
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
-
-    // JUnit 5
     testImplementation(libs.bundles.junit)
-
     testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(libs.ktor.server.callId)
 }
 
 tasks.test {
@@ -51,13 +48,34 @@ kotlin {
 }
 
 tasks {
+    register("verifyPackages") {
+        notCompatibleWithConfigurationCache("Uses script references")
+        val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
+        doLast {
+            files.forEach { file ->
+                val text = file.readText()
+                val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
+                    .find(text)?.groupValues?.get(1)
+
+                val requiredPrefix = "no.nav.pensjon.brev.alder"
+                if (pkg == null) {
+                    throw GradleException("File $file is missing package directive!")
+                } else if (!pkg.startsWith(requiredPrefix)) {
+                    throw GradleException("Invalid package: $pkg in file $file. Package should start with $requiredPrefix to avoid runtime class conflict.")
+                }
+            }
+        }
+    }
+
     compileJava {
+        dependsOn("verifyPackages")
         targetCompatibility = apiModelJavaTarget
     }
     compileTestJava {
         targetCompatibility = apiModelJavaTarget
     }
 }
+
 
 tasks {
     test {

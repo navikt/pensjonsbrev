@@ -15,7 +15,7 @@ Se [seksjonen under for oppsett av read token i gradle](#for-gradle).
 Bruk følgende for å bygge og kjøre:
 
 ```bash
-./gradlew :pensjon-brevbaker:build :pdf-bygger:build
+./gradlew :pensjon:brevbaker:build :brevbaker:pdf-bygger:build
 ```
 
 Dersom du kun skal kjøre brevbaker og pdf-bygger og ikke skribenten må du fortsatt pga en bug i docker-compose generere tomme env files for skribenten:
@@ -112,7 +112,7 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Endringer i biblioteks-koden
 
-Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker-api-model-common`, `brevbaker-dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
+Vi bruker gradle-pluginen `binary-compatibility-validator` for å se etter endringer i koden i modulene som inngår i biblioteket (per nå `brevbaker:api-model-common`, `brevbaker:dsl` og `brevbaker). Denne holder oversikt representert i .api-filer i disse modulene.
 
 Ved endringer av public-kode i disse modulene - inkludert sletting av metoder eller nye metoder - må du huske å kjøre `gradle apiDump` og sjekke inn de oppdaterte .api-filene. Glemmer du dette vil bygget feile - det kjører automatisk `gradle apiCheck`-kommandoen.
 
@@ -122,15 +122,15 @@ Mer om dette på https://kotlinlang.org/docs/api-guidelines-backward-compatibili
 
 Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_AUTO.
 
-1. Evt. rediger `locust/autobrev_request.json` om du ønsker å teste et annet brev.
-2. Kjør `./locust/fetch-secrets.sh`
+1. Evt. rediger `brevbaker/locust/autobrev_request.json` om du ønsker å teste et annet brev.
+2. Kjør `.brevbaker/locust/fetch-secrets.sh`
 3. Start docker compose med locust profil `docker compose --profile locust up`
 4. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
    [Se dokumentasjon fra locust for mer info om bruk.](http://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
 
 ## Endring av obligatoriske felter i API-model
 
-Brevbakeren bruker pensjon-brevbaker-api-model, alder-brevbaker-api-model og ufoere-brevbaker-api-model for bestilling av brev.
+Brevbakeren bruker pensjon-api-model, alder-api-model og ufoere-api-model for bestilling av brev.
 Api modellen eksporteres som artifakt og brukes av eksterne systemer for å fylle ut informasjon som kreves ved bestilling av brev.
 
 Vi må kunne endre på obligatoriske felter i api modellen uten å ødelegge pågående brevbestillinger i produksjon.
@@ -180,17 +180,17 @@ En strategi for overgangen kan se slik ut:
 For å fort kunne oppdatere latex filene i pdf-byggeren under kjøring, anbefales det å kjøre følgende kommando som before launch for LatexVisualITest.
 
 ```bash
-docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && docker cp ./pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
+docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && docker cp .brevbaker/pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
 ```
 
-Da vil du kunne se på pensjon-brevbaker/build/test_visual/pdf resultatet av endringen fort.
+Da vil du kunne se på pensjon/brevbaker/build/test_visual/pdf resultatet av endringen fort.
 
 ## Se forskjell mellom endringer og gammel versjon
 
 For å se at du kun har endret det du skal, så kan du kjøre følgende script etterpå:
 
 ```bash
-folder=./pdf-bygger/build/test_visual
+folder=.brevbaker/pdf-bygger/build/test_visual
 original_files=$folder/image_old
 compare_to_folder=$folder/pdf
 mogrify_folder=$folder/image_new
@@ -214,7 +214,7 @@ Du vil også kunne se disse endringene i percey ved å lage en pull-request.
 
 ## Oppdatere latex biblioteker
 
-Ved først bygge pdf-bygger/latex.Dockerfile, så sette "from" i pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
+Ved først bygge brevbaker/pdf-bygger/latex.Dockerfile, så sette "from" i brevbaker/pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
 Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pdf-bygger/Dockerfile.
 
 Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk percy eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.

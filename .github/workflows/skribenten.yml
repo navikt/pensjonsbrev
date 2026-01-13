@@ -36,6 +36,8 @@ jobs:
     with:
       image_suffix: skribenten-backend
       path: skribenten-backend
+      target: skribenten-backend
+      gradleTarget: skribenten-backend
       buildImage: true
 
   salsa:

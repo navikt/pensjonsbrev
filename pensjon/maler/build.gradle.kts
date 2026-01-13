@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val apiModelVersion = 331
+
 val apiModelJavaTarget: String by System.getProperties()
 
 plugins {
@@ -7,8 +9,9 @@ plugins {
     alias(libs.plugins.ksp) apply true
 }
 
-group = "no.nav.etterlatte.brev"
+group = "no.nav.pensjon.brev"
 version = "0.0.1-SNAPSHOT"
+base.archivesName.set("pensjon-maler")
 
 repositories {
     mavenCentral()
@@ -19,17 +22,11 @@ dependencies {
     compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
+    api("no.nav.pensjon.brev:api-model:$apiModelVersion")
+    implementation(libs.bundles.logging)
 
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
-
-    // JUnit 5
     testImplementation(libs.bundles.junit)
-
     testImplementation(testFixtures(project(":brevbaker:core")))
-    testImplementation(libs.ktor.server.callId)
 }
 
 tasks.test {
@@ -58,6 +55,7 @@ tasks {
         targetCompatibility = apiModelJavaTarget
     }
 }
+
 
 tasks {
     test {
