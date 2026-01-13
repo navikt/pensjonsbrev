@@ -49,23 +49,12 @@ fun Route.sakRoute(
             } else {
                 brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
             }
-            val erSkjermet = skjermingService.hentSkjerming(sak.foedselsnr) ?: false
-            //val harVerge = pensjonRepresentasjonService.harVerge(sak.foedselsnr) // TODO FIX
-            val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
-            if (person != null) {
-                call.respond(
-                    Api.SakContext(
-                        sak = sak,
-                        brevmalKoder = brevmetadata.map { it.id },
-                        adressebeskyttelse = person.adressebeskyttelse,
-                        doedsfall = person.doedsdato,
-                        erSkjermet = erSkjermet,
-                        vergemaal = false
-                    )
+            call.respond(
+                Api.SakContext(
+                    sak = sak,
+                    brevmalKoder = brevmetadata.map { it.id },
                 )
-            } else {
-                call.respond(status = HttpStatusCode.NotFound, message = "Person ikke funnet i PDL")
-            }
+            )
         }
 
         get("/brukerstatus") {
