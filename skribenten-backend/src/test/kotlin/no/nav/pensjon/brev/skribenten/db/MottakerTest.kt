@@ -3,6 +3,8 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.Mottaker
+import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -96,7 +98,7 @@ class MottakerTest {
     private fun createBrevredigering() = transaction {
         Brevredigering.new {
             saksId = 123L
-            opprettetAvNavIdent = principal
+            opprettetAv = principal
             this.brevkode = Testbrevkoder.TESTBREV
             this.spraak = LanguageCode.BOKMAL
             this.avsenderEnhetId = "1111"

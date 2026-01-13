@@ -18,6 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.ObjectAssert
 import java.time.LocalDate
 
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
@@ -70,20 +71,22 @@ fun Felles.copy(
     signerendeSaksbehandlere = signerendeSaksbehandlere,
 )
 
-inline fun <reified T> assertSuccess(resultat: Result<T, *>?, noinline block: ((T) -> Unit)? = null) {
-    assertThat(resultat).isNotNull()
-    assertThat(resultat).isInstanceOfSatisfying<Result.Success<*>>(Result.Success::class.java) { res ->
+inline fun <reified T, E> ObjectAssert<Result<T, E>?>.isSuccess(noinline block: ((T) -> Unit)? = null): ObjectAssert<Result<T, E>?> {
+    isNotNull()
+    isInstanceOfSatisfying<Result.Success<*>>(Result.Success::class.java) { res ->
         assertThat(res.value).isInstanceOfSatisfying<T>(T::class.java) {
             block?.invoke(it)
         }
     }
+    return this
 }
 
-inline fun <reified Error> assertFailure(resultat: Result<*, *>?, noinline block: ((Error) -> Unit)? = null) {
-    assertThat(resultat).isNotNull()
-    assertThat(resultat).isInstanceOfSatisfying<Result.Failure<*>>(Result.Failure::class.java) { res ->
-        assertThat(res.error).isInstanceOfSatisfying<Error>(Error::class.java) {
+inline fun <reified ExpectedE : E, T, E> ObjectAssert<Result<T, E>?>.isFailure(noinline block: ((E) -> Unit)? = null): ObjectAssert<Result<T, E>?> {
+    isNotNull()
+    isInstanceOfSatisfying<Result.Failure<*>>(Result.Failure::class.java) { res ->
+        assertThat(res.error).isInstanceOfSatisfying<ExpectedE>(ExpectedE::class.java) {
             block?.invoke(it)
         }
     }
+    return this
 }

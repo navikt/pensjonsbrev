@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
@@ -40,18 +41,20 @@ fun Route.sakBrev(
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
-            val brev = brevredigeringService.opprettBrev(
-                sak = sak,
-                vedtaksId = request.vedtaksId,
-                brevkode = request.brevkode,
-                spraak = spraak,
-                avsenderEnhetsId = avsenderEnhetsId,
-                saksbehandlerValg = request.saksbehandlerValg,
-                reserverForRedigering = true,
-                mottaker = request.mottaker?.toDto(),
+            val brev = brevredigeringFacade.opprettBrev(
+                CreateLetterHandler.Request(
+                    saksId = sak.saksId,
+                    vedtaksId = request.vedtaksId,
+                    brevkode = request.brevkode,
+                    spraak = spraak,
+                    avsenderEnhetsId = avsenderEnhetsId,
+                    saksbehandlerValg = request.saksbehandlerValg,
+                    reserverForRedigering = true,
+                    mottaker = request.mottaker?.toDto(),
+                )
             )
 
-            call.respond(HttpStatusCode.Created, dto2ApiService.toApi(brev))
+            apiRespond(dto2ApiService, brev, successStatus = HttpStatusCode.Created)
         }
 
         put<Api.OppdaterBrevRequest>("/{brevId}") { request ->
