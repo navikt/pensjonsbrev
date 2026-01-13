@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.vedlegg.pdf
 
+import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.P1Dto
 import no.nav.pensjon.brev.model.SakstypeNavn
 import no.nav.pensjon.brev.template.LangBokmalEnglish
@@ -57,7 +58,7 @@ object P1PDFDto {
             innvilgedePensjoner.chunked(RADER_PER_SIDE) { side ->
                 side("P1-side2") {
                     felt {
-                        add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon) }
+                        add(side.mapIndexed { index, pensjon -> innvilgetPensjon(index, pensjon, sakstype) }
                             .reduce { a, b -> a + b })
                     }
                 }
@@ -73,7 +74,7 @@ object P1PDFDto {
             avslaattePensjoner.chunked(RADER_PER_SIDE) { side ->
                 side("P1-side3") {
                     felt {
-                        add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon) }
+                        add(side.mapIndexed { index, pensjon -> avslaattPensjon(index, pensjon, sakstype) }
                             .reduce { a, b -> a + b })
                     }
                 }
@@ -148,8 +149,13 @@ object P1PDFDto {
         ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
     )
 
-    val adresseNyVurderingNorge = mapOf(
+    val adresseNyVurderingNorgeNFP = mapOf(
         BOKMAL to "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
+        ENGLISH to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
+    )
+
+    val adresseNyVurderingNorgeNAY = mapOf(
+        BOKMAL to "NAV Arbeid og Ytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
         ENGLISH to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
     )
 
@@ -158,7 +164,7 @@ object P1PDFDto {
         ENGLISH to "See previous decisions from the relevant country",
     )
 
-    private fun innvilgetPensjon(radnummer: Int, innvilgelse: P1Dto.InnvilgetPensjon): Map<String, Any?> {
+    private fun innvilgetPensjon(radnummer: Int, innvilgelse: P1Dto.InnvilgetPensjon, sakstype: Sakstype): Map<String, Any?> {
         val erNorskRad = innvilgelse.erNorskRad ?: false
         return mapOf(
             "Institution_awarding_the_pension[$radnummer]" to formatInstitusjon(
@@ -177,7 +183,7 @@ object P1PDFDto {
             "PensjonRedusert[$radnummer]" to innvilgelse.reduksjonsgrunnlag?.nummer?.let { "[$it]" },
             "Review_period[${radnummer * 2}]" to vurderingsperiode(erNorskRad, innvilgelse.vurderingsperiode),
             "Where_to_adress_the_request[$radnummer]" to
-                    adresseNyVurdering(erNorskRad, innvilgelse.adresseNyVurdering),
+                    adresseNyVurdering(erNorskRad, innvilgelse.adresseNyVurdering, sakstype),
         )
     }
 
@@ -277,7 +283,7 @@ object P1PDFDto {
     }
 
 
-    private fun avslaattPensjon(radnummer: Int, avslag: P1Dto.AvslaattPensjon): Map<String, Any?> {
+    private fun avslaattPensjon(radnummer: Int, avslag: P1Dto.AvslaattPensjon, sakstype: Sakstype): Map<String, Any?> {
         val erNorskAvslag = avslag.erNorskRad()
         return mapOf(
             "Institution_rejecting_the_pension[$radnummer]" to
@@ -293,13 +299,17 @@ object P1PDFDto {
                     vurderingsperiode(erNorskAvslag, avslag.vurderingsperiode),
 
             "Where_to_adress_the_request[$radnummer]" to
-                    adresseNyVurdering(erNorskAvslag, avslag.adresseNyVurdering),
+                    adresseNyVurdering(erNorskAvslag, avslag.adresseNyVurdering, sakstype),
         )
     }
 
-    private fun adresseNyVurdering(erNorge: Boolean, adresser: List<P1Dto.Adresse>): Map<LanguageCode, String?> =
+    private fun adresseNyVurdering(erNorge: Boolean, adresser: List<P1Dto.Adresse>, sakstype: Sakstype): Map<LanguageCode, String?> =
         if (erNorge) {
-            adresseNyVurderingNorge
+            if (sakstype == Sakstype.UFOREP) {
+                adresseNyVurderingNorgeNAY
+            } else {
+                adresseNyVurderingNorgeNFP
+            }
         } else if (adresser.isNotEmpty()) {
             adresser.formater()
         } else {
