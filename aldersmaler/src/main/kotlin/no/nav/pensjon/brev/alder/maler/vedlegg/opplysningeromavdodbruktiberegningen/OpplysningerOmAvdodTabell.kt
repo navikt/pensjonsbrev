@@ -101,149 +101,150 @@ data class OpplysningerOmAvdodTabell(
                     flyktningstatusBrukt(beregnetPensjonPerManedVedVirk.avdoedFlyktningstatusErBrukt)
 
                     ifNotNull(avdoedTrygdetidsdetaljerKap19VedVirk) { avdoedTrygdetidsdetaljerKap19VedVirk ->
-                        val beregningsmetode = avdoedTrygdetidsdetaljerKap19VedVirk.beregningsMetode
-                        //vedleggTabellAvdodTT_001
-                        showIf(beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
-                            avdodesTrygdetid(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
+                        ifNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.beregningsMetode) { beregningsmetode ->
+                            //vedleggTabellAvdodTT_001
+                            showIf(beregningsmetode.isOneOf(FOLKETRYGD, NORDISK)) {
+                                avdodesTrygdetid(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
 
 
-                            //vedleggTabellAvdodFaktiskTTnordisk_001
-                            showIf(beregningsmetode.equalTo(NORDISK)) {
-                                faktiskTTNordiskKonvensjon(avdoedTrygdetidsdetaljerKap19VedVirk.faktiskTTNordiskKonv)
-
-                                //vedleggTabellAvdodKap19TTnorsk_001
-                                framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTNorsk)
-
-                                //vedleggTabellFaktiskTTBrokNorgeNordisk_001
-                                tabellFaktiskTTBroekNorgeNordisk(
-                                    avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek,
-                                )
-                            }
-
-                            showIf(tillegspensjonKombinertMedAvdod and beregningsmetode.equalTo(FOLKETRYGD)) {
-                                //vedleggTabellAvdodKap19Sluttpoengtall_001
-                                //vedleggTabellAvdodKap19SluttpoengtallMedOverkomp_001
-                                //vedleggTabellAvdodKap19SluttpoengtallUtenOverkomp_001
-
-                                sluttpoengTall(
-                                    sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
-                                    sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
-                                    sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall },
-                                )
-
-                                //vedleggTabellKap19PoengAr_001
-                                antallPoengAar(avdoedBeregningKap19VedVirk.safe { poengAr })
-                            }
-                            //vedleggTabellKap19PoengArf92_001
-                            showIf(tillegspensjonKombinertMedAvdod) {
-                                aarMed45og42pensjonsprosent(
-                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
-                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
-                                )
-
-                                //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
+                                //vedleggTabellAvdodFaktiskTTnordisk_001
                                 showIf(beregningsmetode.equalTo(NORDISK)) {
+                                    faktiskTTNordiskKonvensjon(avdoedTrygdetidsdetaljerKap19VedVirk.faktiskTTNordiskKonv)
+
+                                    //vedleggTabellAvdodKap19TTnorsk_001
+                                    framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTNorsk)
+
+                                    //vedleggTabellFaktiskTTBrokNorgeNordisk_001
+                                    tabellFaktiskTTBroekNorgeNordisk(
+                                        avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek,
+                                    )
+                                }
+
+                                showIf(tillegspensjonKombinertMedAvdod and beregningsmetode.equalTo(FOLKETRYGD)) {
+                                    //vedleggTabellAvdodKap19Sluttpoengtall_001
+                                    //vedleggTabellAvdodKap19SluttpoengtallMedOverkomp_001
+                                    //vedleggTabellAvdodKap19SluttpoengtallUtenOverkomp_001
+
+                                    sluttpoengTall(
+                                        sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
+                                        sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
+                                        sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall },
+                                    )
+
+                                    //vedleggTabellKap19PoengAr_001
+                                    antallPoengAar(avdoedBeregningKap19VedVirk.safe { poengAr })
+                                }
+                                //vedleggTabellKap19PoengArf92_001
+                                showIf(tillegspensjonKombinertMedAvdod) {
+                                    aarMed45og42pensjonsprosent(
+                                        poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
+                                        poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
+                                    )
+
+                                    //vedleggTabellAvdodKap19FaktiskePoengArNorge_001
+                                    showIf(beregningsmetode.equalTo(NORDISK)) {
+                                        antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.safe { faktiskPoengArNorge })
+                                    }
+
+                                    //vedleggTabellAvdodKap19FramtidigPoengar_001
+                                    showIf(beregningsmetode.equalTo(FOLKETRYGD)) {
+                                        norskeFramtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
+                                    }
+                                }
+                            }.orShowIf(beregningsmetode.equalTo(EOS)) {
+                                //tabellTTNorgeEOS_001
+                                samletTTNorgeOgEOS(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
+
+                                //vedleggTabellAvdodFramtidigTT_001
+                                framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTEOS)
+
+                                //tabellFaktiskTTBrokNorgeEOS_001
+                                faktiskTTBroekNorgeEOS(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
+
+                                showIf(tillegspensjonKombinertMedAvdod) {
+                                    //vedleggAvdodTabellAntallPoengArFaktiskNorge_001
                                     antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.safe { faktiskPoengArNorge })
+                                    //vedleggAvdodTabellAntallPoengarEOS_001
+                                    antallAarIfNotNull(
+                                        bokmal = "Antall poengår i andre EØS-land",
+                                        nynorsk = "Talet på poengår i andre EØS- land",
+                                        engelsk = "Number of point earning years in other EEA country",
+                                        aar = avdoedBeregningKap19VedVirk.safe { faktiskPoengArAvtale },
+                                    )
+
+                                    //vedleggTabellKap19SluttpoengtallEOS_001
+                                    //vedleggTabellAvdodSluttpoengMedOverkompEOS_001
+                                    //vedleggTabellAvdodSluttpoengUtenOverkompEOS_001
+
+                                    sluttpoengTall(
+                                        suffixNorsk = " (EØS)",
+                                        suffixEngelsk = " (EEA)",
+                                        sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
+                                        sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
+                                        sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall }
+                                    )
+
+                                    //vedleggTabellKap19PoengArf92EOS_001
+                                    //vedleggTabellKap19PoengAre91EOS_001
+                                    aarMed45og42pensjonsprosent(
+                                        poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
+                                        poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
+                                        bokmalSuffix = " (EØS)",
+                                        nynorskSuffix = " (EØS)",
+                                        engelskSuffix = " (EEA)"
+                                    )
+                                    //vedleggTabellAvdodFramtidigPoengTeoretisk_001
+                                    framtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
+
+                                    //tabellPoengArBrokNorgeEOS_001
+                                    poengAarBroekNorgeEOS(avdoedBeregningKap19VedVirk.safe { poengArBroek })
                                 }
+                            }.orShow {
+                                //tabellTTNorgeAvtaleland_001
+                                samletTrygdetidNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
 
-                                //vedleggTabellAvdodKap19FramtidigPoengar_001
-                                showIf(beregningsmetode.equalTo(FOLKETRYGD)) {
-                                    norskeFramtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
+                                //vedleggTabellAvdodFramtidigTTBilateral_001
+                                framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTBilateral)
+
+                                //tabellTTBrokNorgeAvtaleland_001
+                                trygdetidBroekNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
+
+
+                                showIf(tillegspensjonKombinertMedAvdod) {
+                                    //vedleggAvdodTabellAntallPoengArFaktiskNorge_001
+                                    antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.safe { faktiskPoengArNorge })
+
+                                    //vedleggTabellAvdodPoengAvtleland_001
+                                    antallAarIfNotNull(
+                                        bokmal = "Antall poengår i andre avtaleland",
+                                        nynorsk = "Talet på poengår i andre avtaleland",
+                                        engelsk = "Number of point earning years in country with social security agreement",
+                                        aar = avdoedBeregningKap19VedVirk.safe { faktiskPoengArAvtale }
+                                    )
+
+                                    //vedleggTabellKap19SluttpoengtallAvtaleland_001
+                                    //vedleggTabellAvdodKap19SluttpoengMedOverkompAvtaleland_001
+                                    //vedleggTabellAvdodKap19SluttpoengUtenOverkompAvtaleland_001
+                                    sluttpoengTall(
+                                        suffixNorsk = " (avtaleland)",
+                                        suffixEngelsk = " (earned in countries with social security agreement)",
+                                        sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
+                                        sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
+                                        sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall }
+                                    )
+                                    aarMed45og42pensjonsprosent(
+                                        poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
+                                        poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
+                                        bokmalSuffix = " (Norge og avtaleland)",
+                                        nynorskSuffix = " (Noreg og avtaleland)",
+                                        engelskSuffix = " (Norway and countries with social security agreement)"
+                                    )
+                                    //vedleggTabellAvdodFramtidigPoengTeoretisk_001
+                                    framtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
+
+                                    //tabellPoengArBrokNorgeAvtaleland_001
+                                    poengArBrokNorgeOgAvtaleland(avdoedBeregningKap19VedVirk.safe { poengArBroek })
                                 }
-                            }
-                        }.orShowIf(beregningsmetode.equalTo(EOS)) {
-                            //tabellTTNorgeEOS_001
-                            samletTTNorgeOgEOS(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
-
-                            //vedleggTabellAvdodFramtidigTT_001
-                            framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTEOS)
-
-                            //tabellFaktiskTTBrokNorgeEOS_001
-                            faktiskTTBroekNorgeEOS(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
-
-                            showIf(tillegspensjonKombinertMedAvdod) {
-                                //vedleggAvdodTabellAntallPoengArFaktiskNorge_001
-                                antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.safe { faktiskPoengArNorge })
-                                //vedleggAvdodTabellAntallPoengarEOS_001
-                                antallAarIfNotNull(
-                                    bokmal = "Antall poengår i andre EØS-land",
-                                    nynorsk = "Talet på poengår i andre EØS- land",
-                                    engelsk = "Number of point earning years in other EEA country",
-                                    aar = avdoedBeregningKap19VedVirk.safe { faktiskPoengArAvtale },
-                                )
-
-                                //vedleggTabellKap19SluttpoengtallEOS_001
-                                //vedleggTabellAvdodSluttpoengMedOverkompEOS_001
-                                //vedleggTabellAvdodSluttpoengUtenOverkompEOS_001
-
-                                sluttpoengTall(
-                                    suffixNorsk = " (EØS)",
-                                    suffixEngelsk = " (EEA)",
-                                    sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
-                                    sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
-                                    sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall }
-                                )
-
-                                //vedleggTabellKap19PoengArf92EOS_001
-                                //vedleggTabellKap19PoengAre91EOS_001
-                                aarMed45og42pensjonsprosent(
-                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
-                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
-                                    bokmalSuffix = " (EØS)",
-                                    nynorskSuffix = " (EØS)",
-                                    engelskSuffix = " (EEA)"
-                                )
-                                //vedleggTabellAvdodFramtidigPoengTeoretisk_001
-                                framtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
-
-                                //tabellPoengArBrokNorgeEOS_001
-                                poengAarBroekNorgeEOS(avdoedBeregningKap19VedVirk.safe { poengArBroek })
-                            }
-                        }.orShow {
-                            //tabellTTNorgeAvtaleland_001
-                            samletTrygdetidNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.anvendtTT)
-
-                            //vedleggTabellAvdodFramtidigTTBilateral_001
-                            framtidigTTMaanederIfNotNull(avdoedTrygdetidsdetaljerKap19VedVirk.framtidigTTBilateral)
-
-                            //tabellTTBrokNorgeAvtaleland_001
-                            trygdetidBroekNorgeAvtaleland(avdoedTrygdetidsdetaljerKap19VedVirk.trygdetidEOSBroek)
-
-
-                            showIf(tillegspensjonKombinertMedAvdod) {
-                                //vedleggAvdodTabellAntallPoengArFaktiskNorge_001
-                                antallFaktiskePoengAarINorge(avdoedBeregningKap19VedVirk.safe { faktiskPoengArNorge })
-
-                                //vedleggTabellAvdodPoengAvtleland_001
-                                antallAarIfNotNull(
-                                    bokmal = "Antall poengår i andre avtaleland",
-                                    nynorsk = "Talet på poengår i andre avtaleland",
-                                    engelsk = "Number of point earning years in country with social security agreement",
-                                    aar = avdoedBeregningKap19VedVirk.safe { faktiskPoengArAvtale }
-                                )
-
-                                //vedleggTabellKap19SluttpoengtallAvtaleland_001
-                                //vedleggTabellAvdodKap19SluttpoengMedOverkompAvtaleland_001
-                                //vedleggTabellAvdodKap19SluttpoengUtenOverkompAvtaleland_001
-                                sluttpoengTall(
-                                    suffixNorsk = " (avtaleland)",
-                                    suffixEngelsk = " (earned in countries with social security agreement)",
-                                    sluttpoengtallMedOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallMedOverkomp },
-                                    sluttpoengtallUtenOverkomp = avdoedBeregningKap19VedVirk.safe { sluttpoengtallUtenOverkomp },
-                                    sluttpoengtall = avdoedBeregningKap19VedVirk.safe { sluttpoengtall }
-                                )
-                                aarMed45og42pensjonsprosent(
-                                    poengAarFoer92 = avdoedBeregningKap19VedVirk.safe { poengArf92 },
-                                    poengAarEtter91 = avdoedBeregningKap19VedVirk.safe { poengAre91 },
-                                    bokmalSuffix = " (Norge og avtaleland)",
-                                    nynorskSuffix = " (Noreg og avtaleland)",
-                                    engelskSuffix = " (Norway and countries with social security agreement)"
-                                )
-                                //vedleggTabellAvdodFramtidigPoengTeoretisk_001
-                                framtidigePoengAar(avdoedBeregningKap19VedVirk.safe { framtidigPoengAr })
-
-                                //tabellPoengArBrokNorgeAvtaleland_001
-                                poengArBrokNorgeOgAvtaleland(avdoedBeregningKap19VedVirk.safe { poengArBroek })
                             }
                         }
                     }

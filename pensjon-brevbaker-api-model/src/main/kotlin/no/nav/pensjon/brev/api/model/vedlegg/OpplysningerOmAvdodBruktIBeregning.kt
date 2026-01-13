@@ -84,7 +84,7 @@ data class OpplysningerOmAvdoedBruktIBeregningDto(
 
     data class AvdoedTrygdetidsdetaljerKap19VedVirk(
         val anvendtTT: Int?,
-        val beregningsMetode: Beregningsmetode,
+        val beregningsMetode: Beregningsmetode?,
         val framtidigTTNorsk: Int?,
         val faktiskTTNordiskKonv: Int?,
         val trygdetidEOSBroek: Broek?,
