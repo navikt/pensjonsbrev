@@ -68,7 +68,7 @@ subprojects {
 
     tasks {
         register<Test>("integrationTest") {
-            outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
+            outputs.doNotCacheIf("Output of this task is not cached") { true }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
             useJUnitPlatform {
@@ -76,7 +76,7 @@ subprojects {
             }
         }
         register<Test>("manualTest") {
-            outputs.doNotCacheIf("Output of this task is pdf from pdf-bygger which is not cached") { true }
+            outputs.doNotCacheIf("Output of this task is not cached") { true }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
             useJUnitPlatform {
