@@ -25,7 +25,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.Isolated
 
+@Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 class UpdateLetterHandlerTest : BrevredigeringTest() {
 
     val oppdaterBrev = UpdateLetterHandler(
