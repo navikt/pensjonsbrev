@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -77,7 +78,7 @@ object AvslagUttakFoerNormertPensjonsalderAP2016 : RedigerbarTemplate<AvslagUtta
         includeAttachment(opplysningerBruktIBeregningenAP2016Vedlegg, pesysData.opplysningerBruktIBeregningen)
     }
 
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 

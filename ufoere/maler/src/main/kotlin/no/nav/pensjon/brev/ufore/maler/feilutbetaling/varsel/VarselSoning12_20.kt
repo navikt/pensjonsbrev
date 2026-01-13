@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -16,6 +15,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_FEILUTB
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysDataSelectors.feilutbetaltBrutto
+import no.nav.pensjon.brev.ufore.maler.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata

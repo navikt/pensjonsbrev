@@ -96,7 +96,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        kategori = Pen.Brevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
         sakstyper = Sakstype.all,
     )
@@ -109,7 +109,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
+        kategori = Pen.Brevkategori.UFOEREPENSJON,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )
@@ -122,7 +122,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.VARSEL,
+        kategori = Pen.Brevkategori.VARSEL,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )

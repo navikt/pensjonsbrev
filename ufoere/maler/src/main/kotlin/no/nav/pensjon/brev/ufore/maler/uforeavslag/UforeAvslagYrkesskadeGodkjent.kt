@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -24,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
     override val kode = UT_AVSLAG_YRKESSKADE_GODKJENT
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

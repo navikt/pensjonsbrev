@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmGjenlevendere
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON_GJENLEVENDE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -43,7 +44,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGjenlevenderettigheterDto> {
 
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(UFOREP, ALDER)
 

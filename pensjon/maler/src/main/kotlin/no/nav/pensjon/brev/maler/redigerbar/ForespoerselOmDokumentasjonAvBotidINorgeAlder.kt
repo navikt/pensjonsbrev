@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjo
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.SaksbehandlerValgSelectors.opplystOmBotid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -24,7 +25,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
 
     // PE_IY_03_167 - dette er delen for alder
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSELOMDOKUMENTASJONAVBOTIDINORGE_ALDER
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
 

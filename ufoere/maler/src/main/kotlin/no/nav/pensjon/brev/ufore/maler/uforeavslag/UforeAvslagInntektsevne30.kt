@@ -24,8 +24,8 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDt
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.UforeAvslagInntektPendataSelectors.vurderingIFU
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
-import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagInntektsevne50.fritekst
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -34,7 +34,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object UforeAvslagInntektsevne30 : RedigerbarTemplate<UforeAvslagInntektDto> {
 
     override val kode = UT_AVSLAG_INNTEKTSEVNE_30
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

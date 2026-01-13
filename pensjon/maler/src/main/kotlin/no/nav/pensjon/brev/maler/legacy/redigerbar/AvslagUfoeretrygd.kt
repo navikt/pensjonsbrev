@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -31,7 +32,7 @@ object AvslagUfoeretrygd : RedigerbarTemplate<AvslagUfoeretrygdDto> {
 
     // PE_UT_04_104
     override val kode = Pesysbrevkoder.Redigerbar.UT_AVSLAG_UFOERETRYGD
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

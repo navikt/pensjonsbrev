@@ -42,7 +42,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
-    val kategori: TemplateDescription.Brevkategori
+    val kategori: TemplateDescription.IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<Sakstype>
 

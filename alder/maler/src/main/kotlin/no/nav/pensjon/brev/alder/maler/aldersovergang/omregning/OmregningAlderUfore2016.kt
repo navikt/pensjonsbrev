@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang.omregning
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
@@ -131,7 +132,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlderAP2025,pesysData.opplysningerBruktIBeregningenAlderAP2025Dto)
     }
 
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 

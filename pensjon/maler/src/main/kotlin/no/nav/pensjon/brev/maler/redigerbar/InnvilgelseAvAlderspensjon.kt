@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.Sakstype.ALDER
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDtoSelectors.AlderspensjonVedVirkSelectors.erEksportberegnet
@@ -86,6 +85,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAld
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -121,7 +121,7 @@ hvisFlyttetET, hvisFlyttetBT, hvisFlyttetETogBT */
 @TemplateModelHelpers
 object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjonDto> {
 
-    override val kategori: TemplateDescription.Brevkategori = FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNVILGELSE
