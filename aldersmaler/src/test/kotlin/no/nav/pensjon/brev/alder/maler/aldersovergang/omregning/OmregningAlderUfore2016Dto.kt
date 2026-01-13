@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregning
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.Sivilstand
+import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurdering
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdod
@@ -57,5 +58,6 @@ fun createOmregningAlderUfore2016Dto() =
         borMedSivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
         over2G = false,
         kronebelop2G = Kroner(400000),
+        ytelseForAldersovergang = YtelseForAldersovergangKode.UT_GRAD,
     )
 
