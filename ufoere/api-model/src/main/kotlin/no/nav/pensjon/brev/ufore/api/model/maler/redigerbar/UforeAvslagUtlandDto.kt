@@ -40,7 +40,8 @@ data class UforeAvslagUtlandDto(
 
     enum class KravGjelder {
         MELLOMBH,
-        F_BH_BO_UTL
+        F_BH_BO_UTL,
+        SLUTT_BH_UTL
     }
 
     data class Trygdetid(
