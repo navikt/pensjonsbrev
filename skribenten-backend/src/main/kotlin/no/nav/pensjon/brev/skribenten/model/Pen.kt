@@ -167,7 +167,7 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    enum class Brevkategori(override val kategoritekst: String) : TemplateDescription.IBrevkategori {
+    enum class Brevkategori(val kategoritekst: String) : TemplateDescription.IBrevkategori {
         ETTEROPPGJOER("Etteroppgjør"),
         FEILUTBETALING("Feilutbetaling"),
         FOERSTEGANGSBEHANDLING("Førstegangsbehandling"),
@@ -186,5 +186,6 @@ object Pen {
         VEDTAK_FLYTTE_MELLOM_LAND("Vedtak - flytte mellom land");
 
         override fun kode() = name
+        override fun kategoritekst() = kategoritekst
     }
 }

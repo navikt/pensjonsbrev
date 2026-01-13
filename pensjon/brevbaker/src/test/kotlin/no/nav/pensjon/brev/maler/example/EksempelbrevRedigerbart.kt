@@ -301,9 +301,9 @@ data class EksempelRedigerbartDto(
 
 
 
-enum class Brevkategori(override val kategoritekst: String) : TemplateDescription.IBrevkategori {
-    INNHENTE_OPPLYSNINGER("Innhente opplysninger"),
-    VARSEL("Varsel");
+enum class Brevkategori : TemplateDescription.IBrevkategori {
+    INNHENTE_OPPLYSNINGER,
+    VARSEL;
 
     override fun kode(): String = name
 }

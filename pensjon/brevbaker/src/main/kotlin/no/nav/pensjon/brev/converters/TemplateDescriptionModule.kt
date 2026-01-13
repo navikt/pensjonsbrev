@@ -19,12 +19,7 @@ object TemplateDescriptionModule : SimpleModule() {
 
     private class BrevkategoriSerializer : JsonSerializer<TemplateDescription.IBrevkategori>() {
         override fun serialize(brevkategori: TemplateDescription.IBrevkategori, generator: JsonGenerator, serializers: SerializerProvider?) {
-            generator.writeStartObject()
-            generator.writeFieldName("kode")
             generator.writeString(brevkategori.kode())
-            generator.writeFieldName("kategoritekst")
-            generator.writeString(brevkategori.kategoritekst)
-            generator.writeEndObject()
         }
     }
 
@@ -34,6 +29,6 @@ object TemplateDescriptionModule : SimpleModule() {
 
 }
 
-data class Brevkategori(override val kategoritekst: String, val kode: String) : TemplateDescription.IBrevkategori {
+data class Brevkategori(val kode: String) : TemplateDescription.IBrevkategori {
     override fun kode() = kode
 }

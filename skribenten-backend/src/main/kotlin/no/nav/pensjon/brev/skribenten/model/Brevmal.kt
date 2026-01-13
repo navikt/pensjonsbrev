@@ -64,7 +64,7 @@ interface LetterMetadata {
                     BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                     BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
                 },
-                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.kategoritekst ?: this.brevkategori?.toKategoriTekst(),
+                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.kategoritekst() ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
@@ -93,7 +93,7 @@ interface LetterMetadata {
                 id = name,
                 brevsystem = BrevSystem.BREVBAKER,
                 spraak = this.languages.map { it.toSpraakKode() },
-                brevkategori = kategori.kategoritekst,
+                brevkategori = kategori.kategoritekst(),
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,
