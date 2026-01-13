@@ -27,7 +27,10 @@ export const P1CountryField = <
   error,
 }: P1CountryFieldProps<TFieldValues, TName>) => {
   const sortedOptions = useMemo(
-    () => landListe.toSorted((a, b) => a.navn.localeCompare(b.navn, "no")).map((land) => land.navn),
+    () =>
+      landListe
+        .toSorted((aLand, bLand) => aLand.navn.localeCompare(bLand.navn, "no"))
+        .map((land) => ({ label: land.navn, value: land.kode })),
     [landListe],
   );
 
@@ -36,31 +39,19 @@ export const P1CountryField = <
       control={control}
       name={name}
       render={({ field }) => {
-        const selectedCountryName = field.value ? landListe.find((l) => l.kode === field.value)?.navn : "";
+        const selectedCountry = sortedOptions.find((land) => land.value === field.value);
 
         return (
           <UNSAFE_Combobox
             css={{
               marginBottom: "var(--ax-space-8)",
-              "& *": {
-                fontSize: "var(--ax-font-size-medium)",
-              },
             }}
             data-cy={`land-combobox-${index}`}
             error={error}
             label="Land"
-            onToggleSelected={(option, isSelected) => {
-              if (isSelected) {
-                const selectedCountry = landListe.find((l) => l.navn === option);
-                if (selectedCountry) {
-                  field.onChange(selectedCountry.kode);
-                }
-              } else {
-                field.onChange("");
-              }
-            }}
+            onToggleSelected={(landCode, isSelected) => (isSelected ? field.onChange(landCode) : field.onChange(""))}
             options={sortedOptions}
-            selectedOptions={selectedCountryName ? [selectedCountryName] : []}
+            selectedOptions={selectedCountry ? [selectedCountry] : undefined}
             shouldAutocomplete
             size="small"
           />
