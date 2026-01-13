@@ -1,9 +1,10 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
   BodyShort,
+  BoxNew,
   Button,
   Detail,
   HStack,
@@ -24,6 +25,7 @@ import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { P1EditModal } from "~/components/P1/P1EditModal";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -158,6 +160,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const [modalopen, setModalopen] = useState<boolean>(false);
+
   const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
     onSuccess: (response) => {
@@ -181,83 +185,117 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
-    <div>
-      <VStack gap="space-16">
-        <EndreMottakerMedOppsummeringOgApiHåndtering
-          brev={props.brev}
-          endreAsIcon
-          kanTilbakestilleMottaker={!erLaast}
-          overrideOppsummering={(edit) => (
-            <div>
-              <Detail textColor="subtle">Mottaker</Detail>
-              <HStack align="start" gap="space-32" wrap={false}>
-                <OppsummeringAvMottaker
-                  mottaker={props.brev.mottaker ?? null}
-                  saksId={props.saksId}
-                  withTitle={false}
-                />
-                {!erLaast && edit}
-              </HStack>
-            </div>
-          )}
-          saksId={props.saksId}
-        />
-        <Switch
-          checked={erLaast}
-          loading={laasForRedigeringMutation.isPending}
-          onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
-          size="small"
-        >
-          {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
-            ? "Brevet er klart for attestering"
-            : "Brevet er klart for sending"}
-        </Switch>
-        {laasForRedigeringMutation.isError && (
-          <Alert size="small" variant="error">
-            {getErrorMessage(laasForRedigeringMutation.error)}
-          </Alert>
-        )}
-        {!erLaast && (
-          <VStack align="start" gap="space-16">
-            <Button
-              onClick={() =>
-                navigate({
-                  to: "/saksnummer/$saksId/brev/$brevId",
-                  params: { brevId: props.brev.id, saksId: props.saksId },
-                  search: { enhetsId, vedtaksId },
-                })
-              }
-              size="small"
-              variant="secondary-neutral"
-            >
-              Fortsett redigering
-            </Button>
+    <VStack gap="space-16">
+      <EndreMottakerMedOppsummeringOgApiHåndtering
+        brev={props.brev}
+        endreAsIcon
+        kanTilbakestilleMottaker={!erLaast}
+        overrideOppsummering={(edit) => (
+          <VStack flexGrow="1">
+            <HStack justify="space-between" wrap={false}>
+              <BodyShort size="small" weight="semibold">
+                Mottaker
+              </BodyShort>
+              {!erLaast && edit}
+            </HStack>
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
           </VStack>
         )}
-        {erLaast && (
-          <RadioGroup
-            data-cy="brevbehandler-distribusjonstype"
-            description={
-              <HStack align="center">
-                Distribusjon
-                {distribusjonstypeMutation.isPending && <Loader size="small" />}
-                {distribusjonstypeMutation.isError && (
-                  <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
-                )}
-              </HStack>
+        saksId={props.saksId}
+      />
+
+      {/* Only show the attacment section if P1 (until more attacments are available) */}
+      {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
+        <>
+          <VStack gap="space-8">
+            <BodyShort size="small" weight="semibold">
+              Vedlegg
+            </BodyShort>
+
+            <HStack align="center" justify="space-between">
+              <BodyShort size="small">P1</BodyShort>
+              {!erLaast && (
+                <BoxNew asChild borderRadius="4">
+                  <Button
+                    data-cy="p1-edit-button"
+                    icon={<PencilIcon />}
+                    onClick={() => setModalopen(true)}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  />
+                </BoxNew>
+              )}
+            </HStack>
+          </VStack>
+
+          {modalopen && (
+            <P1EditModal
+              brevId={props.brev.id}
+              onClose={() => setModalopen(false)}
+              open={modalopen}
+              saksId={props.saksId}
+            />
+          )}
+        </>
+      )}
+
+      <Switch
+        checked={erLaast}
+        loading={laasForRedigeringMutation.isPending}
+        onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
+        size="small"
+      >
+        {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
+          ? "Brevet er klart for attestering"
+          : "Brevet er klart for sending"}
+      </Switch>
+      {laasForRedigeringMutation.isError && (
+        <Alert size="small" variant="error">
+          {getErrorMessage(laasForRedigeringMutation.error)}
+        </Alert>
+      )}
+      {!erLaast && (
+        <VStack align="start" gap="space-16">
+          <Button
+            onClick={() =>
+              navigate({
+                to: "/saksnummer/$saksId/brev/$brevId",
+                params: { brevId: props.brev.id, saksId: props.saksId },
+                search: { enhetsId, vedtaksId },
+              })
             }
-            legend=""
-            onChange={(v) => distribusjonstypeMutation.mutate(v)}
             size="small"
-            value={props.brev.distribusjonstype}
+            variant="secondary-neutral"
           >
-            <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
-            <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
-          </RadioGroup>
-        )}
-        {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
-      </VStack>
-    </div>
+            Fortsett redigering
+          </Button>
+        </VStack>
+      )}
+
+      {erLaast && (
+        <RadioGroup
+          data-cy="brevbehandler-distribusjonstype"
+          description={
+            <HStack align="center">
+              Distribusjon
+              {distribusjonstypeMutation.isPending && <Loader size="small" />}
+              {distribusjonstypeMutation.isError && (
+                <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
+              )}
+            </HStack>
+          }
+          legend=""
+          onChange={(v) => distribusjonstypeMutation.mutate(v)}
+          size="small"
+          value={props.brev.distribusjonstype}
+        >
+          <Radio value={Distribusjonstype.SENTRALPRINT}>Sentralprint</Radio>
+          <Radio value={Distribusjonstype.LOKALPRINT}>Lokalprint</Radio>
+        </RadioGroup>
+      )}
+      {props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && erLaast && <LokalPrintInfoAlerts />}
+    </VStack>
   );
 };
 
