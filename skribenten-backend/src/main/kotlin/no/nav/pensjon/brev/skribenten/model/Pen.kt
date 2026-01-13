@@ -194,5 +194,9 @@ object Pen {
             if ((first != null && first !is BrevdataDto.BrevregeltypeCode) || (second != null && second !is Boolean)) throw IllegalStateException("Forventa parametre av typen brevregeltypecode og boolean, fikk ${first?.javaClass} og ${second?.javaClass}")
             return isRelevant(first, second)
         }
+
+        companion object {
+            val sakstypeForLegacybrev = GENRL
+        }
     }
 }

@@ -78,9 +78,8 @@ class BrevmalService(
 
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
             //     det blir forkastet før funksjonen returnerer.
-            // TODO: Håper å komme bort fra at vi kopler oss så tett mot Pen-sakstyper
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
-                    legacy.await().map { LetterMetadata.Legacy(it, Pen.BrevbakerSakstype.GENRL) }
+                    legacy.await().map { LetterMetadata.Legacy(it, Pen.BrevbakerSakstype.sakstypeForLegacybrev) }
         }.filter { it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
