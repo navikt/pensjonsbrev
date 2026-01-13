@@ -1,12 +1,12 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { Button, HStack, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { EndreMottakerModal } from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottaker";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
@@ -60,17 +60,19 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
-            <div>
+            <>
               {props.endreAsIcon && (
-                <Button
-                  icon={<PencilIcon fontSize="24px" />}
-                  onClick={() => setModalÅpen(true)}
-                  size="xsmall"
-                  type="button"
-                  variant="tertiary"
-                />
+                <BoxNew asChild borderRadius="4">
+                  <Button
+                    icon={<PencilIcon />}
+                    onClick={() => setModalÅpen(true)}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  />
+                </BoxNew>
               )}
-            </div>,
+            </>,
           )
         ) : (
           <OppsummeringAvMottaker

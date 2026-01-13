@@ -102,7 +102,7 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     paragraph {
                         text(
                             bokmal { +"Vår beregning viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstiger 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjørsperioden, og du vil derfor få etterbetalt beløpet som er for lite utbetalt." },
-                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " kroner for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstig 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjerperioden, og du vil difor få etterbetalt beløpet som har vore for lite utbetalt." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for lite omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Beløpet overstig 25 prosent av rettsgebyret. Kravet til aktivitetsplikt er oppfylt i etteroppgjerperioden, og du vil difor få etterbetalt beløpet som har vore for lite utbetalt." },
                             english { +"Our calculations show that you have been paid " + data.avviksBeloep.absoluteValue().format() + " too little adjustment allowance in " + data.etteroppgjoersAar.format() + ". The amount exceeds 25 percent of the court fee. The activity requirement has been met during the post-assessment period, and you will therefore receive a back payment of the amount that was previously underpaid." }
                         )
                     }
@@ -200,8 +200,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
 
                 paragraph {
                     text(
-                        bokmal { +"Du får fortsatt omstillingsstønad og den er på " + data.utbetaltBeloep.format() + " kroner hver måned før skatt." },
-                        nynorsk { +"Du får framleis omstillingsstønad. Du får " + data.utbetaltBeloep.format() + " kroner kvar månad før skatt." },
+                        bokmal { +"Du får fortsatt omstillingsstønad og den er på " + data.utbetaltBeloep.format() + " hver måned før skatt." },
+                        nynorsk { +"Du får framleis omstillingsstønad. Du får " + data.utbetaltBeloep.format() + " kvar månad før skatt." },
                         english { +"You will continue to receive adjustment allowance and this will be " + data.utbetaltBeloep.format() + " per month before tax." },
                     )
                 }

@@ -1,0 +1,173 @@
+/* ===========================================
+ * Scrollbars
+ * =========================================== */
+
+/* Firefox scrollbar */
+.p1-modal {
+  scrollbar-width: thin;
+  scrollbar-color: var(--ax-border-neutral) var(--ax-bg-neutral-soft);
+}
+
+/* Webkit scrollbar styling */
+.p1-modal::-webkit-scrollbar {
+  width: 10px;
+}
+.p1-modal::-webkit-scrollbar-track {
+  background: var(--ax-bg-neutral-soft);
+  border-radius: 8px;
+}
+.p1-modal::-webkit-scrollbar-thumb {
+  background-color: var(--ax-border-neutral);
+  border-radius: 8px;
+  border: 2px solid var(--ax-bg-neutral-soft);
+}
+
+/* ===========================================
+ * Tabs panel
+ * =========================================== */
+.p1-tabs-panel {
+  overflow: auto;
+  padding-inline: var(--ax-space-20);
+  padding-block: var(--ax-space-32) var(--ax-space-16);
+}
+
+/* ===========================================
+ * Multi-column Tables (Tab 3 & 4)
+ * =========================================== */
+.p1-table {
+  border: 1px solid var(--ax-border-neutral);
+  table-layout: fixed;
+}
+
+.p1-table > thead > tr > th,
+.p1-table > tbody > tr > td {
+  border: 1px solid var(--ax-border-neutral);
+  vertical-align: top;
+}
+
+.p1-table > thead > tr > th span {
+  display: block;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.p1-table--zebra-stripes > tbody > tr:nth-of-type(even) {
+  background-color: var(--ax-bg-neutral-soft);
+}
+
+.p1-table--zebra-stripes > tbody > tr:nth-of-type(odd) {
+  background-color: var(--ax-bg-default);
+}
+
+.cell-seamless {
+  padding: 0;
+  height: 242px;
+}
+
+/* ===========================================
+ * Two-column Tables (Tab 1, 2 & 5)
+ * =========================================== */
+.p1-table--two-column td:first-of-type {
+  font-weight: 600;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+/* ===========================================
+ * Seamless Textarea (fills table cell)
+ * =========================================== */
+.p1-seamless-textarea {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+}
+
+.p1-seamless-textarea :where(label) {
+  padding-inline: var(--ax-space-8);
+  padding-block: var(--ax-space-4) 0;
+}
+
+.p1-seamless-textarea :where(textarea) {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  flex-grow: 1;
+  padding: var(--ax-space-8);
+  resize: none;
+}
+
+.p1-seamless-textarea :where(textarea):focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ax-border-focus);
+}
+
+/* ===========================================
+ * Seamless TextField (fills table cell)
+ * =========================================== */
+.p1-seamless-textfield {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+.p1-seamless-textfield :where(input) {
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0.75rem 1rem;
+  height: 100%;
+}
+
+.p1-seamless-textfield :where(input):focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ax-border-focus);
+}
+
+/* ===========================================
+ * Validation error styling
+ * =========================================== */
+.p1-table .p1-cell-error {
+  border: 2px solid var(--ax-border-danger-strong);
+  background-color: var(--ax-bg-danger-soft);
+}
+
+/* ===========================================
+ * Disabled Tab Content (read-only tabs)
+ * =========================================== */
+.p1-tab-disabled {
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 
+  Prevent "double opacity" when using readOnly inputs inside a disabled tab.
+  The styling is handled by the parent .p1-tab-disabled class.
+*/
+.p1-tab-disabled .p1-seamless-textfield input[readonly] {
+  opacity: 1;
+  color: inherit;
+}
+
+/* ===========================================
+ * Aksel DatePicker width-override
+ * =========================================== */
+
+.p1-date-picker-full-width {
+  /* Expand the outer wrapper */
+  width: 100%;
+  margin-bottom: var(--ax-space-8);
+
+  /* Expand the inner wrapper (immediately surrounding the input field) */
+  div:has(> input) {
+    width: 100%;
+  }
+
+  /* Expand the datepicker input field */
+  input {
+    width: 100%;
+  }
+}

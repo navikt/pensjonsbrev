@@ -128,9 +128,9 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
             showIf(utbetaling) {
                 paragraph {
                     text(
-                        bokmal { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
-                        nynorsk { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
-                        english { +"It is registered in your adjustment allowance that you FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos NAV som reell arbeidssøker." },
+                        bokmal { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
+                        nynorsk { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
+                        english { +"It is registered in your adjustment allowance that you FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
                     )
                 }
             }
@@ -138,8 +138,8 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
             showIf(aktivitetsgrad.notEqualTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
                 paragraph {
                     text(
-                        bokmal { +"For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos NAV. Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktivt med å søke jobber, samt deltar på de kurs som Nav tilbyr. Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}." },
-                        nynorsk { +"For å kunne få omstillingsstønad vidare bør du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?».  Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, bør du melde deg som reell arbeidssøkjar hos NAV. Dette inneber at du bekrefte at du vil stå som arbeidssøkjar, være aktiv med å søkje jobbar, og delta på kursa som Nav tilbyr. Du kan lese meir om å være arbeidssøkjar på ${Constants.REGISTRER_ARBEIDSSOKER}." },
+                        bokmal { +"For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos Nav. Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktivt med å søke jobber, samt deltar på de kurs som Nav tilbyr. Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}." },
+                        nynorsk { +"For å kunne få omstillingsstønad vidare bør du auke aktiviteten din. Sjå «Korleis oppfyller du aktivitetsplikta?».  Dersom du ikkje gjer nokon av dei andre aktivitetane som er nemnde, bør du melde deg som reell arbeidssøkjar hos Nav. Dette inneber at du må bekrefte at du vil stå som arbeidssøkjar, vere aktiv med å søkje jobbar, og delta på kursa som Nav tilbyr. Du kan lese meir om å være arbeidssøkjar på ${Constants.REGISTRER_ARBEIDSSOKER}." },
                         english { +"To receive an adjustment allowance in the future, you should increase your level of activity. See “How do I comply with the activity obligation?”.  If you are not doing any of the other activities mentioned, you must register as a genuine job seeker with Nav. This means that you confirm that you want to be a job seeker, actively be looking for work, and participate in the courses offered by Nav. You can read more about being a job seeker at ${Constants.Engelsk.REGISTRER_ARBEIDSSOKER}." },
                     )
                 }
@@ -158,6 +158,16 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                         nynorsk { +"Viss det er ein grunn til at du ikkje kan vere reell arbeidssøkjar eller gjere anna som oppfyller aktivitetsplikta på 100 prosent, må du sende oss dokumentasjon på dette snarast mogleg og seinast innan tre veker frå datoen på dette brevet. Sjå «Unntak frå aktivitetsplikta» under." },
                         english { +"" }
                     )
+                }
+
+                showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT)) {
+                    paragraph {
+                        text(
+                            bokmal { +"Hvis du jobber minst 50 prosent eller deltar i annen aktivitet med mål om å komme i arbeid, og mener du kan forsørge deg selv med den inntekten du har i nåværende stillingsprosent (uten å regne med omstillingsstønad), må du sende oss informasjon om dette." },
+                            nynorsk { +"Dersom du jobbar minst 50 prosent, eller deltek i annan aktivitet med mål om å kome i arbeid, og meiner du kan forsørgje deg sjølv med inntekta du har i noverande stillingsprosent (utan å rekne med omstillingsstønad), må du sende oss informasjon om dette." },
+                            english { +"If you work at least 50 percent or participate in another activity with the goal of obtaining employment, and believe you can support yourself with the income you have in your current position (without considering adjustment allowance), you must send us information about this." },
+                        )
+                    }
                 }
             }
 
@@ -186,15 +196,23 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                     english { +"You will find more information about how to notify us in the section “You must notify us about any changes”." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
-                            "og senest innen tre uker fra datoen på dette brevet." },
-                    nynorsk { +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
-                            "og seinast innan tre veker frå datoen på dette brevet." },
-                    english { +"If you need more time to obtain documentation, you must contact us as soon as possible " +
-                            "and no later than three weeks from the date of this letter." },
-                )
+            showIf(utbetaling) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
+                                    "og senest innen tre uker fra datoen på dette brevet."
+                        },
+                        nynorsk {
+                            +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
+                                    "og seinast innan tre veker frå datoen på dette brevet."
+                        },
+                        english {
+                            +"If you need more time to obtain documentation, you must contact us as soon as possible " +
+                                    "and no later than three weeks from the date of this letter."
+                        },
+                    )
+                }
             }
 
             title2 {

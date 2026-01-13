@@ -1,0 +1,183 @@
+{
+  "p1BrevInfo": {
+    "id": 1,
+    "opprettetAv": { "id": "Z990297", "navn": "Ola Nordmann" },
+    "opprettet": "2021-09-01T12:00:00",
+    "sistredigertAv": { "id": "Z990297", "navn": "Ola Nordmann" },
+    "sistredigert": "2021-09-01T12:00:00",
+    "brevkode": "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2",
+    "brevtittel": "P1 med forsidebrev",
+    "status": { "type": "Kladd" },
+    "distribusjonstype": "SENTRALPRINT",
+    "brevtype": "INFORMASJONSBREV",
+    "mottaker": null,
+    "avsenderEnhet": null,
+    "spraak": "NB",
+    "journalpostId": null,
+    "vedtaksId": null,
+    "saksId": "22981081"
+  },
+  "annetBrev": {
+    "id": 2,
+    "opprettetAv": { "id": "Z990297", "navn": "Ola Nordmann" },
+    "opprettet": "2021-09-01T12:00:00",
+    "sistredigertAv": { "id": "Z990297", "navn": "Ola Nordmann" },
+    "sistredigert": "2021-09-01T12:00:00",
+    "brevkode": "INFORMASJON_OM_SAKSBEHANDLINGSTID",
+    "brevtittel": "Informasjon om saksbehandlingstid",
+    "status": { "type": "Kladd" },
+    "distribusjonstype": "SENTRALPRINT",
+    "brevtype": "INFORMASJONSBREV",
+    "mottaker": null,
+    "avsenderEnhet": null,
+    "spraak": "NB",
+    "journalpostId": null,
+    "vedtaksId": null,
+    "saksId": "22981081"
+  },
+  "p1BrevData": {
+    "innehaver": {
+      "fornavn": "Penny",
+      "etternavn": "Pernsjon",
+      "etternavnVedFoedsel": null,
+      "foedselsdato": "1955-02-23",
+      "adresselinje": "Towarowa 3",
+      "poststed": null,
+      "postnummer": null,
+      "landkode": "BG"
+    },
+    "forsikrede": {
+      "fornavn": "Penny",
+      "etternavn": "Pernsjon",
+      "etternavnVedFoedsel": null,
+      "foedselsdato": "1955-02-23",
+      "adresselinje": "Towarova 3",
+      "poststed": null,
+      "postnummer": null,
+      "landkode": "BG"
+    },
+    "sakstype": "ALDER",
+    "innvilgedePensjoner": [
+      {
+        "institusjon": {
+          "institusjonsnavn": "BUL99AFL",
+          "pin": "99999999",
+          "saksnummer": "88888888",
+          "vedtaksdato": "2022-09-23",
+          "land": "BG"
+        },
+        "pensjonstype": "Alder",
+        "datoFoersteUtbetaling": "2022-03-01",
+        "utbetalt": "3972 NOK\nMånedlig (12 per år)",
+        "grunnlagInnvilget": "ProRata",
+        "reduksjonsgrunnlag": "PaaGrunnAvAndreYtelserEllerAnnenInntekt",
+        "vurderingsperiode": "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+        "adresseNyVurdering": "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge"
+      },
+      {
+        "institusjon": {
+          "institusjonsnavn": "BUL99AFL",
+          "pin": "99999999",
+          "saksnummer": "99999999",
+          "vedtaksdato": "2022-08-26",
+          "land": "BG"
+        },
+        "pensjonstype": "Ufoere",
+        "datoFoersteUtbetaling": "2024-01-01",
+        "utbetalt": "1500 NOK\nMånedlig (12 per år)",
+        "grunnlagInnvilget": "IHenholdTilNasjonalLovgivning",
+        "reduksjonsgrunnlag": "PaaGrunnAvOverlappendeGodskrevnePerioder",
+        "vurderingsperiode": "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+        "adresseNyVurdering": "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge"
+      }
+    ],
+    "avslaattePensjoner": [
+      {
+        "institusjon": {
+          "institusjonsnavn": "BUL99AFL",
+          "pin": "99999999",
+          "saksnummer": "88888888",
+          "vedtaksdato": "2022-08-26",
+          "land": "BG"
+        },
+        "pensjonstype": "Ufoere",
+        "avslagsbegrunnelse": "OpptjeningsperiodePaaMindreEnnEttAar",
+        "vurderingsperiode": "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+        "adresseNyVurdering": "Nav familie- og pensjonsytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge"
+      }
+    ],
+    "utfyllendeInstitusjon": {
+      "navn": "Nav Familie- og pensjonsytelser",
+      "adresselinje": "Postboks 6600 Etterstad",
+      "poststed": "Oslo",
+      "postnummer": "0607",
+      "landkode": "NO",
+      "institusjonsID": null,
+      "faksnummer": null,
+      "telefonnummer": "55 55 33 34",
+      "epost": null,
+      "dato": "2026-01-06"
+    }
+  },
+  "p1BrevDataWithMissingFields": {
+    "innehaver": {
+      "fornavn": "Penny",
+      "etternavn": "Pernsjon",
+      "etternavnVedFoedsel": null,
+      "foedselsdato": "1955-02-23",
+      "adresselinje": "Towarowa 3",
+      "poststed": null,
+      "postnummer": null,
+      "landkode": "BG"
+    },
+    "forsikrede": {
+      "fornavn": "Penny",
+      "etternavn": "Pernsjon",
+      "etternavnVedFoedsel": null,
+      "foedselsdato": "1955-02-23",
+      "adresselinje": "Towarova 3",
+      "poststed": null,
+      "postnummer": null,
+      "landkode": "BG"
+    },
+    "sakstype": "ALDER",
+    "innvilgedePensjoner": [
+      {
+        "institusjon": {
+          "institusjonsnavn": "",
+          "pin": "123456",
+          "saksnummer": "",
+          "vedtaksdato": null,
+          "land": null
+        },
+        "pensjonstype": null,
+        "datoFoersteUtbetaling": null,
+        "utbetalt": "",
+        "grunnlagInnvilget": null,
+        "reduksjonsgrunnlag": null,
+        "vurderingsperiode": "",
+        "adresseNyVurdering": ""
+      }
+    ],
+    "avslaattePensjoner": [],
+    "utfyllendeInstitusjon": {
+      "navn": "Nav Familie- og pensjonsytelser",
+      "adresselinje": "Postboks 6600 Etterstad",
+      "poststed": "Oslo",
+      "postnummer": "0607",
+      "landkode": "NO",
+      "institusjonsID": null,
+      "faksnummer": null,
+      "telefonnummer": "55 55 33 34",
+      "epost": null,
+      "dato": "2026-01-06"
+    }
+  },
+  "countriesSubset": [
+    { "kode": "GB", "navn": "Storbritannia" },
+    { "kode": "FR", "navn": "Frankrike" },
+    { "kode": "DK", "navn": "Danmark" },
+    { "kode": "BG", "navn": "Bulgaria" },
+    { "kode": "NO", "navn": "Norge" }
+  ]
+}

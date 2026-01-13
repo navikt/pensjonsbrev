@@ -9,6 +9,7 @@ import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
@@ -18,7 +19,6 @@ import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
-import { EndreMottakerModal } from "../endreMottaker/EndreMottaker";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
