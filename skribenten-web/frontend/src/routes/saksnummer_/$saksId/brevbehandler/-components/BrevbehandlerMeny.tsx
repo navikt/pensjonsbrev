@@ -22,7 +22,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
@@ -305,6 +305,11 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
     defaultValues: { valgteVedlegg: [] },
   });
 
+  const valgteVedlegg = useWatch({
+    control: form.control,
+    name: "valgteVedlegg",
+  });
+
   const {
     data: vedleggKoder,
     isLoading,
@@ -467,7 +472,12 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
             <Button onClick={handleCloseModal} variant="tertiary">
               Avbryt
             </Button>
-            <Button loading={leggTilVedleggMutation.isPending} onClick={handleLeggTil} variant="primary">
+            <Button
+              disabled={valgteVedlegg.length === 0}
+              loading={leggTilVedleggMutation.isPending}
+              onClick={handleLeggTil}
+              variant="primary"
+            >
               Legg til
             </Button>
           </HStack>
