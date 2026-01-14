@@ -215,7 +215,7 @@ abstract class BrevredigeringTest {
         avsenderEnhetsId: String = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
-            CreateLetterHandler.Request(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,

@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
-class CreateLetterHandler(
+class OpprettBrevHandler(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val renderService: RenderService,

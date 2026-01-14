@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import java.time.Instant
 
-class UpdateLetterHandler(
+class OppdaterBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val renderService: RenderService,

@@ -7,9 +7,9 @@ import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
 class BrevredigeringFacade(
@@ -22,14 +22,14 @@ class BrevredigeringFacade(
     val opprettBrevPolicy: OpprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService),
 ) {
 
-    suspend fun oppdaterBrev(request: UpdateLetterHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         newSuspendedTransaction {
-            UpdateLetterHandler(redigerBrevPolicy, brevreservasjonPolicy, renderService, brevdataService).handle(request)
+            OppdaterBrevHandler(redigerBrevPolicy, brevreservasjonPolicy, renderService, brevdataService).handle(request)
         }
 
-    suspend fun opprettBrev(request: CreateLetterHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
+    suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         newSuspendedTransaction {
-            CreateLetterHandler(
+            OpprettBrevHandler(
                 opprettBrevPolicy = opprettBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
                 renderService = renderService,

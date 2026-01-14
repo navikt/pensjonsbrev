@@ -25,9 +25,9 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -1169,7 +1169,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
                         put("ytelse", "uføre")
@@ -1261,7 +1261,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = brev.info.id,
                     nyttRedigertbrev = brev.redigertBrev.copy(
                         blocks = listOf(
@@ -1308,7 +1308,7 @@ class BrevredigeringServiceTest {
         sak: Pen.SakSelection = sak1,
     ) = withPrincipal(principal) {
         val result = brevredigeringFacade.opprettBrev(
-            CreateLetterHandler.Request(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,

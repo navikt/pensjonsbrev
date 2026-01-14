@@ -16,8 +16,8 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
-import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(
@@ -42,7 +42,7 @@ fun Route.sakBrev(
             val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
 
             val brev = brevredigeringFacade.opprettBrev(
-                CreateLetterHandler.Request(
+                OpprettBrevHandler.Request(
                     saksId = sak.saksId,
                     vedtaksId = request.vedtaksId,
                     brevkode = request.brevkode,
@@ -62,7 +62,7 @@ fun Route.sakBrev(
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
             val result = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = brevId,
                     nyeSaksbehandlerValg = request.saksbehandlerValg,
                     nyttRedigertbrev = request.redigertBrev,

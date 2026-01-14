@@ -23,11 +23,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.parallel.Execution
-import org.junit.jupiter.api.parallel.ExecutionMode
-import org.junit.jupiter.api.parallel.Isolated
 
-class UpdateLetterHandlerTest : BrevredigeringTest() {
+class OppdaterBrevHandlerTest : BrevredigeringTest() {
     private val nyttRedigertBrev = editedLetter(Paragraph(1, true, listOf(Literal(1, text = "red pill", editedText = "blue pill"))))
 
     private suspend fun oppdaterBrev(
@@ -37,7 +34,7 @@ class UpdateLetterHandlerTest : BrevredigeringTest() {
         frigiReservasjon: Boolean = false,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevredigeringFacade.oppdaterBrev(
-            UpdateLetterHandler.Request(
+            OppdaterBrevHandler.Request(
                 brevId = brevId,
                 nyeSaksbehandlerValg = nyeSaksbehandlerValg,
                 nyttRedigertbrev = nyttRedigertbrev,
