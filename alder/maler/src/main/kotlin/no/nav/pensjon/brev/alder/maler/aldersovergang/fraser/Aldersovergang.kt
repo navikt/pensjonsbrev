@@ -412,9 +412,9 @@ data class InfoSivilstandAP(
                 showIf(borMedSivilstand.isNotAnyOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)) {
                     paragraph {
                         text(
-                            bokmal { +"Vi har beregnet alderspensjonen din ut ifra at " + borMedSivilstand.bestemtForm() + " " },
-                            nynorsk { +"Vi har berekna alderspensjonen din ut ifrå at " + borMedSivilstand.bestemtForm() + " " },
-                            english { +"We have calculated your retirement pension based on the assumption that your " + borMedSivilstand.bestemtForm() + " " }
+                            bokmal { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
+                            nynorsk { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
+                            english { +"We have registered that your " + borMedSivilstand.bestemtForm() + " " }
                         )
                         ifNotNull(over2G) { over2G ->
                             showIf(over2G) {
@@ -431,6 +431,14 @@ data class InfoSivilstandAP(
 
                             }
                         }
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har registrert at du og ektefellen din er registrert med forskjellig bosted, eller en av dere bor på institusjon." },
+                            nynorsk { +"Vi har registrert at du og ektefellen din er registrerte med forskjellig bustad, eller ein av dykk bur på institusjon." },
+                            english { +"We have registered that you and your spouse are registered at different residences, or that one of you is living in an institution." }
+                        )
                     }
                 }
             }.orShow {
