@@ -1,0 +1,176 @@
+@file:Suppress("ConvertSecondaryConstructorToPrimary")
+
+package no.nav.pensjon.brev.template
+
+import no.nav.pensjon.brevbaker.api.model.DisplayText
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType.Scalar.Kind
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.*
+import java.time.LocalDate
+
+class TemplateModelSpecificationFactoryTest {
+    data class AModel(
+        val tekst: String,
+        val etTall: Int,
+        val etDesimal: Double,
+        val enBool: Boolean,
+        @DisplayText("viktig dato")
+        val dato: LocalDate,
+        val tall: List<Int>,
+        val strenger: List<String>,
+        val doubles: List<Double>,
+        val sub: SubModel,
+    ) {
+        data class SubModel(val navn: String, val alder: Int)
+    }
+
+    private val spec = TemplateModelSpecificationFactory(AModel::class).build()
+    private val aModelSpec = spec.types[AModel::class.qualifiedName!!]!!
+
+    @Test
+    fun `letterModelTypeName matches input class`() {
+        assertThat(spec.letterModelTypeName).isEqualTo(AModel::class.qualifiedName)
+    }
+
+    @Test
+    fun `has an entry for all fields`() {
+        assertThat(aModelSpec.keys).containsAll(listOf("enBool", "tekst", "tall", "strenger", "doubles", "etTall", "etDesimal", "dato", "sub"))
+    }
+
+    @Test
+    fun `string is a scalar value with type`() {
+        assertThat(aModelSpec["tekst"]).isEqualTo(FieldType.Scalar(false, Kind.STRING))
+    }
+
+    @Test
+    fun `handles display text`() {
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
+    }
+
+    @Test
+    fun `int is a scalar value with type`() {
+        assertThat(aModelSpec["etTall"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
+    }
+
+    @Test
+    fun `double is a scalar value with type`() {
+        assertThat(aModelSpec["etDesimal"]).isEqualTo(FieldType.Scalar(false, Kind.DOUBLE))
+    }
+
+    @Test
+    fun `boolean is a scalar value with boolean as type`() {
+        assertThat(aModelSpec["enBool"]).isEqualTo(FieldType.Scalar(false, Kind.BOOLEAN))
+    }
+
+    @Test
+    fun `date is a scalar value with type`() {
+        assertThat(aModelSpec["dato"]).isEqualTo(FieldType.Scalar(false, Kind.DATE, "viktig dato"))
+    }
+
+    @Test
+    fun `list fields have Array type with scalars as items`() {
+        assertThat(aModelSpec["tall"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.NUMBER)))
+        assertThat(aModelSpec["strenger"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.STRING)))
+        assertThat(aModelSpec["doubles"]).isEqualTo(FieldType.Array(false, FieldType.Scalar(false, Kind.DOUBLE)))
+    }
+
+    @Test
+    fun `object fields have Object type and name can be looked up in specification types`() {
+        assertThat(aModelSpec["sub"]).isEqualTo(FieldType.Object(false, AModel.SubModel::class.qualifiedName!!))
+        assertThat(
+            spec.types[AModel.SubModel::class.qualifiedName!!]!!).isEqualTo(
+                mapOf(
+                    "navn" to FieldType.Scalar(false, Kind.STRING),
+                    "alder" to FieldType.Scalar(false, Kind.NUMBER),
+                )
+            )
+    }
+
+    class NoPrimaryConstructor {
+        @Suppress("unused")
+        constructor(x: String) {
+            this.x = x
+        }
+
+        var x: String
+    }
+
+    @Test
+    fun `fails for Model classes without primary constructor`() {
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NoPrimaryConstructor::class).build() }
+    }
+
+    class NotADataClass(val navn: String, @Suppress("unused") val alder: Int)
+
+    @Test
+    fun `fails for non data class`() {
+        assertThrows<TemplateModelSpecificationError> { TemplateModelSpecificationFactory(NotADataClass::class).build() }
+    }
+
+    data class WithEnumeration(val navn: String, val anEnum: AnEnum) {
+        @Suppress("unused")
+        enum class AnEnum {
+            @DisplayText("Flag 1") FLAG1, @DisplayText("Flag 2") FLAG2
+        }
+    }
+
+    @Test
+    fun `enum fields have Enum type with all enum-values`() {
+        val spec = TemplateModelSpecificationFactory(WithEnumeration::class).build().types[WithEnumeration::class.qualifiedName!!]!!
+        assertThat(spec["anEnum"]).isEqualTo(FieldType.Enum(false, setOf(FieldType.EnumEntry("FLAG1", "Flag 1"), FieldType.EnumEntry("FLAG2", "Flag 2"))))
+    }
+
+    data class WithValueClass(val navn: String, val aValueClass: TheValue) {
+        @JvmInline
+        value class TheValue(val value: Int)
+    }
+
+    @Test
+    fun `value class fields have Scalar type`() {
+        val spec = TemplateModelSpecificationFactory(WithValueClass::class).build()
+        val withValueClassSpec = spec.types[WithValueClass::class.qualifiedName!!]!!
+        assertThat(withValueClassSpec["aValueClass"]).isEqualTo(FieldType.Scalar(false, Kind.NUMBER))
+        assertThat(spec.types[WithValueClass::class.qualifiedName!!]!!).isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "aValueClass" to FieldType.Scalar(false, Kind.NUMBER)))
+    }
+
+    data class WithNullable(val scalar: String?, val objekt: AModel.SubModel?, val listNullable: List<String>?, val listWithNullable: List<String?>, val list: List<String?>?)
+
+    @Test
+    fun `nullable fields are mapped correctly`() {
+        val spec = TemplateModelSpecificationFactory(WithNullable::class).build()
+
+        assertThat(
+            spec.types[WithNullable::class.qualifiedName!!]!!)
+            .isEqualTo(
+                mapOf(
+                    "scalar" to FieldType.Scalar(true, Kind.STRING),
+                    "objekt" to FieldType.Object(true, AModel.SubModel::class.qualifiedName!!),
+                    "listNullable" to FieldType.Array(true, FieldType.Scalar(false, Kind.STRING)),
+                    "listWithNullable" to FieldType.Array(false, FieldType.Scalar(true, Kind.STRING)),
+                    "list" to FieldType.Array(true, FieldType.Scalar(true, Kind.STRING))
+                )
+            )
+
+        assertThat(
+            spec.types[AModel.SubModel::class.qualifiedName!!]!!)
+            .isEqualTo(mapOf("navn" to FieldType.Scalar(false, Kind.STRING), "alder" to FieldType.Scalar(false, Kind.NUMBER)))
+    }
+
+    data class Recursive(val next: Recursive?)
+    data class SubRecursive(val next: Child) {
+        data class Child(val next: Grandchild)
+        data class Grandchild(val next: SubRecursive)
+    }
+
+    @Test
+    fun `recursive model structures causes failure`() {
+        assertThrows<TemplateModelSpecificationError>("Should not support self-recursive types") {
+            TemplateModelSpecificationFactory(Recursive::class).build()
+        }
+        assertThrows<TemplateModelSpecificationError>("Should not support circular-recursive types") {
+            TemplateModelSpecificationFactory(SubRecursive::class).build()
+        }
+    }
+
+}

@@ -7,6 +7,7 @@ import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttesteringQuery } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
+import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -153,7 +154,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     return (
       <Modal header={{ heading: "Vil du sende brevet?" }} onClose={props.onClose} open={props.åpen} portal width={450}>
         <Modal.Body>
-          <BodyShort>Klarte ikke å hente brev­informasjon – prøv på nytt senere.</BodyShort>
+          <BodyShort>Klarte ikke å hente brev{SOFT_HYPHEN}informasjon - prøv på nytt senere.</BodyShort>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onClose}>Lukk</Button>

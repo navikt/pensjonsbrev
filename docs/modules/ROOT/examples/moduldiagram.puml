@@ -17,13 +17,13 @@ object "etterlattemaler" as etterlatte #pink
 object "pensjon-brevbaker-api-model" as pensjonapimodel #pink
 pensjonapimodel : denne skal bort
 
-object "alder-brevbaker-api-model" as alderapimodel #pink
+object "alder:api-model" as alderapimodel #pink
 alderapimodel : som i dag
 
-object "ufoere-brevbaker-api-model" as ufoereapimodel #pink
+object ":ufoere:api-model" as ufoereapimodel #pink
 ufoereapimodel : som i dag
 
-object "brevbaker-dsl" as dsl
+object "brevbaker:dsl" as dsl
 dsl : - ny modul
 dsl : - det som trengs for å lage en mal
 

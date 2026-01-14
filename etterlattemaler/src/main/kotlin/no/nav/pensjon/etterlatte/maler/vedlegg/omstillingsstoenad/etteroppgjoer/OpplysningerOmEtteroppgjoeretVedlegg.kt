@@ -18,6 +18,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.erVedtak
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.grunnlag
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.harOpphoer
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.innhold
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggDataSelectors.utbetalingData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerGrunnlagDTOSelectors.afp
@@ -33,7 +34,8 @@ data class BeregningsVedleggData(
     val etteroppgjoersAar: Int,
     val utbetalingData: EtteroppgjoerUtbetalingDTO,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
-    val erVedtak: Boolean = false
+    val erVedtak: Boolean = false,
+    val harOpphoer: Boolean = false
 ) : VedleggData, BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
@@ -60,7 +62,7 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         },
         includeSakspart = false,
     ) {
-        opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar)
+        opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar, argument.harOpphoer)
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
         dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.grunnlag, argument.erVedtak)
@@ -69,7 +71,8 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
     }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
-    etteroppgjoersAar: Expression<Int>
+    etteroppgjoersAar: Expression<Int>,
+    harOpphoer: Expression<Boolean>
 ) {
     showIf(erVedtak) {
         paragraph {
@@ -81,9 +84,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
         }
         paragraph {
             text(
-                bokmal { +"I beregningen har vi brukt opplysninger om din faktiske inntekt for " + etteroppgjoersAar.format() + " fra Skatteetaten og a-ordningen. Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”." },
-                nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga. Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”." },
-                english { +"In the calculation, we have used information about your actual income for " + etteroppgjoersAar.format() + " from the Norwegian Tax Administration and the A-scheme. If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”." },
+                bokmal { +"I beregningen har vi brukt opplysninger om din faktiske inntekt for " + etteroppgjoersAar.format() + " fra Skatteetaten og a-ordningen. " +
+                        ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”.")},
+                nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga. " +
+                        ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”.")},
+                english { +"In the calculation, we have used information about your actual income for " + etteroppgjoersAar.format() + " from the Norwegian Tax Administration and the A-scheme. " +
+                        ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”.")},
             )
         }
     }.orShow {
@@ -345,9 +351,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
     ) {
         paragraph {
             text(
-                bokmal { +"I " + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " kroner inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. For den innvilgede perioden er pensjonsgivende inntekt uten omstillingsstønad beregnet til " + grunnlag.inntekt.format() + " kroner, fordelt slik: " },
-                nynorsk { +"I " + etteroppgjoersAar.format() + " var den pensjonsgivande inntekta di totalt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " kroner inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. For den innvilga perioden er pensjonsgivande inntekt uten omstillingsstønad utrekna til " + grunnlag.inntekt.format() + " kroner. Inntekta fordeler seg slik: " },
-                english { +"In " + etteroppgjoersAar.format() + ", your pensionable income was a total of NOK " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " including adjustment allowance, according to information from the Norwegian Tax Administration. For the approved period, your pensionable income is calculated to be NOK " + grunnlag.inntekt.format() + " without adjustment allowance, distributed as follows:" },
+                bokmal { +"I " + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. For den innvilgede perioden er pensjonsgivende inntekt uten omstillingsstønad beregnet til " + grunnlag.inntekt.format() + ", fordelt slik: " },
+                nynorsk { +"I " + etteroppgjoersAar.format() + " var den pensjonsgivande inntekta di totalt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. For den innvilga perioden er pensjonsgivande inntekt uten omstillingsstønad utrekna til " + grunnlag.inntekt.format() + ". Inntekta fordeler seg slik: " },
+                english { +"In " + etteroppgjoersAar.format() + ", your pensionable income was a total of " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " including adjustment allowance, according to information from the Norwegian Tax Administration. For the approved period, your pensionable income is calculated to be " + grunnlag.inntekt.format() + " without adjustment allowance, distributed as follows:" },
             )
         }
 
@@ -415,20 +421,21 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
             }
         }
     }.orShow {
+        val pgi = grunnlag.pensjonsgivendeInntektHeleAaret.format()
         showIf(erVedtak) {
             paragraph {
                 text(
-                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden." },
-                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + grunnlag.inntekt.format() + " kroner inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden." },
-                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was NOK " + grunnlag.inntekt.format() + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance." }
+                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden." },
+                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden." },
+                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance." }
                 )
             }
         }.orShow {
             paragraph {
                 text(
-                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + grunnlag.inntekt.format() + " kroner inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden. Dersom dette ikke stemmer, må du sende oss opplysninger om inntekten du har og har hatt ved siden av omstillingsstønaden din innen tre uker." },
-                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + grunnlag.inntekt.format() + " kroner inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden. Dersom dette ikkje stemmer, må du sende oss korrekte opplysningar innan tre veker." },
-                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was NOK " + grunnlag.inntekt.format() + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance. If this is incorrect, you must send us information within three weeks." }
+                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden. Dersom dette ikke stemmer, må du sende oss opplysninger om inntekten du har og har hatt ved siden av omstillingsstønaden din innen tre uker." },
+                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden. Dersom dette ikkje stemmer, må du sende oss korrekte opplysningar innan tre veker." },
+                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance. If this is incorrect, you must send us information within three weeks." }
                 )
             }
         }

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -11,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
@@ -101,7 +103,7 @@ class MottakerTest {
             this.saksbehandlerValg = Api.GeneriskBrevdata()
             laastForRedigering = false
             distribusjonstype = Distribusjonstype.SENTRALPRINT
-            redigeresAvNavIdent = principal
+            redigeresAv = principal
             opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
             redigertBrev = Edit.Letter(
@@ -122,7 +124,8 @@ class MottakerTest {
                 ),
                 emptySet(),
             )
-            sistRedigertAvNavIdent = principal
+            sistRedigertAv = principal
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         }
     }
 

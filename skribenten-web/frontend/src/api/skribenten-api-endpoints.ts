@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 import type {
   Avtaleland,
   BestillOgRedigerBrevResponse,
+  BrukerStatusDto,
   Enhet,
   FinnSamhandlerRequestDto,
   FinnSamhandlerResponseDto,
@@ -85,6 +86,11 @@ export const preferredLanguageKeys = {
   saksId: (saksId: string) => [...preferredLanguageKeys.all, saksId] as const,
 };
 
+export const brukerStatusKeys = {
+  all: ["BRUKER_STATUS"] as const,
+  saksId: (saksId: string) => [...brukerStatusKeys.all, saksId] as const,
+};
+
 export const orderLetterKeys = {
   all: ["ORDER_LETTER"],
   brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
@@ -101,6 +107,12 @@ export const getPreferredLanguageQuery = (saksId: string) => ({
   queryKey: preferredLanguageKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
+});
+
+export const getBrukerStatusQuery = (saksId: string) => ({
+  queryKey: brukerStatusKeys.saksId(saksId),
+  queryFn: async () =>
+    (await axios.get<BrukerStatusDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brukerstatus`)).data,
 });
 
 export const getKontaktAdresseQuery = (saksId: string) => ({
