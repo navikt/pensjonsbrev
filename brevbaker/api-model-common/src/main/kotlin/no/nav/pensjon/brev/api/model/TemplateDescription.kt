@@ -35,7 +35,7 @@ interface TemplateDescription {
         override val metadata: LetterMetadata,
         val kategori: Brevkategori,
         val brevkontekst: Brevkontekst,
-        val sakstyper: Set<Sakstype>,
+        val sakstyper: Set<ISakstype>,
     ): TemplateDescription {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true

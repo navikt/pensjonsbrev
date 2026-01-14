@@ -5,8 +5,8 @@ import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -90,7 +90,7 @@ open class FakeBrevmetadataService(
 ) : BrevmetadataService {
     override suspend fun getAllBrev(): List<BrevdataDto> = brevmaler + eblanketter
 
-    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype) = brevmaler
+    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype) = brevmaler
 
     override suspend fun getEblanketter() = eblanketter
 

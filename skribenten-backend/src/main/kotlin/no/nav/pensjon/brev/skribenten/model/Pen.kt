@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
@@ -8,9 +9,9 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import java.time.LocalDate
 import java.time.LocalDateTime
-import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
     enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
@@ -165,5 +166,37 @@ object Pen {
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
+
+    enum class BrevbakerSakstype(val isRelevant: (brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?) -> Boolean = { _, _ -> true}) : ISakstype {
+        AFP,
+        AFP_PRIVAT,
+        ALDER({ brevregeltype, forGammeltRegelverk ->
+            if (forGammeltRegelverk == true) {
+                brevregeltype?.gjelderGammeltRegelverk() ?: true
+            } else {
+                brevregeltype?.gjelderNyttRegelverk() ?: true
+            }
+        }),
+        BARNEP,
+        FAM_PL,
+        GAM_YRK,
+        GENRL,
+        GJENLEV,
+        GRBL,
+        KRIGSP,
+        OMSORG,
+        UFOREP( { brevregeltype, _ -> brevregeltype?.gjelderGammeltRegelverk() ?: true});
+
+        override fun kode(): String = name
+
+        override fun isRelevantRegelverk(first: Any?, second: Any?): Boolean {
+            if ((first != null && first !is BrevdataDto.BrevregeltypeCode) || (second != null && second !is Boolean)) throw IllegalStateException("Forventa parametre av typen brevregeltypecode og boolean, fikk ${first?.javaClass} og ${second?.javaClass}")
+            return isRelevant(first, second)
+        }
+
+        companion object {
+            val sakstypeForLegacybrev = GENRL
+        }
     }
 }

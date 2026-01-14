@@ -38,6 +38,7 @@ import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.P1Exception
 import no.nav.pensjon.brev.skribenten.services.PenDataException
 import no.nav.pensjon.brev.skribenten.services.ServiceException
@@ -214,6 +215,7 @@ fun Application.skribentenContenNegotiation() {
             registerModule(JavaTimeModule())
             registerModule(EditLetterJacksonModule)
             registerModule(BrevkodeJacksonModule)
+            registerModule(SakstypeModule)
             registerModule(LetterMarkupJacksonModule)
             disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
