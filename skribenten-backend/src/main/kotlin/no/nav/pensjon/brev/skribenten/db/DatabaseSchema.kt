@@ -178,13 +178,13 @@ fun initDatabase(config: Config) =
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
     }
 
-fun initDatabase(jdbcUrl: String, username: String, password: String) =
+fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2) =
     HikariDataSource(HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
         this.username = username
         this.password = password
         this.initializationFailTimeout = 6000
-        maximumPoolSize = 2
+        maximumPoolSize = maxPoolSize
         validate()
     })
         .also { konfigurerFlyway(it) }

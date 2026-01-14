@@ -1,45 +1,31 @@
 package no.nav.pensjon.brev.skribenten.db
 
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
-import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
-import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 
 class MottakerTest {
-    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     @BeforeAll
     fun startDb() {
-        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
-        postgres.start()
-        initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
-    }
-
-    @AfterAll
-    fun stopDb() {
-        postgres.stop()
+        SharedPostgres.ensureDatabaseInitialized()
     }
 
     private val principal = NavIdent("abc")

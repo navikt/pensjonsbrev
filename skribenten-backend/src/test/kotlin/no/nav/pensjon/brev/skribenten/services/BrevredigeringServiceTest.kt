@@ -9,18 +9,14 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.MockPrincipal
-import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.*
-import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -42,12 +38,11 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNull
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.parallel.Isolated
-import org.testcontainers.postgresql.PostgreSQLContainer
+import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -58,30 +53,17 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
-// Mye greier i denne klassa
-@Isolated
 class BrevredigeringServiceTest {
 
-    init {
-        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
-        initADGroups()
+    @BeforeAll
+    fun initDb() {
+        SharedPostgres.ensureDatabaseInitialized()
     }
 
     companion object {
-        @JvmStatic
-        private val postgres = PostgreSQLContainer("postgres:17-alpine")
-
-        @JvmStatic
-        @BeforeAll
-        fun startDb() {
-            postgres.start()
-            initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
-        }
-
-        @JvmStatic
-        @AfterAll
-        fun stopDb() {
-            postgres.stop()
+        init {
+            KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
+            initADGroups()
         }
     }
 

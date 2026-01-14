@@ -6,11 +6,11 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
@@ -29,10 +29,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
-import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.LocalDate
 
 /**
@@ -42,21 +40,10 @@ import java.time.LocalDate
  * Jeg er også usikker på om sluttresultatet tester helt ned mot database eller ei.
  */
 abstract class BrevredigeringTest {
-    private val postgres = PostgreSQLContainer("postgres:17-alpine")
-
-    init {
-        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
-    }
 
     @BeforeAll
-    fun startDb() {
-        postgres.start()
-        initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
-    }
-
-    @AfterAll
-    fun stopDb() {
-        postgres.stop()
+    fun startDbOnce() {
+        SharedPostgres.ensureDatabaseInitialized()
     }
 
     @BeforeEach
@@ -112,6 +99,7 @@ abstract class BrevredigeringTest {
 
     protected companion object Fixtures {
         init {
+            KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
             initADGroups()
         }
 

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.db.kryptering
 
 import java.nio.ByteBuffer
 import java.security.SecureRandom
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.crypto.Cipher
 import javax.crypto.SecretKey
 import javax.crypto.SecretKeyFactory
@@ -21,11 +22,14 @@ object KrypteringService {
 
     private val secureRandom = SecureRandom()
 
+    private val initialized = AtomicBoolean(false)
     fun init(krypteringsnoekkel: String) {
-        this.krypteringsnoekkel = krypteringsnoekkel
+        synchronized(this) {
+            if (initialized.compareAndSet(false, true)) {
+                this.krypteringsnoekkel = krypteringsnoekkel
+            }
+        }
     }
-
-    fun krypter(klartekst: ByteArray?): EncryptedByteArray? = klartekst?.let { krypter(it) }
 
     fun krypter(klartekst: ByteArray): EncryptedByteArray {
         val salt = getRandomNonce(SALT_LENGTH_BYTE)
@@ -39,8 +43,6 @@ object KrypteringService {
             .array()
             .let { EncryptedByteArray(it) }
     }
-
-    fun dekrypter(kryptertMelding: EncryptedByteArray?): ByteArray? = kryptertMelding?.let { dekrypter(it) }
 
     fun dekrypter(kryptertMelding: EncryptedByteArray): ByteArray {
         val byteBuffer = ByteBuffer.wrap(kryptertMelding.bytes)

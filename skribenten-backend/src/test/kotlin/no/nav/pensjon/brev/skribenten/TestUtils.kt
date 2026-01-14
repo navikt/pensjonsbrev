@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.usecase.Result
 import no.nav.pensjon.brevbaker.api.model.Bruker
@@ -19,7 +20,9 @@ import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
+import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.LocalDate
+import java.util.concurrent.atomic.AtomicBoolean
 
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken
@@ -89,4 +92,31 @@ inline fun <reified ExpectedE : E, T, E> ObjectAssert<Result<T, E>?>.isFailure(n
         }
     }
     return this
+}
+
+object SharedPostgres {
+    private val container by lazy {
+        PostgreSQLContainer("postgres:17-alpine")
+            .apply { start() }
+            .also { c ->
+                Runtime.getRuntime().addShutdownHook(Thread {
+                    try {
+                        c.stop()
+                    } catch (t: Throwable) {
+                        println("Could not stop Postgres container: ${t.message}")
+                    }
+                })
+            }
+    }
+
+    private val initialized = AtomicBoolean(false)
+
+    fun ensureDatabaseInitialized() {
+        synchronized(this) {
+            if (initialized.compareAndSet(false, true)) {
+                val c = container
+                initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20)
+            }
+        }
+    }
 }
