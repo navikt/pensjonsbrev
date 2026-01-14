@@ -164,8 +164,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
-  const [modalopen, setModalopen] = useState<boolean>(false);
-
   const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
     mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
     onSuccess: (response) => {
@@ -208,41 +206,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         saksId={props.saksId}
       />
 
-      {/* Only show the attacment section if P1 (until more attacments are available) */}
-      {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
-        <>
-          <VStack gap="space-8">
-            <BodyShort size="small" weight="semibold">
-              Vedlegg
-            </BodyShort>
-
-            <HStack align="center" justify="space-between">
-              <BodyShort size="small">P1</BodyShort>
-              {!erLaast && (
-                <BoxNew asChild borderRadius="4">
-                  <Button
-                    data-cy="p1-edit-button"
-                    icon={<PencilIcon />}
-                    onClick={() => setModalopen(true)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  />
-                </BoxNew>
-              )}
-            </HStack>
-          </VStack>
-
-          {modalopen && (
-            <P1EditModal
-              brevId={props.brev.id}
-              onClose={() => setModalopen(false)}
-              open={modalopen}
-              saksId={props.saksId}
-            />
-          )}
-        </>
-      )}
+      <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
 
       <Switch
         checked={erLaast}
@@ -330,9 +294,12 @@ const getVedleggLabel = (kode: string): string => {
   return kode;
 };
 
-const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
+const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isP1ModalOpen, setIsP1ModalOpen] = useState(false);
   const [savedVedlegg, setSavedVedlegg] = useState<VedleggKode[]>([]);
+
+  const isP1Brev = props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 
   const form = useForm<VedleggFormData>({
     defaultValues: { valgteVedlegg: [] },
@@ -371,11 +338,18 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
     leggTilVedleggMutation.mutate(data.valgteVedlegg);
   });
 
+  // Don't show vedlegg section if not P1 and no saved vedlegg
+  if (!isP1Brev && savedVedlegg.length === 0 && !isLoading && !isError) {
+    return null;
+  }
+
   if (isLoading) {
     return (
       <div>
         <HStack align="center" gap="space-8">
-          <Detail textColor="subtle">Vedlegg</Detail>
+          <BodyShort size="small" weight="semibold">
+            Vedlegg
+          </BodyShort>
         </HStack>
         <Loader size="small" />
       </div>
@@ -386,7 +360,9 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
     return (
       <div>
         <HStack align="center" gap="space-8">
-          <Detail textColor="subtle">Vedlegg</Detail>
+          <BodyShort size="small" weight="semibold">
+            Vedlegg
+          </BodyShort>
         </HStack>
         <Alert size="small" variant="error">
           {getErrorMessage(error)}
@@ -396,9 +372,11 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
   }
 
   return (
-    <div>
+    <VStack gap="space-8">
       <HStack align="center" gap="space-8">
-        <Detail textColor="subtle">Vedlegg</Detail>
+        <BodyShort size="small" weight="semibold">
+          Vedlegg
+        </BodyShort>
         <Button
           css={css`
             margin-left: auto;
@@ -411,6 +389,26 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
         />
       </HStack>
 
+      {/* P1 vedlegg with its own edit button */}
+      {isP1Brev && (
+        <HStack align="center" justify="space-between">
+          <BodyShort size="small">P1</BodyShort>
+          {!props.erLaast && (
+            <BoxNew asChild borderRadius="4">
+              <Button
+                data-cy="p1-edit-button"
+                icon={<PencilIcon />}
+                onClick={() => setIsP1ModalOpen(true)}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            </BoxNew>
+          )}
+        </HStack>
+      )}
+
+      {/* Other saved vedlegg */}
       {savedVedlegg.length > 0 && (
         <VStack gap="space-4">
           {savedVedlegg.map((kode) => (
@@ -421,6 +419,17 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
         </VStack>
       )}
 
+      {/* P1 Edit Modal */}
+      {isP1ModalOpen && (
+        <P1EditModal
+          brevId={props.brev.id}
+          onClose={() => setIsP1ModalOpen(false)}
+          open={isP1ModalOpen}
+          saksId={props.saksId}
+        />
+      )}
+
+      {/* Add vedlegg modal */}
       <Modal header={{ heading: "Legg til vedlegg/skjema" }} onClose={handleCloseModal} open={isModalOpen}>
         <Modal.Body>
           {vedleggKoder && vedleggKoder.length > 0 ? (
@@ -457,7 +466,7 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo }) => {
           </HStack>
         </Modal.Footer>
       </Modal>
-    </div>
+    </VStack>
   );
 };
 
