@@ -430,7 +430,14 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
       )}
 
       {/* Add vedlegg modal */}
-      <Modal header={{ heading: "Legg til vedlegg/skjema" }} onClose={handleCloseModal} open={isModalOpen}>
+      <Modal
+        css={css`
+          width: 700px;
+        `}
+        header={{ heading: "Legg til vedlegg/skjema" }}
+        onClose={handleCloseModal}
+        open={isModalOpen}
+      >
         <Modal.Body>
           {vedleggKoder && vedleggKoder.length > 0 ? (
             <Controller
