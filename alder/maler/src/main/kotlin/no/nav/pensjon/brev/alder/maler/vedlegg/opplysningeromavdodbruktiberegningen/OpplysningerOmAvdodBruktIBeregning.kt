@@ -178,49 +178,52 @@ val vedleggOpplysningerOmAvdoedBruktIBeregning =
                 )
             )
         }
-        title1 {
-            text(
-                bokmal { +"Pensjonsopptjening" },
-                nynorsk { +"Pensjonsopptening" },
-                // TODO ser denne teksten også er brukt for Pensjonsbeholdning. Er det det samme?
-                //  det er lite konsekvent ordbruk for pensjonsopptjening og beholdning på engelsk.
-                english { +"Accumulated pension capital" },
-            )
-        }
-        paragraph {
-            text(
-                bokmal { +"Tabellen under viser den avdødes pensjonsgivende inntekten og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen." },
-                nynorsk { +"Tabellen under viser den pensjonsgivande inntekta og pensjonspoenga til den avdøde. Det er berre inntekt for ferdiglikna år som viser i tabellen." },
-                english { +"The table below shows the pensionable income and pension points to the deceased. Only income from assessed years are shown in the table." },
-            )
-        }
 
-        showIf(avdoedPoengrekkeVedVirk.inneholderFramtidigPoeng) {
-            paragraph {
+        showIf(avdoedPoengrekkeVedVirk.pensjonspoeng.isNotEmpty()) {
+            title1 {
                 text(
-                    bokmal { +"Framtidige pensjonspoeng blir lagt til grunn for beregningen av pensjon fra og med uføreåret eller året for dødsfallet fram til året vedkommende fyller eller skulle ha fylt 66 år." },
-                    nynorsk { +"Framtidige pensjonspoeng blir lagde til grunn for berekninga av pensjonen frå og med uføreåret eller året før dødsfallet og fram til året vedkommande fyller eller skulle ha fylt 66 år." },
-                    english { +"Future pension points will be credited to the basis for calculation of pension starting from the year of disablement or year of death until the year in which the person concerned turns or would have turned 66 years." },
+                    bokmal { +"Pensjonsopptjening" },
+                    nynorsk { +"Pensjonsopptening" },
+                    // TODO ser denne teksten også er brukt for Pensjonsbeholdning. Er det det samme?
+                    //  det er lite konsekvent ordbruk for pensjonsopptjening og beholdning på engelsk.
+                    english { +"Accumulated pension capital" },
                 )
             }
-        }
-        showIf(avdoedPoengrekkeVedVirk.inneholderOmsorgspoeng) {
             paragraph {
                 text(
-                    bokmal { +"Omsorgspoeng vises bare hvis annen inntekt gir et lavere pensjonspoeng enn omsorgspoenget." },
-                    nynorsk { +"Omsorgspoeng blir berre vist dersom anna inntekt gir lågare pensjonspoeng enn omsorgspoenga." },
-                    english { +"Points for care work are only shown if other income results in lower pension points than the points for care work." },
+                    bokmal { +"Tabellen under viser den avdødes pensjonsgivende inntekten og pensjonspoeng. Det er bare inntekt for ferdiglignede år som vises i tabellen." },
+                    nynorsk { +"Tabellen under viser den pensjonsgivande inntekta og pensjonspoenga til den avdøde. Det er berre inntekt for ferdiglikna år som viser i tabellen." },
+                    english { +"The table below shows the pensionable income and pension points to the deceased. Only income from assessed years are shown in the table." },
                 )
             }
+
+            showIf(avdoedPoengrekkeVedVirk.inneholderFramtidigPoeng) {
+                paragraph {
+                    text(
+                        bokmal { +"Framtidige pensjonspoeng blir lagt til grunn for beregningen av pensjon fra og med uføreåret eller året for dødsfallet fram til året vedkommende fyller eller skulle ha fylt 66 år." },
+                        nynorsk { +"Framtidige pensjonspoeng blir lagde til grunn for berekninga av pensjonen frå og med uføreåret eller året før dødsfallet og fram til året vedkommande fyller eller skulle ha fylt 66 år." },
+                        english { +"Future pension points will be credited to the basis for calculation of pension starting from the year of disablement or year of death until the year in which the person concerned turns or would have turned 66 years." },
+                    )
+                }
+            }
+            showIf(avdoedPoengrekkeVedVirk.inneholderOmsorgspoeng) {
+                paragraph {
+                    text(
+                        bokmal { +"Omsorgspoeng vises bare hvis annen inntekt gir et lavere pensjonspoeng enn omsorgspoenget." },
+                        nynorsk { +"Omsorgspoeng blir berre vist dersom anna inntekt gir lågare pensjonspoeng enn omsorgspoenga." },
+                        english { +"Points for care work are only shown if other income results in lower pension points than the points for care work." },
+                    )
+                }
+            }
+            title1 {
+                text(
+                    bokmal { +"Avdødes pensjonspoeng" },
+                    nynorsk { +"Avdødes pensjonspoeng" },
+                    english { +"The deceased's pension points" },
+                )
+            }
+            includePhrase(TabellPoengrekke(avdoedPoengrekkeVedVirk.pensjonspoeng))
         }
-        title1 {
-            text(
-                bokmal { +"Avdødes pensjonspoeng" },
-                nynorsk { +"Avdødes pensjonspoeng" },
-                english { +"The deceased's pension points" },
-            )
-        }
-        includePhrase(TabellPoengrekke(avdoedPoengrekkeVedVirk.pensjonspoeng))
     }
 
 private object TrygdetidNorgeAvdodTabellInnledning : OutlinePhrase<LangBokmalNynorskEnglish>() {
