@@ -35,7 +35,7 @@ class UpdateLetterHandlerTest : BrevredigeringTest() {
         nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
-    ): Result<Dto.Brevredigering, BrevredigeringError>? =
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         brevredigeringFacade.oppdaterBrev(
             UpdateLetterHandler.Request(
                 brevId = brevId,

@@ -13,8 +13,8 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.failure
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.success
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
@@ -37,12 +37,12 @@ class CreateLetterHandler(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    suspend fun handle(req: Request): Result<Dto.Brevredigering, BrevredigeringError> {
+    suspend fun handle(req: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
         val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(req, principal)) {
-            is Result.Failure -> return failure(res.error)
-            is Result.Success -> res.value
+            is Outcome.Failure -> return failure(res.error)
+            is Outcome.Success -> res.value
         }
 
         val pesysData = brevdataService.hentBrevdata(

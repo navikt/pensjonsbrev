@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.failure
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.success
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import java.time.Instant
 
 class UpdateLetterHandler(
@@ -27,7 +27,7 @@ class UpdateLetterHandler(
         val frigiReservasjon: Boolean = false,
     )
 
-    suspend fun handle(cmd: Request): Result<Dto.Brevredigering, BrevredigeringError>? = with(cmd) {
+    suspend fun handle(cmd: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? = with(cmd) {
         val brev = Brevredigering.findById(brevId) ?: return null
         val principal = PrincipalInContext.require()
 

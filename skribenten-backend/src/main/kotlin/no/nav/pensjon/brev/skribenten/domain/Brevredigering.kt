@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
@@ -114,7 +114,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
         fra: Instant,
         saksbehandler: NavIdent,
         policy: BrevreservasjonPolicy
-    ): Result<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> =
+    ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> =
         policy.kanReservere(this, fra, saksbehandler).then {
             redigeresAv = saksbehandler
             sistReservert = fra.truncatedTo(ChronoUnit.MILLIS)

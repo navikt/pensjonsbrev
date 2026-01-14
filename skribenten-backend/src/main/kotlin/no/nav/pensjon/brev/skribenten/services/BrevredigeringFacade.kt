@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
-import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
 
@@ -22,12 +22,12 @@ class BrevredigeringFacade(
     val opprettBrevPolicy: OpprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService),
 ) {
 
-    suspend fun oppdaterBrev(request: UpdateLetterHandler.Request): Result<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun oppdaterBrev(request: UpdateLetterHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         newSuspendedTransaction {
             UpdateLetterHandler(redigerBrevPolicy, brevreservasjonPolicy, renderService, brevdataService).handle(request)
         }
 
-    suspend fun opprettBrev(request: CreateLetterHandler.Request): Result<Dto.Brevredigering, BrevredigeringError> =
+    suspend fun opprettBrev(request: CreateLetterHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         newSuspendedTransaction {
             CreateLetterHandler(
                 opprettBrevPolicy = opprettBrevPolicy,

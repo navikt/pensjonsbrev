@@ -213,7 +213,7 @@ abstract class BrevredigeringTest {
         vedtaksId: Long? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: String = PRINCIPAL_NAVENHET_ID,
-    ): Result<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
+    ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
             CreateLetterHandler.Request(
                 saksId = sak.saksId,
@@ -273,8 +273,8 @@ abstract class BrevredigeringTest {
 
     class ResultFailure(val error: BrevredigeringError) : Exception()
 
-    fun <T> Result<T, BrevredigeringError>.resultOrThrow(): T = when (this) {
-        is Result.Success -> value
-        is Result.Failure -> throw ResultFailure(error)
+    fun <T> Outcome<T, BrevredigeringError>.resultOrThrow(): T = when (this) {
+        is Outcome.Success -> value
+        is Outcome.Failure -> throw ResultFailure(error)
     }
 }

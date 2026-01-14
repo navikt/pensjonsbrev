@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.domain
 
-import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import java.time.Duration
 import java.time.Instant
@@ -18,13 +18,13 @@ class BrevreservasjonPolicy {
         }
     }
 
-    fun kanReservere(brev: Brevredigering, fra: Instant, saksbehandler: NavIdent): Result<Boolean, ReservertAvAnnen> {
+    fun kanReservere(brev: Brevredigering, fra: Instant, saksbehandler: NavIdent): Outcome<Boolean, ReservertAvAnnen> {
         val eksisterende = brev.reservasjon
 
         return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || !isValid(eksisterende, fra)) {
-            Result.success(true)
+            Outcome.success(true)
         } else {
-            Result.failure(ReservertAvAnnen(eksisterende))
+            Outcome.failure(ReservertAvAnnen(eksisterende))
         }
     }
 

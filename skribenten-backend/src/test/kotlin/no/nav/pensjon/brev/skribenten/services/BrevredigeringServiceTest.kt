@@ -26,7 +26,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
-import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -1320,8 +1320,8 @@ class BrevredigeringServiceTest {
             )
         )
         when (result) {
-            is Result.Failure -> error("Kunne ikke opprette brev: ${result.error}")
-            is Result.Success -> result.value
+            is Outcome.Failure -> error("Kunne ikke opprette brev: ${result.error}")
+            is Outcome.Success -> result.value
         }
     }
 
