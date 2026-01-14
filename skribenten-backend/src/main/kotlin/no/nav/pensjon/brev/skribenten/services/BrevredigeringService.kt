@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -39,13 +38,10 @@ sealed class BrevredigeringException(override val message: String) : Exception()
 
     class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
     class NyereVersjonFinsException(message: String) : BrevredigeringException(message)
-    class BrevLaastForRedigeringException(message: String) : BrevredigeringException(message)
     class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
     class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereException(message: String) : BrevredigeringException(message)
     class AlleredeAttestertException(message: String) : BrevredigeringException(message)
     class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
-    class VedtaksbrevKreverVedtaksId(message: String) : BrevredigeringException(message)
     class IkkeTilgangTilEnhetException(message: String) : BrevredigeringException(message)
 }
 
@@ -483,16 +479,6 @@ class BrevredigeringService(
         )
     }
 
-    private suspend fun <T> harTilgangTilEnhet(enhetsId: String?, then: suspend () -> T): T {
-        val ident = PrincipalInContext.require().navIdent.id
-
-        return if (enhetsId == null || navansattService.harTilgangTilEnhet(ident, enhetsId)) {
-            then()
-        } else {
-            throw IkkeTilgangTilEnhetException("Mangler tilgang til NavEnhet $enhetsId")
-        }
-    }
-
     private suspend fun opprettPdf(
         brevredigering: Dto.Brevredigering,
         pesysData: BrevdataResponse.Data,
@@ -550,20 +536,6 @@ class BrevredigeringService(
             delete()
         } else {
             valgteVedlegg = valgte
-        }
-    }
-
-    /**
-     * Krever vedtaksId om brevet er vedtaksbrev, men forkaster om ikke.
-     */
-    private suspend fun beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId: Long?, brevkode: Brevkode.Redigerbart): Long? {
-        val template = brevbakerService.getRedigerbarTemplate(brevkode)
-
-        return if (template?.brevkontekst == TemplateDescription.Brevkontekst.VEDTAK) {
-            vedtaksId
-                ?: throw VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
-        } else {
-            null
         }
     }
 
