@@ -472,7 +472,7 @@ data class InfoSivilstandAP(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>,
     val borMedSivilstand: Expression<BorMedSivilstand?>,
     val over2G: Expression<Boolean?>,
-    val kronebelop2G: Expression<Kroner>,
+    val kronebelop2G: Expression<Kroner?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
