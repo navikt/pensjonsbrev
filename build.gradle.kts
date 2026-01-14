@@ -48,6 +48,10 @@ allprojects {
             events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED, TestLogEvent.STANDARD_ERROR)
             exceptionFormat = TestExceptionFormat.FULL
         }
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+        systemProperties["junit.jupiter.execution.parallel.mode.classes.default"] = "concurrent"
+        systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
     }
 }
 
@@ -62,6 +66,25 @@ subprojects {
             exclude { element ->
                 val path = element.file.path
                 path.contains("generated/") || path.contains("build.gradle.kts")
+            }
+        }
+    }
+
+    tasks {
+        register<Test>("integrationTest") {
+            outputs.doNotCacheIf("Output of this task is not cached") { true }
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
+            systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            useJUnitPlatform {
+                includeTags = setOf("integration-test")
+            }
+        }
+        register<Test>("manualTest") {
+            outputs.doNotCacheIf("Output of this task is not cached") { true }
+            group = LifecycleBasePlugin.VERIFICATION_GROUP
+            systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            useJUnitPlatform {
+                includeTags = setOf("manual-test")
             }
         }
     }

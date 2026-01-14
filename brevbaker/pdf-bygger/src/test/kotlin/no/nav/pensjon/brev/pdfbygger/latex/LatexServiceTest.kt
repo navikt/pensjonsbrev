@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertInstanceOf
 import org.junit.jupiter.api.assertNotNull
+import org.junit.jupiter.api.parallel.Isolated
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createTempFile
 import kotlin.io.path.deleteIfExists
@@ -20,6 +21,8 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+// Denne testar så mange ting relatert til parallellisering at det er fint å kjøre isolert fra andre tester
+@Isolated
 class LatexServiceTest {
 
     @Test

@@ -17,12 +17,15 @@ import no.nav.pensjon.etterlatte.maler.Vedlegg
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(ExecutionMode.CONCURRENT)
 class EtterlatteTemplatesTest : BrevmodulTest(
     templates = EtterlatteMaler,
     auto = EtterlatteBrevKode.entries,

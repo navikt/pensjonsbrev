@@ -18,6 +18,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -29,6 +31,7 @@ private const val FIND_FAILING_CHARACTERS = false
 @OptIn(InterneDataklasser::class)
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(ExecutionMode.CONCURRENT)
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
 
