@@ -10,5 +10,5 @@ data class InfoAlderspensjonOvergang67AarAutoDto(
     val ytelseForAldersovergang: YtelseForAldersovergangKode,
     val borMedSivilstand: BorMedSivilstand?,
     val over2G: Boolean?,
-    val kronebelop2G: Kroner,
+    val kronebelop2G: Kroner?,
 ) : AutobrevData
