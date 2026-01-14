@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -176,10 +177,11 @@ data class GarantitilleggHjemmel(
 }
 
 data class GjenlevendetilleggKap19Hjemmel(
-    val gjenlevendetilleggKap19Innvilget: Expression<Boolean>
+    val gjenlevendetilleggKap19Innvilget: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(gjenlevendetilleggKap19Innvilget) {
+        showIf(gjenlevendetilleggKap19Innvilget and regelverkType.notEqualTo(AP1967)) {
             paragraph {
                 text(
                     bokmal { + "Gjenlevendetillegg er gitt etter nye bestemmelser i folketrygdloven § 19-16 og kapittel 10A i tilhørende forskrift om alderspensjon i folketrygden som gjelder fra 1. januar 2024." },
@@ -194,10 +196,11 @@ data class GjenlevendetilleggKap19Hjemmel(
 
 data class InnvilgetGjRettKap19For2024(
     val gjenlevenderettAnvendt: Expression<Boolean>,
-    val gjenlevendetilleggKap19Innvilget: Expression<Boolean>
+    val gjenlevendetilleggKap19Innvilget: Expression<Boolean>,
+    val regelverkType: Expression<AlderspensjonRegelverkType>
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget)) {
+        showIf(gjenlevenderettAnvendt and not(gjenlevendetilleggKap19Innvilget) and regelverkType.notEqualTo(AP1967)) {
             paragraph {
                 text(
                     bokmal { + "Gjenlevenderett er innvilget etter § 19-16 i folketrygdloven." },
