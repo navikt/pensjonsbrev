@@ -19,9 +19,6 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
-/**
- * Handler for creating a new Brevredigering, mirroring the pattern used by UpdateLetterHandler.
- */
 class CreateLetterHandler(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
