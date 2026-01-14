@@ -329,6 +329,16 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
     },
   });
 
+  const fjernVedleggMutation = useMutation({
+    mutationFn: (vedleggToRemove: VedleggKode) =>
+      delvisOppdaterBrev(props.saksId, props.brev.id, {
+        alltidValgbareVedlegg: savedVedlegg.filter((v) => v !== vedleggToRemove),
+      }),
+    onSuccess: (response) => {
+      setSavedVedlegg((response.valgteVedlegg as VedleggKode[]) ?? []);
+    },
+  });
+
   const handleOpenModal = () => {
     form.reset({ valgteVedlegg: savedVedlegg });
     setIsModalOpen(true);
@@ -419,7 +429,13 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
           {savedVedlegg.map((kode) => (
             <HStack align="center" justify="space-between" key={kode}>
               <BodyShort size="small">{getVedleggLabel(kode)}</BodyShort>
-              <Button icon={<TrashIcon title="Fjern vedlegg" />} onClick={() => {}} size="xsmall" variant="tertiary" />
+              <Button
+                icon={<TrashIcon title="Fjern vedlegg" />}
+                loading={fjernVedleggMutation.isPending && fjernVedleggMutation.variables === kode}
+                onClick={() => fjernVedleggMutation.mutate(kode)}
+                size="xsmall"
+                variant="tertiary"
+              />
             </HStack>
           ))}
         </VStack>
