@@ -8,14 +8,13 @@ fun createVedtakAvslagPaaOmsorgsopptjeningDto() =
     VedtakAvslagPaaOmsorgsopptjeningDto(
         saksbehandlerValg = VedtakAvslagPaaOmsorgsopptjeningDto.SaksbehandlerValg(
             omsorgsarbeidFoer1992 = false,
-            omsorgsarbeidEtter69Aar = false,
+            omsorgsarbeidEtter69Aar = true,
             omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder = false,
             omsorgsarbeidMindreEnn22Timer = false,
             omsorgsarbeidMindreEnn6Maaneder = false,
             privatAFPavslaat = false,
             omsorgsarbeidForBarnUnder7aarFoer1992 = false,
-            omsorgsopptjeningenGodskrevetEktefellen = true
-            ,
+            omsorgsopptjeningenGodskrevetEktefellen = false,
             brukerFoedtFoer1948 = false
         ),
         pesysData = VedtakAvslagPaaOmsorgsopptjeningDto.PesysData(

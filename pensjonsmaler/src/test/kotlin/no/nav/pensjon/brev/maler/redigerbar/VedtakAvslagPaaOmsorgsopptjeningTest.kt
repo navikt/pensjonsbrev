@@ -29,7 +29,7 @@ class VedtakAvslagPaaOmsorgsopptjeningTest {
         LetterTestImpl(
             VedtakAvslagPaaOmsorgsopptjening.template,
             Fixtures.create<VedtakAvslagPaaOmsorgsopptjeningDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestHtml(VedtakAvslagPaaOmsorgsopptjening.kode.name)
     }

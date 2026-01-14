@@ -70,7 +70,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         ) + " for følgende år:"
                     },
                     nynorsk {
-                        +pesysData.navEnhet + "viser til søknaden din om å få godskriven pensjonsopptening for " + fritekst(
+                        +pesysData.navEnhet + " viser til søknaden din om å få godskriven pensjonsopptening for " + fritekst(
                             "pleie- og omsorgsarbeid/omsorg for barn under 7 år før 1992"
                         ) + " for følgjande år:"
                     },
@@ -231,7 +231,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                                 +"På bakgrunn av opplysningane vi har motteke frå kommunen, " +
                                         "finn vi at pleie- og omsorgsarbeidet ikkje har utgjort minst 22 timar per veke, inkludert reisetid. " +
                                         "Vidare har arbeidet heller ikkje vart i til saman minst seks månader i "
-                                +fritekst("år") + "." + "Kommunen oppgir at omsorgsarbeidet har utgjort om lag "
+                                +fritekst("år") + ". " + "Kommunen oppgir at omsorgsarbeidet har utgjort om lag "
                                 +fritekst("antall timer") + " timar per veke og har vart i omtrent "
                                 +fritekst("antall måneder") + " månader i <år>."
                             },
@@ -285,7 +285,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                                         "Dette forutsetter at Fellesordningen har innvilget AFP i privat sektor."
                             },
                             nynorsk {
-                                +"or personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast i utrekning av avtalefesta pensjon (AFP) i privat sektor. " +
+                                +"For personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast i utrekning av avtalefesta pensjon (AFP) i privat sektor. " +
                                         "Dette føreset at Fellesordninga har innvilga AFP i privat sektor."
                             },
                             english {
@@ -319,7 +319,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                                 +"For personer som er født i 1948 eller senere kan pensjonsopptjening for omsorg for barn under 7 år før 1992 benyttes i beregning av avtalefestet pensjon (AFP) i privat sektor. "
                             },
                             nynorsk {
-                                +"or personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast i utrekning av avtalefesta pensjon (AFP) i privat sektor. "
+                                +"For personar som er fødde i 1948 eller seinare kan pensjonsopptening for omsorg for barn under 7 år før 1992 nyttast i utrekning av avtalefesta pensjon (AFP) i privat sektor. "
                             },
                             english {
                                 +"If you were born in or after 1948, care for children under the age of 7 before 1992 may be included in calculating a contractual pension in the private sector. "
