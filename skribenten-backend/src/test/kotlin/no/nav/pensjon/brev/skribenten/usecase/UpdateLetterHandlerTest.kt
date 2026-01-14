@@ -23,7 +23,12 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.Isolated
 
+@Execution(ExecutionMode.SAME_THREAD)
+@Isolated
 class UpdateLetterHandlerTest : BrevredigeringTest() {
     private val nyttRedigertBrev = editedLetter(Paragraph(1, true, listOf(Literal(1, text = "red pill", editedText = "blue pill"))))
 

@@ -46,6 +46,7 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.parallel.Isolated
 import org.testcontainers.postgresql.PostgreSQLContainer
 import java.time.Instant
 import java.time.LocalDate
@@ -57,23 +58,31 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
+// Mye greier i denne klassa
+@Isolated
 class BrevredigeringServiceTest {
-    private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
     init {
         KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
         initADGroups()
     }
 
-    @BeforeAll
-    fun startDb() {
-        postgres.start()
-        initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
-    }
+    companion object {
+        @JvmStatic
+        private val postgres = PostgreSQLContainer("postgres:17-alpine")
 
-    @AfterAll
-    fun stopDb() {
-        postgres.stop()
+        @JvmStatic
+        @BeforeAll
+        fun startDb() {
+            postgres.start()
+            initDatabase(postgres.jdbcUrl, postgres.username, postgres.password)
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun stopDb() {
+            postgres.stop()
+        }
     }
 
     private val saksbehandler1Principal =
