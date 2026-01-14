@@ -414,7 +414,9 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget))
+            showIf(regelverkType.notEqualTo(AlderspensjonRegelverkType.AP1967)) {
+                includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget))
+            }
             includePhrase(InnvilgetGjRettKap19For2024(gjenlevenderettAnvendt, gjenlevendetilleggKap19Innvilget))
 
             title1 {
