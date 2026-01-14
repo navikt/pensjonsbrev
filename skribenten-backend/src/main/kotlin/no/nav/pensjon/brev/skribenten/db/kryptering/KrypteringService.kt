@@ -22,6 +22,8 @@ object KrypteringService {
 
     private val secureRandom = SecureRandom()
 
+    // Sikrer at KrypteringsService-singleton kun initialiseres én gang.
+    // Dette er spesielt viktig for tester som skal fungere både individuelt og samlet i parallell.
     private val initialized = AtomicBoolean(false)
     fun init(krypteringsnoekkel: String) {
         synchronized(this) {

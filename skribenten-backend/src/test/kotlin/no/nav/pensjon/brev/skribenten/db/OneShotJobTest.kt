@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.oneShotJobs
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.util.concurrent.atomic.AtomicInteger
@@ -17,7 +18,12 @@ class OneShotJobTest {
 
     @BeforeAll
     fun initDb() {
-        SharedPostgres.ensureDatabaseInitialized()
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+    }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
     }
 
     // Util function to avoid silly name collisions in tests

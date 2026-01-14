@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
+import io.ktor.util.collections.ConcurrentSet
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -95,28 +96,37 @@ inline fun <reified ExpectedE : E, T, E> ObjectAssert<Result<T, E>?>.isFailure(n
 }
 
 object SharedPostgres {
+    private val subscriptions = ConcurrentSet<Any>()
+
     private val container by lazy {
         PostgreSQLContainer("postgres:17-alpine")
             .apply { start() }
-            .also { c ->
-                Runtime.getRuntime().addShutdownHook(Thread {
-                    try {
-                        c.stop()
-                    } catch (t: Throwable) {
-                        println("Could not stop Postgres container: ${t.message}")
-                    }
-                })
-            }
     }
 
     private val initialized = AtomicBoolean(false)
 
-    fun ensureDatabaseInitialized() {
+    fun subscribeAndEnsureDatabaseInitialized(subscriber: Any) {
         synchronized(this) {
             if (initialized.compareAndSet(false, true)) {
                 val c = container
                 initDatabase(jdbcUrl = c.jdbcUrl, username = c.username, password = c.password, maxPoolSize = 20)
             }
+            subscriptions.add(subscriber)
+        }
+    }
+
+    fun cancelSubscription(subscriber: Any) {
+        synchronized(this) {
+            subscriptions.remove(subscriber)
+            if (subscriptions.isEmpty()) {
+                try {
+                    container.stop()
+                } catch (t: Throwable) {
+                    println("Could not stop Postgres container: ${t.message}")
+                }
+                initialized.set(false)
+            }
+
         }
     }
 }

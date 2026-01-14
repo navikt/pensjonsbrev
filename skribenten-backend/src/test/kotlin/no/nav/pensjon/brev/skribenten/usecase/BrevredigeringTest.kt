@@ -29,6 +29,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import java.time.LocalDate
@@ -43,7 +44,12 @@ abstract class BrevredigeringTest {
 
     @BeforeAll
     fun startDbOnce() {
-        SharedPostgres.ensureDatabaseInitialized()
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+    }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
     }
 
     @BeforeEach

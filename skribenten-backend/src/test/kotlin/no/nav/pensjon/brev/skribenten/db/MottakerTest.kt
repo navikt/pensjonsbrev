@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.exceptions.ExposedSQLException
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -25,7 +26,12 @@ class MottakerTest {
 
     @BeforeAll
     fun startDb() {
-        SharedPostgres.ensureDatabaseInitialized()
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+    }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
     }
 
     private val principal = NavIdent("abc")

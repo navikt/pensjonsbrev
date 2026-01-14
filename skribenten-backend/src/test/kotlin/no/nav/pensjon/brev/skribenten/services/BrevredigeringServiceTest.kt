@@ -38,6 +38,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
@@ -57,8 +58,14 @@ class BrevredigeringServiceTest {
 
     @BeforeAll
     fun initDb() {
-        SharedPostgres.ensureDatabaseInitialized()
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
     }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
+    }
+
 
     companion object {
         init {
