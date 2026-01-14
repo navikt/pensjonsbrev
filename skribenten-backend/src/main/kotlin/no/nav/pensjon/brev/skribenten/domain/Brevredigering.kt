@@ -1,21 +1,25 @@
 package no.nav.pensjon.brev.skribenten.domain
 
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.Mottaker
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.db.ValgteVedleggTable
-import no.nav.pensjon.brev.skribenten.db.wrap
 import no.nav.pensjon.brev.skribenten.db.writeHashTo
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.dao.LongEntity
 import org.jetbrains.exposed.dao.LongEntityClass
@@ -41,7 +45,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     var distribusjonstype by BrevredigeringTable.distribusjonstype
     var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
     var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
-    var opprettetAvNavIdent by BrevredigeringTable.opprettetAvNavIdent
+    var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
     var opprettet by BrevredigeringTable.opprettet
     var sistredigert by BrevredigeringTable.sistredigert
     var sistReservert by BrevredigeringTable.sistReservert
@@ -60,6 +64,35 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             } else {
                 find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }
+
+        fun opprettBrev(
+            saksId: Long,
+            vedtaksId: Long?,
+            opprettetAv: NavIdent,
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            avsenderEnhetId: String?,
+            saksbehandlerValg: SaksbehandlerValg,
+            redigertBrev: Edit.Letter,
+            brevtype: LetterMetadata.Brevtype,
+            timestamp: Instant = Instant.now(),
+            distribusjonstype: Distribusjonstype = Distribusjonstype.SENTRALPRINT,
+        ): Brevredigering = new {
+            this.saksId = saksId
+            this.vedtaksId = vedtaksId
+            this.opprettetAv = opprettetAv
+            this.brevkode = brevkode
+            this.spraak = spraak
+            this.avsenderEnhetId = avsenderEnhetId
+            this.saksbehandlerValg = saksbehandlerValg
+            this.laastForRedigering = false
+            this.distribusjonstype = distribusjonstype
+            this.opprettet = timestamp
+            this.sistredigert = timestamp
+            this.sistRedigertAv = opprettetAv
+            this.redigertBrev = redigertBrev
+            this.brevtype = brevtype
+        }
     }
 
     val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
@@ -74,7 +107,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
                 timestamp = sistReservert,
                 expiresIn = BrevreservasjonPolicy.timeout,
                 redigertBrevHash = this.redigertBrevHash,
-            )
+            ).takeIf { BrevreservasjonPolicy.isValid(it, Instant.now()) }
         }
 
     fun reserver(
@@ -97,4 +130,56 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
     fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
     }
+
+    fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker =
+        mottaker?.oppdater(mottakerDto)
+            ?: Mottaker.opprettMottaker(this, mottakerDto).also { refresh() }
+
+    fun fjernMottaker() {
+        mottaker?.delete()
+    }
+
+    fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+        Dto.Brevredigering(
+            info = toBrevInfo(),
+            redigertBrev = redigertBrev,
+            redigertBrevHash = redigertBrevHash,
+            saksbehandlerValg = saksbehandlerValg,
+            propertyUsage = coverage,
+            valgteVedlegg = valgteVedlegg?.valgteVedlegg
+        )
+
+    fun toBrevInfo(): Dto.BrevInfo =
+        Dto.BrevInfo(
+            id = id.value,
+            saksId = saksId,
+            vedtaksId = vedtaksId,
+            opprettetAv = opprettetAv,
+            opprettet = opprettet,
+            sistredigertAv = sistRedigertAv,
+            sistredigert = sistredigert,
+            redigeresAv = reservasjon?.reservertAv,
+            brevkode = brevkode,
+            laastForRedigering = laastForRedigering,
+            distribusjonstype = distribusjonstype,
+            mottaker = mottaker?.toDto(),
+            avsenderEnhetId = avsenderEnhetId,
+            spraak = spraak,
+            sistReservert = sistReservert,
+            journalpostId = journalpostId,
+            attestertAv = attestertAvNavIdent,
+            status = when {
+                journalpostId != null -> Dto.BrevStatus.ARKIVERT
+                laastForRedigering && isVedtaksbrev ->
+                    if (attestertAvNavIdent != null) {
+                        Dto.BrevStatus.KLAR
+                    } else {
+                        Dto.BrevStatus.ATTESTERING
+                    }
+
+                laastForRedigering -> Dto.BrevStatus.KLAR
+
+                else -> Dto.BrevStatus.KLADD
+            }
+        )
 }

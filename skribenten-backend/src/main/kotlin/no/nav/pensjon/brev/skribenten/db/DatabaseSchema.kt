@@ -14,14 +14,13 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.brev.Landkode
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
@@ -140,23 +139,6 @@ object MottakerTable : IdTable<Long>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-enum class MottakerType { SAMHANDLER, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
-
-class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
-    var type by MottakerTable.type
-    var tssId by MottakerTable.tssId
-    var navn by MottakerTable.navn
-    var postnummer by MottakerTable.postnummer.wrap(::NorskPostnummer, NorskPostnummer::value)
-    var poststed by MottakerTable.poststed
-    var adresselinje1 by MottakerTable.adresselinje1
-    var adresselinje2 by MottakerTable.adresselinje2
-    var adresselinje3 by MottakerTable.adresselinje3
-    var manueltAdressertTil by MottakerTable.manueltAdressertTil
-    var landkode by MottakerTable.landkode.wrap(::Landkode, Landkode::landkode)
-
-    companion object : LongEntityClass<Mottaker>(MottakerTable)
-}
-
 object P1DataTable : IdTable<Long>() {
     override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val p1data: Column<Api.GeneriskBrevdata> = encryptedBinary("p1data")
@@ -196,13 +178,13 @@ fun initDatabase(config: Config) =
         initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
     }
 
-fun initDatabase(jdbcUrl: String, username: String, password: String) =
+fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2) =
     HikariDataSource(HikariConfig().apply {
         this.jdbcUrl = jdbcUrl
         this.username = username
         this.password = password
         this.initializationFailTimeout = 6000
-        maximumPoolSize = 2
+        maximumPoolSize = maxPoolSize
         validate()
     })
         .also { konfigurerFlyway(it) }

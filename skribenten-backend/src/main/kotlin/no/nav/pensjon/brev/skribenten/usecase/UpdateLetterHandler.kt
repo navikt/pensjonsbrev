@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.domain.BrevedigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.services.toDto
 import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.success
 import java.time.Instant
@@ -28,7 +27,7 @@ class UpdateLetterHandler(
         val frigiReservasjon: Boolean = false,
     )
 
-    suspend fun handle(cmd: Request): Result<Dto.Brevredigering, BrevedigeringError>? = with(cmd) {
+    suspend fun handle(cmd: Request): Result<Dto.Brevredigering, BrevredigeringError>? = with(cmd) {
         val brev = Brevredigering.findById(brevId) ?: return null
         val principal = PrincipalInContext.require()
 

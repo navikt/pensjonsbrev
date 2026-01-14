@@ -7,21 +7,26 @@ import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
+// TODO: Det er noe som lukter med de statiske feltene her, skal se på det i handler for fornyReservasjon
 class BrevreservasjonPolicy {
 
     companion object {
         val timeout: Duration = 10.minutes.toJavaDuration()
+
+        fun isValid(reservasjon: Reservasjon, fra: Instant): Boolean {
+            return reservasjon.timestamp.plus(timeout).isAfter(fra)
+        }
     }
 
     fun kanReservere(brev: Brevredigering, fra: Instant, saksbehandler: NavIdent): Result<Boolean, ReservertAvAnnen> {
         val eksisterende = brev.reservasjon
 
-        return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || eksisterende.timestamp.plus(timeout).isBefore(fra)) {
+        return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || !isValid(eksisterende, fra)) {
             Result.success(true)
         } else {
             Result.failure(ReservertAvAnnen(eksisterende))
         }
     }
 
-    data class ReservertAvAnnen(val eksisterende: Reservasjon) : BrevedigeringError
+    data class ReservertAvAnnen(val eksisterende: Reservasjon) : BrevredigeringError
 }
