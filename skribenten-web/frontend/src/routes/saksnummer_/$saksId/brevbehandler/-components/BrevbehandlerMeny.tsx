@@ -1,5 +1,5 @@
 import { css } from "@emotion/react";
-import { PencilIcon, PlusCircleIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, PlusCircleIcon, TrashIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
@@ -417,9 +417,10 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
       {savedVedlegg.length > 0 && (
         <VStack gap="space-4">
           {savedVedlegg.map((kode) => (
-            <BodyShort key={kode} size="small">
-              {getVedleggLabel(kode)}
-            </BodyShort>
+            <HStack align="center" justify="space-between" key={kode}>
+              <BodyShort size="small">{getVedleggLabel(kode)}</BodyShort>
+              <Button icon={<TrashIcon title="Fjern vedlegg" />} onClick={() => {}} size="xsmall" variant="tertiary" />
+            </HStack>
           ))}
         </VStack>
       )}
