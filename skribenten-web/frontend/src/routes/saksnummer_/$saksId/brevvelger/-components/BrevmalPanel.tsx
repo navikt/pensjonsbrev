@@ -1,4 +1,4 @@
-import { css } from "@emotion/react";
+import { VStack } from "@navikt/ds-react";
 
 import type { LetterMetadata } from "~/types/apiTypes";
 
@@ -19,15 +19,7 @@ const BrevmalPanel = (props: {
   return (
     <>
       {visPanel && (
-        <div
-          css={css`
-            display: flex;
-            border-right: 1px solid var(--a-gray-200);
-            padding: var(--a-spacing-6);
-            height: 100%;
-            overflow-y: auto;
-          `}
-        >
+        <VStack height="100%" overflowY="auto" padding="space-24" width="385px">
           {props.templateId ? (
             <TemplateLoader
               enhetsId={props.enhetsId}
@@ -46,7 +38,7 @@ const BrevmalPanel = (props: {
               setOnFormSubmitClick={props.setOnFormSubmitClick}
             />
           )}
-        </div>
+        </VStack>
       )}
     </>
   );

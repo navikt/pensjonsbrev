@@ -21,7 +21,7 @@ export const SamhandlerTypeSelect = ({
     <UNSAFE_Combobox
       //begrenser høyden så en ikke faller utenfor modalen og forårsaker scrolling
       css={css`
-        .navds-combobox__list {
+        .aksel-combobox__list {
           max-height: 200px;
         }
       `}

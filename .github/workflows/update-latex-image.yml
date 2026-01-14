@@ -11,7 +11,7 @@ jobs:
       - name: Create image tag
         run: |
           echo "IMAGE_LATEX=ghcr.io/${{ github.repository }}/pensjon-latex:$(date +'%Y-%m-%d-%H_%M')" >> $GITHUB_ENV
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Docker login
@@ -22,7 +22,7 @@ jobs:
           password: ${{ github.token }}
       - name: "Build image"
         run: |
-          docker build --pull --tag ${{ env.IMAGE_LATEX }} -f pdf-bygger/latex.Dockerfile pdf-bygger
+          docker build --pull --tag ${{ env.IMAGE_LATEX }} -f brevbaker/pdf-bygger/latex.Dockerfile pdf-bygger
       - name: "Push image"
         run: |
           docker push ${{ env.IMAGE_LATEX }}

@@ -1,23 +1,21 @@
 package no.nav.pensjon.etterlatte.maler.tilbakekreving
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.perioder
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTOSelectors.summer
 
 @TemplateModelHelpers
 val tilbakekrevingVedlegg = createAttachment<LangBokmalNynorskEnglish, TilbakekrevingDTO>(
-	title = newText(
-		Bokmal to "Oversikt over feilutbetalinger",
-		Nynorsk to "Oversikt over feilutbetalingar",
-		English to "Overview of payment errors",
-	),
+	title = {
+		text(
+			bokmal { +"Oversikt over feilutbetalinger" },
+			nynorsk { +"Oversikt over feilutbetalingar" },
+			english { +"Overview of payment errors" },
+		)
+	},
 	includeSakspart = false
 ) {
 	title2 {

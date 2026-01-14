@@ -15,5 +15,13 @@ jobs:
         with:
           package-name: pensjonsbrev/pdf-bygger
           package-type: container
+          ignore-versions: '(.*?)main$'
           min-versions-to-keep: 10
+          token: "${{ secrets.DELETE_PACKAGES_TOKEN }}"
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: pensjonsbrev/pdf-bygger
+          package-type: container
+          ignore-versions: '.*(?<!main)$'
+          min-versions-to-keep: 1
           token: "${{ secrets.DELETE_PACKAGES_TOKEN }}"

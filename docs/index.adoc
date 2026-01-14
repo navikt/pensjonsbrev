@@ -1,9 +1,0 @@
-
-:toc:
-:toclevels: 2
-
-include::arkitektur.adoc[]
-include::brevbaker_pdfbygger_beskrivelse.adoc[]
-include::skribenten.adoc[]
-include::hvordan-utvikle-maler.adoc[]
-

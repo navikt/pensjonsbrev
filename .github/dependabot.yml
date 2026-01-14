@@ -18,35 +18,31 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
-      - "/alder-brevbaker-api-model"
-      - "/aldersmaler"
-      - "/brevbaker-api-model-common"
+      - "/alder/api-model"
+      - "/alder/maler"
+      - "/brevbaker/api-model-common"
       - "/brevbaker"
-      - "/brevbaker-dsl"
+      - "/brevbaker/dsl"
       - "/etterlattemaler"
-      - "/pdf-bygger"
-      - "/pensjon-brevbaker"
-      - "/pensjon-brevbaker-api-model"
-      - "/pensjonsmaler"
+      - "/brevbaker/pdf-bygger"
+      - "/pensjon/brevbaker"
+      - "/pensjon/api-model"
+      - "/pensjon/maler"
       - "/skribenten-backend"
-      - "/template-model-generator"
-      - "/tjenestebuss-integrasjon"
-      - "/ufoere-brevbaker-api-model"
-      - "/ufoeremaler"
+      - "/brevbaker/template-model-generator"
+      - "/ufoere/api-model"
+      - "/ufoere/maler"
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - gradle-artifactory
     ignore:
-      - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
+      - dependency-name: "no.nav.brev.brevbaker:api-model-common"
     groups:
-      tjenestebuss:
-        patterns:
-          - "org.apache.cxf*"
-          - "com.sun.xml.messaging.saaj:saaj-impl"
-          - "com.sun.xml.bind:jaxb-core"
       postgresql:
         patterns:
           - "org.postgresql:postgresql"
@@ -56,7 +52,6 @@ updates:
           - "com.fasterxml.jackson*"
           - "com.google*"
           - "commons-codec:commons-codec"
-          - "com.natpryce:hamkrest"
           - "com.zaxxer:HikariCP"
           - "dev.zacsweers.kctfork:ksp"
           - "io.getunleash*"
@@ -69,7 +64,7 @@ updates:
           - "org.flyway*"
           - "org.jetbrains*"
           - "org.junit*"
-          - "org.testcontainers:postgresql"
+          - "org.testcontainers*"
           - "io.github.classgraph:classgraph"
 
 
@@ -85,6 +80,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     open-pull-requests-limit: 10
     registries:
       - npm-github
@@ -108,6 +105,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
 
   # ==============
   # Docker frontend
@@ -119,6 +118,8 @@ updates:
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:
@@ -129,13 +130,14 @@ updates:
   # ==============
   - package-ecosystem: "docker"
     directories:
-      - "/pensjon-brevbaker"
-      - "/pdf-bygger"
+      - "/pensjon/brevbaker"
+      - "/brevbaker/pdf-bygger"
       - "/skribenten-backend"
-      - "/tjenestebuss-integrasjon"
     schedule:
       interval: "monthly"
       day: "sunday"
+    cooldown:
+      default-days: 7
     groups:
       docker-frontend:
         patterns:

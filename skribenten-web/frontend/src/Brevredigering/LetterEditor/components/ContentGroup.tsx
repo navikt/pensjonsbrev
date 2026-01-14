@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -106,7 +105,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
-          case TABLE:
+          case TABLE: {
             return (
               <TableView
                 blockIndex={literalIndex.blockIndex}
@@ -115,6 +114,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                 node={content}
               />
             );
+          }
         }
       })}
     </div>
@@ -577,15 +577,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // 'plaintext-only' well, and browser native formatting shortcuts and
       // pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
-      css={css({
+      css={{
+        lineHeight: "var(--ax-font-line-height-medium)",
         ...(erFritekst && {
-          color: "var(--a-blue-500)",
+          color: "var(--ax-accent-600)",
           textDecoration: "underline",
           cursor: "pointer",
         }),
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
-      })}
+      }}
       data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}

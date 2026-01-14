@@ -1,0 +1,61 @@
+package no.nav.pensjon.brev.ufore.api.model
+
+import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
+import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+
+object Ufoerebrevkoder {
+    enum class AutoBrev : Automatisk {
+
+        ;
+        override fun kode(): String = this.name
+    }
+
+    enum class Redigerbar : Redigerbart {
+        UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING,
+        UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I1,
+        UT_AVSLAG_HENSIKTSMESSIG_ARB_TILTAK_I2,
+        UT_AVSLAG_SYKDOM,
+        UT_AVSLAG_ALDER,
+        UT_AVSLAG_MANGLENDE_DOK,
+        UT_AVSLAG_INNTEKTSEVNE_50,
+        UT_AVSLAG_INNTEKTSEVNE_40,
+        UT_AVSLAG_INNTEKTSEVNE_30,
+        UT_AVSLAG_UNG_UFOR_36,
+        UT_AVSLAG_UNG_UFOR_26,
+        UT_AVSLAG_UNG_UFOR_VARIG,
+        UT_AVSLAG_YRKESSKADE_GODKJENT,
+        UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT,
+        UT_AVSLAG_IFU_IKKE_VARIG,
+        UT_AVSLAG_IFU_OKT_STILLING,
+        UT_AVSLAG_OKT_GRAD_INNTEKTSEVNE,
+        UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_BEHANDLING,
+        UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I1,
+        UT_AVSLAG_OKT_GRAD_HENSIKTSMESSIG_ARB_TILTAK_I2,
+        UT_AVSLAG_OKT_GRAD_SYKDOM,
+        UT_AVSLAG_OKT_GRAD_MANGLENDE_DOK,
+        UT_AVSLAG_MEDLEMSKAP,
+        UT_VEDTAK_FEILUTBETALING,
+        UT_VEDTAK_FEILUTBETALING_INGEN_TILBAKEKREVING,
+        UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET,
+        UT_VARSEL_FEILUTBETALING,
+        UT_AVSLAG_MEDLEMSKAP_UTLAND,
+        UT_FEILUTBETALING_VARSEL_SIVILSTAND,
+        UT_FEILUTBETALING_VARSEL_SIVILSTAND_UU,
+        UT_FEILUTBETALING_VARSEL_BARN_FLYTTER,
+        UT_FEILUTBETALING_VARSEL_BARN_UTLAND,
+        UT_FEILUTBETALING_VARSEL_INSTITUSJON,
+        UT_FEILUTBETALING_VARSEL_SONING,
+        UT_FEILUTBETALING_VARSEL_DODSBO,
+        UT_INNH_OPPL_SOKNAD_BARNETILLEGG,
+        ;
+
+        override fun kode(): String = this.name
+    }
+
+    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+        ;
+
+        override fun kode() = name
+    }
+}

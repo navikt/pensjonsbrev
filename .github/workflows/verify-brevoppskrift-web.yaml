@@ -23,9 +23,10 @@ jobs:
   "klarTilMerge":
     name: "Klar til merge"
     needs: [verify]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: ./.github/pr

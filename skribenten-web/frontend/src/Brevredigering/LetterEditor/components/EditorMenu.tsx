@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { BodyShort, HStack, Select } from "@navikt/ds-react";
+import { BodyShort, BoxNew, HStack, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -57,33 +56,23 @@ type EditorMenuProps = {
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) => {
   return (
-    <div
-      css={css`
-        border-bottom: 1px solid var(--a-gray-200);
-        background: var(--a-white);
-        padding-inline: var(--a-spacing-4);
-        min-height: 48px;
-        display: flex;
-        gap: var(--a-spacing-1);
-        align-self: stretch;
-        align-items: center;
-        justify-content: space-between;
-      `}
-    >
-      <HStack align="center" gap="4" margin-block="2">
-        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        <VerticalDivider />
-        <EditorFonts />
-        <VerticalDivider />
-        <EditorBulletList />
-        <VerticalDivider />
-        <EditorTableTools />
-        <VerticalDivider />
-        <SelectTypography />
-      </HStack>
+    <BoxNew background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
+      <HStack align="center" gap="space-4" justify="space-between" minHeight="48px" paddingInline="space-16">
+        <HStack align="center" gap="space-16" margin-block="2">
+          <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+          <VerticalDivider />
+          <EditorFonts />
+          <VerticalDivider />
+          <EditorBulletList />
+          <VerticalDivider />
+          <EditorTableTools />
+          <VerticalDivider />
+          <SelectTypography />
+        </HStack>
 
-      <LagringStatus />
-    </div>
+        <LagringStatus />
+      </HStack>
+    </BoxNew>
   );
 };
 
@@ -91,7 +80,7 @@ const LagringStatus = () => {
   const { error, editorState, freeze } = useEditor();
   if (freeze || editorState.saveStatus === "SAVE_PENDING") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagrer...</BodyShort>
       </HStack>
     );
@@ -101,14 +90,14 @@ const LagringStatus = () => {
       : `Klarte ikke lagre. Sist lagret ${format(editorState.info.sistredigert, "dd.MM.yyyy HH:mm")}`;
 
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <ExclamationmarkTriangleFillIcon color="#FF9100" fontSize="1.5rem" title="error-ikon" />
         {tekst}
       </HStack>
     );
   } else if (editorState.saveStatus === "SAVED") {
     return (
-      <HStack gap="1">
+      <HStack gap="space-4">
         <BodyShort size="small">Lagret</BodyShort>
       </HStack>
     );

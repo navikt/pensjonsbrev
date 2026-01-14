@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, BoxNew, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -8,6 +7,7 @@ import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttesteringQuery } from "~/api/brev-queries";
 import { sendBrev } from "~/api/sak-api-endpoints";
+import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
@@ -30,36 +30,14 @@ const VedtakForhåndsvisningWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <Box
-        background="bg-default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--a-spacing-8);
-        `}
-      >
-        <VStack align="center" gap="1">
+      <BoxNew asChild background="default" paddingBlock="space-32 0">
+        <VStack align="center" flexGrow="1" gap="space-4" justify="center">
           <Loader size="3xlarge" title="henter brev..." />
           <Heading size="large">Henter brev....</Heading>
         </VStack>
-      </Box>
+      </BoxNew>
     ),
-    error: (err) => (
-      <Box
-        background="bg-default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--a-spacing-8);
-        `}
-      >
-        <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
-      </Box>
-    ),
+    error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
     success: (brev) => <VedtaksForhåndsvisning brev={brev} saksId={saksId} />,
   });
 };
@@ -80,7 +58,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
       )}
       <ThreeSectionLayout
         bottom={
-          <HStack gap="5">
+          <HStack gap="space-20">
             <Button
               icon={<ArrowLeftIcon />}
               onClick={() =>
@@ -111,11 +89,11 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
           </HStack>
         }
         left={
-          <VStack gap="3">
+          <VStack gap="space-12">
             <Heading size="small">{props.brev.info.brevtittel}</Heading>
-            <VStack gap="4">
+            <VStack gap="space-16">
               <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
-              <VStack gap="1">
+              <VStack gap="space-4">
                 <Label size="small">Distribusjonstype</Label>
                 <BodyShort size="small">{distribusjonstypeTilText(props.brev.info.distribusjonstype)}</BodyShort>
                 {props.brev.info.distribusjonstype === "LOKALPRINT" && (
@@ -176,7 +154,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     return (
       <Modal header={{ heading: "Vil du sende brevet?" }} onClose={props.onClose} open={props.åpen} portal width={450}>
         <Modal.Body>
-          <BodyShort>Klarte ikke å hente brev­informasjon – prøv på nytt senere.</BodyShort>
+          <BodyShort>Klarte ikke å hente brev{SOFT_HYPHEN}informasjon - prøv på nytt senere.</BodyShort>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={props.onClose}>Lukk</Button>
@@ -190,7 +168,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
         <BodyShort>Du kan ikke angre denne handlingen.</BodyShort>
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button onClick={props.onClose} type="button" variant="tertiary">
             Avbryt
           </Button>

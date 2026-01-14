@@ -12,6 +12,5 @@ gcloud auth print-access-token >& /dev/null || (
 ) || exit 1
 
  (cd skribenten-backend && ./fetch-secrets.sh)
- (cd tjenestebuss-integrasjon && ./fetch-secrets.sh)
  (cd skribenten-web/bff && ./fetch-secrets.sh)
- (cd pensjon-brevbaker && ./fetch-secrets.sh)
+ (cd pensjon/brevbaker && ./fetch-secrets.sh)

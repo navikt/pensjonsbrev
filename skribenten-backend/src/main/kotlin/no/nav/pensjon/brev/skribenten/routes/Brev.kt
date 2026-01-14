@@ -9,20 +9,22 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
-import org.slf4j.LoggerFactory
+import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
 
-private val logger = LoggerFactory.getLogger("no.nav.brev.skribenten.routes.Brev")
+fun Route.brev(
+    brevredigeringService: BrevredigeringService,
+    pdlService: PdlService,
+    penService: PenService,
+    brevredigeringFacade: BrevredigeringFacade,
+    dto2ApiService: Dto2ApiService,
+) {
 
-fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto2ApiService, pdlService: PdlService, penService: PenService) {
-
-    suspend fun RoutingContext.respond(brevResponse: ServiceResult<Dto.Brevredigering>?) {
-        brevResponse?.map { dto2ApiService.toApi(it) }
-            ?.onOk { brev -> call.respond(HttpStatusCode.OK, brev) }
-            ?.onError { message, statusCode ->
-                logger.error("$statusCode - Feil ved oppdatering av brev: $message")
-                call.respond(HttpStatusCode.InternalServerError, "Feil ved oppdatering av brev.")
-            }
-            ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+    suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
+        if (brevResponse != null) {
+            call.respond(dto2ApiService.toApi(brevResponse))
+        } else {
+            call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
+        }
     }
 
     route("/brev/{brevId}") {
@@ -45,28 +47,28 @@ fun Route.brev(brevredigeringService: BrevredigeringService, dto2ApiService: Dto
 
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            respond(
-                brevredigeringService.oppdaterBrev(
-                    saksId = null,
+            val resultat = brevredigeringFacade.oppdaterBrev(
+                UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
                 )
             )
+            apiRespond(dto2ApiService, resultat)
         }
 
         put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            respond(
-                brevredigeringService.oppdaterBrev(
-                    saksId = null,
+            val resultat = brevredigeringFacade.oppdaterBrev(
+                UpdateLetterHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = request,
                     nyttRedigertbrev = null,
                     frigiReservasjon = frigiReservasjon,
                 )
             )
+            apiRespond(dto2ApiService, resultat)
         }
 
         put<String>("/signatur") { signatur ->

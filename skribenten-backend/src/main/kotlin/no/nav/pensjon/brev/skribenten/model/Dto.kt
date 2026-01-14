@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import java.time.Instant
@@ -21,6 +22,7 @@ object Dto {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?
     )
 
     data class BrevInfo(
@@ -85,7 +87,7 @@ object Dto {
         val type: MottakerType,
         val tssId: String? = null,
         val navn: String? = null,
-        val postnummer: String? = null,
+        val postnummer: NorskPostnummer? = null,
         val poststed: String? = null,
         val adresselinje1: String? = null,
         val adresselinje2: String? = null,
@@ -102,24 +104,22 @@ object Dto {
 
             fun norskAdresse(
                 navn: String,
-                postnummer: String,
+                postnummer: NorskPostnummer,
                 poststed: String,
                 adresselinje1: String?,
                 adresselinje2: String?,
                 adresselinje3: String?,
                 manueltAdressertTil: ManueltAdressertTil
-            ) =
-                Mottaker(
-                    type = MottakerType.NORSK_ADRESSE,
-                    navn = navn,
-                    postnummer = postnummer,
-                    poststed = poststed,
-                    adresselinje1 = adresselinje1,
-                    adresselinje2 = adresselinje2,
-                    adresselinje3 = adresselinje3,
-                    manueltAdressertTil = manueltAdressertTil,
-
-                )
+            ) = Mottaker(
+                type = MottakerType.NORSK_ADRESSE,
+                navn = navn,
+                postnummer = postnummer,
+                poststed = poststed,
+                adresselinje1 = adresselinje1,
+                adresselinje2 = adresselinje2,
+                adresselinje3 = adresselinje3,
+                manueltAdressertTil = manueltAdressertTil,
+            )
 
             fun utenlandskAdresse(
                 navn: String,
@@ -193,4 +193,20 @@ fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) 
             adresselinje3 = adresselinje3,
         ),
     )
+}
+
+
+@JvmInline
+value class NorskPostnummer(val value: String) {
+    init {
+        valider()
+    }
+
+    fun valider() = require(value.matches(regex)) {
+        "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
+    }
+
+    companion object {
+        private val regex = Regex("^[0-9]{4}$")
+    }
 }

@@ -1,0 +1,107 @@
+= Skribenten 101
+
+== Kort om Skribenten
+
+=== Skribenten består av 3 deler
+1. *Brevmeny* – her velger du hvilket brev du vil lage ut ifra en liste av kategorier, søk eller
+via favoritter. Det er også her du setter mottaker, velger avsenderenhet og språk.
+2. *Brevredigering* – her redigerer du brevet og legger til relevant informasjon til mottaker.
+3. *Brevbehandler* – her vil du se brevet slik det vil bli seende ut for mottaker. Det er herfra
+du velger distribusjonsmetode og sender brevet fra. Etter brevbehandler vil du bli
+sendt videre til kvitteringssiden hvor brevet har fått en journalpost ID.
+
+=== Fint å vite
+1. Du har nesten full redigeringsfrihet i Skribenten. Unntaket er foreløpig kun de grå
+boksene. Les mer om dem lenger nede.
+2. Du kan sende brev til Skatteetaten via sentralprint.
+3. Automatisk formatering av innlimt tekst.
+4. Automatisk datering av brev.
+
+=== Brevvelger
+==== Hvordan legger jeg til et brev som favoritt?
+For å legge til et brev som favoritt, må du først velge brevet. I toppen av høyremenyen er det en knapp «legg til som favoritt». Brevet blir liggende som favoritt helt til du fjerner det som favoritt. Det gjøres på samme måte.
+
+==== Hvordan endrer jeg adresse i brevet?
+For å endre adresse, trykk på «endre mottaker». Du kan søke opp samhandler på samme måte som det fungerer i Pesys i dag, eller skrive inn adresse manuelt. 
+
+Rutine for endring av navn og adresse i brev finner du her: https://navno.sharepoint.com/sites/fag-og-ytelser-pensjonalderspensjon/SitePages/Maler/Mal-for-rutiner.aspx
+
+==== Jeg åpnet feil brev, hva gjør jeg?
+Hvis du åpnet feil brev kan du gå tilbake til brevmenyen via knappen nede til høyre. Brevet du åpnet er nå lagret som en kladd i Skribenten, og vil også dukke opp i dokumentoversikten, men det er ikke journalført. Ingen Skribenten-brev blir journalført før de er sendt til mottaker. Du kan slette kladden ved å trykke på «slett kladd» i toppen av høyremenyen når kladden er valgt.
+
+=== Brevredigering
+==== Hva er den blå, understrekede teksten i brevmalen?
+De blå, understrekede tekstene kalles fritekstfelt. Fritekstfeltene kan klikkes 1 gang på for å markere og erstatte innholdet. Vi jobber med en løsning for å sette tekstmarkøren inn i fritekstfeltet. Du kan gå til neste fritekstfelt ved å bruke hurtigtasten tab.
+
+==== Hva er forskjellen på de ulike tekstvalgene?
+I Skribenten-brev har du to ulike tekstvalg. Den ene typen er radioknapper, hvor du må velge enten/eller ut ifra alternativene, og er som regel obligatorisk. Den andre typen er vis/ikke vis (samme som i Doksys) og velges ut ifra hva som er relevant for bruker. Du har mulighet til å redigere tekstene som kommer fra venstremenyen.
+
+==== Hvordan legger jeg til overskrift?
+Du kan legge til overskrift ved å markere tekst eller trykke midt i en setning, og velge alternativet «overskrift» i nedtrekksmenyen i verktøylinjen. «Overskrift» er den vanligste typen. Underoverskrift kan brukes hvis det er et overordnet tema med behov for ytterligere presisering av innhold.
+
+==== Hvilke formateringsalternativer har jeg?
+Du kan enten gjøre tekst fet eller kursiv. De kan ikke kombineres. Utover det har du to overskriftsnivåer, vanlig tekst og kulepunkter.
+
+==== Hvordan legger jeg til og redigerer tabeller?
+Du kan legge til tabell ved å trykke på tabell-ikonet i verktøylinjen. Da får du opp et vindu som spør hvor mange rader og kolonner du vil ha. For å redigere tabellen, f.eks. fjerne en rad, høyreklikker du i tabellen.
+
+==== Hvordan limer jeg inn bilder i Skribenten-brev?
+Skribenten tillater ikke innliming av bilder i brev. Du kan fortsatt lime inn bilder i notat.
+
+==== Hvorfor kan jeg ikke redigere de grå boksene?
+De grå boksene er informasjon som er hentet ut fra Pesys som ikke kan endres. Hvis informasjonen i boksene er feil, må det endres noe i Pesys/saksbehandlingen. Informasjonen i disse boksene oppdateres automatisk hver gang brevet lagres eller brevet lastes inn på nytt. Du trenger derfor ikke lage nytt brev hvis du endrer noe i Pesys, du trenger kun å oppdatere Skribenten.
+
+==== Hvordan lagrer jeg brevet?
+Skribenten har innebygget automatisk lagring. Du finner brev du har startet på i kladdlisten i brevmenyen, eller i brevbehandler. Brevene finnes også i dokumentoversikten. Ingen brev laget med Skribenten blir journalført før det er sendt.
+
+==== Hvordan fjerner jeg alle endringene jeg har gjort?
+Du kan tilbakestille malen ved å trykke på tilbakestill-knappen. Da vil alle endringer du har gjort i brevet forsvinne, og du kan begynne å redigere på nytt.
+
+==== Hvordan kan jeg legge til skjemaer i Skribenten-brev?
+Vi holder på å undersøke muligheter for skjemaer og vedlegg. Enn så lenge er det ikke mulighet for å legge til skjemaer som vedlegg i Skribenten-brev.
+
+=== Brevbehandler
+==== Hvorfor kommer ikke adressen opp i selve brevet?
+Nav har besluttet å bruke konvolutter uten vindu. Vi holder på å undersøke mulige løsninger for Skribenten-brev som må sendes lokalt og som må bruke konvolutter med vindu.
+
+==== Adressen i brevet er feil. Kan jeg endre den fra Brevbehandler?
+Ja, du kan endre adresse i brevbehandler. Klikk på «endre mottaker» (det forutsetter at brevet ikke er markert «klart til sending/attestering»).
+
+==== Vedtaksbrevet skal videre til attestering – hva gjør jeg?
+For at brevet skal kunne attesteres må du markere brevet «klart til attestering» og klikke på fortsett (evt fortsett/send brev). Attestant vil da kunne åpne brevet i riktig modus, og få mulighet til å legge til sin egen underskrift.
+
+==== Kan jeg redigere brevet hvis jeg har markert det klart til sending/attestering?
+For å gå tilbake til redigering må du først fjerne markeringen «klar for sending/attestering», og deretter vil du få opp knappen for å fortsette å redigere.
+
+==== Kan jeg attestere brev som jeg selv har opprettet?
+Nei, du kan ikke attestere brev du selv har opprettet.
+
+==== Jeg får ikke redigert brevet etter at attestant har sett på det. Hva gjør jeg?
+Attestant må lukke brevet hos seg, og du må vente i 10 minutter før du kan åpne det igjen. Vi jobber med en bedre løsning!
+
+=== Attestering
+==== Hvordan attesterer jeg brevet?
+For å attestere et vedtaksbrev, må brevet først og fremst være markert «klar for attestering». Dette gjøres av saksbehandler. Brevet åpnes fra dokumentoversikt, og har status «under arbeid (attestering)».
+
+==== Hvordan legger jeg til signaturen min?
+Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.
+
+==== Brevet inneholder feil/mangler, og jeg vil sende det tilbake til saksbehandler
+Da må du lukke Skribenten, og saksbehandler må vente 10 minutter før hen kan åpne brevet. Vi jobber med en bedre løsning!
+
+=== Hurtigtaster
+
+|===
+| Aksjon | Snarvei
+
+| Gå til neste fritekstfelt | Tab
+| Kopier | Ctrl+C
+| Lim inn | Ctrl+V
+| Gjør tekst til overskrift 1 | Alt+1
+| Gjør tekst til overskrift 2 | Alt+2
+| Gjør tekst til vanlig tekst | Alt+3
+| Fet tekst | Ctrl+F
+| Kuriv tekst | Ctrl+K
+| Angre | Ctrl+Z
+| Gjør om | Ctrl+shift+Z (kommer snart)
+|===

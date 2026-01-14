@@ -13,7 +13,6 @@ describe("Endrer på mottaker", () => {
         brevkode: "PE_IY_05_300",
         idTSSEkstern: "80000781720",
         spraak: "NB",
-        isSensitive: false,
         brevtittel: "Vedtak om bla bla",
         enhetsId: "4405",
         vedtaksId: null,
@@ -49,7 +48,6 @@ describe("Endrer på mottaker", () => {
         brevkode: "PE_IY_05_300",
         idTSSEkstern: "80000781720",
         spraak: "NB",
-        isSensitive: false,
         brevtittel: "Vedtak om bla bla",
         enhetsId: "4405",
         vedtaksId: null,
@@ -92,7 +90,6 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
     cy.getDataCy("order-letter").click();
@@ -150,7 +147,6 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
     cy.getDataCy("order-letter").click();
@@ -208,7 +204,6 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
     cy.getDataCy("språk-velger-select").should("have.value", "NB");
-    cy.getDataCy("is-sensitive").contains("Nei").click({ force: true });
 
     //bestiller brev
     cy.getDataCy("order-letter").click();

@@ -11,6 +11,15 @@ on:
         description: "Path to build"
         required: true
         type: string
+        default: ""
+      target:
+        description: "target build folder name"
+        required: true
+        type: string
+      gradleTarget:
+        description: "gradle build target path"
+        required: true
+        type: string
       extraModulesToBuild:
         description: "Modules to build"
         required: false
@@ -34,7 +43,7 @@ on:
 
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 jobs:
   build:
@@ -47,7 +56,7 @@ jobs:
       image: ${{ steps.docker-push.outputs.image }}
       digest: ${{ steps.docker-push.outputs.digest }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: gradle/actions/setup-gradle@v5
@@ -59,14 +68,14 @@ jobs:
           "java-version": ${{ env.JavaVersion }}
       - name: "publish common to Maven local"
         run: |
-          ./gradlew :brevbaker-api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
       - name: "publish extra modules to Maven local"
         if: ${{ inputs.extraModulesToBuild != '' }}
         run: |
           ./gradlew ${{ inputs.extraModulesToBuild }}
       - name: "compile and run tests"
         run: |
-          ./gradlew :${{ inputs.path }}:buildNeeded
+          ./gradlew :${{ inputs.gradleTarget }}:buildNeeded
       - name: "Build and publish container image to GAR"
         uses: nais/docker-build-push@v0
         id: docker-push
@@ -80,8 +89,8 @@ jobs:
           salsa: false
       - name: "Upload jar"
         if: ${{ inputs.uploadJar }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
-          name: ${{inputs.path}}-jar
-          path: ${{ inputs.path }}/build/install/${{ inputs.path }}/lib
+          name: ${{inputs.target}}-jar
+          path: ${{ inputs.path }}/build/install/${{ inputs.target }}/lib
           if-no-files-found: 'error'

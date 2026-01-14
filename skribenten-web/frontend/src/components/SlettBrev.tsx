@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { TrashIcon } from "@navikt/aksel-icons";
 import { BodyLong, Button, ErrorMessage, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -22,11 +21,7 @@ export const SlettBrev = (properties: {
   const [vilSletteBrev, setVilSletteBrev] = useState(false);
 
   return (
-    <div
-      css={css`
-        height: 32px;
-      `}
-    >
+    <HStack flexGrow="1" justify="end">
       {vilSletteBrev && (
         <SlettBrevModal
           brevId={properties.brevId}
@@ -38,11 +33,11 @@ export const SlettBrev = (properties: {
         />
       )}
       <Button onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="danger">
-        <HStack align={"center"} gap="1">
+        <HStack align="center" gap="space-4">
           <TrashIcon fontSize="1.5rem" title="slett-ikon" /> {properties.buttonText}
         </HStack>
       </Button>
-    </div>
+    </HStack>
   );
 };
 
@@ -89,7 +84,7 @@ const SlettBrevModal = (properties: {
         {slett.isError && <ErrorMessage>Kunne ikke slette brev {properties.brevId}. Vil du prøve igjen?</ErrorMessage>}
       </Modal.Body>
       <Modal.Footer>
-        <HStack gap="4">
+        <HStack gap="space-16">
           <Button disabled={slett.isPending} onClick={properties.onClose} type="button" variant="tertiary">
             {slett.isSuccess ? "Avbryt" : (properties.texts?.buttonNo ?? "Nei, behold brevet")}
           </Button>
@@ -99,7 +94,7 @@ const SlettBrevModal = (properties: {
             </Button>
           ) : (
             <Button onClick={() => properties.onSlettSuccess()} type="button" variant="primary">
-              {"Gå til brevbehandler"}
+              Gå til brevbehandler
             </Button>
           )}
         </HStack>

@@ -43,7 +43,6 @@ class ExternalAPIServiceTest {
         languages = listOf(),
         metadata = LetterMetadata(
             "Informasjonsbrev",
-            false,
             LetterMetadata.Distribusjonstype.ANNET,
             LetterMetadata.Brevtype.INFORMASJONSBREV
         ),

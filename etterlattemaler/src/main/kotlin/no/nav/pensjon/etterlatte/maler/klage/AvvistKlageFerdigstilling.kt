@@ -39,7 +39,6 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - Avvist klage",
-            isSensitiv = true,
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
@@ -67,7 +66,7 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = true),  data.bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
 
         // Bosatt utland
         includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())

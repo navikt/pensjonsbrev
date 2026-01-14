@@ -7,11 +7,11 @@ import type { z } from "zod";
 
 import { orderDoksysLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
+import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import type { LetterMetadata, OrderDoksysLetterRequest, SpraakKode } from "~/types/apiTypes";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
-import HentOgVisAdresse from "../endreMottaker/HentOgVisAdresse";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
@@ -31,7 +31,6 @@ export default function BrevmalForDoksys({
   preferredLanguage: SpraakKode | null;
   displayLanguages: SpraakKode[];
   defaultValues: {
-    isSensitive: undefined;
     brevtittel: string;
     spraak: SpraakKode;
     enhetsId: string;
@@ -86,7 +85,6 @@ export default function BrevmalForDoksys({
                 vedtaksId: vedtaksId ?? null,
                 formValues: {
                   enhetsId: submittedValues.enhetsId,
-                  isSensitive: submittedValues.isSensitive,
                   spraak: submittedValues.spraak ?? null,
                   brevtittel: submittedValues.brevtittel ?? null,
                 },

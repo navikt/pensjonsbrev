@@ -1,22 +1,30 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.client.plugins.*
-import io.ktor.client.statement.*
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.routes.tjenestebussintegrasjon.dto.TjenestebussStatus
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 interface ServiceStatus {
-    val name: String
-    suspend fun ping(): ServiceResult<Boolean>
+    suspend fun ping(): PingResult
+
+    data class PingResult(val name: String, val status: HttpStatusCode, val body: String)
 }
+
+suspend fun ping(name: String, block: suspend () -> HttpResponse): ServiceStatus.PingResult =
+    block().let { response ->
+        ServiceStatus.PingResult(name, response.status, response.bodyAsText())
+    }
 
 data class StatusResponse(
     val overall: Boolean,
     val services: Map<String, Boolean>,
     val errors: Map<String, String>,
-    val tjenestebuss: TjenestebussStatus?,
 )
 
 fun Route.setupServiceStatus(vararg services: ServiceStatus) {
@@ -27,33 +35,17 @@ fun Route.setupServiceStatus(vararg services: ServiceStatus) {
 
 
 private suspend fun Array<out ServiceStatus>.checkStatuses(): StatusResponse {
-    val pingResponses = this.associate {
-        it.name to try {
-            it.ping()
-        } catch (e: ClientRequestException) {
-            ServiceResult.Error(e.response.bodyAsText(), e.response.status)
-        } catch (e: Exception) {
-            ServiceResult.Error(e.message ?: "Unknown error", HttpStatusCode.InternalServerError)
-        }
-    }
+    val pingResponses = withContext(Dispatchers.IO) {
+        this@checkStatuses.map { async { it.ping() } }
+    }.awaitAll()
 
-    val results = pingResponses.mapValues {
-        when (val r = it.value) {
-            is ServiceResult.Ok -> r.result
-            is ServiceResult.Error -> false
-        }
-    }
-    val errors = pingResponses.toList().mapNotNull {
-        when (val e = it.second) {
-            is ServiceResult.Ok -> null
-            is ServiceResult.Error -> it.first to "${e.statusCode}: ${e.error}"
-        }
-    }.toMap()
+    val results = pingResponses.associate { it.name to it.status.isSuccess() }
+    val errors = pingResponses.filter { !it.status.isSuccess() }
+        .associate { it.name to "${it.status.value}: ${it.body}" }
 
     return StatusResponse(
         overall = results.values.all { it },
         services = results,
         errors = errors,
-        tjenestebuss = this.filterIsInstance<TjenestebussIntegrasjonService>().firstOrNull()?.status()?.resultOrNull(),
     )
 }

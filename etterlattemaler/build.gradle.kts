@@ -7,7 +7,7 @@ plugins {
     alias(libs.plugins.ksp) apply true
 }
 
-group = "no.nav.pensjon.brev"
+group = "no.nav.etterlatte.brev"
 version = "0.0.1-SNAPSHOT"
 
 repositories {
@@ -17,8 +17,8 @@ repositories {
 
 dependencies {
     compileOnly(kotlin("stdlib"))
-    implementation(project(":brevbaker"))
-    ksp(project(":template-model-generator"))
+    implementation(project(":brevbaker:core"))
+    ksp(project(":brevbaker:template-model-generator"))
 
 
     implementation(libs.jackson.datatype.jsr310) {
@@ -28,7 +28,7 @@ dependencies {
     // JUnit 5
     testImplementation(libs.bundles.junit)
 
-    testImplementation(testFixtures(project(":brevbaker")))
+    testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(libs.ktor.server.callId)
 }
 
@@ -65,22 +65,15 @@ tasks {
             excludeTags = setOf("integration-test", "manual-test")
         }
     }
-
     val test by testing.suites.existing(JvmTestSuite::class)
-    register<Test>("integrationTest") {
+
+
+    named<Test>("integrationTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("integration-test")
-        }
     }
-    register<Test>("manualTest") {
+    named<Test>("manualTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("manual-test")
-        }
     }
 }

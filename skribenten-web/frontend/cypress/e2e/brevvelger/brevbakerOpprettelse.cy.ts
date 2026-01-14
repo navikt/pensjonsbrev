@@ -33,7 +33,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
     cy.wait("@getBrevmal");
     cy.contains("Åpne brev").click();
-    cy.get(".navds-error-message").should("have.length", 3);
+    cy.get(".aksel-error-message").should("have.length", 3);
   });
 
   it("oppretter brev", () => {

@@ -40,7 +40,7 @@ object BarnepensjonAvslagFraser {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Din søknad om barnepensjon etter " + avdoedNavn +  " er derfor endelig avslått." },
+                        bokmal { +"Din søknad om barnepensjon etter " + avdoedNavn + " er derfor endelig avslått." },
                         nynorsk { +"Søknaden din om barnepensjon etter " + avdoedNavn + " er derfor endeleg avslått." },
                         english { +
                                 "Your application for children`s pension for the deceased " + avdoedNavn + " has therefore been finally rejected." },

@@ -1,6 +1,0 @@
-app-name: "pensjon-pdf-bygger"
-brevbaker-app: "pensjon-brevbaker"
-asyncWorker: str(false)
-minReplicas: 150
-ingresses:
-  - "https://pensjon-pdf-bygger.intern.dev.nav.no"

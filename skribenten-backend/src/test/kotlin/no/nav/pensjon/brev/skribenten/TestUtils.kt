@@ -7,18 +7,18 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
-import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.auth.ADGroup
+import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.usecase.Result
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.assertj.core.api.AbstractAssert
+import org.assertj.core.api.Assertions.assertThat
 import java.time.LocalDate
-import java.util.function.Consumer
-
-inline fun <reified T> AbstractAssert<*, *>.isInstanceOfSatisfying(block: Consumer<T>) =
-    isInstanceOfSatisfying(T::class.java, block)!!
 
 data class MockPrincipal(override val navIdent: NavIdent, override val fullName: String, val groups: Set<ADGroup> = emptySet()) : UserPrincipal {
     override val accessToken: UserAccessToken
@@ -38,6 +38,7 @@ object Testbrevkoder {
     val TESTBREV = RedigerbarBrevkode("TESTBREV")
     val INFORMASJONSBREV = RedigerbarBrevkode("INFORMASJONSBREV")
     val VEDTAKSBREV = RedigerbarBrevkode("VEDTAKSBREV")
+    val VARSELBREV = RedigerbarBrevkode("VARSELBREV")
 }
 
 data class EksempelRedigerbartDto(
@@ -68,3 +69,21 @@ fun Felles.copy(
     annenMottakerNavn = annenMottakerNavn,
     signerendeSaksbehandlere = signerendeSaksbehandlere,
 )
+
+inline fun <reified T> assertSuccess(resultat: Result<T, *>?, noinline block: ((T) -> Unit)? = null) {
+    assertThat(resultat).isNotNull()
+    assertThat(resultat).isInstanceOfSatisfying<Result.Success<*>>(Result.Success::class.java) { res ->
+        assertThat(res.value).isInstanceOfSatisfying<T>(T::class.java) {
+            block?.invoke(it)
+        }
+    }
+}
+
+inline fun <reified Error> assertFailure(resultat: Result<*, *>?, noinline block: ((Error) -> Unit)? = null) {
+    assertThat(resultat).isNotNull()
+    assertThat(resultat).isInstanceOfSatisfying<Result.Failure<*>>(Result.Failure::class.java) { res ->
+        assertThat(res.error).isInstanceOfSatisfying<Error>(Error::class.java) {
+            block?.invoke(it)
+        }
+    }
+}

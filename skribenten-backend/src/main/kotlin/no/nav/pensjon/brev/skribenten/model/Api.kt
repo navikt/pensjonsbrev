@@ -11,10 +11,12 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Duration
 import java.time.Instant
+import java.time.LocalDate
 
 typealias SaksbehandlerValg = Api.GeneriskBrevdata
 
@@ -39,7 +41,8 @@ object Api {
     data class DelvisOppdaterBrevRequest(
         val laastForRedigering: Boolean? = null,
         val distribusjonstype: Distribusjonstype? = null,
-        val mottaker: OverstyrtMottaker? = null
+        val mottaker: OverstyrtMottaker? = null,
+        val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     )
 
     data class OppdaterAttesteringRequest(
@@ -92,7 +95,7 @@ object Api {
         data class Samhandler(val tssId: String, val navn: String?) : OverstyrtMottaker()
         data class NorskAdresse(
             val navn: String,
-            val postnummer: String,
+            val postnummer: NorskPostnummer,
             val poststed: String,
             val adresselinje1: String?,
             val adresselinje2: String?,
@@ -117,6 +120,7 @@ object Api {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValgBrevdata,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
     )
 
     data class ReservasjonResponse(
@@ -157,6 +161,13 @@ object Api {
         val brevmalKoder: List<String>,
     )
 
+    data class BrukerStatus(
+        val adressebeskyttelse: Boolean,
+        val doedsfall: LocalDate?,
+        val erSkjermet: Boolean,
+        val vergemaal: Boolean,
+    )
+
     data class Brevmal(
         val name: String,
         val id: String,
@@ -178,7 +189,6 @@ object Api {
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val isSensitive: Boolean,
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
@@ -189,7 +199,6 @@ object Api {
         val brevkode: String,
         val landkode: String,
         val mottakerText: String,
-        val isSensitive: Boolean,
         val enhetsId: String,
     )
 

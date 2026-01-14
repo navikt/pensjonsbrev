@@ -5,11 +5,11 @@ export function FullWidthDatePickerWrapper({ children }: { children: ReactNode }
   return (
     <div
       css={css`
-        .navds-date__wrapper {
+        .aksel-date__wrapper {
           width: 100%;
         }
 
-        .navds-date__field-wrapper {
+        .aksel-date__field-wrapper {
           width: 100%;
         }
 

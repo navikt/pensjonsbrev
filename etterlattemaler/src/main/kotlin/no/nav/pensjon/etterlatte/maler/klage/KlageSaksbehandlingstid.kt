@@ -43,7 +43,6 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
             letterMetadata =
             LetterMetadata(
                 displayTitle = "Klagebehandlingstid",
-                isSensitiv = false,
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
@@ -163,7 +162,7 @@ object KlageSaksbehandlingstid : EtterlatteTemplate<KlageSaksbehandlingstidDTO> 
                         " Hvis du ikke finner svar på spørsmålet ditt, kan du ringe oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " hverdager mellom klokken 09.00-15.00." +
                                 " Om du oppgir <fødselsnummer ditt/fødselsnummer til barnet/ fødselsnummer til den du er verge for>, kan vi lettere gi deg rask og god hjelp." },
                         nynorsk { +"Du finn meir informasjon på " + sakUrl(sakType) + "." +
-                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " kvardagar mellom klokka 09.00–15.00."  +
+                                " Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " + kontakttelefonPensjonExpr(borIUtlandet) + " kvardagar mellom klokka 09.00–15.00." +
                                 " Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir  <fødselsnummeret ditt / fødselsnummeret til barnet / fødselsnummeret til den du er verje for>." },
                         english { +"For more information, visit us online: " + sakUrl(sakType) + "." +
                                 " If you cannot find the answer to your question, you can call us by phone at " + kontakttelefonPensjonExpr(borIUtlandet) + " Monday to Friday between 9:00 AM and 3:00 PM." + "" +

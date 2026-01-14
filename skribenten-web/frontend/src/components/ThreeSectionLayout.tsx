@@ -1,54 +1,30 @@
-import { css } from "@emotion/react";
-import { Box, HStack } from "@navikt/ds-react";
+import { BoxNew, HGrid, HStack, VStack } from "@navikt/ds-react";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {
   return (
-    <Box
-      background="bg-default"
-      css={css`
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        flex: 1;
-      `}
-    >
-      <div
-        css={css`
-          display: grid;
-          grid-template-columns: minmax(min-content, 25%) auto;
-          flex: 1;
-
-          > :first-of-type {
-            padding: 16px 24px;
-            border-right: 1px solid var(--a-gray-200);
-          }
-
-          @media (width <= 1024px) {
-            > :first-of-type {
-              padding: var(--a-spacing-3);
-            }
-          }
-        `}
-      >
-        <div>{props.left}</div>
-        <div>{props.right}</div>
-      </div>
-      <HStack
-        css={css`
-          position: sticky;
-          bottom: 0;
-          left: 0;
-          width: 100%;
-          background: var(--a-white);
-
-          border-top: 1px solid var(--a-gray-200);
-          padding: var(--a-spacing-2) var(--a-spacing-4);
-        `}
-        justify={"end"}
-      >
-        {props.bottom}
-      </HStack>
-    </Box>
+    <BoxNew asChild background="default">
+      <VStack flexGrow="1" justify="space-between">
+        <HGrid columns="minmax(304px, 384px) auto" flexGrow="1">
+          <BoxNew
+            borderColor="neutral-subtle"
+            borderWidth="0 1 0 0"
+            height="var(--main-page-content-height)"
+            overflowY="auto"
+            padding={{ xs: "space-12" }}
+            paddingBlock={{ lg: "space-16" }}
+            paddingInline={{ lg: "space-24" }}
+          >
+            {props.left}
+          </BoxNew>
+          {props.right}
+        </HGrid>
+        <BoxNew asChild background="default" borderColor="neutral-subtle" borderWidth="1 0 0 0">
+          <HStack bottom="0" justify="end" left="0" paddingBlock="space-8" paddingInline="space-16" position="sticky">
+            {props.bottom}
+          </HStack>
+        </BoxNew>
+      </VStack>
+    </BoxNew>
   );
 };
 

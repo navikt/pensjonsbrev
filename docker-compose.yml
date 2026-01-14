@@ -1,7 +1,7 @@
 #Used for local testing purposes
 services:
   pdf-bygger:
-    build: ./pdf-bygger
+    build: ./brevbaker/pdf-bygger
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
       - PDF_COMPILE_TIMEOUT_SECONDS=200
@@ -19,12 +19,12 @@ services:
       - AZURE_APP_PRE_AUTHORIZED_APPS=[{"name":"skribenten-backend","clientId":"adce3431-deeb-422f-959c-298b644b7611"}]
       # Allows requests without auth-header #opens up debug port
       - JAVA_TOOL_OPTIONS=-Dio.ktor.development=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5015 -Dconfig.resource=application-local.conf
-    build: ./pensjon-brevbaker
+    build: ./pensjon/brevbaker
     ports:
       - "8080:8080"
       - "5015:5015" # debug port
     env_file:
-      - ./pensjon-brevbaker/secrets/unleash.env
+      - ./pensjon/brevbaker/secrets/unleash.env
   skribenten-backend:
     profiles:
       - skribenten
@@ -45,8 +45,6 @@ services:
       - NAIS_APP_NAME=skribenten-backend
       - DB_HOST=skribenten-backend-db
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5017 -Dconfig.resource=application-local.conf
-      - TJENESTEBUSS_INTEGRASJON_URL=http://tjenestebuss-integrasjon:8080
-      - TJENESTEBUSS_INTEGRASJON_SCOPE=api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-lokal/.default
       - BREVBAKER_URL=http://pensjon-brevbaker:8080
 
   skribenten-backend-db:
@@ -61,20 +59,6 @@ services:
     restart: always
     environment:
       POSTGRES_PASSWORD: pass
-
-  tjenestebuss-integrasjon:
-    build: ./tjenestebuss-integrasjon
-    profiles:
-      - skribenten
-    ports:
-      - "8086:8080"
-      - "5018:5018"
-    env_file:
-      - tjenestebuss-integrasjon/secrets/docker.env
-    environment:
-      - STS_URL=https://security-token-service.dev.adeo.no
-      - SAMHANDLERSERVICE_URL=https://wasapp-q2.adeo.no/
-      - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5018
 
   wonderwall:
     profiles:
@@ -154,7 +138,7 @@ services:
       - "20080:20080"
       - "8089:8089"
     volumes:
-      - ./locust:/mnt/locust
+      - ./brevbaker/locust:/mnt/locust
     command: -f /mnt/locust/locustfile.py --master -H https://pensjon-brevbaker.intern.dev.nav.no
 
   locust-worker:
@@ -164,7 +148,7 @@ services:
       - locust
     image: locustio/locust
     volumes:
-      - ./locust:/mnt/locust
+      - ./brevbaker/locust:/mnt/locust
     command: -f /mnt/locust/locustfile.py --worker --master-host locust-master
 
 networks:
