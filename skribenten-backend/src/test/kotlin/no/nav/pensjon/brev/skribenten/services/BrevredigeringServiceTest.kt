@@ -456,7 +456,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { Brevredigering[brev.info.id].journalpostId = 123L }
+        transaction { BrevredigeringEntity[brev.info.id].journalpostId = 123L }
 
         val oppdatertBrev = withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)
@@ -487,7 +487,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         transaction {
-            assertThat(Brevredigering[brev.info.id].document).isEmpty()
+            assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
         }
 
@@ -498,7 +498,7 @@ class BrevredigeringServiceTest {
         ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
         transaction {
-            val brevredigering = Brevredigering[brev.info.id]
+            val brevredigering = BrevredigeringEntity[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
             assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
@@ -516,7 +516,7 @@ class BrevredigeringServiceTest {
 
         brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
         transaction {
-            assertThat(Brevredigering.findById(brev.info.id)).isNull()
+            assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
         }
     }
@@ -546,11 +546,11 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+            val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
-            transaction { Brevredigering[brev.info.id].document.first().delete() }
+            transaction { BrevredigeringEntity[brev.info.id].document.first().delete() }
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+            val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
             assertThat(firstHash).isEqualTo(secondHash)
         }
@@ -563,16 +563,16 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+        val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
+            BrevredigeringEntity[brev.info.id].redigertBrev =
                 letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+        val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
         assertThat(firstHash).isNotEqualTo(secondHash)
     }
@@ -596,7 +596,7 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].redigertBrev =
+                BrevredigeringEntity[brev.info.id].redigertBrev =
                     letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
             }
 
@@ -892,7 +892,7 @@ class BrevredigeringServiceTest {
                     )
                 }
             }
-            assertThat(transaction { Brevredigering[brev.info.id].redigeresAv }).isEqualTo(
+            assertThat(transaction { BrevredigeringEntity[brev.info.id].redigeresAv }).isEqualTo(
                 saksbehandler1Principal.navIdent
             )
         }
@@ -922,7 +922,7 @@ class BrevredigeringServiceTest {
                 }
             }
             val awaited = hentBrev.awaitAll()
-            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAv }!!
+            val redigeresFaktiskAv = transaction { BrevredigeringEntity[brev.info.id].redigeresAv }!!
 
             assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
             assertThat(awaited).areExactly(
@@ -990,7 +990,7 @@ class BrevredigeringServiceTest {
             }
             // verifiser forskjellig hash
             transaction {
-                val redigering = Brevredigering[brev.info.id]
+                val redigering = BrevredigeringEntity[brev.info.id]
                 assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
             }
 
@@ -1026,7 +1026,7 @@ class BrevredigeringServiceTest {
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
-        assertThat(transaction { Brevredigering.findById(brev.info.id) }).isNull()
+        assertThat(transaction { BrevredigeringEntity.findById(brev.info.id) }).isNull()
     }
 
     @Test
@@ -1034,7 +1034,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         transaction {
-            Brevredigering[brev.info.id].sistReservert =
+            BrevredigeringEntity[brev.info.id].sistReservert =
                 Instant.now() - RESERVASJON_TIMEOUT - 1.seconds.toJavaDuration()
         }
 
@@ -1057,10 +1057,10 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         val forrigeReservasjon = Instant.now().minusSeconds(60).truncatedTo(ChronoUnit.MILLIS)
-        transaction { Brevredigering[brev.info.id].sistReservert = forrigeReservasjon }
+        transaction { BrevredigeringEntity[brev.info.id].sistReservert = forrigeReservasjon }
 
         withPrincipal(saksbehandler1Principal) { brevredigeringService.fornyReservasjon(brev.info.id) }
-        assertThat(transaction { Brevredigering[brev.info.id].sistReservert })
+        assertThat(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
             .isAfter(forrigeReservasjon)
             .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
     }
@@ -1073,7 +1073,7 @@ class BrevredigeringServiceTest {
 
         assertNull(brevredigeringService.hentBrev(sak1.saksId, brev.info.id)?.info?.mottaker)
         assertNull(transaction { Mottaker.findById(brev.info.id) })
-        assertNull(transaction { Brevredigering[brev.info.id].mottaker })
+        assertNull(transaction { BrevredigeringEntity[brev.info.id].mottaker })
     }
 
     @Test
@@ -1157,7 +1157,7 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             "en ny signatur",
-            transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
+            transaction { BrevredigeringEntity[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
     }
 
     @Test

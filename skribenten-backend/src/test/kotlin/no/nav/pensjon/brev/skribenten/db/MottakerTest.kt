@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -80,7 +80,7 @@ class MottakerTest {
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
-        transaction { Brevredigering[brevredigeringId].mottaker?.tssId = "abc" }
+        transaction { BrevredigeringEntity[brevredigeringId].mottaker?.tssId = "abc" }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)
@@ -88,7 +88,7 @@ class MottakerTest {
     }
 
     private fun createBrevredigering() = transaction {
-        Brevredigering.new {
+        BrevredigeringEntity.new {
             saksId = 123L
             opprettetAv = principal
             this.brevkode = Testbrevkoder.TESTBREV

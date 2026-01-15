@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
@@ -29,35 +30,79 @@ import org.jetbrains.exposed.sql.and
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
+interface Brevredigering {
+    val id: EntityID<Long>
+    val saksId: Long
+    val vedtaksId: Long?
+    val brevkode: Brevkode.Redigerbart
+    val spraak: LanguageCode
+    val avsenderEnhetId: String?
+    val saksbehandlerValg: SaksbehandlerValg
+    val redigertBrev: Edit.Letter
+    val redigertBrevHash: Hash<Edit.Letter>
+    val laastForRedigering: Boolean
+    val distribusjonstype: Distribusjonstype
+    val redigeresAv: NavIdent?
+    val sistRedigertAv: NavIdent
+    val opprettetAv: NavIdent
+    val opprettet: Instant
+    val sistredigert: Instant
+    val sistReservert: Instant?
+    val journalpostId: Long?
+    val document: Iterable<Document>
+    val mottaker: Mottaker?
+    val p1Data: P1Data?
+    val valgteVedlegg: ValgteVedlegg?
+    val attestertAvNavIdent: NavIdent?
+    val brevtype: LetterMetadata.Brevtype
+    val isVedtaksbrev: Boolean
+    val reservasjon: Reservasjon?
+
+    fun reserver(
+        fra: Instant,
+        saksbehandler: NavIdent,
+        policy: BrevreservasjonPolicy
+    ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen>
+
+    fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
+    fun markerSomKlar()
+    fun markerSomKladd()
+    fun mergeRendretBrev(rendretBrev: LetterMarkup)
+    fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker
+    fun fjernMottaker()
+    fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
+    fun toBrevInfo(): Dto.BrevInfo
+}
+
 // TODO: Intensjonen er at de fleste vars her skal ha private setters
-class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
-    var saksId by BrevredigeringTable.saksId
+class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering {
+    override var saksId by BrevredigeringTable.saksId
 
     // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
-    var vedtaksId by BrevredigeringTable.vedtaksId
-    var brevkode by BrevredigeringTable.brevkode
-    var spraak by BrevredigeringTable.spraak
-    var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
-    var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
-    var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-    val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
-    var laastForRedigering by BrevredigeringTable.laastForRedigering
-    var distribusjonstype by BrevredigeringTable.distribusjonstype
-    var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
-    var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
-    var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
-    var opprettet by BrevredigeringTable.opprettet
-    var sistredigert by BrevredigeringTable.sistredigert
-    var sistReservert by BrevredigeringTable.sistReservert
-    var journalpostId by BrevredigeringTable.journalpostId
-    val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
-    val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
-    val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
-    val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
-    var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
-    var brevtype by BrevredigeringTable.brevtype
+    override var vedtaksId by BrevredigeringTable.vedtaksId
+    override var brevkode by BrevredigeringTable.brevkode
+    override var spraak by BrevredigeringTable.spraak
+    override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
+    override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
+    override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
+    override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
+    override var laastForRedigering by BrevredigeringTable.laastForRedigering
+    override var distribusjonstype by BrevredigeringTable.distribusjonstype
+    override var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
+    override var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
+    override var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
+    override var opprettet by BrevredigeringTable.opprettet
+    override var sistredigert by BrevredigeringTable.sistredigert
+    override var sistReservert by BrevredigeringTable.sistReservert
+    override var journalpostId by BrevredigeringTable.journalpostId
+    override val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    override val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
+    override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
+    override val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
+    override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
+    override var brevtype by BrevredigeringTable.brevtype
 
-    companion object : LongEntityClass<Brevredigering>(BrevredigeringTable) {
+    companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
             if (saksId == null) {
                 findById(id)
@@ -77,7 +122,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             brevtype: LetterMetadata.Brevtype,
             timestamp: Instant = Instant.now(),
             distribusjonstype: Distribusjonstype = Distribusjonstype.SENTRALPRINT,
-        ): Brevredigering = new {
+        ): BrevredigeringEntity = new {
             this.saksId = saksId
             this.vedtaksId = vedtaksId
             this.opprettetAv = opprettetAv
@@ -95,8 +140,8 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
         }
     }
 
-    val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
-    val reservasjon: Reservasjon?
+    override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
+    override val reservasjon: Reservasjon?
         get() {
             val reservertAv = this.redigeresAv ?: return null
             val sistReservert = this.sistReservert ?: return null
@@ -110,7 +155,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             ).takeIf { BrevreservasjonPolicy.isValid(it, Instant.now()) }
         }
 
-    fun reserver(
+    override fun reserver(
         fra: Instant,
         saksbehandler: NavIdent,
         policy: BrevreservasjonPolicy
@@ -121,25 +166,35 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             return@then reservasjon!!
         }
 
-    fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
+    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
         redigertBrev = nyttRedigertbrev
         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
         sistRedigertAv = av
     }
 
-    fun mergeRendretBrev(rendretBrev: LetterMarkup) {
+    override fun markerSomKlar() {
+        laastForRedigering = true
+    }
+
+    override fun markerSomKladd() {
+        laastForRedigering = false
+        attestertAvNavIdent = null
+        redigertBrev = redigertBrev.withSignatur(attestant = null)
+    }
+
+    override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
     }
 
-    fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker =
+    override fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker =
         mottaker?.oppdater(mottakerDto)
             ?: Mottaker.opprettMottaker(this, mottakerDto).also { refresh() }
 
-    fun fjernMottaker() {
+    override fun fjernMottaker() {
         mottaker?.delete()
     }
 
-    fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+    override fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(),
             redigertBrev = redigertBrev,
@@ -149,7 +204,7 @@ class Brevredigering(id: EntityID<Long>) : LongEntity(id) {
             valgteVedlegg = valgteVedlegg?.valgteVedlegg
         )
 
-    fun toBrevInfo(): Dto.BrevInfo =
+    override fun toBrevInfo(): Dto.BrevInfo =
         Dto.BrevInfo(
             id = id.value,
             saksId = saksId,

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -28,7 +28,7 @@ class OppdaterBrevHandler(
     )
 
     suspend fun handle(cmd: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? = with(cmd) {
-        val brev = Brevredigering.findById(brevId) ?: return null
+        val brev = BrevredigeringEntity.findById(brevId) ?: return null
         val principal = PrincipalInContext.require()
 
         brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy).onError { return failure(it) }

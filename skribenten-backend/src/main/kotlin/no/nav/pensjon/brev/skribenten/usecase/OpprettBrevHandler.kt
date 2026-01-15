@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
@@ -61,7 +61,7 @@ class OpprettBrevHandler(
             pesysData = pesysData,
         )
 
-        val brev = Brevredigering.opprettBrev(
+        val brev = BrevredigeringEntity.opprettBrev(
             saksId = req.saksId,
             vedtaksId = parametre.vedtaksId,
             opprettetAv = principal.navIdent,

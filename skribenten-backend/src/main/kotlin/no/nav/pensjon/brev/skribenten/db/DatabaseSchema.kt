@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
@@ -113,7 +113,7 @@ object DocumentTable : LongIdTable() {
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
-    var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
+    var brevredigering by BrevredigeringEntity referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdfKryptert
     var redigertBrevHash by DocumentTable.redigertBrevHash
