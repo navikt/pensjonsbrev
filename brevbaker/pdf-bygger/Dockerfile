@@ -20,18 +20,27 @@ RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner appru
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
+ENV CACHE_PATH="/home/apprunner/.cache/fontconfig"
+RUN mkdir -p $CACHE_PATH
+ENV XDG_CACHE_HOME=$CACHE_PATH
+ENV FONTCONFIG_PATH=$CACHE_PATH
 RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
 COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-09-08-11_43 /app /app
 COPY containerFiles/fonts /usr/share/fonts
-RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
+RUN fc-cache --really-force /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
+ENV HOME=/home/apprunner
 
-RUN mkdir -p /home/apprunner/.cache/fontconfig && chown -R apprunner:apprunner /home/apprunner
+RUN echo $XDG_CACHE_HOME
+RUN chown -R apprunner:apprunner /home/apprunner
+RUN chown -R apprunner:apprunner /usr/local/share/fonts
+RUN chown -R apprunner:apprunner /usr/share/fonts
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
-RUN fc-list
-RUN chmod -R 777 /var/cache/fontconfig
+RUN chown -R apprunner:apprunner /etc/fonts
 USER apprunner
+RUN chmod -R 777 /var/cache/fontconfig
+RUN fc-cache -fv /usr/share/fonts
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
 ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]
