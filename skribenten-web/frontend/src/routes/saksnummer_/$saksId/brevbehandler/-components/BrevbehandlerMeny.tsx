@@ -26,7 +26,7 @@ import { Controller, useForm, useWatch } from "react-hook-form";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, getBrevVedlegg, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, getBrevVedlegg, hentAlleBrevForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { P1EditModal } from "~/components/P1/P1EditModal";
@@ -295,11 +295,19 @@ const getVedleggLabel = (kode: string): string => {
 };
 
 const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) => {
+  const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isP1ModalOpen, setIsP1ModalOpen] = useState(false);
-  const [savedVedlegg, setSavedVedlegg] = useState<VedleggKode[]>([]);
 
   const isP1Brev = props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
+
+  // Fetch the brev to get saved vedlegg (without reserving)
+  const { data: brevData } = useQuery({
+    queryKey: getBrev.queryKey(props.brev.id),
+    queryFn: () => getBrev.queryFn(props.saksId, props.brev.id, false),
+  });
+
+  const savedVedlegg = (brevData?.valgteVedlegg as VedleggKode[]) ?? [];
 
   const form = useForm<VedleggFormData>({
     defaultValues: { valgteVedlegg: [] },
@@ -323,8 +331,9 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
   const leggTilVedleggMutation = useMutation({
     mutationFn: (vedlegg: VedleggKode[]) =>
       delvisOppdaterBrev(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
-    onSuccess: (response) => {
-      setSavedVedlegg((response.valgteVedlegg as VedleggKode[]) ?? []);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
       handleCloseModal();
     },
   });
@@ -334,8 +343,9 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
       delvisOppdaterBrev(props.saksId, props.brev.id, {
         alltidValgbareVedlegg: savedVedlegg.filter((v) => v !== vedleggToRemove),
       }),
-    onSuccess: (response) => {
-      setSavedVedlegg((response.valgteVedlegg as VedleggKode[]) ?? []);
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
     },
   });
 
@@ -353,8 +363,10 @@ const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) =>
     leggTilVedleggMutation.mutate(data.valgteVedlegg);
   });
 
-  // Don't show vedlegg section if not P1 and no saved vedlegg
-  if (!isP1Brev && savedVedlegg.length === 0 && !isLoading && !isError) {
+  const hasVedleggToShow = isP1Brev || savedVedlegg.length > 0;
+  const hasVedleggToAdd = vedleggKoder && vedleggKoder.length > 0;
+
+  if (!hasVedleggToShow && !hasVedleggToAdd && !isLoading && !isError) {
     return null;
   }
 
