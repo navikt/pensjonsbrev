@@ -92,22 +92,24 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         brevbakerService.renderMarkupResultat = { markupMedFritekst }
         val brev = opprettBrev().resultOrFail()
 
-        val redigertFritekst = oppdaterBrev(
-            brevId = brev.info.id,
-            nyttRedigertbrev = brev.redigertBrev.copy(
-                blocks = listOf(
-                    E_Paragraph(
-                        1,
-                        true,
-                        listOf(
-                            E_Literal(12, "Vi har "),
-                            E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
-                            E_Literal(14, " mottatt søknad.")
+        assertThat(
+            oppdaterBrev(
+                brevId = brev.info.id,
+                nyttRedigertbrev = brev.redigertBrev.copy(
+                    blocks = listOf(
+                        E_Paragraph(
+                            1,
+                            true,
+                            listOf(
+                                E_Literal(12, "Vi har "),
+                                E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
+                                E_Literal(14, " mottatt søknad.")
+                            )
                         )
                     )
                 )
             )
-        ).resultOrFail()
+        ).isSuccess()
 
         assertThat(veksleKlarStatus(brev = brev, klar = true)).isSuccess {
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)

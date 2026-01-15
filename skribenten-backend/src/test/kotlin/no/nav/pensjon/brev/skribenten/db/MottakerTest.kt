@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.db
 
 import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
@@ -20,13 +21,13 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 
 class MottakerTest {
 
     @BeforeAll
     fun startDb() {
         SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+        KrypteringService.init("ZBn9yGLDluLZVVGXKZxvnPun3kPQ2ccF")
     }
 
     @AfterAll
@@ -88,18 +89,14 @@ class MottakerTest {
     }
 
     private fun createBrevredigering() = transaction {
-        BrevredigeringEntity.new {
-            saksId = 123L
-            opprettetAv = principal
-            this.brevkode = Testbrevkoder.TESTBREV
-            this.spraak = LanguageCode.BOKMAL
-            this.avsenderEnhetId = "1111"
-            this.saksbehandlerValg = Api.GeneriskBrevdata()
-            laastForRedigering = false
-            distribusjonstype = Distribusjonstype.SENTRALPRINT
-            redigeresAv = principal
-            opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+        BrevredigeringEntity.opprettBrev(
+            saksId = 123L,
+            opprettetAv = principal,
+            brevkode = Testbrevkoder.TESTBREV,
+            spraak = LanguageCode.BOKMAL,
+            avsenderEnhetId = "1111",
+            saksbehandlerValg = Api.GeneriskBrevdata(),
+            distribusjonstype = Distribusjonstype.SENTRALPRINT,
             redigertBrev = Edit.Letter(
                 Edit.Title(listOf(Edit.ParagraphContent.Text.Literal(null, "a"))),
                 LetterMarkupImpl.SakspartImpl(
@@ -117,10 +114,11 @@ class MottakerTest {
                     navAvsenderEnhet = "j",
                 ),
                 emptySet(),
-            )
-            sistRedigertAv = principal
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
-        }
+            ),
+            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            vedtaksId = null,
+            timestamp = Instant.now(),
+        )
     }
 
     @Test

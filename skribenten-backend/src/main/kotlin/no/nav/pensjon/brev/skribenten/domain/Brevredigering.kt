@@ -74,24 +74,30 @@ interface Brevredigering {
     fun toBrevInfo(): Dto.BrevInfo
 }
 
-// TODO: Intensjonen er at de fleste vars her skal ha private setters
 class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering {
     override var saksId by BrevredigeringTable.saksId
-
+        private set
     // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
     override var vedtaksId by BrevredigeringTable.vedtaksId
+        private set
     override var brevkode by BrevredigeringTable.brevkode
+        private set
     override var spraak by BrevredigeringTable.spraak
+        private set
     override var avsenderEnhetId by BrevredigeringTable.avsenderEnhetId
+        private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     override var laastForRedigering by BrevredigeringTable.laastForRedigering
+        private set
     override var distribusjonstype by BrevredigeringTable.distribusjonstype
     override var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
     override var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
     override var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
+        private set
     override var opprettet by BrevredigeringTable.opprettet
+        private set
     override var sistredigert by BrevredigeringTable.sistredigert
     override var sistReservert by BrevredigeringTable.sistReservert
     override var journalpostId by BrevredigeringTable.journalpostId
@@ -101,6 +107,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
     override val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
+        private set
 
     companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: Long, saksId: Long?) =
