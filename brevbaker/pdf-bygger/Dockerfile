@@ -20,7 +20,7 @@ RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner appru
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
-ENV CACHE_PATH=/home/apprunner/.cache/fontconfig
+ENV CACHE_PATH="/home/apprunner/.cache/fontconfig"
 RUN mkdir -p $CACHE_PATH
 ENV XDG_CACHE_HOME=$CACHE_PATH
 ENV FONTCONFIG_PATH=$CACHE_PATH
@@ -32,6 +32,7 @@ RUN fc-cache --really-force /usr/share/fonts # Build font cache for faster latex
 COPY containerFiles/latex /app/pensjonsbrev_latex
 ENV HOME=/home/apprunner
 
+RUN echo $XDG_CACHE_HOME
 RUN chown -R apprunner:apprunner /home/apprunner
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
 RUN chown -R apprunner:apprunner /usr/share/fonts
