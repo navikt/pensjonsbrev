@@ -2,14 +2,16 @@ package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class RedigerBrevPolicy {
     fun kanRedigere(brev: Brevredigering, principal: UserPrincipal): Outcome<Boolean, BrevredigeringError> {
         return when {
-            brev.journalpostId != null -> Outcome.failure(KanIkkeRedigere.ArkivertBrev(brev.journalpostId!!))
-            brev.laastForRedigering && !principal.isAttestant() -> Outcome.failure(KanIkkeRedigere.LaastBrev)
-            brev.redigeresAv != principal.navIdent -> Outcome.failure(KanIkkeRedigere.IkkeReservert)
-            else -> Outcome.success(true)
+            brev.journalpostId != null -> failure(KanIkkeRedigere.ArkivertBrev(brev.journalpostId!!))
+            brev.laastForRedigering && !principal.isAttestant() -> failure(KanIkkeRedigere.LaastBrev)
+            brev.redigeresAv != principal.navIdent -> failure(KanIkkeRedigere.IkkeReservert)
+            else -> success(true)
         }
     }
 
