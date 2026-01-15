@@ -48,6 +48,7 @@ object Ufoerebrevkoder {
         UT_FEILUTBETALING_VARSEL_SONING,
         UT_FEILUTBETALING_VARSEL_DODSBO,
         UT_INNH_OPPL_SOKNAD_BARNETILLEGG,
+        UT_INNH_OPPL_BRUKER_LEGEERKLAERING,
         ;
 
         override fun kode(): String = this.name
