@@ -20,8 +20,8 @@ private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med LaTeX"
 internal object LatexDocumentRenderer {
 
     internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
-        letter = pdfRequest.letterMarkup,
-        attachments = pdfRequest.attachments,
+        letter = pdfRequest.letterMarkup.clean(),
+        attachments = pdfRequest.attachments.clean(),
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
