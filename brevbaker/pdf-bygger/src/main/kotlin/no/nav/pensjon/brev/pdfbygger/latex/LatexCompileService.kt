@@ -110,6 +110,7 @@ class LatexCompileService(
 
                 if (process.exitValue() == 0) {
                     logger.info("Compilation successful. Output: ${output.toFile().readText()}")
+                    logger.info("Compilation successful. Errors: ${error.toFile().readText()}")
                     Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
                 } else {
                     Execution.Failure.Compilation(
