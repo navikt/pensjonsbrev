@@ -30,6 +30,7 @@ COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-09-08-11_43 /app /app
 COPY containerFiles/fonts /usr/share/fonts
 RUN fc-cache --really-force /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
+ENV HOME=/home/apprunner
 
 RUN chown -R apprunner:apprunner /home/apprunner
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
