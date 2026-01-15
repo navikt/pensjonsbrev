@@ -86,11 +86,7 @@ const PDFViewer = (properties: {
         />
         {properties.children}
         <HStack justify="space-around" overflow="auto" padding="space-12">
-          <Document
-            file={properties.pdf}
-            loading="Henter brev..."
-            onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
-          >
+          <Document file={properties.pdf} loading="" onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}>
             {Array.from({ length: totalNumberOfPages }, (_, index) => (
               <BoxNew
                 className={`pdf-page`}
@@ -98,7 +94,7 @@ const PDFViewer = (properties: {
                 key={`page_${index + 1}`}
                 marginBlock="0 space-16"
               >
-                <PDFPage pageNumber={index + 1} scale={scale} />
+                <PDFPage loading="" pageNumber={index + 1} scale={scale} />
               </BoxNew>
             ))}
           </Document>
