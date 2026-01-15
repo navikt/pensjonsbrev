@@ -39,6 +39,7 @@ RUN chown -R apprunner:apprunner /usr/share/fonts
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
 RUN chown -R apprunner:apprunner /etc/fonts
 USER apprunner
+RUN chmod -R 777 /var/cache/fontconfig
 RUN fc-cache -fv /usr/share/fonts
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
