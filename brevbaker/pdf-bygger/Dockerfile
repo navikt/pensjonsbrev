@@ -34,6 +34,7 @@ COPY containerFiles/latex /app/pensjonsbrev_latex
 RUN chown -R apprunner:apprunner /home/apprunner
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
 RUN chown -R apprunner:apprunner /usr/share/fonts
+RUN chown -R apprunner:apprunner /app/tmp
 USER apprunner
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
