@@ -4,12 +4,12 @@ registries:
   npm-github:
     type: npm-registry
     url: https://npm.pkg.github.com
-    token: ${{secrets.READ_PACKAGES_TEMP}}
+    token: ${{secrets.READER_TOKEN}}
   gradle-artifactory:
     type: maven-repository
     url: https://maven.pkg.github.com/navikt/pensjonsbrev
     username: ${{ github.repository_owner }}
-    password: ${{secrets.READ_PACKAGES_TEMP}}
+    password: ${{secrets.READER_TOKEN}}
 
 updates:
   # ==============
@@ -18,20 +18,20 @@ updates:
   - package-ecosystem: "gradle"
     directories:
       - "/"
-      - "/alder-brevbaker-api-model"
-      - "/aldersmaler"
-      - "/brevbaker-api-model-common"
+      - "/alder/api-model"
+      - "/alder/maler"
+      - "/brevbaker/api-model-common"
       - "/brevbaker"
-      - "/brevbaker-dsl"
+      - "/brevbaker/dsl"
       - "/etterlattemaler"
-      - "/pdf-bygger"
-      - "/pensjon-brevbaker"
-      - "/pensjon-brevbaker-api-model"
-      - "/pensjonsmaler"
+      - "/brevbaker/pdf-bygger"
+      - "/pensjon/brevbaker"
+      - "/pensjon/api-model"
+      - "/pensjon/maler"
       - "/skribenten-backend"
-      - "/template-model-generator"
-      - "/ufoere-brevbaker-api-model"
-      - "/ufoeremaler"
+      - "/brevbaker/template-model-generator"
+      - "/ufoere/api-model"
+      - "/ufoere/maler"
     schedule:
       interval: "monthly"
       day: "sunday"
@@ -41,7 +41,7 @@ updates:
     registries:
       - gradle-artifactory
     ignore:
-      - dependency-name: "no.nav.pensjon.brevbaker:brevbaker-api-model-common"
+      - dependency-name: "no.nav.brev.brevbaker:api-model-common"
     groups:
       postgresql:
         patterns:
@@ -52,7 +52,6 @@ updates:
           - "com.fasterxml.jackson*"
           - "com.google*"
           - "commons-codec:commons-codec"
-          - "com.natpryce:hamkrest"
           - "com.zaxxer:HikariCP"
           - "dev.zacsweers.kctfork:ksp"
           - "io.getunleash*"
@@ -131,8 +130,8 @@ updates:
   # ==============
   - package-ecosystem: "docker"
     directories:
-      - "/pensjon-brevbaker"
-      - "/pdf-bygger"
+      - "/pensjon/brevbaker"
+      - "/brevbaker/pdf-bygger"
       - "/skribenten-backend"
     schedule:
       interval: "monthly"

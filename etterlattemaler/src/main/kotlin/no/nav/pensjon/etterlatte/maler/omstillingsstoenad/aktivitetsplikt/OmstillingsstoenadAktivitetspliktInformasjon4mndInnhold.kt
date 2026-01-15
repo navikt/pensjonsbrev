@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -20,6 +21,7 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.aktivitetsgrad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.halvtGrunnbeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.nasjonalEllerUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.redusertEtterInntekt
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.utbetaling
@@ -28,7 +30,8 @@ data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
     val aktivitetsgrad: Aktivitetsgrad,
     val utbetaling: Boolean,
     val redusertEtterInntekt: Boolean,
-    val nasjonalEllerUtland: NasjonalEllerUtland
+    val nasjonalEllerUtland: NasjonalEllerUtland,
+    val halvtGrunnbeloep: Kroner
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -255,15 +258,23 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     english { +"You will find more information about how to notify us in the section “You must notify us about any changes”." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
-                            "og senest innen tre uker fra datoen på dette brevet." },
-                    nynorsk { +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
-                            "og seinast innan tre veker frå datoen på dette brevet." },
-                    english { +"If you need more time to obtain documentation, you must contact us as soon as possible " +
-                            "and no later than three weeks from the date of this letter." },
-                )
+            showIf(utbetaling) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Hvis du trenger mer tid for å innhente dokumentasjon, må du kontakte oss snarest mulig " +
+                                    "og senest innen tre uker fra datoen på dette brevet."
+                        },
+                        nynorsk {
+                            +"Viss du treng meir tid for å innhente dokumentasjon, må du kontakte oss snarast mogleg " +
+                                    "og seinast innan tre veker frå datoen på dette brevet."
+                        },
+                        english {
+                            +"If you need more time to obtain documentation, you must contact us as soon as possible " +
+                                    "and no later than three weeks from the date of this letter."
+                        },
+                    )
+                }
             }
 
             title2 {
@@ -291,7 +302,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
 
 
 
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt, halvtGrunnbeloep))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(nasjonalEllerUtland, false.expr()))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseUnntakFraAktivitetsplikt)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.TrengerDuHjelpTilAaFaaNyJobb)

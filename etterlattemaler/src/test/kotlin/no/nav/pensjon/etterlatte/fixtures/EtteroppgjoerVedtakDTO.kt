@@ -24,16 +24,17 @@ fun createEtteroppgjoerVedtakBrevDTO() =
                 YearMonth.of(2024, 1),
                 YearMonth.of(2024, 12),
                 12,
-                Kroner(4),
-                Kroner(40),
-                Kroner(400),
-                Kroner(4000),
-                Kroner(4444),
-                Kroner(5000)
+                Kroner(0),
+                Kroner(0),
+                Kroner(0),
+                Kroner(0),
+                Kroner(0),
+                Kroner(0)
             ),
             vedleggInnhold = emptyList(),
             utbetaltBeloep = Kroner(4444),
-            rettsgebyrBeloep = Kroner(1234)
+            rettsgebyrBeloep = Kroner(1234),
+            harOpphoer = false
         )
     )
 

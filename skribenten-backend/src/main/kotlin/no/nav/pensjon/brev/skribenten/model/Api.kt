@@ -159,6 +159,9 @@ object Api {
     data class SakContext(
         val sak: Pen.SakSelection,
         val brevmalKoder: List<String>,
+    )
+
+    data class BrukerStatus(
         val adressebeskyttelse: Boolean,
         val doedsfall: LocalDate?,
         val erSkjermet: Boolean,

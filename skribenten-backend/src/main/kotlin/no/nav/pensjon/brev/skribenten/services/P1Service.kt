@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -24,7 +24,7 @@ interface P1Service {
     suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long,
+        brevId: Long?,
         saksId: Long
     ): BrevdataResponse.Data
 }
@@ -52,9 +52,9 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long,
+        brevId: Long?,
         saksId: Long
-    ): BrevdataResponse.Data = if (brevkode.kode() == P1_BREVKODE) {
+    ): BrevdataResponse.Data = if (brevkode.kode() == P1_BREVKODE && brevId != null) {
         brevdataResponse.copy(
             brevdata = brevdataResponse.brevdata.apply { put(P1_VEDLEGG_KEY, hentP1Data(brevId, saksId)) }
         )

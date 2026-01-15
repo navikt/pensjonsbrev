@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, BoxNew, Button, Heading, Hide, Label, Loader, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -12,6 +12,7 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -50,10 +51,7 @@ const VedtakWrapper = () => {
     initial: () => null,
     pending: () => (
       <BoxNew asChild background="default" paddingBlock="space-32 0">
-        <VStack align="center" flexGrow="1" gap="space-4" justify="center">
-          <Loader size="3xlarge" title="henter brev..." />
-          <Heading size="large">Henter brev....</Heading>
-        </VStack>
+        <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
       </BoxNew>
     ),
     error: (err) => {

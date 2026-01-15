@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.ExternalAPI
 import org.slf4j.LoggerFactory
