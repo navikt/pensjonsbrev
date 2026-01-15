@@ -49,7 +49,7 @@ spec:
   filesFrom:
     - emptyDir:
         medium: Memory
-      mountPath: /tmp
+      mountPath: /app/tmp
   env:
     - name: PDF_BYGGER_COMPILE_TIMEOUT
       value: "45s"
@@ -58,7 +58,7 @@ spec:
     - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
       value: "1s"
     - name: PDF_BYGGER_COMPILE_TMP_DIR
-      value: "/tmp"
+      value: "/app/tmp"
     - name: PDF_BYGGER_IS_ASYNC
       value: "false"
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]
