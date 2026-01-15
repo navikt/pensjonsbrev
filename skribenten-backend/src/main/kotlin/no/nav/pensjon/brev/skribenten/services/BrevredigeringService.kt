@@ -63,26 +63,14 @@ class BrevredigeringService(
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
-        laastForRedigering: Boolean? = null,
         distribusjonstype: Distribusjonstype? = null,
         mottaker: Dto.Mottaker? = null,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
-            if (laastForRedigering == true) {
-                brevDto.validerErFerdigRedigert()
-            }
-
             val annenMottakerNavn = mottaker?.fetchNavn()
 
             transaction {
-                if (laastForRedigering == false) {
-                    brevDb.laastForRedigering = laastForRedigering
-                    brevDb.attestertAvNavIdent = null
-                } else if (laastForRedigering == true) {
-                    brevDb.laastForRedigering = laastForRedigering
-                }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
                 if (mottaker != null) {
                     brevDb.mottaker?.oppdaterGammel(mottaker) ?: Mottaker.new(brevId) { oppdaterGammel(mottaker) }
@@ -569,7 +557,7 @@ private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur):
     } ?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
-    redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
+    redigertBrev.alleFritekstFelterErRedigert() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
     if (!userPrincipal.isAttestant()) {

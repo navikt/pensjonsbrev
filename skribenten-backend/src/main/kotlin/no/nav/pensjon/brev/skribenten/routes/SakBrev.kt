@@ -99,13 +99,25 @@ fun Route.sakBrev(
                 val brev = brevredigeringService.delvisOppdaterBrev(
                     saksId = sak.saksId,
                     brevId = brevId,
-                    laastForRedigering = request.laastForRedigering,
                     distribusjonstype = request.distribusjonstype,
                     mottaker = request.mottaker?.toDto(),
                     alltidValgbareVedlegg = request.alltidValgbareVedlegg,
                 )
 
                 respond(brev)
+            }
+
+            put<Api.OppdaterKlarStatusRequest>("/status") { request ->
+                val brevId = call.parameters.getOrFail<Long>("brevId")
+
+                val resultat = brevredigeringFacade.veksleKlarStatus(
+                    VeksleKlarStatusHandler.Request(
+                        brevId = brevId,
+                        klar = request.klar,
+                    )
+                )
+
+                apiRespond(dto2ApiService, resultat?.then { it.info })
             }
 
             delete {
