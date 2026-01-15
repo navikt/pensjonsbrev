@@ -34,10 +34,12 @@ ENV HOME=/home/apprunner
 
 RUN echo $XDG_CACHE_HOME
 RUN chown -R apprunner:apprunner /home/apprunner
-RUN chown -R apprunner:apprunner /var/cache/fontconfig
+RUN chown -R apprunner:apprunner /usr/local/share/fonts
 RUN chown -R apprunner:apprunner /usr/share/fonts
+RUN chown -R apprunner:apprunner /var/cache/fontconfig
 RUN chown -R apprunner:apprunner /etc/fonts
 USER apprunner
+RUN fc-cache -fv /usr/share/fonts
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
 ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]
