@@ -144,7 +144,10 @@ class BrevredigeringService(
                 }
 
                 if (alltidValgbareVedlegg != null) {
-                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) }
+                    if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
+                        brevDb.document.singleOrNull()?.delete()
+                    }
+                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) })
                 }
 
                 brevDb.redigeresAv = null
@@ -311,7 +314,7 @@ class BrevredigeringService(
                 }
 
                 Api.PdfResponse(
-                            pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
+                    pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
                     rendretBrevErEndret = rendretBrevErEndret
                 )
             }
@@ -595,7 +598,7 @@ class BrevredigeringService(
         if (this == null) {
             return
         }
-        if (valgte == null || valgte.isEmpty()) {
+        if (valgte.isNullOrEmpty()) {
             delete()
         } else {
             valgteVedlegg = valgte
