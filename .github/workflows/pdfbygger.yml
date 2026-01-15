@@ -53,51 +53,6 @@ jobs:
       buildImage: true
       uploadJar: true
 
-  pushPdfByggerToGithubRegistry:
-    name: "Push pdf-bygger to github registry"
-    needs: buildPdfbygger
-    runs-on: ubuntu-latest
-    permissions:
-      packages: "write"
-      id-token: "write"
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-      - name: Download jar
-        uses: actions/download-artifact@v7
-        with:
-          name: pdf-bygger-jar
-          path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
-      - name: Docker login
-        uses: docker/login-action@v3
-        with:
-          registry: "https://ghcr.io"
-          username: ${{ github.repository }}
-          password: ${{ github.token }}
-      - name: "Build Docker image"
-        run: | 
-          docker build --pull --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
-      - name: "Push image with sha"
-        run: |
-          docker push ${IMAGE_PDF_BYGGER}
-      - name: "Tag image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        run: |
-          docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
-      - name: "Push image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        run: |
-          docker push ${IMAGE_BRANCH}
-
-  salsa-pdfbygger:
-    uses: ./.github/workflows/.salsa.yaml
-    needs: buildPdfbygger
-    secrets: inherit
-    with:
-      digest: ${{ needs.buildPdfbygger.outputs.digest }}
-      image: ${{ needs.buildPdfbygger.outputs.image }}
-
   changes:
     runs-on: ubuntu-latest
     permissions:
@@ -126,14 +81,3 @@ jobs:
       resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "brevbaker/pdf-bygger/.nais/dev.yaml"
-
-  deployPdfByggerToProd:
-    name: "Deploy pdf-bygger to prod"
-    uses: ./.github/workflows/.deploy.yaml
-    secrets: inherit
-    needs: [buildPdfbygger]
-    with:
-      cluster: "prod-gcp"
-      resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
-      image: ${{needs.buildPdfbygger.outputs.image}}
-      vars: "brevbaker/pdf-bygger/.nais/prod.yaml"
