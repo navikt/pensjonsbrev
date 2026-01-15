@@ -29,6 +29,7 @@ COPY containerFiles/latex /app/pensjonsbrev_latex
 
 RUN mkdir -p /home/apprunner/.cache/fontconfig && chown -R apprunner:apprunner /home/apprunner
 RUN chown -R apprunner:apprunner /var/cache/fontconfig
+RUN fc-list
 RUN chmod -R 777 /var/cache/fontconfig
 USER apprunner
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
