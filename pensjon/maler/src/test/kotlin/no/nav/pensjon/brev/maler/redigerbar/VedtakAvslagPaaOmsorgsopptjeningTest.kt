@@ -17,7 +17,7 @@ class VedtakAvslagPaaOmsorgsopptjeningTest {
     @Test
     fun testPdf() {
         LetterTestImpl(
-            VedtakOmInnvilgelseAvOmsorgspoeng.template,
+            VedtakAvslagPaaOmsorgsopptjening.template,
             Fixtures.create<VedtakAvslagPaaOmsorgsopptjeningDto>(),
             Language.Bokmal,
             Fixtures.felles
