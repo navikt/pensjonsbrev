@@ -28,6 +28,7 @@ RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/ap
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
 COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-09-08-11_43 /app /app
 COPY containerFiles/fonts /usr/share/fonts
+RUN fc-cache /usr/share/fonts # Build font cache for faster latex compile time. About 400 ms faster per letter
 COPY containerFiles/latex /app/pensjonsbrev_latex
 
 RUN chown -R apprunner:apprunner /home/apprunner
