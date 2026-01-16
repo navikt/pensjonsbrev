@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.*
@@ -63,26 +63,14 @@ class BrevredigeringService(
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
-        laastForRedigering: Boolean? = null,
         distribusjonstype: Distribusjonstype? = null,
         mottaker: Dto.Mottaker? = null,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
-            if (laastForRedigering == true) {
-                brevDto.validerErFerdigRedigert()
-            }
-
             val annenMottakerNavn = mottaker?.fetchNavn()
 
             transaction {
-                if (laastForRedigering == false) {
-                    brevDb.laastForRedigering = laastForRedigering
-                    brevDb.attestertAvNavIdent = null
-                } else if (laastForRedigering == true) {
-                    brevDb.laastForRedigering = laastForRedigering
-                }
                 brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
                 if (mottaker != null) {
                     brevDb.mottaker?.oppdaterGammel(mottaker) ?: Mottaker.new(brevId) { oppdaterGammel(mottaker) }
@@ -95,11 +83,11 @@ class BrevredigeringService(
 
                 brevDb.redigeresAv = null
 
-                Brevredigering.reload(brevDb, true)?.toDto(null)
+                BrevredigeringEntity.reload(brevDb, true)?.toDto(null)
             }
         }
 
-    private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
+    private fun BrevredigeringEntity.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
         redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottaker)
     }
 
@@ -138,7 +126,7 @@ class BrevredigeringService(
      */
     fun slettBrev(saksId: Long, brevId: Long): Boolean {
         return transaction {
-            val brev = Brevredigering.findByIdAndSaksId(brevId, saksId)
+            val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
             if (brev != null) {
                 brev.delete()
                 true
@@ -149,7 +137,7 @@ class BrevredigeringService(
     }
 
     fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { Brevredigering.findById(brevId)?.toBrevInfo() }
+        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
 
     suspend fun hentBrev(
         saksId: Long,
@@ -167,7 +155,7 @@ class BrevredigeringService(
                 }
             }
         } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
+            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
         }
 
     suspend fun hentBrevAttestering(
@@ -191,18 +179,18 @@ class BrevredigeringService(
                 }
             }
         } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
+            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
         }
 
     fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
         transaction {
-            Brevredigering.find { BrevredigeringTable.saksId eq saksId }
+            BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
                 .map { it.toBrevInfo() }
         }
 
     override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
         transaction {
-            Brevredigering.find { BrevredigeringTable.saksId inList saksIder }
+            BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo() }
         }
 
@@ -223,7 +211,7 @@ class BrevredigeringService(
         saksId: Long, brevId: Long
     ): Api.PdfResponse? {
         val (brevredigering, document) = transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
         return brevredigering?.let {
@@ -301,7 +289,7 @@ class BrevredigeringService(
 
     suspend fun sendBrev(saksId: Long, brevId: Long): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
 
@@ -336,9 +324,9 @@ class BrevredigeringService(
                     transaction {
                         if (it.journalpostId != null) {
                             if (it.error == null) {
-                                Brevredigering[brevId].delete()
+                                BrevredigeringEntity[brevId].delete()
                             } else {
-                                Brevredigering[brevId].journalpostId = it.journalpostId
+                                BrevredigeringEntity[brevId].journalpostId = it.journalpostId
                             }
                         }
                     }
@@ -355,7 +343,7 @@ class BrevredigeringService(
 
     fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
         transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)?.also {
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.also {
                 it.mottaker?.delete()
                 it.oppdaterMedAnnenMottakerNavn(null)
             } != null
@@ -391,7 +379,7 @@ class BrevredigeringService(
         val principal = PrincipalInContext.require()
 
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
                     if (redigeresAv == null || redigeresAv == principal.navIdent || erReservasjonUtloept()) {
                         redigeresAv = principal.navIdent
@@ -502,7 +490,7 @@ class BrevredigeringService(
 
         return transaction {
             val update: Document.() -> Unit = {
-                this.brevredigering = Brevredigering[brevredigering.info.id]
+                this.brevredigering = BrevredigeringEntity[brevredigering.info.id]
                 this.pdf = pdf.file
                 this.dokumentDato = pesysData.felles.dokumentDato
                 this.redigertBrevHash = brevredigering.redigertBrevHash
@@ -569,7 +557,7 @@ private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur):
     } ?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
-    redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
+    redigertBrev.alleFritekstFelterErRedigert() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
     if (!userPrincipal.isAttestant()) {
@@ -607,7 +595,7 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
     } else this
 }
 
-private class ReservertBrevScope(val brevDb: Brevredigering) {
+private class ReservertBrevScope(val brevDb: BrevredigeringEntity) {
     val brevDto = brevDb.toDto(null)
 }
 
@@ -621,5 +609,5 @@ private fun Document.toDto(): Dto.Document =
         brevdataHash = brevdataHash
     )
 
-private fun Brevredigering.erReservasjonUtloept(): Boolean =
+private fun BrevredigeringEntity.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true

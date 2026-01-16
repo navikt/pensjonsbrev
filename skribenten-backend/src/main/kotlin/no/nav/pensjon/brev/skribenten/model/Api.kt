@@ -50,6 +50,8 @@ object Api {
         val redigertBrev: Edit.Letter,
     )
 
+    data class OppdaterKlarStatusRequest(val klar: Boolean)
+
     data class BrevInfo(
         val id: Long,
         val saksId: Long,

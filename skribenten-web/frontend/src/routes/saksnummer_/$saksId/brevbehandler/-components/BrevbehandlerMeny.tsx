@@ -22,7 +22,7 @@ import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { delvisOppdaterBrev, hentAlleBrevForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { P1EditModal } from "~/components/P1/P1EditModal";
@@ -162,11 +162,11 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   const [modalopen, setModalopen] = useState<boolean>(false);
 
-  const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
-    mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
+  const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
+    mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
     },
