@@ -43,7 +43,7 @@ interface Brevredigering {
 
     /**
      * Denne burde få et bedre navn.
-     * Semantikken er at kladden er klar til sending eller attestring,
+     * Semantikken er at kladden er ferdig, og brevet er klart til sending eller attestring,
      * avhengig av om det er informasjonsbrev eller vedtaksbrev.
      */
     val laastForRedigering: Boolean
