@@ -37,8 +37,8 @@ object BrevkodeJacksonModule : SimpleModule() {
     private object AlltidValgbartVedleggKodeSerializer : JsonSerializer<AlltidValgbartVedleggKode>() {
         override fun serialize(value: AlltidValgbartVedleggKode, gen: JsonGenerator, serializers: SerializerProvider) {
             gen.writeStartObject()
-            gen.writeStringField("kode", value.kode())
-            gen.writeStringField("visningstekst", value.visningstekst())
+            gen.writeStringField("kode", value.kode)
+            gen.writeStringField("visningstekst", value.visningstekst)
             gen.writeEndObject()
         }
     }
