@@ -23,7 +23,7 @@ const nullIfEmpty = (v: string): string | null => (v.trim() === "" ? null : v);
 export const createDefaultRows = <T>(factory: () => T, count: number): T[] =>
   Array.from({ length: count }, () => factory());
 
-export const MIN_ROWS = 5;
+export const MIN_ROWS = 0;
 
 // Person
 const mapPersonDtoToForm = (p: P1Person): P1PersonForm => ({
