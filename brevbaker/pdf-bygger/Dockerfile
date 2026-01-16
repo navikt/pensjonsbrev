@@ -22,7 +22,7 @@ ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
 # CACHE_PATH i ei skrivbar mappe trengs både for XDG_CACHE_HOME
 # og FONTCONFIG_PATH for at tex skal få riktig tilgang til cache underveis
-ENV CACHE_PATH="/home/apprunner/.cache/fontconfig"
+ARG CACHE_PATH="/home/apprunner/.cache/fontconfig"
 RUN mkdir -p $CACHE_PATH
 ENV XDG_CACHE_HOME=$CACHE_PATH
 ENV FONTCONFIG_PATH=$CACHE_PATH
