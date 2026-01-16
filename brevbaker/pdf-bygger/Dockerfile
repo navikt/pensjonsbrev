@@ -22,6 +22,7 @@ ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
 ENV CACHE_PATH="/home/apprunner/.cache/fontconfig"
 RUN mkdir -p $CACHE_PATH
+ENV XDG_CACHE_HOME=$CACHE_PATH
 ENV FONTCONFIG_PATH=$CACHE_PATH
 RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
