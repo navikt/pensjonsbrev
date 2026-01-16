@@ -76,7 +76,7 @@ jobs:
           username: ${{ github.repository }}
           password: ${{ github.token }}
       - name: "Build Docker image"
-        run: |
+        run: | 
           docker build --pull --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
       - name: "Push image with sha"
         run: |
