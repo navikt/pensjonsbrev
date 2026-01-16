@@ -20,7 +20,6 @@ RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner appru
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
-# CACHE_PATH i ei skrivbar mappe trengs både for XDG_CACHE_HOME og FONTCONFIG_PATH for at tex skal få riktig tilgang til cache underveis
 ARG CACHE_PATH="/home/apprunner/.cache/fontconfig"
 RUN mkdir -p ${CACHE_PATH}
 ENV XDG_CACHE_HOME=${CACHE_PATH}
@@ -34,7 +33,7 @@ COPY containerFiles/latex /app/pensjonsbrev_latex
 
 RUN chown -R apprunner:apprunner /home/apprunner
 USER apprunner
-RUN fc-cache -fv /usr/share/fonts # Kjører på nytt her for å få kjørt også som apprunner-brukeren, vi trenger begge
+RUN fc-cache -fv /usr/share/fonts
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
 ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]
