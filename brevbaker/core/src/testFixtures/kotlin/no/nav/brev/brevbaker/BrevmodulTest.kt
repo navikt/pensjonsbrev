@@ -126,7 +126,7 @@ abstract class BrevmodulTest(
         listOf(Language.Bokmal, Language.English)
             .flatMap { spraak ->
                 templates.hentAlltidValgbareVedlegg()
-                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode()) }
+                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode) }
                     .distinctBy { it.get()[2].toString() + it.get()[3] }
             }
 

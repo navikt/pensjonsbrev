@@ -97,10 +97,10 @@ object Pesysbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
         ;
 
-        override fun kode(): String = name
+        override val kode: String = name
     }
 }
 
