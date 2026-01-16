@@ -3,14 +3,10 @@ package no.nav.pensjon.brev.maler.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDtoSelectors.PesysDataSelectors.vedlegg
 import no.nav.pensjon.brev.maler.fraser.common.Felles.fulltNavn
-import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
-import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -55,63 +51,7 @@ object BekreftelsePaaFlyktningstatus : RedigerbarTemplate<EmptyRedigerbarBrevdat
             paragraph {
                 text(bokmal { + "Vi ønsker i den forbindelse kopi av vedtaket og dato for ankomst til Norge." })
             }
-            title2 {
-                text(bokmal {+ ""})
-            }
-            title2 {
-                text(bokmal {+ ""})
-            }
-            title1 {
-                text(bokmal {+ " "})
-            }
-            title1 {
-                text(bokmal {+ " "})
-            }
-            paragraph {
-                text(bokmal {+ ""})
-            }
-            paragraph {
-                text(bokmal {+ ""})
-            }
-            paragraph {
-                text(bokmal {+ " "})
-            }
-            paragraph {
-                text(bokmal {+ " "})
-            }
-       }
-        includeAttachment(vedlegg)
+        }
     }
 }
 
-val vedlegg = createAttachment<LangBokmal, EmptyVedleggData>(
-    title = {
-        text(bokmal { +"Vedlegg 123" })
-    },
-    includeSakspart = false
-) {
-    title2 {
-        text(bokmal {+ ""})
-    }
-    title2 {
-        text(bokmal {+ ""})
-    }
-    title1 {
-        text(bokmal {+ " "})
-    }
-    title1 {
-        text(bokmal {+ " "})
-    }
-    paragraph {
-        text(bokmal {+ ""})
-    }
-    paragraph {
-        text(bokmal {+ ""})
-    }
-    paragraph {
-        text(bokmal {+ " "})
-    }
-    paragraph {
-        text(bokmal {+ " "})
-    }
-}
