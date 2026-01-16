@@ -56,13 +56,11 @@ object Aldersbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg(private val visningstekst: String) : AlltidValgbartVedleggKode {
+    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
         SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger"),
         UTTAKSSKJEMA("Uttaksskjema")
         ;
 
-        override fun kode() = name
-
-        override fun visningstekst() = visningstekst
+        override val kode = name
     }
 }

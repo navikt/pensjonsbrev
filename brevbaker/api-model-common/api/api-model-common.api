@@ -275,15 +275,15 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData 
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public fun getKode ()Ljava/lang/String;
+	public fun getVisningstekst ()Ljava/lang/String;
 	public fun hashCode ()I
-	public fun kode ()Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-	public fun visningstekst ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public abstract fun kode ()Ljava/lang/String;
-	public abstract fun visningstekst ()Ljava/lang/String;
+	public abstract fun getKode ()Ljava/lang/String;
+	public abstract fun getVisningstekst ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {
