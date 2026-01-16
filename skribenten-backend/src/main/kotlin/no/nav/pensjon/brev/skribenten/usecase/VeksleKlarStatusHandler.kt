@@ -23,6 +23,7 @@ class VeksleKlarStatusHandler(
     suspend fun handle(req: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(req.brevId) ?: return null
 
+        // Om ingen endring, returner vellykket uten å gjøre noe
         if (brev.laastForRedigering == req.klar) {
             return success(brev.toDto(null))
         }

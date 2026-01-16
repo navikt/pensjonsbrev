@@ -40,6 +40,12 @@ interface Brevredigering {
     val saksbehandlerValg: SaksbehandlerValg
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
+
+    /**
+     * Denne burde få et bedre navn.
+     * Semantikken er at kladden er klar til sending eller attestring,
+     * avhengig av om det er informasjonsbrev eller vedtaksbrev.
+     */
     val laastForRedigering: Boolean
     val distribusjonstype: Distribusjonstype
     val redigeresAv: NavIdent?
