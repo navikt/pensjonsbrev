@@ -28,8 +28,11 @@ export interface OppdaterKlarStatusRequest {
   klar: boolean;
 }
 
+export interface DistribusjonstypeRequest {
+  distribusjon: Distribusjonstype;
+}
+
 export interface DelvisOppdaterBrevRequest {
-  distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
 }
 

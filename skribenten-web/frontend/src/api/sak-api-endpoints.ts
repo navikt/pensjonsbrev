@@ -10,6 +10,7 @@ import type {
   BrevResponse,
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
+  DistribusjonstypeRequest,
   OppdaterBrevRequest,
   OppdaterKlarStatusRequest,
 } from "~/types/brev";
@@ -58,6 +59,9 @@ const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =
 
 export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
+
+export const endreDistribusjonstype = async (saksId: string, brevId: string | number, body: DistribusjonstypeRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/distribusjon`, body)).data;
 
 export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
   (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))

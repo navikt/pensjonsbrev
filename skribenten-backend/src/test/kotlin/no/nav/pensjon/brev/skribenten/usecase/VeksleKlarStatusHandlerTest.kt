@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -127,16 +126,19 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
     @Test
     suspend fun `kan ikke sette arkivert brev tilbake til kladd`() {
         val brev = opprettBrev().resultOrFail()
-        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
-        assertThat(veksleKlarStatus(brev, true)).isSuccess()
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
-            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-        )
-        assertThat(sendBrev(brev)).isNotNull()
+        arkiverBrev(brev).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, false))
             .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
+    }
+
+    @Test
+    suspend fun `beholder ikke reservasjon`() {
+        val brev = opprettBrev().resultOrFail()
+
+        assertThat(veksleKlarStatus(brev, klar = true))
+            .isSuccess {
+                assertThat(it.info.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
+            }
     }
 }

@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
@@ -99,12 +100,24 @@ fun Route.sakBrev(
                 val brev = brevredigeringService.delvisOppdaterBrev(
                     saksId = sak.saksId,
                     brevId = brevId,
-                    distribusjonstype = request.distribusjonstype,
                     mottaker = request.mottaker?.toDto(),
                     alltidValgbareVedlegg = request.alltidValgbareVedlegg,
                 )
 
                 respond(brev)
+            }
+
+            put<Api.DistribusjonstypeRequest>("/distribusjon") { request ->
+                val brevId = call.parameters.getOrFail<Long>("brevId")
+
+                val brev = brevredigeringFacade.endreDistribusjonstype(
+                    EndreDistribusjonstypeHandler.Request(
+                        brevId = brevId,
+                        type = request.distribusjon,
+                    )
+                )
+
+                apiRespond(dto2ApiService, brev)
             }
 
             put<Api.OppdaterKlarStatusRequest>("/status") { request ->

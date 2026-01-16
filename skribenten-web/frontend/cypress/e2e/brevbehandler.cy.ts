@@ -104,9 +104,9 @@ describe("Brevbehandler", () => {
       expect(request.body).contains({ klar: true });
       request.reply(klarBrev);
     });
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      expect(request.body).contains({ distribusjonstype: "LOKALPRINT" });
-      request.reply({ info: lokalprintBrev, redigertBrev: {}, saksbehandlerValg: {} });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/distribusjon", (request) => {
+      expect(request.body).contains({ distribusjon: "LOKALPRINT" });
+      request.reply(lokalprintBrev);
     });
 
     //åpner brevet
@@ -160,9 +160,9 @@ describe("Brevbehandler", () => {
       request.reply(klarBrev);
     });
 
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      expect(request.body).contains({ distribusjonstype: "LOKALPRINT" });
-      request.reply({ info: lokalprintBrev, redigertBrev: {}, saksbehandlerValg: {} });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/distribusjon", (request) => {
+      expect(request.body).contains({ distribusjon: "LOKALPRINT" });
+      request.reply(lokalprintBrev);
     });
 
     //åpner brevet

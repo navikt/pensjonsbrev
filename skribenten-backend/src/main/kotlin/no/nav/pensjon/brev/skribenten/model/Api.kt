@@ -40,7 +40,6 @@ object Api {
 
     data class DelvisOppdaterBrevRequest(
         val laastForRedigering: Boolean? = null,
-        val distribusjonstype: Distribusjonstype? = null,
         val mottaker: OverstyrtMottaker? = null,
         val alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     )
@@ -51,6 +50,7 @@ object Api {
     )
 
     data class OppdaterKlarStatusRequest(val klar: Boolean)
+    data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
 
     data class BrevInfo(
         val id: Long,

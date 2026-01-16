@@ -63,7 +63,6 @@ class BrevredigeringService(
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
-        distribusjonstype: Distribusjonstype? = null,
         mottaker: Dto.Mottaker? = null,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
@@ -71,7 +70,6 @@ class BrevredigeringService(
             val annenMottakerNavn = mottaker?.fetchNavn()
 
             transaction {
-                brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
                 if (mottaker != null) {
                     brevDb.mottaker?.oppdaterGammel(mottaker) ?: Mottaker.new(brevId) { oppdaterGammel(mottaker) }
                     brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
