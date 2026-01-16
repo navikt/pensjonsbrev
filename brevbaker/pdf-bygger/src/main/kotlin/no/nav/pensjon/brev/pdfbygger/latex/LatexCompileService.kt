@@ -109,8 +109,10 @@ class LatexCompileService(
                 process.onExit().await()
 
                 if (process.exitValue() == 0) {
-                    logger.info("Compilation successful. Output: ${output.toFile().readText()}")
-                    logger.info("Compilation successful. Errors: ${error.toFile().readText()}")
+                    val errors = error.toFile().readText()
+                    if (errors.isNotBlank()) {
+                        logger.warn("PDF-generering gikk bra, men ga følgende TeX-feil: $errors")
+                    }
                     Execution.Success(pdf = workingDir.resolve("${File(texFilename).nameWithoutExtension}.pdf"))
                 } else {
                     Execution.Failure.Compilation(
