@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import java.time.Duration
 import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
@@ -22,9 +24,9 @@ class BrevreservasjonPolicy {
         val eksisterende = brev.reservasjon
 
         return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || !isValid(eksisterende, fra)) {
-            Outcome.success(true)
+            success(true)
         } else {
-            Outcome.failure(ReservertAvAnnen(eksisterende))
+            failure(ReservertAvAnnen(eksisterende))
         }
     }
 
