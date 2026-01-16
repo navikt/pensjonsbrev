@@ -61,6 +61,7 @@ import no.nav.pensjon.brev.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloep
 import no.nav.pensjon.brev.maler.redigerbar.VarselOmMuligAvslag
 import no.nav.pensjon.brev.maler.redigerbar.VarselRevurderingAvPensjon
 import no.nav.pensjon.brev.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloep
+import no.nav.pensjon.brev.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjening
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndret
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsopphold
 import no.nav.pensjon.brev.maler.redigerbar.VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge
@@ -158,6 +159,7 @@ object ProductionTemplates : AllTemplates {
         VarselOmMuligAvslag,
         VarselRevurderingAvPensjon,
         VarselTilbakekrevingAvFeilutbetaltBeloep,
+        VedtakAvslagPaaOmsorgsopptjening,
         VedtakEndringAvAlderspensjonFordiOpptjeningErEndret,
         VedtakEndringAvAlderspensjonGjenlevenderettigheter,
         VedtakEndringAvAlderspensjonInstitusjonsopphold,

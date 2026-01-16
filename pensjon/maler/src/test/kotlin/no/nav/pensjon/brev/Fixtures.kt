@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselTilbakekrevingAvFeilutbetaltBeloepDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -102,6 +103,7 @@ import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakDto
 import no.nav.pensjon.brev.fixtures.createSamletMeldingOmPensjonsvedtakV2Dto
 import no.nav.pensjon.brev.fixtures.createUfoerOmregningEnsligDto
 import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAlderspensjon
@@ -199,6 +201,7 @@ object Fixtures : LetterDataFactory {
             VarselRevurderingAvPensjonDto::class -> createVarselRevurderingAvPensjonDto() as T
             VarselSaksbehandlingstidAutoDto::class -> createVarselSaksbehandlingstidAutoDto() as T
             VarselTilbakekrevingAvFeilutbetaltBeloepDto::class -> createVarselTilbakekrevingAvFeilutbetaltBeloep() as T
+            VedtakAvslagPaaOmsorgsopptjeningDto::class -> createVedtakAvslagPaaOmsorgsopptjeningDto() as T
             VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto::class -> createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto() as T
             VedtakEndringAvAlderspensjonGjenlevenderettigheterDto::class -> createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto() as T
             VedtakEndringAvAlderspensjonInstitusjonsoppholdDto::class -> createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto() as T
