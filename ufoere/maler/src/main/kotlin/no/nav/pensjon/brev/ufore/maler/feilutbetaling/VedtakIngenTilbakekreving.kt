@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.oversiktOverFeilutbetalinger
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -34,66 +36,78 @@ object VedtakIngenTilbakekreving : RedigerbarTemplate<VedtakFeilutbetalingUforeI
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak- ingen tilbakekreving av feilutbetalt beløp",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBelop
-        val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
-        val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
+        val dato = fritekst("dato")
+        val arsak = fritekst("årsak")
 
         title {
-            text(bokmal { + "Vi krever ikke tilbake pengene du har fått for mye i uføretrygd"})
+            text(
+                bokmal { + "Vi krever ikke tilbake feilutbetalt uføretrygd "},
+                nynorsk { + "Vi krev ikkje tilbake feilutbetalt uføretrygd " }
+            )
         }
         outline {
             paragraph {
-                text(bokmal { + "I vedtaket datert " + fritekst("dato") + " ble uføretrygden din endret på grunn av " + fritekst("årsak") + "." })
-            }
-            paragraph {
                 text(
-                    bokmal { + "Vi har vurdert om du har fått riktig utbetaling tidligere. Du har fått utbetalt for mye i perioden "
-                            + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format()
-                            + ". Det feilutbetalte beløpet er brutto " + feilutbetaltTotalBeloep.format(CurrencyFormat) + " kroner." },
+                    bokmal { + "I perioden " + dato + " til " + dato + " fikk du utbetalt beløp kroner for mye i uføretrygd. " +
+                            "Vi krever ikke tilbake beløpet du har fått utbetalt for mye. " },
+                    nynorsk { + "I perioden " + dato + " til " + dato + " fekk du utbetalt beløp kroner for mykje i uføretrygd. " +
+                            "Vi krev ikkje tilbake beløpet du har fått utbetalt for mykje. " }
+                )
+            }
+            title1 {
+                text(
+                    bokmal { + "Derfor krever vi ikke pengene tilbake " },
+                    nynorsk { + "Derfor krev vi ikkje pengane tilbake " }
                 )
             }
             paragraph {
-                text (bokmal { + "Du har mottatt beløpet i god tro, og vi vurderer at du ikke kunne forstå at det var feil. "})
-            }
-
-            title1 { text(bokmal { + "Derfor krever vi ikke pengene tilbake" }) }
-            paragraph {
                 text(
-                    bokmal { + "Nav har mottatt informasjon om " + fritekst("årsak") + ". Dette har ført til at du har fått utbetalt for mye i perioden "
-                        + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + "." }
+                    bokmal { + "Vi har fått informasjon om " + arsak + ". Denne endringen har ført til at du har fått " +
+                            "utbetalt for mye i perioden " + dato + " til " + dato + ".  " },
+                    nynorsk { + "Vi har fått informasjon om " + arsak + ". Denne endringa har ført til at du har fått " +
+                            "utbetalt for mykje i perioden " + dato + " til " + dato + ". " }
                 )
             }
             paragraph {
-                text(bokmal {+ "Etter folketrygdloven § 22-15 kan Nav kreve tilbake feilutbetalinger hvis mottakeren forstod eller burde ha forstått at det var en feil. " +
-                        "Vi har vurdert om du kunne ha oppdaget feilen, basert på informasjon du har fått fra Nav."})
+                text(
+                    bokmal { + "Vi vurderer at du ikke kunne forstå at utbetalingen var feil, og at du derfor mottok beløpet i god tro. " +
+                            "Ifølge folketrygdloven § 22-15 kan vi bare kreve tilbake feilutbetalinger hvis mottakeren forstod eller " +
+                            "burde ha forstått at det var en feil.  " },
+                    nynorsk { + "Vi vurderer at du ikkje kunne forstå at utbetalinga var feil, og at du derfor mottok beløpet i god tru. " +
+                            "Ifølgje folketrygdlova § 22-15 kan vi berre krevje tilbake feilutbetalingar dersom mottakaren forstod eller " +
+                            "burde ha forstått at det var ein feil. " }
+                )
             }
             paragraph {
-                text(bokmal {+ "Vi mener at du mottok beløpet i god tro, og at du ikke hadde grunnlag for å forstå at utbetalingen var feil. " +
-                        "Vilkårene for tilbakekreving etter § 22-15 første ledd er derfor ikke oppfylt. " })
+                text(
+                    bokmal { + fritekst("fritekst") },
+                    nynorsk { + fritekst("fritekst") }
+                )
             }
             paragraph {
-                text(bokmal {+ "Etter § 22-15 femte ledd kan Nav kreve tilbake beløp som fortsatt er i behold når feilen oppdages. " +
-                        "Siden uføretrygd er en livsoppholdsytelse, antar vi at beløpet ikke er i behold. " +
-                        "Vilkårene for tilbakekreving etter femte ledd er derfor heller ikke oppfylt." })
+                text(
+                    bokmal { + "Vi kan kreve tilbake feilutbetalte beløp som fortsatt er i behold når feilen oppdages. " +
+                            "Dette står i folketrygdloven § 22-15 femte ledd.  Siden uføretrygd er en livsoppholdsytelse, " +
+                            "antar vi at beløpet ikke er i behold. Derfor kan vi ikke kreve tilbake beløpet etter dette vilkåret. " },
+                    nynorsk { + "Vi kan krevje tilbake feilutbetalte beløp som framleis er i behald når feilen blir oppdaga. " +
+                            "Dette står i folketrygdlova § 22-15 femte ledd. Sidan uføretrygd er ei livsopphaldsyting, " +
+                            "går vi ut frå at beløpet ikkje er i behald. Derfor kan vi ikkje krevje tilbake beløpet etter dette vilkåret. " }
+                )
             }
             paragraph {
-                text(bokmal {+ "Konklusjon: Du trenger ikke betale tilbake beløpet du fikk for mye i perioden "
-                    + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + "." })
-            }
-            paragraph {
-                text(bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15 første og femte ledd. " })
+                text(
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15 første og femte ledd. " },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 22-15 første og femte ledd. " }
+                )
             }
 
-            includePhrase(Felles.RettTilAKlageKort)
-            includePhrase(Felles.RettTilInnsynRefVedlegg)
-            includePhrase(Felles.HarDuSporsmal)
         }
         includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)

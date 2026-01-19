@@ -130,13 +130,13 @@ class Felles {
             title1 {
                 text(
                     bokmal { + "Du har rett til innsyn" },
-                    nynorsk { + "Du har rett til innsyn" }
+                    nynorsk { + "Du har rett til innsyn " }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram."},
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram. " }
                 )
             }
         }

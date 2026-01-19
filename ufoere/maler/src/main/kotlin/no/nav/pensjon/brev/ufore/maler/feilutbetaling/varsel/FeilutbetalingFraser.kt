@@ -17,14 +17,18 @@ class FeilutbetalingFraser {
             }
             paragraph {
                 text(
-                    bokmal { + "Hvis du kan dokumentere at vi har gitt deg feil eller mangelfull informasjon, eller du har hatt en alvorlig helsetilstand, ber vi deg om å uttale deg og gi oss denne informasjonen. " },
-                    nynorsk { + "Dersom du kan dokumentere at vi har gitt deg feil eller mangelfull informasjon, eller du har hatt ein alvorleg helsetilstand, ber vi deg om å uttale deg og gi oss denne informasjonen. " }
+                    bokmal { + "Hvis du mener at vi har gitt deg feil eller mangelfull informasjon, " +
+                            "eller du har hatt en alvorlig helsetilstand, ber vi deg om å uttale deg og gi oss dokumentasjon på dette.  " },
+                    nynorsk { + "Dersom du meiner at vi har gitt deg feil eller mangelfull informasjon, " +
+                            "eller du har hatt ein alvorleg helsetilstand, ber vi deg om å uttale deg og gi oss dokumentasjon på dette. " }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har rett til å uttale deg før vi tar den endelige avgjørelsen om tilbakebetaling og fatter et vedtak. Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. " },
-                    nynorsk { + "Du har rett til å uttale deg før vi tek den endelege avgjerda om tilbakebetaling og fattar eit vedtak. Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. "}
+                    bokmal { + "Du har rett til å uttale deg før vi tar den endelige avgjørelsen om tilbakebetaling og fatter et vedtak. " +
+                            "Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. " },
+                    nynorsk { + "Du har rett til å uttale deg før vi tek den endelege avgjerda om tilbakebetaling og fattar eit vedtak. " +
+                            "Du kan skrive til oss på ${Constants.KONTAKT_URL} eller ringe oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE}. "}
                 )
             }
         }
