@@ -78,7 +78,7 @@ open class FakeP1Service(): P1Service {
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long,
+        brevId: Long?,
         saksId: Long
     ): BrevdataResponse.Data = brevdataResponse
 }

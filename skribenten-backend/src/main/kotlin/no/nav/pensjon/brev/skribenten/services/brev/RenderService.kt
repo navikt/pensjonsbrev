@@ -1,29 +1,37 @@
 package no.nav.pensjon.brev.skribenten.services.brev
 
+import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 
 class RenderService(private val brevbakerService: BrevbakerService) {
 
-    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
+    suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        saksbehandlerValg: SaksbehandlerValg,
+        pesysData: BrevdataResponse.Data
+    ): LetterMarkupWithDataUsage =
         brevbakerService.renderMarkup(
-            brevkode = brev.brevkode,
-            spraak = brev.spraak,
+            brevkode = brevkode,
+            spraak = spraak,
             brevdata = GeneriskRedigerbarBrevdata(
                 pesysData = pesysData.brevdata,
-                saksbehandlerValg = brev.saksbehandlerValg,
+                saksbehandlerValg = saksbehandlerValg,
             ),
-            felles = pesysData.felles.medSignerendeSaksbehandlere(
-                SignerendeSaksbehandlere(
-                    // Redigerbare brev skal alltid ha saksbehandlers signatur, derfor non-null assertion her.
-                    saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
-                    attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
-                )
-            ).medAnnenMottakerNavn(null)
+            felles = pesysData.felles
         )
 
+    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
+        renderMarkup(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            saksbehandlerValg = brev.saksbehandlerValg,
+            pesysData = pesysData,
+        )
 }

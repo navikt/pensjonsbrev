@@ -6,11 +6,29 @@ import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
+import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.DineRettigheterOgMulighetTilAKlageDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManed
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerAr
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.KonteringType
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysData
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26Dto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
+import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.ufore.maler.Sakstype
 import java.time.LocalDate
 import java.time.Month
@@ -25,6 +43,7 @@ object Fixtures : LetterDataFactory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
+            InfoEndretUTPgaInntektDto::class -> lagInfoEndretUTPgaInntektDto() as T
             UforeAvslagUtenVurderingDto::class -> lagUforeAvslagUtenVurderingDto() as T
             UforeAvslagEnkelDto::class -> lagUforeAvslagEnkelDto() as T
             UforeAvslagInntektDto::class -> lagUforeAvslagInntektDto() as T
@@ -42,7 +61,7 @@ object Fixtures : LetterDataFactory {
         }
 
     @Suppress("UNCHECKED_CAST")
-    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when (letterDataType) {
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
@@ -223,7 +242,7 @@ object Fixtures : LetterDataFactory {
         sakstype = Sakstype.UFOREP,
         brukerUnder18Ar = false
     )
-    
+
     private fun createOversiktOverFeilutbetalingPEDto() = OversiktOverFeilutbetalingPEDto(
         bruttoTilbakekrevdTotalbelop = 1,
         nettoUtenRenterTilbakekrevdTotalbelop = 2,
@@ -266,7 +285,8 @@ object Fixtures : LetterDataFactory {
                 resultatAvVurderingen = TilbakekrevingResultat.DELVIS_TILBAKEKREV,
                 skattefradragSomInnkreves = 100,
                 ytelsenMedFeilutbetaling = KonteringType.UT_ORDINER
-            )),
+            )
+        ),
         feilutbetalingPerArListe = lagFeilutbetalingPerAr(),
     )
 
@@ -274,4 +294,17 @@ object Fixtures : LetterDataFactory {
         saksbehandlerValg = FeilutbetalingDodsboSaksbehandlervalg(),
         pesysData = VarselFeilutbetalingPesysData(feilutbetaltBrutto = 100)
     )
+
+    private fun lagInfoEndretUTPgaInntektDto() = InfoEndretUTPgaInntektDto(
+        loependeInntektsAvkortning = InfoEndretUTPgaInntektDto.LoependeInntektsAvkortning(
+            forventetInntektAar = Kroner(2000),
+            inntektsgrenseAar = Kroner(200)
+        ),
+        uforetrygdInnevarendeAr = InfoEndretUTPgaInntektDto.Uforetrygd(
+            utbetalingsgrad = 81,
+            ufoeregrad = 82
+        )
+    )
+
+
 }

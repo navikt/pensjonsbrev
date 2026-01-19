@@ -24,8 +24,11 @@ export type BrevResponse = {
   propertyUsage: Nullable<PropertyUsage[]>;
 };
 
+export interface OppdaterKlarStatusRequest {
+  klar: boolean;
+}
+
 export interface DelvisOppdaterBrevRequest {
-  laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
 }
