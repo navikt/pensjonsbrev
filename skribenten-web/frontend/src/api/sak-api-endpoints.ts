@@ -5,6 +5,7 @@ import axios from "axios";
 
 import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
+  AlltidValgbartVedlegg,
   BestillBrevResponse,
   BrevInfo,
   BrevResponse,
@@ -32,8 +33,11 @@ const hentAlleBrevForSakFunction = async (saksId: string) =>
 export const getBrevVedlegg = {
   queryKey: (saksId: string, brevId: number) => ["brevVedlegg", saksId, brevId] as const,
   queryFn: async (saksId: string, brevId: number) =>
-    (await axios.get<VedleggKode[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`))
-      .data,
+    (
+      await axios.get<AlltidValgbartVedlegg[]>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`,
+      )
+    ).data,
 };
 
 export const hentPdfForBrev = {

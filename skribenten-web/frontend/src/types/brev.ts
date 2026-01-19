@@ -139,12 +139,11 @@ export interface NAVEnhet {
   navn: string;
 }
 
-export enum VedleggKode {
-  SKJEMA_FOR_BANKOPPLYSNINGER = "SKJEMA_FOR_BANKOPPLYSNINGER",
-  UTTAKSSKJEMA = "UTTAKSSKJEMA",
-}
+export type VedleggKode = string;
 
-export const VEDLEGG_KODE_TO_TEXT: Record<VedleggKode, string> = {
-  [VedleggKode.SKJEMA_FOR_BANKOPPLYSNINGER]: "Skjema for bankopplysninger",
-  [VedleggKode.UTTAKSSKJEMA]: "Uttaksskjema",
-};
+export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
+
+export interface AlltidValgbartVedlegg {
+  kode: string;
+  visningstekst: string;
+}
