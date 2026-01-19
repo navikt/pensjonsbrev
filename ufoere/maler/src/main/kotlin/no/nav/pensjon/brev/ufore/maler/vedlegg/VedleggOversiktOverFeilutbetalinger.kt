@@ -31,7 +31,7 @@ import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingSt
 
 @TemplateModelHelpers
 val oversiktOverFeilutbetalinger =
-    createAttachment<LangBokmal, OversiktOverFeilutbetalingPEDto>(
+    createAttachment(
         title = { text(bokmal { +"Oversikt over feilutbetalinger" }) },
         includeSakspart = true,
     ) {

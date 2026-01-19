@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.oversiktOverFeilutbetalinger
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.LocalizedFormatter.CurrencyFormat
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -34,66 +36,81 @@ object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbeta
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
-        languages = languages(Bokmal),
+        languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak- ingen tilbakekreving av feilutbetalt beløp",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
-        val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBelop
-        val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
-        val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
-
+        val dato = fritekst("dato")
         title {
-            text(bokmal { + "Vi krever ikke tilbake feilutbetalt uføretrygd"})
+            text(
+                bokmal { + "Vi krever ikke tilbake feilutbetalt uføretrygd "},
+                nynorsk { + "Vi krev ikkje tilbake feilutbetalt uføretrygd " }
+            )
         }
         outline {
             paragraph {
-                text(bokmal { + "Vi viser til forhåndsvarselet vårt " + fritekst("dato") + "." })
+                text(
+                    bokmal { + "I perioden " + dato + " til " + dato + " fikk du utbetalt beløp kroner for mye i uføretrygd. " +
+                            "Vi krever ikke tilbake beløpet du har fått utbetalt for mye. " },
+                    nynorsk { + "I perioden " + dato + " til " + dato + " fekk du utbetalt beløp kroner for mykje i uføretrygd. " +
+                            "Vi krev ikkje tilbake beløpet du har fått utbetalt for mykje. " }
+                )
+            }
+            title1 {
+                text(
+                    bokmal { + "Derfor krever vi ikke beløpet tilbake " },
+                    nynorsk { + "Derfor krev vi ikkje beløpet tilbake " }
+                )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har fått utbetalt for mye uføretrygd i perioden "
-                            + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format()
-                            + ". Det feilutbetalte beløpet utgjør " + feilutbetaltTotalBeloep.format(CurrencyFormat) + " kroner inkludert skatt." },
+                    bokmal { + "Vi har vurdert at hele det feilutbetalte beløpet er foreldet. Når et pengekrav er foreldet, " +
+                            "kan vi som hovedregel ikke kreve det tilbake.  " },
+                    nynorsk { + "Vi har vurdert at heile det feilutbetalte beløpet er forelda. Når eit pengekrav er forelda, " +
+                            "kan vi som hovudregel ikkje krevje det tilbake. " }
                 )
             }
-
-            title1 { text(bokmal { + "Derfor krever vi ikke tilbake feilutbetalt uføretrygd" }) }
+            title1 {
+                text(
+                    bokmal { + "Derfor vurderer vi at beløpet er foreldet " },
+                    nynorsk { + "Derfor vurderer vi at beløpet er forelda " }
+                )
+            }
             paragraph {
                 text(
-                    bokmal { + "Hele det feilutbetalte beløpet er foreldet. Vi krever derfor ikke tilbake uføretrygden som ble utbetalt i perioden "
-                        + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + "." }
+                    bokmal { + "Den første feilutbetalingen ble gjort " + dato + ", og denne feilutbetalingen ble foreldet " + dato + ". " },
+                    nynorsk { + "Den første feilutbetalinga blei gjort " + dato + ", og denne feilutbetalinga blei forelda " + dato + ". " }
                 )
             }
-
-            title2 { text(bokmal {+ "Foreldelse"}) }
             paragraph {
-                text(bokmal {+ "Etter foreldelsesloven §§ 2 og 3 foreldes et pengekrav som hovedregel etter tre år, regnet fra tidspunktet da feilutbetalingen fant sted." })
+                text(
+                    bokmal { + "Når et pengekrav er foreldet, kan vi ikke kreve det tilbake. Et pengekrav regnes som hovedregel som foreldet " +
+                            "etter tre år fra feilutbetalingen fant sted. Det står i foreldelsesloven §§ 2 og 3. " },
+                    nynorsk { + "Når eit pengekrav er forelda, kan vi ikkje krevje det tilbake. Eit pengekrav blir som hovudregel rekna som forelda " +
+                            "etter tre år frå feilutbetalinga fann stad. Det står i foreldingslova §§ 2 og 3. " }
+                )
             }
             paragraph {
-                text(bokmal {+ "Den første feilutbetalingen ble gjort " + fritekst("dato") + ", og foreldelsesfristen for denne utbetalingen utløp " + fritekst("dato") + ". " +
-                        "Nav har vurdert at hele beløpet som ble feilutbetalt i perioden "
-                        + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + " er foreldet. " })
+                text(
+                    bokmal { + "Vi har også vurdert om unntaksregelen i foreldelsesloven § 10 kan brukes. Denne gir en tilleggsfrist på 1 år i " +
+                            "de tilfellene vi ikke har fått informasjon om forholdene som har ført til feilutbetalingen. " +
+                            "Vi fikk informasjon om feilutbetalingen dato, vi har ikke gjort fristavbrytende tiltak innen ett år etter dette. " +
+                            "Derfor kan vi ikke kan bruke unntaksregler i foreldelsesloven som forlenger den vanlige fristen. " },
+                    nynorsk { + "Vi har òg vurdert om unntaksregelen i foreldingslova § 10 kan brukast. Denne gir ein tilleggsfrist på 1 år " +
+                            "i dei tilfella vi ikkje har fått informasjon om forholda som har ført til feilutbetalinga. " +
+                            "Vi fekk informasjon om feilutbetalinga dato, og vi har ikkje gjort fristavbrytande tiltak innan eitt år etter dette. " +
+                            "Derfor kan vi ikkje bruke unntaksreglar i foreldingslova som forlenger den vanlege fristen. " }
+                )
             }
             paragraph {
-                text(bokmal {+ "Vi har også vurdert om unntaksregelen i foreldelsesloven § 10 kan benyttes. " +
-                        "Denne gir en tilleggsfrist på ett år dersom Nav ikke har hatt nødvendig kunnskap om kravet. " +
-                        "Nav fikk kunnskap om feilutbetalingen den " + fritekst("dato") + ", men det er ikke gjort fristavbrytende tiltak innen ett år etter dette. Unntaksregelen kan derfor ikke benyttes. " })
+                text(
+                    bokmal { + "Vedtaket har vi gjort etter §§ 2, 3 og 10 i foreldelsesloven og folketrygdloven § 22-14 " },
+                    nynorsk { + "Vedtaket er gjort etter §§ 2, 3 og 10 i foreldingslova og folketrygdlova § 22-14. " }
+                )
             }
-            paragraph {
-                text(bokmal {+ "Hele det feilutbetalte beløpet er foreldet. Vi krever derfor ikke tilbake uføretrygden som ble utbetalt i perioden "
-                    + startPeriodeForTilbakekreving.format() + " til " + sluttPeriodeForTilbakekreving.format() + ". " +
-                        "Vi har ikke vurdert om vilkårene for tilbakekreving etter folketrygdloven § 22-15 første ledd er oppfylt, ettersom hele beløpet er foreldet.  " })
-            }
-            paragraph {
-                text(bokmal { + "Vedtaket er gjort etter §§ 2, 3 og 10 i foreldelsesloven, og vi viser til folketrygdloven § 22-14, som fastslår at foreldelsesloven gjelder for ytelser etter folketrygdloven. " })
-            }
-
-            includePhrase(Felles.RettTilAKlageKort)
-            includePhrase(Felles.RettTilInnsynRefVedlegg)
-            includePhrase(Felles.HarDuSporsmal)
         }
         includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
