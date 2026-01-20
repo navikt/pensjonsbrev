@@ -67,11 +67,7 @@ open class BrevredigeringStub : Brevredigering {
         notYetStubbed()
     }
 
-    override fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker {
-        notYetStubbed()
-    }
-
-    override fun fjernMottaker() {
+    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? {
         notYetStubbed()
     }
 

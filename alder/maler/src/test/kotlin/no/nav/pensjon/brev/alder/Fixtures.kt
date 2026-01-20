@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.alder
 
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
+import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createMaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakAldersovergang67AarGarantitilleggAutoDto
@@ -27,6 +29,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregning
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
+import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
@@ -63,6 +66,7 @@ object Fixtures : LetterDataFactory {
     override fun <T : Any> create(letterDataType: KClass<T>): T =
         when (letterDataType) {
             AdhocAlderspensjonGjtOppryddingAutoDto::class -> createAlderspensjonGjtOppryddingAutoDto() as T
+            AdhocTidligereUfoereGradertAPAutoDto::class -> createAdhocTidligereUfoereGradertAPAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarAutoDto() as T
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto::class -> createAvslagGradsendringFoerNormertPensjonsalderFoerEttAarDto() as T
             AvslagUttakFoerNormertPensjonsalderAP2016AutoDto::class -> createAvslagUttakFoerNormertPensjonsalderAP2016AutoDto() as T

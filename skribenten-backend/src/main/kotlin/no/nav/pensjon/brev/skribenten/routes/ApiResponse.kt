@@ -51,6 +51,7 @@ private suspend fun <T> RoutingContext.respondOutcome(
             is RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev ->
                 call.respond(HttpStatusCode.Conflict, "Brev er arkivert med journalpostId: ${outcome.error.journalpostId}")
 
+            // TODO: Muligens burde dette være internal server error siden det burde indikere at koden ikke forsøkte å reserver eller at feil fra reservasjon ble ignorert
             is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                 call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
 

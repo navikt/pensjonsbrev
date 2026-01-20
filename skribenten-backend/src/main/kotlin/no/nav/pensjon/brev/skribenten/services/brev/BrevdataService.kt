@@ -47,6 +47,9 @@ class BrevdataService(private val penService: PenService, private val samhandler
             ),
         )
 
+    suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =
+        mottaker.annenMottakerNavn()
+
     private suspend fun Dto.Mottaker.annenMottakerNavn(): String? =
         when (type) {
             MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }

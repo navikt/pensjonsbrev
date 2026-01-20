@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
+import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
@@ -260,7 +261,6 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService(),
         p1Service = FakeP1Service()
     )
 
@@ -301,11 +301,11 @@ class BrevredigeringServiceTest {
 
     // TODO: opprett blir testet i CreateLetterHandlerTest, så henting er det som gjenstår til senere
     @Test
-    fun `can create and fetch brevredigering`(): Unit = runBlocking {
+    suspend fun `can create and fetch brevredigering`() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val brev = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg)
 
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
+        assertEquals(Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH), brevbakerService.renderMarkupKall.last())
         brevbakerService.renderMarkupKall.clear()
 
         assertEquals(
@@ -321,7 +321,7 @@ class BrevredigeringServiceTest {
         assertThat(brev.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
         assertThat(brev.redigertBrev).isEqualTo(letter.toEdit())
 
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
+        assertEquals(Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH), brevbakerService.renderMarkupKall.last())
     }
 
     @Test
@@ -734,11 +734,14 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                distribusjonstype = Distribusjonstype.LOKALPRINT,
-            )
+            assertThat(
+                brevredigeringFacade.endreDistribusjonstype(
+                    EndreDistribusjonstypeHandler.Request(
+                        brevId = brev.info.id,
+                        type = Distribusjonstype.LOKALPRINT
+                    )
+                )
+            ).isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
@@ -854,13 +857,6 @@ class BrevredigeringServiceTest {
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
-            assertThrows<ArkivertBrevException> {
-                brevredigeringService.delvisOppdaterBrev(
-                    brev.info.saksId,
-                    brev.info.id,
-                    Distribusjonstype.LOKALPRINT
-                )
-            }
             assertThrows<ArkivertBrevException> { brevredigeringService.oppdaterSignatur(brev.info.id, "ny signatur") }
             assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(brev.info.id) }
         }
@@ -967,56 +963,6 @@ class BrevredigeringServiceTest {
         assertThat(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
             .isAfter(forrigeReservasjon)
             .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
-    }
-
-    @Test
-    fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
-        val brev = opprettBrev(mottaker = mottaker)
-        assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak1.saksId))
-
-        assertNull(brevredigeringService.hentBrev(sak1.saksId, brev.info.id)?.info?.mottaker)
-        assertNull(transaction { Mottaker.findById(brev.info.id) })
-        assertNull(transaction { BrevredigeringEntity[brev.info.id].mottaker })
-    }
-
-    @Test
-    fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1"))
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", NorskPostnummer("1234"), "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertEquals(nyMottaker, oppdatert?.info?.mottaker)
-    }
-
-    @Test
-    fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
-
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
-            navn = "a",
-            adresselinje1 = "b",
-            adresselinje2 = "c",
-            adresselinje3 = "d",
-            landkode = Landkode("CY"),
-            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
-        )
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertThat(oppdatert?.redigertBrev?.sakspart?.annenMottakerNavn).isEqualTo(nyMottaker.navn)
     }
 
     @Test
