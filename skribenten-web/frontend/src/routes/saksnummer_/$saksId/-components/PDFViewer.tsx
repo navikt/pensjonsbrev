@@ -102,7 +102,7 @@ const PDFViewer = (properties: {
                 key={`page_${index + 1}`}
                 marginBlock="0 space-16"
               >
-                <PDFPage loading="" pageNumber={index + 1} scale={scale} />
+                <PDFPage pageNumber={index + 1} scale={scale} />
               </BoxNew>
             ))}
           </Document>
