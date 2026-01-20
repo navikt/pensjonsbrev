@@ -4,11 +4,9 @@ import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
-import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.JsonSerializer
 import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.module.SimpleModule
-import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.AutomatiskBrevkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
@@ -23,7 +21,7 @@ object BrevkodeModule : SimpleModule() {
         addDeserializer(Brevkode.Automatisk::class.java, BrevkodeDeserializerAutomatisk)
         addDeserializer(Brevkode.Redigerbart::class.java, BrevkodeDeserializerRedigerbart)
         addSerializer(AlltidValgbartVedleggKode::class.java, AlltidValgbartVedleggKodeSerializer)
-        addDeserializer(AlltidValgbartVedleggKode::class.java, AlltidValgbartVedleggKodeDeserializer)
+        addAbstractTypeMapping<AlltidValgbartVedleggKode, AlltidValgbartVedleggBrevkode>()
     }
 
     private object BrevkodeDeserializerAutomatisk : JsonDeserializer<Brevkode.Automatisk>() {
@@ -42,15 +40,6 @@ object BrevkodeModule : SimpleModule() {
             gen.writeStringField("kode", value.kode)
             gen.writeStringField("visningstekst", value.visningstekst)
             gen.writeEndObject()
-        }
-    }
-
-    private object AlltidValgbartVedleggKodeDeserializer : JsonDeserializer<AlltidValgbartVedleggKode>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): AlltidValgbartVedleggKode {
-            val node = parser.codec.readTree<JsonNode>(parser)
-            val kode = node.get("kode").textValue()
-            val visningstekst = node.get("visningstekst").textValue()
-            return AlltidValgbartVedleggBrevkode(kode = kode, visningstekst = visningstekst)
         }
     }
 }
