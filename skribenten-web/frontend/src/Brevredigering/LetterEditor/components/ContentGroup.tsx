@@ -65,7 +65,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
-    <div>
+    <>
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
@@ -117,7 +117,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
           }
         }
       })}
-    </div>
+    </>
   );
 }
 

@@ -87,21 +87,15 @@ export const LetterEditor = ({
     <VStack align="center" height={editorHeight ?? "auto"}>
       <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        <BoxNew
-          className="editor"
-          css={css`
-            ${freeze && "cursor: wait;"}
-          `}
-          flexGrow="1"
-          overflowY="auto"
-        >
+        <BoxNew className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
           <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
           <Heading
-            css={css`
-              line-height: 30px;
-              letter-spacing: 0.108px;
-              margin-bottom: var(--ax-space-28);
-            `}
+            css={{
+              fontWeight: "700",
+              lineHeight: "30px",
+              letterSpacing: "0.108px",
+              marginBottom: "var(--ax-space-28)",
+            }}
             level="3"
             onDragOver={(e) => {
               e.preventDefault();
@@ -131,12 +125,7 @@ export const LetterEditor = ({
               </div>
             ))}
           </div>
-          <SignaturView
-            signatur={letter.signatur}
-            wrapperStyles={css`
-              margin-bottom: 48px;
-            `}
-          />
+          <SignaturView signatur={letter.signatur} />
         </BoxNew>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
