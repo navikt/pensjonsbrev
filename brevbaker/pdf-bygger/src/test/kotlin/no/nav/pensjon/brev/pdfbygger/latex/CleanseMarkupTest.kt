@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.pdfbygger.attachment
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -186,6 +187,28 @@ class CleanseMarkupTest {
         assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
             assertThat(paragraph.content).hasSize(3)
             assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        }
+    }
+
+    @Test
+    fun `renser ogsaa vedlegg`() {
+        val cleansed = attachment {
+            title {
+                text("Tittel1")
+            }
+            outline {
+                title2 {
+                    text("")
+                }
+                paragraph {
+                    text("Innhold")
+                }
+            }
+        }.clean()
+        assertThat(cleansed.blocks).hasSize(1)
+        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            assertThat(paragraph.content).hasSize(1)
+            assertThat(paragraph.content).allSatisfy { it is LetterMarkup.ParagraphContent.Text.Literal }
         }
     }
 }

@@ -31,6 +31,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.beregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.etteroppgjoersAar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.harOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.rettsgebyrBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.utbetaltBeloep
@@ -56,9 +57,10 @@ data class EtteroppgjoerVedtakDataDTO(
     val faktiskStoenad: Kroner,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val rettsgebyrBeloep: Kroner,
+    val harOpphoer: Boolean
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true, harOpphoer)
 }
 
 @TemplateModelHelpers
@@ -190,28 +192,30 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                     }
                 }
 
-                title2 {
-                    text(
-                        bokmal { +"Du må melde fra om endringer" },
-                        nynorsk { +"Du må melde frå om endringar" },
-                        english { +"You must report any changes" },
-                    )
-                }
+                showIf(data.harOpphoer.not()) {
+                    title2 {
+                        text(
+                            bokmal { +"Du må melde fra om endringer" },
+                            nynorsk { +"Du må melde frå om endringar" },
+                            english { +"You must report any changes" },
+                        )
+                    }
 
-                paragraph {
-                    text(
-                        bokmal { +"Du får fortsatt omstillingsstønad og den er på " + data.utbetaltBeloep.format() + " hver måned før skatt." },
-                        nynorsk { +"Du får framleis omstillingsstønad. Du får " + data.utbetaltBeloep.format() + " kvar månad før skatt." },
-                        english { +"You will continue to receive adjustment allowance and this will be " + data.utbetaltBeloep.format() + " per month before tax." },
-                    )
-                }
+                    paragraph {
+                        text(
+                            bokmal { +"Du får fortsatt omstillingsstønad og den er på " + data.utbetaltBeloep.format() + " hver måned før skatt." },
+                            nynorsk { +"Du får framleis omstillingsstønad. Du får " + data.utbetaltBeloep.format() + " kvar månad før skatt." },
+                            english { +"You will continue to receive adjustment allowance and this will be " + data.utbetaltBeloep.format() + " per month before tax." },
+                        )
+                    }
 
-                paragraph {
-                    text(
-                        bokmal { +"Se hvordan du melder fra om endringer i vedlegget “Dine rettigheter og plikter”." },
-                        nynorsk { +"I vedlegget «Dine rettar og plikter» ser du kva endringar du må seie frå om." },
-                        english { +"You will see which changes you must report in the attachment, Your Rights and Obligations." },
-                    )
+                    paragraph {
+                        text(
+                            bokmal { +"Se hvordan du melder fra om endringer i vedlegget “Dine rettigheter og plikter”." },
+                            nynorsk { +"I vedlegget «Dine rettar og plikter» ser du kva endringar du må seie frå om." },
+                            english { +"You will see which changes you must report in the attachment, Your Rights and Obligations." },
+                        )
+                    }
                 }
 
                 includePhrase(Felles.DuHarRettTilAaKlage)
