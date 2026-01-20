@@ -4,7 +4,6 @@ import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
@@ -14,19 +13,28 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 object Pen {
-    enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
-        AFP(null),
-        AFP_PRIVAT(null),
-        ALDER(B280),
-        BARNEP(B359),
-        FAM_PL(null),
-        GAM_YRK(null),
-        GENRL(null),
-        GJENLEV(B222),
-        GRBL(null),
-        KRIGSP(null),
-        OMSORG(null),
-        UFOREP(B255);
+    private val behandlingsnummerMap = mapOf(
+        "ALDER" to B280,
+        "BARNEP" to B359,
+        "GJENLEV" to B222,
+        "UFOREP" to B255
+    )
+
+    fun finnBehandlingsnummer(sakstype: SakType) = behandlingsnummerMap[sakstype.name]
+
+    enum class SakType {
+        AFP,
+        AFP_PRIVAT,
+        ALDER,
+        BARNEP,
+        FAM_PL,
+        GAM_YRK,
+        GENRL,
+        GJENLEV,
+        GRBL,
+        KRIGSP,
+        OMSORG,
+        UFOREP;
 
         fun toBrevbaker(): BrevbakerSakstype = when(this) {
             AFP -> BrevbakerSakstype.AFP

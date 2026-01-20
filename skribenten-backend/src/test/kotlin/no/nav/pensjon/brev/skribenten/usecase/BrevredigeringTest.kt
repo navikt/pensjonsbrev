@@ -151,7 +151,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = Sakstype.all,
+            sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
         )
 
         private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
