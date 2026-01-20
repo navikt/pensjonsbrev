@@ -20,8 +20,9 @@ RUN groupadd -r --gid 1001 apprunner && useradd -r --uid 1001 -g apprunner appru
 ENV DEBIAN_FRONTEND="noninteractive" TZ="Europe/London"
 ENV PATH="${PATH}:/app/tex/bin/x86_64-linux/"
 ENV TEXINPUTS=".:/app/pensjonsbrev_latex//:"
-RUN mkdir -p /tmp/fontconfig
-RUN ln -s /tmp/fontconfig /var/cache/fontconfig
+ENV FONTCONFIG_FILE=/usr/share/fonts/fonts.conf
+ENV XDG_CACHE_HOME=/tmp/.cache
+# Viktig å kopiere filer før vi installerer fontconfig, for den starter umiddelbart å bygge cachen
 COPY containerFiles/fonts /usr/share/fonts
 RUN apt update && apt -y install tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
