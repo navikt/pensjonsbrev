@@ -96,7 +96,6 @@ abstract class BrevredigeringTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = samhandlerService,
         p1Service = FakeP1Service()
     )
     protected val brevredigeringFacade = BrevredigeringFacade(

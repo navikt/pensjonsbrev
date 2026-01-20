@@ -53,7 +53,6 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
-    private val samhandlerService: SamhandlerService,
     private val p1Service: P1Service,
 ) : HentBrevService {
     companion object {

@@ -261,7 +261,6 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService(),
         p1Service = FakeP1Service()
     )
 
