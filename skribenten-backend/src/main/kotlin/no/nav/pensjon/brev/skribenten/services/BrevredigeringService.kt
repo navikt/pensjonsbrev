@@ -8,8 +8,6 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.Mottaker
-import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
@@ -76,28 +74,6 @@ class BrevredigeringService(
                 brevDb.redigeresAv = null
 
                 BrevredigeringEntity.reload(brevDb, true)?.toDto(null)
-            }
-        }
-
-    suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): Dto.Brevredigering? =
-        hentBrevMedReservasjon(brevId = brevId) {
-            val rendretBrev = rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende)
-
-            transaction {
-                brevDb.apply {
-                    redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                }.toDto(rendretBrev.letterDataUsage)
-            }
-        }
-
-    suspend fun oppdaterSignaturAttestant(brevId: Long, signaturAttestant: String): Dto.Brevredigering? =
-        hentBrevMedReservasjon(brevId = brevId) {
-            val rendretBrev = rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant)
-
-            transaction {
-                brevDb.apply {
-                    redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                }.toDto(rendretBrev.letterDataUsage)
             }
         }
 

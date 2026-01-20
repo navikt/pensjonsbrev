@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -610,11 +609,6 @@ class BrevredigeringServiceTest {
         )
 
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
-            val oppdatert = brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
-            assertEquals(
-                "Lars Holm",
-                oppdatert?.redigertBrev?.signatur?.attesterendeSaksbehandlerNavn,
-            )
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
@@ -634,7 +628,6 @@ class BrevredigeringServiceTest {
         )
 
         withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
-            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
@@ -857,7 +850,6 @@ class BrevredigeringServiceTest {
         assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
-            assertThrows<ArkivertBrevException> { brevredigeringService.oppdaterSignatur(brev.info.id, "ny signatur") }
             assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(brev.info.id) }
         }
     }
@@ -875,26 +867,29 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
-        runBlocking {
-            val brev = opprettBrev()
+    suspend fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
+        val brev = opprettBrev()
 
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
-                brevredigeringService.oppdaterSignatur(brev.info.id, "en ny signatur")
-                assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                    .isSuccess()
-            }
-            // verifiser forskjellig hash
-            transaction {
-                val redigering = BrevredigeringEntity[brev.info.id]
-                assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
-            }
+        withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            brevredigeringFacade.oppdaterBrev(
+                OppdaterBrevHandler.Request(
+                    brevId = brev.info.id,
+                    nyttRedigertbrev = brev.redigertBrev.withSignatur(saksbehandler = "en ny signatur")
+                )
+            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
+        }
+        // verifiser forskjellig hash
+        transaction {
+            val redigering = BrevredigeringEntity[brev.info.id]
+            assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
+        }
 
-            withPrincipal(saksbehandler1Principal) {
-                assertThrows<NyereVersjonFinsException> {
-                    brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-                }
+        withPrincipal(saksbehandler1Principal) {
+            assertThrows<NyereVersjonFinsException> {
+                brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
             }
         }
     }
@@ -994,21 +989,6 @@ class BrevredigeringServiceTest {
                 )
             ), true
         )
-    }
-
-    @Test
-    fun `kan endre signerende saksbehandler signatur`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.oppdaterSignatur(
-                brev.info.id,
-                "en ny signatur"
-            )
-        }
-
-        assertEquals(
-            "en ny signatur",
-            transaction { BrevredigeringEntity[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
     }
 
     @Test
