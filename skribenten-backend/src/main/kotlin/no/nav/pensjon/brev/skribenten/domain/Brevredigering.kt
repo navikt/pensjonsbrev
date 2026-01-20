@@ -74,8 +74,7 @@ interface Brevredigering {
     fun markerSomKlar()
     fun markerSomKladd()
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
-    fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker
-    fun fjernMottaker()
+    fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
     fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(): Dto.BrevInfo
 }
@@ -199,12 +198,19 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
     }
 
-    override fun settMottaker(mottakerDto: Dto.Mottaker): Mottaker =
-        mottaker?.oppdater(mottakerDto)
-            ?: Mottaker.opprettMottaker(this, mottakerDto).also { refresh() }
+    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? {
+        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottakerNavn)
 
-    override fun fjernMottaker() {
-        mottaker?.delete()
+        return if (mottakerDto == null) {
+            mottaker?.delete()
+            null
+        } else if (mottaker == null) {
+            Mottaker.opprettMottaker(this, mottakerDto)
+                // pga. optional backreference, så må vi oppdatere referansen til mottaker-tabellen
+                .also { refresh(flush = true) }
+        } else {
+            mottaker?.oppdater(mottakerDto)
+        }
     }
 
     override fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =

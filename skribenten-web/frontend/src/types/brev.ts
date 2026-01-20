@@ -29,17 +29,12 @@ export interface OppdaterKlarStatusRequest {
   klar: boolean;
 }
 
-export interface DelvisOppdaterBrevRequest {
-  distribusjonstype?: Nullable<Distribusjonstype>;
-  mottaker?: Nullable<Mottaker>;
-  alltidValgbareVedlegg?: Nullable<AlltidValgbartVedlegg[]>;
+export interface DistribusjonstypeRequest {
+  distribusjon: Distribusjonstype;
 }
 
-export interface DelvisOppdaterBrevResponse {
-  info: BrevInfo;
-  redigertBrev: EditedLetter;
-  saksbehandlerValg: SaksbehandlerValg;
-  valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
+export interface OppdaterMottakerRequest {
+  mottaker: Mottaker;
 }
 
 export interface BestillBrevResponse {

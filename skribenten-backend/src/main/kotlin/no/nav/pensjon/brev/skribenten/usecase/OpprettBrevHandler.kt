@@ -77,7 +77,7 @@ class OpprettBrevHandler(
             brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
         }
         if (req.mottaker != null) {
-            brev.settMottaker(req.mottaker)
+            brev.settMottaker(req.mottaker, pesysData.felles.annenMottakerNavn)
         }
 
         return success(brev.toDto(rendretBrev.letterDataUsage))

@@ -9,10 +9,10 @@ import type {
   BestillBrevResponse,
   BrevInfo,
   BrevResponse,
-  DelvisOppdaterBrevRequest,
-  DelvisOppdaterBrevResponse,
+  DistribusjonstypeRequest,
   OppdaterBrevRequest,
   OppdaterKlarStatusRequest,
+  OppdaterMottakerRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -70,9 +70,15 @@ const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =
 export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
 
-export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
-  (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))
-    .data;
+export const endreDistribusjonstype = async (saksId: string, brevId: string | number, body: DistribusjonstypeRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/distribusjon`, body)).data;
+
+export const endreMottaker = async (saksId: string, brevId: string | number, body: OppdaterMottakerRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/mottaker`, body)).data;
+
+export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
+  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
+};
 
 export const slettBrev = async (saksId: string, brevId: string | number) =>
   (await axios.delete<void>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
@@ -93,10 +99,6 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
       headers: { Accept: "application/pdf" },
     })
   ).data;
-
-export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
-  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
-};
 
 export const attesterBrev = async (args: {
   saksId: string;

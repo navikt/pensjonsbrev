@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -48,12 +49,7 @@ class VeksleKlarStatusHandler(
 
     private fun settBrevTilKladd(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.Brevredigering, BrevredigeringError> {
         brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy).onError { return failure(it) }
-        redigerBrevPolicy.kanRedigere(brev, principal).onError {
-            // Formålet er å låse opp brevet, så vi ignorerer denne feilen
-            if (it !is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev) {
-                return failure(it)
-            }
-        }
+        redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
 
         brev.markerSomKladd()
         brev.redigeresAv = null

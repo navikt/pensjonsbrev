@@ -40,8 +40,7 @@ fun Application.configureRouting(
     val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1ServiceImpl = P1ServiceImpl(penService)
-    val brevredigeringService =
-        BrevredigeringService(brevbakerService, navansattService, penService, samhandlerService, p1ServiceImpl)
+    val brevredigeringService = BrevredigeringService(brevbakerService, navansattService, penService, p1ServiceImpl)
     val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
     val brevredigeringFacade = BrevredigeringFacade(brevbakerService, BrevdataService(penService, samhandlerService), navansattService, RenderService(brevbakerService))
