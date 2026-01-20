@@ -32,7 +32,7 @@ class BrevmalServiceTest {
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = Sakstype.entries.toSet(),
+            sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
         )
     )
 
@@ -155,7 +155,7 @@ class BrevmalServiceTest {
 
     @Test
     fun `inkluderer brevbakerbrev`() = runBlocking {
-        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype("ALDER"))
+        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype("S2"))
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
         }

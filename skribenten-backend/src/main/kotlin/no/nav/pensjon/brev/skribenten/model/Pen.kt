@@ -21,14 +21,14 @@ object Pen {
         "UFOREP" to B255
     )
 
-    fun finnBehandlingsnummer(sakstype: Sakstype) = behandlingsnummerMap[sakstype.kode()]
+    fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode()]
 
     data class SakSelection(
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: Sakstype,
+        val sakType: ISakstype,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
