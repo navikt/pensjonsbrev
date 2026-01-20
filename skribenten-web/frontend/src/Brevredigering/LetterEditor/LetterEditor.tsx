@@ -95,18 +95,12 @@ export const LetterEditor = ({
           flexGrow="1"
           overflowY="auto"
         >
-          <SakspartView
-            sakspart={letter.sakspart}
-            spraak={editorState.info.spraak}
-            wrapperStyles={css`
-              margin-bottom: 1.88rem;
-            `}
-          />
+          <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
           <Heading
             css={css`
               line-height: 30px;
-              margin-bottom: 27px;
-              letter-spacing: 0.45px;
+              letter-spacing: 0.108px;
+              margin-bottom: var(--ax-space-28);
             `}
             level="3"
             onDragOver={(e) => {
