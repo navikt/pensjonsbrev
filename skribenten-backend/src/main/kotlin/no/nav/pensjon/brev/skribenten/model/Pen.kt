@@ -147,23 +147,6 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    enum class BrevbakerSakstype : ISakstype {
-        AFP,
-        AFP_PRIVAT,
-        ALDER,
-        BARNEP,
-        FAM_PL,
-        GAM_YRK,
-        GENRL,
-        GJENLEV,
-        GRBL,
-        KRIGSP,
-        OMSORG,
-        UFOREP;
-
-        override fun kode(): String = name
-    }
-
     fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode()) {
         "ALDER" -> if (forGammeltRegelverk == true) {
             brevregeltype?.gjelderGammeltRegelverk() ?: true

@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -96,7 +97,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
+        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
     )
     private val vedtaksbrev = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VEDTAKSBREV.kode(),
@@ -109,7 +110,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
+        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
     )
     private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VARSELBREV.kode(),
@@ -122,7 +123,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.VARSEL,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
+        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
     )
     private val letterResponse =
         LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = informasjonsbrev.metadata)

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -34,7 +34,7 @@ class Dto2ApiServiceTest {
                     ),
                     kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
                     brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                    sakstyper = Pen.BrevbakerSakstype.entries.toSet(),
+                    sakstyper = setOf(Sakstype("Sakstype1")),
                 ))),
             navansattService = navansattService,
             norg2Service = norg2Service,
