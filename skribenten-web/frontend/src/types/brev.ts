@@ -22,7 +22,7 @@ export type BrevResponse = {
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
   propertyUsage: Nullable<PropertyUsage[]>;
-  valgteVedlegg: Nullable<VedleggKode[]>;
+  valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 
 export interface OppdaterKlarStatusRequest {
@@ -32,14 +32,14 @@ export interface OppdaterKlarStatusRequest {
 export interface DelvisOppdaterBrevRequest {
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
-  alltidValgbareVedlegg?: Nullable<VedleggKode[]>;
+  alltidValgbareVedlegg?: Nullable<AlltidValgbartVedlegg[]>;
 }
 
 export interface DelvisOppdaterBrevResponse {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   saksbehandlerValg: SaksbehandlerValg;
-  valgteVedlegg: Nullable<VedleggKode[]>;
+  valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 }
 
 export interface BestillBrevResponse {
