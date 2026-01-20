@@ -19,12 +19,12 @@ import { Controller, useForm } from "react-hook-form";
 import { getBrev } from "~/api/brev-queries";
 import { delvisOppdaterBrev, getBrevVedlegg, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import type { VedleggKode } from "~/types/brev";
+import type { AlltidValgbartVedlegg } from "~/types/brev";
 import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {
-  valgteVedlegg: VedleggKode[];
+  valgteVedlegg: AlltidValgbartVedlegg[];
 };
 
 export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolean }) => {
@@ -39,7 +39,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     queryFn: () => getBrev.queryFn(props.saksId, props.brev.id, false),
   });
 
-  const savedVedlegg = (brevData?.valgteVedlegg as VedleggKode[]) ?? [];
+  const savedVedlegg: AlltidValgbartVedlegg[] = brevData?.valgteVedlegg ?? [];
 
   const form = useForm<VedleggFormData>({
     defaultValues: { valgteVedlegg: [] },
@@ -55,10 +55,10 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     queryFn: () => getBrevVedlegg.queryFn(props.saksId, props.brev.id),
   });
 
-  const getVedleggLabel = (kode: string) => vedleggKoder?.find((v) => v.kode === kode)?.visningstekst ?? kode;
+  const getVedleggLabel = (vedlegg: AlltidValgbartVedlegg) => vedlegg.visningstekst ?? vedlegg.kode;
 
   const leggTilVedleggMutation = useMutation({
-    mutationFn: (vedlegg: VedleggKode[]) =>
+    mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
       delvisOppdaterBrev(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
@@ -68,9 +68,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   });
 
   const fjernVedleggMutation = useMutation({
-    mutationFn: (vedleggToRemove: VedleggKode) =>
+    mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
       delvisOppdaterBrev(props.saksId, props.brev.id, {
-        alltidValgbareVedlegg: savedVedlegg.filter((v) => v !== vedleggToRemove),
+        alltidValgbareVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
@@ -169,14 +169,14 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
       {/* Other saved vedlegg */}
       {savedVedlegg.length > 0 && (
         <VStack gap="space-4">
-          {savedVedlegg.map((kode) => (
-            <HStack align="center" justify="space-between" key={kode}>
-              <BodyShort size="small">{getVedleggLabel(kode)}</BodyShort>
+          {savedVedlegg.map((vedlegg) => (
+            <HStack align="center" justify="space-between" key={vedlegg.kode}>
+              <BodyShort size="small">{getVedleggLabel(vedlegg)}</BodyShort>
               {!props.erLaast && (
                 <Button
                   icon={<TrashIcon title="Fjern vedlegg" />}
-                  loading={fjernVedleggMutation.isPending && fjernVedleggMutation.variables === kode}
-                  onClick={() => fjernVedleggMutation.mutate(kode)}
+                  loading={fjernVedleggMutation.isPending && fjernVedleggMutation.variables?.kode === vedlegg.kode}
+                  onClick={() => fjernVedleggMutation.mutate(vedlegg)}
                   size="xsmall"
                   variant="tertiary"
                 />
@@ -211,7 +211,15 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
               control={form.control}
               name="valgteVedlegg"
               render={({ field }) => (
-                <CheckboxGroup hideLegend legend="Velg vedlegg" onChange={field.onChange} value={field.value}>
+                <CheckboxGroup
+                  hideLegend
+                  legend="Velg vedlegg"
+                  onChange={(selectedKodes: string[]) => {
+                    const selectedVedlegg = vedleggKoder.filter((v) => selectedKodes.includes(v.kode));
+                    field.onChange(selectedVedlegg);
+                  }}
+                  value={field.value.map((v) => v.kode)}
+                >
                   {vedleggKoder.map((vedlegg) => (
                     <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
                       {vedlegg.visningstekst}
