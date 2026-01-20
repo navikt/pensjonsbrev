@@ -25,8 +25,11 @@ export type BrevResponse = {
   valgteVedlegg: Nullable<VedleggKode[]>;
 };
 
+export interface OppdaterKlarStatusRequest {
+  klar: boolean;
+}
+
 export interface DelvisOppdaterBrevRequest {
-  laastForRedigering?: Nullable<boolean>;
   distribusjonstype?: Nullable<Distribusjonstype>;
   mottaker?: Nullable<Mottaker>;
   alltidValgbareVedlegg?: Nullable<VedleggKode[]>;

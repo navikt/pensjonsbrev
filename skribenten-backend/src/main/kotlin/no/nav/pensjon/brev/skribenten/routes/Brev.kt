@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 
 fun Route.brev(
     brevredigeringService: BrevredigeringService,
@@ -48,7 +48,7 @@ fun Route.brev(
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
@@ -61,7 +61,7 @@ fun Route.brev(
         put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = request,
                     nyttRedigertbrev = null,

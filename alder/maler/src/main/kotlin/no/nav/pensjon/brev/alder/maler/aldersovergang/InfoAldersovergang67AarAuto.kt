@@ -4,8 +4,12 @@ import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.InfoInntektAP
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
+import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.borMedSivilstand
+import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.kronebelop2G
+import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.over2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
+import no.nav.pensjon.brev.aldersovergang.fraser.InfoArbeidsinntekt
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoBoddArbeidetUtlandet
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoFTAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoOenskeSokeAP
@@ -51,13 +55,19 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoVelgeAP(ytelseForAldersovergang))
                 includePhrase(InfoOnsketUttakAP(ytelseForAldersovergang))
                 includePhrase(InfoOenskeSokeAP(ytelseForAldersovergang))
-                includePhrase(InfoSivilstandAP(ytelseForAldersovergang))
+                includePhrase(InfoSivilstandAP(
+                    ytelseForAldersovergang,
+                    borMedSivilstand = borMedSivilstand,
+                    over2G = over2G,
+                    kronebelop2G = kronebelop2G,
+                ))
                 includePhrase(InfoFTAP(ytelseForAldersovergang))
                 includePhrase(InfoAFPprivatAP(ytelseForAldersovergang))
                 includePhrase(InfoSoekeAP(ytelseForAldersovergang))
                 includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergang))
-                includePhrase(InfoSkattAP)
+                includePhrase(InfoSkattAP(ytelseForAldersovergang))
                 includePhrase(InfoInntektAP)
+                includePhrase(InfoArbeidsinntekt)
                 includePhrase(InfoBoddArbeidetUtlandet)
                 includePhrase(InfoPensjonFraAndreAP)
                 includePhrase(HarDuSpoersmaalAlder)

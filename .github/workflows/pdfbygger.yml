@@ -82,11 +82,11 @@ jobs:
         run: |
           docker push ${IMAGE_PDF_BYGGER}
       - name: "Tag image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
         run: |
           docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
       - name: "Push image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
         run: |
           docker push ${IMAGE_BRANCH}
 

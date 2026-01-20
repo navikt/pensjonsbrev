@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page as PDFPage } from "react-pdf";
 
+import { CenteredLoader } from "~/components/CenteredLoader";
+
 import PDFViewerTopBar from "./PDFViewerTopBar";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.mjs", import.meta.url).toString();
@@ -13,7 +15,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.m
 const PDFViewer = (properties: {
   sakId: string;
   brevId: number;
-  pdf: Blob;
+  pdf?: Blob;
   utenSlettKnapp?: boolean;
   children?: React.ReactNode;
 }) => {
@@ -85,8 +87,14 @@ const PDFViewer = (properties: {
           }}
         />
         {properties.children}
-        <HStack justify="space-around" overflow="auto" padding="space-12">
-          <Document file={properties.pdf} loading="" onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}>
+        <HStack flexGrow="1" justify="space-around" overflow="auto" padding="space-12">
+          <Document
+            css={{ display: "flex", flexDirection: "column", "> div": { flexGrow: "1" } }}
+            file={properties.pdf}
+            loading={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}
+            noData={<CenteredLoader label="Henter brev..." verticalStrategy="height" />}
+            onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
+          >
             {Array.from({ length: totalNumberOfPages }, (_, index) => (
               <BoxNew
                 className={`pdf-page`}

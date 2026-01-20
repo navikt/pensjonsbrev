@@ -12,7 +12,7 @@ import type {
   DelvisOppdaterBrevRequest,
   DelvisOppdaterBrevResponse,
   OppdaterBrevRequest,
-  VedleggKode,
+  OppdaterKlarStatusRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -66,6 +66,9 @@ const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =
     rendretBrevErEndret: response.data.rendretBrevErEndret,
   };
 };
+
+export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
 
 export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
   (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))

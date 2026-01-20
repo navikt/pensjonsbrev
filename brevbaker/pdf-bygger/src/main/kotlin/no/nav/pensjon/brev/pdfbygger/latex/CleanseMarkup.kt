@@ -8,6 +8,13 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 fun LetterMarkup.clean(): LetterMarkup =
     cleanMarkup(this)
 
+fun List<LetterMarkup.Attachment>.clean(): List<LetterMarkup.Attachment> =
+    map { it.clean() }
+
+fun LetterMarkup.Attachment.clean(): LetterMarkup.Attachment =
+    cleanMarkup(this)
+
+
 @OptIn(InterneDataklasser::class)
 private fun cleanMarkup(markup: LetterMarkup): LetterMarkup =
     LetterMarkupImpl(
@@ -15,6 +22,15 @@ private fun cleanMarkup(markup: LetterMarkup): LetterMarkup =
         sakspart = markup.sakspart,
         blocks = markup.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
         signatur = markup.signatur
+    )
+
+@OptIn(InterneDataklasser::class)
+private fun cleanMarkup(attachment: LetterMarkup.Attachment): LetterMarkup.Attachment =
+    LetterMarkupImpl.AttachmentImpl(
+        title = attachment.title,
+        blocks = attachment.blocks.mapNotNull { clean(it) }.removeEmptyBlocks(),
+        includeSakspart = attachment.includeSakspart
+
     )
 
 private fun List<Block>.removeEmptyBlocks(): List<Block> =
@@ -95,3 +111,5 @@ private fun List<LetterMarkup.ParagraphContent>.endsWithLinebreakableContent(): 
     }.lastOrNull().let {
         it is LetterMarkup.ParagraphContent.Text && it.text.isNotBlank()
     }
+
+

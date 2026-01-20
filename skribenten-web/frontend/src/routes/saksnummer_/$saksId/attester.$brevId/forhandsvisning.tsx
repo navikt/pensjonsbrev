@@ -1,5 +1,5 @@
 import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, BoxNew, Button, Heading, HStack, Label, Loader, Modal, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, BoxNew, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -9,6 +9,7 @@ import { attesteringBrevKeys, getBrevAttesteringQuery } from "~/api/brev-queries
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import { ApiError } from "~/components/ApiError";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
@@ -31,10 +32,7 @@ const VedtakForhåndsvisningWrapper = () => {
     initial: () => null,
     pending: () => (
       <BoxNew asChild background="default" paddingBlock="space-32 0">
-        <VStack align="center" flexGrow="1" gap="space-4" justify="center">
-          <Loader size="3xlarge" title="henter brev..." />
-          <Heading size="large">Henter brev....</Heading>
-        </VStack>
+        <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
       </BoxNew>
     ),
     error: (err) => <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />,
