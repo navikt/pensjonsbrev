@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.ved
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.Sivilstand
+import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
@@ -35,6 +36,7 @@ data class OmregningAlderUfore2016Felles(
     val avdodNavn: Expression<String?>,
     val avdodFnr: Expression<String?>,
     val gjenlevenderettAnvendt: Expression<Boolean>,
+    val gjenlevenderettInnvilget: Expression<Boolean>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val faktiskBostedsland: Expression<String?>,
     val erEksportberegnet: Expression<Boolean>,
@@ -58,6 +60,7 @@ data class OmregningAlderUfore2016Felles(
     val borMedSivilstand: Expression<BorMedSivilstand?>,
     val over2G: Expression<Boolean?>,
     val kronebelop2G: Expression<Kroner>,
+    val ytelseForAldersovergang: Expression<YtelseForAldersovergangKode>,
 
 
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -174,7 +177,7 @@ data class OmregningAlderUfore2016Felles(
             }
         }
         ifNotNull(avdodNavn) { avdodNavn ->
-            showIf(gjenlevenderettAnvendt.not() and avdodFnr.notNull()) {
+            showIf(gjenlevenderettAnvendt.not() and avdodFnr.notNull() and gjenlevenderettInnvilget) {
                 title2 {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },
@@ -265,20 +268,44 @@ data class OmregningAlderUfore2016Felles(
             }
 
             paragraph {
+                showIf(ytelseForAldersovergang.equalTo(YtelseForAldersovergangKode.UT_GRAD)){
+                    text(
+                        bokmal {
+                            +"Du har fått alderspensjon med en uttaksgrad nærmest mulig uføregraden din."
+                        },
+                        nynorsk {
+                            +"Du har fått alderspensjon med ein uttaksgrad nærast mogleg uføregraden din."
+                        },
+                        english {
+                            +"You have been granted a retirement pension with a withdrawal rate as close as possible to your previous disability benefit rate"
+                        }
+                    )
+                }.orShowIf(ytelseForAldersovergang.equalTo(YtelseForAldersovergangKode.UT_AP_GRAD)){
+                    text(
+                        bokmal {
+                            +"Du har fått alderspensjon med en uttaksgrad nærmest mulig den du har hatt i uføretrygd og alderspensjon."
+                        },
+                        nynorsk {
+                            +"Du har fått alderspensjon med ein uttaksgrad nærast mogleg den du har hatt i uføretrygd og alderspensjon."
+                        },
+                        english {
+                            +"You have been granted a retirement pension with a withdrawal rate as close as possible to your previous disability benefit rate and retirement pension. "
+                        }
+                    )
+                }
                 text(
                     bokmal {
-                        +"Du har fått alderspensjon med en uttaksgrad nærmest mulig uføregraden din. Hvis du ønsker hel alderspensjon, må du gi beskjed til Nav. " +
+                        +"Hvis du ønsker hel alderspensjon, må du gi beskjed til Nav. " +
                                 "Du kan endre pensjonen på $DIN_PENSJON_URL. " +
                                 "Alderspensjonen kan tidligst endres fra måneden etter at du har søkt om endringen. "
                     },
                     nynorsk {
-                        +"Du har fått alderspensjon med ein uttaksgrad nærast mogleg uføregraden din. Om du ønskjer heil alderspensjon, må du gi beskjed til Nav. " +
+                        +"Om du ønskjer heil alderspensjon, må du gi beskjed til Nav. " +
                                 "Du kan endre pensjonen på $DIN_PENSJON_URL. " +
                                 "Du kan tidlegast få endra alderspensjonen frå månaden etter at du har søkt om endringa. "
                     },
                     english {
-                        +"You have been granted a retirement pension with a withdrawal rate as close as possible to your previous disability benefit rate. " +
-                                "If you wish to receive a full retirement pension, you must notify Nav. " +
+                        +"If you wish to receive a full retirement pension, you must notify Nav. " +
                                 "You can change your pension at $DIN_PENSJON_URL. Changes can take effect from the month after you apply. "
                     }
                 )

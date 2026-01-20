@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregni
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.Sivilstand
+import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerBruktIBeregningenAlderDto
@@ -20,6 +21,7 @@ data class OmregningAlderUfore2016Dto(
     val antallBeregningsperioder: Int,
     val gjenlevendetilleggKap19Innvilget: Boolean,
     val gjenlevenderettAnvendt: Boolean,
+    val gjenlevenderettInnvilget: Boolean,
     val inngangOgEksportVurdering: InngangOgEksportVurdering,
     val pensjonstilleggInnvilget: Boolean,
     val garantipensjonInnvilget: Boolean,
@@ -35,6 +37,7 @@ data class OmregningAlderUfore2016Dto(
     val borMedSivilstand: BorMedSivilstand?,
     val over2G: Boolean?,
     val kronebelop2G: Kroner,
+    val ytelseForAldersovergang: YtelseForAldersovergangKode,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,

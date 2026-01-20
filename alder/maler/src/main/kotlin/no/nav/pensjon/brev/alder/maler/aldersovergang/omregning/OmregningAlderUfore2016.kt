@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantitilleggInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
@@ -49,6 +50,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.totalPensjon
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.uttaksgrad
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.virkFom
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdodSelectors.avdodFnr
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.PersongrunnlagAvdodSelectors.avdodNavn
@@ -92,6 +94,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     totalPensjon = pesysData.totalPensjon,
                     antallBeregningsperioder = pesysData.antallBeregningsperioder,
                     gjenlevendetilleggKap19Innvilget = pesysData.gjenlevendetilleggKap19Innvilget,
+                    gjenlevenderettInnvilget = pesysData.gjenlevenderettInnvilget,
                     avdodNavn = pesysData.persongrunnlagAvdod.avdodNavn,
                     avdodFnr = pesysData.persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = pesysData.gjenlevenderettAnvendt,
@@ -118,7 +121,8 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     borMedSivilstand = pesysData.borMedSivilstand,
                     over2G = pesysData.over2G,
                     kronebelop2G = pesysData.kronebelop2G,
-                    )
+                    ytelseForAldersovergang = pesysData.ytelseForAldersovergang,
+                )
             )
 
         }
