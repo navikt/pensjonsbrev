@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import org.slf4j.LoggerFactory
 
@@ -47,7 +48,7 @@ class BrevmalService(
         penService.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: String): Sequence<LetterMetadata> {
-        val erKravPaaGammeltRegelverk = if (sakstype == Pen.BrevbakerSakstype.ALDER) {
+        val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {
             penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 ?: false.also { logger.warn("Feltet \"erKravPaaGammeltRegelverk\" fra vedtak er null, antar false") }
         } else null
@@ -79,7 +80,7 @@ class BrevmalService(
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
-                    legacy.await().map { LetterMetadata.Legacy(it, Pen.BrevbakerSakstype.sakstypeForLegacybrev) }
+                    legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
         }.filter { it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }

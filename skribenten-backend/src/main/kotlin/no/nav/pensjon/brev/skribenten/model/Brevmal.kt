@@ -43,7 +43,7 @@ interface LetterMetadata {
         override val isRedigerbart: Boolean get() = data.redigerbart
         override fun isForSakstype(sakstype: ISakstype) = sakstype == hasSakstype
 
-        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean = sakstype.isRelevantRegelverk(data.brevregeltype, forGammeltRegelverk)
+        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean = Pen.isRelevantRegelverk(sakstype, data.brevregeltype, forGammeltRegelverk)
 
         override fun toApi(): Api.Brevmal = with(data) {
             Api.Brevmal(

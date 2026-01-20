@@ -147,16 +147,10 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    enum class BrevbakerSakstype(val isRelevant: (brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?) -> Boolean = { _, _ -> true}) : ISakstype {
+    enum class BrevbakerSakstype : ISakstype {
         AFP,
         AFP_PRIVAT,
-        ALDER({ brevregeltype, forGammeltRegelverk ->
-            if (forGammeltRegelverk == true) {
-                brevregeltype?.gjelderGammeltRegelverk() ?: true
-            } else {
-                brevregeltype?.gjelderNyttRegelverk() ?: true
-            }
-        }),
+        ALDER,
         BARNEP,
         FAM_PL,
         GAM_YRK,
@@ -165,17 +159,20 @@ object Pen {
         GRBL,
         KRIGSP,
         OMSORG,
-        UFOREP( { brevregeltype, _ -> brevregeltype?.gjelderGammeltRegelverk() ?: true});
+        UFOREP;
 
         override fun kode(): String = name
-
-        override fun isRelevantRegelverk(first: Any?, second: Any?): Boolean {
-            if ((first != null && first !is BrevdataDto.BrevregeltypeCode) || (second != null && second !is Boolean)) throw IllegalStateException("Forventa parametre av typen brevregeltypecode og boolean, fikk ${first?.javaClass} og ${second?.javaClass}")
-            return isRelevant(first, second)
-        }
-
-        companion object {
-            val sakstypeForLegacybrev = GENRL
-        }
     }
+
+    fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode()) {
+        "ALDER" -> if (forGammeltRegelverk == true) {
+            brevregeltype?.gjelderGammeltRegelverk() ?: true
+        } else {
+            brevregeltype?.gjelderNyttRegelverk() ?: true
+        }
+        "UFOREP" -> brevregeltype?.gjelderGammeltRegelverk() ?: true
+        else -> true
+    }
+
+    val sakstypeForLegacybrev = Sakstype("GENRL")
 }
