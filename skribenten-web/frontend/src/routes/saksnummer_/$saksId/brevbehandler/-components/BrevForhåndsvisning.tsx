@@ -22,7 +22,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
   });
 
-  const brev = useQuery(getBrevInfoQuery(properties.brevId));
+  const brevInfo = useQuery(getBrevInfoQuery(properties.brevId));
 
   const navigateToBrevRedigering = () =>
     navigate({
@@ -30,8 +30,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
       params: { saksId: properties.saksId, brevId: properties.brevId },
     });
 
-  const erKlarEllerAttestering =
-    brev.data?.status.type === "Klar" || brev.data?.status.type === "Attestering";
+  const erKlarEllerAttestering = brevInfo.data?.status.type === "Klar" || brevInfo.data?.status.type === "Attestering";
 
   const oppdaterBrevTilKladd = useMutation({
     mutationFn: () => veksleKlarStatus(properties.saksId, properties.brevId, { klar: false }),
@@ -45,7 +44,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
   });
 
   const handleOppdater = () => {
-    if (brev.isLoading) return;
+    if (brevInfo.isLoading) return;
 
     if (erKlarEllerAttestering) {
       oppdaterBrevTilKladd.mutate();
