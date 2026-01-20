@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
+import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
@@ -40,6 +41,16 @@ class BrevredigeringFacade(
                 renderService = renderService,
                 brevdataService = brevdataService,
                 navansattService = navansattService,
+            ).handle(request)
+        }
+
+    suspend fun hentBrev(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        newSuspendedTransaction {
+            HentBrevHandler(
+                brevreservasjonPolicy = brevreservasjonPolicy,
+                redigerBrevPolicy = redigerBrevPolicy,
+                renderService = renderService,
+                brevdataService = brevdataService,
             ).handle(request)
         }
 

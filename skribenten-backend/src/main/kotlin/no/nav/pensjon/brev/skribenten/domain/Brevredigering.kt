@@ -1,16 +1,7 @@
 package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.db.Document
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
-import no.nav.pensjon.brev.skribenten.db.Hash
-import no.nav.pensjon.brev.skribenten.db.MottakerTable
-import no.nav.pensjon.brev.skribenten.db.P1Data
-import no.nav.pensjon.brev.skribenten.db.P1DataTable
-import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
-import no.nav.pensjon.brev.skribenten.db.ValgteVedleggTable
-import no.nav.pensjon.brev.skribenten.db.writeHashTo
+import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
