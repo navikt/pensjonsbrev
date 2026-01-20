@@ -16,12 +16,18 @@ export const UnderskriftTextField = ({ of }: { of: "Saksbehandler" | "Attestant"
     [of, setEditorState],
   );
 
+  const onFocus = useCallback(
+    () => applyAction(Actions.updateFocus, setEditorState, { blockIndex: -1, contentIndex: -1 }),
+    [setEditorState],
+  );
+
   return (
     <TextField
       autoComplete="on"
       error={(value?.length ?? 0) > 0 ? undefined : "Underskrift må oppgis"}
       label="Underskrift"
       onChange={update}
+      onFocus={onFocus}
       size="small"
       value={value ?? ""}
     />
