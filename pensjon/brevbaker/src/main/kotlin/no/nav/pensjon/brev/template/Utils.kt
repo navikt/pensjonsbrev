@@ -15,7 +15,6 @@ fun ObjectMapper.brevbakerConfig() {
     registerModule(BrevbakerBrevdataModule)
     registerModule(BrevkodeModule)
     registerModule(LetterMarkupModule)
-    registerModule(SakstypeModule)
     registerModule(TemplateModelSpecificationModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)

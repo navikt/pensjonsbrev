@@ -58,7 +58,7 @@ class BrevmalService(
 
     private suspend fun hentMaler(sakstype: ISakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { sakstype.isIn(it.sakstyper) }.map { LetterMetadata.Brevbaker(it) } }
+            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.contains(sakstype) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
