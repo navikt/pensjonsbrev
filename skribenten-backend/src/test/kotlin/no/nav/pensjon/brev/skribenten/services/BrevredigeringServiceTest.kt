@@ -302,11 +302,11 @@ class BrevredigeringServiceTest {
 
     // TODO: opprett blir testet i CreateLetterHandlerTest, så henting er det som gjenstår til senere
     @Test
-    fun `can create and fetch brevredigering`(): Unit = runBlocking {
+    suspend fun `can create and fetch brevredigering`() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val brev = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg)
 
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
+        assertEquals(Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH), brevbakerService.renderMarkupKall.last())
         brevbakerService.renderMarkupKall.clear()
 
         assertEquals(
@@ -322,7 +322,7 @@ class BrevredigeringServiceTest {
         assertThat(brev.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
         assertThat(brev.redigertBrev).isEqualTo(letter.toEdit())
 
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
+        assertEquals(Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH), brevbakerService.renderMarkupKall.last())
     }
 
     @Test
@@ -964,56 +964,6 @@ class BrevredigeringServiceTest {
         assertThat(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
             .isAfter(forrigeReservasjon)
             .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
-    }
-
-    @Test
-    fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
-        val brev = opprettBrev(mottaker = mottaker)
-        assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak1.saksId))
-
-        assertNull(brevredigeringService.hentBrev(sak1.saksId, brev.info.id)?.info?.mottaker)
-        assertNull(transaction { Mottaker.findById(brev.info.id) })
-        assertNull(transaction { BrevredigeringEntity[brev.info.id].mottaker })
-    }
-
-    @Test
-    fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1"))
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", NorskPostnummer("1234"), "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertEquals(nyMottaker, oppdatert?.info?.mottaker)
-    }
-
-    @Test
-    fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
-
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
-            navn = "a",
-            adresselinje1 = "b",
-            adresselinje2 = "c",
-            adresselinje3 = "d",
-            landkode = Landkode("CY"),
-            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
-        )
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertThat(oppdatert?.redigertBrev?.sakspart?.annenMottakerNavn).isEqualTo(nyMottaker.navn)
     }
 
     @Test

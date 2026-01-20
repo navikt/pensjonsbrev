@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
+import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
@@ -50,5 +51,10 @@ class BrevredigeringFacade(
     suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         newSuspendedTransaction {
             EndreDistribusjonstypeHandler(redigerBrevPolicy, brevreservasjonPolicy).handle(request)
+        }
+
+    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        newSuspendedTransaction {
+            EndreMottakerHandler(brevreservasjonPolicy, redigerBrevPolicy, brevdataService).endreMottaker(request)
         }
 }

@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
+import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
@@ -100,7 +101,6 @@ fun Route.sakBrev(
                 val brev = brevredigeringService.delvisOppdaterBrev(
                     saksId = sak.saksId,
                     brevId = brevId,
-                    mottaker = request.mottaker?.toDto(),
                     alltidValgbareVedlegg = request.alltidValgbareVedlegg,
                 )
 
@@ -144,14 +144,23 @@ fun Route.sakBrev(
                 }
             }
 
-            delete("/mottaker") {
-                val brevId = call.parameters.getOrFail<Long>("brevId")
-                val sak: Pen.SakSelection = call.attributes[SakKey]
+            route("/mottaker") {
+                put<Api.OppdaterMottakerRequest> { request ->
+                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val resultat = brevredigeringFacade.endreMottaker(
+                        EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
+                    )
 
-                if (brevredigeringService.fjernOverstyrtMottaker(brevId, sak.saksId)) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+                    apiRespond(dto2ApiService, resultat?.then { it.info })
+                }
+
+                delete {
+                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val resultat = brevredigeringFacade.endreMottaker(
+                        EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
+                    )
+
+                    apiRespond(dto2ApiService, resultat?.then { it.info })
                 }
             }
 
@@ -213,7 +222,7 @@ fun Route.sakBrev(
                     val brevId = call.parameters.getOrFail<Long>("brevId")
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     val p1Data = p1Service.hentP1Data(brevId, sak.saksId)
-                    if(p1Data != null) {
+                    if (p1Data != null) {
                         call.respond(p1Data)
                     } else {
                         call.respond(HttpStatusCode.NotFound)
@@ -221,7 +230,7 @@ fun Route.sakBrev(
 
                 }
 
-                post<Api.GeneriskBrevdata>{ p1Data ->
+                post<Api.GeneriskBrevdata> { p1Data ->
                     val brevId = call.parameters.getOrFail<Long>("brevId")
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))

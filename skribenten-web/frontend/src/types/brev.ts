@@ -32,14 +32,8 @@ export interface DistribusjonstypeRequest {
   distribusjon: Distribusjonstype;
 }
 
-export interface DelvisOppdaterBrevRequest {
-  mottaker?: Nullable<Mottaker>;
-}
-
-export interface DelvisOppdaterBrevResponse {
-  info: BrevInfo;
-  redigertBrev: EditedLetter;
-  saksbehandlerValg: SaksbehandlerValg;
+export interface OppdaterMottakerRequest {
+  mottaker: Mottaker;
 }
 
 export interface BestillBrevResponse {

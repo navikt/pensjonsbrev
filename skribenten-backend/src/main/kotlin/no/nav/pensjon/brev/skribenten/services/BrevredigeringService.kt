@@ -63,18 +63,10 @@ class BrevredigeringService(
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
-        mottaker: Dto.Mottaker? = null,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            val annenMottakerNavn = mottaker?.fetchNavn()
-
             transaction {
-                if (mottaker != null) {
-                    brevDb.mottaker?.oppdaterGammel(mottaker) ?: Mottaker.new(brevId) { oppdaterGammel(mottaker) }
-                    brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
-                }
-
                 if (alltidValgbareVedlegg != null) {
                     if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
                         brevDb.document.singleOrNull()?.delete()
@@ -86,17 +78,6 @@ class BrevredigeringService(
 
                 BrevredigeringEntity.reload(brevDb, true)?.toDto(null)
             }
-        }
-
-    private fun BrevredigeringEntity.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
-        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottaker)
-    }
-
-    private suspend fun Dto.Mottaker.fetchNavn(): String? =
-        when (type) {
-            MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
-            MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
-                if (manueltAdressertTil == Dto.Mottaker.ManueltAdressertTil.ANNEN) navn else null
         }
 
     suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): Dto.Brevredigering? =
@@ -342,15 +323,6 @@ class BrevredigeringService(
         }
     }
 
-    fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
-        transaction {
-            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.also {
-                it.mottaker?.delete()
-                it.oppdaterMedAnnenMottakerNavn(null)
-            } != null
-
-        }
-
     suspend fun tilbakestill(brevId: Long): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId) {
             val modelSpec = brevbakerService.getModelSpecification(brevDto.info.brevkode)
@@ -501,21 +473,6 @@ class BrevredigeringService(
                 ?: Document.new(update).pdf
         }
     }
-
-    @Deprecated("Bruk metode i Mottaker")
-    private fun Mottaker.oppdaterGammel(mottaker: Dto.Mottaker?) =
-        if (mottaker != null) {
-            type = mottaker.type
-            tssId = mottaker.tssId
-            navn = mottaker.navn
-            postnummer = mottaker.postnummer
-            poststed = mottaker.poststed
-            adresselinje1 = mottaker.adresselinje1
-            adresselinje2 = mottaker.adresselinje2
-            adresselinje3 = mottaker.adresselinje3
-            landkode = mottaker.landkode
-            manueltAdressertTil = mottaker.manueltAdressertTil
-        } else delete()
 
     private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
         if (this == null) {

@@ -90,17 +90,18 @@ abstract class BrevredigeringTest {
 
     protected val brevbakerService = BrevredigeringServiceTest.BrevredigeringFakeBrevbakerService()
     protected val penService = BrevredigeringServiceTest.FakePenService()
+    protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService(),
+        samhandlerService = samhandlerService,
         p1Service = FakeP1Service()
     )
     protected val brevredigeringFacade = BrevredigeringFacade(
         brevbakerService = brevbakerService,
-        brevdataService = BrevdataService(penService, FakeSamhandlerService()),
+        brevdataService = BrevdataService(penService, samhandlerService),
         navansattService = navAnsattService,
         renderService = RenderService(brevbakerService),
         redigerBrevPolicy = RedigerBrevPolicy(),
