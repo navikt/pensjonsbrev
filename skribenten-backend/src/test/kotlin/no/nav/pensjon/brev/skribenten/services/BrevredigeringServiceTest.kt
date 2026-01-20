@@ -170,7 +170,7 @@ class BrevredigeringServiceTest {
         foedselsnr = "12345678910",
         foedselsdato = LocalDate.now().minusYears(42),
         navn = Pen.SakSelection.Navn("a", "b", "c"),
-        sakType = Pen.SakType.ALDER,
+        sakType = Sakstype("ALDER"),
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(

@@ -30,3 +30,13 @@ object SakstypeModule : SimpleModule() {
         }
     }
 }
+
+class Sakstype(val name: String) : ISakstype {
+    override fun kode() = name
+    override fun equals(other: Any?): Boolean {
+        if (other !is ISakstype) return false
+        return name == other.kode()
+    }
+    override fun hashCode() = name.hashCode()
+    override fun toString() = name
+}

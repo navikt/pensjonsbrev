@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -120,7 +121,7 @@ abstract class BrevredigeringTest {
             foedselsnr = "12345678910",
             foedselsdato = LocalDate.now().minusYears(42),
             navn = Pen.SakSelection.Navn("a", "b", "c"),
-            sakType = Pen.SakType.ALDER,
+            sakType = Sakstype("ALDER"),
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))

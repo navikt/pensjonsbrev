@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
@@ -199,7 +200,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: Pen.SakType,
+        val sakType: Sakstype,
         val enhetId: String?,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)

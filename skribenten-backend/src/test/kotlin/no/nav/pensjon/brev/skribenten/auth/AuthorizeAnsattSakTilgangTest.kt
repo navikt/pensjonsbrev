@@ -22,8 +22,7 @@ import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.Pen.SakType.ALDER
-import no.nav.pensjon.brev.skribenten.model.Pen.SakType.GENRL
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PdlServiceException
 import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
@@ -41,14 +40,14 @@ private val testSak = Pen.SakSelection(
     foedselsnr = "12345",
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = ALDER,
+    sakType = Sakstype("ALDER"),
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = 7007,
     foedselsnr = "007",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = ALDER,
+    sakType = Sakstype("ALDER"),
 )
 
 private val generellSak0001 = Pen.SakSelection(
@@ -56,7 +55,7 @@ private val generellSak0001 = Pen.SakSelection(
     foedselsnr = "12345",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = GENRL,
+    sakType = Sakstype("GENRL"),
 )
 
 private val generellSak0002 = Pen.SakSelection(
@@ -64,7 +63,7 @@ private val generellSak0002 = Pen.SakSelection(
     foedselsnr = "12345",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = GENRL,
+    sakType = Sakstype("GENRL"),
 )
 
 
@@ -255,7 +254,7 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
-    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(ALDER)
+    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(Sakstype("ALDER"))
 
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"
