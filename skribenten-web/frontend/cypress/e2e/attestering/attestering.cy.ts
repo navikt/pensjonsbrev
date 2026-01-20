@@ -22,11 +22,6 @@ describe("attestering", () => {
       req.reply(vedtaksBrev);
     }).as("hentBrev");
 
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).to.deep.equal({});
-      req.reply(vedtaksBrev);
-    }).as("saksbehandlerValg");
-
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (req) => {
       req.reply({ ...vedtaksBrev, redigertBrev: req.body });
     }).as("oppdaterBrevtekst");

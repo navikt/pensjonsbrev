@@ -58,19 +58,6 @@ fun Route.brev(
             apiRespond(dto2ApiService, resultat)
         }
 
-        put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
-            val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            val resultat = brevredigeringFacade.oppdaterBrev(
-                OppdaterBrevHandler.Request(
-                    brevId = call.parameters.getOrFail<Long>("brevId"),
-                    nyeSaksbehandlerValg = request,
-                    nyttRedigertbrev = null,
-                    frigiReservasjon = frigiReservasjon,
-                )
-            )
-            apiRespond(dto2ApiService, resultat)
-        }
-
         get("/reservasjon") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
             brevredigeringService.fornyReservasjon(brevId)
