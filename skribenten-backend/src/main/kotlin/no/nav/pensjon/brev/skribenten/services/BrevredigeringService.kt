@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
@@ -14,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
@@ -368,50 +368,27 @@ class BrevredigeringService(
         signaturSignerende: String? = null,
         signaturAttestant: String? = null,
         annenMottaker: String? = null,
-    ) =
-        rendreBrev(
-            brevkode = brev.info.brevkode,
-            spraak = brev.info.spraak,
-            saksId = brev.info.saksId,
-            vedtaksId = brev.info.vedtaksId,
-            saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
-            avsenderEnhetsId = brev.info.avsenderEnhetId,
-            signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
-            ?: principalSignatur(),
-            signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
-            annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
-        )
-
-    private suspend fun rendreBrev(
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        saksId: Long,
-        vedtaksId: Long?,
-        saksbehandlerValg: SaksbehandlerValgBrevdata,
-        avsenderEnhetsId: String?,
-        signaturSignerende: String,
-        signaturAttestant: String? = null,
-        annenMottakerNavn: String? = null,
     ): LetterMarkupWithDataUsage {
         val pesysData = penService.hentPesysBrevdata(
-            saksId = saksId,
-            vedtaksId = vedtaksId,
-            brevkode = brevkode,
-            avsenderEnhetsId = avsenderEnhetsId,
+            saksId = brev.info.saksId,
+            vedtaksId = brev.info.vedtaksId,
+            brevkode = brev.info.brevkode,
+            avsenderEnhetsId = brev.info.avsenderEnhetId,
         )
         return brevbakerService.renderMarkup(
-            brevkode = brevkode,
-            spraak = spraak,
+            brevkode = brev.info.brevkode,
+            spraak = brev.info.spraak,
             brevdata = GeneriskRedigerbarBrevdata(
                 pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
+                saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
             ),
             felles = pesysData.felles.medSignerendeSaksbehandlere(
                 SignerendeSaksbehandlere(
-                    saksbehandler = signaturSignerende,
-                    attesterendeSaksbehandler = signaturAttestant
+                    saksbehandler = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
+                    ?: principalSignatur(),
+                    attesterendeSaksbehandler = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
                 )
-            ).medAnnenMottakerNavn(annenMottakerNavn)
+            ).medAnnenMottakerNavn(annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn)
         )
     }
 
