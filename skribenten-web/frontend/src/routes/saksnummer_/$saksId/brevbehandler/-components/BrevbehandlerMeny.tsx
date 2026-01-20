@@ -159,8 +159,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
-  const [modalopen, setModalopen] = useState<boolean>(false);
-
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response) => {
