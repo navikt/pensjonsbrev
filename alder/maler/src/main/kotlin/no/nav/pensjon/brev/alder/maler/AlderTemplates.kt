@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtOpprydding
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
@@ -58,6 +59,7 @@ object AlderTemplates : AllTemplates {
             AdhocAlderspensjonGjtVarselBrev,
             AdhocSkjermingstilleggFeilBeroertBruker,
             AdhocSkjermingstilleggFeilMottaker,
+            AdhocTidligereUfoereGradertAP,
             AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
             AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
             AvslagGradsendringFoerNormertPensjonsalder2016Auto,
