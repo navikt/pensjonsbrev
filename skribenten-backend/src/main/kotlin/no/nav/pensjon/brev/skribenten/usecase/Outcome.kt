@@ -31,4 +31,11 @@ sealed class Outcome<out T, out E> {
         }
         return this
     }
+
+    inline fun onError(ignore: (E) -> Boolean, action: (E) -> Unit): Outcome<T, E> {
+        if (this is Failure && !ignore(this.error)) {
+            action(this.error)
+        }
+        return this
+    }
 }
