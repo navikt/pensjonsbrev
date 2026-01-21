@@ -789,7 +789,6 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
         )
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlderDto)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregningDto)
-        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAFP, maanedligPensjonFoerSkattAFPDto)
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
     }
