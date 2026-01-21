@@ -20,8 +20,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET
 
-    override val featureToggle = FeatureToggles.infoBekreftUtsendelseUtland.toggle
-
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(

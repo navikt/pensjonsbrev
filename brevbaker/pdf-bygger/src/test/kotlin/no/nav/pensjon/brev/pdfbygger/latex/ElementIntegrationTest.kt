@@ -10,9 +10,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(ExecutionMode.CONCURRENT)
 class ElementIntegrationTest {
 
     private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())

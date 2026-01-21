@@ -50,10 +50,9 @@ describe("Brevbehandler", () => {
       request.reply([brevResponse[requestNo++]]);
     });
 
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      expect(request.body).contains({ laastForRedigering: true });
-      //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
-      request.reply({ info: klarBrev, redigertBrev: {}, saksbehandlerValg: {} });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
+      expect(request.body).contains({ klar: true });
+      request.reply(klarBrev);
     });
 
     //åpner brevet
@@ -88,11 +87,9 @@ describe("Brevbehandler", () => {
   it("kan ferdigstille og sende brev med lokalprint", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    let patchBrevRequestNr = 0;
     const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
-    const patchResponse = [klarBrev, lokalprintBrev];
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
       request.reply({ journalpostId: 80_912, error: null });
@@ -103,14 +100,13 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([brevResponse[hentBrevRequestNr++]]);
     });
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      if (patchBrevRequestNr === 0) {
-        expect(request.body).contains({ laastForRedigering: true });
-      } else {
-        expect(request.body).contains({ distribusjonstype: "LOKALPRINT" });
-      }
-      //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
-      request.reply({ info: patchResponse[patchBrevRequestNr++], redigertBrev: {}, saksbehandlerValg: {} });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
+      expect(request.body).contains({ klar: true });
+      request.reply(klarBrev);
+    });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/distribusjon", (request) => {
+      expect(request.body).contains({ distribusjon: "LOKALPRINT" });
+      request.reply(lokalprintBrev);
     });
 
     //åpner brevet
@@ -144,11 +140,9 @@ describe("Brevbehandler", () => {
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    let patchBrevRequestNr = 0;
     const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
-    const patchResponse = [klarBrev, lokalprintBrev];
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/pdf/send", (request) => {
       request.reply({ journalpostId: 80_912, error: null });
@@ -161,14 +155,14 @@ describe("Brevbehandler", () => {
       request.reply({ body: "simulerer en feil ved henting av pdf for journalpostId'en", statusCode: 500 });
     });
 
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      if (patchBrevRequestNr === 0) {
-        expect(request.body).contains({ laastForRedigering: true });
-      } else {
-        expect(request.body).contains({ distribusjonstype: "LOKALPRINT" });
-      }
-      //er ikke interesert i innholdet i redigert brev + saksbehandlerValg
-      request.reply({ info: patchResponse[patchBrevRequestNr++], redigertBrev: {}, saksbehandlerValg: {} });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
+      expect(request.body).contains({ klar: true });
+      request.reply(klarBrev);
+    });
+
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/distribusjon", (request) => {
+      expect(request.body).contains({ distribusjon: "LOKALPRINT" });
+      request.reply(lokalprintBrev);
     });
 
     //åpner brevet
@@ -408,10 +402,8 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([nyBrevInfo2]);
     });
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
-      expect(request.body).deep.equal({
-        laastForRedigering: true,
-      });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
+      expect(request.body).deep.equal({ klar: true });
       request.reply({ statusCode: 400, body: { message: "dette er en feil" } });
     });
 

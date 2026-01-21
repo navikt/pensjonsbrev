@@ -27,17 +27,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.JwtUserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.UnauthorizedException
-import no.nav.pensjon.brev.skribenten.auth.requireAzureADConfig
-import no.nav.pensjon.brev.skribenten.auth.skribentenJwt
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.services.P1Exception
 import no.nav.pensjon.brev.skribenten.services.PenDataException
 import no.nav.pensjon.brev.skribenten.services.ServiceException
@@ -130,14 +126,11 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
                     BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
                 is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
-                is BrevLaastForRedigeringException -> call.respond(HttpStatusCode.Locked, cause.message)
                 is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
                 is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
                 is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is KanIkkeAttestereException -> call.respond(HttpStatusCode.InternalServerError, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
-                is VedtaksbrevKreverVedtaksId -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
             }
         }

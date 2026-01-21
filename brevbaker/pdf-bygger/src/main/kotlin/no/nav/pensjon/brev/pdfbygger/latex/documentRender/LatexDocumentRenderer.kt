@@ -21,7 +21,7 @@ internal object LatexDocumentRenderer {
 
     internal fun render(pdfRequest: PDFRequest): LatexDocument = render(
         letter = pdfRequest.letterMarkup.clean(),
-        attachments = pdfRequest.attachments,
+        attachments = pdfRequest.attachments.clean(),
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,

@@ -24,16 +24,16 @@ export type BrevResponse = {
   propertyUsage: Nullable<PropertyUsage[]>;
 };
 
-export interface DelvisOppdaterBrevRequest {
-  laastForRedigering?: Nullable<boolean>;
-  distribusjonstype?: Nullable<Distribusjonstype>;
-  mottaker?: Nullable<Mottaker>;
+export interface OppdaterKlarStatusRequest {
+  klar: boolean;
 }
 
-export interface DelvisOppdaterBrevResponse {
-  info: BrevInfo;
-  redigertBrev: EditedLetter;
-  saksbehandlerValg: SaksbehandlerValg;
+export interface DistribusjonstypeRequest {
+  distribusjon: Distribusjonstype;
+}
+
+export interface OppdaterMottakerRequest {
+  mottaker: Mottaker;
 }
 
 export interface BestillBrevResponse {

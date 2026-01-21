@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.db.MottakerType
+import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus

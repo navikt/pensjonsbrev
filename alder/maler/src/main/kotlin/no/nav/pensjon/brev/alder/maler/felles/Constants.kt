@@ -31,6 +31,8 @@ object Constants {
     const val PENSJON_ENDRING_URL = "$NAV_URL/pensjon-endring"
     const val REGULERING_ALDERSPENSJON_URL = "$NAV_URL/reguleringalderspensjon"
     const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
+    const val SKATTEETATEN_URL = "skatteetaten.no"
+    const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
 
 
     // todo slett ubrukte
@@ -48,8 +50,6 @@ object Constants {
     const val MEDLEMSKAP_URL = "$NAV_URL/medlemskap"
     const val MINSIDE_URL = "$NAV_URL/minside"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
-    const val SKATTEETATEN_URL = "skatteetaten.no"
-    const val SKATTEETATEN_PENSJONIST_URL = "$SKATTEETATEN_URL/pensjonist"
     const val SKJEMA_URL = "$NAV_URL/skjema"
     const val SKRIV_TIL_OSS_URL = "$NAV_URL/skriv-til-oss"
     const val SUPPLERENDE_STOENAD_URL = "$NAV_URL/supplerende"

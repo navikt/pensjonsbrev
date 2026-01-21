@@ -21,6 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.Isolated
 
 class TemplateRoutesTest {
 
@@ -37,16 +38,6 @@ class TemplateRoutesTest {
         val response = client.get("/templates/autobrev")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(alleAutobrevmaler.map { it.kode.kode() }.toSet(), response.body<Set<String>>())
-    }
-
-    @Test
-    fun `can get names of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
-        val response = client.get("/templates/redigerbar")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(
-            alleRedigerbareMaler
-                .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
-        )
     }
 
     @Test
@@ -71,12 +62,27 @@ class TemplateRoutesTest {
         assertEquals(alleAutobrevmaler.map { it.description() }, response.body<List<TemplateDescription.Autobrev>>())
     }
 
-    @Test
-    fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
-        val response = client.get("/templates/redigerbar?includeMetadata=true")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(alleRedigerbareMaler
+    // Disse testene må kjøre for seg sjøl for å ikke bli forvirra av parallellisering
+    // Burde vel egentlig kunne løses med resourcelock
+    @Isolated
+    class Redigerbar {
+        @Test
+        fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar?includeMetadata=true")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(alleRedigerbareMaler
             .map { it.description() }.map { medBrevkategori(it) }, response.body<List<TemplateDescription.Redigerbar>>())
+        }
+
+        @Test
+        fun `can get names of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(
+                alleRedigerbareMaler
+                    .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
+            )
+        }
     }
 
     @Test

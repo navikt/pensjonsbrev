@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val apiModelVersion = 331
+val apiModelVersion = 332
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -65,20 +65,12 @@ tasks {
     }
 
     val test by testing.suites.existing(JvmTestSuite::class)
-    register<Test>("integrationTest") {
+    named<Test>("integrationTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("integration-test")
-        }
     }
-    register<Test>("manualTest") {
+    named<Test>("manualTest") {
         testClassesDirs = files(test.map { it.sources.output.classesDirs })
         classpath = files(test.map { it.sources.runtimeClasspath })
-        group = LifecycleBasePlugin.VERIFICATION_GROUP
-        useJUnitPlatform {
-            includeTags = setOf("manual-test")
-        }
     }
 }

@@ -31,6 +31,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -40,6 +42,7 @@ import kotlin.reflect.KProperty
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(ExecutionMode.CONCURRENT)
 abstract class BrevmodulTest(
     val templates: AllTemplates,
     val auto: Collection<Brevkode.Automatisk>,
@@ -123,7 +126,7 @@ abstract class BrevmodulTest(
         listOf(Language.Bokmal, Language.English)
             .flatMap { spraak ->
                 templates.hentAlltidValgbareVedlegg()
-                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode()) }
+                    .map { Arguments.of(it.vedlegg, EmptyVedleggData, spraak, it.kode.kode) }
                     .distinctBy { it.get()[2].toString() + it.get()[3] }
             }
 

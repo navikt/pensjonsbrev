@@ -6,7 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Ufoerebrevkoder {
     enum class AutoBrev : Automatisk {
-
+        UT_INFO_ENDRET_PGA_INNTEKT
         ;
         override fun kode(): String = this.name
     }
@@ -53,9 +53,9 @@ object Ufoerebrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
         ;
 
-        override fun kode() = name
+        override val kode = name
     }
 }

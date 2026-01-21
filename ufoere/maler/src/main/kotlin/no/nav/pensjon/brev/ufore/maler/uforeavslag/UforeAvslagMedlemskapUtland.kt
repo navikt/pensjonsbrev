@@ -123,7 +123,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             }
 
             title1 {
-                text(bokmal { + "Slik har vi beregnet trygdetiden"})
+                text(bokmal { + "Dette er trygdetiden din"})
             }
 
             paragraph {
@@ -157,7 +157,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
             }
 
             paragraph {
-                text(bokmal { + fritekst("Individuell vurdering medlemsskap og lovvalg") })
+                text(bokmal { + fritekst("Individuell vurdering medlemskap og lovvalg") })
             }
 
             showIf(saksbehandlerValg.visBrukerIkkeOmfattesAvPersonkretsTrygdeforordning) {
@@ -181,7 +181,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                     text(bokmal { + "Har du ikke vært yrkesaktiv i Norge eller andre EØS-land, må du ha minst tre års medlemskap i folketrygden før uføretidspunktet." })
                 }
                 paragraph {
-                    text(bokmal { + "Du har ikke vært medlem av folketrygden før " + fritekst("uføretidspunktet / før dato") + ", og fyller dermed ikke minstekravet til medlemsskap i Norge." })
+                    text(bokmal { + "Du har ikke vært medlem av folketrygden før " + fritekst("uføretidspunktet / før dato") + ", og fyller dermed ikke minstekravet til medlemskap i Norge." })
                 }
                 paragraph {
                     text(bokmal { + "Du har ikke rett til uføretrygd fra Norge etter EØS-avtalen." })
@@ -194,7 +194,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }.orShow {
                 paragraph {
-                    text(bokmal { + "Når vi legger sammen trygdetiden din fra utland og Norge, oppfyller du fortsatt ikke vilkårene om trygdetid." })
+                    text(bokmal { + "Når vi legger sammen trygdetiden din i Norge og avtaleland, oppfyller du fortsatt ikke vilkårene om medlemskap." })
                 }
 
                 paragraph {

@@ -22,12 +22,12 @@ import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { endreDistribusjonstype, hentAlleBrevForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { BrevStatus, DelvisOppdaterBrevResponse } from "~/types/brev";
+import type { BrevStatus } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
@@ -162,22 +162,22 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   const [modalopen, setModalopen] = useState<boolean>(false);
 
-  const laasForRedigeringMutation = useMutation<DelvisOppdaterBrevResponse, Error, boolean, unknown>({
-    mutationFn: (laast) => delvisOppdaterBrev(props.saksId, props.brev.id, { laastForRedigering: laast }),
+  const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
+    mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
     },
   });
 
-  const distribusjonstypeMutation = useMutation<DelvisOppdaterBrevResponse, Error, Distribusjonstype, unknown>({
+  const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      delvisOppdaterBrev(props.saksId, props.brev.id, { distribusjonstype: distribusjonstype }),
+      endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
     },
   });

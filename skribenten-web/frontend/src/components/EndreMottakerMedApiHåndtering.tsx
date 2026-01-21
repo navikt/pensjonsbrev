@@ -5,9 +5,9 @@ import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, fjernOverstyrtMottaker, hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import type { BrevInfo, DelvisOppdaterBrevResponse, Mottaker } from "~/types/brev";
+import type { BrevInfo, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import OppsummeringAvMottaker from "./OppsummeringAvMottaker";
@@ -22,13 +22,14 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
   withGap?: boolean;
 }) => {
   const queryClient = useQueryClient();
-  const mottakerMutation = useMutation<DelvisOppdaterBrevResponse, AxiosError, Mottaker>({
-    mutationFn: (mottaker) => delvisOppdaterBrev(props.saksId, props.brev.id, { mottaker: mottaker }),
+  const mottakerMutation = useMutation<BrevInfo, AxiosError, Mottaker>({
+    mutationFn: (mottaker) => endreMottaker(props.saksId, props.brev.id, { mottaker: mottaker }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? response.info : brev)),
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
       setModalÅpen(false);
     },
   });
@@ -39,6 +40,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === props.brev.id ? { ...props.brev, mottaker: null } : brev)),
       );
+      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
     },
   });
 

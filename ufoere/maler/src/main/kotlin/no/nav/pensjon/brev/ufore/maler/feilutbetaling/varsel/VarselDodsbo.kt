@@ -119,7 +119,7 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             }
             paragraph {
                 text(
-                    bokmal { + dato + " fikk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
+                    bokmal { + navn + " fikk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
                         "Utbetalingen skulle vært stanset i denne perioden, og derfor har det skjedd en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
                     nynorsk { + navn + " fekk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
                             "Utbetalinga skulle vore stansa i denne perioden, og derfor har det skjedd ei feilutbetaling på " + bruttoFeilutbetalt + " kroner. "}

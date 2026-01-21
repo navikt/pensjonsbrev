@@ -414,8 +414,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
             includePhrase(GarantitilleggHjemmel(garantitilleggInnvilget))
-            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget))
-            includePhrase(InnvilgetGjRettKap19For2024(gjenlevenderettAnvendt, gjenlevendetilleggKap19Innvilget))
+            includePhrase(GjenlevendetilleggKap19Hjemmel(gjenlevendetilleggKap19Innvilget, regelverkType))
+            includePhrase(InnvilgetGjRettKap19For2024(gjenlevenderettAnvendt, gjenlevendetilleggKap19Innvilget, regelverkType))
 
             title1 {
                 text(
