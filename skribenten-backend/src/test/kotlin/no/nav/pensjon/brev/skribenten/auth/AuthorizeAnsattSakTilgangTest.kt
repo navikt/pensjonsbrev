@@ -40,14 +40,14 @@ private val testSak = Pen.SakSelection(
     foedselsnr = "12345",
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = Sakstype("ALDER"),
+    sakType = Sakstype("Sakstype123"),
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = 7007,
     foedselsnr = "007",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
-    sakType = Sakstype("ALDER"),
+    sakType = Sakstype("Sakstype123"),
 )
 
 private val generellSak0001 = Pen.SakSelection(
@@ -254,7 +254,7 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
-    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(Sakstype("ALDER"))
+    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(Sakstype("Sakstype123"))
 
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"
