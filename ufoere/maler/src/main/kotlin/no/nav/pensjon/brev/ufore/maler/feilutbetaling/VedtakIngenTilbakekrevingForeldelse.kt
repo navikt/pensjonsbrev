@@ -23,6 +23,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.s
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.maler.vedlegg.oversiktOverFeilutbetalingerPaRadform
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -112,7 +113,7 @@ object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbeta
                 )
             }
         }
-        includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto)
+        includeAttachment(oversiktOverFeilutbetalingerPaRadform, pesysData.oversiktOverFeilutbetalingPEDto)
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }

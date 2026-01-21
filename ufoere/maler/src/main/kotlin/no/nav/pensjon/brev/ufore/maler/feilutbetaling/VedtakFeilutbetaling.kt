@@ -308,8 +308,7 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
             includePhrase(Felles.HarDuSporsmal)
         }
 
-        includeAttachment(oversiktOverFeilutbetalingerPaRadform, pesysData.oversiktOverFeilutbetalingPEDto, pesysData.oversiktOverFeilutbetalingPEDto.feilutbetalingPerArListe.notNull())
-        includeAttachment(oversiktOverFeilutbetalinger, pesysData.oversiktOverFeilutbetalingPEDto, pesysData.oversiktOverFeilutbetalingPEDto.feilutbetalingPerArListe.isNull())
+        includeAttachment(oversiktOverFeilutbetalingerPaRadform, pesysData.oversiktOverFeilutbetalingPEDto)
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
