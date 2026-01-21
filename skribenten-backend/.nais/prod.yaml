@@ -61,7 +61,6 @@ externalHosts:
   - pensjon-pen.prod-fss-pub.nais.io
   - saf.prod-fss-pub.nais.io
   - pensjon-persondata.prod-fss-pub.nais.io
-  - navansatt.prod-fss-pub.nais.io
   - pensjon-samhandler-proxy.prod-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
   - norg2.intern.nav.no
@@ -112,9 +111,9 @@ env:
     value: "api://prod-fss.pensjon-person.pensjon-representasjon/.default"
 
   - name: NAVANSATT_URL
-    value: "https://navansatt.prod-fss-pub.nais.io/"
+    value: "http://navansatt.pensjon-saksbehandling/"
   - name: NAVANSATT_SCOPE
-    value: "api://prod-fss.pensjondeployer.navansatt/.default"
+    value: "api://prod-gcp.pensjon-saksbehandling.navansatt/.default"
 
   - name: SAMHANDLER_PROXY_URL
     value: "https://pensjon-samhandler-proxy.prod-fss-pub.nais.io"
