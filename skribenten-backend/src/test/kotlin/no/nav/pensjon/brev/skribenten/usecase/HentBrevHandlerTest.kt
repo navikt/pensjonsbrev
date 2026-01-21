@@ -120,7 +120,7 @@ class HentBrevHandlerTest : BrevredigeringTest() {
                 }
             }
         }
-        val awaited = hentBrev.awaitAll().filterIsInstance<Outcome<Dto.Brevredigering, BrevredigeringError>>()
+        val awaited = hentBrev.awaitAll().filterNotNull()
         assertThat(awaited).hasSize(hentBrev.size)
 
         assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
