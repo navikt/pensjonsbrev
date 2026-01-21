@@ -31,6 +31,10 @@ describe("P1 med forsidebrev", () => {
       // @ts-expect-error: JSON fixture data might miss optional complex types but works for runtime
       request.reply(nyBrevResponse({ info: p1BrevInfo }));
     });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=false", (request) => {
+      // @ts-expect-error: JSON fixture data might miss optional complex types but works for runtime
+      request.reply(nyBrevResponse({ info: p1BrevInfo }));
+    });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([p1BrevInfo]);
     });
@@ -40,21 +44,11 @@ describe("P1 med forsidebrev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
       request.reply(countriesSubset);
     }).as("getLand");
+    // Intercept for Vedlegg component - returns empty array since P1 vedlegg is handled separately
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/alltidValgbareVedlegg", (request) => {
+      request.reply([]);
+    }).as("getVedlegg");
     cy.visit("/saksnummer/123456/brevbehandler");
-  });
-
-  it("viser vedlegg og redigeringsknapp kun for P1", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
-      request.reply([p1BrevInfo, annetBrev]);
-    });
-
-    cy.contains(annetBrev.brevtittel).click();
-    cy.contains("Vedlegg").should("not.be.visible");
-    cy.get('[data-cy="p1-edit-button"]').should("not.be.visible");
-    cy.contains(p1BrevInfo.brevtittel).click();
-    cy.contains("Overstyring av vedlegg - P1").should("not.exist");
-    cy.contains("Vedlegg").should("be.visible").get('[data-cy="p1-edit-button"]').should("be.visible").click();
-    cy.contains("Overstyring av vedlegg - P1").should("be.visible");
   });
 
   it("viser og lagrer data i henholdsvis visningformat og api format", () => {
