@@ -41,7 +41,6 @@ fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto
     orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
     maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025Dto(),
-    maanedligPensjonFoerSkattAFPDto = createMaanedligPensjonFoerSkattAFPDto(),
     opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
     opplysningerOmAvdoedBruktIBeregningDto = createOpplysningerOmAvdoedBruktIBeregningDto(),
     informasjonOmMedlemskap = null,
