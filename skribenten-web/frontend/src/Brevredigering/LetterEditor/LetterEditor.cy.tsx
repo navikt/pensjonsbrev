@@ -38,6 +38,7 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
     propertyUsage: null,
+    valgteVedlegg: null,
   };
   const newState = Actions.create(brevresponse);
   if (focus) {
