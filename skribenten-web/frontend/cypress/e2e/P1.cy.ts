@@ -1,7 +1,7 @@
 import p1Data from "../fixtures/p1Data.json";
 import { nyBrevResponse } from "../utils/brevredigeringTestUtils";
 
-const { p1BrevInfo, annetBrev, p1BrevData, p1BrevDataWithMissingFields, countriesSubset } = p1Data;
+const { p1BrevInfo, p1BrevData, p1BrevDataWithMissingFields, countriesSubset } = p1Data;
 
 // Hjelpere
 const openP1Modal = () => {
