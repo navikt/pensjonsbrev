@@ -78,7 +78,7 @@ export const endreMottaker = async (saksId: string, brevId: string | number, bod
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/mottaker`, body)).data;
 
 export const oppdaterVedlegg = async (saksId: string, brevId: number, body: OppdaterVedleggRequest) =>
-  (await axios.patch<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body)).data;
+  (await axios.patch<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body)).data;
 
 export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
   return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
