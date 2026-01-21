@@ -1,21 +1,16 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
-import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
-import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
+import no.nav.pensjon.brev.skribenten.usecase.*
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
+import java.sql.Connection
+import java.time.Instant
 
 class BrevredigeringFacade(
     brevbakerService: BrevbakerService,
@@ -29,9 +24,11 @@ class BrevredigeringFacade(
 ) {
 
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        newSuspendedTransaction {
-            OppdaterBrevHandler(redigerBrevPolicy, brevreservasjonPolicy, renderService, brevdataService).handle(request)
-        }
+        OppdaterBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            renderService = renderService,
+            brevdataService = brevdataService
+        ).runHandler(request)
 
     suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         newSuspendedTransaction {
@@ -45,27 +42,46 @@ class BrevredigeringFacade(
         }
 
     suspend fun hentBrev(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        newSuspendedTransaction {
-            HentBrevHandler(
-                brevreservasjonPolicy = brevreservasjonPolicy,
-                redigerBrevPolicy = redigerBrevPolicy,
-                renderService = renderService,
-                brevdataService = brevdataService,
-            ).handle(request)
-        }
+        HentBrevHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            renderService = renderService,
+            brevdataService = brevdataService,
+        ).runHandler(request)
 
     suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        newSuspendedTransaction {
-            VeksleKlarStatusHandler(klarTilSendingPolicy, redigerBrevPolicy, brevreservasjonPolicy).handle(request)
-        }
+        VeksleKlarStatusHandler(
+            klarTilSendingPolicy = klarTilSendingPolicy,
+            redigerBrevPolicy = redigerBrevPolicy
+        ).runHandler(request)
 
     suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        newSuspendedTransaction {
-            EndreDistribusjonstypeHandler(redigerBrevPolicy, brevreservasjonPolicy).handle(request)
-        }
+        EndreDistribusjonstypeHandler(
+            redigerBrevPolicy = redigerBrevPolicy
+        ).runHandler(request)
 
     suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        newSuspendedTransaction {
-            EndreMottakerHandler(brevreservasjonPolicy, redigerBrevPolicy, brevdataService).endreMottaker(request)
+        EndreMottakerHandler(
+            redigerBrevPolicy = redigerBrevPolicy,
+            brevdataService = brevdataService
+        ).runHandler(request)
+
+    private suspend fun <Request : BrevredigeringRequest> BrevredigeringHandler<Request>.runHandler(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+        if (requiresReservasjon(request)) {
+            val principal = PrincipalInContext.require()
+
+            val reservasjon = transaction(Connection.TRANSACTION_REPEATABLE_READ) {
+                BrevredigeringEntity.findById(request.brevId)
+                    ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
+            }
+            if (reservasjon == null) {
+                return null
+            } else if (reservasjon is Outcome.Failure) {
+                return failure(reservasjon.error)
+            }
         }
+
+        return newSuspendedTransaction {
+            handle(request)
+        }
+    }
 }

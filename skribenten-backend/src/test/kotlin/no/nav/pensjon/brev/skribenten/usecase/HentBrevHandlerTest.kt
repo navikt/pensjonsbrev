@@ -123,16 +123,20 @@ class HentBrevHandlerTest : BrevredigeringTest() {
         val awaited = hentBrev.awaitAll().filterIsInstance<Outcome<Dto.Brevredigering, BrevredigeringError>>()
         assertThat(awaited).hasSize(hentBrev.size)
 
-//        val redigeresFaktiskAv = transaction { BrevredigeringEntity[brev.info.id].redigeresAv }!!
-
         assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
         assertThat(awaited).areExactly(
             awaited.size - 1,
             condition("Feilende hentBrev med reservasjon") { it.isFailure },
         )
-//        assertThat(awaited).allMatch {
-//            it.isFailure || it.getOrNull()?.info?.redigeresAv == redigeresFaktiskAv
-//        }
+
+        val faktiskReservertAv = awaited.filterIsInstance<Outcome.Success<Dto.Brevredigering>>().single().resultOrFail().info.redigeresAv
+
+        assertThat(awaited).allMatch {
+            when (it) {
+                is Outcome.Success -> it.value.info.redigeresAv == faktiskReservertAv
+                is Outcome.Failure -> it.error is BrevreservasjonPolicy.ReservertAvAnnen && it.error.eksisterende.reservertAv == faktiskReservertAv
+            }
+        }
     }
 
     private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =

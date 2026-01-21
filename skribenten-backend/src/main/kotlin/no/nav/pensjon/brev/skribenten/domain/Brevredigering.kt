@@ -144,6 +144,8 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
     }
 
     override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
+
+    // TODO: Vurder å ekstrahere dette som en egen entitet i egen tabell
     override val reservasjon: Reservasjon?
         get() {
             val reservertAv = this.redigeresAv ?: return null
