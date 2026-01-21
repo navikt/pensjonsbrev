@@ -5,8 +5,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   validateSearch: (search): BrevbehandlerSearch => brevbehandlerSearchSchema.parse(search),
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    const getSakContextQueryOptions = getSakContext(saksId, vedtaksId);
     return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   component: Brevbehandler,
@@ -37,8 +37,8 @@ function Brevbehandler() {
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
   //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId),
+    queryKey: hentAlleBrevInfoForSak.queryKey(saksId),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(saksId),
   });
 
   return (

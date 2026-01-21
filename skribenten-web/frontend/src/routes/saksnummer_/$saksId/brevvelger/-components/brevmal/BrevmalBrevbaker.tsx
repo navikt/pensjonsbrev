@@ -5,7 +5,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
+import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
 import { Divider } from "~/components/Divider";
@@ -93,8 +93,8 @@ const BrevmalBrevbaker = (props: {
   const { enhetsId, vedtaksId } = Route.useSearch();
 
   const alleSaksbrevQuery = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
-    queryFn: () => hentAlleBrevForSak.queryFn(props.saksId.toString()),
+    queryKey: hentAlleBrevInfoForSak.queryKey(props.saksId.toString()),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(props.saksId.toString()),
   });
 
   const sistOpprettetKladd = useMemo(() => {

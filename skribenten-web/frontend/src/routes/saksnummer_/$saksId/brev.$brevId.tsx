@@ -19,7 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
@@ -199,7 +199,7 @@ function RedigerBrev({
     });
 
   const brevmal = useQuery({
-    ...getBrevmetadataQuery,
+    ...getBrevmetadata,
     select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 

@@ -6,7 +6,7 @@ import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakContextDto } from "~/types/apiTypes";
 
@@ -28,9 +28,9 @@ function SaksnummerPage() {
   const search = Route.useSearch();
 
   const hentSakContextMutation = useMutation<SakContextDto, AxiosError<unknown>, { saksnummer: string }>({
-    mutationFn: ({ saksnummer }) => getSakContextQuery(saksnummer, undefined).queryFn(),
+    mutationFn: ({ saksnummer }) => getSakContext(saksnummer, undefined).queryFn(),
     onSuccess: (sakContext, { saksnummer }) => {
-      queryClient.setQueryData(getSakContextQuery(saksnummer, undefined).queryKey, sakContext);
+      queryClient.setQueryData(getSakContext(saksnummer, undefined).queryKey, sakContext);
       return navigate({
         to: "/saksnummer/$saksId/brevvelger",
         params: { saksId: sakContext.sak.saksId.toString() },

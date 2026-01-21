@@ -2,7 +2,7 @@ import { Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 
-import { hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
+import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SamhandlerTypeCode } from "~/types/apiTypes";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
@@ -22,7 +22,7 @@ const HentOgVisSamhandlerAdresse = (properties: {
   isPending: Nullable<boolean>;
   onCloseIntent: () => void;
 }) => {
-  const samhandlerAdresse = useQuery(hentSamhandlerAdresseQuery(properties.id));
+  const samhandlerAdresse = useQuery(hentSamhandlerAdresse(properties.id));
 
   if (samhandlerAdresse.isPending) {
     return (

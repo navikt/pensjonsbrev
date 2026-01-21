@@ -1,7 +1,7 @@
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
-import { hentPdfForJournalpostQuery } from "~/api/sak-api-endpoints";
+import { hentPdfForJournalpost } from "~/api/sak-api-endpoints";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
 import type { BrevInfo } from "~/types/brev";
@@ -32,7 +32,7 @@ export default AccordionContent;
 
 const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
   const pdfForJournalpost = useMutation<Blob, Error, number>({
-    mutationFn: (journalpostId) => hentPdfForJournalpostQuery.queryFn(props.saksId, journalpostId),
+    mutationFn: (journalpostId) => hentPdfForJournalpost.queryFn(props.saksId, journalpostId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
   });
 

@@ -6,7 +6,7 @@ import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -42,7 +42,7 @@ const VedtakWrapper = () => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   const hentBrevQuery = useQuery({
-    ...getBrevAttesteringQuery(saksId, Number(brevId)),
+    ...getBrevAttestering(saksId, Number(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
   });
 

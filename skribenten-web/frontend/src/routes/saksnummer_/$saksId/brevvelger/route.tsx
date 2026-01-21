@@ -21,9 +21,9 @@ import { groupBy, partition, sortBy } from "lodash";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 
-import { getBrevmetadataQuery } from "~/api/brev-queries";
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritterQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getBrevmetadata } from "~/api/brev-queries";
+import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
@@ -48,8 +48,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    context.queryClient.prefetchQuery(getBrevmetadataQuery);
-    return await context.queryClient.ensureQueryData(getSakContextQuery(saksId, vedtaksId));
+    context.queryClient.prefetchQuery(getBrevmetadata);
+    return await context.queryClient.ensureQueryData(getSakContext(saksId, vedtaksId));
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -62,13 +62,13 @@ export interface SubmitTemplateOptions {
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
   const { brevmalKoder } = Route.useLoaderData();
-  const brevmetadata = useQuery({ ...getBrevmetadataQuery, select: metadataMapFromList }).data ?? {};
+  const brevmetadata = useQuery({ ...getBrevmetadata, select: metadataMapFromList }).data ?? {};
 
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
+    queryKey: hentAlleBrevInfoForSak.queryKey(saksId.toString()),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(saksId.toString()),
   });
 
   return (
@@ -172,7 +172,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
-  const favoritter = useQuery(getFavoritterQuery).data ?? [];
+  const favoritter = useQuery(getFavoritter).data ?? [];
 
   const alleBrevmaler: LetterMetadata[] = useMemo(
     () => brevmalKoder.map((kode) => brevmetadata[kode]).filter((b): b is LetterMetadata => b !== undefined),
