@@ -60,6 +60,5 @@ interface TemplateDescription {
 
     interface IBrevkategori {
         fun kode(): String
-        fun kategoritekst(): String? = null
     }
 }

@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.serialize.Brevkategori
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -47,7 +47,7 @@ class ExternalAPIServiceTest {
             LetterMetadata.Distribusjonstype.ANNET,
             LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
-        kategori = Pen.Brevkategori.INFORMASJONSBREV,
+        kategori = Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.SAK,
         sakstyper = emptySet(),
     )

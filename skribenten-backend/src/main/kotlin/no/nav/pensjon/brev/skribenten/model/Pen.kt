@@ -167,25 +167,24 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    enum class Brevkategori(val kategoritekst: String) : TemplateDescription.IBrevkategori {
-        ETTEROPPGJOER("Etteroppgjør"),
-        FEILUTBETALING("Feilutbetaling"),
-        FOERSTEGANGSBEHANDLING("Førstegangsbehandling"),
-        FRITEKSTBREV("Fritekstbrev"),
-        INFORMASJONSBREV("Informasjonsbrev"),
-        INNHENTE_OPPLYSNINGER("Innhente opplysninger"),
-        KLAGE_OG_ANKE("Klage og anke"),
-        LEVEATTEST("Leveattest"),
-        OMSORGSOPPTJENING("Omsorgsopptjening"),
-        POSTERINGSGRUNNLAG("Posteringsgrunnlag"),
-        SLUTTBEHANDLING("Sluttbehandling"),
-        UFOEREPENSJON("Uførepensjon"),
-        VARSEL("Varsel"),
-        VEDTAK_EKSPORT("Vedtak - eksport"),
-        VEDTAK_ENDRING_OG_REVURDERING("Vedtak - endring og revurdering"),
-        VEDTAK_FLYTTE_MELLOM_LAND("Vedtak - flytte mellom land");
+    private val brevkategoriTilVisningstekst = mapOf(
+        "ETTEROPPGJOER" to "Etteroppgjør",
+        "FEILUTBETALING" to "Feilutbetaling",
+        "FOERSTEGANGSBEHANDLING" to "Førstegangsbehandling",
+        "FRITEKSTBREV" to "Fritekstbrev",
+        "LetterMetadata" to "Informasjonsbrev",
+        "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
+        "KLAGE_OG_ANKE" to "Klage og anke",
+        "LEVEATTEST" to "Leveattest",
+        "OMSORGSOPPTJENING" to "Omsorgsopptjening",
+        "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
+        "SLUTTBEHANDLING" to "Sluttbehandling",
+        "UFOEREPENSJON" to "Uførepensjon",
+        "BrevdataDto" to "Varsel",
+        "VEDTAK_EKSPORT" to "Vedtak - eksport",
+        "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
+        "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
+    )
 
-        override fun kode() = name
-        override fun kategoritekst() = kategoritekst
-    }
+    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode()]
 }

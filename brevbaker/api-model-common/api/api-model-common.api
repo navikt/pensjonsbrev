@@ -138,12 +138,7 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkonteks
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
-	public fun kategoritekst ()Ljava/lang/String;
 	public abstract fun kode ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori$DefaultImpls {
-	public static fun kategoritekst (Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;)Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar : no/nav/pensjon/brev/api/model/TemplateDescription {

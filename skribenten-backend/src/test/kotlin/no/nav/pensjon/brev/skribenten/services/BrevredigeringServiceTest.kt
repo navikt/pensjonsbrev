@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -20,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.serialize.Brevkategori
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -96,7 +96,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = Pen.Brevkategori.INFORMASJONSBREV,
+        kategori = Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
         sakstyper = Sakstype.all,
     )
@@ -109,7 +109,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        kategori = Pen.Brevkategori.UFOEREPENSJON,
+        kategori = Brevkategori("UFOEREPENSJON"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )
@@ -122,7 +122,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = Pen.Brevkategori.VARSEL,
+        kategori = Brevkategori("VARSEL"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = Sakstype.all,
     )

@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.serialize.Brevkategori
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -139,7 +140,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = Pen.Brevkategori.INFORMASJONSBREV,
+            kategori = Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
             sakstyper = Sakstype.all,
         )
@@ -153,7 +154,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
-            kategori = Pen.Brevkategori.UFOEREPENSJON,
+            kategori = Brevkategori("UFOEREPENSJON"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
             sakstyper = Sakstype.all,
         )
@@ -167,7 +168,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = TemplateDescription.Brevkategori.VARSEL,
+            kategori = Brevkategori("VARSEL"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
             sakstyper = Sakstype.all,
         )
