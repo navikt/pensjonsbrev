@@ -14,6 +14,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 object Pen {
+    // TODO: Denne bør på sikt flyttes ut herifra
     private val behandlingsnummerMap = mapOf(
         "ALDER" to B280,
         "BARNEP" to B359,
