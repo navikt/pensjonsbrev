@@ -30,7 +30,7 @@ private class BrevTemplateTest {
         override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = setOf(object : ISakstype {
-            override fun kode() = "ALDER"
+            override val kode = "ALDER"
         })
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =

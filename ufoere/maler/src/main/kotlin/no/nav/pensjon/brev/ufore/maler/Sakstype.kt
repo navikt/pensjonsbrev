@@ -6,5 +6,5 @@ enum class Sakstype : ISakstype {
     UFOREP,
     ;
 
-    override fun kode() = name
+    override val kode = name
 }

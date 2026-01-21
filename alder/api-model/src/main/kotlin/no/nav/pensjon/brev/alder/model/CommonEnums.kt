@@ -141,7 +141,7 @@ enum class Sakstype : ISakstype {
     UFOREP,
     ;
 
-    override fun kode() = name
+    override val kode = name
 
     companion object {
         val pensjon: Set<Sakstype> = setOf(AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG)

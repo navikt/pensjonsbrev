@@ -60,10 +60,10 @@ private object SakstypeModule : SimpleModule() {
 }
 
 internal class TestSakstype(val name: String) : ISakstype {
-    override fun kode() = name
+    override val kode = name
     override fun equals(other: Any?): Boolean {
         if (other !is ISakstype) return false
-        return name == other.kode()
+        return name == other.kode
     }
     override fun hashCode() = name.hashCode()
     override fun toString() = name

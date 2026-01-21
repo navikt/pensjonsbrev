@@ -21,7 +21,7 @@ object Pen {
         "UFOREP" to B255
     )
 
-    fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode()]
+    fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode]
 
     data class SakSelection(
         val saksId: Long,
@@ -147,7 +147,7 @@ object Pen {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
 
-    fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode()) {
+    fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode) {
         "ALDER" -> if (forGammeltRegelverk == true) {
             brevregeltype?.gjelderGammeltRegelverk() ?: true
         } else {

@@ -50,7 +50,7 @@ class BrevmetadataServiceHttp(
     }
 
     override suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode()}?includeXsd=false") {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {

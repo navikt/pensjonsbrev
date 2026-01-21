@@ -249,7 +249,7 @@ enum class Sakstype : ISakstype {
     UFOREP,
     ;
 
-    override fun kode() = name
+    override val kode = name
 
     companion object {
         val all: Set<Sakstype> = entries.toSet()

@@ -24,16 +24,16 @@ object SakstypeModule : SimpleModule() {
 
     private object SakstypeSerializer : JsonSerializer<ISakstype>() {
         override fun serialize(value: ISakstype, generator: JsonGenerator, serializers: SerializerProvider) {
-            generator.writeString(value.kode())
+            generator.writeString(value.kode)
         }
     }
 }
 
 class Sakstype(val name: String) : ISakstype {
-    override fun kode() = name
+    override val kode = name
     override fun equals(other: Any?): Boolean {
         if (other !is ISakstype) return false
-        return name == other.kode()
+        return name == other.kode
     }
     override fun hashCode() = name.hashCode()
     override fun toString() = name

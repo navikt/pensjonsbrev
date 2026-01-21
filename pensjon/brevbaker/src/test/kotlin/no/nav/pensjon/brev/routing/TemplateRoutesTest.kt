@@ -98,7 +98,7 @@ class TemplateRoutesTest {
             metadata = redigerbar.metadata,
             kategori = redigerbar.kategori,
             brevkontekst = redigerbar.brevkontekst,
-            sakstyper = redigerbar.sakstyper.map { s -> TestSakstype(s.kode()) }.toSet()
+            sakstyper = redigerbar.sakstyper.map { s -> TestSakstype(s.kode) }.toSet()
         )
     }
 
