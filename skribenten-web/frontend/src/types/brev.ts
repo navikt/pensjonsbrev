@@ -37,6 +37,10 @@ export interface OppdaterMottakerRequest {
   mottaker: Mottaker;
 }
 
+export interface OppdaterVedleggRequest {
+  alltidValgbareVedlegg: AlltidValgbartVedlegg[];
+}
+
 export interface BestillBrevResponse {
   journalpostId: Nullable<number>;
   error: Nullable<BestillBrevError>;

@@ -17,7 +17,7 @@ import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, getBrevVedlegg, hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import type { AlltidValgbartVedlegg } from "~/types/brev";
 import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
@@ -59,7 +59,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
   const leggTilVedleggMutation = useMutation({
     mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
-      delvisOppdaterBrev(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
+      oppdaterVedlegg(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
@@ -69,7 +69,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
   const fjernVedleggMutation = useMutation({
     mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
-      delvisOppdaterBrev(props.saksId, props.brev.id, {
+      oppdaterVedlegg(props.saksId, props.brev.id, {
         alltidValgbareVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
       }),
     onSuccess: () => {
