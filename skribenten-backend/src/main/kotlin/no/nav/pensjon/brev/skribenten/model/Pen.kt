@@ -149,11 +149,8 @@ object Pen {
     }
 
     fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode) {
-        "ALDER" -> if (forGammeltRegelverk == true) {
-            brevregeltype?.gjelderGammeltRegelverk() ?: true
-        } else {
-            brevregeltype?.gjelderNyttRegelverk() ?: true
-        }
+        "ALDER" if forGammeltRegelverk == true -> brevregeltype?.gjelderGammeltRegelverk() ?: true
+        "ALDER" -> brevregeltype?.gjelderNyttRegelverk() ?: true
         "UFOREP" -> brevregeltype?.gjelderGammeltRegelverk() ?: true
         else -> true
     }
