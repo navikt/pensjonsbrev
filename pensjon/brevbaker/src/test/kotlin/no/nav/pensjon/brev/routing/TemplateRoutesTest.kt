@@ -7,7 +7,6 @@ import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.converters.Brevkategori
 import no.nav.pensjon.brev.maler.ForhaandsvarselEtteroppgjoerUfoeretrygdAuto
@@ -83,6 +82,23 @@ class TemplateRoutesTest {
                     .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
             )
         }
+
+        @Test
+        fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(InformasjonOmSaksbehandlingstid.description().let { medBrevkategori(it) }, response.body<TemplateDescription.Redigerbar>())
+        }
+
+        private fun medBrevkategori(redigerbar: TemplateDescription.Redigerbar): TemplateDescription.Redigerbar = TemplateDescription.Redigerbar(
+            name = redigerbar.name,
+            letterDataClass = redigerbar.letterDataClass,
+            languages = redigerbar.languages,
+            metadata = redigerbar.metadata,
+            kategori = redigerbar.kategori.let { Brevkategori(it.kode()) },
+            brevkontekst = redigerbar.brevkontekst,
+            sakstyper = redigerbar.sakstyper
+        )
     }
 
     @Test
@@ -91,23 +107,6 @@ class TemplateRoutesTest {
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(OmsorgEgenAuto.description(), response.body<TemplateDescription.Autobrev>())
     }
-
-    @Test
-    fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.description().let { medBrevkategori(it) }, response.body<TemplateDescription.Redigerbar>())
-    }
-
-    private fun medBrevkategori(redigerbar: TemplateDescription.Redigerbar): TemplateDescription.Redigerbar = TemplateDescription.Redigerbar(
-        name = redigerbar.name,
-        letterDataClass = redigerbar.letterDataClass,
-        languages = redigerbar.languages,
-        metadata = redigerbar.metadata,
-        kategori = redigerbar.kategori.let { Brevkategori(it.kode()) },
-        brevkontekst = redigerbar.brevkontekst,
-        sakstyper = redigerbar.sakstyper
-    )
 
     @Test
     fun `can get modelSpecification of autobrev`() = testBrevbakerApp(isIntegrationTest = false) { client ->
