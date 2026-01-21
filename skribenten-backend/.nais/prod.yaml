@@ -55,6 +55,9 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: prod-gcp
+  - application: navansatt
+    namespace: pensjon-saksbehandling
+    cluster: prod-gcp
 
 externalHosts:
   - pdl-api.prod-fss-pub.nais.io
