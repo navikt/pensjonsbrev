@@ -13,6 +13,7 @@
     "onchange": "^7.1.0"
   },
   "dependencies": {
+    "@antora/lunr-extension": "^1.0.0-alpha.12",
     "asciidoctor-kroki": "^0.18.1"
   }
 }

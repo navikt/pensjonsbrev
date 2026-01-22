@@ -1,0 +1,33 @@
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="{{{or site.url siteRootPath}}}">
+          <img src="{{{uiRootPath}}}/img/nav-logo.svg" alt="NAV" />
+          {{site.title}}
+      </a>
+        <div class="navbar-item search hide-for-print">
+            <div id="search-field" class="field">
+                <input id="search-input" type="text" placeholder="Søk..."{{#if page.home}} autofocus{{/if}}>
+            </div>
+        </div>
+      <button class="navbar-burger" data-target="topbar-nav">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Hjem</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Lenker</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="https://teamkatalog.nav.no/team/8e5b97ee-6c0c-439b-b5dc-2ad06a0df33b" target=”_blank”>Teamkatalogen</a>
+            <a class="navbar-item" href="https://slack.com/app_redirect?team=T5LNAMWNA&channel=team-pensjonsbrev" target=”_blank”>Slack</a>
+            <a class="navbar-item" href="https://github.com/navikt/pensjonsbrev" target=”_blank”>Github</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
