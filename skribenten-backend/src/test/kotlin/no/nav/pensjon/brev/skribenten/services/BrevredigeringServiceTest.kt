@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
+import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
@@ -37,7 +38,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
@@ -48,7 +48,6 @@ import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import java.util.function.Predicate
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
@@ -300,12 +299,6 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             assertThat(
-                brevredigeringService.hentBrev(
-                    saksId = sak1.saksId + 1,
-                    brevId = brev.info.id
-                )
-            ).isNull()
-            assertThat(
                 brevredigeringService.hentEllerOpprettPdf(
                     saksId = sak1.saksId + 1,
                     brevId = brev.info.id,
@@ -348,9 +341,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         transaction { BrevredigeringEntity[brev.info.id].journalpostId = 123L }
 
-        val oppdatertBrev = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)
-        }
+        val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
     }
 
@@ -360,15 +351,15 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             brev.copy(propertyUsage = null),
-            brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
+            hentBrev(brev.info.id)
         )
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)).isTrue()
-        assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)).isNull()
+        assertThat(hentBrev(brev.info.id)).isNull()
     }
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = 1337)).isNull()
+        assertThat(hentBrev(brevId = 1337)).isNull()
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = 1337)).isFalse()
     }
 
@@ -744,7 +735,7 @@ class BrevredigeringServiceTest {
         )
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
+        assertThat(hentBrev(brev.info.id)).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
             assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(brev.info.id) }
@@ -812,7 +803,7 @@ class BrevredigeringServiceTest {
         ).isSuccess()
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
+        assertThat(hentBrev(brev.info.id)).isNotNull()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(991, null)
 
@@ -830,17 +821,15 @@ class BrevredigeringServiceTest {
                 Instant.now() - RESERVASJON_TIMEOUT - 1.seconds.toJavaDuration()
         }
 
-        val hentetBrev = brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
+        val hentetBrev = hentBrev(brev.info.id)
 
         assertThat(hentetBrev?.info?.redigeresAv).isNull()
 
-        val hentetBrevMedReservasjon = withPrincipal(saksbehandler2Principal) {
-            brevredigeringService.hentBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                reserverForRedigering = true
-            )
-        }
+        val hentetBrevMedReservasjon = hentBrev(
+            brevId = brev.info.id,
+            reserverForRedigering = true,
+            principal = saksbehandler2Principal,
+        )
         assertThat(hentetBrevMedReservasjon?.info?.redigeresAv).isEqualTo(saksbehandler2Principal.navIdent)
     }
 
@@ -980,6 +969,21 @@ class BrevredigeringServiceTest {
         when (result) {
             is Outcome.Failure -> error("Kunne ikke opprette brev: ${result.error}")
             is Outcome.Success -> result.value
+        }
+    }
+
+    private suspend fun hentBrev(
+        brevId: Long,
+        reserverForRedigering: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Dto.Brevredigering? {
+        val result = withPrincipal(principal) {
+            brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = reserverForRedigering))
+        }
+        return when (result) {
+            is Outcome.Failure -> error("Kunne ikke hente brev: ${result.error}")
+            is Outcome.Success -> result.value
+            null -> null
         }
     }
 
