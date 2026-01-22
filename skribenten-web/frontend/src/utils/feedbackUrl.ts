@@ -1,1 +1,0 @@
-export default "https://teams.microsoft.com/l/channel/19%3A2cf24a9f13b14dd8a8ff33ca28b289bc%40thread.tacv2/Skribenten%20pilot?groupId=781079c8-b365-405f-ac98-29b34fbd1dd9&tenantId=62366534-1ec3-4962-8869-9b5535279d0b&ngc=true";
