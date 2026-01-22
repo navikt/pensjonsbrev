@@ -21,6 +21,7 @@ class BrevredigeringFacade(
     private val brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
     private val opprettBrevPolicy: OpprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService),
     private val klarTilSendingPolicy: KlarTilSendingPolicy = KlarTilSendingPolicy(),
+    private val attesterBrevPolicy: AttesterBrevPolicy = AttesterBrevPolicy(),
 ) {
 
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
@@ -46,6 +47,15 @@ class BrevredigeringFacade(
             redigerBrevPolicy = redigerBrevPolicy,
             renderService = renderService,
             brevdataService = brevdataService,
+        ).runHandler(request)
+
+    suspend fun hentBrevAttestering(request: HentBrevAttesteringHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        HentBrevAttesteringHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            renderService = renderService,
+            brevdataService = brevdataService,
+            navansattService = navansattService,
         ).runHandler(request)
 
     suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =

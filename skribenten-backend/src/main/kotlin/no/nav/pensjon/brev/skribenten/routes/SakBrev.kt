@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
+import no.nav.pensjon.brev.skribenten.usecase.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
@@ -200,11 +201,17 @@ fun Route.sakBrev(
 
             route("/attestering") {
                 get {
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
                     val brevId = call.parameters.getOrFail<Long>("brevId")
                     val reserver = call.request.queryParameters["reserver"].toBoolean()
 
-                    respond(brevredigeringService.hentBrevAttestering(sak.saksId, brevId, reserver))
+                    val resultat = brevredigeringFacade.hentBrevAttestering(
+                        HentBrevAttesteringHandler.Request(
+                            brevId = brevId,
+                            reserverForRedigering = reserver,
+                        )
+                    )
+
+                    apiRespond(dto2ApiService, resultat)
                 }
 
                 put<Api.OppdaterAttesteringRequest> { request ->
