@@ -9,4 +9,7 @@ fun Route.landRoute() {
     get("/land") {
         call.respond(Landkoder.landkoderMedNavn)
     }
+    get("/landForP1") {
+        call.respond((Landkoder.eoesLand + Landkoder.nordiskTrygdeavtaleland + Landkoder.trygdeavtaleMedStorbritanniaLand).distinct())
+    }
 }
