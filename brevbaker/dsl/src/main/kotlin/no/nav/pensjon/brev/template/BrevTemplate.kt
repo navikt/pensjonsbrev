@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
@@ -44,7 +44,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
     val kategori: TemplateDescription.IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
-    val sakstyper: Set<Sakstype>
+    val sakstyper: Set<ISakstype>
 
     override fun description(): TemplateDescription.Redigerbar =
         TemplateDescription.Redigerbar(
@@ -54,7 +54,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             metadata = template.letterMetadata,
             kategori = kategori,
             brevkontekst = brevkontekst,
-            sakstyper = sakstyper,
+            sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
 
     fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Expression<String> =

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
@@ -29,7 +29,9 @@ private class BrevTemplateTest {
     private object EksempelBrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
-        override val sakstyper = Sakstype.all
+        override val sakstyper = setOf(object : ISakstype {
+            override val kode = "ALDER"
+        })
         override val kode = RedigerbarBrevkode.TESTBREV_REDIGERBART
         override val template =
             createTemplate(

@@ -1,54 +1,35 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.Landkode
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import java.time.LocalDate
 import java.time.LocalDateTime
-import no.nav.pensjon.brev.api.model.Sakstype as BrevbakerSakstype
 
 object Pen {
-    enum class SakType(val behandlingsnummer: Behandlingsnummer?) {
-        AFP(null),
-        AFP_PRIVAT(null),
-        ALDER(B280),
-        BARNEP(B359),
-        FAM_PL(null),
-        GAM_YRK(null),
-        GENRL(null),
-        GJENLEV(B222),
-        GRBL(null),
-        KRIGSP(null),
-        OMSORG(null),
-        UFOREP(B255);
+    // TODO: Denne bør på sikt flyttes ut herifra
+    private val behandlingsnummerMap = mapOf(
+        "ALDER" to B280,
+        "BARNEP" to B359,
+        "GJENLEV" to B222,
+        "UFOREP" to B255
+    )
 
-        fun toBrevbaker(): BrevbakerSakstype = when(this) {
-            AFP -> BrevbakerSakstype.AFP
-            AFP_PRIVAT -> BrevbakerSakstype.AFP_PRIVAT
-            ALDER -> BrevbakerSakstype.ALDER
-            BARNEP -> BrevbakerSakstype.BARNEP
-            FAM_PL -> BrevbakerSakstype.FAM_PL
-            GAM_YRK -> BrevbakerSakstype.GAM_YRK
-            GENRL -> BrevbakerSakstype.GENRL
-            GJENLEV -> BrevbakerSakstype.GJENLEV
-            GRBL -> BrevbakerSakstype.GRBL
-            KRIGSP -> BrevbakerSakstype.KRIGSP
-            OMSORG -> BrevbakerSakstype.OMSORG
-            UFOREP -> BrevbakerSakstype.UFOREP
-        }
-    }
+    fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode]
 
     data class SakSelection(
         val saksId: Long,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: SakType,
+        val sakType: ISakstype,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
@@ -166,6 +147,15 @@ object Pen {
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
     }
+
+    fun isRelevantRegelverk(sakstype: ISakstype, brevregeltype: BrevdataDto.BrevregeltypeCode?, forGammeltRegelverk: Boolean?): Boolean = when (sakstype.kode) {
+        "ALDER" if forGammeltRegelverk == true -> brevregeltype?.gjelderGammeltRegelverk() ?: true
+        "ALDER" -> brevregeltype?.gjelderNyttRegelverk() ?: true
+        "UFOREP" -> brevregeltype?.gjelderGammeltRegelverk() ?: true
+        else -> true
+    }
+
+    val sakstypeForLegacybrev = Sakstype("GENRL")
 
     private val brevkategoriTilVisningstekst = mapOf(
         "ETTEROPPGJOER" to "Etteroppgjør",

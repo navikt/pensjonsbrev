@@ -59,7 +59,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 
     if (sak != null) {
         call.attributes.put(SakKey, sak)
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer)
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

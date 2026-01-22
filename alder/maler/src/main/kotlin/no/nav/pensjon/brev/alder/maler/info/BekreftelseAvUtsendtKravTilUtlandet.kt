@@ -3,7 +3,8 @@ package no.nav.pensjon.brev.alder.maler.info
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -79,5 +80,5 @@ object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarB
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
 
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.ALDER)
 }

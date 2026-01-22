@@ -12,6 +12,9 @@ sealed class Outcome<out T, out E> {
     val isSuccess: Boolean
         get() = this is Success
 
+    val isFailure: Boolean
+        get() = this is Failure
+
     fun <TResult> then(transform: (T) -> TResult): Outcome<TResult, E> =
         when (this) {
             is Success -> Success(transform(this.value))

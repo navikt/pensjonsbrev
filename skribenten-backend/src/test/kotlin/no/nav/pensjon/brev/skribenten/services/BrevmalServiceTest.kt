@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.serialize.Brevkategori
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
@@ -20,6 +21,7 @@ import org.junit.jupiter.api.Test
 
 const val TEST_VEDTAKS_ID = "1234"
 
+@OptIn(InternKonstruktoer::class)
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription.Redigerbar(
@@ -33,7 +35,7 @@ class BrevmalServiceTest {
             ),
             kategori = Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = Sakstype.all,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
     )
 
@@ -88,7 +90,7 @@ class BrevmalServiceTest {
         )
 
         runBlocking {
-            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype.UFOREP, includeEblanketter = true)
+            val brevmaler = lagBrevmalService(brevmetadataService = brevmetadataService).hentBrevmalerForSak(sakType = Sakstype("UFOREP"), includeEblanketter = true)
             assertThat(brevmaler).anyMatch { it.id == "e-blankett-kode" }
         }
     }
@@ -100,24 +102,24 @@ class BrevmalServiceTest {
 
     @Test
     fun `viser vedtaksbrev i vedtaks kontekst`() {
-        assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, sakstype = Sakstype.UFOREP).anyMatch { it.id == testOkVedtakBrev.brevkodeIBrevsystem }
+        assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, sakstype = Sakstype("UFOREP")).anyMatch { it.id == testOkVedtakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `viser ikke brev for sakskontekst i vedtakskontekst`() {
-        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev, sakstype = Sakstype.UFOREP).noneMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
+        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev, sakstype = Sakstype("UFOREP")).noneMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `viser brev for med ALLTID i vedtakskontekst`() {
-        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev.copy(brevkontekst = ALLTID), sakstype = Sakstype.UFOREP).anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
+        assertThatBrevmalerInVedtaksKontekst(testOkSakBrev.copy(brevkontekst = ALLTID), sakstype = Sakstype("UFOREP")).anyMatch { it.id == testOkSakBrev.brevkodeIBrevsystem }
     }
 
     @Test
     fun `viser ikke vedtaksbrev mal paa nytt alderspensjon regelverk naar vedtaket er pa gammel alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
             testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.NN, brevkodeIBrevsystem = "nytt regelverk"),
-            sakstype = Sakstype.ALDER,
+            sakstype = Sakstype("ALDER"),
             isKravPaaGammeltRegelverk = true
         ).noneMatch { it.id == "nytt regelverk" }
     }
@@ -126,7 +128,7 @@ class BrevmalServiceTest {
     fun `viser vedtaksbrev mal paa nytt alderspensjon regelverk naar vedtaket er pa ny alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
             testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GN, brevkodeIBrevsystem = "nytt regelverk"),
-            sakstype = Sakstype.ALDER,
+            sakstype = Sakstype("ALDER"),
             isKravPaaGammeltRegelverk = false,
         ).anyMatch { it.id == "nytt regelverk" }
     }
@@ -135,7 +137,7 @@ class BrevmalServiceTest {
     fun `viser ikke vedtaksbrev mal paa gammelt alderspensjon regelverk naar vedtaket er pa ny alderspensjon beregning`() {
         assertThatBrevmalerInVedtaksKontekst(
             testOkVedtakBrev.copy(brevregeltype = BrevdataDto.BrevregeltypeCode.GG, brevkodeIBrevsystem = "gammelt regelverk"),
-            sakstype = Sakstype.ALDER,
+            sakstype = Sakstype("ALDER"),
             isKravPaaGammeltRegelverk = false,
         ).noneMatch { it.id == "gammelt regelverk" }
     }
@@ -156,7 +158,7 @@ class BrevmalServiceTest {
 
     @Test
     fun `inkluderer brevbakerbrev`() = runBlocking {
-        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype.ALDER)
+        val brevmalerAssert = assertThatBrevmalerInVedtaksKontekst(testOkVedtakBrev, false, Sakstype("S2"))
         for (brev in brevbakerbrev) {
             brevmalerAssert.anyMatch { it.id == brev.name }
         }
@@ -192,7 +194,7 @@ class BrevmalServiceTest {
     private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>) = runBlocking {
         val brevmaler = lagBrevmalService(brevmetadataService = FakeBrevmetadataService(
             brevmaler = brevdataDto,
-        )).hentBrevmalerForSak(Sakstype.UFOREP, false)
+        )).hentBrevmalerForSak(Sakstype("UFOREP"), false)
         return@runBlocking assertThat(brevmaler)
     }
 }

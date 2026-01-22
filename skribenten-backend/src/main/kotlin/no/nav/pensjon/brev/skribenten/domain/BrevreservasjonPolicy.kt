@@ -26,7 +26,7 @@ class BrevreservasjonPolicy {
         return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || !isValid(eksisterende, fra)) {
             success(true)
         } else {
-            failure(ReservertAvAnnen(eksisterende))
+            failure(ReservertAvAnnen(eksisterende.copy(vellykket = false)))
         }
     }
 

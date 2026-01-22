@@ -33,7 +33,6 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
     val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
     val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
-    val maanedligPensjonFoerSkattAFPDto: MaanedligPensjonFoerSkattAFPDto?,
     val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
 
     ): AutobrevData {

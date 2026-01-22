@@ -20,12 +20,14 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.brev.BrevExceptionDto
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
+import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
@@ -67,6 +69,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         install(ContentNegotiation) {
             jackson {
                 registerModule(JavaTimeModule())
+                registerModule(SakstypeModule)
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
@@ -199,7 +202,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
-        val sakType: Pen.SakType,
+        val sakType: ISakstype,
         val enhetId: String?,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)

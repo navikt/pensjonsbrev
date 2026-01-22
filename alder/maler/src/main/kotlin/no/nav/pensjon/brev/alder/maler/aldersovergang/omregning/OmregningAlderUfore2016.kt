@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegnin
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.avtaleland
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.borINorge
@@ -136,5 +136,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
+    override val sakstyper = setOf(Sakstype.ALDER)
 }
+

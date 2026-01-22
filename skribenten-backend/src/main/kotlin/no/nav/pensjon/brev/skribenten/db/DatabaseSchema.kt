@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.serialize.TemplateDescriptionModule
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -56,6 +57,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
+    registerModule(SakstypeModule)
     registerModule(BrevkodeJacksonModule)
     registerModule(TemplateDescriptionModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)

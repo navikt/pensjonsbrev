@@ -85,7 +85,7 @@ inline fun <reified T, E> ObjectAssert<Outcome<T, E>?>.isSuccess(noinline block:
     return this
 }
 
-inline fun <reified ExpectedE : E, T, E> ObjectAssert<Outcome<T, E>?>.isFailure(noinline block: ((E) -> Unit)? = null): ObjectAssert<Outcome<T, E>?> {
+inline fun <reified ExpectedE : E, T, E> ObjectAssert<Outcome<T, E>?>.isFailure(noinline block: ((ExpectedE) -> Unit)? = null): ObjectAssert<Outcome<T, E>?> {
     isNotNull()
     isInstanceOfSatisfying<Outcome.Failure<*>>(Outcome.Failure::class.java) { res ->
         assertThat(res.error).isInstanceOfSatisfying<ExpectedE>(ExpectedE::class.java) {

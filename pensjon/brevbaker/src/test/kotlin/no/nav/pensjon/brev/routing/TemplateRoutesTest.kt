@@ -69,8 +69,9 @@ class TemplateRoutesTest {
         fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(alleRedigerbareMaler
-            .map { it.description() }.map { medBrevkategori(it) }, response.body<List<TemplateDescription.Redigerbar>>())
+            assertEquals(
+            alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
+            )
         }
 
         @Test
@@ -87,18 +88,8 @@ class TemplateRoutesTest {
         fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(InformasjonOmSaksbehandlingstid.description().let { medBrevkategori(it) }, response.body<TemplateDescription.Redigerbar>())
+            assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
         }
-
-        private fun medBrevkategori(redigerbar: TemplateDescription.Redigerbar): TemplateDescription.Redigerbar = TemplateDescription.Redigerbar(
-            name = redigerbar.name,
-            letterDataClass = redigerbar.letterDataClass,
-            languages = redigerbar.languages,
-            metadata = redigerbar.metadata,
-            kategori = redigerbar.kategori.let { Brevkategori(it.kode()) },
-            brevkontekst = redigerbar.brevkontekst,
-            sakstyper = redigerbar.sakstyper
-        )
     }
 
     @Test

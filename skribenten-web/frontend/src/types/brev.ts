@@ -22,6 +22,7 @@ export type BrevResponse = {
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
   propertyUsage: Nullable<PropertyUsage[]>;
+  valgteVedlegg: Nullable<AlltidValgbartVedlegg[]>;
 };
 
 export interface OppdaterKlarStatusRequest {
@@ -34,6 +35,10 @@ export interface DistribusjonstypeRequest {
 
 export interface OppdaterMottakerRequest {
   mottaker: Mottaker;
+}
+
+export interface OppdaterVedleggRequest {
+  alltidValgbareVedlegg: AlltidValgbartVedlegg[];
 }
 
 export interface BestillBrevResponse {
@@ -134,4 +139,13 @@ export interface UtenlandskAdresse {
 export interface NAVEnhet {
   enhetNr: string;
   navn: string;
+}
+
+export type VedleggKode = string;
+
+export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
+
+export interface AlltidValgbartVedlegg {
+  kode: string;
+  visningstekst: string;
 }
