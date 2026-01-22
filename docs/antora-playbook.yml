@@ -11,8 +11,10 @@ content:
 
 ui:
   bundle:
-    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
-    snapshot: true
+    url: https://github.com/navikt/pensjon-docs-ui/releases/download/2025.01.15-11.05-2ec57f1f221e/ui-bundle.zip
+    #url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: false
+  supplemental_files: supplemental_ui
 
 output:
   dir: ./build/site
@@ -21,4 +23,11 @@ asciidoc:
   extensions:
     - asciidoctor-kroki
   attributes:
+    lang: nb-NO
+    last-update-label: 'Sist oppdatert:'
+    icons: font
     kroki-fetch-diagram: true
+
+antora:
+  extensions:
+    - '@antora/lunr-extension'
