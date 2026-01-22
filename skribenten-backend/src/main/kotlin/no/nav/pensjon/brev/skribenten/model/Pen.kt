@@ -176,5 +176,5 @@ object Pen {
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
     )
 
-    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode()]
+    fun finnVisningstekst(brevkategori: String) = brevkategoriTilVisningstekst[brevkategori]
 }

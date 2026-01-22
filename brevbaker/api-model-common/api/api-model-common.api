@@ -118,14 +118,14 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkonteks
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
-	public abstract fun kode ()Ljava/lang/String;
+	public abstract fun getKode ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar : no/nav/pensjon/brev/api/model/TemplateDescription {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/util/List;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Ljava/lang/String;Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
-	public final fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
+	public final fun getKategori-Gnp6WTg ()Ljava/lang/String;
 	public fun getLanguages ()Ljava/util/List;
 	public fun getLetterDataClass ()Ljava/lang/String;
 	public fun getMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
@@ -133,6 +133,20 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 	public final fun getSakstyper ()Ljava/util/Set;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Brevkategori;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getKode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype {

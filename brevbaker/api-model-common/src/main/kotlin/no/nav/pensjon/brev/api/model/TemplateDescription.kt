@@ -34,7 +34,7 @@ interface TemplateDescription {
         override val letterDataClass: String,
         override val languages: List<LanguageCode>,
         override val metadata: LetterMetadata,
-        val kategori: IBrevkategori,
+        val kategori: Brevkategori,
         val brevkontekst: Brevkontekst,
         val sakstyper: Set<Sakstype>,
     ): TemplateDescription {
@@ -48,6 +48,8 @@ interface TemplateDescription {
         override fun toString(): String =
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
 
+        @JvmInline
+        value class Brevkategori @InternKonstruktoer constructor(val kode: String)
 
         @JvmInline
         value class Sakstype @InternKonstruktoer constructor(val kode: String)
@@ -64,6 +66,6 @@ interface TemplateDescription {
     }
 
     interface IBrevkategori {
-        fun kode(): String
+        val kode: String
     }
 }

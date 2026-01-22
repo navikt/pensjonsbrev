@@ -20,5 +20,5 @@ enum class Brevkategori : TemplateDescription.IBrevkategori {
     VEDTAK_ENDRING_OG_REVURDERING,
     VEDTAK_FLYTTE_MELLOM_LAND;
 
-    override fun kode() = name
+    override val kode = name
 }

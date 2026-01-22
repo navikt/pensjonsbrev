@@ -97,5 +97,5 @@ private class BrevTemplateTest {
 enum class Brevkategori : TemplateDescription.IBrevkategori {
     INNHENTE_OPPLYSNINGER;
 
-    override fun kode(): String = name
+    override val kode: String = name
 }

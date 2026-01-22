@@ -52,7 +52,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
-            kategori = kategori,
+            kategori = kategori.let { TemplateDescription.Redigerbar.Brevkategori(it.kode) },
             brevkontekst = brevkontekst,
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
