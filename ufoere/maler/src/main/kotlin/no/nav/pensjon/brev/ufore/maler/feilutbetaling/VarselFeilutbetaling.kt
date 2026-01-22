@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling
 
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
-import no.nav.pensjon.brev.ufore.maler.Sakstype
-import no.nav.pensjon.brev.ufore.maler.Sakstype.*
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype.*
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
