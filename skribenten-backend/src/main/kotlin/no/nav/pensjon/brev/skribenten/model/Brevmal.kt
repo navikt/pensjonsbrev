@@ -53,7 +53,7 @@ interface LetterMetadata {
                     BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
                     BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
                 },
-                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.let { Pen.finnVisningstekst(it.kode) } ?: this.brevkategori?.toKategoriTekst(),
+                brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.let { Pen.finnVisningstekst(it) } ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,
                 redigerbarBrevtittel = isRedigerbarBrevtittel(),
