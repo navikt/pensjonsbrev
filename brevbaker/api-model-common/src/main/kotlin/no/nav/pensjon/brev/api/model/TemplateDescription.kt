@@ -35,7 +35,7 @@ interface TemplateDescription {
         override val metadata: LetterMetadata,
         val kategori: Brevkategori,
         val brevkontekst: Brevkontekst,
-        val sakstyper: Set<ISakstype>,
+        val sakstyper: Set<Sakstype>,
     ): TemplateDescription {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -46,6 +46,10 @@ interface TemplateDescription {
         override fun hashCode() = Objects.hash(name, letterDataClass, languages, metadata, kategori, brevkontekst, sakstyper)
         override fun toString(): String =
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
+
+
+        @JvmInline
+        value class Sakstype(val kode: String)
     }
 
     enum class Brevkontekst {

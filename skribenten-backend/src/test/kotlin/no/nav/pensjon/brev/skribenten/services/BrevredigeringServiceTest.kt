@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -98,7 +97,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val vedtaksbrev = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VEDTAKSBREV.kode(),
@@ -111,7 +110,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VARSELBREV.kode(),
@@ -124,7 +123,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.VARSEL,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val letterResponse =
         LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = informasjonsbrev.metadata)

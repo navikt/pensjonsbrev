@@ -5,7 +5,6 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.TestSakstype
 import no.nav.pensjon.brev.alleAutobrevmaler
 import no.nav.pensjon.brev.alleRedigerbareMaler
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -70,7 +69,7 @@ class TemplateRoutesTest {
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(
-                alleRedigerbareMaler.map { it.description() }.map { medSakstype(it) }, response.body<List<TemplateDescription.Redigerbar>>()
+                alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
             )
         }
 
@@ -88,18 +87,8 @@ class TemplateRoutesTest {
         fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(InformasjonOmSaksbehandlingstid.description().let { medSakstype(it) }, response.body<TemplateDescription.Redigerbar>())
+            assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
         }
-
-        private fun medSakstype(redigerbar: TemplateDescription.Redigerbar): TemplateDescription.Redigerbar = TemplateDescription.Redigerbar(
-            name = redigerbar.name,
-            letterDataClass = redigerbar.letterDataClass,
-            languages = redigerbar.languages,
-            metadata = redigerbar.metadata,
-            kategori = redigerbar.kategori,
-            brevkontekst = redigerbar.brevkontekst,
-            sakstyper = redigerbar.sakstyper.map { s -> TestSakstype(s.kode) }.toSet()
-        )
     }
 
     @Test

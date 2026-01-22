@@ -34,7 +34,7 @@ class Dto2ApiServiceTest {
                     ),
                     kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
                     brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                    sakstyper = setOf(Sakstype("Sakstype1")),
+                    sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("Sakstype1")),
                 ))),
             navansattService = navansattService,
             norg2Service = norg2Service,

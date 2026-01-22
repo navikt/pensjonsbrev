@@ -93,7 +93,7 @@ interface LetterMetadata {
         override val brevkontekst: TemplateDescription.Brevkontekst get() = data.brevkontekst
         override val isRedigerbart: Boolean = true
         override val brevkode: String get() = data.name
-        override fun isForSakstype(sakstype: ISakstype) = sakstype in data.sakstyper
+        override fun isForSakstype(sakstype: ISakstype) = sakstype.kode in data.sakstyper.map { it.kode }
         override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?) = true
 
         private fun LanguageCode.toSpraakKode(): SpraakKode =

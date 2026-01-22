@@ -32,7 +32,7 @@ class BrevmalServiceTest {
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
     )
 

@@ -141,7 +141,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
 
         val vedtaksbrev = TemplateDescription.Redigerbar(
@@ -155,7 +155,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = setOf(Sakstype("S1"), Sakstype("S2"))
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2"))
         )
 
         private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
@@ -169,7 +169,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.VARSEL,
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = setOf(Sakstype("S1"), Sakstype("S2")),
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
 
         val stagetPDF = "nesten en pdf".encodeToByteArray()

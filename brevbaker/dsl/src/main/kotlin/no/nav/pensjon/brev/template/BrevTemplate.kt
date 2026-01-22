@@ -54,7 +54,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             metadata = template.letterMetadata,
             kategori = kategori,
             brevkontekst = brevkontekst,
-            sakstyper = sakstyper,
+            sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
 
     fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Expression<String> =
