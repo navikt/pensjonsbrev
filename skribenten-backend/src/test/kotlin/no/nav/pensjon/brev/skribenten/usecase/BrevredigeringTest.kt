@@ -7,27 +7,18 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.MockPrincipal
-import no.nav.pensjon.brev.skribenten.SharedPostgres
-import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.initADGroups
-import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -105,15 +96,7 @@ abstract class BrevredigeringTest {
         penService = penService,
         p1Service = FakeP1Service()
     )
-    protected val brevredigeringFacade = BrevredigeringFacade(
-        brevbakerService = brevbakerService,
-        brevdataService = BrevdataService(penService, samhandlerService),
-        navansattService = navAnsattService,
-        renderService = RenderService(brevbakerService),
-        redigerBrevPolicy = RedigerBrevPolicy(),
-        brevreservasjonPolicy = BrevreservasjonPolicy(),
-        opprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navAnsattService),
-    )
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService)
 
     protected companion object Fixtures {
         init {
@@ -228,7 +211,7 @@ abstract class BrevredigeringTest {
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
-            OpprettBrevHandler.Request(
+            OpprettBrevHandlerImpl.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,

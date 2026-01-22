@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy.KanIkkeOppretteBr
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -19,7 +19,7 @@ class OpprettBrevPolicy(
 ) {
 
     suspend fun kanOppretteBrev(
-        request: OpprettBrevHandler.Request,
+        request: OpprettBrevHandlerImpl.Request,
         principal: UserPrincipal
     ): Outcome<Parametre, BrevredigeringError> {
         if (!navansattService.harTilgangTilEnhet(principal.navIdent.id, request.avsenderEnhetsId)) {

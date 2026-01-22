@@ -20,13 +20,17 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
-class OpprettBrevHandler(
+interface OpprettBrevHandler {
+    suspend fun handle(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
+}
+
+class OpprettBrevHandlerImpl(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
-) {
+) : OpprettBrevHandler {
     data class Request(
         val saksId: Long,
         val vedtaksId: Long?,
@@ -38,7 +42,7 @@ class OpprettBrevHandler(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
         val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {

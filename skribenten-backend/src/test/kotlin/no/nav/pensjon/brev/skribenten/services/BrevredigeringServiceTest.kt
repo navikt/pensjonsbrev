@@ -1,7 +1,10 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -15,21 +18,14 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.*
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
-import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
+import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -265,14 +261,11 @@ class BrevredigeringServiceTest {
         p1Service = FakeP1Service()
     )
 
-    private val brevredigeringFacade = BrevredigeringFacade(
-        renderService = RenderService(brevbakerService),
-        brevdataService = BrevdataService(penService, FakeSamhandlerService()),
-        redigerBrevPolicy = RedigerBrevPolicy(),
-        brevreservasjonPolicy = BrevreservasjonPolicy(),
+    private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevbakerService = brevbakerService,
-        navansattService = navAnsattService,
-        opprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navAnsattService),
+        penService = penService,
+        samhandlerService = FakeSamhandlerService(),
+        navansattService = navAnsattService
     )
 
     private val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
@@ -956,7 +949,7 @@ class BrevredigeringServiceTest {
         sak: Pen.SakSelection = sak1,
     ) = withPrincipal(principal) {
         val result = brevredigeringFacade.opprettBrev(
-            OpprettBrevHandler.Request(
+            OpprettBrevHandlerImpl.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,
