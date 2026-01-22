@@ -12,7 +12,7 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 * Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med nye data
 
 === Ting vi har fikset
-* VedtaksID ble ikke alltid beholdt når man navigerte mellom sider i Skribenten
+* VedtaksID beholdes nå selv om man navigerer mellom sider i Skribenten
 * Eldre avslagsbrev for alderspensjon fra Exstream var fremdeles synlig i brevvelger. De er nå tatt bort fordi de har blitt erstattet av nye brev i Skribenten
 * Litt bedre navigasjon med piltastene i Skribenten
 * Scrolling i visning av PDF fungerte ikke helt som forventet
