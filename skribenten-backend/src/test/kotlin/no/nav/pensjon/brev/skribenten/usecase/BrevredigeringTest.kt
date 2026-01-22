@@ -253,6 +253,19 @@ abstract class BrevredigeringTest {
         )
     }
 
+    protected suspend fun hentBrev(
+        brevId: Long,
+        reserverForRedigering: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.hentBrev(
+            HentBrevHandler.Request(
+                brevId = brevId,
+                reserverForRedigering = reserverForRedigering,
+            )
+        )
+    }
+
     protected suspend fun attester(
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestantPrincipal,

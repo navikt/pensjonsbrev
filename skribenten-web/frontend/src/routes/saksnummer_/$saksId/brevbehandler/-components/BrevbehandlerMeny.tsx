@@ -1,10 +1,9 @@
 import { css } from "@emotion/react";
-import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Accordion,
   Alert,
   BodyShort,
-  BoxNew,
   Button,
   Detail,
   HStack,
@@ -25,7 +24,6 @@ import { getBrev } from "~/api/brev-queries";
 import { endreDistribusjonstype, hentAlleBrevForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import { P1EditModal } from "~/components/P1/P1EditModal";
 import { useUserInfo } from "~/hooks/useUserInfo";
 import type { BrevStatus } from "~/types/brev";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -36,6 +34,7 @@ import { getErrorMessage } from "~/utils/errorUtils";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
+import { Vedlegg } from "./Vedlegg";
 
 const BrevbehandlerMeny = (properties: { saksId: string; brevInfo: BrevInfo[] }) => {
   return (
@@ -160,8 +159,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
-  const [modalopen, setModalopen] = useState<boolean>(false);
-
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response) => {
@@ -204,41 +201,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         saksId={props.saksId}
       />
 
-      {/* Only show the attacment section if P1 (until more attacments are available) */}
-      {props.brev.brevkode === "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2" && (
-        <>
-          <VStack gap="space-8">
-            <BodyShort size="small" weight="semibold">
-              Vedlegg
-            </BodyShort>
-
-            <HStack align="center" justify="space-between">
-              <BodyShort size="small">P1</BodyShort>
-              {!erLaast && (
-                <BoxNew asChild borderRadius="4">
-                  <Button
-                    data-cy="p1-edit-button"
-                    icon={<PencilIcon />}
-                    onClick={() => setModalopen(true)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  />
-                </BoxNew>
-              )}
-            </HStack>
-          </VStack>
-
-          {modalopen && (
-            <P1EditModal
-              brevId={props.brev.id}
-              onClose={() => setModalopen(false)}
-              open={modalopen}
-              saksId={props.saksId}
-            />
-          )}
-        </>
-      )}
+      <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
 
       <Switch
         checked={erLaast}

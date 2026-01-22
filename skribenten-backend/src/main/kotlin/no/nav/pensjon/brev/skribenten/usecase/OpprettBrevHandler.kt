@@ -37,47 +37,47 @@ class OpprettBrevHandler(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    suspend fun handle(req: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
-        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(req, principal)) {
+        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {
             is Outcome.Failure -> return failure(res.error)
             is Outcome.Success -> res.value
         }
 
         val pesysData = brevdataService.hentBrevdata(
-            saksId = req.saksId,
+            saksId = request.saksId,
             vedtaksId = parametre.vedtaksId,
-            brevkode = req.brevkode,
-            avsenderEnhetsId = req.avsenderEnhetsId,
-            mottaker = req.mottaker,
+            brevkode = request.brevkode,
+            avsenderEnhetsId = request.avsenderEnhetsId,
+            mottaker = request.mottaker,
             signatur = SignerendeSaksbehandlere(saksbehandler = principalSignatur(principal)),
         )
 
         val rendretBrev = renderService.renderMarkup(
-            brevkode = req.brevkode,
-            spraak = req.spraak,
-            saksbehandlerValg = req.saksbehandlerValg,
+            brevkode = request.brevkode,
+            spraak = request.spraak,
+            saksbehandlerValg = request.saksbehandlerValg,
             pesysData = pesysData,
         )
 
         val brev = BrevredigeringEntity.opprettBrev(
-            saksId = req.saksId,
+            saksId = request.saksId,
             vedtaksId = parametre.vedtaksId,
             opprettetAv = principal.navIdent,
-            brevkode = req.brevkode,
-            spraak = req.spraak,
-            avsenderEnhetId = req.avsenderEnhetsId,
-            saksbehandlerValg = req.saksbehandlerValg,
+            brevkode = request.brevkode,
+            spraak = request.spraak,
+            avsenderEnhetId = request.avsenderEnhetsId,
+            saksbehandlerValg = request.saksbehandlerValg,
             redigertBrev = rendretBrev.markup.toEdit(),
             brevtype = parametre.brevtype,
         )
 
-        if (req.reserverForRedigering) {
+        if (request.reserverForRedigering) {
             brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
         }
-        if (req.mottaker != null) {
-            brev.settMottaker(req.mottaker, pesysData.felles.annenMottakerNavn)
+        if (request.mottaker != null) {
+            brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
         }
 
         return success(brev.toDto(rendretBrev.letterDataUsage))
