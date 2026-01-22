@@ -9,7 +9,7 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 === Ting vi har forbedret
 * Flere tekniske forbedringer under panseret i både Skribenten og Brevbaker. Ikke mye som merkes i hverdagen, men det hjulene må smøres innimellom!
 * Litt bedre filtrering i brevvelger. Noen brev som kun hørte til alderspensjon dukket også opp på uføresaker
-* Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med ny data
+* Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med nye data
 
 === Ting vi har fikset
 * VedtaksID ble ikke alltid beholdt når man navigerte mellom sider i Skribenten
