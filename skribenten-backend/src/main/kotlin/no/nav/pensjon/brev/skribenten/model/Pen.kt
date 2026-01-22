@@ -157,6 +157,7 @@ object Pen {
 
     val sakstypeForLegacybrev = Sakstype("GENRL")
 
+    // TODO: Dette bør flyttes over en annen plass, feks i brevbaker-appen, og serveres derifra
     private val brevkategoriTilVisningstekst = mapOf(
         "ETTEROPPGJOER" to "Etteroppgjør",
         "FEILUTBETALING" to "Feilutbetaling",
