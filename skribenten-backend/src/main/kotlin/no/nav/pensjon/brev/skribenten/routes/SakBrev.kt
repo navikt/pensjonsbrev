@@ -46,7 +46,7 @@ fun Route.sakBrev(
 
             call.respond(
                 HttpStatusCode.OK,
-                brevredigeringService.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
+                brevredigeringFacade.hentBrevForSak(sak.saksId).map { dto2ApiService.toApi(it) }
             )
         }
 
