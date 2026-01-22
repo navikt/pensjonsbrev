@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 
 
+@OptIn(InternKonstruktoer::class)
 class Dto2ApiServiceTest {
     private val saksbehandler = NavIdent("Z123")
     private val attestant = NavIdent("A 456")

@@ -1,6 +1,9 @@
+@file:OptIn(InternKonstruktoer::class)
+
 package no.nav.pensjon.brev.skribenten.usecase
 
 import io.ktor.http.*
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode

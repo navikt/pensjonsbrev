@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -19,6 +20,7 @@ import org.junit.jupiter.api.Test
 
 const val TEST_VEDTAKS_ID = "1234"
 
+@OptIn(InternKonstruktoer::class)
 class BrevmalServiceTest {
     private val brevbakerbrev = listOf(
         TemplateDescription.Redigerbar(
