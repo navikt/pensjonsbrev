@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.stans
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.EksportForbudKode
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap

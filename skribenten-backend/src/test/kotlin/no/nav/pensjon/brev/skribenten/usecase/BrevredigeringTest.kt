@@ -1,8 +1,10 @@
+@file:OptIn(InternKonstruktoer::class)
+
 package no.nav.pensjon.brev.skribenten.usecase
 
 import io.ktor.http.*
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
@@ -21,6 +23,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -124,7 +127,7 @@ abstract class BrevredigeringTest {
             foedselsnr = "12345678910",
             foedselsdato = LocalDate.now().minusYears(42),
             navn = Pen.SakSelection.Navn("a", "b", "c"),
-            sakType = Pen.SakType.ALDER,
+            sakType = Sakstype("ALDER"),
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
@@ -141,7 +144,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-            sakstyper = Sakstype.all,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
 
         val vedtaksbrev = TemplateDescription.Redigerbar(
@@ -155,7 +158,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = Sakstype.all,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2"))
         )
 
         private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
@@ -169,7 +172,7 @@ abstract class BrevredigeringTest {
             ),
             kategori = TemplateDescription.Brevkategori.VARSEL,
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-            sakstyper = Sakstype.all,
+            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
 
         val stagetPDF = "nesten en pdf".encodeToByteArray()
