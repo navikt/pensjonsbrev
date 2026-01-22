@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -32,7 +32,7 @@ interface P1Service {
 class P1ServiceImpl(private val penService: PenService) : P1Service {
 
     override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: Long): P1Data = transaction {
-        val brevredigering = Brevredigering.findByIdAndSaksId(brevId, saksId)
+        val brevredigering = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
                 p1Data.p1data = p1DataInput
@@ -43,7 +43,7 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
     }
 
     override suspend fun hentP1Data(brevId: Long, saksId: Long): Api.GeneriskBrevdata? = newSuspendedTransaction {
-        Brevredigering.findByIdAndSaksId(brevId, saksId)?.let {
+        BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.let {
             it.p1Data?.p1data
                 ?: penService.hentP1VedleggData(saksId, it.spraak)
         }

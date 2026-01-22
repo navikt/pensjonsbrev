@@ -5,12 +5,15 @@ import axios from "axios";
 
 import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
 import type {
+  AlltidValgbartVedlegg,
   BestillBrevResponse,
   BrevInfo,
   BrevResponse,
-  DelvisOppdaterBrevRequest,
-  DelvisOppdaterBrevResponse,
+  DistribusjonstypeRequest,
   OppdaterBrevRequest,
+  OppdaterKlarStatusRequest,
+  OppdaterMottakerRequest,
+  OppdaterVedleggRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -27,6 +30,16 @@ export const hentAlleBrevForSak = {
 
 const hentAlleBrevForSakFunction = async (saksId: string) =>
   (await axios.get<BrevInfo[]>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev`)).data;
+
+export const getBrevVedlegg = {
+  queryKey: (saksId: string, brevId: number) => ["brevVedlegg", saksId, brevId] as const,
+  queryFn: async (saksId: string, brevId: number) =>
+    (
+      await axios.get<AlltidValgbartVedlegg[]>(
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`,
+      )
+    ).data,
+};
 
 export const hentPdfForBrev = {
   queryKey: (brevId: number) => ["hentPdfForBrev", brevId],
@@ -55,9 +68,21 @@ const hentPdfForBrevFunction = async (saksId: string, brevId: string | number) =
   };
 };
 
-export const delvisOppdaterBrev = async (saksId: string, brevId: string | number, body: DelvisOppdaterBrevRequest) =>
-  (await axios.patch<DelvisOppdaterBrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body))
-    .data;
+export const veksleKlarStatus = async (saksId: string, brevId: string | number, body: OppdaterKlarStatusRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/status`, body)).data;
+
+export const endreDistribusjonstype = async (saksId: string, brevId: string | number, body: DistribusjonstypeRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/distribusjon`, body)).data;
+
+export const endreMottaker = async (saksId: string, brevId: string | number, body: OppdaterMottakerRequest) =>
+  (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/mottaker`, body)).data;
+
+export const oppdaterVedlegg = async (saksId: string, brevId: number, body: OppdaterVedleggRequest) =>
+  (await axios.patch<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body)).data;
+
+export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
+  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
+};
 
 export const slettBrev = async (saksId: string, brevId: string | number) =>
   (await axios.delete<void>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`)).data;
@@ -78,10 +103,6 @@ export const hentPdfForJournalpost = async (argz: { sakId: string; journalpostId
       headers: { Accept: "application/pdf" },
     })
   ).data;
-
-export const fjernOverstyrtMottaker = async (argz: { saksId: string; brevId: string | number }) => {
-  return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${argz.saksId}/brev/${argz.brevId}/mottaker`)).data;
-};
 
 export const attesterBrev = async (args: {
   saksId: string;

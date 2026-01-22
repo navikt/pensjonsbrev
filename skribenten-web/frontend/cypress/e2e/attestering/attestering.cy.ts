@@ -22,11 +22,6 @@ describe("attestering", () => {
       req.reply(vedtaksBrev);
     }).as("hentBrev");
 
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).to.deep.equal({});
-      req.reply(vedtaksBrev);
-    }).as("saksbehandlerValg");
-
     cy.intercept("PUT", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=false", (req) => {
       req.reply({ ...vedtaksBrev, redigertBrev: req.body });
     }).as("oppdaterBrevtekst");
@@ -57,21 +52,18 @@ describe("attestering", () => {
 
     //brevbehandler
 
-    const brevEtterLaas: BrevResponse = {
-      ...vedtaksBrev,
-      info: nyBrevInfo({ ...vedtaksBrev.info, status: { type: "Attestering" } }),
-    };
+    const brevEtterLaas = nyBrevInfo({ ...vedtaksBrev.info, status: { type: "Attestering" } });
     let brevErLaast = false;
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (req) => {
       if (brevErLaast) {
-        req.reply([brevEtterLaas.info]);
+        req.reply([brevEtterLaas]);
       } else {
         req.reply([vedtaksBrev.info]);
       }
     }).as("alleBrevPåSak");
 
-    cy.intercept("PATCH", "/bff/skribenten-backend/sak/123456/brev/1", (req) => {
-      expect(req.body).to.deep.equal({ laastForRedigering: true });
+    cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (req) => {
+      expect(req.body).to.deep.equal({ klar: true });
       brevErLaast = true;
       req.reply(brevEtterLaas);
     }).as("låsBrev");

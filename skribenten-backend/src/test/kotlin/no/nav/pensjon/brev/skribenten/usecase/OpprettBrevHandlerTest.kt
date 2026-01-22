@@ -10,6 +10,8 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil.ANNEN
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -17,7 +19,7 @@ import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
-class CreateLetterHandlerTest : BrevredigeringTest() {
+class OpprettBrevHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `kan opprette brev`() {
@@ -89,11 +91,20 @@ class CreateLetterHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `kan overstyre mottaker av brev`() {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
+        val mottaker = Dto.Mottaker.norskAdresse(
+            navn = "Anon Y. Mouse",
+            postnummer = NorskPostnummer("0001"),
+            poststed = "Andeby",
+            adresselinje1 = "Andebyveien 1",
+            adresselinje2 = null,
+            adresselinje3 = null,
+            manueltAdressertTil = ANNEN
+        )
         val brev = opprettBrev(mottaker = mottaker)
 
         assertThat(brev).isSuccess {
             assertThat(it.info.mottaker).isEqualTo(mottaker)
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(mottaker.navn)
         }
     }
 

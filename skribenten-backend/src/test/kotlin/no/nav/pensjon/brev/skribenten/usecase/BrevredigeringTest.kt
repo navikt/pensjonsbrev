@@ -17,21 +17,26 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.initADGroups
+import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
+import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
 
 /**
@@ -85,17 +90,17 @@ abstract class BrevredigeringTest {
 
     protected val brevbakerService = BrevredigeringServiceTest.BrevredigeringFakeBrevbakerService()
     protected val penService = BrevredigeringServiceTest.FakePenService()
+    protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService(),
         p1Service = FakeP1Service()
     )
     protected val brevredigeringFacade = BrevredigeringFacade(
         brevbakerService = brevbakerService,
-        brevdataService = BrevdataService(penService, FakeSamhandlerService()),
+        brevdataService = BrevdataService(penService, samhandlerService),
         navansattService = navAnsattService,
         renderService = RenderService(brevbakerService),
         redigerBrevPolicy = RedigerBrevPolicy(),
@@ -213,9 +218,9 @@ abstract class BrevredigeringTest {
         vedtaksId: Long? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: String = PRINCIPAL_NAVENHET_ID,
-    ): Result<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
+    ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
-            CreateLetterHandler.Request(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,
@@ -228,30 +233,83 @@ abstract class BrevredigeringTest {
         )
     }
 
-    /**
-     * TODO: Potensielt midlertidig frem til refaktorering er ferdig
-     */
-    protected suspend fun delvisOppdaterBrev(
+    protected suspend fun oppdaterBrev(
+        brevId: Long,
+        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyttRedigertbrev: Edit.Letter? = null,
+        frigiReservasjon: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.oppdaterBrev(
+            OppdaterBrevHandler.Request(
+                brevId = brevId,
+                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
+                nyttRedigertbrev = nyttRedigertbrev,
+                frigiReservasjon = frigiReservasjon
+            )
+        )
+    }
+
+    protected suspend fun hentBrev(
+        brevId: Long,
+        reserverForRedigering: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.hentBrev(
+            HentBrevHandler.Request(
+                brevId = brevId,
+                reserverForRedigering = reserverForRedigering,
+            )
+        )
+    }
+
+    protected suspend fun attester(
         brev: Dto.Brevredigering,
-        laastForRedigering: Boolean? = null,
-        distribusjonstype: Distribusjonstype? = null,
-        mottaker: Dto.Mottaker? = null,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
-    ) =
-        brevredigeringService.delvisOppdaterBrev(
+        attestant: UserPrincipal = attestantPrincipal,
+        frigiReservasjon: Boolean = false,
+    ) = withPrincipal(attestant) {
+        brevredigeringService.attester(
             saksId = brev.info.saksId,
             brevId = brev.info.id,
-            laastForRedigering = laastForRedigering,
-            distribusjonstype = distribusjonstype,
-            mottaker = mottaker,
-            alltidValgbareVedlegg = alltidValgbareVedlegg
+            frigiReservasjon = frigiReservasjon,
+            nyeSaksbehandlerValg = null,
+            nyttRedigertbrev = null,
         )
+    }
+
+    protected suspend fun veksleKlarStatus(
+        brev: Dto.Brevredigering,
+        klar: Boolean,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.veksleKlarStatus(
+            VeksleKlarStatusHandler.Request(
+                brevId = brev.info.id,
+                klar = klar
+            )
+        )
+    }
+
+    protected suspend fun arkiverBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Unit, BrevredigeringError> = withPrincipal(principal) {
+        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
+        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+
+        penService.sendBrevResponse = Pen.BestillBrevResponse(
+            991,
+            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
+        )
+        assertThat(sendBrev(brev)).isNotNull()
+        success(Unit)
+    }
 
     /**
      * TODO: Potensielt midlertidig frem til refaktorering er ferdig
      */
-    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering) =
-        brevredigeringService.hentEllerOpprettPdf(saksId = brev.info.saksId, brevId = brev.info.id)
+    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal) =
+        withPrincipal(principal) { brevredigeringService.hentEllerOpprettPdf(saksId = brev.info.saksId, brevId = brev.info.id) }
 
     /**
      * TODO: Potensielt midlertidig frem til refaktorering er ferdig
@@ -271,10 +329,12 @@ abstract class BrevredigeringTest {
         )
     }
 
-    class ResultFailure(val error: BrevredigeringError) : Exception()
+    class ResultFailure(error: BrevredigeringError) :
+        AssertionFailedError(null,Outcome.Success::class.java, error::class.java)
 
-    fun <T> Result<T, BrevredigeringError>.resultOrThrow(): T = when (this) {
-        is Result.Success -> value
-        is Result.Failure -> throw ResultFailure(error)
+    fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
+        is Outcome.Success -> value
+        is Outcome.Failure -> throw ResultFailure(error)
+        null -> throw AssertionError("Resultat var null")
     }
 }

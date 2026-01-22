@@ -5,7 +5,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
-import { delvisOppdaterBrev, hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { hentPdfForBrev, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { queryFold } from "~/utils/tanstackUtils";
 
@@ -37,10 +37,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     brev.data?.info.status.type === "Klar" || brev.data?.info.status.type === "Attestering";
 
   const oppdaterBrevTilKladd = useMutation({
-    mutationFn: () =>
-      delvisOppdaterBrev(properties.saksId, properties.brevId, {
-        laastForRedigering: false,
-      }),
+    mutationFn: () => veksleKlarStatus(properties.saksId, properties.brevId, { klar: false }),
     onSuccess: () => {
       setShowBrevDataEndringAlert(false);
       navigateToBrevRedigering();

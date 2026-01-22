@@ -7,9 +7,8 @@ import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 
 fun Route.brev(
     brevredigeringService: BrevredigeringService,
@@ -48,7 +47,7 @@ fun Route.brev(
         put<Edit.Letter>("/redigertBrev") { request ->
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = call.parameters.getOrFail<Long>("brevId"),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
@@ -56,35 +55,6 @@ fun Route.brev(
                 )
             )
             apiRespond(dto2ApiService, resultat)
-        }
-
-        put<SaksbehandlerValg>("/saksbehandlerValg") { request ->
-            val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
-            val resultat = brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
-                    brevId = call.parameters.getOrFail<Long>("brevId"),
-                    nyeSaksbehandlerValg = request,
-                    nyttRedigertbrev = null,
-                    frigiReservasjon = frigiReservasjon,
-                )
-            )
-            apiRespond(dto2ApiService, resultat)
-        }
-
-        put<String>("/signatur") { signatur ->
-            if (signatur.trim().isNotEmpty()) {
-                respond(brevredigeringService.oppdaterSignatur(brevId = call.parameters.getOrFail<Long>("brevId"), signaturSignerende = signatur))
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
-            }
-        }
-
-        put<String>("/attestant") { signatur ->
-            if (signatur.trim().isNotEmpty()) {
-                respond(brevredigeringService.oppdaterSignaturAttestant(brevId = call.parameters.getOrFail<Long>("brevId"), signaturAttestant = signatur))
-            } else {
-                call.respond(HttpStatusCode.BadRequest, "Signatur kan ikke være tom")
-            }
         }
 
         get("/reservasjon") {
