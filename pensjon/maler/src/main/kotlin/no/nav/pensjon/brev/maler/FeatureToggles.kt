@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 enum class FeatureToggles(private val key: String) {
     // Sett inn featuretoggles her
     // val minFeature = UnleashToggle("minFeature")
+    vedtakAvslagPaaOmsorgsopptjening("vedtakAvslagPaaOmsorgsopptjening"),
     bekreftelsePaaPensjon("bekreftelsePaaPensjon"),
     bekreftelsePaaUfoeretrygd("bekreftelsePaaUfoeretrygd"),
     pl7231ForventetSvartid("pl_7231.foreventet_svartid"),
