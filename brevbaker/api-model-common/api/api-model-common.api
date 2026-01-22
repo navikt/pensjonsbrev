@@ -38,7 +38,10 @@ public final class no/nav/brev/Landkode {
 
 public final class no/nav/brev/Landkoder {
 	public static final field INSTANCE Lno/nav/brev/Landkoder;
+	public final fun getEoesLand ()Ljava/util/List;
 	public final fun getLandkoderMedNavn ()Ljava/util/List;
+	public final fun getNordiskTrygdeavtaleland ()Ljava/util/List;
+	public final fun getTrygdeavtaleMedStorbritanniaLand ()Ljava/util/List;
 }
 
 public final class no/nav/brev/brevbaker/PDFCompilationOutput {
