@@ -65,7 +65,7 @@ export type P1UtfyllendeInstitusjon = {
 export type P1Redigerbar = {
   innehaver: P1Person;
   forsikrede: P1Person;
-  sakstype: "ALDER" | "UFORE" | "ETTERLATTE";
+  sakstype: "ALDER" | "UFOREP" | "ETTERLATTE";
   innvilgedePensjoner: P1InnvilgetPensjon[];
   avslaattePensjoner: P1AvslaattPensjon[];
   utfyllendeInstitusjon: P1UtfyllendeInstitusjon;

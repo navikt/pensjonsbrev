@@ -135,6 +135,9 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       // Show which tabs have errors
       const errorLabels = tabsWithErrors.map((t) => t.label).join(", ");
       setValidationError(`Skjemaet har feil som må rettes: ${errorLabels}`);
+    } else if (Object.keys(fieldErrors).length > 0) {
+      // Fallback: If we have errors but couldn't map them to a tab (e.g. sakstype, root errors)
+      setValidationError(`Skjemaet kan ikke lagres pga. ugyldig data (felt: ${Object.keys(fieldErrors).join(", ")})`);
     }
   };
 

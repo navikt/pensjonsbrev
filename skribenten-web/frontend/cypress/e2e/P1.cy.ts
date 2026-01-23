@@ -138,4 +138,51 @@ describe("P1 med forsidebrev", () => {
     cy.contains("Lagre").should("not.be.disabled").click();
     cy.contains("Endringene ble lagret").should("exist");
   });
+
+  it("viser feilmelding hvis data er ugyldig men ingen fane er markert (f.eks. ved bruk av utdatert sakstype UFORE)", () => {
+    // This reproduces the scenario where hidden fields (like sakstype) could fail validation
+    // Now we expect a visible error message instead of silent failure.
+    // We use "UFORE" which is the old/incorrect type we just removed.
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      const invalidData = structuredClone(p1BrevData);
+      // UFORE is no longer a valid type; we still set it here to reproduce invalid backend data.
+      invalidData.sakstype = "UFORE";
+      request.reply(invalidData);
+    });
+
+    openP1Modal();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+
+    cy.contains("Lagre").click();
+
+    // Check for the fallback error message we implemented
+    cy.contains("Skjemaet kan ikke lagres pga. ugyldig data").should("be.visible");
+    cy.contains("sakstype").should("be.visible");
+  });
+
+  it("håndterer sakstype UFOREP (uføretrygd) korrekt ved lagring", () => {
+    // This test explicitly verifies the fix for the reported bug
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      const uforepData = structuredClone(p1BrevData);
+      uforepData.sakstype = "UFOREP";
+      request.reply(uforepData);
+    });
+
+    openP1Modal();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    // Modify field to enable save
+    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      expect(request.body.sakstype).to.eq("UFOREP");
+      request.reply("200");
+    }).as("saveP1Uforep");
+
+    cy.contains("Lagre").click();
+
+    cy.wait("@saveP1Uforep");
+    cy.contains("Endringene ble lagret").should("be.visible");
+  });
 });
