@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
 import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { type FieldErrors, FormProvider, useForm, useFormState } from "react-hook-form";
+import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
@@ -57,7 +57,6 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     handleSubmit,
     reset,
     formState: { errors },
-    control,
   } = formMethods;
 
   // Track if form has been initialized with data
@@ -275,11 +274,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   <Button disabled={lagreMutation.isPending} onClick={handleCancel} type="button" variant="tertiary">
                     Avbryt
                   </Button>
-                  <SubmitButton
-                    control={control}
-                    isInitialLoading={isInitialLoading}
-                    isLoading={lagreMutation.isPending}
-                  />
+                  <SubmitButton isInitialLoading={isInitialLoading} isLoading={lagreMutation.isPending} />
                 </Modal.Footer>
               </HStack>
             </form>
@@ -302,18 +297,15 @@ const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => 
   </>
 );
 
-// Isolated submit button that subscribes to isDirty - prevents parent re-renders
+// Submit button - always enabled after initial load to avoid UX confusion
 interface SubmitButtonProps {
-  control: ReturnType<typeof useForm<P1RedigerbarForm>>["control"];
   isLoading: boolean;
   isInitialLoading: boolean;
 }
 
-const SubmitButton = ({ control, isLoading, isInitialLoading }: SubmitButtonProps) => {
-  const { isDirty } = useFormState({ control });
-
+const SubmitButton = ({ isLoading, isInitialLoading }: SubmitButtonProps) => {
   return (
-    <Button disabled={isInitialLoading || !isDirty} loading={isLoading} size="medium" type="submit" variant="primary">
+    <Button disabled={isInitialLoading} loading={isLoading} size="medium" type="submit" variant="primary">
       Lagre
     </Button>
   );
