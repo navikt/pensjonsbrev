@@ -4,11 +4,11 @@ on:
   workflow_call:
     inputs:
       workingDir:
-        description: 'Working directory'
+        description: "Working directory"
         required: true
         type: string
       deployToProd:
-        description: 'Deploy to prod?'
+        description: "Deploy to prod?"
         required: true
         type: boolean
 
@@ -25,9 +25,9 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: "24"
           registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
+          scope: "@navikt"
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -63,7 +63,6 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       digest: ${{ steps.docker-build-push.outputs.digest }}
-
 
   salsa:
     uses: ./.github/workflows/.salsa.yaml
