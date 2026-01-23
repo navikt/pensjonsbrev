@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigValueFactory
 import kotlinx.coroutines.runBlocking
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -13,6 +14,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
+@OptIn(InternKonstruktoer::class)
 class ExternalAPIServiceTest {
 
     private val skribentenWebUrl = "https://our-cool-url"
@@ -46,7 +48,7 @@ class ExternalAPIServiceTest {
             LetterMetadata.Distribusjonstype.ANNET,
             LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
-        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.SAK,
         sakstyper = emptySet(),
     )

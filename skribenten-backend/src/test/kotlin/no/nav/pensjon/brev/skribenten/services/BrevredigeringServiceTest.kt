@@ -96,7 +96,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
@@ -109,7 +109,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("UFOEREPENSJON"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
@@ -122,7 +122,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.VARSEL,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("VARSEL"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )

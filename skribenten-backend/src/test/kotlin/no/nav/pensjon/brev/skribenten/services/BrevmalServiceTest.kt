@@ -32,7 +32,7 @@ class BrevmalServiceTest {
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
                 no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
-            kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
             sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )

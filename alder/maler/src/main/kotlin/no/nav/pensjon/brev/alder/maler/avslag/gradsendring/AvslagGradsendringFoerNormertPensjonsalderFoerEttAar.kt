@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.avslag.gradsendring
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -47,8 +48,7 @@ object AvslagGradsendringFoerNormertPensjonsalderFoerEttAar : RedigerbarTemplate
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
 
-    override val kategori: TemplateDescription.Brevkategori =
-        TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 
