@@ -16,20 +16,6 @@ const avslagsbegrunnelseEnum = z.enum([
   "PensjonsalderErIkkeNaadd",
   "AndreAarsaker",
 ]);
-const sakstypeEnum = z.enum([
-  "AFP",
-  "AFP_PRIVAT",
-  "ALDER",
-  "BARNEP",
-  "FAM_PL",
-  "GAM_YRK",
-  "GENRL",
-  "GJENLEV",
-  "GRBL",
-  "KRIGSP",
-  "OMSORG",
-  "UFOREP",
-]);
 
 /**
  * ISO date string validator.
@@ -178,7 +164,7 @@ export const p1RedigerbarFormSchema = z
   .object({
     innehaver: p1PersonFormSchema,
     forsikrede: p1PersonFormSchema,
-    sakstype: sakstypeEnum,
+    sakstype: z.string(),
     innvilgedePensjoner: z.array(p1InnvilgetPensjonFormSchema),
     avslaattePensjoner: z.array(p1AvslaattPensjonFormSchema),
     utfyllendeInstitusjon: p1UtfyllendeInstitusjonFormSchema,

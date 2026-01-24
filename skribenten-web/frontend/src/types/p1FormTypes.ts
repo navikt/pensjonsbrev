@@ -70,19 +70,7 @@ export type P1UtfyllendeInstitusjonForm = {
 export type P1RedigerbarForm = {
   innehaver: P1PersonForm;
   forsikrede: P1PersonForm;
-  sakstype:
-    | "AFP"
-    | "AFP_PRIVAT"
-    | "ALDER"
-    | "BARNEP"
-    | "FAM_PL"
-    | "GAM_YRK"
-    | "GENRL"
-    | "GJENLEV"
-    | "GRBL"
-    | "KRIGSP"
-    | "OMSORG"
-    | "UFOREP";
+  sakstype: string;
   innvilgedePensjoner: P1InnvilgetPensjonForm[];
   avslaattePensjoner: P1AvslaattPensjonForm[];
   utfyllendeInstitusjon: P1UtfyllendeInstitusjonForm;

@@ -65,19 +65,7 @@ export type P1UtfyllendeInstitusjon = {
 export type P1Redigerbar = {
   innehaver: P1Person;
   forsikrede: P1Person;
-  sakstype:
-    | "AFP"
-    | "AFP_PRIVAT"
-    | "ALDER"
-    | "BARNEP"
-    | "FAM_PL"
-    | "GAM_YRK"
-    | "GENRL"
-    | "GJENLEV"
-    | "GRBL"
-    | "KRIGSP"
-    | "OMSORG"
-    | "UFOREP";
+  sakstype: string;
   innvilgedePensjoner: P1InnvilgetPensjon[];
   avslaattePensjoner: P1AvslaattPensjon[];
   utfyllendeInstitusjon: P1UtfyllendeInstitusjon;
