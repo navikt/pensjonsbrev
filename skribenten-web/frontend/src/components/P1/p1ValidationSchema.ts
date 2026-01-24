@@ -16,7 +16,20 @@ const avslagsbegrunnelseEnum = z.enum([
   "PensjonsalderErIkkeNaadd",
   "AndreAarsaker",
 ]);
-const sakstypeEnum = z.enum(["ALDER", "UFOREP", "ETTERLATTE"]);
+const sakstypeEnum = z.enum([
+  "AFP",
+  "AFP_PRIVAT",
+  "ALDER",
+  "BARNEP",
+  "FAM_PL",
+  "GAM_YRK",
+  "GENRL",
+  "GJENLEV",
+  "GRBL",
+  "KRIGSP",
+  "OMSORG",
+  "UFOREP",
+]);
 
 /**
  * ISO date string validator.
