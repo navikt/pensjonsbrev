@@ -84,5 +84,5 @@ class OpprettBrevHandler(
     }
 
     private suspend fun principalSignatur(principal: UserPrincipal): String =
-        navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" } ?: principal.fullName
+        navansattService.hentNavansatt(principal.navIdent.id)?.fulltNavn ?: principal.fullName
 }

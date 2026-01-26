@@ -18,7 +18,7 @@ export const REDUKSJONSGRUNNLAG_OPTIONS = [
 
 export const AVSLAGSBEGRUNNELSE_OPTIONS = [
   { value: "IngenOpptjeningsperioder", label: "Ingen opptjeningsperioder" },
-  { value: "OpptjeningsperiodePaaMindreEnnEttAar", label: "Opptjeningsperiode < 1 år" },
+  { value: "OpptjeningsperiodePaaMindreEnnEttAar", label: "Opptjeningsperiode mindre enn 1 år" },
   {
     value: "KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt",
     label: "Kvalifiseringskrav ikke oppfylt",

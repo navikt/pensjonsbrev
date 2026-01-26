@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.Sakstype
-import no.nav.pensjon.brev.api.model.Sakstype.*
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
@@ -17,7 +16,7 @@ interface LetterMetadata {
     val isForVedtakskontekst: Boolean get() = brevkontekst in setOf(TemplateDescription.Brevkontekst.VEDTAK, TemplateDescription.Brevkontekst.ALLE)
     val isRedigerbart: Boolean
 
-    fun isForSakstype(sakstype: Sakstype): Boolean
+    fun isForSakstype(sakstype: ISakstype): Boolean
 
     /**
      * Svarer på om brevmalen er relevant for angitt sakstype når regelverket brukt i saken
@@ -26,13 +25,13 @@ interface LetterMetadata {
      * Om forGammeltRegelverk er null så betyr det at man ikke har hentet fra Pesys,
      * dette er kun fordi det per nå bare er relevant for brevmaler for ALDER.
      */
-    fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean
+    fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean
     fun toApi(): Api.Brevmal
 
     /**
      * Brevmetadata om brevmaler fra pensjon-brevmetadata (Exstream/Doksys)
      */
-    data class Legacy(val data: BrevdataDto, private val hasSakstype: Sakstype) : LetterMetadata {
+    data class Legacy(val data: BrevdataDto, private val hasSakstype: ISakstype) : LetterMetadata {
         override val brevkode: String get() = data.brevkodeIBrevsystem
         override val brevkontekst: TemplateDescription.Brevkontekst?
             get() = when(data.brevkontekst) {
@@ -42,19 +41,9 @@ interface LetterMetadata {
                 null -> null
             }
         override val isRedigerbart: Boolean get() = data.redigerbart
-        override fun isForSakstype(sakstype: Sakstype) = sakstype == hasSakstype
+        override fun isForSakstype(sakstype: ISakstype) = sakstype == hasSakstype
 
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?): Boolean =
-            when (sakstype) {
-                ALDER -> if (forGammeltRegelverk == true) {
-                    data.brevregeltype?.gjelderGammeltRegelverk() ?: true
-                } else {
-                    data.brevregeltype?.gjelderNyttRegelverk() ?: true
-                }
-
-                UFOREP -> data.brevregeltype?.gjelderGammeltRegelverk() ?: true
-                BARNEP, AFP, AFP_PRIVAT, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG -> true
-            }
+        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?): Boolean = Pen.isRelevantRegelverk(sakstype, data.brevregeltype, forGammeltRegelverk)
 
         override fun toApi(): Api.Brevmal = with(data) {
             Api.Brevmal(
@@ -104,8 +93,8 @@ interface LetterMetadata {
         override val brevkontekst: TemplateDescription.Brevkontekst get() = data.brevkontekst
         override val isRedigerbart: Boolean = true
         override val brevkode: String get() = data.name
-        override fun isForSakstype(sakstype: Sakstype) = sakstype in data.sakstyper
-        override fun isRelevantRegelverk(sakstype: Sakstype, forGammeltRegelverk: Boolean?) = true
+        override fun isForSakstype(sakstype: ISakstype) = sakstype.kode in data.sakstyper.map { it.kode }
+        override fun isRelevantRegelverk(sakstype: ISakstype, forGammeltRegelverk: Boolean?) = true
 
         private fun LanguageCode.toSpraakKode(): SpraakKode =
             when (this) {

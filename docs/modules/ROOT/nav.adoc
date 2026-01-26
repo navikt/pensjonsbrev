@@ -1,7 +1,11 @@
-* xref:index.adoc[Startside]
-** xref:brevbaker-arkitektur.adoc[Brevbaker - Arkitektur]
-** xref:brevbaker-hvordan-utvikle-maler.adoc[Hvordan utvikle maler?]
-** xref:brevbaker-pdfbygger-beskrivelse.adoc[Brevbaker og PDFbygger - Teknisk beskrivelse]
-** xref:skribenten-101.adoc[Skribenten - 101 Veiledning]
-** xref:skribenten-beskrivelse.adoc[Skribenten - Teknisk beskrivelse]
-** xref:skribenten-produktoppdateringer.adoc[Skribenten - Produktoppdateringer]
+* xref:index.adoc[Hjem]
+
+.Brevbaker
+* xref:brevbaker-arkitektur.adoc[Arkitektur]
+* xref:brevbaker-hvordan-utvikle-maler.adoc[Hvordan utvikle maler?]
+* xref:brevbaker-pdfbygger-beskrivelse.adoc[Teknisk beskrivelse]
+
+.Skribenten
+* xref:skribenten-101.adoc[Veiledning (101)]
+* xref:skribenten-beskrivelse.adoc[Teknisk beskrivelse]
+* xref:skribenten-produktoppdateringer.adoc[Produktoppdateringer]

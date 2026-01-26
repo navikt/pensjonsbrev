@@ -138,4 +138,29 @@ describe("P1 med forsidebrev", () => {
     cy.contains("Lagre").should("not.be.disabled").click();
     cy.contains("Endringene ble lagret").should("exist");
   });
+
+  it("håndterer sakstype UFOREP (uføretrygd) korrekt ved lagring", () => {
+    // This test explicitly verifies the fix for the reported bug
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      const uforepData = structuredClone(p1BrevData);
+      uforepData.sakstype = "UFOREP";
+      request.reply(uforepData);
+    });
+
+    openP1Modal();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    // Modify field to enable save
+    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      expect(request.body.sakstype).to.eq("UFOREP");
+      request.reply("200");
+    }).as("saveP1Uforep");
+
+    cy.contains("Lagre").click();
+
+    cy.wait("@saveP1Uforep");
+    cy.contains("Endringene ble lagret").should("be.visible");
+  });
 });

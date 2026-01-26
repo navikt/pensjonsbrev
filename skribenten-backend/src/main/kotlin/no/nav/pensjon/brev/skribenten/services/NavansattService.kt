@@ -94,6 +94,8 @@ data class Navansatt(
     val navn: String,
     val fornavn: String,
     val etternavn: String,
-)
+) {
+    val fulltNavn: String get() = "$fornavn $etternavn"
+}
 
 
