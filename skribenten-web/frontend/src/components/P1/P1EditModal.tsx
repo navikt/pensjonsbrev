@@ -8,7 +8,7 @@ import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { useLandData } from "~/hooks/useLandData";
+import { useLandData, useLandDataP1 } from "~/hooks/useLandData";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
@@ -85,7 +85,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     }
   }, [open]);
 
-  const { data: landListe } = useLandData();
+  const { data: landListe } = useLandDataP1();
 
   const lagreMutation = useMutation({
     mutationFn: (formValues: P1RedigerbarForm) => {
