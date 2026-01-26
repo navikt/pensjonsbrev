@@ -12,6 +12,8 @@ object Constants {
     const val NAV_KONTAKTSENTER_AAPNINGSTID = "09.00-15.00"
     const val KONTAKT_URL = "$NAV_URL/kontakt"
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
+    const val SOKNAD_URL = "$NAV_URL/soknader"
+    const val ETTERSENDE_URL = "$NAV_URL/ettersende"
     private val navKontaktsenterUfore = Telefonnummer("55553333")
     val NAV_KONTAKTSENTER_TELEFON_UFORE = navKontaktsenterUfore.format()
 }

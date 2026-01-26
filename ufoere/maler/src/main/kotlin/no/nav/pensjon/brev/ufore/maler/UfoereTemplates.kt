@@ -58,6 +58,9 @@ object UfoereTemplates : AllTemplates {
         VarselSoning12_20,
         SoknadBarnetillegg,
         BrukerLegeerklaering,
+        LegeLegeerklaering,
+        Naeringsinntekter,
+        FlereOpplysninger,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
