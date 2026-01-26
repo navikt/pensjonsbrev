@@ -1450,8 +1450,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_1"))){
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
+                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
                     )
                 }
             }
@@ -1460,8 +1460,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_2"))){
                 paragraph {
                     text(
-                        bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent."},
-                        nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent."},
+                        bokmal {+"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent."},
+                        nynorsk {+"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent."},
                     )
                 }
             }
@@ -1470,8 +1470,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("mellombh") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse()).equalTo("stdbegr_12_7_1_3"))){
                 paragraph {
                     text(
-                        bokmal {+"Du ble ufør i " + uforetidspunkt.format() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent."},
-                        nynorsk {+"Du blei ufør i " + uforetidspunkt.format() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent."},
+                        bokmal {+"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent."},
+                        nynorsk {+"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent."},
                     )
                 }
             }
