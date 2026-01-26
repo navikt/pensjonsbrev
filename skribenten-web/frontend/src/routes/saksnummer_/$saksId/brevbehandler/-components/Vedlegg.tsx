@@ -243,7 +243,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
               Avbryt
             </Button>
             <Button loading={leggTilVedleggMutation.isPending} onClick={handleLeggTil} variant="primary">
-              Legg til
+              Lagre
             </Button>
           </HStack>
         </Modal.Footer>
