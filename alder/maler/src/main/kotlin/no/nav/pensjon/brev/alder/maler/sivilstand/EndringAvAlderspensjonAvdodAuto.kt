@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_GJENLEVENDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
@@ -61,7 +62,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
         letterDataType = EndringAvAlderspensjonAvdodAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av alderspensjon (avdød)",
+            displayTitle = "Vedtak - Omregning til enslig alderspensjonist",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -775,13 +776,13 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     },
                     english {
                         +"If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
-                                "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav"
+                                "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
                     }
                 )
             }
 
             includePhrase(RettTilAAKlage)
-
+            includePhrase(HarDuSpoersmaalAlder)
         }
         includeAttachment(
             vedleggOrienteringOmRettigheterOgPlikter,
