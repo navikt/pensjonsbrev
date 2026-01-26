@@ -1,6 +1,5 @@
 import "./editor.css";
 
-import { css } from "@emotion/react";
 import { BoxNew, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
