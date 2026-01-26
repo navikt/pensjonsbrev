@@ -41,7 +41,7 @@ describe("P1 med forsidebrev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
       request.reply(p1BrevData);
     }).as("getP1Data");
-    cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/landForP1", (request) => {
       request.reply(countriesSubset);
     }).as("getLand");
     // Intercept for Vedlegg component - returns empty array since P1 vedlegg is handled separately
