@@ -35,6 +35,7 @@ data class OmregningAlderUfore2016Felles(
     val avdodNavn: Expression<String?>,
     val avdodFnr: Expression<String?>,
     val gjenlevenderettAnvendt: Expression<Boolean>,
+    val gjenlevenderettInnvilget: Expression<Boolean>,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val faktiskBostedsland: Expression<String?>,
     val erEksportberegnet: Expression<Boolean>,
@@ -174,7 +175,7 @@ data class OmregningAlderUfore2016Felles(
             }
         }
         ifNotNull(avdodNavn) { avdodNavn ->
-            showIf(gjenlevenderettAnvendt.not() and avdodFnr.notNull()) {
+            showIf(gjenlevenderettAnvendt.not() and avdodFnr.notNull() and gjenlevenderettInnvilget) {
                 title2 {
                     text(
                         bokmal { +"Gjenlevenderett i alderspensjon" },
