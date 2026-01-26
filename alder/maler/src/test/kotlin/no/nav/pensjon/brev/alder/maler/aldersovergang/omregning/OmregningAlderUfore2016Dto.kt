@@ -22,6 +22,7 @@ fun createOmregningAlderUfore2016Dto() =
         faktiskBostedsland = "Skottland",
         gjenlevendetilleggKap19Innvilget = true,
         gjenlevenderettAnvendt = true,
+        gjenlevenderettInnvilget = true,
         inngangOgEksportVurdering = InngangOgEksportVurdering(
             eksportTrygdeavtaleAvtaleland = true,
 

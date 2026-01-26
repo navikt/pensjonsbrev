@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantitilleggInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
@@ -90,6 +91,7 @@ object OmregningAlderUfore2016Auto : AutobrevTemplate<OmregningAlderUfore2016Dto
                     avdodNavn = persongrunnlagAvdod.avdodNavn,
                     avdodFnr = persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = gjenlevenderettAnvendt,
+                    gjenlevenderettInnvilget = gjenlevenderettInnvilget,
                     eksportTrygdeavtaleAvtaleland = inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                     faktiskBostedsland = faktiskBostedsland,
                     erEksportberegnet = inngangOgEksportVurdering.erEksportberegnet,
