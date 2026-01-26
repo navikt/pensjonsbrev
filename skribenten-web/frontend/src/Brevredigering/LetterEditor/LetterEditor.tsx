@@ -95,7 +95,7 @@ export const LetterEditor = ({
               letterSpacing: "0.108px",
               marginBottom: "var(--ax-space-28)",
             }}
-            level="3"
+            level="1"
             onDragOver={(e) => {
               e.preventDefault();
               e.dataTransfer.dropEffect = "none";

@@ -40,29 +40,38 @@
 
 .PARAGRAPH {
   font-size: 16.5px;
-  line-height: var(--ax-font-line-height-heading-xsmall);
-  margin-bottom: 27px;
+  line-height: var(--ax-font-line-height-large);
+  margin-bottom: var(--ax-space-28);
+}
+
+.PARAGRAPH:has(+ .PARAGRAPH > ul){
+  margin-bottom: 0;
+}
+
+.PARAGRAPH > ul {
+  margin-top: 0;
 }
 
 .TITLE1 {
   font-size: 19.5px;
-  letter-spacing: 0.375px;
+  letter-spacing: 0.073px;
   line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: var(--ax-font-weight-bold);
+  font-weight: 700;
   margin-bottom: var(--ax-space-6);
 }
 
 .TITLE2 {
   font-size: 18px;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.067px;
   line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: var(--ax-font-weight-bold);
+  font-weight: 700;
   margin-bottom: var(--ax-space-6);
 }
 
 .TITLE3 {
   font-size: 16.5px;
+  letter-spacing: 0.062px;
   line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: var(--ax-font-weight-bold);
+  font-weight: 700;
   margin-bottom: var(--ax-space-6);
 }
