@@ -5,6 +5,7 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.RoutingContext
 import no.nav.brev.BrevExceptionDto
+import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
@@ -72,6 +73,15 @@ private suspend fun <T> RoutingContext.respondOutcome(
                     status = HttpStatusCode.UnprocessableEntity,
                     message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret")
                 )
+
+            is AttesterBrevPolicy.KanIkkeAttestere.HarIkkeAttestantrolle ->
+                call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} har ikke attestantrolle")
+
+            is AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereEgetBrev ->
+                call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} kan ikke attestere sitt eget brev ${outcome.error.brevId}")
+
+            is AttesterBrevPolicy.KanIkkeAttestere.AlleredeAttestertAvAnnen ->
+                call.respond(HttpStatusCode.Conflict, "Brev ${outcome.error.brevId} er allerede attestert av ${outcome.error.attestertAv}")
         }
 
         null -> call.respond(HttpStatusCode.NotFound, "Fant ikke brev")

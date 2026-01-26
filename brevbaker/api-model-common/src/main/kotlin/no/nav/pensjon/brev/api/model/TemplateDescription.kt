@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.api.model
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.util.Objects
@@ -46,6 +47,10 @@ interface TemplateDescription {
         override fun hashCode() = Objects.hash(name, letterDataClass, languages, metadata, kategori, brevkontekst, sakstyper)
         override fun toString(): String =
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
+
+
+        @JvmInline
+        value class Sakstype @InternKonstruktoer constructor(val kode: String)
     }
 
     enum class Brevkontekst {

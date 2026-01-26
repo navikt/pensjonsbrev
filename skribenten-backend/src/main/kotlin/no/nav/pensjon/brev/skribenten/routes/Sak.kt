@@ -42,12 +42,12 @@ fun Route.sakRoute(
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
                 brevmalService.hentBrevmalerForVedtak(
-                    sakstype = sak.sakType.toBrevbaker(),
+                    sakstype = sak.sakType,
                     includeEblanketter = hasAccessToEblanketter,
                     vedtaksId = vedtaksId
                 )
             } else {
-                brevmalService.hentBrevmalerForSak(sak.sakType.toBrevbaker(), hasAccessToEblanketter)
+                brevmalService.hentBrevmalerForSak(sak.sakType, hasAccessToEblanketter)
             }
             call.respond(
                 Api.SakContext(
@@ -62,7 +62,7 @@ fun Route.sakRoute(
                 val sak: Pen.SakSelection = call.attributes[SakKey]
                 val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
                 val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
-                val person = pdlService.hentBrukerContext(sak.foedselsnr, sak.sakType.behandlingsnummer)
+                val person = pdlService.hentBrukerContext(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(

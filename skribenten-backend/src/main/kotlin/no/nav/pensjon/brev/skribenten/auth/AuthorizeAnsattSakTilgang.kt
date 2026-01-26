@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import io.ktor.http.HttpStatusCode
+import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
 import org.slf4j.LoggerFactory
@@ -22,6 +22,9 @@ open class AuthorizeAnsattSakTilgangConfiguration {
     lateinit var penService: PenService
 }
 
+// TODO: Vurder om disse to pluginene bør erstattes med policy-klasser som kan brukes i usecasene direkte.
+//       Fordelen er at det blir mer eksplisitt, men samtidig så må det huskes på å kalle dem i alle usecasene.
+
 val AuthorizeAnsattSakTilgang =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgang", ::AuthorizeAnsattSakTilgangConfiguration) {
         on(PrincipalInContext.Hook) { call ->
@@ -33,14 +36,14 @@ val AuthorizeAnsattSakTilgang =
     }
 
 class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangConfiguration() {
-    lateinit var brevredigeringService: BrevredigeringService
+    lateinit var brevredigeringFacade: BrevredigeringFacade
 }
 
 val AuthorizeAnsattSakTilgangForBrev =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
         on(PrincipalInContext.Hook) { call ->
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val brev = pluginConfig.brevredigeringService.hentBrevInfo(brevId)
+            val brev = pluginConfig.brevredigeringFacade.hentBrevInfo(brevId)
 
             if (brev != null) {
                 validerTilgangTilSak(call, brev.saksId.toString())
@@ -59,7 +62,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 
     if (sak != null) {
         call.attributes.put(SakKey, sak)
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, sak.sakType.behandlingsnummer)
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

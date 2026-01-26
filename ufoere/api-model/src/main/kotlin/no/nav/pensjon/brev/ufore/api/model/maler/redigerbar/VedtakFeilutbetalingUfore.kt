@@ -1,11 +1,13 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.Saksbehandlervalg
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate

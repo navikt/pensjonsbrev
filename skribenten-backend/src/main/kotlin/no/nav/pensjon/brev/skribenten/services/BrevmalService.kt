@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.skribenten.services
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
+import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import org.slf4j.LoggerFactory
 
@@ -22,13 +24,13 @@ class BrevmalService(
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
 
-    suspend fun hentBrevmalerForSak(sakType: Sakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
+    suspend fun hentBrevmalerForSak(sakType: ISakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
         hentMaler(sakType, includeEblanketter)
             .filter { it.isForSakskontekst }
             .map { it.toApi() }
             .toList()
 
-    suspend fun hentBrevmalerForVedtak(sakstype: Sakstype, includeEblanketter: Boolean, vedtaksId: String): List<Api.Brevmal> {
+    suspend fun hentBrevmalerForVedtak(sakstype: ISakstype, includeEblanketter: Boolean, vedtaksId: String): List<Api.Brevmal> {
         // Finner hvilke brev som skal filtreres vekk basert på om vi har en brevdatabygger i PEN som sier at den ikke støttes.
         // Denne logikken skal på sikt reverteres slik at PEN gir en liste med brevmaler som støttes for et et gitt vedtak.
         val ikkeStoettedeBrevkoder = brevdataByggerStoettedeVedtak(vedtaksId).kravStoettet.filterValues { !it }.keys
@@ -45,8 +47,8 @@ class BrevmalService(
     private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
         penService.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
-    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: Sakstype, vedtaksId: String): Sequence<LetterMetadata> {
-        val erKravPaaGammeltRegelverk = if (sakstype == Sakstype.ALDER) {
+    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: String): Sequence<LetterMetadata> {
+        val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {
             penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 ?: false.also { logger.warn("Feltet \"erKravPaaGammeltRegelverk\" fra vedtak er null, antar false") }
         } else null
@@ -54,9 +56,9 @@ class BrevmalService(
         return filter { it.isRelevantRegelverk(sakstype, erKravPaaGammeltRegelverk) }
     }
 
-    private suspend fun hentMaler(sakstype: Sakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
+    private suspend fun hentMaler(sakstype: ISakstype, includeEblanketter: Boolean): Sequence<LetterMetadata> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevakerMaler().asSequence().filter { it.sakstyper.contains(sakstype) }.map { LetterMetadata.Brevbaker(it) } }
+            val brevbaker = async { hentBrevbakerMaler().asSequence().filter { it.sakstyper.map { it.kode }.contains(sakstype.kode) }.map { LetterMetadata.Brevbaker(it) } }
             val legacy = async { brevmetadataService.getBrevmalerForSakstype(sakstype).asSequence().map { LetterMetadata.Legacy(it, sakstype) } }
             val eblanketter = async {
                 if (includeEblanketter) brevmetadataService.getEblanketter().asSequence().map { LetterMetadata.Legacy(it, sakstype) } else emptySequence()
@@ -69,7 +71,7 @@ class BrevmalService(
 
     private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevakerMaler() }
+            val brevbaker = async { hentBrevbakerMaler() }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
                     .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
@@ -78,12 +80,12 @@ class BrevmalService(
             // NB: setter sakstype til GENRL for legacy brev her siden vi ikke har sakstype info når vi henter alle maler,
             //     det blir forkastet før funksjonen returnerer.
             return@withContext brevbaker.await().asSequence().map { LetterMetadata.Brevbaker(it) } +
-                    legacy.await().map { LetterMetadata.Legacy(it, Sakstype.GENRL) }
+                    legacy.await().map { LetterMetadata.Legacy(it, Pen.sakstypeForLegacybrev) }
         }.filter { it.isRedigerbart }
             .filter { it.brevkode !in ekskluderteBrev }
             .map { it.toApi() }
 
-    private suspend fun hentBrevakerMaler(): List<TemplateDescription.Redigerbar> =
+    private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
         brevbakerService.getTemplates() ?: emptyList()
 
 }

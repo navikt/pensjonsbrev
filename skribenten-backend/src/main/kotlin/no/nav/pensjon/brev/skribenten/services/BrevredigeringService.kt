@@ -93,58 +93,6 @@ class BrevredigeringService(
         }
     }
 
-    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
-
-    suspend fun hentBrev(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): Dto.Brevredigering? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                val rendretBrev = rendreBrev(brev = brevDto)
-
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            }
-        } else {
-            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-        }
-
-    suspend fun hentBrevAttestering(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): Dto.Brevredigering? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                brevDto.validerKanAttestere(PrincipalInContext.require())
-
-                val signaturAttestant =
-                    brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
-
-                val rendretBrev = rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant)
-
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            }
-        } else {
-            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-        }
-
-    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
-        transaction {
-            BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
-                .map { it.toBrevInfo() }
-        }
-
     override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
