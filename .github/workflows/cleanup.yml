@@ -7,7 +7,7 @@ on:
 jobs:
   cleanup-pdf-bygger:
     name: "Pdf-bygger: Fjern gamle container bilder"
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-slim"
     permissions:
       packages: write
     steps:
