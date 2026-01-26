@@ -33,65 +33,6 @@ object Landkoder {
         Land(Landkode(it), Locale.of("", it).getDisplayCountry(Locale.of("NB", "NO")))
     }
 
-    val eoesLand = landkoderMedNavn.filter {
-        it.kode.landkode in setOf(
-            // EU-land
-            "AT", // Østerrike
-            "BE", // Belgia
-            "BG", // Bulgaria
-            "CY", // Kypros
-            "CZ", // Tsjekkia
-            "DE", // Tyskland
-            "DK", // Danmark
-            "EE", // Estland
-            "ES", // Spania
-            "FI", // Finland
-            "FR", // Frankrike
-            "GR", // Hellas
-            "HR", // Kroatia
-            "HU", // Ungarn
-            "IE", // Irland
-            "IT", // Italia
-            "LT", // Litauen
-            "LU", // Luxembourg
-            "LV", // Latvia
-            "MT", // Malta
-            "NL", // Nederland
-            "PL", // Polen
-            "PT", // Portugal
-            "RO", // Romania
-            "SE", // Sverige
-            "SI", // Slovenia
-            "SK", // Slovakia
-
-            // EØS
-            "IS", // Island
-            "LI", // Liechtenstein
-            "NO", // Norge
-        )
-    }
-
-    val nordiskTrygdeavtaleland = landkoderMedNavn.filter {
-        it.kode.landkode in setOf(
-            "DK", // Danmark
-            "FI", // Finland
-            "IS", // Island
-            "SE", // Sverige
-
-            "FO", // Færøyene
-            "GL", // Grønland
-            "AX", // Åland, del av Finland
-        )
-    }
-
-    val trygdeavtaleMedStorbritanniaLand = landkoderMedNavn.filter {
-        it.kode.landkode in setOf(
-            "IM", // Isle of Man
-            "JE", // Jersey
-            "GB", // Storbritannia
-        )
-    }
-
     internal fun isValidLandkode(landkode: String): Boolean =
         landkode.length == 2 && alleLandkoder.contains(landkode.uppercase())
 
