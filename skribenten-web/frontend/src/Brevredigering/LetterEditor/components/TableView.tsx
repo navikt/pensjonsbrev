@@ -27,6 +27,7 @@ const tableStyles = css`
     font-weight: var(--ax-font-weight-regular);
     font-size: var(--ax-font-size-medium);
   }
+
   th {
     border-bottom: 2px solid var(--ax-border-focus);
     background: var(--ax-bg-accent-moderate);
