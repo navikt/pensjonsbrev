@@ -11,6 +11,6 @@ class SelectorUsage {
 
     @OptIn(InterneDataklasser::class)
     operator fun plusAssign(selector: TemplateModelSelector<*, *>) {
-        _propertyUsage += LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = selector.className, propertyName = selector.propertyName, redigerbar = selector.redigerbar)
+        _propertyUsage += LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = selector.className, propertyName = selector.propertyName)
     }
 }

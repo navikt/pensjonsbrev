@@ -641,7 +641,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {
 	public abstract fun getPropertyName ()Ljava/lang/String;
-	public abstract fun getRedigerbar ()Z
 	public abstract fun getTypeName ()Ljava/lang/String;
 }
 

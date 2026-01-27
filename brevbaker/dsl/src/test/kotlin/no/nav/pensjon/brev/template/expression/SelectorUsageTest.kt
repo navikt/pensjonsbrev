@@ -33,7 +33,7 @@ class SelectorUsageTest {
 
     @OptIn(InterneDataklasser::class)
     private fun TemplateModelSelector<*, *>.usageId(): Property =
-        LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = this.className, propertyName = this.propertyName, redigerbar = this.redigerbar)
+        LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = this.className, propertyName = this.propertyName)
 
     private val argument = Expression.FromScope.Argument<RotModel>()
     private val Expression<AModel?>.testFeltSafe: Expression<Boolean?>
