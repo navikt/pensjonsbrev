@@ -5,6 +5,7 @@ interface TemplateModelSelector<Model : Any, Property> : StableHash {
     val propertyName: String
     val propertyType: String
     val selector: Model.() -> Property
+    val redigerbar: Boolean
 
     override fun stableHashCode(): Int {
         var result = className.hashCode()
@@ -18,5 +19,6 @@ data class SimpleSelector<Model : Any, Property>(
     override val className: String,
     override val propertyName: String,
     override val propertyType: String,
-    override val selector: Model.() -> Property
+    override val selector: Model.() -> Property,
+    override val redigerbar: Boolean
 ) : TemplateModelSelector<Model, Property>

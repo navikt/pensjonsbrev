@@ -72,6 +72,8 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
 
             val type = property.type.resolveWithTypeParameters()
 
+            val redigerbar = property.annotations.map { it.annotationType.resolveWithTypeParameters() }.any { it == "no.nav.pensjon.brevbaker.api.model.Redigerbar" }
+
             writer.println(
                 """
                 |@JvmField
@@ -80,7 +82,8 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
                 |        className = "$dataClassName",
                 |        propertyName = "$propertyName",
                 |        propertyType = "$type",
-                |        selector = $dataClassName::$propertyName
+                |        selector = $dataClassName::$propertyName,
+                |        redigerbar = $redigerbar
                 |    )
                 |
                 |val TemplateGlobalScope<$dataClassName>.$propertyName: Expression<$type>

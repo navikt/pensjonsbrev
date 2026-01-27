@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template
 
 import kotlin.reflect.KProperty1
 
-class SimpleSelector<Model : Any, Property>(override val className: String, property: KProperty1<Model, Property>) :
+class SimpleSelector<Model : Any, Property>(override val className: String, property: KProperty1<Model, Property>, override val redigerbar: Boolean) :
     TemplateModelSelector<Model, Property> {
     override val propertyName: String = property.name
     override val propertyType: String = property.returnType.toString()
@@ -10,6 +10,6 @@ class SimpleSelector<Model : Any, Property>(override val className: String, prop
 
     companion object {
         inline operator fun <reified Model : Any, Property> invoke(property: KProperty1<Model, Property>): SimpleSelector<Model, Property> =
-            SimpleSelector(Model::class.simpleName ?: "Unknown class", property)
+            SimpleSelector(Model::class.simpleName ?: "Unknown class", property, false)
     }
 }

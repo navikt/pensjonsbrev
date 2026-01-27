@@ -62,11 +62,12 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
                     import no.nav.brev.InternKonstruktoer
+                    import no.nav.pensjon.brevbaker.api.model.Redigerbar
 
                     data class UncleModel(val name: String)
 
                     data class ParentModel(val child: ChildModel) {
-                        data class ChildModel(val uncle: UncleModel)
+                        data class ChildModel(@Redigerbar val uncle: UncleModel)
                     }
 
                     @TemplateModelHelpers

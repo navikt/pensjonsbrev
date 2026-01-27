@@ -841,17 +841,19 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
-	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)V
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Z)V
 	public final fun component1 ()Ljava/lang/String;
 	public final fun component2 ()Ljava/lang/String;
 	public final fun component3 ()Ljava/lang/String;
 	public final fun component4 ()Lkotlin/jvm/functions/Function1;
-	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/SimpleSelector;
-	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/SimpleSelector;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/SimpleSelector;
+	public final fun component5 ()Z
+	public final fun copy (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;Z)Lno/nav/pensjon/brev/template/SimpleSelector;
+	public static synthetic fun copy$default (Lno/nav/pensjon/brev/template/SimpleSelector;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/SimpleSelector;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun getClassName ()Ljava/lang/String;
 	public fun getPropertyName ()Ljava/lang/String;
 	public fun getPropertyType ()Ljava/lang/String;
+	public fun getRedigerbar ()Z
 	public fun getSelector ()Lkotlin/jvm/functions/Function1;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
@@ -880,6 +882,7 @@ public abstract interface class no/nav/pensjon/brev/template/TemplateModelSelect
 	public abstract fun getClassName ()Ljava/lang/String;
 	public abstract fun getPropertyName ()Ljava/lang/String;
 	public abstract fun getPropertyType ()Ljava/lang/String;
+	public abstract fun getRedigerbar ()Z
 	public abstract fun getSelector ()Lkotlin/jvm/functions/Function1;
 	public fun stableHashCode ()I
 }
