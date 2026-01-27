@@ -719,6 +719,9 @@ public final class no/nav/pensjon/brevbaker/api/model/Percent : no/nav/pensjon/b
 	public final synthetic fun unbox-impl ()I
 }
 
+public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/Redigerbar : java/lang/annotation/Annotation {
+}
+
 public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlere {
 	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
