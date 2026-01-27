@@ -30,7 +30,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Din søknad om barnetillegg i uføretrygd",
+            displayTitle = "Barnetillegg Barn som ikke bor hos bruker",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -59,6 +59,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
             }
 
+            includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }
     }

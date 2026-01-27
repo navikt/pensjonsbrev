@@ -61,6 +61,11 @@ object UfoereTemplates : AllTemplates {
         LegeLegeerklaering,
         Naeringsinntekter,
         FlereOpplysninger,
+        NySivilstand,
+        SoknadBarnetilleggFosterForelder,
+        SoknadBarnetilleggUtland,
+        TrukketKlage,
+        UtsattKlagefrist,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.DineRettigheterOgMulighetTilAKlageDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManed
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerAr
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.KonteringType
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysData
@@ -56,6 +57,7 @@ object Fixtures : LetterDataFactory {
             VedtakFeilutbetalingUforeIngenTilbakekrevingDto::class -> lagVedtakFeilutbetalingUforeIngenTilbakekrevingDto() as T
             FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
+            InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -71,6 +73,13 @@ object Fixtures : LetterDataFactory {
     private fun lagFeilutbetalingSpesfikkVarsel() = FeilutbetalingSpesifikkVarselDto(
         pesysData = VarselFeilutbetalingPesysData(100),
         saksbehandlerValg = EmptySaksbehandlerValg,
+    )
+
+    private fun lagInnhentingOpplysningerNaeringsinntekt() = InnhentingOpplysningerNaeringsinntektDto(
+        pesysData = EmptyFagsystemdata,
+        saksbehandlerValg = InnhentingOpplysningerNaeringsinntektDto.Saksbehandlervalg(
+            ikkeMottattInntektsskjema = true
+        )
     )
 
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(

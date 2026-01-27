@@ -59,14 +59,14 @@ object FlereOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             }
             paragraph {
                 list {
-                    item {text(bokmal { +"Arbeidsavtale for den aktuelle stillingen." })                    }
-                    item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("xxxx xxxx") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." })                    }
-                    item {text(bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuell hvem har overtatt dine arbeidsoppgaver)" })                    }
-                    item {text(bokmal { +"Timelistene dine fra 20" + fritekst("xx") + " og 20" + fritekst("xx") + "." })                    }
-                    item {text(bokmal { +"Hvilke arbeidsoppgaver du har utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra 20" + fritekst("xx") + " til 20" + fritekst("xx") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i 20" + fritekst("xx") + "." })                    }
-                    item {text(bokmal { +"Beskriv dine arbeidsoppgaver som styremedlem, samt uttak av styrehonorar." })                    }
-                    item {text(bokmal { +"Hvor mye forventer du å tjene fremover? Her er det viktig at alle inntekter oppgis, både pensjonsgivende og kapital-inntekter." })                    }
-                    item {text(bokmal { +"Skal du eller andre ta ut utbytte fra firmaet? Eventuelt hvor mye forventer du at det tas ut i 20" + fritekst("xx") + "?" })                    }
+                    item {text(bokmal { +"Arbeidsavtale for den aktuelle stillingen." }) }
+                    item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("xxxx xxxx") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." }) }
+                    item {text(bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuell hvem har overtatt dine arbeidsoppgaver)" }) }
+                    item {text(bokmal { +"Timelistene dine fra 20" + fritekst("xx") + " og 20" + fritekst("xx") + "." }) }
+                    item {text(bokmal { +"Hvilke arbeidsoppgaver du har utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra 20" + fritekst("xx") + " til 20" + fritekst("xx") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i 20" + fritekst("xx") + "." }) }
+                    item {text(bokmal { +"Beskriv dine arbeidsoppgaver som styremedlem, samt uttak av styrehonorar." }) }
+                    item {text(bokmal { +"Hvor mye forventer du å tjene fremover? Her er det viktig at alle inntekter oppgis, både pensjonsgivende og kapital-inntekter." }) }
+                    item {text(bokmal { +"Skal du eller andre ta ut utbytte fra firmaet? Eventuelt hvor mye forventer du at det tas ut i 20" + fritekst("xx") + "?" }) }
                 }
             }
             paragraph {

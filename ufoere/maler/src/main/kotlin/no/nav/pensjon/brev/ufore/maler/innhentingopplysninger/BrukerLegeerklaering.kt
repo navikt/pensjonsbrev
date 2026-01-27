@@ -29,7 +29,7 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Innhenting av legeerklæring",
+            displayTitle = "Brev til brukeren ved innhenting av medisinske opplysninger",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -43,18 +43,16 @@ object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Vi trenger din hjelp til å få helseopplysninger om deg fra din fastlege. " })
             }
             paragraph {
-                text(bokmal { +"Du har søkt om uføretrygd (eller ung ufør/yrkesskadefordel). For at vi skal kunne behandle søknaden din (eller vurdere din rett til ung ufør/yrkesskadefordel), trenger vi oppdaterte (stryk ev. «oppdaterte») medisinske opplysninger. " })
+                text(bokmal { +"Du har søkt om uføretrygd " + fritekst("(eller ung ufør/yrkesskadefordel)") + ". For at vi skal kunne behandle søknaden din " + fritekst("(eller vurdere din rett til ung ufør/yrkesskadefordel)") + ", trenger vi oppdaterte " + fritekst("(stryk ev. «oppdaterte»)") + " medisinske opplysninger. " })
             }
             paragraph {
-                text(bokmal { +"Vi har flere ganger bedt fastlegen din om å sende oss legeerklæring/medisinske opplysninger, uten å ha fått dette. " })
+                text(bokmal { +"Vi har flere ganger bedt fastlegen din om å sende oss " + fritekst("legeerklæring/medisinske opplysninger") + ", uten å ha fått dette. Vi ber deg derfor om å kontakte din fastlege og minne om at " + fritekst("legeerklæring/medisinske opplysninger") + " må sendes til Nav så snart som mulig. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber deg derfor om å kontakte din fastlege og minne om at legeerklæring/medisinske opplysninger må sendes til Nav så snart som mulig. " })
-            }
-            paragraph {
-                text(bokmal { +"Dersom vi ikke får legeerklæringen/medisinske opplysninger innen to uker, vil vi behandle saken ut fra opplysningene vi har. " })
+                text(bokmal { +"Dersom vi ikke får " + fritekst("legeerklæringen/medisinske opplysninger") + " innen to uker, vil vi behandle saken ut fra opplysningene vi har. " })
             }
 
+            includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }
     }

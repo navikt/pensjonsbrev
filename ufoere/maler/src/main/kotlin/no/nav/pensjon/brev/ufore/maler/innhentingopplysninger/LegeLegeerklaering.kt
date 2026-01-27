@@ -29,7 +29,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Innhenting av legeerklæring - Uføretrygd",
+            displayTitle = "Brev til fastlege – innhenting av legeerklæring ved krav om uføretrygd",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -40,7 +40,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Ovennevnte person har søkt om uføretrygd. " })
+                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet NAV 08-07.08. " })
