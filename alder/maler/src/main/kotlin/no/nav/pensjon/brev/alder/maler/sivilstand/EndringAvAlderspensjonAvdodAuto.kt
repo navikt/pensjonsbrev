@@ -223,10 +223,13 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     )
                 }
             }
-            val brukerSokeSelv = (avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
-                    and ((borINorge.not() and avdodInformasjon.avdodHarYtelse.notEqualTo(true))
-                    or   alderspensjonVedVirk.innvilgetFor67.equalTo(true)
-                    and alderspensjonVedVirk.uttaksgrad.equalTo(0)))
+            val brukerSokeSelv =
+            (avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
+            and (
+                (borINorge.not() and avdodInformasjon.avdodHarYtelse.notEqualTo(true))
+                or
+                (alderspensjonVedVirk.innvilgetFor67.equalTo(true) and alderspensjonVedVirk.uttaksgrad.equalTo(0)))
+                )
 
             showIf(brukerSokeSelv.not()
                         and avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
