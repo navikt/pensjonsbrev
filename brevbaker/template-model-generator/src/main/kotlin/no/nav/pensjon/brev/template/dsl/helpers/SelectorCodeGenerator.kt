@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.template.dsl.helpers
 import com.google.devtools.ksp.closestClassDeclaration
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.*
+import no.nav.pensjon.brevbaker.api.model.Redigerbar
 import java.io.PrintWriter
 
 private const val INDENT = "    "
@@ -72,7 +73,7 @@ internal class SelectorCodeGenerator(needed: Map<KSClassDeclaration, Set<KSFile>
 
             val type = property.type.resolveWithTypeParameters()
 
-            val redigerbar = property.annotations.map { it.annotationType.resolveWithTypeParameters() }.any { it == "no.nav.pensjon.brevbaker.api.model.Redigerbar" }
+            val redigerbar = property.annotations.map { it.annotationType.resolveWithTypeParameters() }.any { it == Redigerbar::class.qualifiedName }
 
             writer.println(
                 """
