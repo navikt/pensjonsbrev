@@ -486,6 +486,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title3 : 
 public abstract class no/nav/pensjon/brev/template/Expression : no/nav/pensjon/brev/template/StableHash {
 	public abstract fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public fun isRedigerbar (Lno/nav/pensjon/brev/template/ExpressionScope;)Z
+	public final fun toString ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/Expression$BinaryInvoke : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
