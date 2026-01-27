@@ -13,7 +13,7 @@ data class VedtakGodskrivingPensjonsopptjeningDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakGodskrivingPensjonsopptjeningDto.PesysData> {
 
     data class PesysData(
-        val brukersFoedselsdato: Year,
+        val brukersFoedselsaar: Year, //PE_PersonSak_Fodselsdato
         val omsorgspersonNavn: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe_Godskrivesliste_OGPersonPleieTrengFornavn/Mellomnavn/Etternavn
         val omsorgsopptjeningsaar: String, //PE_Grunnlag_OmsorgGodskrGrunnlagListe:OmsorgGodskrGrunnlagAr
     ) : FagsystemBrevdata
