@@ -11,13 +11,13 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface BrevmetadataService {
     suspend fun getAllBrev(): List<BrevdataDto>
-    suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto>
+    suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto>
     suspend fun getEblanketter(): List<BrevdataDto>
     suspend fun getMal(brevkode: String): BrevdataDto
 }
@@ -49,8 +49,8 @@ class BrevmetadataServiceHttp(
         }
     }
 
-    override suspend fun getBrevmalerForSakstype(sakstype: Sakstype): List<BrevdataDto> {
-        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.name}?includeXsd=false") {
+    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode}?includeXsd=false") {
             contentType(ContentType.Application.Json)
         }
         if (httpResponse.status.isSuccess()) {
@@ -74,9 +74,8 @@ class BrevmetadataServiceHttp(
         }.body<BrevdataDto>()
     }
 
-    override val name = "Brevmetadata"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        httpClient.get("/api/internal/isReady").toServiceResult<String>().map { true }
+    override suspend fun ping() =
+        ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
 
 }
 
@@ -126,11 +125,11 @@ data class BrevdataDto(
                 || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
 
     enum class BrevregeltypeCode {
-        GG,     //Gammelt regelverk
-        GN,     //Nytt regelverk med gammel opptjening
-        NN,     //Nytt regelverk
-        ON,     //Overgangsordning med ny og gammel opptjening
-        OVRIGE;  //vrige brev, ikke knyttet til gammelt eller nytt regelverk.
+        GG, //Gammelt regelverk
+        GN, //Nytt regelverk med gammel opptjening
+        NN, //Nytt regelverk
+        ON, //Overgangsordning med ny og gammel opptjening
+        OVRIGE; //Øvrige brev, ikke knyttet til gammelt eller nytt regelverk.
 
         fun gjelderGammeltRegelverk() =
             when (this) {

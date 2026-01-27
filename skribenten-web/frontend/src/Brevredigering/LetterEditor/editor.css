@@ -1,8 +1,12 @@
 .editor {
-  margin-top: var(--a-spacing-6);
+  align-self: start;
+  max-width: 694px;
+  min-width: 480px;
+  width: 100%;
   /*clamp: minimum, ideal, max */
   padding: 0 clamp(1rem, 2vw, 4rem);
-  caret-color: green;
+  /* make scrollbar reach the top with padding-top rathern than margin-top */
+  padding-top: var(--ax-space-24);
 
   [contenteditable] {
     &:focus-within {
@@ -36,29 +40,29 @@
 
 .PARAGRAPH {
   font-size: 16.5px;
-  line-height: var(--a-font-line-height-heading-xsmall);
+  line-height: var(--ax-font-line-height-heading-xsmall);
   margin-bottom: 27px;
 }
 
 .TITLE1 {
   font-size: 19.5px;
   letter-spacing: 0.375px;
-  line-height: var(--a-font-line-height-heading-xsmall);
-  font-weight: var(--a-font-weight-bold);
-  margin-bottom: var(--a-spacing-1-alt);
+  line-height: var(--ax-font-line-height-heading-xsmall);
+  font-weight: var(--ax-font-weight-bold);
+  margin-bottom: var(--ax-space-6);
 }
 
 .TITLE2 {
   font-size: 18px;
   letter-spacing: 0.3px;
-  line-height: var(--a-font-line-height-heading-xsmall);
-  font-weight: var(--a-font-weight-bold);
-  margin-bottom: var(--a-spacing-1-alt);
+  line-height: var(--ax-font-line-height-heading-xsmall);
+  font-weight: var(--ax-font-weight-bold);
+  margin-bottom: var(--ax-space-6);
 }
 
 .TITLE3 {
   font-size: 16.5px;
-  line-height: var(--a-font-line-height-heading-xsmall);
-  font-weight: var(--a-font-weight-bold);
-  margin-bottom: var(--a-spacing-1-alt);
+  line-height: var(--ax-font-line-height-heading-xsmall);
+  font-weight: var(--ax-font-weight-bold);
+  margin-bottom: var(--ax-space-6);
 }

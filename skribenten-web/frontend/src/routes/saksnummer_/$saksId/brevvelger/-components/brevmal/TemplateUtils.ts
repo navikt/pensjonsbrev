@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
-import { BrevSystem, type LetterMetadata, SpraakKode } from "~/types/apiTypes";
+import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export const byggDoksysOnSubmitRequest = (argz: {
@@ -9,7 +9,6 @@ export const byggDoksysOnSubmitRequest = (argz: {
   vedtaksId: Nullable<string>;
   formValues: {
     enhetsId: string;
-    isSensitive?: boolean;
     spraak: Nullable<SpraakKode>;
     brevtittel: Nullable<string>;
   };
@@ -29,7 +28,6 @@ export const byggExstreamOnSubmitRequest = (argz: {
   vedtaksId: Nullable<string>;
   formValues: {
     enhetsId: string;
-    isSensitive?: boolean;
     spraak: Nullable<SpraakKode>;
     brevtittel: Nullable<string>;
   };
@@ -37,8 +35,6 @@ export const byggExstreamOnSubmitRequest = (argz: {
   return {
     brevkode: argz.template.id,
     enhetsId: argz.formValues.enhetsId,
-    //validering skal fange at denne ikke er undefined
-    isSensitive: argz.formValues.isSensitive!,
     idTSSEkstern: argz.idTSSEkstern ?? null,
     vedtaksId: argz.vedtaksId ?? null,
     brevtittel: argz.formValues.brevtittel ?? null,
@@ -57,13 +53,11 @@ export const byggEBlankettOnSubmitRequest = (argz: {
     landkode: string;
     mottakerText: string;
     enhetsId: string;
-    isSensitive?: boolean;
   };
 }): OrderEblankettRequest => {
   return {
     landkode: argz.formValues.landkode,
     mottakerText: argz.formValues.mottakerText,
-    isSensitive: argz.formValues.isSensitive!,
     enhetsId: argz.formValues.enhetsId,
     vedtaksId: argz.vedtaksId ?? null,
     brevkode: argz.template.id,
@@ -83,7 +77,6 @@ export const createValidationSchema = (template: LetterMetadata) => {
       enhetsId: z.coerce.string().min(1, { error: "Obligatorisk" }),
 
       //disse valideres gjennom superRefine
-      isSensitive: z.boolean({ error: "Obligatorisk" }).optional(),
       spraak: z.enum(SpraakKode).optional(),
       brevtittel: z.string().optional(),
     })
@@ -94,15 +87,6 @@ export const createValidationSchema = (template: LetterMetadata) => {
           code: "custom",
           message: "Obligatorisk",
           path: ["spraak"],
-        });
-      }
-
-      //isSensitive skal kun sjekkes for brev som ikke er doksys
-      if (template.brevsystem !== BrevSystem.DokSys && data.isSensitive === undefined) {
-        refinementContext.addIssue({
-          code: "custom",
-          message: "Obligatorisk",
-          path: ["isSensitive"],
         });
       }
 

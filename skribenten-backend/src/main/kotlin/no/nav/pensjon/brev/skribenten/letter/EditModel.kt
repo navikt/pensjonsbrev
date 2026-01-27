@@ -21,6 +21,7 @@ object Edit {
         val title: Title,
         val sakspart: Sakspart,
         val blocks: List<Block>,
+        // TODO: Lag egen edit-modell for signatur slik at saksbehandlerNavn kan påkreves
         val signatur: Signatur,
         val deletedBlocks: Set<Int>
     ) {
@@ -37,6 +38,18 @@ object Edit {
                 annenMottakerNavn = annenMottakerNavn,
                 saksnummer = saksnummer,
                 dokumentDato = dokumentDato,
+            )
+        )
+
+        fun withSignatur(
+            saksbehandler: String = signatur.saksbehandlerNavn!!,
+            attestant: String? = signatur.attesterendeSaksbehandlerNavn,
+        ) = copy(
+            signatur = LetterMarkupImpl.SignaturImpl(
+                hilsenTekst = signatur.hilsenTekst,
+                saksbehandlerNavn = saksbehandler,
+                attesterendeSaksbehandlerNavn = attestant,
+                navAvsenderEnhet = signatur.navAvsenderEnhet,
             )
         )
     }

@@ -26,7 +26,7 @@ const BrevmalAlternativer = (props: {
       return (
         <ApiError
           error={specificationFormElements.error}
-          title={"Feil oppstod ved henting av alternativer for brevmal"}
+          title="Feil oppstod ved henting av alternativer for brevmal"
         />
       );
     }
@@ -46,11 +46,11 @@ const BrevmalAlternativer = (props: {
         // Boolean felter er optional med default value false, så de må registreres slik i form.
         // Dermed må SaksbehandlerValgModelEditor også rendres om det finnes optional felter (ingenting blir synlig).
         return (
-          <VStack gap="3">
+          <VStack gap="space-12">
             {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <SaksbehandlerValgModelEditor
               brevkode={props.brevkode}
-              fieldsToRender={"required"}
+              fieldsToRender="required"
               specificationFormElements={specificationFormElements}
               submitOnChange={props.submitOnChange}
             />
@@ -59,11 +59,11 @@ const BrevmalAlternativer = (props: {
       } else {
         if (!hasOptional) {
           return (
-            <VStack gap="3">
+            <VStack gap="space-12">
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
-                fieldsToRender={"required"}
+                fieldsToRender="required"
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -73,11 +73,11 @@ const BrevmalAlternativer = (props: {
 
         if (!hasRequired) {
           return (
-            <VStack gap="3">
+            <VStack gap="space-12">
               {props.withTitle && <Heading size="xsmall">Tekstalternativer</Heading>}
               <SaksbehandlerValgModelEditor
                 brevkode={props.brevkode}
-                fieldsToRender={"optional"}
+                fieldsToRender="optional"
                 specificationFormElements={specificationFormElements}
                 submitOnChange={props.submitOnChange}
               />
@@ -86,7 +86,7 @@ const BrevmalAlternativer = (props: {
         }
 
         return (
-          <VStack gap="3">
+          <VStack gap="space-12">
             {props.withTitle && <Heading size="xsmall">Brevmal alternativer</Heading>}
             <Tabs
               css={css`
@@ -94,9 +94,9 @@ const BrevmalAlternativer = (props: {
 
                 display: flex;
                 flex-direction: column;
-                gap: var(--a-spacing-5);
+                gap: var(--ax-space-20);
 
-                .navds-tabs__scroll-button {
+                .aksel-tabs__scroll-button {
                   /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
                   display: none;
                 }
@@ -118,13 +118,13 @@ const BrevmalAlternativer = (props: {
                 css={css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--a-spacing-5);
+                  gap: var(--ax-space-20);
                 `}
                 value={BrevAlternativTab.TEKSTER}
               >
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
-                  fieldsToRender={"optional"}
+                  fieldsToRender="optional"
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />
@@ -133,13 +133,13 @@ const BrevmalAlternativer = (props: {
                 css={css`
                   display: flex;
                   flex-direction: column;
-                  gap: var(--a-spacing-5);
+                  gap: var(--ax-space-20);
                 `}
                 value={BrevAlternativTab.OVERSTYRING}
               >
                 <SaksbehandlerValgModelEditor
                   brevkode={props.brevkode}
-                  fieldsToRender={"required"}
+                  fieldsToRender="required"
                   specificationFormElements={specificationFormElements}
                   submitOnChange={props.submitOnChange}
                 />

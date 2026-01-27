@@ -1,39 +1,29 @@
 package no.nav.pensjon.brev.skribenten.db
 
 import com.typesafe.config.ConfigFactory
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.SharedPostgres
 import no.nav.pensjon.brev.skribenten.oneShotJobs
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.sql.Database
-import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.selectAll
 import org.jetbrains.exposed.sql.transactions.transaction
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
-import org.testcontainers.containers.PostgreSQLContainer
 import java.util.concurrent.atomic.AtomicInteger
 
 class OneShotJobTest {
-    private val postgres = PostgreSQLContainer("postgres:15-alpine")
     private val config = ConfigFactory.parseMap(mapOf("services.leader.url" to null))
     private val jobnameCounter = AtomicInteger(0)
 
-    init {
-        postgres.start()
-        Database.connect(
-            HikariDataSource(HikariConfig().apply {
-                this.jdbcUrl = postgres.jdbcUrl
-                this.username = postgres.username
-                this.password = postgres.password
-                this.initializationFailTimeout = 6000
-                maximumPoolSize = 2
-                validate()
-            })
-        )
-        transaction {
-            SchemaUtils.create(OneShotJobTable)
-        }
+    @BeforeAll
+    fun initDb() {
+        SharedPostgres.subscribeAndEnsureDatabaseInitialized(this)
+    }
+
+    @AfterAll
+    fun kansellerDbAvhengighet() {
+        SharedPostgres.cancelSubscription(this)
     }
 
     // Util function to avoid silly name collisions in tests

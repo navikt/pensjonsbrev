@@ -4,12 +4,12 @@ import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.db.databaseObjectMapper
-import org.junit.AfterClass
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
 import org.testcontainers.containers.GenericContainer
 import org.testcontainers.containers.wait.strategy.Wait
-import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.minutes
 
 
@@ -40,7 +40,8 @@ class CacheTest {
         var counter = 0
         runBlocking {
             (1..10).forEach { _ ->
-                val i1: Int = cache.cached(Cacheomraade.NORG, "k") {
+                // Her må vi tilordne til variabel, elles fungerer det ikkje
+                val i1 = cache.cached(Cacheomraade.NORG, "k") {
                     counter++
                     123
                 }
@@ -92,7 +93,7 @@ class CacheTest {
 
     companion object {
         @JvmStatic
-        @AfterClass
+        @AfterAll
         fun stopValkey() {
             valkeyContainer.stop()
         }

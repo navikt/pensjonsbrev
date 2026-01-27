@@ -51,8 +51,14 @@ import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingFerdigDTO
 import no.nav.pensjon.etterlatte.fixtures.createTilbakekrevingRedigerbartBrevDTO
 import no.nav.pensjon.etterlatte.fixtures.createTomMal
 import no.nav.pensjon.etterlatte.fixtures.createTomMalInformasjonsbrev
+import no.nav.pensjon.etterlatte.fixtures.lagBeregning
+import no.nav.pensjon.etterlatte.fixtures.lagTilbakekrevingDTO
+import no.nav.pensjon.etterlatte.fixtures.vedlegg.lagBeregningsVedleggData
+import no.nav.pensjon.etterlatte.fixtures.vedlegg.lagInformasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTO
@@ -92,6 +98,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.Aarl
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.lagOmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
@@ -99,7 +106,10 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.Omstilling
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingBrevDTO
+import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingDTO
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.TilbakekrevingRedigerbartBrevDTO
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.BeregningsVedleggData
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.etteroppgjoer.EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO
 import kotlin.reflect.KClass
 
@@ -177,6 +187,15 @@ object Fixtures : LetterDataFactory {
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : Any> createVedlegg(letterDataType: KClass<T>): T = when(letterDataType) {
+        BarnepensjonBeregning::class -> lagBeregning() as T
+        BeregningsVedleggData::class -> lagBeregningsVedleggData() as T
+        OmstillingsstoenadBeregning::class -> lagOmstillingsstoenadBeregning() as T
+        InformasjonOmOmstillingsstoenadData::class -> lagInformasjonOmOmstillingsstoenadData() as T
+        TilbakekrevingDTO::class -> lagTilbakekrevingDTO() as T
+        else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
+    }
 
 
 }

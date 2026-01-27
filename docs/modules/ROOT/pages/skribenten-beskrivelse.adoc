@@ -1,0 +1,208 @@
+= Skribenten
+
+Skribenten er en web applikasjon hvor saksbehandlere kan bestille, redigere og sende brev. Skribenten har full støtte for redigering av brev fra Brevbaker, samt den gjør det mulig å bestille legacy brev fra Doksys og Exstream. Skribenten består av skribenten-web (React) og skribenten-backend (Kotlin/Ktor). Skribenten-backend er i utgangspunktet ansvarlig for å videresende alle requests på vegne av skribenten-web.
+
+
+== Grunnleggende scenarioer
+
+- Web: skribenten-web
+- API: skribenten-backend
+
+[plantuml, target=img/seq-diagram, format=svg]
+....
+actor Saksbehandler
+boundary Web
+boundary API
+participant Brev
+participant BrevPDF
+boundary Pesys
+boundary Brevbaker
+boundary DokArkiv
+
+Saksbehandler -> Web : Lag nytt brev
+activate Web
+
+== Initier brevredigering ==
+Web -> Web ++ : Initier brevredigering
+
+note over API
+    Endret sti fra engelsk til norsk
+end note
+
+Web -> API ++ : GET /brevmal/{brevkode}
+API -> Brevbaker ++ : GET /templates/redigerbar/{brevkode}
+return TemplateDescription
+return TemplateDescription
+
+note over API
+    Bør ressursstien for brev være under sak?
+    Et argument for er at vi har tilgangsstyring på alt under sak.
+end note
+
+Web -> API ++ : POST /sak/{saksId}/brev
+
+API -> Pesys ++ : GET /skribenten/sak/{saksId}/brevdata/{brevkode}
+return Brevdata
+
+API -> Brevbaker ++ : POST /templates/redigerbar/{brevkode}
+return RenderedLetter
+
+API -> Brev ** : << create >>
+
+return BrevMedRendering
+return
+
+Web --> Saksbehandler : Klar til redigering
+
+== Endre "malalternativer" ==
+Saksbehandler --> Web : Endret malalternativer
+Web -> Web ++
+
+Web -> API ++ : POST /sak/{saksId}/brev/{brevId}
+
+API -> Pesys ++ : GET /skribenten/sak/{saksId}/brevdata/{brevkode}
+return Brevdata
+
+API -> Brevbaker ++ : POST /templates/redigerbar/{brevkode}
+return RenderedLetter
+
+API -> Brev : Oppdater malalternativer
+return BrevMedRendering
+return
+
+== Rediger innhold ==
+Saksbehandler --> Web : Endret innhold
+Web -> Web ++
+
+note left Web
+    Noe timing/antall endringer
+    utløser dette
+end note
+
+Web -> API ++ : POST /sak/{saksId}/brev/{brevId}
+
+API -> Pesys ++ : GET /skribenten/sak/{saksId}/brevdata/{brevkode}
+return Brevdata
+
+API -> Brevbaker ++ : POST /templates/redigerbar/{brevkode}
+return RenderedLetter
+
+API -> Brev : Oppdater redigert innhold
+
+return BrevMedRendering
+return
+
+Web --> Saksbehandler : Lagret
+
+== Ferdigstill ==
+Saksbehandler --> Web : Ferdigstill brev
+Web -> Web ++
+
+Web -> API : POST /sak/{saksId}/brev/{brevId}/ferdigstill
+activate API
+
+API -> Brevbaker ++ : Rendre PDF
+return BrevPDF
+
+note over BrevPDF
+    TODO: Må detaljere interaksjonen her
+end note
+API -> BrevPDF ** : << create >>
+return BrevPDF
+return
+
+Web --> Saksbehandler : Be om bekreftelse
+Saksbehandler --> Web : Bekreft ferdigstill
+Web -> Web ++
+
+Web -> API ++ : Send brev
+API -> DokArkiv ++ : Send brev
+return Journalpost ID
+
+API -> Brev !! : << delete >>
+Brev -> BrevPDF !! : << delete >>
+return Journalpost ID
+return
+return
+
+== Åpne eksisterende brev ==
+Saksbehandler -> Web ++ : Åpne brev
+Web -> Web ++
+
+Web -> API ++ : GET /sak/{saksId}/brev/{brevId}
+API -> Brev ++
+Brev -> BrevPDF ++
+return
+return
+
+note over Pesys
+    Om BrevPDF ikke finnes så hentes brevdata og det rendres.
+end note
+
+API -> Pesys ++ : GET /skribenten/sak/{saksId}/brevdata/{brevkode}
+return Brevdata
+
+API -> Brevbaker ++ : POST /templates/redigerbar/{brevkode}
+return RenderedLetter
+
+return BrevMedRendering\neller BrevMedPDF
+return
+
+Web --> Saksbehandler : Klar til redigering\neller bekreftelse
+
+== Angre ferdigstilling og åpne for redigering ==
+Saksbehandler -> Web : Angre ferdigstilling
+Web -> Web ++
+
+Web -> API ++ : DELETE /sak{saksId}/brev/{brevId}/ferdigstill
+API -> BrevPDF !! : << delete >>
+return 204 (deleted) || 404
+return
+
+Web --> Saksbehandler : Klar til redigering
+
+== Kanseller (slett) brev ==
+Saksbehandler -> Web : Kanseller brev
+Web -> Web ++
+
+Web -> API ++ : DELETE /sak/{saksId}/brev/{brevId}
+API -> Brev !! : << delete >>
+Brev -> BrevPDF !! : << delete >>
+
+return 204 (deleted) || 404
+return
+
+Web --> Saksbehandler : Slettet brev
+
+....
+
+== Brevredigering status diagram
+
+[plantuml, target=img/brevredigering-state, format=svg]
+....
+state UnderRedigering
+UnderRedigering : redigeresAv : NavIdent
+state Kladd
+state Attestering
+state Klar
+Klar : attestertAv : NavIdent?
+
+state isVedtaksbrev <<choice>>
+
+[*] --> UnderRedigering : Åpne brev (fra brevmeny)
+UnderRedigering --> UnderRedigering : Forny lås (1m)
+UnderRedigering --> Kladd : Fortsett (knapp)
+
+Kladd --> UnderRedigering : Åpne
+Kladd --> isVedtaksbrev : Lås brev
+
+isVedtaksbrev --> Klar : [not isVedtaksbrev]
+isVedtaksbrev --> Attestering : [isVedtaksbrev]
+
+Attestering --> Klar
+
+Klar --> Kladd : Lås opp brev
+Attestering --> Kladd : Lås opp brev
+
+Klar --> [*] : Ferdigstill (arkiver+distribuer)
+....

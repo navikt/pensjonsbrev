@@ -28,10 +28,10 @@ jobs:
       id-token: write
     runs-on: ubuntu-latest
     if: ${{
-      ((inputs.cluster == 'dev-gcp' || inputs.cluster == 'dev-fss') && ((github.event_name == 'push' && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch' )) ||
-      ((inputs.cluster == 'prod-gcp' || inputs.cluster == 'prod-fss') && (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
+      (inputs.cluster == 'dev-gcp' && ((github.event_name == 'push' && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch' )) ||
+      (inputs.cluster == 'prod-gcp' && (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - name: Deploy to ${{ inputs.cluster }}

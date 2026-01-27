@@ -455,6 +455,20 @@ describe("onClickHandler", () => {
     expect(selection?.toString()).toBe("andre literal");
   });
 
+  test("double-clicking on a fritekst variable that has focus, but no selection, should select the whole element", async () => {
+    const { user } = setupComplex();
+    await user.click(screen.getByText("andre literal"));
+    await user.click(screen.getByText("andre literal"));
+    const selection = globalThis.getSelection();
+    expect(selection?.isCollapsed).toBeTruthy();
+    await user.click(screen.getByText("andre literal"));
+    expect(selection?.isCollapsed).toBeTruthy();
+    expect(selection?.toString()).toBe("");
+    await user.dblClick(screen.getByText("andre literal"));
+    expect(selection?.isCollapsed).toBeFalsy();
+    expect(selection?.toString()).toBe("andre literal");
+  });
+
   test("clicking on a fritekst variable that has been edited should not select the whole element", async () => {
     const state = letter(
       paragraph([
@@ -477,10 +491,18 @@ describe("onFocusHandler", () => {
     const { user } = setupComplex();
 
     await user.click(screen.getByText("Dokumentet starter med variable"));
+    expect(globalThis.getSelection()?.isCollapsed).toBe(true);
     await user.tab();
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
+    expect(selection?.isCollapsed).toBe(false);
     expect(selection?.focusNode?.textContent).toBe("andre literal");
+    const fritekst = screen.getByText("andre literal");
+    expect(fritekst.textContent).toBe("andre literal");
+    expect(globalThis.getSelection()?.isCollapsed).toBe(false);
+    await user.keyboard("abcdef");
+    expect(fritekst.textContent).toBe("abcdef");
+    expect(globalThis.getSelection()?.isCollapsed).toBe(true);
   });
   test("tabbing through a fritkest variable that has been edited should not be focused", async () => {
     const state = letter(

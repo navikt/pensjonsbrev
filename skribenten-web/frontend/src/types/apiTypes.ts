@@ -1,8 +1,4 @@
-import type {
-  Identtype,
-  InnOgUtland,
-  Søketype,
-} from "~/routes/saksnummer_/$saksId/brevvelger/-components/endreMottaker/EndreMottakerUtils";
+import type { Identtype, InnOgUtland, Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
 
 import type { ManueltAdressertTil } from "./brev";
 import type { Nullable } from "./Nullable";
@@ -10,15 +6,21 @@ import type { Nullable } from "./Nullable";
 export type SakDto = {
   readonly saksId: number;
   readonly foedselsnr: string;
-  readonly foedselsdato: [number, number, number];
+  readonly foedselsdato: string;
   readonly navn: { readonly fornavn: string; readonly mellomnavn: string | null; readonly etternavn: string };
   readonly sakType: SakType;
-  readonly enhetId: string;
 };
 
 export type SakContextDto = {
   readonly sak: SakDto;
   readonly brevmalKoder: string[];
+};
+
+export type BrukerStatusDto = {
+  readonly adressebeskyttelse: boolean;
+  readonly doedsfall: string;
+  readonly erSkjermet: boolean;
+  readonly vergemaal: boolean;
 };
 
 export type SakType =
@@ -85,13 +87,11 @@ export type BaseLetterRequest = {
 export type OrderDoksysLetterRequest = BaseLetterRequest;
 
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
-  isSensitive: boolean;
   idTSSEkstern: Nullable<string>;
   brevtittel: Nullable<string>;
 };
 
 export type OrderEblankettRequest = Omit<BaseLetterRequest, "spraak"> & {
-  isSensitive: boolean;
   landkode: string;
   mottakerText: string;
 };

@@ -1,0 +1,87 @@
+package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
+
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
+import no.nav.pensjon.brev.api.model.BeloepEndring
+import no.nav.pensjon.brev.api.model.KravInitiertAv
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
+import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterOgPlikterDto
+import no.nav.pensjon.brevbaker.api.model.DisplayText
+import no.nav.pensjon.brevbaker.api.model.Kroner
+import java.time.LocalDate
+
+data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
+    override val saksbehandlerValg: SaksbehandlerValg,
+    override val pesysData: PesysData,
+) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
+    data class SaksbehandlerValg(
+        @DisplayText("Omregnet til enslig i samme vedtak")
+        val omregnetTilEnsligISammeVedtak: Boolean,
+        @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
+        val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
+        @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
+        val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
+        @DisplayText("Hvis etterbetaling av pensjon")
+        val etterbetaling: Boolean?,
+    ) : SaksbehandlerValgBrevdata
+
+    data class PesysData(
+        val avdod: Avdod,
+        val bruker: Bruker,
+        val krav: Krav,
+        val alderspensjonVedVirk: AlderspensjonVedVirk,
+        val ytelseskomponentInformasjon: YtelseskomponentInformasjon,
+        val gjenlevendetilleggKapittel19VedVirk: GjenlevendetilleggKapittel19VedVirk,
+        val beregnetPensjonPerManedVedVirk: BeregnetPensjonPerManedVedVirk,
+        val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
+        val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
+        val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
+        val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
+    ) : FagsystemBrevdata
+
+    data class Avdod(
+        val navn: String
+    )
+
+    data class Bruker(
+        val fodselsdato: LocalDate
+    )
+
+    data class Krav(
+        val virkDatoFom: LocalDate,
+        val kravInitiertAv: KravInitiertAv,
+    )
+
+    data class AlderspensjonVedVirk(
+        val totalPensjon: Kroner,
+        val regelverkType: AlderspensjonRegelverkType,
+        val uttaksgrad: Int,
+        val gjenlevendetilleggKap19Innvilget: Boolean,
+        val gjenlevenderettAnvendt: Boolean,
+        val gjenlevendetilleggInnvilget: Boolean,
+        val saertilleggInnvilget: Boolean,
+        val minstenivaIndividuellInnvilget: Boolean,
+        val pensjonstilleggInnvilget: Boolean,
+        val garantipensjonInnvilget: Boolean,
+        val harEndretPensjon: Boolean,
+    )
+
+    data class YtelseskomponentInformasjon(
+        val beloepEndring: BeloepEndring,
+    )
+
+    data class GjenlevendetilleggKapittel19VedVirk(
+        val apKap19utenGJR: Int
+    )
+
+    data class BeregnetPensjonPerManedVedVirk(
+        val inntektspensjon: Kroner?,
+        val gjenlevendetilleggKap19: Kroner?,
+        val gjenlevendetillegg: Kroner?,
+        val antallBeregningsperioderPensjon: Int,
+    )
+}

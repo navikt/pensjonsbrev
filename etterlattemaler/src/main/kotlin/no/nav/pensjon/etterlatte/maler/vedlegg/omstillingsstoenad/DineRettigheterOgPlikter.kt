@@ -1,24 +1,25 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.AttachmentTemplate
+import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.newText
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
 @TemplateModelHelpers
-val dineRettigheterOgPlikter = createAttachment(
-    title = newText(
-        Bokmal to "Dine rettigheter og plikter",
-        Nynorsk to "Dine rettar og plikter",
-        English to "Your rights and obligations",
-    ),
+val dineRettigheterOgPlikter: AttachmentTemplate<LangBokmalNynorskEnglish, EmptyVedleggData> = createAttachment(
+    title = {
+        text(
+            bokmal { +"Dine rettigheter og plikter" },
+            nynorsk { +"Dine rettar og plikter" },
+            english { +"Your rights and obligations" },
+        )
+    },
     includeSakspart = false,
 ) {
     meldFraOmEndringer()
@@ -62,7 +63,14 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, E
                 text(
                     bokmal { +"du får innvilget andre stønader fra Nav" },
                     nynorsk { +"du får innvilga andre stønader frå Nav" },
-                    english { +"You are granted any other benefits by Nav " },
+                    english { +"You are granted any other benefits by Nav" },
+                )
+            }
+            item {
+                text(
+                    bokmal { +"du blir innvilget full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    nynorsk { +"du blir innvilga full uføretrygd (omstillingsstønaden skal stoppe)" },
+                    english { +"you will be granted full disability benefit (the adjustment allowance will stop)" },
                 )
             }
             item {

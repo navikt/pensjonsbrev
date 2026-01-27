@@ -7,7 +7,7 @@ on:
 jobs:
   cleanup-pdf-bygger:
     name: "Pdf-bygger: Fjern gamle container bilder"
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-slim"
     permissions:
       packages: write
     steps:
@@ -15,5 +15,6 @@ jobs:
         with:
           package-name: pensjonsbrev/pdf-bygger
           package-type: container
+          ignore-versions: '(.*?)main$'
           min-versions-to-keep: 10
           token: "${{ secrets.DELETE_PACKAGES_TOKEN }}"

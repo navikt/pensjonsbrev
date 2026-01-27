@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.context
 
+import kotlinx.coroutines.currentCoroutineContext
 import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.coroutineContext
 
 interface ContextValue<V> {
     suspend fun get(): V?
@@ -14,7 +14,7 @@ class ContextValueProvider<V, E : CoroutineContext.Element, K : CoroutineContext
     private val value: E.() -> V
 ) : ContextValue<V> {
     override suspend fun get(): V? {
-        return coroutineContext[key]?.value()
+        return currentCoroutineContext()[key]?.value()
     }
 
     override suspend fun require(): V {

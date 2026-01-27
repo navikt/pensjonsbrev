@@ -9,6 +9,8 @@ on:
       - "skribenten-backend/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/skribenten.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
   push:
     branches:
       - "main"
@@ -19,6 +21,8 @@ on:
       - "skribenten-backend/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/skribenten.yml"
+      - "gradle/wrapper/gradle-wrapper.jar"
+      - "gradle/wrapper/gradle-wrapper.properties"
 
 permissions:
   contents: read
@@ -32,6 +36,8 @@ jobs:
     with:
       image_suffix: skribenten-backend
       path: skribenten-backend
+      target: skribenten-backend
+      gradleTarget: skribenten-backend
       buildImage: true
 
   salsa:
@@ -67,9 +73,10 @@ jobs:
   "klarTilMerge":
     name: "Klar til merge"
     needs: [build-skribenten-backend]
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: ./.github/pr

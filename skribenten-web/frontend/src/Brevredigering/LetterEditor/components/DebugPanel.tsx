@@ -1,5 +1,5 @@
-import { css } from "@emotion/react";
-import { Accordion, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
+import { css, Global } from "@emotion/react";
+import { Accordion, BodyShort, BoxNew, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
 import type { Dispatch } from "react";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -47,52 +47,63 @@ export function DebugPanel() {
   }, []);
 
   return (
-    <div
-      css={css`
-        padding: 1rem;
-        margin-top: 1rem;
-        align-self: flex-start;
-        background: var(--a-blue-200);
-        width: 100%;
-      `}
-    >
-      <HStack gap={"4"}>
-        {mappedSelection ? (
-          <>
-            <VStack>
-              <HStack gap={"4"}>
-                SELECTION START:
-                <Focus focus={mappedSelection.start} />
-              </HStack>
-              <HStack gap={"4"}>
-                SELECTION END:
-                <Focus focus={mappedSelection.end} />
-              </HStack>
-            </VStack>
-          </>
-        ) : null}
-      </HStack>
-      <HStack gap={"4"}>
-        FOCUS:
-        <Focus focus={editorState.focus} />
-      </HStack>
-      <HStack gap={"4"}>
-        FREEZE: <b css={css({ color: freeze ? "red" : "black" })}>{freeze.toString()}</b>
-        SAVESTATUS: <b>{editorState.saveStatus}</b>
-      </HStack>
-      <HStack gap={"4"}>
-        MOUSE:
-        <b>X: {mousePosition.x}</b>
-        <b>Y: {mousePosition.y}</b>
-      </HStack>
-      <HStack gap={"4"}>
-        CARET:
-        <b>offset: {caretOffset}</b>
-        <b>X: {caretRect?.x}</b>
-        <b>Y: {caretRect?.y}</b>
-      </HStack>
-      <LetterTree state={editorState} />
-    </div>
+    <>
+      <Global
+        styles={css`
+          .editor {
+            [contenteditable] {
+              &:focus-within {
+                outline: 1px solid var(--ax-border-brand-magenta-subtle);
+              }
+              outline: 1px solid var(--ax-border-brand-magenta-subtle);
+            }
+          }
+        `}
+      />
+      <BoxNew background="neutral-soft" marginBlock="space-16 0">
+        <VStack padding="space-16">
+          <HStack gap="space-16">
+            {mappedSelection ? (
+              <>
+                <VStack>
+                  <HStack gap="space-16">
+                    SELECTION &lt;:
+                    <Focus focus={mappedSelection.start} />
+                  </HStack>
+                  <HStack gap="space-16">
+                    SELECTION &gt;:
+                    <Focus focus={mappedSelection.end} />
+                  </HStack>
+                </VStack>
+              </>
+            ) : null}
+          </HStack>
+          <HStack gap="space-16">
+            FOCUS:
+            <Focus focus={editorState.focus} />
+          </HStack>
+          <HStack gap="space-16">
+            FREEZE:{" "}
+            <BodyShort color={freeze ? "red" : "black"} weight="semibold">
+              {freeze.toString()}
+            </BodyShort>
+            SAVESTATUS: <BodyShort weight="semibold">{editorState.saveStatus}</BodyShort>
+          </HStack>
+          <HStack gap="space-16">
+            MOUSE:
+            <BodyShort weight="semibold">X: {mousePosition.x}</BodyShort>
+            <BodyShort weight="semibold">Y: {mousePosition.y}</BodyShort>
+          </HStack>
+          <HStack gap="space-16">
+            CARET:
+            <BodyShort weight="semibold">offset: {caretOffset}</BodyShort>
+            <BodyShort weight="semibold">X: {caretRect?.x}</BodyShort>
+            <BodyShort weight="semibold">Y: {caretRect?.y}</BodyShort>
+          </HStack>
+          <LetterTree state={editorState} />
+        </VStack>
+      </BoxNew>
+    </>
   );
 }
 
@@ -101,7 +112,9 @@ const Focus = ({ focus }: { focus: Focus }) => {
     <>
       {Object.entries(focus).map(([key, value]) => (
         <div key={key}>
-          <b>{key.replaceAll("Index", "")}: </b>
+          <BodyShort as="span" weight="semibold">
+            {key.replaceAll("Index", "")}:{" "}
+          </BodyShort>
           <span>{value}</span>
         </div>
       ))}
@@ -137,23 +150,20 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
     .map((c) => (isTextContent(c) ? textOf(c) : null))
     .filter((c) => c !== null)
     .join("");
-  const highlightColor = getHighlightColor(isNew(block), isEdited(block));
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
 
   return (
     <ExpansionCard
       aria-label={`${block.type} - ${index} - ${block.id}`}
-      css={css`
-        background: var(${highlightColor});
-      `}
+      data-color={getHighlightColor(isNew(block), isEdited(block))}
       onToggle={setIsOpen}
       open={isOpen}
-      size={"small"}
+      size="small"
     >
       <ExpansionCard.Header>
         <ExpansionCard.Title>
-          <HStack gap={"4"}>
+          <HStack gap="space-16">
             <span>{block.type}</span>
             <span>Index: {index}</span>
             <span>ID: {block.id ?? "NEW"}</span>
@@ -161,33 +171,32 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         </ExpansionCard.Title>
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
-      <ExpansionCard.Content>
-        <Accordion size={"small"}>
-          {block.content.map((c, index) => (
-            <Content content={c} focus={focus} index={index} key={index} />
-          ))}
-        </Accordion>
-      </ExpansionCard.Content>
+      <BoxNew asChild background="default">
+        <ExpansionCard.Content>
+          <Accordion size="small">
+            {block.content.map((c, index) => (
+              <Content content={c} focus={focus} index={index} key={index} />
+            ))}
+          </Accordion>
+        </ExpansionCard.Content>
+      </BoxNew>
     </ExpansionCard>
   );
 };
 
 const Content = ({ content, focus, index }: { content: Content; focus?: Focus; index: number }) => {
   const extract = isTextContent(content) ? textExtract(textOf(content)) : "";
-  const highlightColor = getHighlightColor(isNew(content), isEdited(content));
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus?.contentIndex, index);
 
   return (
     <Accordion.Item
-      css={css`
-        background: var(${highlightColor});
-      `}
+      data-color={getHighlightColor(isNew(content), isEdited(content))}
       onOpenChange={setIsOpen}
       open={isOpen}
     >
       <Accordion.Header>
-        <HStack gap={"4"}>
+        <HStack gap="space-16">
           <span>{content.type}</span>
           <span>Index: {index}</span>
           <span>ID: {content.id ?? "NEW"}</span>
@@ -210,7 +219,7 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
       return "--new line--";
     case "ITEM_LIST":
       return (
-        <Accordion size={"small"}>
+        <Accordion size="small">
           {content.items.map((i, index) => (
             <ItemBody focus={focus} index={index} item={i} key={index} />
           ))}
@@ -236,25 +245,22 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
   );
 
   const itemText = item.content.map(textOf).join("");
-  const highlightColor = getHighlightColor(isNew(item), isEditedItem(item));
 
   return (
     <Accordion.Item
-      css={css`
-        background: var(${highlightColor});
-      `}
+      data-color={getHighlightColor(isNew(item), isEditedItem(item))}
       onOpenChange={setIsOpen}
       open={isOpen}
     >
       <Accordion.Header>
-        <HStack gap={"4"}>
+        <HStack gap="space-16">
           <span>Index: {index}</span>
           <span>ID: {item.id ?? "NEW"}</span>
           <span>{textExtract(itemText)}</span>
         </HStack>
       </Accordion.Header>
       <Accordion.Content>
-        <Accordion size={"small"}>
+        <Accordion size="small">
           {item.content.map((c, index) => (
             <Content content={c} focus={itemContentFocus} index={index} key={index} />
           ))}
@@ -265,7 +271,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
 };
 
 function getHighlightColor(isNew: boolean, isEdited: boolean): string {
-  return isNew ? "--a-surface-success-subtle" : isEdited ? "--a-surface-info-subtle" : "--a-surface-default";
+  return isNew ? "success" : isEdited ? "accent" : "neutral";
 }
 
 function isEdited(content: Content | AnyBlock): boolean {

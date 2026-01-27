@@ -155,11 +155,9 @@ export const SaksbehandlerValgModelEditor = (props: {
   }
 
   return (
-    <>
-      <VStack gap="5" marginBlock="space-0 space-16">
-        {fieldsWithElements[`${props.fieldsToRender}Fields`].map((field) => field.element)}
-      </VStack>
-    </>
+    <VStack gap="space-20" marginBlock="space-0 space-20">
+      {fieldsWithElements[`${props.fieldsToRender}Fields`].map((field) => field.element)}
+    </VStack>
   );
 };
 

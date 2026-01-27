@@ -1,9 +1,9 @@
-import { css } from "@emotion/react";
-import { BodyShort, Box, Button, Heading, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
 import { getBaseUrls } from "~/api/bff-endpoints";
+import { VerticalDivider } from "~/components/Divider";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
 import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
@@ -35,57 +35,66 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <Box
-        background="bg-default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--a-spacing-8);
-        `}
+      <BoxNew
+        asChild
+        background="default"
+        height="calc(var(--main-page-content-height) + 48px)"
+        marginInline="auto"
+        width="fit-content"
       >
-        {urlReady && (
-          <VStack gap="2">
-            <Heading size="medium">Hva vil du gjøre nå?</Heading>
-            <NavButtons psak={psak} saksId={saksId} />
-          </VStack>
-        )}
-        <BodyShort>Ingen informasjon om brevsending</BodyShort>
-        <Link
-          params={{ saksId, brevId }}
-          search={{ vedtaksId, enhetsId }}
-          to={"/saksnummer/$saksId/attester/$brevId/forhandsvisning"}
-        >
-          Tilbake til forhåndsvisning
-        </Link>
-      </Box>
+        <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
+          <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+            <VStack>
+              <BodyShort>Ingen informasjon om brevsending</BodyShort>
+              <Link
+                params={{ saksId, brevId }}
+                search={{ vedtaksId, enhetsId }}
+                to="/saksnummer/$saksId/attester/$brevId/forhandsvisning"
+              >
+                Tilbake til forhåndsvisning
+              </Link>
+            </VStack>
+          </HStack>
+          <VerticalDivider />
+          {urlReady && (
+            <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+              <VStack gap="space-8" marginInline="auto">
+                <Heading size="medium">Hva vil du gjøre nå?</Heading>
+                <NavButtons psak={psak} saksId={saksId} />
+              </VStack>
+            </HStack>
+          )}
+        </HGrid>
+      </BoxNew>
     );
   }
 
   return (
-    <Box
-      background="bg-default"
-      css={css`
-        display: flex;
-        flex: 1;
-        align-self: center;
-        gap: 5rem;
-        justify-content: center;
-        padding: var(--a-spacing-8) var(--a-spacing-24);
-      `}
+    <BoxNew
+      asChild
+      background="default"
+      height="calc(var(--main-page-content-height) + 48px)"
+      marginInline="auto"
+      width="fit-content"
     >
-      <VStack gap="5">
-        <Heading size="medium">Kvittering</Heading>
-        <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
-      </VStack>
-      {urlReady && (
-        <VStack gap="2">
-          <Heading size="medium">Hva vil du gjøre nå?</Heading>
-          <NavButtons psak={psak} saksId={saksId} />
-        </VStack>
-      )}
-    </Box>
+      <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
+        <HStack justify="start" overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+          <VStack gap="space-20">
+            <Heading size="medium">Kvittering</Heading>
+            <KvitterteBrev kvitterteBrev={sendteBrevLista} sakId={saksId} />
+          </VStack>
+        </HStack>
+        <VerticalDivider />
+        {urlReady && (
+          <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+            <VStack gap="space-8" marginInline="auto">
+              <Heading size="medium">Hva vil du gjøre nå?</Heading>
+              <NavButtons psak={psak} saksId={saksId} />
+            </VStack>
+          </HStack>
+        )}
+      </HGrid>
+    </BoxNew>
   );
 };
 
@@ -98,11 +107,11 @@ const NavButtons = ({ psak, saksId }: { psak?: string; saksId: string }) => {
   };
 
   return (
-    <VStack align={"start"} gap="3">
-      <ButtonLink as={"a"} href={urls.bruker}>
+    <VStack align="start" gap="space-12">
+      <ButtonLink as="a" href={urls.bruker}>
         Gå til brukeroversikt
       </ButtonLink>
-      <ButtonLink as={"a"} href={urls.dokument}>
+      <ButtonLink as="a" href={urls.dokument}>
         Gå til dokumentoversikt
       </ButtonLink>
     </VStack>

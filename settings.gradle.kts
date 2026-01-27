@@ -1,17 +1,21 @@
 rootProject.name = "pensjonsbrev"
 
-include("alder-brevbaker-api-model")
-include("aldersmaler")
-include("brevbaker")
-include("brevbaker-api-model-common")
-include("brevbaker-dsl")
-include("etterlattemaler")
-include("pdf-bygger")
-include("pensjon-brevbaker")
-include("pensjon-brevbaker-api-model")
-include("pensjonsmaler")
+include("brevbaker:core")
+include("brevbaker:api-model-common")
+include("brevbaker:dsl")
+include("brevbaker:pdf-bygger")
+include("brevbaker:template-model-generator")
+
 include("skribenten-backend")
-include("template-model-generator")
-include("tjenestebuss-integrasjon")
-include("ufoere-brevbaker-api-model")
-include("ufoeremaler")
+
+include("pensjon:brevbaker")
+include("pensjon:maler")
+include("pensjon:api-model")
+
+include("ufoere:maler")
+include("ufoere:api-model")
+
+include("alder:maler")
+include("alder:api-model")
+
+include("etterlattemaler")

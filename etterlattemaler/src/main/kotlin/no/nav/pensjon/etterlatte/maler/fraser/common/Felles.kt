@@ -239,4 +239,68 @@ object Felles {
             }
         }
     }
+
+    object DuHarRettTilAaKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+        override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+            title2 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                    english { +"You have the right to appeal" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Hvis du mener at vedtaket er feil, kan du klage innen seks uker fra den dagen du " +
+                            "mottok vedtaket. Kontoret som har fattet vedtaket vil da vurdere saken din på nytt. " +
+                            "Hvis du ikke får gjennomslag for klagen din, blir den sendt videre til Nav klageinstans " +
+                            "for ny vurdering og avgjørelse. Dersom du heller ikke får gjennomslag hos klageinstansen, " +
+                            "kan du anke saken inn for Trygderetten." },
+                    nynorsk { +"Dersom du meiner vedtaket er feil, kan du klage innan seks veker frå den " +
+                            "datoen du fekk vedtaket. Kontoret som har fatta vedtaket, vil då vurdere saka di på " +
+                            "nytt. Dersom du ikkje får medhald i klaga di, blir ho sendt vidare til Nav klageinstans " +
+                            "for ny vurdering og avgjerd. Dersom du heller ikkje får medhald hos klageinstansen, kan " +
+                            "du anke saka inn for Trygderetten." },
+                    english { +"If you believe the decision is wrong, you can appeal within six weeks from " +
+                            "the date you received the decision. The office that made the decision will then review " +
+                            "your case again. If your appeal is not approved, it will be forwarded to the Nav Appeals " +
+                            "Instance for a new review and decision. If you do not receive approval there either, you " +
+                            "can bring your case before the National Insurance Court." }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du finner skjema og informasjon på ${Constants.KLAGE_URL}. Nav kan veilede deg " +
+                            "på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å " +
+                            "skrive en klage." },
+                    nynorsk { +"Du finn skjema og informasjon på ${Constants.KLAGE_URL}. Nav kan rettleie deg " +
+                            "på telefon om korleis du sender ei klage. Nav-kontoret ditt kan òg hjelpe deg med å " +
+                            "skrive ei klage." },
+                    english { +"You can find forms and information at ${Constants.Engelsk.KLAGE_URL}. Nav " +
+                            "can guide you by phone on how to submit an appeal. Your local Nav office can also help " +
+                            "you write an appeal." }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Kontakt oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
+                            "hvis du trenger hjelp. Hvis du sender klagen i posten, må du signere klagen." },
+                    nynorsk { +"Kontakt oss på telefon ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
+                            "dersom du treng hjelp. Viss du sender klaga i posten, må du signere ho." },
+                    english { +"Contact us by phone at ${Constants.KONTAKTTELEFON_PENSJON_MED_LANDKODE} " +
+                            "if you need assistance. If you send your appeal by post, you must sign it." }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Mer informasjon om klagerettigheter finner du på ${Constants.KLAGERETTIGHETER_URL}." },
+                    nynorsk { +"Meir informasjon om klagerettar finn du på ${Constants.KLAGERETTIGHETER_URL}." },
+                    english { +"More information about appeal rights can be found at ${Constants.KLAGERETTIGHETER_URL}." }
+                )
+            }
+        }
+    }
 }

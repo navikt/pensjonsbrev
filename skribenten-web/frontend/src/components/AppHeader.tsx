@@ -1,25 +1,14 @@
-import { css } from "@emotion/react";
-import { BodyShort, Dropdown, InternalHeader, Link, Spacer } from "@navikt/ds-react";
+import { Dropdown, InternalHeader } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 import { useUserInfo } from "~/hooks/useUserInfo";
-import feedbackUrl from "~/utils/feedbackUrl";
 
 export function AppHeader() {
   return (
-    <InternalHeader
-      css={css`
-        position: sticky;
-        top: 0;
-        z-index: var(--a-z-index-popover);
-      `}
-    >
+    <InternalHeader css={{ position: "sticky", top: 0, zIndex: 1000 }}>
       <InternalHeader.Title as="h1">
         <RouterLink
-          css={css`
-            color: inherit;
-            text-decoration: inherit;
-          `}
+          css={{ color: "inherit", textDecoration: "inherit" }}
           params={(current) => current}
           search={(current) => current}
           to="/"
@@ -27,18 +16,6 @@ export function AppHeader() {
           Skribenten
         </RouterLink>
       </InternalHeader.Title>
-      <Spacer />
-
-      <Link
-        css={css`
-          color: inherit;
-          padding-inline: var(--a-spacing-4);
-        `}
-        href={feedbackUrl}
-        target="_blank"
-      >
-        <BodyShort size="small">Gi oss en tilbakemelding på teams her</BodyShort>
-      </Link>
 
       <nav css={{ marginLeft: "auto", display: "flex" }}>
         <UserDropdown />

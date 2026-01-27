@@ -2,6 +2,7 @@ app-name: "skribenten-backend"
 
 database:
   auditlog: "off"
+  postgresVersion: POSTGRES_17
 
 ingresses:
   - "https://pensjon-skribenten-api.intern.dev.nav.no"
@@ -67,21 +68,23 @@ outboundRules:
   - application: digdir-krr-proxy
     namespace: team-rocket
     cluster: dev-gcp
+  - application: navansatt
+    namespace: pensjon-saksbehandling
+    cluster: dev-gcp
 
 externalHosts:
   - pdl-api.dev-fss-pub.nais.io
   - pensjon-pen-q2.dev-fss-pub.nais.io
   - saf-q2.dev-fss-pub.nais.io
   - pensjon-persondata-q2.dev-fss-pub.nais.io
-  - pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io
-  - navansatt.dev-fss-pub.nais.io
   - pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io
   - teampensjon-unleash-api.nav.cloud.nais.io
   - norg2.intern.dev.nav.no
+  - pensjon-representasjon-q2.intern.dev.nav.no
 
 env:
   - name: CORS_ALLOW_HOST
-    value: "pensjon-skribenten-web-q2.intern.dev.nav.no"
+    value: "pensjon-skribenten-web-q2.intern.dev.nav.no,pensjon-skribenten-web-q2.ansatt.dev.nav.no"
 
   - name: PEN_URL
     value: "https://pensjon-pen-q2.dev-fss-pub.nais.io/pen/api/"
@@ -118,15 +121,15 @@ env:
   - name: PENSJON_PERSONDATA_SCOPE
     value: "api://dev-fss.pensjon-person.pensjon-persondata-q2/.default"
 
-  - name: TJENESTEBUSS_INTEGRASJON_URL
-    value: "https://pensjonsbrev-tjenestebuss-q2.dev-fss-pub.nais.io"
-  - name: TJENESTEBUSS_INTEGRASJON_SCOPE
-    value: "api://dev-fss.pensjonsbrev.pensjonsbrev-tjenestebuss-q2/.default"
+  - name: PENSJON_REPRESENTASJON_URL
+    value: "https://pensjon-representasjon-q2.dev-fss-pub.nais.io"
+  - name: PENSJON_REPRESENTASJON_SCOPE
+    value: "api://dev-fss.pensjon-person.pensjon-representasjon-q2/.default"
 
   - name: NAVANSATT_URL
-    value: "https://navansatt.dev-fss-pub.nais.io/"
+    value: "http://navansatt.pensjon-saksbehandling/"
   - name: NAVANSATT_SCOPE
-    value: "api://dev-fss.teampensjon.navansatt/.default"
+    value: "api://dev-gcp.pensjon-saksbehandling.navansatt/.default"
 
   - name: SAMHANDLER_PROXY_URL
     value: "https://pensjon-samhandler-proxy-q2.dev-fss-pub.nais.io"
@@ -138,3 +141,8 @@ env:
 
   - name: SKRIBENTEN_WEB_URL
     value: "https://pensjon-skribenten-web-q2.intern.dev.nav.no"
+
+  - name: SKJERMING_URL
+    value: "https://skjermede-personer-pip.intern.dev.nav.no/skjermet"
+  - name: SKJERMING_SCOPE
+    value: "api://dev-gcp.nom.skjermede-personer-pip/.default"

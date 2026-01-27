@@ -4,11 +4,11 @@ on:
   workflow_call:
     inputs:
       workingDir:
-        description: 'Working directory'
+        description: "Working directory"
         required: true
         type: string
       cypress:
-        description: 'Run cypress tests'
+        description: "Run cypress tests"
         required: true
         type: boolean
 
@@ -19,14 +19,14 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: "24"
           registry-url: https://npm.pkg.github.com/
-          scope: '@navikt'
+          scope: "@navikt"
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
@@ -51,13 +51,13 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
         with:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: '22'
-          cache: 'npm'
+          node-version: "24"
+          cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -65,7 +65,7 @@ jobs:
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c
+        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -75,7 +75,7 @@ jobs:
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@e65cba2e7319696fc0fdc4d5a319b737aec4ba1c
+        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -100,7 +100,7 @@ jobs:
         run: npm run check-types
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots

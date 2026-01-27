@@ -1,7 +1,7 @@
 import "./editor.css";
 
 import { css } from "@emotion/react";
-import { Heading } from "@navikt/ds-react";
+import { BoxNew, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
@@ -84,35 +84,16 @@ export const LetterEditor = ({
   }, [canRedo, setEditorState]);
 
   return (
-    <div
-      css={css`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: ${editorHeight ?? "auto"};
-        overflow-y: auto;
-      `}
-    >
+    <VStack align="center" height={editorHeight ?? "auto"}>
       <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
-        <div
-          css={css`
-            position: sticky;
-            top: 0;
-            width: 100%;
-            z-index: 1;
-          `}
-        >
-          <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        </div>
-        <div
+        <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+        <BoxNew
           className="editor"
           css={css`
-            align-self: start;
-            max-width: 694px;
-            min-width: 480px;
-            width: 100%;
             ${freeze && "cursor: wait;"}
           `}
+          flexGrow="1"
+          overflowY="auto"
         >
           <SakspartView
             sakspart={letter.sakspart}
@@ -162,10 +143,10 @@ export const LetterEditor = ({
               margin-bottom: 48px;
             `}
           />
-        </div>
+        </BoxNew>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
-    </div>
+    </VStack>
   );
 };
 

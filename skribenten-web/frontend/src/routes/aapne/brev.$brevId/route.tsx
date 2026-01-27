@@ -1,3 +1,4 @@
+import { Alert, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 
@@ -11,6 +12,10 @@ import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 export const Route = createFileRoute("/aapne/brev/$brevId")({
   loader: async ({ params: { brevId } }) => {
     const brevIdNum = Number(brevId);
+
+    if (Number.isNaN(brevIdNum) || !Number.isInteger(brevIdNum) || brevIdNum <= 0) {
+      throw new Error("Ugyldig brev-ID mottatt fra Pesys. Gå tilbake til Pesys og prøv igjen.");
+    }
 
     let brevInfo;
     try {
@@ -76,5 +81,20 @@ function AttestGuard() {
 
 function BrevOpenError({ error }: { error: unknown }) {
   const { brevId } = Route.useParams();
+
+  if (error instanceof Error && error.message.includes("Ugyldig brev-ID")) {
+    return (
+      <VStack align="center" marginBlock="space-12">
+        <Alert css={{ width: "100%", maxWidth: "512px" }} size="medium" variant="error">
+          <Heading level="2" size="small" spacing>
+            Ugyldig lenke fra Pesys
+          </Heading>
+          <p>{error.message}</p>
+          <p>Brev-ID som ble mottatt: {brevId}</p>
+        </Alert>
+      </VStack>
+    );
+  }
+
   return <ApiError error={error as AxiosError} title={`Kunne ikke åpne brev ${brevId}`} />;
 }

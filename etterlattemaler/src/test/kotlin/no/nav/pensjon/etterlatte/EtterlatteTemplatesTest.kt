@@ -5,6 +5,7 @@ import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.LetterTestRenderer
 import no.nav.brev.brevbaker.BrevmodulTest
 import no.nav.brev.brevbaker.jacksonObjectMapper
+import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
@@ -16,12 +17,15 @@ import no.nav.pensjon.etterlatte.maler.Vedlegg
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Files
 import java.nio.file.Paths
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Execution(ExecutionMode.CONCURRENT)
 class EtterlatteTemplatesTest : BrevmodulTest(
     templates = EtterlatteMaler,
     auto = EtterlatteBrevKode.entries,
@@ -41,7 +45,7 @@ class EtterlatteTemplatesTest : BrevmodulTest(
 
     @ParameterizedTest(name = "{index} => template={0}, etterlatteBrevKode={1}, fixtures={2}, spraak={3}")
     @MethodSource("alleMalene")
-    fun <T : Any> jsontest(
+    fun <T : BrevbakerBrevdata> jsontest(
         template: LetterTemplate<LanguageSupport.Triple<Language.Bokmal, Language.Nynorsk, Language.English>, T>,
         etterlatteBrevKode: Brevkode.Automatisk,
         fixtures: T,

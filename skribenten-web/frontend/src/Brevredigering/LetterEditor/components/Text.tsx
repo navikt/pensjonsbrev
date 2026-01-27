@@ -1,5 +1,3 @@
-import { css } from "@emotion/react";
-
 import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
 import { FontType, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
@@ -24,18 +22,19 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     case VARIABLE: {
       return (
         <span
-          css={css`
-            border-radius: 4px;
-            border: ${isFocused ? "2px" : "1px"} solid ${isFocused ? "blue" : "var(--a-border-default)"};
-            background: var(--a-gray-50);
-            padding: 1px 4px;
-            display: inline-block;
-            margin: 0 1px;
-            cursor: default;
+          css={{
+            background: "var(--ax-bg-neutral-moderate)",
+            borderRadius: "var(--ax-radius-2)",
+            cursor: "default",
+            display: "inline-block",
+            lineHeight: "var(--ax-font-line-height-medium)",
+            margin: "0 var(--ax-space-1)",
+            outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
+            padding: "0 var(--ax-space-2)",
 
-            ${content.fontType === FontType.BOLD && "font-weight: bold;"}
-            ${content.fontType === FontType.ITALIC && "font-style: italic;"}
-          `}
+            ...(content.fontType === FontType.BOLD ? { fontWeight: "var(--ax-font-weight-bold)" } : {}),
+            ...(content.fontType === FontType.ITALIC ? { fontStyle: "italic" } : {}),
+          }}
           data-literal-index={JSON.stringify(literalIndex)}
           onClick={() => {
             setEditorState((oldState) => ({

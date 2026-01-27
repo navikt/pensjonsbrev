@@ -33,7 +33,6 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
             letterMetadata =
                 LetterMetadata(
                     displayTitle = "Varselbrev - stans om ikke akt.plikt oppfylt",
-                    isSensitiv = true,
                     distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
                     brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
                 ),

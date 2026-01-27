@@ -16,13 +16,11 @@ import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormW
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectAvtaleland from "./components/SelectAvtaleland";
 import SelectEnhet from "./components/SelectEnhet";
-import SelectSensitivity from "./components/SelectSensitivity";
 import { byggEBlankettOnSubmitRequest } from "./TemplateUtils";
 
 const eblankettValidationSchema = z.object({
   landkode: z.string().min(1, "Obligatorisk"),
   mottakerText: z.string().min(1, "Vennligst fyll inn mottaker"),
-  isSensitive: z.boolean({ error: "Obligatorisk" }),
   enhetsId: z.string().min(1, "Obligatorisk"),
 });
 
@@ -85,7 +83,6 @@ export default function Eblankett({
           />
           <SelectAvtaleland />
           <SelectEnhet />
-          <SelectSensitivity />
         </BrevmalFormWrapper>
 
         <OrderLetterResult data={orderEblankettMutation.data} error={orderEblankettMutation.error} />

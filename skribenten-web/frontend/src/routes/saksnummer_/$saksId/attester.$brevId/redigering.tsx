@@ -1,6 +1,5 @@
-import { css } from "@emotion/react";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Label, Loader, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -13,6 +12,7 @@ import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import { Divider } from "~/components/Divider";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
@@ -50,21 +50,9 @@ const VedtakWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <Box
-        background="bg-default"
-        css={css`
-          display: flex;
-          flex-direction: column;
-          flex: 1;
-          align-items: center;
-          padding-top: var(--a-spacing-8);
-        `}
-      >
-        <VStack align="center" gap="1">
-          <Loader size="3xlarge" title="henter brev..." />
-          <Heading size="large">Henter brev....</Heading>
-        </VStack>
-      </Box>
+      <BoxNew asChild background="default" paddingBlock="space-32 0">
+        <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
+      </BoxNew>
     ),
     error: (err) => {
       if (err.response?.status === 423 && err.response?.data) {
@@ -107,18 +95,9 @@ const VedtakWrapper = () => {
       }
 
       return (
-        <Box
-          background="bg-default"
-          css={css`
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            align-items: center;
-            padding-top: var(--a-spacing-8);
-          `}
-        >
-          <ApiError error={err} title={"En feil skjedde ved henting av vedtaksbrev"} />
-        </Box>
+        <BoxNew background="default" flexGrow="1">
+          <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
+        </BoxNew>
       );
     },
     success: (brev) => (
@@ -232,9 +211,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         left={
           <FormProvider {...form}>
-            <VStack gap="8">
+            <VStack gap="space-32">
               <Heading size="small">{props.brev.info.brevtittel}</Heading>
-              <VStack gap="4">
+              <VStack gap="space-16">
                 <OppsummeringAvMottaker mottaker={props.brev.info.mottaker} saksId={props.saksId} withTitle />
                 <VStack>
                   <Label size="small">Distribusjonstype</Label>
@@ -242,23 +221,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 </VStack>
               </VStack>
               <Divider />
-              <VStack gap="5">
-                <Switch
-                  css={css`
-                    display: none;
-                  `}
-                  size="small"
-                >
-                  Marker tekst som er lagt til manuelt
-                </Switch>
-                <Switch
-                  css={css`
-                    display: none;
-                  `}
-                  size="small"
-                >
-                  Vis slettet tekst
-                </Switch>
+              <VStack gap="space-20">
+                <Hide above="sm" asChild>
+                  <Switch size="small">Marker tekst som er lagt til manuelt</Switch>
+                </Hide>
+                <Hide above="sm" asChild>
+                  <Switch size="small">Vis slettet tekst</Switch>
+                </Hide>
                 <UnderskriftTextField of="Attestant" />
               </VStack>
               <Divider />
@@ -278,7 +247,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           </FormProvider>
         }
         right={
-          <>
+          <VStack justify="center">
             <ReservertBrevError
               doRetry={props.doReload}
               onNeiClick={() =>
@@ -294,7 +263,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               reservasjon={reservasjonQuery.data}
             />
             <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
-          </>
+          </VStack>
         }
       />
     </form>

@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -106,7 +105,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               </ul>
             );
           }
-          case TABLE:
+          case TABLE: {
             return (
               <TableView
                 blockIndex={literalIndex.blockIndex}
@@ -115,6 +114,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                 node={content}
               />
             );
+          }
         }
       })}
     </div>
@@ -509,14 +509,21 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
     if (!erFritekst) return;
-    // blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
+
+    // Tøm markering for å restarte dra-og-marker
+    const selection = globalThis.getSelection();
+    if (selection && !selection.isCollapsed && selection.containsNode(e.currentTarget, true)) {
+      selection.collapse(e.currentTarget);
+    }
+
+    // Blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
     if (erFritekst && e.detail === 2) {
       e.preventDefault();
     }
   };
 
   const handleOnFocus = (e: React.FocusEvent<HTMLSpanElement>) => {
-    //i word vil endring av fonttype beholde markering av teksten, derimot så vil denne state oppdateringen fjerne markeringen
+    // I word vil endring av fonttype beholde markering av teksten, mens denne focus state endringen vil fjerne markeringen
     const offset = getCursorOffset();
     setEditorState((oldState) => ({
       ...oldState,
@@ -533,7 +540,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     const selection = globalThis.getSelection();
     if (selection) {
       const span = e.currentTarget;
-      // elementet er allerede fokusert/markert eller har markør
+      // Elementet er allerede fokusert/markert eller har markør
       if (span.contains(selection.anchorNode) && span.contains(selection.focusNode)) {
         return;
       }
@@ -546,7 +553,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
   const handleOnDoubleClick = (e: React.MouseEvent<HTMLSpanElement>) => {
     if (!erFritekst) return;
-    // blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
+    // Blokker dobbeltklikk-markering av enkeltord for å heller markere hele friteksten
     e.preventDefault();
     e.stopPropagation();
     setSelection(e.currentTarget);
@@ -570,15 +577,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // 'plaintext-only' well, and browser native formatting shortcuts and
       // pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
-      css={css({
+      css={{
+        lineHeight: "var(--ax-font-line-height-medium)",
         ...(erFritekst && {
-          color: "var(--a-blue-500)",
+          color: "var(--ax-accent-600)",
           textDecoration: "underline",
           cursor: "pointer",
         }),
         ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
         ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
-      })}
+      }}
       data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnClick}
       onDoubleClick={handleOnDoubleClick}

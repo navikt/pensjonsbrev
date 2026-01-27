@@ -191,36 +191,8 @@ describe("Brevredigering", () => {
       .as("radioGroup2Option1")
       .should("not.be.checked");
 
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).deep.equal({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
-      });
-      req.reply({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
-      });
-    });
-
     cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
     cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
-
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).deep.equal({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
-        denBesteKaken: "GULROTKAKE",
-      });
-      req.reply({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-        utsiktenFraKontoret: "MOT_PARKERINGSPLASSEN",
-        denBesteKaken: "GULROTKAKE",
-      });
-    });
 
     cy.get("@radioGroup2Option1").click().should("be.checked");
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
@@ -254,17 +226,6 @@ describe("Brevredigering", () => {
       .parent()
       .find('[type="radio"]')
       .each((elm) => expect(elm).not.to.be.checked);
-
-    cy.intercept("PUT", "/bff/skribenten-backend/brev/1/saksbehandlerValg", (req) => {
-      expect(req.body).deep.equal({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-      });
-      req.reply({
-        kaffemaskinensTilgjengelighet: false,
-        kontorplantenTorlill: false,
-      });
-    });
 
     cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");

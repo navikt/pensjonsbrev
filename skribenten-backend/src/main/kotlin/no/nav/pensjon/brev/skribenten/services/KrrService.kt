@@ -4,22 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.request.accept
 import io.ktor.client.request.get
-import io.ktor.client.request.headers
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import org.slf4j.LoggerFactory
 
-class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()): ServiceStatus {
+class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val client = HttpClient(engine) {
         defaultRequest {
@@ -58,6 +60,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
     @JsonIgnoreProperties(ignoreUnknown = true)
     data class KontaktinfoKRRResponse(val personer: Map<String, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<String, Feiltype>)
 
+    private data class KontaktinfoRequest(val personidenter: List<String>)
 
     data class KontaktinfoResponse(val spraakKode: SpraakKode?, val failure: FailureType?) {
         constructor(failure: FailureType) : this(null, failure)
@@ -69,48 +72,44 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
         }
     }
 
-    data class KontaktinfoRequest(val personidenter: List<String>)
-
-    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse =
-        client.post("/rest/v1/personer") {
-            headers {
-                contentType(ContentType.Application.Json)
-                accept(ContentType.Application.Json)
-                setBody(KontaktinfoRequest(listOf(pid)))
-            }
+    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
+        val response = client.post("/rest/v1/personer") {
+            contentType(ContentType.Application.Json)
+            accept(ContentType.Application.Json)
+            setBody(KontaktinfoRequest(listOf(pid)))
         }
-            .toServiceResult<KontaktinfoKRRResponse>()
-            .map { response ->
-                if (response.feil.isEmpty()) {
-                    KontaktinfoResponse(
-                        when (response.personer[pid]?.spraak) {
-                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.nb -> SpraakKode.NB
-                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn -> SpraakKode.NN
-                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.en -> SpraakKode.EN
-                            KontaktinfoKRRResponseEnkeltperson.SpraakKode.se -> SpraakKode.SE
-                            null -> null
-                        }
-                    )
-                } else {
-                    KontaktinfoResponse(
-                        failure = when(response.feil[pid]) {
-                            Feiltype.person_ikke_funnet -> KontaktinfoResponse.FailureType.NOT_FOUND
-                            Feiltype.fortrolig_adresse,
-                            Feiltype.strengt_fortrolig_adresse,
-                            Feiltype.strengt_fortrolig_utenlandsk_adresse,
-                            Feiltype.skjermet,
-                            Feiltype.noen_andre,
-                            null -> KontaktinfoResponse.FailureType.ERROR
-                        }
-                    )
-                }
-            }.catch { message, status ->
-                KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR).also { logger.error("Feil ved henting av kontaktinformasjon. Status: $status Melding: $message") }
-            }
+        return if (response.status.isSuccess()) {
+            val body = response.body<KontaktinfoKRRResponse>()
 
-    override val name = "KRR"
-    override suspend fun ping(): ServiceResult<Boolean> =
-        client.get("/internal/health/readiness")
-            .toServiceResult<String>()
-            .map { true }
+            if (body.feil.isEmpty()) {
+                KontaktinfoResponse(
+                    when (body.personer[pid]?.spraak) {
+                        KontaktinfoKRRResponseEnkeltperson.SpraakKode.nb -> SpraakKode.NB
+                        KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn -> SpraakKode.NN
+                        KontaktinfoKRRResponseEnkeltperson.SpraakKode.en -> SpraakKode.EN
+                        KontaktinfoKRRResponseEnkeltperson.SpraakKode.se -> SpraakKode.SE
+                        null -> null
+                    }
+                )
+            } else {
+                KontaktinfoResponse(
+                    failure = when (body.feil[pid]) {
+                        Feiltype.person_ikke_funnet -> KontaktinfoResponse.FailureType.NOT_FOUND
+                        Feiltype.fortrolig_adresse,
+                        Feiltype.strengt_fortrolig_adresse,
+                        Feiltype.strengt_fortrolig_utenlandsk_adresse,
+                        Feiltype.skjermet,
+                        Feiltype.noen_andre,
+                        null -> KontaktinfoResponse.FailureType.ERROR
+                    }
+                )
+            }
+        } else {
+            logger.error("Feil ved henting av kontaktinformasjon. Status: ${response.status} Melding: ${response.bodyAsText()}")
+            KontaktinfoResponse(KontaktinfoResponse.FailureType.ERROR)
+        }
+    }
+
+    override suspend fun ping() =
+        ping("KRR") { client.get("/internal/health/readiness") }
 }

@@ -1,34 +1,31 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import io.ktor.http.*
-import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
-import no.nav.pensjon.brev.skribenten.services.ServiceResult.Ok
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
-import java.time.LocalDate
 import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
 data class GeneriskRedigerbarBrevdata(
-    override val pesysData: BrevbakerBrevdata,
+    override val pesysData: FagsystemBrevdata,
     override val saksbehandlerValg: SaksbehandlerValgBrevdata,
-) : RedigerbarBrevdata<SaksbehandlerValgBrevdata, BrevbakerBrevdata>
+) : RedigerbarBrevdata<SaksbehandlerValgBrevdata, FagsystemBrevdata>
 
 sealed class BrevredigeringException(override val message: String) : Exception() {
     class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) :
@@ -38,13 +35,12 @@ sealed class BrevredigeringException(override val message: String) : Exception()
         BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
 
     class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
-    class BrevLaastForRedigeringException(message: String) : BrevredigeringException(message)
+    class NyereVersjonFinsException(message: String) : BrevredigeringException(message)
     class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
     class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereException(message: String) : BrevredigeringException(message)
     class AlleredeAttestertException(message: String) : BrevredigeringException(message)
     class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
-    class VedtaksbrevKreverVedtaksId(message: String) : BrevredigeringException(message)
+    class IkkeTilgangTilEnhetException(message: String) : BrevredigeringException(message)
 }
 
 interface HentBrevService {
@@ -55,161 +51,29 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
-    private val samhandlerService: SamhandlerService,
+    private val p1Service: P1Service,
 ) : HentBrevService {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }
 
-    suspend fun opprettBrev(
-        sak: Pen.SakSelection,
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        avsenderEnhetsId: String?,
-        saksbehandlerValg: SaksbehandlerValg,
-        reserverForRedigering: Boolean = false,
-        mottaker: Dto.Mottaker? = null,
-        vedtaksId: Long?,
-    ): ServiceResult<Dto.Brevredigering> =
-        harTilgangTilEnhet(avsenderEnhetsId) {
-            val principal = PrincipalInContext.require()
-            val signerendeSaksbehandler = principalSignatur()
-            val annenMottakerNavn = mottaker?.fetchNavn()
-            val vedtaksIdOmVedtaksbrev = beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId, brevkode)
-
-            rendreBrev(
-                brevkode = brevkode,
-                spraak = spraak,
-                saksId = sak.saksId,
-                vedtaksId = vedtaksIdOmVedtaksbrev,
-                saksbehandlerValg = saksbehandlerValg,
-                avsenderEnhetsId = avsenderEnhetsId,
-                signaturSignerende = signerendeSaksbehandler,
-                annenMottakerNavn = annenMottakerNavn
-            ).map { letter ->
-                transaction {
-                    Brevredigering.new {
-                        saksId = sak.saksId
-                        this.vedtaksId = vedtaksIdOmVedtaksbrev
-                        opprettetAvNavIdent = principal.navIdent
-                        this.brevkode = brevkode
-                        this.spraak = spraak
-                        this.avsenderEnhetId = avsenderEnhetsId
-                        this.saksbehandlerValg = saksbehandlerValg
-                        laastForRedigering = false
-                        distribusjonstype = Distribusjonstype.SENTRALPRINT
-                        redigeresAvNavIdent = principal.navIdent.takeIf { reserverForRedigering }
-                        sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS).takeIf { reserverForRedigering }
-                        opprettet = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        sistRedigertAvNavIdent = principal.navIdent
-                        redigertBrev = letter.markup.toEdit()
-                    }.also {
-                        if (mottaker != null) {
-                            Mottaker.new(it.id.value) { oppdater(mottaker) }
-                        }
-                    }.toDto(letter.letterDataUsage)
-                }
-            }
-        }
-
-    suspend fun oppdaterBrev(
-        saksId: Long?,
-        brevId: Long,
-        nyeSaksbehandlerValg: SaksbehandlerValg?,
-        nyttRedigertbrev: Edit.Letter?,
-        frigiReservasjon: Boolean = false,
-    ): ServiceResult<Dto.Brevredigering>? =
-        hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            if (!brevDto.info.laastForRedigering || PrincipalInContext.require().isAttestant()) {
-                rendreBrev(
-                    brev = brevDto,
-                    saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg,
-                    signaturSignerende = nyttRedigertbrev?.signatur?.saksbehandlerNavn,
-                    signaturAttestant = nyttRedigertbrev?.signatur?.attesterendeSaksbehandlerNavn,
-                ).map { rendretBrev ->
-                    val principal = PrincipalInContext.require()
-                    transaction {
-                        brevDb.apply {
-                            redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
-                            sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                            saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                            sistRedigertAvNavIdent = principal.navIdent
-                            if (frigiReservasjon) {
-                                redigeresAvNavIdent = null
-                            }
-                        }.toDto(rendretBrev.letterDataUsage)
-                    }
-                }
-            } else {
-                throw BrevLaastForRedigeringException("Kan ikke oppdatere brev markert som 'klar til sending'/'klar til attestering'.")
-            }
-        }
-
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
-        laastForRedigering: Boolean? = null,
-        distribusjonstype: Distribusjonstype? = null,
-        mottaker: Dto.Mottaker? = null,
+        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            // Før brevet kan markeres som `laastForRedigering` (klar til sending) så må det valideres at brevet faktisk er klar til sending.
-            if (laastForRedigering == true) {
-                brevDto.validerErFerdigRedigert()
-            }
-
-            val annenMottakerNavn = mottaker?.fetchNavn()
-
             transaction {
-                if (laastForRedigering == false) {
-                    brevDb.laastForRedigering = laastForRedigering
-                    brevDb.attestertAvNavIdent = null
-                } else if (laastForRedigering == true) {
-                    brevDb.laastForRedigering = laastForRedigering
-                }
-                brevDb.distribusjonstype = distribusjonstype ?: brevDb.distribusjonstype
-                if(mottaker != null) {
-                    brevDb.mottaker?.oppdater(mottaker) ?: Mottaker.new(brevId) { oppdater(mottaker) }
-                    brevDb.oppdaterMedAnnenMottakerNavn(annenMottakerNavn)
+                if (alltidValgbareVedlegg != null) {
+                    if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
+                        brevDb.document.singleOrNull()?.delete()
+                    }
+                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) })
                 }
 
-                brevDb.redigeresAvNavIdent = null
+                brevDb.redigeresAv = null
 
-                Brevredigering.reload(brevDb, true)?.toDto(null)
-            }
-        }
-
-    private fun Brevredigering.oppdaterMedAnnenMottakerNavn(annenMottaker: String?) {
-        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottaker)
-    }
-
-    private suspend fun Dto.Mottaker.fetchNavn(): String? =
-        when(type) {
-            MottakerType.SAMHANDLER -> tssId?.let { samhandlerService.hentSamhandlerNavn(it) }
-            MottakerType.NORSK_ADRESSE, MottakerType.UTENLANDSK_ADRESSE ->
-                if(manueltAdressertTil == Dto.Mottaker.ManueltAdressertTil.ANNEN) navn else null
-        }
-
-    suspend fun oppdaterSignatur(brevId: Long, signaturSignerende: String): ServiceResult<Dto.Brevredigering>? =
-        hentBrevMedReservasjon(brevId = brevId) {
-            rendreBrev(brev = brevDto, signaturSignerende = signaturSignerende).map { rendretBrev ->
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            }
-        }
-
-    suspend fun oppdaterSignaturAttestant(brevId: Long, signaturAttestant: String): ServiceResult<Dto.Brevredigering>? =
-        hentBrevMedReservasjon(brevId = brevId) {
-            rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
+                BrevredigeringEntity.reload(brevDb, true)?.toDto(null)
             }
         }
 
@@ -219,7 +83,7 @@ class BrevredigeringService(
      */
     fun slettBrev(saksId: Long, brevId: Long): Boolean {
         return transaction {
-            val brev = Brevredigering.findByIdAndSaksId(brevId, saksId)
+            val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
             if (brev != null) {
                 brev.delete()
                 true
@@ -229,62 +93,9 @@ class BrevredigeringService(
         }
     }
 
-    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { Brevredigering.findById(brevId)?.toBrevInfo() }
-
-    suspend fun hentBrev(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): ServiceResult<Dto.Brevredigering>? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                rendreBrev(brev = brevDto).map { rendretBrev ->
-                    transaction {
-                        brevDb.apply {
-                            redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                        }.toDto(rendretBrev.letterDataUsage)
-                    }
-                }
-            }
-        } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-                ?.let { Ok(it) }
-        }
-
-    suspend fun hentBrevAttestering(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): ServiceResult<Dto.Brevredigering>? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                brevDto.validerKanAttestere(PrincipalInContext.require())
-
-                val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
-
-                rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant).map { rendretBrev ->
-                    transaction {
-                        brevDb.apply {
-                            redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                        }.toDto(rendretBrev.letterDataUsage)
-                    }
-                }
-            }
-        } else {
-            transaction { Brevredigering.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-                ?.let { Ok(it) }
-        }
-
-    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
-        transaction {
-            Brevredigering.find { BrevredigeringTable.saksId eq saksId }
-                .map { it.toBrevInfo() }
-        }
-
     override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
         transaction {
-            Brevredigering.find { BrevredigeringTable.saksId inList saksIder }
+            BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo() }
         }
 
@@ -301,53 +112,58 @@ class BrevredigeringService(
             )
         }
 
-    suspend fun hentEllerOpprettPdf(saksId: Long, brevId: Long): ServiceResult<Api.PdfResponse>? {
+    suspend fun hentEllerOpprettPdf(
+        saksId: Long, brevId: Long
+    ): Api.PdfResponse? {
         val (brevredigering, document) = transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId).let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
+                .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
         return brevredigering?.let {
-            penService.hentPesysBrevdata(
+            val pesysBrevdata = penService.hentPesysBrevdata(
                 saksId = brevredigering.info.saksId,
                 vedtaksId = brevredigering.info.vedtaksId,
                 brevkode = brevredigering.info.brevkode,
                 avsenderEnhetsId = brevredigering.info.avsenderEnhetId
-            ).then { pesysBrevdata ->
-                val nyBrevdataHash = Hash.read(pesysBrevdata)
+            ).withP1DataIfP1(brevredigering.info, p1Service)
 
-                // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
-                if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
-                    Ok(Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false))
-                } else {
-                    // render markup to check if letterMarkup has changed due to changed brevdata
-                    val rendretBrevErEndret = brevbakerService.renderMarkup(
-                        brevkode = brevredigering.info.brevkode,
-                        spraak = brevredigering.info.spraak,
-                        brevdata = GeneriskRedigerbarBrevdata(
-                            pesysData = pesysBrevdata.brevdata,
-                            saksbehandlerValg = brevredigering.saksbehandlerValg,
-                        ),
-                        felles = pesysBrevdata.felles
-                            .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
-                            .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                    ).map {
-                        // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
-                        brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
-                    }.resultOrNull()
+            val nyBrevdataHash = Hash.read(pesysBrevdata)
 
-                    opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash).map {
-                        Api.PdfResponse(pdf = it, rendretBrevErEndret = rendretBrevErEndret ?: false)
-                    }
+            // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
+            if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
+                Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false)
+            } else {
+                // render markup to check if letterMarkup has changed due to changed brevdata
+                val rendretBrevErEndret = brevbakerService.renderMarkup(
+                    brevkode = brevredigering.info.brevkode,
+                    spraak = brevredigering.info.spraak,
+                    brevdata = GeneriskRedigerbarBrevdata(
+                        pesysData = pesysBrevdata.brevdata,
+                        saksbehandlerValg = brevredigering.saksbehandlerValg,
+                    ),
+                    felles = pesysBrevdata.felles
+                        .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
+                        .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
+                ).let {
+                    // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
+                    brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
                 }
+
+                Api.PdfResponse(
+                    pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
+                    rendretBrevErEndret = rendretBrevErEndret
+                )
             }
         }
     }
+
     suspend fun attester(
         saksId: Long,
         brevId: Long,
         nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
         frigiReservasjon: Boolean = false,
-    ): ServiceResult<Dto.Brevredigering>? =
+    ): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
             val principal = PrincipalInContext.require()
             brevDto.validerErFerdigRedigert()
@@ -357,29 +173,28 @@ class BrevredigeringService(
 
             val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
 
-            rendreBrev(
+            val rendretBrev = rendreBrev(
                 brev = brevDto,
                 saksbehandlerValg = nyeSaksbehandlerValg,
                 signaturAttestant = signaturAttestant,
-            ).map { rendretBrev ->
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
-                        sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                        saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                        sistRedigertAvNavIdent = principal.navIdent
-                        this.attestertAvNavIdent = principal.navIdent
-                        if (frigiReservasjon) {
-                            redigeresAvNavIdent = null
-                        }
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
+            )
+            transaction {
+                brevDb.apply {
+                    redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
+                    sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
+                    saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
+                    sistRedigertAv = principal.navIdent
+                    this.attestertAvNavIdent = principal.navIdent
+                    if (frigiReservasjon) {
+                        redigeresAv = null
+                    }
+                }.toDto(rendretBrev.letterDataUsage)
             }
         }
 
-    suspend fun sendBrev(saksId: Long, brevId: Long): ServiceResult<Pen.BestillBrevResponse>? {
+    suspend fun sendBrev(saksId: Long, brevId: Long): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
         }
 
@@ -389,16 +204,13 @@ class BrevredigeringService(
             }
             brev.validerErFerdigRedigert()
             if (document.redigertBrevHash != brev.redigertBrevHash) {
-                throw BrevIkkeKlartTilSendingException("Det finnes en nyere versjon av brevet enn den som er generert til PDF")
+                throw NyereVersjonFinsException("Det finnes en nyere versjon av brevet enn den som er generert til PDF")
             }
 
             val template = brevbakerService.getRedigerbarTemplate(brev.info.brevkode)
 
             if (template == null) {
-                ServiceResult.Error(
-                    "Mangler TemplateDescription for ${brev.info.brevkode}",
-                    HttpStatusCode.InternalServerError
-                )
+                throw BrevmalFinnesIkke("Mangler TemplateDescription for ${brev.info.brevkode}")
             } else {
                 validerVedtaksbrevAttestert(brev, template.metadata.brevtype)
                 penService.sendbrev(
@@ -413,13 +225,13 @@ class BrevredigeringService(
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
                     distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
-                ).onOk {
+                ).also {
                     transaction {
                         if (it.journalpostId != null) {
                             if (it.error == null) {
-                                Brevredigering[brevId].delete()
+                                BrevredigeringEntity[brevId].delete()
                             } else {
-                                Brevredigering[brevId].journalpostId = it.journalpostId
+                                BrevredigeringEntity[brevId].journalpostId = it.journalpostId
                             }
                         }
                     }
@@ -434,29 +246,25 @@ class BrevredigeringService(
         }
     }
 
-    fun fjernOverstyrtMottaker(brevId: Long, saksId: Long): Boolean =
-        transaction {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)?.also {
-                it.mottaker?.delete()
-                it.oppdaterMedAnnenMottakerNavn(null)
-            } != null
-
-        }
-
-    suspend fun tilbakestill(brevId: Long): ServiceResult<Dto.Brevredigering>? =
+    suspend fun tilbakestill(brevId: Long): Dto.Brevredigering? =
         hentBrevMedReservasjon(brevId = brevId) {
-            brevbakerService.getModelSpecification(brevDto.info.brevkode)
-                .map { brevDto.saksbehandlerValg.tilbakestill(it) }
-                .then { tilbakestiltValg ->
-                    rendreBrev(brev = brevDto, saksbehandlerValg = tilbakestiltValg).map { rendretBrev ->
-                        transaction {
-                            brevDb.apply {
-                                saksbehandlerValg = tilbakestiltValg
-                                redigertBrev = rendretBrev.markup.toEdit()
-                            }.toDto(rendretBrev.letterDataUsage)
-                        }
-                    }
+            val modelSpec = brevbakerService.getModelSpecification(brevDto.info.brevkode)
+
+            if (modelSpec != null) {
+                val tilbakestiltValg = brevDto.saksbehandlerValg.tilbakestill(modelSpec)
+                val rendretBrev = rendreBrev(
+                    brev = brevDto,
+                    saksbehandlerValg = tilbakestiltValg
+                )
+                transaction {
+                    brevDb.apply {
+                        saksbehandlerValg = tilbakestiltValg
+                        redigertBrev = rendretBrev.markup.toEdit()
+                    }.toDto(rendretBrev.letterDataUsage)
                 }
+            } else {
+                throw BrevmalFinnesIkke("Finner ikke brevmal for brevkode ${brevDto.info.brevkode}")
+            }
         }
 
     private suspend fun <T> hentBrevMedReservasjon(
@@ -467,10 +275,10 @@ class BrevredigeringService(
         val principal = PrincipalInContext.require()
 
         return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
-            Brevredigering.findByIdAndSaksId(brevId, saksId)
+            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
-                    if (redigeresAvNavIdent == null || redigeresAvNavIdent == principal.navIdent || erReservasjonUtloept()) {
-                        redigeresAvNavIdent = principal.navIdent
+                    if (redigeresAv == null || redigeresAv == principal.navIdent || erReservasjonUtloept()) {
+                        redigeresAv = principal.navIdent
                         sistReservert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
                     }
                 }?.let { ReservertBrevScope(it) }
@@ -508,125 +316,72 @@ class BrevredigeringService(
         signaturSignerende: String? = null,
         signaturAttestant: String? = null,
         annenMottaker: String? = null,
-    ) =
-        rendreBrev(
-            brevkode = brev.info.brevkode,
-            spraak = brev.info.spraak,
+    ): LetterMarkupWithDataUsage {
+        val pesysData = penService.hentPesysBrevdata(
             saksId = brev.info.saksId,
             vedtaksId = brev.info.vedtaksId,
-            saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
+            brevkode = brev.info.brevkode,
             avsenderEnhetsId = brev.info.avsenderEnhetId,
-            signaturSignerende = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn ?: principalSignatur(),
-            signaturAttestant = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
-            annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn,
         )
-
-    private suspend fun rendreBrev(
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        saksId: Long,
-        vedtaksId: Long?,
-        saksbehandlerValg: SaksbehandlerValgBrevdata,
-        avsenderEnhetsId: String?,
-        signaturSignerende: String,
-        signaturAttestant: String? = null,
-        annenMottakerNavn: String? = null,
-    ): ServiceResult<LetterMarkupWithDataUsage> =
-        penService.hentPesysBrevdata(
-            saksId = saksId,
-            vedtaksId = vedtaksId,
-            brevkode = brevkode,
-            avsenderEnhetsId = avsenderEnhetsId,
-        ).then { pesysData ->
-            brevbakerService.renderMarkup(
-                brevkode = brevkode,
-                spraak = spraak,
-                brevdata = GeneriskRedigerbarBrevdata(
-                    pesysData = pesysData.brevdata,
-                    saksbehandlerValg = saksbehandlerValg,
-                ),
-                felles = pesysData.felles.medSignerendeSaksbehandlere(
-                    SignerendeSaksbehandlere(
-                        saksbehandler = signaturSignerende,
-                        attesterendeSaksbehandler = signaturAttestant
-                    )
-                ).medAnnenMottakerNavn(annenMottakerNavn)
-            )
-        }
-
-    private suspend fun <T> harTilgangTilEnhet(
-        enhetsId: String?,
-        then: suspend () -> ServiceResult<T>,
-    ): ServiceResult<T> {
-        return if (enhetsId == null) {
-            then()
-        } else {
-            navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
-                .then { harTilgang ->
-                    if (harTilgang) {
-                        then()
-                    } else ServiceResult.Error("Mangler tilgang til NavEnhet $enhetsId", HttpStatusCode.Forbidden)
-                }
-        }
+        return brevbakerService.renderMarkup(
+            brevkode = brev.info.brevkode,
+            spraak = brev.info.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = saksbehandlerValg ?: brev.saksbehandlerValg,
+            ),
+            felles = pesysData.felles.medSignerendeSaksbehandlere(
+                SignerendeSaksbehandlere(
+                    saksbehandler = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
+                    ?: principalSignatur(),
+                    attesterendeSaksbehandler = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
+                )
+            ).medAnnenMottakerNavn(annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn)
+        )
     }
 
     private suspend fun opprettPdf(
         brevredigering: Dto.Brevredigering,
         pesysData: BrevdataResponse.Data,
         brevdataHash: Hash<BrevdataResponse.Data>,
-    ): ServiceResult<ByteArray> {
-        return brevbakerService.renderPdf(
-                brevkode = brevredigering.info.brevkode,
-                spraak = brevredigering.info.spraak,
-                brevdata = GeneriskRedigerbarBrevdata(
-                    pesysData = pesysData.brevdata,
-                    saksbehandlerValg = brevredigering.saksbehandlerValg,
-                ),
-                // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-                felles = pesysData.felles
-                    .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                    .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
-                redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato).toMarkup(),
-            ).map {
-                transaction {
-                    val update: Document.() -> Unit = {
-                        this.brevredigering = Brevredigering[brevredigering.info.id]
-                        pdf = it.file
-                        dokumentDato = pesysData.felles.dokumentDato
-                        this.redigertBrevHash = brevredigering.redigertBrevHash
-                        this.brevdataHash = brevdataHash
-                    }
-                    Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
-                        ?: Document.new(update).pdf
-                }
+    ): ByteArray {
+        val pdf = brevbakerService.renderPdf(
+            brevkode = brevredigering.info.brevkode,
+            spraak = brevredigering.info.spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = brevredigering.saksbehandlerValg,
+            ),
+            // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
+            felles = pesysData.felles
+                .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
+                .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
+            redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
+                .toMarkup(),
+            alltidValgbareVedlegg = brevredigering.valgteVedlegg ?: emptyList(),
+        )
+
+        return transaction {
+            val update: Document.() -> Unit = {
+                this.brevredigering = BrevredigeringEntity[brevredigering.info.id]
+                this.pdf = pdf.file
+                this.dokumentDato = pesysData.felles.dokumentDato
+                this.redigertBrevHash = brevredigering.redigertBrevHash
+                this.brevdataHash = brevdataHash
             }
+            Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
+                ?: Document.new(update).pdf
+        }
     }
 
-    private fun Mottaker.oppdater(mottaker: Dto.Mottaker?) =
-        if (mottaker != null) {
-            type = mottaker.type
-            tssId = mottaker.tssId
-            navn = mottaker.navn
-            postnummer = mottaker.postnummer
-            poststed = mottaker.poststed
-            adresselinje1 = mottaker.adresselinje1
-            adresselinje2 = mottaker.adresselinje2
-            adresselinje3 = mottaker.adresselinje3
-            landkode = mottaker.landkode
-            manueltAdressertTil = mottaker.manueltAdressertTil
-        } else delete()
-
-    /**
-     * Krever vedtaksId om brevet er vedtaksbrev, men forkaster om ikke.
-     */
-    private suspend fun beholdOgKrevVedtaksIdOmVedtaksbrev(vedtaksId: Long?, brevkode: Brevkode.Redigerbart): Long? {
-        val template = brevbakerService.getRedigerbarTemplate(brevkode)
-
-        return if (template?.metadata?.brevtype == LetterMetadata.Brevtype.VEDTAKSBREV) {
-            vedtaksId
-                ?: throw VedtaksbrevKreverVedtaksId("Kan ikke opprette brev for vedtaksmal ${brevkode.kode()}: mangler vedtaksId")
+    private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
+        if (this == null) {
+            return
+        }
+        if (valgte.isNullOrEmpty()) {
+            delete()
         } else {
-            null
+            valgteVedlegg = valgte
         }
     }
 
@@ -637,6 +392,18 @@ class BrevredigeringService(
         }
 }
 
+private suspend fun BrevdataResponse.Data.withP1DataIfP1(
+    brevinfo: Dto.BrevInfo,
+    p1Service: P1Service
+): BrevdataResponse.Data =
+    p1Service.patchMedP1DataOmP1(
+        this,
+        brevkode = brevinfo.brevkode,
+        brevId = brevinfo.id,
+        saksId = brevinfo.saksId
+    )
+
+
 private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur): Felles =
     signatur.saksbehandlerNavn?.let {
         medSignerendeSaksbehandlere(
@@ -645,10 +412,10 @@ private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur):
                 attesterendeSaksbehandler = signatur.attesterendeSaksbehandlerNavn
             )
         )
-    }?: this
+    } ?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
-    redigertBrev.klarTilSending() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
+    redigertBrev.alleFritekstFelterErRedigert() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
 private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
     if (!userPrincipal.isAttestant()) {
@@ -686,75 +453,10 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
     } else this
 }
 
-private class ReservertBrevScope(val brevDb: Brevredigering) {
+private class ReservertBrevScope(val brevDb: BrevredigeringEntity) {
     val brevDto = brevDb.toDto(null)
 }
 
-private fun Brevredigering.toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
-    Dto.Brevredigering(
-        info = toBrevInfo(),
-        redigertBrev = redigertBrev,
-        redigertBrevHash = redigertBrevHash,
-        saksbehandlerValg = saksbehandlerValg,
-        propertyUsage = coverage,
-    )
-
-private fun Brevredigering.toBrevInfo(): Dto.BrevInfo =
-    Dto.BrevInfo(
-        id = id.value,
-        saksId = saksId,
-        vedtaksId = vedtaksId,
-        opprettetAv = opprettetAvNavIdent,
-        opprettet = opprettet,
-        sistredigertAv = sistRedigertAvNavIdent,
-        sistredigert = sistredigert,
-        redigeresAv = redigeresAvNavIdent.takeIf { !erReservasjonUtloept() },
-        brevkode = brevkode,
-        laastForRedigering = laastForRedigering,
-        distribusjonstype = distribusjonstype,
-        mottaker = mottaker?.toDto(),
-        avsenderEnhetId = avsenderEnhetId,
-        spraak = spraak,
-        sistReservert = sistReservert,
-        journalpostId = journalpostId,
-        attestertAv = attestertAvNavIdent,
-        status = when {
-            journalpostId != null -> Dto.BrevStatus.ARKIVERT
-            laastForRedigering && isVedtaksbrev ->
-                if (attestertAvNavIdent != null) {
-                    Dto.BrevStatus.KLAR
-                } else {
-                    Dto.BrevStatus.ATTESTERING
-                }
-
-            laastForRedigering -> Dto.BrevStatus.KLAR
-
-            else -> Dto.BrevStatus.KLADD
-        }
-    )
-
-private fun Mottaker.toDto(): Dto.Mottaker =
-    when (type) {
-        MottakerType.SAMHANDLER -> Dto.Mottaker.samhandler(tssId!!)
-        MottakerType.NORSK_ADRESSE -> Dto.Mottaker.norskAdresse(
-            navn = navn!!,
-            postnummer = postnummer!!,
-            poststed = poststed!!,
-            adresselinje1 = adresselinje1,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-            manueltAdressertTil = manueltAdressertTil,
-        )
-
-        MottakerType.UTENLANDSK_ADRESSE -> Dto.Mottaker.utenlandskAdresse(
-            navn = navn!!,
-            adresselinje1 = adresselinje1!!,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-            landkode = landkode!!,
-            manueltAdressertTil = manueltAdressertTil,
-        )
-    }
 
 private fun Document.toDto(): Dto.Document =
     Dto.Document(
@@ -765,5 +467,5 @@ private fun Document.toDto(): Dto.Document =
         brevdataHash = brevdataHash
     )
 
-private fun Brevredigering.erReservasjonUtloept(): Boolean =
+private fun BrevredigeringEntity.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true

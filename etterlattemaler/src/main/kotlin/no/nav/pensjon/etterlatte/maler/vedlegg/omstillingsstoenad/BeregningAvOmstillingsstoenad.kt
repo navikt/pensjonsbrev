@@ -1,29 +1,12 @@
 package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AttachmentTemplate
-import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
-import no.nav.pensjon.brev.template.LanguageSupport
-import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.absoluteValue
-import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifElse
-import no.nav.pensjon.brev.template.dsl.expression.lessThan
-import no.nav.pensjon.brev.template.dsl.expression.not
-import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.newText
+import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.etterlatte.maler.BeregningsMetode
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.beregningsperioder
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.erYrkesskade
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.innhold
@@ -42,16 +25,12 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.restanse
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
-import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGrunnlag
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
-import no.nav.pensjon.etterlatte.maler.formatAar
-import no.nav.pensjon.etterlatte.maler.formatBroek
-import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.Trygdetidstabell
 
 fun beregningAvOmstillingsstoenad(
@@ -59,12 +38,13 @@ fun beregningAvOmstillingsstoenad(
     innvilgelsesaar: Boolean
 ): AttachmentTemplate<LangBokmalNynorskEnglish, OmstillingsstoenadBeregning> =
     createAttachment(
-        title =
-        newText(
-            Bokmal to "Beregning av omstillingsstønad",
-            Nynorsk to "Utrekning av omstillingsstønad",
-            English to "Calculation of adjustment allowance",
-        ),
+        title = {
+            text(
+                bokmal { +"Beregning av omstillingsstønad" },
+                nynorsk { +"Utrekning av omstillingsstønad" },
+                english { +"Calculation of adjustment allowance" },
+            )
+        },
         includeSakspart = false,
     ) {
         beregning(tidligereFamiliepleier.expr(), innvilgelsesaar.expr())
