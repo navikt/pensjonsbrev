@@ -1,10 +1,35 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="no">
   <head>
     <meta charset="UTF-8" />
-<!--    <link rel="icon" type="image/svg+xml" href="/favicon-fullmakt.svg" />-->
+    <!--    <link rel="icon" type="image/svg+xml" href="/favicon-fullmakt.svg" />-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pensjonsbrev</title>
+    <!--
+      Umami Analytics - Proof of Concept
+      
+      For production, replace the data-website-id with the actual ID from NAV's Umami setup.
+      Contact #ResearchOps on Slack to get the correct tracking code.
+      
+      The script below uses:
+      - data-website-id: A placeholder ID for dev testing (replace with actual ID)
+      - data-domains: Restricts tracking to specified domains
+      - data-auto-track: Enables automatic page view tracking
+      - data-do-not-track: Respects user's DNT browser setting
+      
+      In dev environment, the script may not load if Umami is not available,
+      but the tracking functions will still log events to console for debugging.
+      
+      See: https://aksel.nav.no/god-praksis/artikler/umami-maling
+    -->
+    <script
+      defer
+      src="https://umami.nav.no/script.js"
+      data-website-id="REPLACE_WITH_ACTUAL_WEBSITE_ID"
+      data-domains="pensjonsbrev.intern.dev.nav.no,pensjonsbrev.intern.nav.no"
+      data-auto-track="true"
+      data-do-not-track="true"
+    ></script>
   </head>
   <body>
     <div id="root"></div>

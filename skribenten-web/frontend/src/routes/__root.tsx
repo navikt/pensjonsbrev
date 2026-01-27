@@ -1,9 +1,10 @@
 import { BoxNew } from "@navikt/ds-react";
 import { QueryClient } from "@tanstack/react-query";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import React from "react";
+import { createRootRouteWithContext, Outlet, useRouterState } from "@tanstack/react-router";
+import React, { useEffect } from "react";
 
 import { AppHeader } from "~/components/AppHeader";
+import { trackEvent, trackPageView } from "~/utils/umami";
 
 export const queryClient = new QueryClient();
 
@@ -24,11 +25,32 @@ const ReactQueryDevtools = isProdOrCypressTest
       })),
     );
 
+/**
+ * Umami Route Tracker Component
+ * Tracks page views on route changes using TanStack Router
+ */
+const UmamiRouteTracker = () => {
+  const routerState = useRouterState();
+  const pathname = routerState.location.pathname;
+
+  useEffect(() => {
+    // Track page view on route change
+    trackEvent("navigasjon side lastet", {
+      side: pathname,
+    });
+    trackPageView(pathname);
+  }, [pathname]);
+
+  return null;
+};
+
 export const Route = createRootRouteWithContext<{
   queryClient: typeof queryClient;
 }>()({
   component: () => (
     <>
+      {/* Umami route tracking */}
+      <UmamiRouteTracker />
       <React.Suspense fallback="">
         {!isProdOrCypressTest && (
           <Global
