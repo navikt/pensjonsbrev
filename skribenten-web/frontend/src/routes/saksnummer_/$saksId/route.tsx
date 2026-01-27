@@ -7,11 +7,11 @@ import { useMemo } from "react";
 import { z } from "zod";
 
 import {
-  getBrukerStatusQuery,
-  getFavoritterQuery,
-  getKontaktAdresseQuery,
-  getPreferredLanguageQuery,
-  getSakContextQuery,
+  getBrukerStatus,
+  getFavoritter,
+  getKontaktAdresse,
+  getPreferredLanguage,
+  getSakContext,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakContextDto } from "~/types/apiTypes";
@@ -33,12 +33,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
 
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context: { queryClient }, params: { saksId }, deps: { vedtaksId } }) => {
-    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    const getSakContextQueryOptions = getSakContext(saksId, vedtaksId);
 
-    queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
-    queryClient.prefetchQuery(getFavoritterQuery);
-    queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
-    queryClient.prefetchQuery(getBrukerStatusQuery(saksId));
+    queryClient.prefetchQuery(getKontaktAdresse(saksId));
+    queryClient.prefetchQuery(getFavoritter);
+    queryClient.prefetchQuery(getPreferredLanguage(saksId));
+    queryClient.prefetchQuery(getBrukerStatus(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
@@ -69,7 +69,7 @@ function SakLayout() {
 function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const sak = sakContext.sak;
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const { data: brukerStatus } = useQuery(getBrukerStatusQuery(sak.saksId.toString()));
+  const { data: brukerStatus } = useQuery(getBrukerStatus(sak.saksId.toString()));
 
   const dateOfBirth = useMemo(() => {
     if (!sak.foedselsdato) return undefined;

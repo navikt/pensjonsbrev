@@ -21,7 +21,7 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevInfoForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevError, BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
@@ -160,8 +160,8 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
   const alleBrevResult = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
-    queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
+    queryKey: hentAlleBrevInfoForSak.queryKey(properties.sakId),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(properties.sakId),
     select: (data) => data.filter((brev) => erBrevKlar(brev) || erBrevArkivert(brev) || erBrevKlarTilAttestering(brev)),
   });
 
@@ -226,7 +226,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         .map(([id]) => Number(id)),
     );
 
-    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
+    queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
       current.filter((b) => !sentIds.has(b.id)),
     );
 

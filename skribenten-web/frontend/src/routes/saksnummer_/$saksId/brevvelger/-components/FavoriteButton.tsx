@@ -2,7 +2,7 @@ import { StarFillIcon, StarIcon } from "@navikt/aksel-icons";
 import { Button } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { addFavoritt, deleteFavoritt, getFavoritterQuery } from "~/api/skribenten-api-endpoints";
+import { addFavoritt, deleteFavoritt, getFavoritter } from "~/api/skribenten-api-endpoints";
 
 export default function FavoriteButton(props: {
   templateId: string;
@@ -10,13 +10,13 @@ export default function FavoriteButton(props: {
 }) {
   const queryClient = useQueryClient();
   const isFavoritt = useQuery({
-    ...getFavoritterQuery,
+    ...getFavoritter,
     select: (favoritter) => favoritter.includes(props.templateId),
   }).data;
 
   const toggleFavoritesMutation = useMutation<unknown, unknown, string>({
     mutationFn: (id) => (isFavoritt ? deleteFavoritt(id) : addFavoritt(id)),
-    onSettled: () => queryClient.invalidateQueries({ queryKey: getFavoritterQuery.queryKey }),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: getFavoritter.queryKey }),
     onSuccess: isFavoritt ? undefined : () => props.onAddFavorittSuccess?.(props.templateId),
   });
 

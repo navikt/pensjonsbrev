@@ -96,32 +96,32 @@ export const orderLetterKeys = {
   brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
 };
 
-export const getSakContextQuery = (saksId: string, vedtaksId: string | undefined) => ({
+export const getSakContext = (saksId: string, vedtaksId: string | undefined) => ({
   queryKey: saksnummerKeys.id(saksId, vedtaksId),
   queryFn: async () =>
     (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
   staleTime: 5000,
 });
 
-export const getPreferredLanguageQuery = (saksId: string) => ({
+export const getPreferredLanguage = (saksId: string) => ({
   queryKey: preferredLanguageKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
 });
 
-export const getBrukerStatusQuery = (saksId: string) => ({
+export const getBrukerStatus = (saksId: string) => ({
   queryKey: brukerStatusKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<BrukerStatusDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brukerstatus`)).data,
 });
 
-export const getKontaktAdresseQuery = (saksId: string) => ({
+export const getKontaktAdresse = (saksId: string) => ({
   queryKey: adresseKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/adresse`)).data,
 });
 
-export const getFavoritterQuery = {
+export const getFavoritter = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
@@ -204,7 +204,7 @@ export const hentSamhandler = {
   },
 };
 
-export const hentSamhandlerAdresseQuery = (idTSSEkstern: string) => ({
+export const hentSamhandlerAdresse = (idTSSEkstern: string) => ({
   queryKey: samhandlerAdresseKeys.idTSSEkstern(idTSSEkstern),
   queryFn: async () => {
     const response = await axios.post<HentSamhandlerAdresseResponseDto>(

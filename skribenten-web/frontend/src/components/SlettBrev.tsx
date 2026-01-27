@@ -3,7 +3,7 @@ import { BodyLong, Button, ErrorMessage, HStack, Modal } from "@navikt/ds-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { hentAlleBrevForSak, slettBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevInfoForSak, slettBrev } from "~/api/sak-api-endpoints";
 import type { BrevInfo } from "~/types/brev";
 
 export const SlettBrev = (properties: {
@@ -59,7 +59,7 @@ const SlettBrevModal = (properties: {
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo?.filter((brev) => brev.id !== properties.brevId),
       );
     },

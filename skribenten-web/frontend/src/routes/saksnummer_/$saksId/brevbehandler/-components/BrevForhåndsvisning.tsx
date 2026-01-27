@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
-import { getBrev } from "~/api/brev-queries";
+import { getBrevInfo } from "~/api/brev-queries";
 import { hentPdfForBrev, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import { CenteredLoader } from "~/components/CenteredLoader";
 import { queryFold } from "~/utils/tanstackUtils";
@@ -22,10 +22,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
   });
 
-  const brev = useQuery({
-    queryKey: getBrev.queryKey(properties.brevId),
-    queryFn: () => getBrev.queryFn(properties.saksId, properties.brevId),
-  });
+  const brevInfo = useQuery(getBrevInfo(properties.brevId));
 
   const navigateToBrevRedigering = () =>
     navigate({
@@ -34,7 +31,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     });
 
   const erKlarEllerAttestering =
-    brev.data?.info.status.type === "Klar" || brev.data?.info.status.type === "Attestering";
+    brevInfo?.data?.status?.type === "Klar" || brevInfo?.data?.status?.type === "Attestering";
 
   const oppdaterBrevTilKladd = useMutation({
     mutationFn: () => veksleKlarStatus(properties.saksId, properties.brevId, { klar: false }),
@@ -48,7 +45,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
   });
 
   const handleOppdater = () => {
-    if (brev.isLoading) return;
+    if (brevInfo.isLoading) return;
 
     if (erKlarEllerAttestering) {
       oppdaterBrevTilKladd.mutate();
