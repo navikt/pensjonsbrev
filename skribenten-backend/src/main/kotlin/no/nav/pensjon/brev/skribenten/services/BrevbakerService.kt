@@ -175,7 +175,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
     }
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
-        cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode) {
+        cache.cached(Cacheomraade.REDIGERBAR_MAL, brevkode, ttl = { 1.seconds }) {
             val response = client.get("/templates/redigerbar/${brevkode.kode()}")
 
             if (response.status.isSuccess()) {
