@@ -195,9 +195,9 @@ sealed class Expression<out Out> : StableHash {
         override fun isRedigerbar(scope: ExpressionScope<*>) = first.isRedigerbar(scope) || second.isRedigerbar(scope)
     }
 
-//    final override fun toString(): String {
-//        throw PreventToStringForExpressionException()
-//    }
+    final override fun toString(): String {
+        throw PreventToStringForExpressionException()
+    }
 }
 
 typealias StringExpression = Expression<String>
