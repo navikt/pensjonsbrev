@@ -62,12 +62,11 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import ParentModelSelectors.ChildModelSelectors.uncle
                     import UncleModelSelectors.name
                     import no.nav.brev.InternKonstruktoer
-                    import no.nav.pensjon.brevbaker.api.model.Redigerbar
 
                     data class UncleModel(val name: String)
 
                     data class ParentModel(val child: ChildModel) {
-                        data class ChildModel(@Redigerbar val uncle: UncleModel)
+                        data class ChildModel(val uncle: UncleModel)
                     }
 
                     @TemplateModelHelpers
@@ -130,6 +129,32 @@ class TemplateModelHelpersAnnotationProcessorTest {
         assertThat(generatedSources).contains("ParentModelSelectors.kt")
         assertThat(generatedSources).doesNotContain("ChildModelSelectors.kt")
         assertThat(generatedSources).doesNotContain("UncleModelSelectors.kt")
+    }
+
+    @Test
+    fun `redigerbar is true if model field annotated`() {
+        val result = KotlinSourceFile(
+            "MyClass.kt", """
+                    import no.nav.pensjon.brev.template.HasModel
+                    import no.nav.pensjon.brev.template.Expression
+                    import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+                    import no.nav.pensjon.brev.template.thirdpkg.SimpleModel
+                    import no.nav.brev.InternKonstruktoer
+                    import no.nav.pensjon.brevbaker.api.model.Redigerbar
+
+                    data class ParentModel(val name: String)
+
+                    @TemplateModelHelpers
+                    @OptIn(InternKonstruktoer::class)
+                    object MyClass : HasModel<ParentModel> {
+                        val data: Expression<ParentModel> = Expression.Literal(ParentModel("Scrooge"))
+                        val name: Expression<String> = data.name
+                    }
+                    """.trimIndent()
+        ).generateSelectors()
+
+        assertThat(result.exitCode).isEqualTo(KotlinSymbolProcessing.ExitCode.OK)
+        assertThat(result.generatedSources.joinToString { it.content }).contains("redigerbar = true")
     }
 
     @Test
