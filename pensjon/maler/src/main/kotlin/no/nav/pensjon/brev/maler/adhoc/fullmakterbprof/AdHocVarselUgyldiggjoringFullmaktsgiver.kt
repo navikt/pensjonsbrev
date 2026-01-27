@@ -37,7 +37,7 @@ object AdHocVarselUgyldiggjoringFullmaktsgiver : AutobrevTemplate<Fullmaktsgiver
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav får ny løsning for digitale fullmakter. Det betyr at gamle fullmakter blir slettet 10.01.2026." }
+                    bokmal { +"Nav får ny løsning for digitale fullmakter. Det betyr at gamle fullmakter blir slettet 15.03.2026." }
                 )
             }
             paragraph {
