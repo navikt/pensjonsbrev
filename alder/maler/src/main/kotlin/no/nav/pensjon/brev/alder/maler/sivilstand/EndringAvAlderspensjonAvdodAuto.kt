@@ -223,7 +223,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     )
                 }
             }
-            val brukerSokeSelv =
+            val brukerMaaSokeSelv =
             (avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
             and (
                 (borINorge.not() and avdodInformasjon.avdodHarYtelse.notEqualTo(true))
@@ -231,7 +231,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 (alderspensjonVedVirk.innvilgetFor67.equalTo(true) and alderspensjonVedVirk.uttaksgrad.equalTo(0)))
                 )
 
-            showIf(brukerSokeSelv.not()
+            showIf(brukerMaaSokeSelv.not()
                         and avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
                         and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
                 paragraph {
@@ -246,7 +246,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 }
             }
 
-            showIf(  brukerSokeSelv and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
+            showIf(brukerMaaSokeSelv and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha rettigheter etter avdøde. Derfor bør du søke om gjenlevenderett i alderspensjonen." },
