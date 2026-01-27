@@ -142,7 +142,7 @@ class TemplateModelHelpersAnnotationProcessorTest {
                     import no.nav.brev.InternKonstruktoer
                     import no.nav.pensjon.brevbaker.api.model.Redigerbar
 
-                    data class ParentModel(val name: String)
+                    data class ParentModel(@Redigerbar val name: String)
 
                     @TemplateModelHelpers
                     @OptIn(InternKonstruktoer::class)
