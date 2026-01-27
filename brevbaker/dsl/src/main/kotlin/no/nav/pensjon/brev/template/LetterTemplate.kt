@@ -55,6 +55,8 @@ sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
+    open fun isRedigerbar(scope: ExpressionScope<*>): Boolean = false
+
     class Literal<out Out> @InternKonstruktoer constructor(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
@@ -134,6 +136,15 @@ sealed class Expression<out Out> : StableHash {
             return operation.apply(value.eval(scope))
         }
 
+        override fun isRedigerbar(scope: ExpressionScope<*>): Boolean {
+            if (operation is UnaryOperation.Select) {
+                return operation.selector.redigerbar
+            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
+                return operation.operation.selector.redigerbar
+            }
+            return super.isRedigerbar(scope)
+        }
+
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
             return value == other.value && operation == other.operation
@@ -180,6 +191,8 @@ sealed class Expression<out Out> : StableHash {
             return first == other.first && second == other.second && operation == other.operation
         }
         override fun hashCode() = Objects.hash(first, second, operation)
+
+        override fun isRedigerbar(scope: ExpressionScope<*>) = first.isRedigerbar(scope) || second.isRedigerbar(scope)
     }
 
 //    final override fun toString(): String {

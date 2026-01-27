@@ -485,7 +485,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Title3 : 
 
 public abstract class no/nav/pensjon/brev/template/Expression : no/nav/pensjon/brev/template/StableHash {
 	public abstract fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
-	public final fun toString ()Ljava/lang/String;
+	public fun isRedigerbar (Lno/nav/pensjon/brev/template/ExpressionScope;)Z
 }
 
 public final class no/nav/pensjon/brev/template/Expression$BinaryInvoke : no/nav/pensjon/brev/template/Expression, no/nav/pensjon/brev/template/StableHash {
@@ -496,6 +496,7 @@ public final class no/nav/pensjon/brev/template/Expression$BinaryInvoke : no/nav
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/BinaryOperation;
 	public final fun getSecond ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
+	public fun isRedigerbar (Lno/nav/pensjon/brev/template/ExpressionScope;)Z
 	public fun stableHashCode ()I
 }
 
@@ -561,6 +562,7 @@ public final class no/nav/pensjon/brev/template/Expression$UnaryInvoke : no/nav/
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/UnaryOperation;
 	public final fun getValue ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
+	public fun isRedigerbar (Lno/nav/pensjon/brev/template/ExpressionScope;)Z
 	public fun stableHashCode ()I
 }
 

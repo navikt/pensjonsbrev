@@ -105,6 +105,7 @@ interface LetterMarkup {
             interface Variable : Text {
                 override val type: Type
                     get() = Type.VARIABLE
+                val redigerbar: Boolean
             }
 
             interface NewLine : Text {

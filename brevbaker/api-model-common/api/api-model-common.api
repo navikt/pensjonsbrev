@@ -581,6 +581,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
+	public abstract fun getRedigerbar ()Z
 	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 
