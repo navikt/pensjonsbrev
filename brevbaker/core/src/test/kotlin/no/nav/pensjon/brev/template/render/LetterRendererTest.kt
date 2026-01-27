@@ -245,6 +245,7 @@ class LetterRendererTest {
             override val propertyName = "vedlegg"
             override val propertyType = "TestVedleggDto"
             override val selector = LetterData::vedlegg
+            override val redigerbar = false
         }
         val vedleggDataExpr = Expression.FromScope.Argument<LetterData>().select(vedleggDataSelector)
 

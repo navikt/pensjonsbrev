@@ -21,17 +21,19 @@ class SelectorUsageTest {
         override val propertyName: String = "testFelt"
         override val propertyType: String = "kotlin.Boolean"
         override val selector: AModel.() -> Boolean? = AModel::testFelt
+        override val redigerbar: Boolean = false
     }
     private val aModelSelector = object : TemplateModelSelector<RotModel, AModel?> {
         override val className: String = RotModel::class.qualifiedName!!
         override val propertyName: String = "aModel"
         override val propertyType: String = AModel::class.qualifiedName!!
         override val selector: RotModel.() -> AModel? = RotModel::aModel
+        override val redigerbar: Boolean = false
     }
 
     @OptIn(InterneDataklasser::class)
     private fun TemplateModelSelector<*, *>.usageId(): Property =
-        LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = this.className, propertyName = this.propertyName)
+        LetterMarkupWithDataUsageImpl.PropertyImpl(typeName = this.className, propertyName = this.propertyName, redigerbar = this.redigerbar)
 
     private val argument = Expression.FromScope.Argument<RotModel>()
     private val Expression<AModel?>.testFeltSafe: Expression<Boolean?>

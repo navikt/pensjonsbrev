@@ -25,12 +25,14 @@ private object LocalDateSelectors {
         override val propertyName = "year"
         override val propertyType = "Int"
         override val selector = LocalDate::getYear
+        override val redigerbar = false
     }
     val monthSelector = object : TemplateModelSelector<LocalDate, Int> {
         override val className = "java.time.LocalDate"
         override val propertyName = "month"
         override val propertyType = "Int"
         override val selector = LocalDate::getMonthValue
+        override val redigerbar = false
     }
 
     val daySelector = object : TemplateModelSelector<LocalDate, Int> {
@@ -38,6 +40,7 @@ private object LocalDateSelectors {
         override val propertyName = "day"
         override val propertyType = "Int"
         override val selector = LocalDate::getDayOfMonth
+        override val redigerbar = false
     }
 
     val firstDayOfYear = object : TemplateModelSelector<LocalDate, LocalDate> {
@@ -45,6 +48,7 @@ private object LocalDateSelectors {
         override val propertyName = "firstDayOfYear"
         override val propertyType = "LocalDate"
         override val selector = {localDate: LocalDate -> localDate.withDayOfYear(1)}
+        override val redigerbar = false
     }
 
     val lastDayOfYear = object : TemplateModelSelector<LocalDate, LocalDate> {
@@ -52,6 +56,7 @@ private object LocalDateSelectors {
         override val propertyName = "lastDayOfYear"
         override val propertyType = "LocalDate"
         override val selector = {localDate: LocalDate -> localDate.withDayOfYear(localDate.lengthOfYear())}
+        override val redigerbar = false
     }
 
 }

@@ -10,6 +10,7 @@ interface LetterMarkupWithDataUsage {
     interface Property {
         val typeName: String
         val propertyName: String
+        val redigerbar: Boolean
     }
 }
 

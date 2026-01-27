@@ -12,6 +12,7 @@ val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val propertyName: String = "value"
     override val propertyType: String = "kotlin.Int"
     override val selector = IntValue::value
+    override val redigerbar = false
 }
 
 val Expression<IntValue>.value: Expression<Int>

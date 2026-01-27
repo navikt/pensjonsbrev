@@ -19,7 +19,7 @@ data class LetterMarkupWithDataUsageImpl(
 ) : LetterMarkupWithDataUsage {
 
     @InterneDataklasser
-    data class PropertyImpl(override val typeName: String, override val propertyName: String) : LetterMarkupWithDataUsage.Property
+    data class PropertyImpl(override val typeName: String, override val propertyName: String, override val redigerbar: Boolean) : LetterMarkupWithDataUsage.Property
 }
 
 @Suppress("unused")

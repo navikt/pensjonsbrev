@@ -80,6 +80,7 @@ class ForEachViewTest {
             override val propertyName = "value"
             override val propertyType = "String"
             override val selector = Argument::value
+            override val redigerbar = false
         }
 
         val actual = outlineTestTemplate<Argument> {
