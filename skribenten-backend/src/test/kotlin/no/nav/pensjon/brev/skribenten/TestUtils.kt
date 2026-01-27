@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.usecase.Result
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
@@ -75,9 +75,9 @@ fun Felles.copy(
     signerendeSaksbehandlere = signerendeSaksbehandlere,
 )
 
-inline fun <reified T, E> ObjectAssert<Result<T, E>?>.isSuccess(noinline block: ((T) -> Unit)? = null): ObjectAssert<Result<T, E>?> {
+inline fun <reified T, E> ObjectAssert<Outcome<T, E>?>.isSuccess(noinline block: ((T) -> Unit)? = null): ObjectAssert<Outcome<T, E>?> {
     isNotNull()
-    isInstanceOfSatisfying<Result.Success<*>>(Result.Success::class.java) { res ->
+    isInstanceOfSatisfying<Outcome.Success<*>>(Outcome.Success::class.java) { res ->
         assertThat(res.value).isInstanceOfSatisfying<T>(T::class.java) {
             block?.invoke(it)
         }
@@ -85,9 +85,9 @@ inline fun <reified T, E> ObjectAssert<Result<T, E>?>.isSuccess(noinline block: 
     return this
 }
 
-inline fun <reified ExpectedE : E, T, E> ObjectAssert<Result<T, E>?>.isFailure(noinline block: ((E) -> Unit)? = null): ObjectAssert<Result<T, E>?> {
+inline fun <reified ExpectedE : E, T, E> ObjectAssert<Outcome<T, E>?>.isFailure(noinline block: ((ExpectedE) -> Unit)? = null): ObjectAssert<Outcome<T, E>?> {
     isNotNull()
-    isInstanceOfSatisfying<Result.Failure<*>>(Result.Failure::class.java) { res ->
+    isInstanceOfSatisfying<Outcome.Failure<*>>(Outcome.Failure::class.java) { res ->
         assertThat(res.error).isInstanceOfSatisfying<ExpectedE>(ExpectedE::class.java) {
             block?.invoke(it)
         }

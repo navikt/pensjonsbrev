@@ -76,17 +76,17 @@ jobs:
           username: ${{ github.repository }}
           password: ${{ github.token }}
       - name: "Build Docker image"
-        run: | 
+        run: |
           docker build --pull --tag ${IMAGE_PDF_BYGGER} brevbaker/pdf-bygger
       - name: "Push image with sha"
         run: |
           docker push ${IMAGE_PDF_BYGGER}
       - name: "Tag image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
         run: |
           docker tag ${IMAGE_PDF_BYGGER} ${IMAGE_BRANCH}
       - name: "Push image with main"
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        if: ${{ (github.event_name == 'push' || github.event_name == 'workflow_dispatch') && github.ref == 'refs/heads/main' }}
         run: |
           docker push ${IMAGE_BRANCH}
 
@@ -118,7 +118,7 @@ jobs:
 
   runIntegrationTests:
     name: "Integration tests"
-    needs: [ pushPdfByggerToGithubRegistry, changes ]
+    needs: [pushPdfByggerToGithubRegistry, changes]
     runs-on: ubuntu-latest-16-cores
     permissions:
       statuses: write
@@ -148,7 +148,7 @@ jobs:
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
-          report_paths: '**/build/test-results/integrationTest/TEST-*.xml'
+          report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
         if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
         uses: actions/upload-artifact@v6
@@ -158,7 +158,7 @@ jobs:
 
   analyzeImages:
     name: "Analyze images"
-    needs: [ runIntegrationTests, changes ]
+    needs: [runIntegrationTests, changes]
     runs-on: ubuntu-latest-16-cores
     if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
     permissions:
@@ -177,7 +177,7 @@ jobs:
           command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: "24"
       - run: npm install --save-dev @percy/cli
       - name: Publish visual-tests to percy
         run: |
@@ -193,7 +193,6 @@ jobs:
         with:
           issue-number: ${{ github.event.number }}
           body-path: percy-build-url
-
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"

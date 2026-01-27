@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.vedlegg
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.brukerUnder18Aar
 import no.nav.pensjon.brev.alder.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDtoSelectors.sakstype
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and

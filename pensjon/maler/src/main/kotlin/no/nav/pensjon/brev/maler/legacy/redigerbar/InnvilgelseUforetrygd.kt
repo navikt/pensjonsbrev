@@ -46,7 +46,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse på uføretrygd",
+            displayTitle = "Vedtak - innvilgelse av uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -367,7 +367,44 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "Grunngiving for vedtaket" },
                     )
                 }
-                includePhrase(TBU1130_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "For å ha rett til uføretrygd må du oppfylle disse vilkårene:" },
+                        nynorsk { + "For å ha rett til uføretrygd må du oppfylle desse vilkåra:" },
+                    )
+                    list {
+                        item {
+                            text(
+                                bokmal { +"Du må være mellom 18 og 67 år." },
+                                nynorsk { +"Du må vere mellom 18 og 67 år." },
+                            )
+                        }
+                        item {
+                            text(
+                                bokmal { +"Du må ha vært medlem av folketrygden i de siste " + pe.aars_trygdetid() + " årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                                nynorsk { +"Du må ha vore medlem av folketrygda i dei siste " + pe.aars_trygdetid() + " åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                            )
+                        }
+                        item {
+                            text(
+                                bokmal { +"Inntektsevnen din må være varig nedsatt med minst 50 prosent på grunn av sykdom og/eller skade, eller du må oppfylle en av unntaksreglene." },
+                                nynorsk { +"Inntektsevna di må vere varig sett ned med minst 50 prosent på grunn av sjukdom og/eller skade, eller oppfylle ein av unntaksreglane." },
+                            )
+                        }
+                        item {
+                            text(
+                                bokmal { +"Sykdommen eller skaden din må være hovedårsak til din nedsatte inntektsevne." },
+                                nynorsk { +"Sjukdommen eller skaden din må vere hovudårsaka til at inntektsevna di er sett ned." },
+                            )
+                        }
+                        item {
+                            text(
+                                bokmal { +"Du må ha gjennomført hensiktsmessig behandling og arbeidsrettede tiltak." },
+                                nynorsk { +"Du må ha gjennomført formålstenleg behandling og arbeidsretta tiltak." },
+                            )
+                        }
+                    }
+                }
                 //[TBU1131EN, TBU1131, TBU1131NN]
 
                 paragraph {
@@ -992,7 +1029,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "oppfylt" OR FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforResultat) = "ikke_oppfylt") THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo("oppfylt") or (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()).equalTo("ikke_oppfylt"))){
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Rettighet som ung ufør" },
                         nynorsk { + "Rett som ung ufør" },
@@ -1025,20 +1062,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforBegrunnelse) = "stdbegr_12_13_1_i_2") THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforbegrunnelse()).equalTo("stdbegr_12_13_1_i_2"))){
                 includePhrase(TBU1152_Generated)
-            }
-
-            //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforBegrunnelse) = "stdbegr_12_13_1_i_2") THEN      INCLUDE ENDIF
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforbegrunnelse()).equalTo("stdbegr_12_13_1_i_2"))){
                 includePhrase(TBU1153_Generated)
             }
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforBegrunnelse) = "stdbegr_12_13_1_i_3") THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforbegrunnelse()).equalTo("stdbegr_12_13_1_i_3"))){
                 includePhrase(TBU1154_Generated)
-            }
-
-            //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforBegrunnelse) = "stdbegr_12_13_1_i_3") THEN      INCLUDE ENDIF
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforbegrunnelse()).equalTo("stdbegr_12_13_1_i_3"))){
                 includePhrase(TBU1155_Generated)
             }
 
@@ -1135,7 +1164,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) <> "ikke_vurdert") THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).notEqualTo("ikke_vurdert"))){
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Uførhet som skyldes yrkesskade eller yrkessykdom" },
                         nynorsk { + "Uførleik som kjem av yrkesskade eller yrkessjukdom" },

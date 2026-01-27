@@ -76,6 +76,10 @@ public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no
 public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/ISakstype {
+	public abstract fun getKode ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/LetterResponse {
 	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -84,30 +88,6 @@ public final class no/nav/pensjon/brev/api/model/LetterResponse {
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brev/api/model/Sakstype : java/lang/Enum {
-	public static final field AFP Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field AFP_PRIVAT Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field ALDER Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field BARNEP Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field Companion Lno/nav/pensjon/brev/api/model/Sakstype$Companion;
-	public static final field FAM_PL Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field GAM_YRK Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field GENRL Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field GJENLEV Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field GRBL Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field KRIGSP Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field OMSORG Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static final field UFOREP Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static fun getEntries ()Lkotlin/enums/EnumEntries;
-	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/Sakstype;
-	public static fun values ()[Lno/nav/pensjon/brev/api/model/Sakstype;
-}
-
-public final class no/nav/pensjon/brev/api/model/Sakstype$Companion {
-	public final fun getAll ()Ljava/util/Set;
-	public final fun getPensjon ()Ljava/util/Set;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription {
@@ -171,6 +151,20 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar 
 	public final fun getSakstyper ()Ljava/util/Set;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar$Sakstype;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getKode ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/AutobrevData : no/nav/pensjon/brev/api/model/maler/BrevbakerBrevdata, no/nav/pensjon/brev/api/model/maler/FagsystemBrevdata {
@@ -273,22 +267,17 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData 
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode : no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggBrevkode;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun <init> (Ljava/lang/String;Ljava/lang/String;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public fun getKode ()Ljava/lang/String;
+	public fun getVisningstekst ()Ljava/lang/String;
 	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun kode ()Ljava/lang/String;
-	public static fun kode-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode {
-	public abstract fun kode ()Ljava/lang/String;
+	public abstract fun getKode ()Ljava/lang/String;
+	public abstract fun getVisningstekst ()Ljava/lang/String;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTitle {

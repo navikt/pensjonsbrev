@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
@@ -13,13 +13,13 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.failure
-import no.nav.pensjon.brev.skribenten.usecase.Result.Companion.success
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
-class CreateLetterHandler(
+class OpprettBrevHandler(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
     private val renderService: RenderService,
@@ -37,52 +37,52 @@ class CreateLetterHandler(
         val mottaker: Dto.Mottaker? = null,
     )
 
-    suspend fun handle(req: Request): Result<Dto.Brevredigering, BrevredigeringError> {
+    suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
-        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(req, principal)) {
-            is Result.Failure -> return failure(res.error)
-            is Result.Success -> res.value
+        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {
+            is Outcome.Failure -> return failure(res.error)
+            is Outcome.Success -> res.value
         }
 
         val pesysData = brevdataService.hentBrevdata(
-            saksId = req.saksId,
+            saksId = request.saksId,
             vedtaksId = parametre.vedtaksId,
-            brevkode = req.brevkode,
-            avsenderEnhetsId = req.avsenderEnhetsId,
-            mottaker = req.mottaker,
+            brevkode = request.brevkode,
+            avsenderEnhetsId = request.avsenderEnhetsId,
+            mottaker = request.mottaker,
             signatur = SignerendeSaksbehandlere(saksbehandler = principalSignatur(principal)),
         )
 
         val rendretBrev = renderService.renderMarkup(
-            brevkode = req.brevkode,
-            spraak = req.spraak,
-            saksbehandlerValg = req.saksbehandlerValg,
+            brevkode = request.brevkode,
+            spraak = request.spraak,
+            saksbehandlerValg = request.saksbehandlerValg,
             pesysData = pesysData,
         )
 
-        val brev = Brevredigering.opprettBrev(
-            saksId = req.saksId,
+        val brev = BrevredigeringEntity.opprettBrev(
+            saksId = request.saksId,
             vedtaksId = parametre.vedtaksId,
             opprettetAv = principal.navIdent,
-            brevkode = req.brevkode,
-            spraak = req.spraak,
-            avsenderEnhetId = req.avsenderEnhetsId,
-            saksbehandlerValg = req.saksbehandlerValg,
+            brevkode = request.brevkode,
+            spraak = request.spraak,
+            avsenderEnhetId = request.avsenderEnhetsId,
+            saksbehandlerValg = request.saksbehandlerValg,
             redigertBrev = rendretBrev.markup.toEdit(),
             brevtype = parametre.brevtype,
         )
 
-        if (req.reserverForRedigering) {
+        if (request.reserverForRedigering) {
             brev.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
         }
-        if (req.mottaker != null) {
-            brev.settMottaker(req.mottaker)
+        if (request.mottaker != null) {
+            brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
         }
 
         return success(brev.toDto(rendretBrev.letterDataUsage))
     }
 
     private suspend fun principalSignatur(principal: UserPrincipal): String =
-        navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" } ?: principal.fullName
+        navansattService.hentNavansatt(principal.navIdent.id)?.fulltNavn ?: principal.fullName
 }

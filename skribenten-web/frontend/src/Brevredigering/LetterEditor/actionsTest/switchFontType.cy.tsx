@@ -47,6 +47,7 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
     redigertBrevHash: "hash1",
     saksbehandlerValg: {},
     propertyUsage: null,
+    valgteVedlegg: null,
   };
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brevresponse));
   return (

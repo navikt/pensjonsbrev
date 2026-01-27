@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
-import no.nav.pensjon.brev.api.model.Sakstype.UFOREP
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -135,7 +135,7 @@ object VarselBtBarnetFlytter12_15: RedigerbarTemplate<FeilutbetalingSpesifikkVar
             paragraph {
                 text(
                     bokmal { + "I vårt vedtak av " + dato + " er barnetillegget for barn født " + dato +
-                            " derfor opphørt fra " + dato + ". Du får en lavere utbetaling av uføretrygd fra måneden etter at " + hendelse + ". " +
+                            " derfor opphørt fra " + dato + ". Du får en lavere utbetaling av uføretrygd fra måneden etter at " + hendelse +
                             ". Dette står i folketrygdloven § 22-12 femte ledd. "},
                     nynorsk { + "I vårt vedtak av " + dato + " er barnetillegget for barn fødd " + dato +
                             " derfor opphøyrt frå " + dato + ". Du får ei lågare utbetaling av uføretrygd frå månaden etter at " + hendelse +

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegnin
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.InformasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.avtaleland
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.InngangOgEksportVurderingSelectors.borINorge
@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUf
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantipensjonInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.garantitilleggInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettAnvendt
+import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevenderettInnvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.gjenlevendetilleggKap19Innvilget
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.godkjentYrkesskade
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016DtoSelectors.informasjonOmMedlemskap
@@ -95,6 +96,7 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
                     avdodNavn = pesysData.persongrunnlagAvdod.avdodNavn,
                     avdodFnr = pesysData.persongrunnlagAvdod.avdodFnr,
                     gjenlevenderettAnvendt = pesysData.gjenlevenderettAnvendt,
+                    gjenlevenderettInnvilget = pesysData.gjenlevenderettInnvilget,
                     eksportTrygdeavtaleAvtaleland = pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleAvtaleland,
                     faktiskBostedsland = pesysData.faktiskBostedsland,
                     erEksportberegnet = pesysData.inngangOgEksportVurdering.erEksportberegnet,
@@ -135,5 +137,6 @@ object OmregningAlderUfore2016 : RedigerbarTemplate<OmregningAlderUfore2016Redig
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
 
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
+    override val sakstyper = setOf(Sakstype.ALDER)
 }
+

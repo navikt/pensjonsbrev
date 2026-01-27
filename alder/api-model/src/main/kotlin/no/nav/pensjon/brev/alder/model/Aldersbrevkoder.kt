@@ -6,6 +6,7 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
+        INFO_ADHOC_TIDLIGERE_UFOERE_GRADERT_AP_AUTO,
         INFO_EPS_60_AAR_AUTO,
         INFO_EPS_62_AAR_AUTO,
         INFO_FYLLER_67_AAR_SAERSKILT_SATS,
@@ -56,11 +57,11 @@ object Aldersbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
-        SKJEMA_FOR_BANKOPPLYSNINGER,
-        UTTAKSSKJEMA
+    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger"),
+        UTTAKSSKJEMA("Uttaksskjema")
         ;
 
-        override fun kode() = name
+        override val kode = name
     }
 }

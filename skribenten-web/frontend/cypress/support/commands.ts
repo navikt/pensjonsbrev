@@ -39,6 +39,9 @@ Cypress.Commands.add("setupSakStubs", () => {
   cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
     request.reply([]);
   });
+  cy.intercept("GET", "/bff/skribenten-backend/sak/**/brukerstatus", {
+    body: { adressebeskyttelse: false, doedsfall: "2025-01-01", erSkjermet: false, vergemaal: false },
+  }).as("brukerstatus");
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", {
     fixture: "foretrukketSpraak.json",
   }).as("foretrukketSpraak");

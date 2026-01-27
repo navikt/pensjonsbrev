@@ -68,8 +68,9 @@ class TemplateRoutesTest {
         fun `can get description of all redigerbar`() = testBrevbakerApp(enableAllToggles = true, isIntegrationTest = false) { client ->
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(alleRedigerbareMaler
-                .map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>())
+            assertEquals(
+                alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
+            )
         }
 
         @Test
@@ -81,6 +82,13 @@ class TemplateRoutesTest {
                     .map { it.kode.kode() }.toSet(), response.body<Set<String>>()
             )
         }
+
+        @Test
+        fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
+            val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
+            assertEquals(HttpStatusCode.OK, response.status)
+            assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
+        }
     }
 
     @Test
@@ -88,13 +96,6 @@ class TemplateRoutesTest {
         val response = client.get("/templates/autobrev/${OmsorgEgenAuto.kode.name}")
         assertEquals(HttpStatusCode.OK, response.status)
         assertEquals(OmsorgEgenAuto.description(), response.body<TemplateDescription.Autobrev>())
-    }
-
-    @Test
-    fun `can get description of redigerbar`() = testBrevbakerApp(isIntegrationTest = false) { client ->
-        val response = client.get("/templates/redigerbar/${InformasjonOmSaksbehandlingstid.kode.name}")
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(InformasjonOmSaksbehandlingstid.description(), response.body<TemplateDescription.Redigerbar>())
     }
 
     @Test

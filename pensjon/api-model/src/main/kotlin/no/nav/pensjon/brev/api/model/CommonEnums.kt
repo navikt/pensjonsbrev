@@ -233,3 +233,26 @@ enum class BorI {
     EOS, // v3.Person - if borIEOS is true and borIAvaleland i false and borINorge is false
     NORGE, // v3.Person - if BorI Norge is true and borIAvtaleland is false and borIEOS is false
 }
+
+enum class Sakstype : ISakstype {
+    AFP,
+    AFP_PRIVAT,
+    ALDER,
+    BARNEP,
+    FAM_PL,
+    GAM_YRK,
+    GENRL,
+    GJENLEV,
+    GRBL,
+    KRIGSP,
+    OMSORG,
+    UFOREP,
+    ;
+
+    override val kode = name
+
+    companion object {
+        val all: Set<Sakstype> = entries.toSet()
+        val pensjon: Set<Sakstype> = setOf(AFP, AFP_PRIVAT, ALDER, BARNEP, FAM_PL, GAM_YRK, GENRL, GJENLEV, GRBL, KRIGSP, OMSORG)
+    }
+}

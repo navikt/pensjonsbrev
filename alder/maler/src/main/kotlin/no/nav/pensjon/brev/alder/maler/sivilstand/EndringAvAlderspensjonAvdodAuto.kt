@@ -3,14 +3,16 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ALDERSPENSJON_GJENLEVENDE_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAFP
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.*
@@ -35,7 +37,6 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAut
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdVedVirk
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.opplysningerBruktIBeregningenAlderDto
@@ -63,7 +64,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
         letterDataType = EndringAvAlderspensjonAvdodAutoDto::class,
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av alderspensjon",
+            displayTitle = "Vedtak - Omregning til enslig alderspensjonist",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
@@ -149,7 +150,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
             }
 
             showIf(
-                beregnetPensjonPerManed.erPerioderMedUttak
+                !beregnetPensjonPerManed.erPerioderMedUttak
                         and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP1967)
                         and institusjonsoppholdVedVirk.notEqualTo(Institusjon.FENGSEL)
             ) {
@@ -475,7 +476,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
 
                 paragraph {
                     text(
-                        bokmal { +"Du forsørger ikke lenger en " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor opphører ektefelletillegget ditt." }, //todo må lage formatter for pensjon også
+                        bokmal { +"Du forsørger ikke lenger en " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor opphører ektefelletillegget ditt." },
                         nynorsk { +"Du forsørgjer ikkje lenger for ein " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor vert ektefelletillegget ditt avslutta." },
                         english { +"You no longer provide for a " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Your spouse supplement will therefore end." }
                     )
@@ -592,11 +593,21 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 }
 
                 showIf(alderspensjonVedVirk.uttaksgrad.equalTo(0) and avdodInformasjon.gjenlevendesAlder.lessThan(67)) {
+                    title2 {
+                        text(
+                            bokmal { +"Du kan ha rett til omstillingsstønad" },
+                            nynorsk { +"Du kan ha rett til omstillingsstønad" },
+                            english { +"You may be entitled to an adjustment allowance" }
+                        )
+                    }
                     paragraph {
                         text(
-                            bokmal { +"ha hatt omsorgen for den avdødes barn på dødsfallstidspunktet. Ekteskapet og omsorgen for barnet etter dødsfallet må til sammen ha vart minst fem år." },
-                            nynorsk { +"ha hatt omsorga for barna til den avdøde på dødsfallstidspunktet. Ekteskapet og omsorga for barnet etter dødsfallet må til saman ha vart minst fem år." },
-                            english { +"have had care of the children of the deceased at the time of the death. The marriage and care of the child after the death must have lasted for at least five years." }
+                            bokmal { +"Hvis du har valgt å stanse uttak av alderspensjon før dødsfallet, kan du ha rett til omstillingsstønad. " +
+                                    "Du kan ikke få både alderspensjon og omstillingsstønad, men du må velge en av ytelsene. Du må kontakte oss for å få råd og hjelp." },
+                            nynorsk { +"Dersom du har valt å stanse uttak av alderspensjon før dødsfallet, kan du ha rett til omstillingsstønad. " +
+                                    "Du kan ikkje få både alderspensjon og omstillingsstønad, men du må velje ein av ytingane. Du må kontakte oss for å få råd og hjelp." },
+                            english { +"If before the death of your spouse you have chosen to stop your retirement pension, you may be entitled to an adjustment allowance. " +
+                                    "You cannot receive both a retirement pension and an adjustment allowance, you must choose one of the benefits. You may contact us for advice and assistance." }
                         )
                     }
                 }
@@ -767,13 +778,14 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     },
                     english {
                         +"If your payments have been too high as a result of you failing to notify us of a change, the incorrect payment must normally be repaid. " +
-                                "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav"
+                                "It is your responsibility to keep yourself informed of movements in your account, and you are obligated to report any and all errors to Nav."
                     }
                 )
             }
 
             includePhrase(RettTilAAKlage)
-
+            includePhrase(RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
+            includePhrase(HarDuSpoersmaalAlder)
         }
         includeAttachment(
             vedleggOrienteringOmRettigheterOgPlikter,
@@ -789,7 +801,6 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
         )
         includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlderDto)
         includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregningDto)
-        includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkattAFP, maanedligPensjonFoerSkattAFPDto)
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
         includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
     }

@@ -2,9 +2,8 @@ package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
 import kotlinx.coroutines.*
-import no.nav.brev.Landkode
+import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -20,14 +19,17 @@ import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype.SENTRALPRINT
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
-import no.nav.pensjon.brev.skribenten.usecase.CreateLetterHandler
-import no.nav.pensjon.brev.skribenten.usecase.Result
-import no.nav.pensjon.brev.skribenten.usecase.UpdateLetterHandler
+import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
+import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -36,7 +38,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
-import org.assertj.core.api.Condition
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
@@ -47,13 +48,13 @@ import org.junit.jupiter.api.assertThrows
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
-import java.util.function.Predicate
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
+@OptIn(InternKonstruktoer::class)
 class BrevredigeringServiceTest {
 
     @BeforeAll
@@ -97,7 +98,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-        sakstyper = Sakstype.all,
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val vedtaksbrev = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VEDTAKSBREV.kode(),
@@ -110,7 +111,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Sakstype.all,
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val varselbrevIVedtakskontekst = TemplateDescription.Redigerbar(
         name = Testbrevkoder.VARSELBREV.kode(),
@@ -123,7 +124,7 @@ class BrevredigeringServiceTest {
         ),
         kategori = TemplateDescription.Brevkategori.VARSEL,
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
-        sakstyper = Sakstype.all,
+        sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
     private val letterResponse =
         LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = informasjonsbrev.metadata)
@@ -171,7 +172,7 @@ class BrevredigeringServiceTest {
         foedselsnr = "12345678910",
         foedselsdato = LocalDate.now().minusYears(42),
         navn = Pen.SakSelection.Navn("a", "b", "c"),
-        sakType = Pen.SakType.ALDER,
+        sakType = Sakstype("ALDER"),
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
@@ -260,7 +261,6 @@ class BrevredigeringServiceTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        samhandlerService = FakeSamhandlerService(),
         p1Service = FakeP1Service()
     )
 
@@ -295,52 +295,9 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `non existing brevredingering returns null`(): Unit = runBlocking {
-        assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = 99)).isNull()
-    }
-
-    // TODO: opprett blir testet i CreateLetterHandlerTest, så henting er det som gjenstår til senere
-    @Test
-    fun `can create and fetch brevredigering`(): Unit = runBlocking {
-        val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
-        val brev = opprettBrev(reserverForRedigering = true, saksbehandlerValg = saksbehandlerValg)
-
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
-        brevbakerService.renderMarkupKall.clear()
-
-        assertEquals(
-            brev.copy(info = brev.info.copy(sistReservert = null)),
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentBrev(
-                    saksId = sak1.saksId,
-                    brevId = brev.info.id,
-                    reserverForRedigering = true,
-                )?.let { it.copy(info = it.info.copy(sistReservert = null)) }
-            }
-        )
-        assertThat(brev.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
-        assertThat(brev.redigertBrev).isEqualTo(letter.toEdit())
-
-        assertEquals(brevbakerService.renderMarkupKall.first(), Pair(Testbrevkoder.INFORMASJONSBREV, LanguageCode.ENGLISH))
-    }
-
-    @Test
     fun `brev must belong to provided saksId`(): Unit = runBlocking {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
-            assertThat(
-                brevredigeringService.hentBrev(
-                    saksId = sak1.saksId + 1,
-                    brevId = brev.info.id
-                )
-            ).isNull()
-            assertThat(
-                brevredigeringService.delvisOppdaterBrev(
-                    saksId = sak1.saksId + 1,
-                    brevId = brev.info.id,
-                    laastForRedigering = true,
-                )
-            ).isNull()
             assertThat(
                 brevredigeringService.hentEllerOpprettPdf(
                     saksId = sak1.saksId + 1,
@@ -364,58 +321,15 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `status er KLAR om brev er laast`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-        }
-
-        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.KLAR)
-    }
-
-    @Test
-    fun `status er KLAR om brev er laast for varselbrev i vedtakskontekst`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV, vedtaksId = 1)
-        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-        }
-
-        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.KLAR)
-    }
-
-    @Test
-    fun `status er ATTESTERING om vedtaksbrev er laast`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1)
-
-        val brevEtterLaas = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-        }
-        assertThat(brevEtterLaas.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
-    }
-
-    @Test
     fun `status er KLAR om vedtaksbrev er laast og det er attestert`(): Unit = runBlocking {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1)
 
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-        }
+        assertThat(
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true))
+            }
+        ).isSuccess()
+
         val brevEtterAttestering = withPrincipal(attestantPrincipal) {
             brevredigeringService.attester(saksId = brev.info.saksId, brevId = brev.info.id, null, null)
         }
@@ -423,44 +337,11 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `attestering fjernes om brevet laases opp igjen`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1)
-
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-        }
-        withPrincipal(attestantPrincipal) {
-            brevredigeringService.attester(saksId = brev.info.saksId, brevId = brev.info.id, null, null, frigiReservasjon = true)
-        }
-        withPrincipal(saksbehandler1Principal) {
-            val brevEtterOpplaasing = brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = false
-            )!!
-            assertThat(brevEtterOpplaasing.info.status).isEqualTo(Dto.BrevStatus.KLADD)
-            val brevEtterLaasingIgjen = brevredigeringService.delvisOppdaterBrev(
-                saksId = brev.info.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true
-            )!!
-            assertThat(brevEtterLaasingIgjen.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
-        }
-        assertThat(transaction { Brevredigering[brev.info.id].attestertAvNavIdent }).isNull()
-    }
-
-    @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { Brevredigering[brev.info.id].journalpostId = 123L }
+        transaction { BrevredigeringEntity[brev.info.id].journalpostId = 123L }
 
-        val oppdatertBrev = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)
-        }
+        val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
     }
 
@@ -470,15 +351,15 @@ class BrevredigeringServiceTest {
 
         assertEquals(
             brev.copy(propertyUsage = null),
-            brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
+            hentBrev(brev.info.id)
         )
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)).isTrue()
-        assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)).isNull()
+        assertThat(hentBrev(brev.info.id)).isNull()
     }
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = 1337)).isNull()
+        assertThat(hentBrev(brevId = 1337)).isNull()
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = 1337)).isFalse()
     }
 
@@ -487,7 +368,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         transaction {
-            assertThat(Brevredigering[brev.info.id].document).isEmpty()
+            assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
         }
 
@@ -498,7 +379,7 @@ class BrevredigeringServiceTest {
         ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
 
         transaction {
-            val brevredigering = Brevredigering[brev.info.id]
+            val brevredigering = BrevredigeringEntity[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
             assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
             assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
@@ -516,7 +397,7 @@ class BrevredigeringServiceTest {
 
         brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
         transaction {
-            assertThat(Brevredigering.findById(brev.info.id)).isNull()
+            assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
             assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
         }
     }
@@ -546,11 +427,11 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+            val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
-            transaction { Brevredigering[brev.info.id].document.first().delete() }
+            transaction { BrevredigeringEntity[brev.info.id].document.first().delete() }
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+            val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
             assertThat(firstHash).isEqualTo(secondHash)
         }
@@ -563,16 +444,16 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        val firstHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+        val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
         transaction {
-            Brevredigering[brev.info.id].redigertBrev =
+            BrevredigeringEntity[brev.info.id].redigertBrev =
                 letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        val secondHash = transaction { Brevredigering[brev.info.id].document.first().redigertBrevHash }
+        val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
         assertThat(firstHash).isNotEqualTo(secondHash)
     }
@@ -596,7 +477,7 @@ class BrevredigeringServiceTest {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
 
             transaction {
-                Brevredigering[brev.info.id].redigertBrev =
+                BrevredigeringEntity[brev.info.id].redigertBrev =
                     letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
             }
 
@@ -691,17 +572,8 @@ class BrevredigeringServiceTest {
         )
 
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
-            val oppdatert = brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
-            assertEquals(
-                "Lars Holm",
-                oppdatert?.redigertBrev?.signatur?.attesterendeSaksbehandlerNavn,
-            )
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = SENTRALPRINT
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
         }
@@ -719,13 +591,8 @@ class BrevredigeringServiceTest {
         )
 
         withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
-            brevredigeringService.oppdaterSignaturAttestant(brev.info.id, "Lars Holm")
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = SENTRALPRINT
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             assertThrows<HarIkkeAttestantrolleException> {
                 brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
@@ -744,12 +611,8 @@ class BrevredigeringServiceTest {
         )
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
-            brevredigeringService.delvisOppdaterBrev(
-                brev.info.saksId,
-                brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = SENTRALPRINT
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
 
             assertThrows<BrevIkkeKlartTilSendingException> {
                 brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
@@ -767,12 +630,8 @@ class BrevredigeringServiceTest {
             vedtaksId = 1,
         )
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                brev.info.saksId,
-                brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = SENTRALPRINT
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
         }
 
         withPrincipal(attestantPrincipal) {
@@ -795,12 +654,8 @@ class BrevredigeringServiceTest {
         )
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = SENTRALPRINT
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
@@ -833,12 +688,16 @@ class BrevredigeringServiceTest {
         )
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                laastForRedigering = true,
-                distribusjonstype = Distribusjonstype.LOKALPRINT,
-            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
+            assertThat(
+                brevredigeringFacade.endreDistribusjonstype(
+                    EndreDistribusjonstypeHandler.Request(
+                        brevId = brev.info.id,
+                        type = Distribusjonstype.LOKALPRINT
+                    )
+                )
+            ).isSuccess()
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
@@ -860,88 +719,14 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `brev kan reserveres for redigering gjennom hent brev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        assertThat(brev.info.laastForRedigering).isFalse()
-        assertThat(brev.info.redigeresAv).isNull()
-
-        val hentetBrev = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                reserverForRedigering = true
-            )
-        }
-
-        assertThat(hentetBrev?.info?.laastForRedigering).isFalse()
-        assertThat(hentetBrev?.info?.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
-    }
-
-    @Test
-    fun `allerede reservert brev kan ikke resereveres for redigering`() {
-        runBlocking {
-            val brev = opprettBrev(reserverForRedigering = true)
-
-            assertThrows<KanIkkeReservereBrevredigeringException> {
-                withPrincipal(saksbehandler2Principal) {
-                    brevredigeringService.hentBrev(
-                        saksId = sak1.saksId,
-                        brevId = brev.info.id,
-                        reserverForRedigering = true
-                    )
-                }
-            }
-            assertThat(transaction { Brevredigering[brev.info.id].redigeresAv }).isEqualTo(
-                saksbehandler1Principal.navIdent
-            )
-        }
-    }
-
-    @Test
-    fun `kun en som vinner reservasjon av et brev`() {
-        runBlocking {
-            val brev = opprettBrev()
-
-            brevbakerService.renderMarkupResultat = {
-                delay(100)
-                letter
-            }
-
-            val hentBrev = (0..10).map {
-                async(Dispatchers.IO) {
-                    runCatching {
-                        withPrincipal(MockPrincipal(NavIdent("id-$it"), "saksbehandler-id-$it")) {
-                            brevredigeringService.hentBrev(
-                                saksId = sak1.saksId,
-                                brevId = brev.info.id,
-                                reserverForRedigering = true
-                            )
-                        }
-                    }
-                }
-            }
-            val awaited = hentBrev.awaitAll()
-            val redigeresFaktiskAv = transaction { Brevredigering[brev.info.id].redigeresAv }!!
-
-            assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
-            assertThat(awaited).areExactly(
-                awaited.size - 1,
-                condition("Feilende hentBrev med reservasjon") { it.isFailure })
-            assertThat(awaited).allMatch {
-                it.isFailure || it.getOrNull()?.info?.redigeresAv == redigeresFaktiskAv
-            }
-        }
-    }
-
-    @Test
     fun `brev kan ikke endres om det er arkivert`(): Unit = runBlocking {
         val brev = opprettBrev(reserverForRedigering = true)
 
         withPrincipal(saksbehandler1Principal) {
             val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
             assertThat(pdf).isNotNull()
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
@@ -950,18 +735,9 @@ class BrevredigeringServiceTest {
         )
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
+        assertThat(hentBrev(brev.info.id)).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
-            assertThrows<ArkivertBrevException> {
-                brevredigeringService.delvisOppdaterBrev(
-                    brev.info.saksId,
-                    brev.info.id,
-                    false,
-                    Distribusjonstype.LOKALPRINT
-                )
-            }
-            assertThrows<ArkivertBrevException> { brevredigeringService.oppdaterSignatur(brev.info.id, "ny signatur") }
             assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(brev.info.id) }
         }
     }
@@ -979,25 +755,29 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
-        runBlocking {
-            val brev = opprettBrev()
+    suspend fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
+        val brev = opprettBrev()
 
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
-                brevredigeringService.oppdaterSignatur(brev.info.id, "en ny signatur")
-                brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
-            }
-            // verifiser forskjellig hash
-            transaction {
-                val redigering = Brevredigering[brev.info.id]
-                assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
-            }
+        withPrincipal(saksbehandler1Principal) {
+            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            brevredigeringFacade.oppdaterBrev(
+                OppdaterBrevHandler.Request(
+                    brevId = brev.info.id,
+                    nyttRedigertbrev = brev.redigertBrev.withSignatur(saksbehandler = "en ny signatur")
+                )
+            )
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
+        }
+        // verifiser forskjellig hash
+        transaction {
+            val redigering = BrevredigeringEntity[brev.info.id]
+            assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
+        }
 
-            withPrincipal(saksbehandler1Principal) {
-                assertThrows<NyereVersjonFinsException> {
-                    brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-                }
+        withPrincipal(saksbehandler1Principal) {
+            assertThrows<NyereVersjonFinsException> {
+                brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
             }
         }
     }
@@ -1016,17 +796,20 @@ class BrevredigeringServiceTest {
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
-        }
+        assertThat(
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true))
+            }
+        ).isSuccess()
+
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(brevredigeringService.hentBrev(brev.info.saksId, brev.info.id)).isNotNull()
+        assertThat(hentBrev(brev.info.id)).isNotNull()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(991, null)
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
-        assertThat(transaction { Brevredigering.findById(brev.info.id) }).isNull()
+        assertThat(transaction { BrevredigeringEntity.findById(brev.info.id) }).isNull()
     }
 
     @Test
@@ -1034,21 +817,19 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         transaction {
-            Brevredigering[brev.info.id].sistReservert =
+            BrevredigeringEntity[brev.info.id].sistReservert =
                 Instant.now() - RESERVASJON_TIMEOUT - 1.seconds.toJavaDuration()
         }
 
-        val hentetBrev = brevredigeringService.hentBrev(saksId = sak1.saksId, brevId = brev.info.id)
+        val hentetBrev = hentBrev(brev.info.id)
 
         assertThat(hentetBrev?.info?.redigeresAv).isNull()
 
-        val hentetBrevMedReservasjon = withPrincipal(saksbehandler2Principal) {
-            brevredigeringService.hentBrev(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-                reserverForRedigering = true
-            )
-        }
+        val hentetBrevMedReservasjon = hentBrev(
+            brevId = brev.info.id,
+            reserverForRedigering = true,
+            principal = saksbehandler2Principal,
+        )
         assertThat(hentetBrevMedReservasjon?.info?.redigeresAv).isEqualTo(saksbehandler2Principal.navIdent)
     }
 
@@ -1057,62 +838,12 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         val forrigeReservasjon = Instant.now().minusSeconds(60).truncatedTo(ChronoUnit.MILLIS)
-        transaction { Brevredigering[brev.info.id].sistReservert = forrigeReservasjon }
+        transaction { BrevredigeringEntity[brev.info.id].sistReservert = forrigeReservasjon }
 
         withPrincipal(saksbehandler1Principal) { brevredigeringService.fornyReservasjon(brev.info.id) }
-        assertThat(transaction { Brevredigering[brev.info.id].sistReservert })
+        assertThat(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
             .isAfter(forrigeReservasjon)
             .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
-    }
-
-    @Test
-    fun `kan fjerne overstyrt mottaker av brev`(): Unit = runBlocking {
-        val mottaker = Dto.Mottaker.samhandler("samhandlerId")
-        val brev = opprettBrev(mottaker = mottaker)
-        assertTrue(brevredigeringService.fjernOverstyrtMottaker(brev.info.id, sak1.saksId))
-
-        assertNull(brevredigeringService.hentBrev(sak1.saksId, brev.info.id)?.info?.mottaker)
-        assertNull(transaction { Mottaker.findById(brev.info.id) })
-        assertNull(transaction { Brevredigering[brev.info.id].mottaker })
-    }
-
-    @Test
-    fun `kan oppdatere mottaker av brev`(): Unit = runBlocking {
-        val brev = opprettBrev(mottaker = Dto.Mottaker.samhandler("1"))
-        val nyMottaker = Dto.Mottaker.norskAdresse("a", NorskPostnummer("1234"), "c", "d", "e", "f", Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT)
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertEquals(nyMottaker, oppdatert?.info?.mottaker)
-    }
-
-    @Test
-    fun `kan sette annen mottaker for eksisterende brev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isNull()
-
-        val nyMottaker = Dto.Mottaker.utenlandskAdresse(
-            navn = "a",
-            adresselinje1 = "b",
-            adresselinje2 = "c",
-            adresselinje3 = "d",
-            landkode = Landkode("CY"),
-            manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.ANNEN
-        )
-
-        val oppdatert = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(
-                sak1.saksId,
-                brev.info.id,
-                mottaker = nyMottaker
-            )
-        }
-        assertThat(oppdatert?.redigertBrev?.sakspart?.annenMottakerNavn).isEqualTo(nyMottaker.navn)
     }
 
     @Test
@@ -1121,7 +852,8 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(mottaker = mottaker)
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
+            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
+                .isSuccess()
         }
 
         brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
@@ -1146,21 +878,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `kan endre signerende saksbehandler signatur`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.oppdaterSignatur(
-                brev.info.id,
-                "en ny signatur"
-            )
-        }
-
-        assertEquals(
-            "en ny signatur",
-            transaction { Brevredigering[brev.info.id].redigertBrev.signatur.saksbehandlerNavn })
-    }
-
-    @Test
     fun `kan tilbakestille brev`(): Unit = runBlocking {
         val brev = opprettBrev(saksbehandlerValg = Api.GeneriskBrevdata().apply {
             put("ytelse", "uføre")
@@ -1169,7 +886,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(saksbehandler1Principal) {
             brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
+                OppdaterBrevHandler.Request(
                     brevId = brev.info.id,
                     nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
                         put("ytelse", "uføre")
@@ -1213,76 +930,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `kan ikke markere brev klar til sending om ikke alle fritekst er fylt ut`(): Unit = runBlocking {
-        brevbakerService.renderMarkupResultat = {
-            letter(
-                ParagraphImpl(
-                    1,
-                    true,
-                    listOf(
-                        LiteralImpl(12, "Vi har "),
-                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                        LiteralImpl(14, " mottatt søknad.")
-                    )
-                )
-            )
-        }
-        val brev = opprettBrev()
-
-        // sjekk at delvis oppdatering fungerer uten å sette brevet til låst
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = false)
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, distribusjonstype = SENTRALPRINT)
-        }
-
-        assertThrows<BrevIkkeKlartTilSendingException> {
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
-            }
-        }
-    }
-
-    @Test
-    fun `kan markere brev klar til sending om alle fritekst er fylt ut`(): Unit = runBlocking {
-        brevbakerService.renderMarkupResultat = {
-            letter(
-                ParagraphImpl(
-                    1,
-                    true,
-                    listOf(
-                        LiteralImpl(12, "Vi har "),
-                        LiteralImpl(13, "dato", tags = setOf(ElementTags.FRITEKST)),
-                        LiteralImpl(14, " mottatt søknad.")
-                    )
-                )
-            )
-        }
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringFacade.oppdaterBrev(
-                UpdateLetterHandler.Request(
-                    brevId = brev.info.id,
-                    nyttRedigertbrev = brev.redigertBrev.copy(
-                        blocks = listOf(
-                            E_Paragraph(
-                                1,
-                                true,
-                                listOf(
-                                    E_Literal(12, "Vi har "),
-                                    E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
-                                    E_Literal(14, " mottatt søknad.")
-                                )
-                            )
-                        )
-                    ),
-                )
-            )
-            brevredigeringService.delvisOppdaterBrev(brev.info.saksId, brev.info.id, laastForRedigering = true)
-        }
-    }
-
-    @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
         val sak2 = sak1.copy(saksId = sak1.saksId + 1)
         val sak3 = sak1.copy(saksId = sak2.saksId + 1)
@@ -1308,7 +955,7 @@ class BrevredigeringServiceTest {
         sak: Pen.SakSelection = sak1,
     ) = withPrincipal(principal) {
         val result = brevredigeringFacade.opprettBrev(
-            CreateLetterHandler.Request(
+            OpprettBrevHandler.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,
@@ -1320,8 +967,23 @@ class BrevredigeringServiceTest {
             )
         )
         when (result) {
-            is Result.Failure -> error("Kunne ikke opprette brev: ${result.error}")
-            is Result.Success -> result.value
+            is Outcome.Failure -> error("Kunne ikke opprette brev: ${result.error}")
+            is Outcome.Success -> result.value
+        }
+    }
+
+    private suspend fun hentBrev(
+        brevId: Long,
+        reserverForRedigering: Boolean = false,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Dto.Brevredigering? {
+        val result = withPrincipal(principal) {
+            brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = reserverForRedigering))
+        }
+        return when (result) {
+            is Outcome.Failure -> error("Kunne ikke hente brev: ${result.error}")
+            is Outcome.Success -> result.value
+            null -> null
         }
     }
 
@@ -1336,9 +998,6 @@ class BrevredigeringServiceTest {
             )
         )
     }
-
-    private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =
-        Condition(predicate, description)
 
     private fun LetterMarkupImpl.medSignatur(saksbehandler: String?, attestant: String?) =
         copy(

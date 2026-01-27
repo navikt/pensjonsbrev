@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
+import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -55,6 +56,7 @@ internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
     registerModule(JavaTimeModule())
     registerModule(EditLetterJacksonModule)
     registerModule(LetterMarkupJacksonModule)
+    registerModule(SakstypeModule)
     registerModule(BrevkodeJacksonModule)
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
     disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
@@ -113,7 +115,7 @@ object DocumentTable : LongIdTable() {
 }
 
 class Document(id: EntityID<Long>) : LongEntity(id) {
-    var brevredigering by Brevredigering referencedOn DocumentTable.brevredigering
+    var brevredigering by BrevredigeringEntity referencedOn DocumentTable.brevredigering
     var dokumentDato by DocumentTable.dokumentDato
     var pdf by DocumentTable.pdfKryptert
     var redigertBrevHash by DocumentTable.redigertBrevHash

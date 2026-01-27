@@ -1,5 +1,31 @@
 = Produktoppdateringer
 
+== Desember 2025
+Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desember. Nye ting er enklere å slippe ut når ferien er overstått og alle er tilbake i 2026 :-)
+
+=== Nye ting vi har laget
+* Ingenting helt nytt i desember
+
+=== Ting vi har forbedret
+* Flere tekniske forbedringer under panseret i både Skribenten og Brevbaker. Ikke mye som merkes i hverdagen, men det hjulene må smøres innimellom!
+* Litt bedre filtrering i brevvelger. Noen brev som kun hørte til alderspensjon dukket også opp på uføresaker
+* Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med nye data
+
+=== Ting vi har fikset
+* VedtaksID beholdes nå selv om man navigerer mellom sider i Skribenten
+* Eldre avslagsbrev for alderspensjon fra Exstream var fremdeles synlig i brevvelger. De er nå tatt bort fordi de har blitt erstattet av nye brev i Skribenten
+* Litt bedre navigasjon med piltastene i Skribenten
+* Scrolling ved visning av PDF er gjenopprettet
+
+=== Ting vi jobber med
+* Redigering av P1
+* Vise og legge til vedlegg til brev
+
+=== Kjente problemer og behov vi tenker på
+* Signaturen til første saksbehandler som åpner et brev satt til "Klar for attestering" blir lagt inn, til tross for at dette ikke er den som skal attestere saken og brevet.
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+* Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
+
 == November 2025
 
 === Nye ting vi har laget
@@ -23,7 +49,7 @@
 * Legge til vedlegg for innhenting av opplysninger ved behov
 * Tekstmarkering forsvinner etter at man legger på formatering
 
-=== Kjente problemer
+=== Kjente problemer og behov vi tenker på
 * Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
 
 == Oktober 2025

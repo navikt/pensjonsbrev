@@ -62,9 +62,9 @@ object Ufoerebrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg : AlltidValgbartVedleggKode {
+    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
         ;
 
-        override fun kode() = name
+        override val kode = name
     }
 }

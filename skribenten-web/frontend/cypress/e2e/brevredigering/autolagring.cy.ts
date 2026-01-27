@@ -138,12 +138,6 @@ describe("autolagring", () => {
         req.reply(response);
       }).as("autoLagring");
     });
-    cy.fixture("orienteringOmSaksbehandlingstidResponseMedSoknadOversendesTilUtlandet.json").then((response) => {
-      cy.intercept("PUT", "/bff/skribenten-backend/brev/1/signatur", (req) => {
-        expect(req.body).contains("F_Z990297 E_Z990297");
-        req.reply(response);
-      }).as("signatur");
-    });
 
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Søknaden din vil også bli oversendt utlandet fordi").should("not.exist");

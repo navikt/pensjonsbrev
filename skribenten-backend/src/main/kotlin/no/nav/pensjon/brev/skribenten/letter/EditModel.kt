@@ -40,6 +40,18 @@ object Edit {
                 dokumentDato = dokumentDato,
             )
         )
+
+        fun withSignatur(
+            saksbehandler: String = signatur.saksbehandlerNavn!!,
+            attestant: String? = signatur.attesterendeSaksbehandlerNavn,
+        ) = copy(
+            signatur = LetterMarkupImpl.SignaturImpl(
+                hilsenTekst = signatur.hilsenTekst,
+                saksbehandlerNavn = saksbehandler,
+                attesterendeSaksbehandlerNavn = attestant,
+                navAvsenderEnhet = signatur.navAvsenderEnhet,
+            )
+        )
     }
 
     interface Identifiable {

@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sakstype
 import no.nav.pensjon.brev.alder.model.vedlegg.OrienteringOmRettigheterOgPlikterDtoSelectors.sivilstand
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*

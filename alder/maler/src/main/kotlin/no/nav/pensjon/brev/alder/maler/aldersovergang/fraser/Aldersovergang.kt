@@ -645,17 +645,17 @@ data class InfoAFPprivatAP(
                 text(
                     bokmal {
                         +"AFP for ansatte i en privat virksomhet blir ikke redusert hvis du har inntekt. " +
-                                "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET " +
+                                "Du kan bruke pensjonskalkulatoren på $NAV_URL " +
                                 "for å se hvor mye du får i AFP, sammen med alderspensjonen."
                     },
                     nynorsk {
                         +"AFP for tilsette i ei privat verksemd blir ikkje redusert dersom du har inntekt. " +
-                                "Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET " +
+                                "Du kan bruke pensjonskalkulatoren på $NAV_URL " +
                                 "for å sjå kor mykje du får i AFP, saman med alderspensjonen."
                     },
                     english {
                         +"AFP for employees in a private business is not reduced if you have income. " +
-                                "You can use the pension calculator at $DIN_PENSJON_URL_INNLOGGET " +
+                                "You can use the pension calculator at $NAV_URL " +
                                 "to see how much AFP you will receive in addition to your retirement pension."
                     },
                 )
@@ -733,28 +733,28 @@ data class InfoSoekeAP(
                 text(
                     bokmal {
                         +
-                        "Du kan søke elektronisk via $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjema for " +
+                        "Du kan kan søke på $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjema for " +
                                 "alderspensjon som du også finner på $NAV_URL."
                     },
                     nynorsk {
                         +
-                        "Du kan søkje elektronisk via $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjemaet om " +
+                        "Du kan søkje på $DIN_PENSJON_URL_INNLOGGET eller bruke søknadsskjemaet om " +
                                 "alderspensjon som du også finn på $NAV_URL."
                     },
                     english {
                         +
-                        "You can apply electronically by logging on to $DIN_PENSJON_URL_INNLOGGET, or use the " +
+                        "You can apply at $DIN_PENSJON_URL_INNLOGGET, or use the " +
                                 "application form for retirement pension, which is also found at $NAV_URL."
                     },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET til å beregne alderspensjonen din." },
-                    nynorsk { +"Du kan bruke pensjonskalkulatoren på $DIN_PENSJON_URL_INNLOGGET til å berekne alderspensjon din." },
+                    bokmal { +"Du kan bruke pensjonskalkulatoren på $NAV_URL til å beregne alderspensjonen din." },
+                    nynorsk { +"Du kan bruke pensjonskalkulatoren på $NAV_URL til å berekne alderspensjon din." },
                     english {
                         +
-                        "You can use the pension calculator at $DIN_PENSJON_URL_INNLOGGET to calculate your future retirement pension."
+                        "You can use the pension calculator at $NAV_URL to calculate your future retirement pension."
                     },
                 )
             }
