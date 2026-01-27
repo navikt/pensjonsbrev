@@ -128,28 +128,23 @@ sealed class Expression<out Out> : StableHash {
         val operation: UnaryOperation<In, Out>,
     ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
-            if (operation is UnaryOperation.Select) {
-                scope.markUsage(operation.selector)
-            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
-                scope.markUsage(operation.operation.selector)
-            }
+            operation.finnSelector()?.let { scope.markUsage(it) }
             return operation.apply(value.eval(scope))
         }
 
-        override fun isRedigerbar(scope: ExpressionScope<*>): Boolean {
-            if (operation is UnaryOperation.Select) {
-                return operation.selector.redigerbar
-            } else if (operation is UnaryOperation.SafeCall<*,*> && operation.operation is UnaryOperation.Select<*, *>) {
-                return operation.operation.selector.redigerbar
-            }
-            return super.isRedigerbar(scope)
-        }
+        override fun isRedigerbar(scope: ExpressionScope<*>) = operation.finnSelector()?.redigerbar ?: super.isRedigerbar(scope)
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
             return value == other.value && operation == other.operation
         }
         override fun hashCode() = Objects.hash(value, operation)
+
+        private fun UnaryOperation<In, Out>.finnSelector(): TemplateModelSelector<*,*>? = when (this) {
+            is UnaryOperation.Select -> selector
+            is UnaryOperation.SafeCall<*, *> if this.operation is UnaryOperation.Select<*, *> -> operation.selector
+            else -> null
+        }
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
