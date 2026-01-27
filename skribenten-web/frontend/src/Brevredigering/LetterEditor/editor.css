@@ -15,6 +15,16 @@
   }
 }
 
+.letter-title {
+  margin-bottom: "var(--ax-space-28)";
+  font-weight: "700";
+  letter-spacing: "0.108px";
+  line-height: "1.875rem"; /* Effektiv linjehøyde */
+  > span {
+    line-height: "1.625rem"; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+  }
+}
+
 .editor-surface,
 .editor-surface * {
   user-select: text;
@@ -30,48 +40,62 @@
   box-shadow: none;
 }
 
+.TITLE1 {
+  margin-bottom: var(--ax-space-6);
+  font-size: 19.5px;
+  font-weight: 700;
+  letter-spacing: 0.073px;
+  line-height: 1.5rem; /* Effektiv linjehøyde */
+  span {
+    line-height: 1.3125rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+  }
+}
+
+.TITLE2 {
+  margin-bottom: var(--ax-space-6);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: 0.067px;
+  line-height: 1.5rem; /* Effektiv linjehøyde */
+  span {
+    line-height: 1.25rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+  }
+}
+
+.TITLE3 {
+  margin-bottom: var(--ax-space-6);
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: 0.062px;
+  line-height: 1.5rem; /* Effektiv linjehøyde */
+  span {
+    line-height: 1.25rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+  }
+}
+
+.PARAGRAPH {
+  margin-bottom: var(--ax-space-28);
+  font-size: 16.5px;
+  line-height: 1.5rem;
+  span {
+    line-height: 1.25rem;
+  }
+}
+
+/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
+.PARAGRAPH:has(+ .PARAGRAPH > ul){
+  margin-bottom: 0;
+}
+
+/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
+.PARAGRAPH > ul {
+  margin-top: 0;
+}
+
 .editor-surface td [data-literal-index],
 .editor-surface th [data-literal-index] {
   display: block;
   width: 100%;
   min-height: 1.4rem;
   white-space: pre-wrap;
-}
-
-.PARAGRAPH {
-  font-size: 16.5px;
-  line-height: var(--ax-font-line-height-large);
-  margin-bottom: var(--ax-space-28);
-}
-
-.PARAGRAPH:has(+ .PARAGRAPH > ul){
-  margin-bottom: 0;
-}
-
-.PARAGRAPH > ul {
-  margin-top: 0;
-}
-
-.TITLE1 {
-  font-size: 19.5px;
-  letter-spacing: 0.073px;
-  line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: 700;
-  margin-bottom: var(--ax-space-6);
-}
-
-.TITLE2 {
-  font-size: 18px;
-  letter-spacing: 0.067px;
-  line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: 700;
-  margin-bottom: var(--ax-space-6);
-}
-
-.TITLE3 {
-  font-size: 16.5px;
-  letter-spacing: 0.062px;
-  line-height: var(--ax-font-line-height-heading-xsmall);
-  font-weight: 700;
-  margin-bottom: var(--ax-space-6);
 }

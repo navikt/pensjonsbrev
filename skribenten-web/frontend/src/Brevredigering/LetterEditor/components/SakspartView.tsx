@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { HGrid } from "@navikt/ds-react";
 import { intlFormat } from "date-fns";
 
@@ -10,12 +9,12 @@ export const SakspartView = ({ sakspart, spraak }: { sakspart: Sakspart; spraak:
   return (
     <HGrid
       columns="minmax(10rem, max-content) 1fr min-content"
-      css={css`
-        opacity: 0.5;
-        font-size: 16px;
-        line-height: 21px;
-        margin-bottom: var(--ax-space-40);
-      `}
+      css={{
+        opacity: "0.5",
+        fontSize: "16px",
+        lineHeight: "1.3125rem",
+        marginBottom: "var(--ax-space-40)",
+      }}
       gap="space-4 space-8"
     >
       {sakspart.annenMottakerNavn && (

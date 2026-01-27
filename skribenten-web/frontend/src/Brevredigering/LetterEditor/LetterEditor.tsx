@@ -89,12 +89,7 @@ export const LetterEditor = ({
         <BoxNew className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
           <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
           <Heading
-            css={{
-              fontWeight: "700",
-              lineHeight: "30px",
-              letterSpacing: "0.108px",
-              marginBottom: "var(--ax-space-28)",
-            }}
+            className="letter-title"
             level="1"
             onDragOver={(e) => {
               e.preventDefault();
