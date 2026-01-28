@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG_FOSTERFORELDER
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
@@ -17,11 +17,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object SoknadBarnetilleggFosterForelder : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.innhentingOpplysninger.toggle
 
-    override val kode = UT_INNH_OPPL_SOKNAD_BARNETILLEGG
+    override val kode = UT_INNH_OPPL_SOKNAD_BARNETILLEGG_FOSTERFORELDER
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -30,7 +30,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Barnetillegg Barn som ikke bor hos bruker",
+            displayTitle = "Barnetillegg og fosterbarn",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -41,19 +41,22 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har søkt om barnetillegg for barn som ikke bor hos deg. For å kunne behandle din søknad, trenger vi at du sender oss dokumentasjon på forsørgelse av barn. " })
+                text(bokmal { +"Du har søkt om barnetillegg for barn som du er fosterforelder til. For at vi skal kunne vurdere og beregne barnetillegget, ber vi om at du sender inn bekreftelse på hva du får i godtgjørelse fra det offentlige. " })
             }
             paragraph {
-                text(bokmal { +"Dokumentasjon på forsørgelse kan være avtale om delt bosted, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og være undertegnet av begge foreldrene. " })
+                text(bokmal { +"Det kan gis fosterhjemsgodtgjørelse til personer som har fosterbarn. Fosterhjemsgodtgjørelse består av utgiftsdekning og arbeidsgodtgjørelse. " })
+            }
+            paragraph {
+                text(bokmal { +"Arbeidsgodtgjørelsen skattlegges som lønn og anses som personinntekt. Det er personinntekt etter skatteloven § 12-2 som har betydning for reduksjon av barnetillegg på grunn av inntekt etter folketrygdloven § 12-16. " })
             }
             paragraph {
                 text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen to uker etter at du har fått dette brevet. " })
+                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen " + fritekst("dato") + ". " })
             }
             paragraph {
-                text(bokmal { +"Dersom vi ikke får nødvendige opplysninger innen frist, kan søknaden din bli avslått på grunn av manglende opplysninger. " })
+                text(bokmal { +"Hvis vi ikke får nødvendige opplysninger innen fristen, kan vi avslå søknaden på grunn av manglende opplysninger. " })
             }
             paragraph {
                 text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })

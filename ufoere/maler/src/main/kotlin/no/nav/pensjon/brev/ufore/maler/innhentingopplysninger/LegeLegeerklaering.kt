@@ -9,19 +9,18 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
-import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_LEGE_LEGEERKLAERING
 
 @TemplateModelHelpers
-object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.innhentingOpplysninger.toggle
 
-    override val kode = UT_INNH_OPPL_SOKNAD_BARNETILLEGG
+    override val kode = UT_INNH_OPPL_LEGE_LEGEERKLAERING
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -30,36 +29,35 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Barnetillegg Barn som ikke bor hos bruker",
+            displayTitle = "Brev til fastlege – innhenting av legeerklæring ved krav om uføretrygd",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
     )
     {
         title {
-            text (bokmal { + "Din søknad om barnetillegg i uføretrygd" })
+            text (bokmal { + "Innhenting av legeerklæring - Uføretrygd" })
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har søkt om barnetillegg for barn som ikke bor hos deg. For å kunne behandle din søknad, trenger vi at du sender oss dokumentasjon på forsørgelse av barn. " })
+                text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
             }
             paragraph {
-                text(bokmal { +"Dokumentasjon på forsørgelse kan være avtale om delt bosted, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og være undertegnet av begge foreldrene. " })
+                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet NAV 08-07.08. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
+                text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen fire uker. Erklæringen sendes elektronisk. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at du sender opplysningene til oss innen to uker etter at du har fått dette brevet. " })
+                text(bokmal { +"Erklæringen godgjøres etter honorartakst L40. " })
             }
             paragraph {
-                text(bokmal { +"Dersom vi ikke får nødvendige opplysninger innen frist, kan søknaden din bli avslått på grunn av manglende opplysninger. " })
+                text(bokmal { +"Folketrygdloven § 21-4 andre ledd gir Nav rett til å innhente nødvendige opplysninger. Dette gjelder selv om opplysningene er taushetsbelagte. Dette går frem av § 21-4 sjette ledd.  " })
             }
             paragraph {
-                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
+                text(bokmal { +"Pålegget om utlevering av opplysninger kan påklages etter forvaltningsloven § 14. Klageadgangen gjelder kun lovligheten av pålegget. Fristen for å klage er tre dager etter at pålegget er mottatt. Klagen kan fremsettes muntlig eller skriftlig. " })
             }
 
-            includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }
     }
