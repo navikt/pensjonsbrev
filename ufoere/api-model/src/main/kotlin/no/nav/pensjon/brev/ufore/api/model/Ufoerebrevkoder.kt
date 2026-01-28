@@ -61,6 +61,10 @@ object Ufoerebrevkoder {
         UT_INNH_OPPL_ANTATT_DOD,
         UT_INNH_OPPL_EKTEFELLE_UTLAND,
         UT_INNH_OPPL_OPPGITT_SAMBOER,
+        UT_S_HVILENDE_RETT_INFO_4_AAR,
+        UT_S_HVILENDE_RETT_MIDL_OPPHOER,
+        UT_S_HVILENDE_RETT_OPPHOER,
+        UT_S_HVILENDE_RETT_VARSEL_OPPHOER,
         ;
 
         override fun kode(): String = this.name

@@ -12,6 +12,10 @@ import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
+import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 
@@ -70,6 +74,10 @@ object UfoereTemplates : AllTemplates {
         OppgittSamboer,
         EktefelleUtland,
         AntattDod,
+        HvilendeRettInfo4Aar,
+        HvilendeRettOppHoer,
+        HvilendeRettVarselOpphoer,
+        HvilendeRettMidlertidigOppHoer,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
