@@ -51,11 +51,11 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
         }
 }
 
-sealed class Expression<out Out> : StableHash {
+sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
+    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -124,8 +124,8 @@ sealed class Expression<out Out> : StableHash {
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
-        val tags: Set<ElementTags> = emptySet()
-    ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
+        tags: Set<ElementTags> = emptySet()
+    ) : Expression<Out>(tags), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
