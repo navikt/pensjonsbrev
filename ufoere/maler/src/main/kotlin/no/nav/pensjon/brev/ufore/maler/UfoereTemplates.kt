@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
-import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VarselFeilutbetaling
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.VarselFeilutbetaling
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakFeilutbetaling
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekreving
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekrevingForeldelse

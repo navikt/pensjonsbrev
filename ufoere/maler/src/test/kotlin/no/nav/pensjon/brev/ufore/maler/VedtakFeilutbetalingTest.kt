@@ -17,7 +17,7 @@ class VedtakFeilutbetalingTest {
         LetterTestImpl(
             VedtakFeilutbetaling.template,
             Fixtures.create<VedtakFeilutbetalingUforeDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml(VedtakFeilutbetaling.kode.name)
     }

@@ -167,7 +167,9 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun lagVarselFeilutbetalingUforeDto() = VarselFeilutbetalingUforeDto(
-        pesysData = EmptyFagsystemdata,
+        pesysData = VarselFeilutbetalingPesysData(
+            feilutbetaltBrutto = 100
+        ),
         saksbehandlerValg = VarselFeilutbetalingUforeDto.Saksbehandlervalg(
             rentetillegg = true
         ),
