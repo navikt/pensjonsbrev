@@ -18,7 +18,7 @@ object HvilendeRettVarselOpphoer : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_S_HVILENDE_RETT_VARSEL_OPPHOER
     override val kategori = TemplateDescription.Brevkategori.ETTEROPPGJOER
-    override val brevkontekst = TemplateDescription.Brevkontekst.SAK
+    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
