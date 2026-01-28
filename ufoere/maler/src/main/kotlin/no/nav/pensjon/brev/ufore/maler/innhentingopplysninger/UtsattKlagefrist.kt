@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -41,13 +41,13 @@ object UtsattKlagefrist : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Du har bedt oss om utsatt klagefrist. Klagefristen er fortsatt seks uker, selv om vi har fått en foreløpig klage. " })
+                text(bokmal { +"Du har bedt oss om utsatt klagefrist. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber deg om å sende oss en utfyllende klage og eventuell tilleggsinformasjon innen to uker. Hvis vi ikke har fått utfyllende klage innen fristen, vil vi behandle klagen ut fra de opplysningene vi har i saken. " })
+                text(bokmal { +"Vi ber deg om å sende oss en utfyllende klage og eventuell tilleggsinformasjon innen to uker. Hvis vi ikke har fått utfyllende klage innen fristen, vil vi behandle klagen ut fra de opplysningene vi har i saken. " })
             }
             paragraph {
-                text(bokmal { +"Trenger du mer tid, kan du sende oss en søknad og be om ytterligere utsettelse av klagefristen. Du må gi oss en begrunnelse for hvorfor du trenger mer tid. " })
+                text(bokmal { +"Trenger du mer tid, kan du sende oss en søknad og be om ytterligere utsettelse av klagefristen. Du må gi oss en begrunnelse for hvorfor du trenger mer tid. Vi gjør da en vurdering på om vi kan gi deg utsatt frist. " })
             }
             paragraph {
                 text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })

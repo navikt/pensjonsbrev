@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -9,18 +8,19 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_FLERE_OPPLYSNINGER
+import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_FLERE_OPPL_FIRMAINNTEKT
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object FlereOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object FlereOpplysningerFirmaInntekt : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val featureToggle = FeatureToggles.innhentingOpplysninger.toggle
 
-    override val kode = UT_INNH_OPPL_FLERE_OPPLYSNINGER
+    override val kode = UT_INNH_OPPL_FLERE_OPPL_FIRMAINNTEKT
     override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -29,7 +29,7 @@ object FlereOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Du må sende oss flere opplysninger",
+            displayTitle = "Innhentingsbrev ved tilfeller der inntekter ikke samsvarer med avklaring",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -43,7 +43,7 @@ object FlereOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Din søknad om uføretrygd er under behandling. Vi trenger flere opplysninger fra deg for å kunne behandle søknaden din. " })
             }
             paragraph {
-                text(bokmal { +"Du eier xx AS og du har " + fritekst("firmanavn") + " prosent eierandel av aksjene. " })
+                text(bokmal { +"Du eier " + fritekst("firma AS") + " og du har " + fritekst("prosenttall") + " prosent eierandel av aksjene. " })
             }
             paragraph {
                 text(bokmal { +"Vi vil utelukke at du har inntektsmuligheter som du ikke benytter deg av. Vi trenger derfor opplysninger fra deg, for å se om inntektene du forventer stemmer med arbeidsmengde og inntektsmuligheter." })
@@ -60,13 +60,13 @@ object FlereOpplysninger : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 list {
                     item {text(bokmal { +"Arbeidsavtale for den aktuelle stillingen." }) }
-                    item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("xxxx xxxx") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." }) }
+                    item {text(bokmal { +"Hva skyldes inntektsendringen som inntraff i " + fritekst("dato") + ".? Hvis dette skyldes formell stillingsendring ber vi om at det vedlegges dokumentasjon på dette." }) }
                     item {text(bokmal { +"Dersom du ikke lenger skal arbeide fullt, er det da ansatt en annen person i din stilling? Vi ber om kopi av arbeidsavtalen på denne personen. (eventuell hvem har overtatt dine arbeidsoppgaver)" }) }
-                    item {text(bokmal { +"Timelistene dine fra 20" + fritekst("xx") + " og 20" + fritekst("xx") + "." }) }
-                    item {text(bokmal { +"Hvilke arbeidsoppgaver du har utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra 20" + fritekst("xx") + " til 20" + fritekst("xx") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i 20" + fritekst("xx") + "." }) }
+                    item {text(bokmal { +"Timelistene dine fra " + fritekst("år") + " og " + fritekst("år") + "." }) }
+                    item {text(bokmal { +"Hvilke arbeidsoppgaver du har utført for firmaet? Ifølge foreløpig driftsresultat er omsetningen økt betraktelig fra " + fritekst("år") + " til " + fritekst("år") + ". Firmaet har ikke benyttet innleid arbeidskraft i særlig grad ut ifra opplysningene i foreløpig resultatregnskap. Dette var også tilfellet i " + fritekst("år") + "." }) }
                     item {text(bokmal { +"Beskriv dine arbeidsoppgaver som styremedlem, samt uttak av styrehonorar." }) }
                     item {text(bokmal { +"Hvor mye forventer du å tjene fremover? Her er det viktig at alle inntekter oppgis, både pensjonsgivende og kapital-inntekter." }) }
-                    item {text(bokmal { +"Skal du eller andre ta ut utbytte fra firmaet? Eventuelt hvor mye forventer du at det tas ut i 20" + fritekst("xx") + "?" }) }
+                    item {text(bokmal { +"Skal du eller andre ta ut utbytte fra firmaet? Eventuelt hvor mye forventer du at det tas ut i " + fritekst("år") + "?" }) }
                 }
             }
             paragraph {

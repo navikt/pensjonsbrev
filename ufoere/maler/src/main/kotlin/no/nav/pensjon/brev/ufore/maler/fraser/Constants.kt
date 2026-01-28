@@ -14,6 +14,7 @@ object Constants {
     const val FULLMAKT_URL = "$NAV_URL/fullmakt"
     const val SOKNAD_URL = "$NAV_URL/soknader"
     const val ETTERSENDE_URL = "$NAV_URL/ettersende"
+    const val SKATTEETATEN_MELD_FLYTTING = "https://www.skatteetaten.no/person/folkeregister/flytte/"
     private val navKontaktsenterUfore = Telefonnummer("55553333")
     val NAV_KONTAKTSENTER_TELEFON_UFORE = navKontaktsenterUfore.format()
 }

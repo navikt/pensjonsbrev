@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.Feilu
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
@@ -58,6 +59,7 @@ object Fixtures : LetterDataFactory {
             FeilutbetalingSpesifikkVarselDto::class -> lagFeilutbetalingSpesfikkVarsel() as T
             FeilutbetalingVarselDodsboDto::class -> lagFeilutbetalingVarselDodsbo() as T
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
+            InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
             EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
@@ -79,6 +81,13 @@ object Fixtures : LetterDataFactory {
         pesysData = EmptyFagsystemdata,
         saksbehandlerValg = InnhentingOpplysningerNaeringsinntektDto.Saksbehandlervalg(
             ikkeMottattInntektsskjema = true
+        )
+    )
+
+    private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
+        pesysData = EmptyFagsystemdata,
+        saksbehandlerValg = InnhentingOpplysningerSamboerDto.Saksbehandlervalg(
+            ukjentSamboer = false
         )
     )
 

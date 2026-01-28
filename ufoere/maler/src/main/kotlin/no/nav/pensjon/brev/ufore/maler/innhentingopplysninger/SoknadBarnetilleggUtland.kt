@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
-import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -30,7 +30,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Din søknad om barnetillegg i uføretrygd",
+            displayTitle = "Søkt barnetillegg Barn som ikke bor i Norge",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -65,7 +65,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
             paragraph {
-                text(bokmal { +"Vi ber om at opplysningene sendes oss innen to uker etter at du har fått dette brevet. " })
+                text(bokmal { +"Vi ber om at opplysningene sendes oss innen " + fritekst("dato") + ". " })
             }
             paragraph {
                 text(bokmal { +"Hvis vi ikke får nødvendige opplysninger innen fristen, kan søknaden bli avslått på grunn av manglende opplysninger. Gi oss beskjed dersom det tar lenger tid å innhente opplysningene." })
@@ -74,6 +74,7 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
             }
 
+            includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }
     }

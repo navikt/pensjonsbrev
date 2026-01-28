@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 
-import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -14,6 +13,7 @@ import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_BRUKER_LEGEERKLAERING
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 
 @TemplateModelHelpers
 object BrukerLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
