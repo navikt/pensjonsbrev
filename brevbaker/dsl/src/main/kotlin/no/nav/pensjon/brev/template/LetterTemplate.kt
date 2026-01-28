@@ -124,6 +124,7 @@ sealed class Expression<out Out> : StableHash {
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
+        val tags: Set<ElementTags> = emptySet()
     ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
@@ -136,9 +137,11 @@ sealed class Expression<out Out> : StableHash {
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
-            return value == other.value && operation == other.operation
+            return value == other.value && operation == other.operation && tags == other.tags
         }
-        override fun hashCode() = Objects.hash(value, operation)
+        override fun hashCode() = Objects.hash(value, operation, tags)
+
+        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
