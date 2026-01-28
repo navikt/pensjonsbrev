@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.SoknadBarnetillegg
+import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
@@ -57,6 +57,19 @@ object UfoereTemplates : AllTemplates {
         VarselInstitusjon12_19,
         VarselSoning12_20,
         SoknadBarnetillegg,
+        BrukerLegeerklaering,
+        LegeLegeerklaering,
+        Naeringsinntekter,
+        FlereOpplysningerFirmaInntekt,
+        NySivilstand,
+        SoknadBarnetilleggFosterForelder,
+        SoknadBarnetilleggUtland,
+        TrukketKlage,
+        UtsattKlagefrist,
+        FlereOpplysningerGenerell,
+        OppgittSamboer,
+        EktefelleUtland,
+        AntattDod,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
