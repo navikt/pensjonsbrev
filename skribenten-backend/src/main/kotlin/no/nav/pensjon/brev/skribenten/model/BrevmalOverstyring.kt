@@ -21,11 +21,6 @@ object BrevmalOverstyring {
             "PE_UT_04_402"
         ),
         Brevkategori.FOERSTEGANGSBEHANDLING to listOf(
-            "AP_AVSL_TIDLUTTAK",
-            "AP_AVSL_UTTAK",
-            "AP_INNV_AVT_MAN",
-            "AP_INNV_MAN",
-            "BP_AVSL_MAN",
             "PE_AF_04_001",
             "PE_AF_04_010",
             "PE_AF_04_111",
@@ -59,18 +54,6 @@ object BrevmalOverstyring {
             "PE_UT_04_118"
         ),
         Brevkategori.VEDTAK_ENDRING_OG_REVURDERING to listOf(
-            "AP_AVSL_ENDR",
-            "AP_AVSL_FT_MAN",
-            "AP_AVSL_GJRETT_MAN",
-            "AP_ENDR_EPS_MAN",
-            "AP_ENDR_FT_MAN",
-            "AP_ENDR_GJRETT_MAN",
-            "AP_ENDR_GRAD_MAN",
-            "AP_ENDR_INST_MAN",
-            "AP_ENDR_OPPTJ_MAN",
-            "AP_ENDR_STANS_MAN",
-            "AP_OPPH_FT_MAN",
-            "BP_OPPH_MAN",
             "PE_AF_04_020",
             "PE_AF_04_114",
             "PE_AP_04_020",
@@ -98,8 +81,6 @@ object BrevmalOverstyring {
             "PE_UT_07_100"
         ),
         Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND to listOf(
-            "AP_ENDR_FLYTT_MAN",
-            "AP_STANS_FLYTT_MAN",
             "PE_AP_04_223",
             "PE_AP_04_224",
             "PE_AP_04_225",

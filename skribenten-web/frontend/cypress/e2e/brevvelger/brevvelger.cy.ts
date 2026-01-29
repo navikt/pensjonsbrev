@@ -95,30 +95,6 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("order-letter-success-message");
   });
 
-  it("Bestill Doksys brev", () => {
-    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
-      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
-      request.reply({ fixture: "bestillBrevDoksys.json" });
-    }).as("bestill doksys");
-
-    cy.visit("/saksnummer/123456/brevvelger", {
-      onBeforeLoad(window) {
-        cy.stub(window, "open").as("window-open");
-      },
-    });
-
-    cy.getDataCy("brevmal-search").click().type("gjenlevende");
-    cy.getDataCy("brevmal-button").click();
-
-    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-    cy.getDataCy("order-letter").click();
-    cy.get("@window-open").should(
-      "have.been.calledOnceWithExactly",
-      "mfprocstart9:leaseid=c8cfd547-b80f-442b-8e7f-62f96ff52231",
-    );
-    cy.getDataCy("order-letter-success-message");
-  });
-
   it("Skriv notat", () => {
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
       expect(request.body).contains({
