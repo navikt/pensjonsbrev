@@ -168,7 +168,7 @@ describe("Brevvelger spec", () => {
   });
 
   it("enhetsId som url param gjenspeiles i form og inputs", () => {
-    cy.visit('/saksnummer/123456/brevvelger?templateId=AP_INFO_STID_MAN&enhetsId="4815"', {
+    cy.visit('/saksnummer/123456/brevvelger?templateId=PE_AP_04_922&enhetsId="4815"', {
       onBeforeLoad(window) {
         cy.stub(window, "open").as("window-open");
       },
