@@ -11,4 +11,5 @@ fun createInfoAlderspensjonOvergang67AarAutoDto() =
         borMedSivilstand = BorMedSivilstand.GIFT_LEVER_ADSKILT,
         over2G = true,
         kronebelop2G = Kroner(260320),
+        uforegrad = 50,
     )
