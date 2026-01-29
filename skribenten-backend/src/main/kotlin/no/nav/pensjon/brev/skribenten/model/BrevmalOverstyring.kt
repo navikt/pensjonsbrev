@@ -89,7 +89,6 @@ object BrevmalOverstyring {
             "PE_IY_04_127"
         ),
         Brevkategori.SLUTTBEHANDLING to listOf(
-            "INFO_P1",
             "PE_AP_04_903",
             "PE_AP_04_904",
             "PE_AP_04_912",
@@ -99,8 +98,6 @@ object BrevmalOverstyring {
             "PE_UT_04_107"
         ),
         Brevkategori.INFORMASJONSBREV to listOf(
-            "AP_INFO_STID_MAN",
-            "DOD_INFO_RETT_MAN",
             "PE_AP_04_922",
             "PE_BP_01_001",
             "PE_BP_01_002",
@@ -116,9 +113,9 @@ object BrevmalOverstyring {
             "PE_UT_04_001",
             "PE_UT_04_004"
         ),
-        Brevkategori.VARSEL to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
+        Brevkategori.VARSEL to listOf("PE_IY_03_051", "PE_IY_03_179"),
         Brevkategori.VEDTAK_EKSPORT to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
-        Brevkategori.OMSORGSOPPTJENING to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010", "PE_IY_04_001"),
+        Brevkategori.OMSORGSOPPTJENING to listOf("PE_IY_04_010", "PE_IY_04_001"),
         Brevkategori.UFOEREPENSJON to listOf(
             "PE_UP_04_001",
             "PE_UP_04_020",
@@ -154,9 +151,6 @@ object BrevmalOverstyring {
         ),
         Brevkategori.LEVEATTEST to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
         Brevkategori.FEILUTBETALING to listOf(
-            "VARSEL_TILBAKEBET",
-            "VEDTAK_TILBAKEKREV",
-            "VEDTAK_TILBAKEKREV_MIDL",
             "PE_IY_04_060",
             "PE_IY_04_061",
             "PE_IY_05_027"
