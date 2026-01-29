@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang6
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.borMedSivilstand
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.kronebelop2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.over2G
+import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.uforegrad
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoArbeidsinntekt
@@ -51,7 +52,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 )
             }
             outline {
-                includePhrase(InnledningInfoYtelse(ytelseForAldersovergang))
+                includePhrase(InnledningInfoYtelse(ytelseForAldersovergang, uforegrad))
                 includePhrase(InfoVelgeAP(ytelseForAldersovergang))
                 includePhrase(InfoOnsketUttakAP(ytelseForAldersovergang))
                 includePhrase(InfoOenskeSokeAP(ytelseForAldersovergang))
