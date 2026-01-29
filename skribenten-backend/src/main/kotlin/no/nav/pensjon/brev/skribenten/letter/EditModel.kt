@@ -314,7 +314,7 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
             id = id ?: 0,
             text = text,
             fontType = fontType.toMarkup(),
-            tags = tags
+            tags = tags.also { require(it.all { tag -> tag != ElementTags.FRITEKST }) { "Vi støtter ikke fritekst i variabler, kun i literals" } }
         )
 
         is Edit.ParagraphContent.Text.NewLine -> ParagraphContentImpl.TextImpl.NewLineImpl(id = id ?: 0)
