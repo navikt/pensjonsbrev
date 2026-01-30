@@ -44,9 +44,6 @@ object SoknadBarnetilleggUtland : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Du har søkt om barnetillegg for barn som ikke bor i Norge. For å kunne behandle søknaden trenger vi flere opplysninger fra deg. " })
             }
             paragraph {
-                text(bokmal { + fritekst("(Ha med dersom barnet ikke er registrert med bruker som far eller der barnet ikke har fnr eller d-nummer i fagsystemene): ") })
-            }
-            paragraph {
                 text(bokmal { +"Vi trenger" })
                 list {
                     item { text(bokmal { +"bekreftet kopi av fødselsattest for barnet/barna" }) }
