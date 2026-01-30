@@ -64,19 +64,17 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
-            <>
-              {props.endreAsIcon && (
-                <BoxNew asChild borderRadius="4">
-                  <Button
-                    icon={<PencilIcon />}
-                    onClick={() => setModalÅpen(true)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  />
-                </BoxNew>
-              )}
-            </>,
+            props.endreAsIcon && (
+              <BoxNew asChild borderRadius="4">
+                <Button
+                  icon={<PencilIcon />}
+                  onClick={() => setModalÅpen(true)}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                />
+              </BoxNew>
+            ),
           )
         ) : (
           <OppsummeringAvMottaker

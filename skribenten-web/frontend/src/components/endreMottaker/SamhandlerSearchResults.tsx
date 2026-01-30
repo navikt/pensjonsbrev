@@ -42,7 +42,7 @@ export function SamhandlerSearchResults({
         <Table onSortChange={(sortKey) => handleSort(sortKey)} size="small" sort={sort}>
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
+              <Table.ColumnHeader colSpan={2} sortable sortKey="navn">
                 Navn
               </Table.ColumnHeader>
             </Table.Row>

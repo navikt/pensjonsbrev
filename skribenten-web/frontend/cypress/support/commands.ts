@@ -11,7 +11,6 @@
 export {};
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace -- auto-added by Cypress, keep as is for now
   namespace Cypress {
     interface Chainable {
       /**

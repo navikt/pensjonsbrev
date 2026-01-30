@@ -103,7 +103,7 @@ describe("P1 med forsidebrev", () => {
     const veryLongText = "A".repeat(300);
     // Bruker data-cy for å finne PIN feltet
     getInnvilgetFelt(0, "pin")
-      .type("{selectall}{backspace}" + veryLongText, { delay: 0 })
+      .type(`{selectall}{backspace}${veryLongText}`, { delay: 0 })
       .press(Cypress.Keyboard.Keys.TAB);
 
     cy.contains("PIN kan ikke være lengre enn").should("be.visible");

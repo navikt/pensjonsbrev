@@ -83,7 +83,7 @@
 }
 
 /* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH:has(+ .PARAGRAPH > ul){
+.PARAGRAPH:has(+ .PARAGRAPH > ul) {
   margin-bottom: 0;
 }
 

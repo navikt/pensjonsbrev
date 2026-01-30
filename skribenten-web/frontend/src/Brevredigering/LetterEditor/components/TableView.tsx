@@ -1,12 +1,13 @@
 import { css } from "@emotion/react";
 import { ArrowRightLeftIcon, PlusIcon, TrashIcon } from "@navikt/aksel-icons";
 import { ActionMenu } from "@navikt/ds-react";
-import React, { useState } from "react";
+import type React from "react";
+import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
+import type { Cell as CellType, ColumnSpec, Table } from "~/types/brevbakerTypes";
 
 import type { TableCellIndex } from "../model/state";
 import { isEmptyTableHeader } from "../model/utils";

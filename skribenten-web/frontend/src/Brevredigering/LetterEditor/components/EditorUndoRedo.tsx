@@ -1,6 +1,6 @@
 import { ArrowRedoIcon, ArrowUndoIcon } from "@navikt/aksel-icons";
 import { Button, HStack } from "@navikt/ds-react";
-import React from "react";
+import type React from "react";
 
 type EditorUndoRedoProps = {
   undo: () => void;
@@ -20,7 +20,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
         title="Angre (Undo)"
         type="button"
         variant="tertiary-neutral"
-      ></Button>
+      />
     </HStack>
     <HStack gap="space-8">
       <Button
@@ -31,7 +31,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
         title="Gjør om (Redo)"
         type="button"
         variant="tertiary-neutral"
-      ></Button>
+      />
     </HStack>
   </>
 );
