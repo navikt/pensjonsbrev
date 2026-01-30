@@ -16,7 +16,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
 

@@ -1,0 +1,14 @@
+name: Validate Gradle Wrapper
+on:
+  pull_request:
+    paths:
+      - 'gradlew'
+      - 'gradlew.bat'
+      - 'gradle/wrapper/**'
+
+jobs:
+  wrapper-validation:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - uses: gradle/actions/wrapper-validation@v5

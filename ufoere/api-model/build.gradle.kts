@@ -20,7 +20,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
     api(libs.brevbaker.common)
 }
 

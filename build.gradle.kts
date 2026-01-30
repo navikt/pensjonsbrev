@@ -52,6 +52,8 @@ allprojects {
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.mode.classes.default"] = "concurrent"
         systemProperties["junit.jupiter.execution.parallel.config.strategy"] = "dynamic"
+        maxParallelForks = (Runtime.getRuntime().availableProcessors() / 2).coerceAtLeast(1)
+        forkEvery = 100
     }
 }
 

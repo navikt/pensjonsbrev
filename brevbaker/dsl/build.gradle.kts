@@ -23,7 +23,6 @@ repositories {
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
     implementation(libs.brevbaker.common)
 
     // JUnit 5
