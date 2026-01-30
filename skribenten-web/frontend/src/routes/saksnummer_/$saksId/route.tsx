@@ -44,7 +44,6 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
   },
   component: SakLayout,
   errorComponent: ({ error }) => {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const { saksId } = Route.useParams();
     return <ApiError error={error} title={`Klarte ikke hente saksnummer ${saksId}`} />;
   },
@@ -81,7 +80,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const dateOfDeath = useMemo(() => {
     if (!brukerStatus?.doedsfall) return undefined;
     const date = new Date(brukerStatus.doedsfall);
-    return isNaN(date.valueOf())
+    return Number.isNaN(date.valueOf())
       ? undefined
       : date.toLocaleDateString("no-NO", { year: "numeric", month: "2-digit", day: "2-digit" });
   }, [brukerStatus]);

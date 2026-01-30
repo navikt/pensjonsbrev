@@ -3,13 +3,7 @@ import { BoxNew, HGrid, VStack } from "@navikt/ds-react";
 import type { Signatur } from "~/types/brevbakerTypes";
 
 const Saksbehandler = ({ navn }: { navn?: string }) =>
-  navn ? (
-    <BoxNew as="span" data-cy="brev-editor-saksbehandler">
-      {navn}
-    </BoxNew>
-  ) : (
-    <></>
-  );
+  navn ? <BoxNew data-cy="brev-editor-saksbehandler">{navn}</BoxNew> : null;
 
 export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <VStack

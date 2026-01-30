@@ -5,6 +5,7 @@ import { useFormContext } from "react-hook-form";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { DateField } from "./P1DateField";
+
 type P1ForsikredeTabProps = {
   disabled?: boolean;
 };
@@ -136,5 +137,5 @@ export const P1ForsikredeTab = ({ disabled }: P1ForsikredeTabProps) => {
       </Table>
     </>
   );
-  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : tabContent;
 };
