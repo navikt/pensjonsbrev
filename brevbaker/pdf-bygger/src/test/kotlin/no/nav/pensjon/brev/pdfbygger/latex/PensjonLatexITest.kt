@@ -35,7 +35,9 @@ private const val FIND_FAILING_CHARACTERS = false
 class PensjonLatexITest {
     private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+
 
     @Test
     fun canRender() {
@@ -60,6 +62,24 @@ class PensjonLatexITest {
     @Test
     fun `Ping pdf builder`() {
         runBlocking { laTeXCompilerService.ping() }
+    }
+
+    @Test
+    fun `title with latex code synthax should not fail compilation`(){
+        val template = createTemplate(
+            letterDataType = EmptyAutobrevdata::class,
+            languages = languages(Bokmal),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin display tittel",
+                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            )
+        ) {
+            title { text(bokmal { +"En fin tittel med masse LaTeX kommando tegn \$%&\\^_{}~" }) }
+            outline {}
+        }
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_escape_xmp_title", pdfByggerService = laTeXCompilerService)
+
     }
 
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
