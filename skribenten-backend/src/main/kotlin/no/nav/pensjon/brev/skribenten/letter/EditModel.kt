@@ -307,14 +307,14 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
             id = id ?: 0,
             text = editedText ?: text,
             fontType = (editedFontType ?: fontType).toMarkup(),
-            tags = tags,
+            tags = ElementTags.forLiteral(tags),
         )
 
         is Edit.ParagraphContent.Text.Variable -> ParagraphContentImpl.TextImpl.VariableImpl(
             id = id ?: 0,
             text = text,
             fontType = fontType.toMarkup(),
-            tags = tags
+            tags = ElementTags.forVariable(tags)
         )
 
         is Edit.ParagraphContent.Text.NewLine -> ParagraphContentImpl.TextImpl.NewLineImpl(id = id ?: 0)
