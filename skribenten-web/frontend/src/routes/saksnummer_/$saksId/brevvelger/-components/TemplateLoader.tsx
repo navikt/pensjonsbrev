@@ -10,7 +10,6 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import type { SubmitTemplateOptions } from "../route";
 import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
-import BrevmalForDoksys from "./brevmal/BrevmalDoksys";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
 import Eblankett from "./brevmal/EBlankett";
 import { hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
@@ -78,20 +77,6 @@ function Brevmal({
   }
 
   switch (letterTemplate.brevsystem) {
-    case BrevSystem.DokSys: {
-      return (
-        <BrevmalForDoksys
-          defaultValues={defaultValues}
-          displayLanguages={displayLanguages}
-          key={templateId}
-          letterTemplate={letterTemplate}
-          preferredLanguage={preferredLanguage}
-          saksId={saksId}
-          setOnFormSubmitClick={setOnFormSubmitClick}
-          templateId={templateId}
-        />
-      );
-    }
     case BrevSystem.Exstream: {
       return (
         <BrevmalForExstream

@@ -60,7 +60,6 @@ export type LetterMetadata = {
 
 export enum BrevSystem {
   Exstream = "EXSTREAM",
-  DokSys = "DOKSYS",
   Brevbaker = "BREVBAKER",
 }
 
@@ -84,8 +83,6 @@ export type BaseLetterRequest = {
   vedtaksId: Nullable<string>;
 };
 
-export type OrderDoksysLetterRequest = BaseLetterRequest;
-
 export type OrderExstreamLetterRequest = BaseLetterRequest & {
   idTSSEkstern: Nullable<string>;
   brevtittel: Nullable<string>;
@@ -102,19 +99,6 @@ export type BestillOgRedigerBrevResponse = {
 };
 
 export const FAILURE_TYPES = [
-  "DOKSYS_BESTILLING_ADDRESS_NOT_FOUND",
-  "DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE",
-  "DOKSYS_BESTILLING_PERSON_NOT_FOUND",
-  "DOKSYS_BESTILLING_TPS_CALL_FAILIURE",
-  "DOKSYS_BESTILLING_UNAUTHORIZED",
-  "DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR",
-  "DOKSYS_REDIGERING_IKKE_FUNNET",
-  "DOKSYS_REDIGERING_IKKE_REDIGERBART",
-  "DOKSYS_REDIGERING_IKKE_TILGANG",
-  "DOKSYS_REDIGERING_LUKKET",
-  "DOKSYS_REDIGERING_UFORVENTET",
-  "DOKSYS_REDIGERING_UNDER_REDIGERING",
-  "DOKSYS_REDIGERING_VALIDERING_FEILET",
   "EXSTREAM_BESTILLING_ADRESSE_MANGLER",
   "EXSTREAM_BESTILLING_HENTE_BREVDATA",
   "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT",

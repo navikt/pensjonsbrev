@@ -21,13 +21,6 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
               </Tag>
             );
           }
-          case BrevSystem.DokSys: {
-            return (
-              <Tag size="small" variant="alt3">
-                Doksys
-              </Tag>
-            );
-          }
         }
       })()}
     </>

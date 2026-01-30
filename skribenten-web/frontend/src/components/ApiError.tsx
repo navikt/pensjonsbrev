@@ -115,24 +115,11 @@ function isOfFailureType(error: string): error is FailureType {
 function mapFailureTypes(failureType: FailureType) {
   // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (failureType) {
-    case "DOKSYS_BESTILLING_ADDRESS_NOT_FOUND":
     case "EXSTREAM_BESTILLING_ADRESSE_MANGLER": {
       return "Fant ikke adresse på brukeren.";
     }
-    case "DOKSYS_BESTILLING_PERSON_NOT_FOUND": {
-      return "Fant ikke bruker.";
-    }
     case "EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT": {
       return "Mangler i data-grunnlaget til brukeren for å kunne bestille brevet.";
-    }
-    case "DOKSYS_BESTILLING_UNAUTHORIZED": {
-      return "Har ikke tilgang til å produsere brev på brukeren.";
-    }
-    case "DOKSYS_REDIGERING_IKKE_TILGANG": {
-      return "Prøver å redigere et brev hvor man ikke har tilgang til bruker/enhet.";
-    }
-    case "DOKSYS_REDIGERING_UNDER_REDIGERING": {
-      return "Brevet er allerede åpent for redigering. Det kan hende at du eller noen andre allerede har åpnet brevet.";
     }
     default: {
       return "Teknisk feil.";

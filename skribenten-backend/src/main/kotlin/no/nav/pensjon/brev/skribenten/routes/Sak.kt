@@ -79,12 +79,6 @@ fun Route.sakRoute(
         }
 
         route("/bestillBrev") {
-            post<Api.BestillDoksysBrevRequest>("/doksys") { request ->
-                val sak = call.attributes[SakKey]
-
-                call.respond(legacyBrevService.bestillOgRedigerDoksysBrev(request, sak.saksId))
-            }
-
             route("/exstream") {
                 post<Api.BestillExstreamBrevRequest> { request ->
                     val sak = call.attributes[SakKey]

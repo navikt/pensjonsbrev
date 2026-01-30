@@ -24,7 +24,7 @@ import { z } from "zod";
 import { getBrevmetadata } from "~/api/brev-queries";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
-import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
+import { BrevbakerIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
@@ -376,9 +376,6 @@ const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
   switch (props.brevsystem) {
     case BrevSystem.Exstream: {
       return <ExstreamIcon />;
-    }
-    case BrevSystem.DokSys: {
-      return <DoksysIcon />;
     }
     case BrevSystem.Brevbaker: {
       return <BrevbakerIcon />;
