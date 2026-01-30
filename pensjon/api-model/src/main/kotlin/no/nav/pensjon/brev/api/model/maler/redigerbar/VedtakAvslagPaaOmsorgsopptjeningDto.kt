@@ -35,7 +35,7 @@ data class VedtakAvslagPaaOmsorgsopptjeningDto(
 
     data class PesysData(
         val navEnhet: String,
-        val omsorgGodskrevetAar: List<Year>,
+        val omsorgGodskrevetAar: List<Int>,
         val dineRettigheterOgMulighetTilAaKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
     ) : FagsystemBrevdata
 }

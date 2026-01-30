@@ -20,9 +20,9 @@ fun createVedtakAvslagPaaOmsorgsopptjeningDto() =
         pesysData = VedtakAvslagPaaOmsorgsopptjeningDto.PesysData(
             navEnhet = "Nav Enhet",
             omsorgGodskrevetAar = listOf(
-                Year(2025),
-                Year(2024),
-                Year(2023),
+                2025,
+                2024,
+                2023,
             ),
             dineRettigheterOgMulighetTilAaKlageDto = createDineRettigheterOgMulighetTilAaKlageDto()
         )
