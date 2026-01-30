@@ -41,7 +41,7 @@ object FlereOpplysningerGenerell : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
         }
         outline {
             paragraph {
-                text(bokmal { +"Nav har mottatt " + fritekst("en blankett/brev/henvendelse") + " fra deg den dato. For å kunne behandle henvendelsen mangler vi følgende opplysninger: " })
+                text(bokmal { +"Nav har mottatt " + fritekst("en blankett/brev/henvendelse") + " fra deg den " + fritekst("dato") + ". For å kunne behandle henvendelsen mangler vi følgende opplysninger: " })
             }
             paragraph {
                 text(bokmal { +fritekst("Fyll inn de opplysningene som mangler") })
