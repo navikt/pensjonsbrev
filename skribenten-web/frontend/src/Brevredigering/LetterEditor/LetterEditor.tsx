@@ -3,8 +3,7 @@ import "./editor.css";
 import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
-import { useCallback, useState } from "react";
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useState } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -101,6 +100,10 @@ export const LetterEditor = ({
           >
             <ContentGroup literalIndex={{ blockIndex: TITLE_INDEX, contentIndex: 0 }} />
           </Heading>
+          {/**
+           * biome-ignore lint/a11y/noStaticElementInteractions: Redigeringsflaten inneholder
+           * redigerbar, og derfor interaktiv, tekst
+           */}
           <div
             className="editor-surface"
             data-editor-root

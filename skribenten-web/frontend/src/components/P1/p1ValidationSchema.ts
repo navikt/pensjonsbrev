@@ -31,7 +31,7 @@ const isoDateStringField = () =>
       const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!isoDateRegex.test(val)) return false;
       // Check if it's a valid date
-      const date = new Date(val + "T00:00:00");
+      const date = new Date(`${val}T00:00:00`);
       return !Number.isNaN(date.getTime());
     },
     { message: "Ugyldig dato" },

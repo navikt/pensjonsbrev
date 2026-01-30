@@ -157,5 +157,5 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
       </Table>
     </>
   );
-  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : tabContent;
 };
