@@ -27,15 +27,15 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
                 YearMonth.of(2024, 1),
                 YearMonth.of(2024, 12),
                 12,
-                Kroner(0),
-                Kroner(0),
-                Kroner(0),
-                Kroner(0),
-                Kroner(0),
-                Kroner(0)
+                Kroner(12),
+                Kroner(12),
+                Kroner(12),
+                Kroner(12),
+                Kroner(12),
+                Kroner(12)
             ),
             vedleggInnhold = emptyList(),
-            mottattSkatteoppgjoer = true
+            mottattSkatteoppgjoer = false
         ),
     )
 
