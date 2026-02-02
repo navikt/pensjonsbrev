@@ -2662,49 +2662,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     includePhrase(TBU1076_MedMargin_Generated)
                     includePhrase(TBU1077_Generated)
                     includePhrase(TBU2455_Generated(pe))
-                    //[TBU2247]
-                    paragraph {
-                        text (
-                            bokmal { + "Vedlegg:" },
-                            nynorsk { + "Vedlegg:" },
-                        )
 
-                        //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                        showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                            text (
-                                bokmal { + "" },
-                                nynorsk { + "" },
-                            )
-                        }
-
-                        //IF((PE_Vedtaksdata_BeregningsData_BeregningUfore_Total <> PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Brutto  AND PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder >= 1)  OR PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1) THEN      INCLUDE ENDIF
-                        showIf(((pe.vedtaksdata_beregningsdata_beregningufore_total().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_brutto()) and pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThanOrEqual(1)) or pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1))){
-                            text (
-                                bokmal { + "Dette er din månedlige uføretrygd før skatt" },
-                                nynorsk { + "Dette er den månadlege uføretrygda di før skatt" },
-                            )
-                        }
-
-                        //IF(PE_Vedtaksdata_Faktoromregnet = false) THEN      INCLUDE ENDIF
-                        showIf((not(pe.vedtaksdata_faktoromregnet()))){
-                            text (
-                                bokmal { + "" },
-                                nynorsk { + "" },
-                            )
-                        }
-
-                        //IF(PE_Vedtaksdata_Faktoromregnet = false) THEN      INCLUDE ENDIF
-                        showIf((not(pe.vedtaksdata_faktoromregnet()))){
-                            text (
-                                bokmal { + "Opplysninger om beregningen" },
-                                nynorsk { + "Opplysningar om berekninga" },
-                            )
-                        }
-                        text (
-                            bokmal { + "Orientering om rettigheter og plikter" },
-                            nynorsk { + "Orientering om rettar og plikter" },
-                        )
-                    }
                 }
             }
 
