@@ -44,7 +44,7 @@ function SaksnummerPage() {
     //derfor styler vi komponenten selv her, og ikke i parent.
     //merk at saksnummer/$saksId, også har håndtering for styles og sine children.
     <form className="page-margins" onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}>
-      <VStack gap="space-24" marginBlock="space-32 0" marginInline="auto" width="340px">
+      <VStack gap="space-24" marginBlock="space-32 space-0" marginInline="auto" width="340px">
         <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
         {hentSakContextMutation.error && (
           <ApiError

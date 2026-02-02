@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
-import { BodyShort, BoxNew, CopyButton, HStack, Tag } from "@navikt/ds-react";
+import { BodyShort, Box, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo } from "react";
@@ -87,7 +87,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   }, [brukerStatus]);
 
   return (
-    <BoxNew
+    <Box
       asChild
       background="default"
       borderColor="neutral-subtle"
@@ -128,14 +128,26 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
           {brukerStatus?.erSkjermet && (
             <BodyShort>
-              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag
+                css={{ borderRadius: "var(--ax-radius-4)" }}
+                data-color="neutral"
+                icon={<FileIcon />}
+                size="small"
+                variant="outline"
+              >
                 Egen ansatt
               </Tag>
             </BodyShort>
           )}
           {brukerStatus?.vergemaal && (
             <BodyShort>
-              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
+              <Tag
+                css={{ borderRadius: "var(--ax-radius-4)" }}
+                data-color="neutral"
+                icon={<FileIcon />}
+                size="small"
+                variant="outline"
+              >
                 Vergemål
               </Tag>
             </BodyShort>
@@ -144,9 +156,10 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
             <BodyShort>
               <Tag
                 css={{ borderRadius: "var(--ax-radius-4)" }}
+                data-color="danger"
                 icon={<ParagraphIcon />}
                 size="small"
-                variant="error-filled"
+                variant="strong"
               >
                 Diskresjon
               </Tag>
@@ -160,7 +173,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           </BodyShort>
         </HStack>
       </HStack>
-    </BoxNew>
+    </Box>
   );
 }
 
