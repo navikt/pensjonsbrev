@@ -47,10 +47,9 @@ kotlin {
 
 tasks {
     register("verifyPackages") {
-        notCompatibleWithConfigurationCache("Uses script references")
-        val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
+        inputs.files(fileTree("src/main/kotlin").matching { include("**/*.kt") })
         doLast {
-            files.forEach { file ->
+            inputs.files.forEach { file ->
                 val text = file.readText()
                 val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
                     .find(text)?.groupValues?.get(1)
