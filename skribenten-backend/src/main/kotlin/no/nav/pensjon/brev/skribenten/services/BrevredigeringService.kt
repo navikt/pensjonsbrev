@@ -14,9 +14,8 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.core.inList
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -275,7 +274,7 @@ class BrevredigeringService(
     ): T? {
         val principal = PrincipalInContext.require()
 
-        return transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
+        return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
                     if (redigeresAv == null || redigeresAv == principal.navIdent || erReservasjonUtloept()) {

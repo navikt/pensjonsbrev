@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import org.jetbrains.exposed.v1.core.Column
-import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.dao.Entity
+import org.jetbrains.exposed.sql.Column
 import kotlin.reflect.KProperty
 
 class ValueClassWrapperNullable<Wrapped : Any, Unwrapped: Any>(private val column: Column<Unwrapped?>, private val wrap: (Unwrapped) -> Wrapped, private val unwrap: (Wrapped) -> Unwrapped) {
