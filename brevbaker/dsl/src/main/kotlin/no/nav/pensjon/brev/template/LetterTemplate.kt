@@ -174,8 +174,9 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
     class BinaryInvoke<In1, In2, out Out>(
         val first: Expression<In1>,
         val second: Expression<In2>,
-        val operation: BinaryOperation<In1, In2, Out>
-    ) : Expression<Out>(tags = first.tags + second.tags), StableHash by StableHash.of(first, second, operation) {
+        val operation: BinaryOperation<In1, In2, Out>,
+        tags: Set<ElementTags> = first.tags + second.tags
+    ) : Expression<Out>(tags = tags), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
 
         override fun equals(other: Any?): Boolean {
@@ -183,6 +184,8 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
             return first == other.first && second == other.second && operation == other.operation
         }
         override fun hashCode() = Objects.hash(first, second, operation)
+
+        internal fun medTags(tags: Set<ElementTags>) = BinaryInvoke(first, second, operation, (first.tags + second.tags) + tags)
     }
 
     final override fun toString(): String {
