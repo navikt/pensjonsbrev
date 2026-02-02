@@ -35,7 +35,8 @@ data class BeregningsVedleggData(
     val utbetalingData: EtteroppgjoerUtbetalingDTO,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val erVedtak: Boolean = false,
-    val harOpphoer: Boolean = false
+    val harOpphoer: Boolean = false,
+    val mottattSkatteoppgjoer: Boolean
 ) : VedleggData, BrevDTO
 
 data class EtteroppgjoerGrunnlagDTO(
@@ -47,7 +48,7 @@ data class EtteroppgjoerGrunnlagDTO(
     val afp: Kroner,
     val utlandsinntekt: Kroner,
     val inntekt: Kroner,
-    val pensjonsgivendeInntektHeleAaret: Kroner
+    val pensjonsgivendeInntektHeleAaret: Kroner?
 )
 
 @TemplateModelHelpers
@@ -62,17 +63,26 @@ val beregningsVedlegg: AttachmentTemplate<LangBokmalNynorskEnglish, BeregningsVe
         },
         includeSakspart = false,
     ) {
-        opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar, argument.harOpphoer)
+        opplysningerOmEtteroppgjoer(argument.etteroppgjoersAar, argument.harOpphoer, argument.mottattSkatteoppgjoer)
         hvaDuFikkUtbetalt(argument.etteroppgjoersAar, argument.utbetalingData)
         omBeregningAvOmstillingsstoenad(argument.etteroppgjoersAar)
-        dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.grunnlag, argument.erVedtak)
+
+        if(argument.mottattSkatteoppgjoer) {
+            dinPensjonsgivendeInntekt(argument.etteroppgjoersAar, argument.grunnlag, argument.erVedtak)
+        }
+
         konverterElementerTilBrevbakerformat(argument.innhold)
-        inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.grunnlag)
+
+        if(argument.mottattSkatteoppgjoer) {
+            inntektBruktIBeregningenAvOms(argument.etteroppgjoersAar, argument.grunnlag)
+        }
+
     }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.opplysningerOmEtteroppgjoer(
     etteroppgjoersAar: Expression<Int>,
-    harOpphoer: Expression<Boolean>
+    harOpphoer: Expression<Boolean>,
+    mottattSkatteoppgjoer: Expression<Boolean>
 ) {
     showIf(erVedtak) {
         paragraph {
@@ -93,13 +103,25 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
             )
         }
     }.orShow {
-        paragraph {
-            text(
-                bokmal { +"Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i " + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no." },
-                nynorsk { +"Omstillingsstønaden din blei rekna ut på grunnlag av det du oppgav som forventa inntekt i " + etteroppgjoersAar.format() +". Vi har no gjort ei ny utrekning av den faktiske inntekta di for "+etteroppgjoersAar.format()+" basert på opplysningar frå Skatteetaten og a-ordninga. Du kan sjå skatteoppgjeret ditt på skatteetaten.no." },
-                english { +"Your adjustment allowance was calculated based on your expected income you stated in " + etteroppgjoersAar.format() +". We have now carried out a new calculation based on information provided by the Tax Administration and A-scheme regarding your actual income for "+etteroppgjoersAar.format()+". You can see your tax settlement at: skatteetaten.no." },
-            )
+
+        showIf(mottattSkatteoppgjoer) {
+            paragraph {
+                text(
+                    bokmal { +"Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i " + etteroppgjoersAar.format() +". Vi har nå gjort en ny beregning basert på opplysninger fra Skatteetaten og a-ordningen om din faktiske inntekt for "+etteroppgjoersAar.format()+". Du kan se skatteoppgjøret ditt på skatteetaten.no." },
+                    nynorsk { +"Omstillingsstønaden din blei rekna ut på grunnlag av det du oppgav som forventa inntekt i " + etteroppgjoersAar.format() +". Vi har no gjort ei ny utrekning av den faktiske inntekta di for "+etteroppgjoersAar.format()+" basert på opplysningar frå Skatteetaten og a-ordninga. Du kan sjå skatteoppgjeret ditt på skatteetaten.no." },
+                    english { +"Your adjustment allowance was calculated based on your expected income you stated in " + etteroppgjoersAar.format() +". We have now carried out a new calculation based on information provided by the Tax Administration and A-scheme regarding your actual income for "+etteroppgjoersAar.format()+". You can see your tax settlement at: skatteetaten.no." },
+                )
+            }
+        }.orShow {
+            paragraph {
+                text(
+                    bokmal { +"Omstillingsstønaden din ble beregnet ut fra inntekten du oppga som forventet i " + etteroppgjoersAar.format() +". Vi har nå gjort ny beregning for "+etteroppgjoersAar.format()+" basert på de opplysninger vi har i saken din." },
+                    nynorsk { +"Omstillingsstønaden din blei rekna ut på grunnlag av det du oppgav som forventa inntekt i " + etteroppgjoersAar.format() +". Vi har no gjort ei ny utrekning av den faktiske inntekta di som vi har i saka di for "+etteroppgjoersAar.format()+"." },
+                    english { +"Your adjustment allowance was calculated based on your expected income you stated in " + etteroppgjoersAar.format() +". We have now made a new calculation for "+etteroppgjoersAar.format()+" based on the information available in your case." },
+                )
+            }
         }
+
         paragraph {
             text(
                 bokmal { +"Husk at du må melde fra til oss innen tre uker hvis du mener beregningene er feil." },

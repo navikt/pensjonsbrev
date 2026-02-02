@@ -55,14 +55,15 @@ data class EtteroppgjoerForhaandsvarselDTO(
     val stoenad: Kroner,
     val faktiskStoenad: Kroner,
     val avviksBeloep: Kroner,
-    val grunnlag: EtteroppgjoerGrunnlagDTO
+    val grunnlag: EtteroppgjoerGrunnlagDTO,
+    val mottattSkatteoppgjoer: Boolean
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(
         stoenadUtbetalt = stoenad,
         faktiskStoenad = faktiskStoenad,
         avviksBeloep = avviksBeloep
     )
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, false)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, false, mottattSkatteoppgjoer = mottattSkatteoppgjoer)
     val dagensDato: LocalDate = LocalDate.now()
 }
 
