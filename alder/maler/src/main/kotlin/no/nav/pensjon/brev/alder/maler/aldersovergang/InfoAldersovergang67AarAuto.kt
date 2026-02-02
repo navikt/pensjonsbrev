@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang6
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.over2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
-import no.nav.pensjon.brev.aldersovergang.fraser.InfoArbeidsinntekt
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoBoddArbeidetUtlandet
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoFTAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoOenskeSokeAP
@@ -67,7 +66,6 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergang))
                 includePhrase(InfoSkattAP(ytelseForAldersovergang))
                 includePhrase(InfoInntektAP)
-                includePhrase(InfoArbeidsinntekt)
                 includePhrase(InfoBoddArbeidetUtlandet)
                 includePhrase(InfoPensjonFraAndreAP)
                 includePhrase(HarDuSpoersmaalAlder)
