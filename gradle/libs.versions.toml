@@ -2,27 +2,27 @@
 kotlinVersion = "2.3.0"
 kotlinKspVersion = "2.3.4"
 ktorVersion = "3.4.0"
-assertJVersion = "3.27.6"
+assertJVersion = "3.27.7"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.20.0"
 commonVersion = "2.24.0"
 exposedVersion = "0.61.0"
-flywayVersion = "11.20.0"
+flywayVersion = "11.20.2"
 hikariVersion = "7.0.2"
-jacksonJsr310Version = "2.20.1"
-jupiterVersion = "6.0.1"
+jacksonJsr310Version = "2.21.0"
+jupiterVersion = "6.0.2"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
 ktlintVersion = "14.0.1"
-logbackVersion = "1.5.23"
+logbackVersion = "1.5.26"
 logstashVersion = "9.0"
-micrometerVersion = "1.16.1"
+micrometerVersion = "1.16.2"
 pdfboxVersion = "3.0.6"
 postgresqlVersion = "42.7.8"
 testcontainersCoreVersion = "2.0.3"
 testcontainersPostgresqlVersion = "2.0.3"
-unleashVersion = "11.2.1"
+unleashVersion = "12.1.0"
 valkeyVersion = "5.5.0"
 
 [plugins]
@@ -90,7 +90,7 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.1" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.2" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
