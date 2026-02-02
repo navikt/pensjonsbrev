@@ -200,9 +200,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         )}
         saksId={props.saksId}
       />
-
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
-
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
@@ -221,6 +219,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       {!erLaast && (
         <VStack align="start" gap="space-16">
           <Button
+            data-color="neutral"
             onClick={() =>
               navigate({
                 to: "/saksnummer/$saksId/brev/$brevId",
@@ -229,13 +228,12 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               })
             }
             size="small"
-            variant="secondary-neutral"
+            variant="secondary"
           >
             Fortsett redigering
           </Button>
         </VStack>
       )}
-
       {erLaast && (
         <RadioGroup
           data-cy="brevbehandler-distribusjonstype"
