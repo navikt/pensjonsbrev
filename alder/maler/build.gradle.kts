@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val alderApiModelVersion = 56
+val alderApiModelVersion = 57
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -19,7 +19,6 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
     api("no.nav.pensjon.alder.brev:api-model:${alderApiModelVersion}")
