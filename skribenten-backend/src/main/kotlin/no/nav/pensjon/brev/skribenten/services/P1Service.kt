@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
 // Disse må være i sync med api-modellen
@@ -42,7 +42,7 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
         } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
     }
 
-    override suspend fun hentP1Data(brevId: Long, saksId: Long): Api.GeneriskBrevdata? = newSuspendedTransaction {
+    override suspend fun hentP1Data(brevId: Long, saksId: Long): Api.GeneriskBrevdata? = suspendTransaction {
         BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.let {
             it.p1Data?.p1data
                 ?: penService.hentP1VedleggData(saksId, it.spraak)

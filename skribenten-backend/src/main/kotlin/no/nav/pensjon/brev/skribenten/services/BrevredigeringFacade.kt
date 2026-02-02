@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
@@ -34,7 +34,7 @@ class BrevredigeringFacade(
         ).runHandler(request)
 
     suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-        newSuspendedTransaction {
+        suspendTransaction {
             OpprettBrevHandler(
                 opprettBrevPolicy = opprettBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
@@ -101,7 +101,7 @@ class BrevredigeringFacade(
             }
         }
 
-        return newSuspendedTransaction {
+        return suspendTransaction {
             handle(request)
         }
     }
