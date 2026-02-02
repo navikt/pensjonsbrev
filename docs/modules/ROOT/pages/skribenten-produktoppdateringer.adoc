@@ -11,7 +11,7 @@ Nytt år, nye muligheter! Vi har fått på plass noen artige greier i løpet av 
 * Redigering av signaturen til venstre i brev påvirker ikke lenger bredden til signaturen til høyre i brevet
 * Vi har rettet en liten utfordring med - i lenker. URL som inneholder - vil nå fungere hvis den kopieres fra PDF til nettleser
 * Minimering av listen med land som kan velges i ved redigering av P1 slik at kun EØS-land dukker opp
-* Felt 3.5 manglet muligheten til å velge "ikke oppgitt" i tilfeller der vi ikke vet hva som burde legges inn her
+* Felt 3.5 i P1 manglet muligheten til å velge "ikke oppgitt" i tilfeller der vi ikke vet hva som burde legges inn her
 
 === Ting vi har fikset
 * Henting av PDF i Skribenten kræsjet hvis det ble lagt inn spesialtegn i tittelen. For eksempen % eller $
@@ -19,7 +19,7 @@ Nytt år, nye muligheter! Vi har fått på plass noen artige greier i løpet av 
 * Vi hentet ikke ny PDF når mottaker ble endret i brevbehandler. Det gjør vi nå. Dette var kun et problem i forhåndsvisningen. Brev som ble sendt hadde med endringen av mottaker, men nå kan man altså se dette i forhåndsvisningen i tillegg
 * Vi fjernet tomme rader i P1 redigeringen som kun var estetiske
 * Autolagring kunne stjele fokus fra feltet der underskrift kan redigeres
-* Lagring av redigeringer gjort på P1 fungerte ikke
+* Lagring av redigeringer gjort på P1 i uføresaker fungerte ikke
 * Feltet for vedtaksdato i P1 fikk noen ganger et annet format som vi ikke støttet. Det gjør vi nå
 
 === Ting vi jobber med
