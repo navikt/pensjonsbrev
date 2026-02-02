@@ -38,9 +38,7 @@ private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 
 interface PenService {
     suspend fun hentSak(saksId: String): Pen.SakSelection?
-    suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
-    suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse?
     suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
@@ -94,28 +92,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             )
         }
 
-    override suspend fun bestillDoksysBrev(
-        request: Api.BestillDoksysBrevRequest,
-        enhetsId: String,
-        saksId: Long
-    ): Pen.BestillDoksysBrevResponse {
-        val response = client.post("brev/skribenten/doksys/sak/$saksId") {
-            setBody(
-                BestillDoksysBrevRequest(
-                    saksId = saksId,
-                    brevkode = request.brevkode,
-                    journalfoerendeEnhet = enhetsId,
-                    sprakKode = request.spraak,
-                    vedtaksId = request.vedtaksId,
-                )
-            )
-            contentType(ContentType.Application.Json)
-        }
-
-        return response.bodyOrThrow()
-            ?: throw PenServiceException("Feil ved bestilling av doksysbrev: ${response.status.value} - ${response.bodyAsText()}")
-    }
-
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse {
         val response = client.post("brev/pjoark030/bestillbrev") {
             setBody(bestillExstreamBrevRequest)
@@ -130,10 +106,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             })
         }
     }
-
-    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse? =
-        client.get("brev/dokument/metaforce/$journalpostId/$dokumentId")
-            .bodyOrThrow()
 
     override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse? =
         client.get("brev/dokument/exstream/$journalpostId")
@@ -188,14 +160,6 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             url { parameters.append("distribuer", distribuer.toString()) }
         }.bodyOrThrow()!!
 
-
-    private data class BestillDoksysBrevRequest(
-        val saksId: Long,
-        val brevkode: String,
-        val journalfoerendeEnhet: String?,
-        val sprakKode: SpraakKode?,
-        val vedtaksId: Long?,
-    )
 
     private data class SakResponseDto(
         val saksId: Long,
