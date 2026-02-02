@@ -24,8 +24,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
             faktiskStoenad = Kroner(4444),
             avviksBeloep = Kroner(20000),
             grunnlag = EtteroppgjoerGrunnlagDTO(
-                YearMonth.of(2024,1),
-                YearMonth.of(2024,12),
+                YearMonth.of(2024, 1),
+                YearMonth.of(2024, 12),
                 12,
                 Kroner(0),
                 Kroner(0),
@@ -34,7 +34,8 @@ fun createEtteroppgjoerForhaandsvarselBrevDTO() =
                 Kroner(0),
                 Kroner(0)
             ),
-            vedleggInnhold = emptyList()
+            vedleggInnhold = emptyList(),
+            mottattSkatteoppgjoer = true
         ),
     )
 

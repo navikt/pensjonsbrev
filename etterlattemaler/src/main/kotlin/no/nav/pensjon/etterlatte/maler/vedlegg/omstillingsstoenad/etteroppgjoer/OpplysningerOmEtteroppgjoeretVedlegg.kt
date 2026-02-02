@@ -372,11 +372,12 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
                 .or(grunnlag.afp.absoluteValue().greaterThan(0)
                     .or(grunnlag.utlandsinntekt.absoluteValue().greaterThan(0))))
     ) {
+        val pgi = grunnlag.pensjonsgivendeInntektHeleAaret.ifNull(Kroner(0))
         paragraph {
             text(
-                bokmal { +"I " + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. For den innvilgede perioden er pensjonsgivende inntekt uten omstillingsstønad beregnet til " + grunnlag.inntekt.format() + ", fordelt slik: " },
-                nynorsk { +"I " + etteroppgjoersAar.format() + " var den pensjonsgivande inntekta di totalt " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. For den innvilga perioden er pensjonsgivande inntekt uten omstillingsstønad utrekna til " + grunnlag.inntekt.format() + ". Inntekta fordeler seg slik: " },
-                english { +"In " + etteroppgjoersAar.format() + ", your pensionable income was a total of " + grunnlag.pensjonsgivendeInntektHeleAaret.format() + " including adjustment allowance, according to information from the Norwegian Tax Administration. For the approved period, your pensionable income is calculated to be " + grunnlag.inntekt.format() + " without adjustment allowance, distributed as follows:" },
+                bokmal { +"I " + etteroppgjoersAar.format() + " var din pensjonsgivende inntekt " + pgi.format() + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. For den innvilgede perioden er pensjonsgivende inntekt uten omstillingsstønad beregnet til " + grunnlag.inntekt.format() + ", fordelt slik: " },
+                nynorsk { +"I " + etteroppgjoersAar.format() + " var den pensjonsgivande inntekta di totalt " + pgi.format() + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. For den innvilga perioden er pensjonsgivande inntekt uten omstillingsstønad utrekna til " + grunnlag.inntekt.format() + ". Inntekta fordeler seg slik: " },
+                english { +"In " + etteroppgjoersAar.format() + ", your pensionable income was a total of " + pgi.format() + " including adjustment allowance, according to information from the Norwegian Tax Administration. For the approved period, your pensionable income is calculated to be " + grunnlag.inntekt.format() + " without adjustment allowance, distributed as follows:" },
             )
         }
 
@@ -444,21 +445,21 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.di
             }
         }
     }.orShow {
-        val pgi = grunnlag.pensjonsgivendeInntektHeleAaret.format()
+        val pgi = grunnlag.pensjonsgivendeInntektHeleAaret.ifNull(Kroner(0))
         showIf(erVedtak) {
             paragraph {
                 text(
-                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden." },
-                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden." },
-                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance." }
+                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi.format() + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden." },
+                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi.format() + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden." },
+                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi.format() + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance." }
                 )
             }
         }.orShow {
             paragraph {
                 text(
-                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden. Dersom dette ikke stemmer, må du sende oss opplysninger om inntekten du har og har hatt ved siden av omstillingsstønaden din innen tre uker." },
-                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden. Dersom dette ikkje stemmer, må du sende oss korrekte opplysningar innan tre veker." },
-                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance. If this is incorrect, you must send us information within three weeks." }
+                    bokmal { +"I " + etteroppgjoersAar.format()+ " var din pensjonsgivende inntekt " + pgi.format() + " inkludert omstillingsstønad ifølge opplysninger fra Skatteetaten. Det er registrert at du ikke har inntekt ved siden av omstillingsstønaden. Dersom dette ikke stemmer, må du sende oss opplysninger om inntekten du har og har hatt ved siden av omstillingsstønaden din innen tre uker." },
+                    nynorsk { +"I " + etteroppgjoersAar.format()+ " var den pensjonsgivande inntekta di totalt " + pgi.format() + " inkludert omstillingsstønad, ifølgje opplysningar frå Skatteetaten. Det er registrert at du ikkje har inntekt ved sidan av omstillingsstønaden. Dersom dette ikkje stemmer, må du sende oss korrekte opplysningar innan tre veker." },
+                    english { +"In " + etteroppgjoersAar.format()+ " your pensionable income was " + pgi.format() + " including adjustment allowance, according to information obtained from the Tax Administration. It is recorded that you do not have any income in addition to the adjustment allowance. If this is incorrect, you must send us information within three weeks." }
                 )
             }
         }
