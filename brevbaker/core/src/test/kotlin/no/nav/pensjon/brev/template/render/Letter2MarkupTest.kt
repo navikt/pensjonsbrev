@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
+import no.nav.pensjon.brev.template.SimpleSelector
+import no.nav.pensjon.brev.template.UnaryOperation
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -210,6 +212,31 @@ class Letter2MarkupTest {
         assertThat(result.letterMarkup).hasBlocks {
             paragraph {
                 variable("40")
+            }
+        }
+    }
+
+    @Test
+    fun `haandterer null ved evaluering av variabel-expression`() {
+        val land = Expression.UnaryInvoke(
+            Expression.FromScope.Argument(),
+            UnaryOperation.Select(SimpleSelector<EmptyAutobrevdata, String?>(
+                className = javaClass.name,
+                propertyName = "land",
+                propertyType = "kotlin.String?",
+                selector = { null }
+            ))
+        )
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(
+                    bokmal { + land.ifNull("tomt".expr()) },
+                )
+            }
+        }
+        assertThat(result.letterMarkup).hasBlocks {
+            paragraph {
+                literal("tomt")
             }
         }
     }

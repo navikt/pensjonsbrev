@@ -223,8 +223,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 ((first as? StringExpression)?.toContent(scope, fontType) ?: listOf()) + ((second as? StringExpression)?.toContent(scope, fontType) ?: listOf())
             }
             tags.contains(ElementTags.REDIGERBAR_DATA) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) }
-                ?: listOf()
+            else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) } ?: listOf()
         }.mergeLiterals(fontType)
     }
 
