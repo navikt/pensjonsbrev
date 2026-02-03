@@ -13,6 +13,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -188,6 +191,25 @@ class Letter2MarkupTest {
             paragraph {
                 literal("du")
                 literal("hallo")
+            }
+        }
+    }
+
+    @Test
+    fun `takler GreaterThan`() {
+        val aar = 40.expr()
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(bokmal { +aar.format() + ifElse(aar.greaterThan(1), " years", " year") })
+            }
+        }
+        val variabel = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
+            .flatMap { it.content }
+            .map { it as LetterMarkup.ParagraphContent.Text.Variable }
+        assertThat(variabel[0].tags).isEmpty()
+        assertThat(result.letterMarkup).hasBlocks {
+            paragraph {
+                variable("40")
             }
         }
     }
