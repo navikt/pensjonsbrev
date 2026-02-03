@@ -9,11 +9,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -24,6 +27,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
@@ -98,12 +102,22 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_opphor())){
-                includePhrase(TBU5012_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Når du flytter til dette landet har du ikke lenger rett til barnetillegg i uføretrygden din. Derfor har vi opphørt barnetillegget ditt." },
+                        nynorsk { + "Når du flyttar til dette landet har du ikkje lenger rett til barnetillegg i alderspensjonen din. Derfor opphøyrar vi barnetillegget ditt." },
+                    )
+                }
             }
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_et_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_et_opphor())){
-                includePhrase(TBU5013_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Når du flytter til dette landet har du ikke lenger rett til ektefelletillegg i uføretrygden. Derfor har vi opphørt ektefelletillegget ditt." },
+                        nynorsk { + " Når du flyttar til dette landet har du ikkje lenger rett til ektefelletillegg i alderspensjonen. Derfor opphøyrar vi ektefelletillegget ditt." },
+                    )
+                }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "") THEN      INCLUDE ENDIF
@@ -135,8 +149,18 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
             showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto().greaterThan(0) and ((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0)) or (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().greaterThan(0))))){
                 includePhrase(TBU1254_Generated(pe))
             }
-            includePhrase(TBU1125_Generated)
-            includePhrase(TBU1128_Generated)
+            paragraph {
+                text (
+                    bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i <FRITEKST: måned og år>." },
+                    nynorsk { + "Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i <FRITEKST Månad og år>." },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
+                    nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
+                )
+            }
             includePhrase(TBU1092_Generated)
 
             //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_FortsattMedlemskap_Minst20ArBotid) = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0) THEN      INCLUDE ENDIF
@@ -285,23 +309,76 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_opphor())){
-                includePhrase(TBU5001_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "For å ha rett til barnetillegg fra 1. juli 2020 " },
+                        nynorsk { + "For å ha rett til barnetillegg frå 1. juli 2020 " },
+                    )
+                    text (
+                        bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
+                    )
+                    text (
+                        bokmal { + "må også barnet være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må også barnet vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
+                    )
+                }
             }
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_et_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_et_opphor())){
-                includePhrase(TBU5014_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "For å ha rett til ektefelletillegg fra 1. juli 2020 " },
+                        nynorsk { + "For å ha rett til ektefelletillegg frå 1. juli 2020 " },
+                    )
+                    text (
+                        bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
+                    )
+                    text (
+                        bokmal { + "må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må også ektefellen/sambuaren din vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
+                    )
+                }
             }
-            includePhrase(TBU2210_Generated(pe))
+            paragraph {
+                text (
+                    bokmal { + "Uføretrygden din er beregnet på grunnlag av at du er bosatt i " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
+                    nynorsk { + "Uføretrygda di er berekna på grunnlag av at du er busett i " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
+                )
+
+                //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_BostedslandBeskrivelse) = "") THEN      INCLUDE ENDIF
+                showIf(((pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse()).equalTo(""))){
+                    text (
+                        bokmal { + "<FRITEKST bostedland>" },
+                        nynorsk { + "<FRITEKST bostedland>" },
+                    )
+                }
+                text (
+                    bokmal { + ". Hvis du flytter til et annet land må du gi beskjed til Nav. Uføretrygden din kan da bli beregnet på nytt." },
+                    nynorsk { + ". Dersom du flyttar til eit anna land, må du gi beskjed til Nav. Uføretrygda di kan då bli berekna på nytt." },
+                )
+            }
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_opphor())){
-                includePhrase(TBU5015_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vedtaket om stans av barnetillegg er gjort etter folketrygdloven § 12-15." },
+                        nynorsk { + "Vedtaket om stans av barnetillegg er gjort etter folketrygdlova § 12-15." },
+                    )
+                }
             }
 
             //IF(PE_UT_KravLinjeKode_VedtakResultat_forekomst_et_opphor())THEN INCLUDE ENDIF
             showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_et_opphor())){
-                includePhrase(TBU5016_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Vedtaket om stans av ektefelletillegget er gjort etter forskrift om omregning av uførepensjon til uføretrygd § 8." },
+                        nynorsk { + "Vedtaket om stans av ektefelletillegget er gjort etter forskrift av 3. juli 2014 om omrekning av uførepensjon til uføretrygd § 8." },
+                    )
+                }
             }
             //[TBU1173_103NN, TBU1173_103]
 
@@ -311,7 +388,12 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                     nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-3 <FRITEKST: Eventuell trygdeavtale>." },
                 )
             }
-            includePhrase(TBU1174_Generated)
+            title1 {
+                text (
+                    bokmal { + "Dette er virkningstidspunktet ditt" },
+                    nynorsk { + "Dette er verknadstidspunktet ditt" },
+                )
+            }
             //[TBU3347NN, TBU3347]
 
             paragraph {
@@ -328,7 +410,12 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT <> 0 ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb())) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().notEqualTo(0))){
-                includePhrase(TBU2379mFRI_Generated)
+                paragraph {
+                    text (
+                        bokmal { + "Barnetillegget i uføretrygden din er endret fordi <FRITEKST: årsak til endring>." },
+                        nynorsk { + "Barnetillegget i uføretrygda di er endra fordi <Fritekst: årsak til endring>." },
+                    )
+                }
             }
 
             //IF (   NOT   (     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0     AND     PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0   ) ) THEN   INCLUDE ENDIF
@@ -356,8 +443,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                         //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
                         showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
                             text (
-                                bokmal { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din " },
-                                nynorsk { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
+                                bokmal { + "inntektene til deg og ektefellen, partneren eller samboeren din " },
+                                nynorsk { + "inntektene til deg og ektefella, partneren eller samboaren din " },
                             )
                         }
 
@@ -380,15 +467,15 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                     //[TBU1284]
                     paragraph {
                         text (
-                            bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
-                            nynorsk { + "Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
+                            bokmal { + "Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til ektefellen, partneren eller samboeren din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
+                            nynorsk { + "Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekta til ektefella, partneren eller samboaren din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
                         )
 
                         //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_BTFBbelopFratrukketAnnenForeldersInntekt > 0) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0))){
                             text (
-                                bokmal { + "Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er holdt utenfor inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din. " },
-                                nynorsk { + "Grunnbeløpet i folketrygda på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er halde utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din. " },
+                                bokmal { + "Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er holdt utenfor inntekten til ektefellen, partneren eller samboeren din. " },
+                                nynorsk { + "Grunnbeløpet i folketrygda på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er halde utanfor inntekta til ektefella, partneren eller samboaren din. " },
                             )
                         }
 
@@ -529,8 +616,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                         //IF( PE_UT_TBU1286_del1() AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0 AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 ) THEN      INCLUDE ENDIF
                         showIf((pe.ut_tbu1286_del1() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))){
                             text (
-                                bokmal { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din " + pe.ut_bruttoetterreduksjonbt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
-                                nynorsk { + "inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall() + " din " + pe.ut_bruttoetterreduksjonbt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
+                                bokmal { + "inntektene til deg og ektefellen, partneren eller samboeren din " + pe.ut_bruttoetterreduksjonbt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
+                                nynorsk { + "inntektene til deg og ektefella, partneren eller samboaren din " + pe.ut_bruttoetterreduksjonbt_høyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
                             )
                         }
 
@@ -634,12 +721,58 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
                 //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false) ) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) or not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget())))){
-                    includePhrase(TBU1286.1_Generated(pe))
+                    paragraph {
+                        text (
+                            bokmal { + "Barnetillegget " },
+                            nynorsk { + "Barnetillegget " },
+                        )
+
+                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                            text (
+                                bokmal { + "for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, " },
+                                nynorsk { + "for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra sine, " },
+                            )
+                        }
+                        text (
+                            bokmal { + "blir ikke utbetalt fordi du " },
+                            nynorsk { + "blir ikkje utbetalt fordi du " },
+                        )
+
+                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()){
+                            text (
+                                bokmal { + "alene " },
+                                nynorsk { + "åleine " },
+                            )
+                        }
+                        text (
+                            bokmal { + "har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kroner. Inntekten din er over grensen for å få utbetalt barnetillegg." },
+                            nynorsk { + "har ei samla inntekt som er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + " kroner. Inntekta di er over grensa for å få utbetalt barnetillegg. " },
+                        )
+                    }
                 }
 
                 //IF( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto <> 0  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) ) THEN      INCLUDE ENDIF
                 showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0) or not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())))){
-                    includePhrase(TBU1286.2_Generated(pe))
+                    paragraph {
+                        text (
+                            bokmal { + "Barnetillegget" },
+                            nynorsk { + "Barnetillegget " },
+                        )
+
+                        //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+                        showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()){
+                            text (
+                                bokmal { + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre," },
+                                nynorsk { + "for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine, " },
+                            )
+                        }
+                        text (
+                            bokmal { + " blir ikke utbetalt fordi dere har en samlet inntekt som er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + " kroner. De samlede inntektene er over grensen for å få utbetalt barnetillegg." },
+                            nynorsk { + "blir ikkje utbetalt fordi dei har ei samla inntekt som er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + " kroner. Dei samla inntektene er over grensa for å få utbetalt barnetillegg." },
+                        )
+                    }
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0)  )  THEN      INCLUDE ENDIF
@@ -670,7 +803,20 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()){
-                includePhrase(TBU1215_Generated(pe))
+                paragraph {
+                    text (
+                        bokmal { + "Du er innvilget uføretrygd med gjenlevendetillegg. Tillegget er beregnet etter ditt eget og din avdøde ektefelles beregningsgrunnlag og trygdetid. Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med. " },
+                        nynorsk { + "Du er innvilga uføretrygd med attlevandetillegg. Tillegget er rekna ut etter utrekningsgrunnlaget og trygdetida både for deg og for den avdøde ektefellen din. Tener du meir enn inntektsgrensa di, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med. " },
+                    )
+
+                    //PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_NyttGjenlevendetillegg = true
+                    showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_nyttgjenlevendetillegg()){
+                        text (
+                            bokmal { + "Tillegget er tidsbegrenset til fem år fra virkningstidspunktet. " },
+                            nynorsk { + "Tillegget er tidsbegrensa til fem år frå verknadstidspunktet. " },
+                        )
+                    }
+                }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true) THEN      INCLUDE ENDIF
@@ -685,16 +831,96 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
             showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()){
-                includePhrase(TBU2275_Generated)
-                includePhrase(TBU2369_Generated)
+                title1 {
+                    text (
+                        bokmal { + "For deg som mottar ektefelletillegg" },
+                        nynorsk { + "For deg som får ektefelletillegg" },
+                    )
+                }
+                paragraph {
+                    text (
+                        bokmal { + "Du mottar ektefelletillegg i uføretrygden din. Dette tillegget blir ikke endret som følge av endring i uføretrygden din." },
+                        nynorsk { + "Du får ektefelletillegg i uføretrygda di. Dette tillegget blir ikkje endra som følgje av endring i uføretrygda di." },
+                    )
+                    text (
+                        bokmal { + "For å ha rett til ektefelletillegg fra 1. juli 2020 " },
+                        nynorsk { + "For å ha rett til ektefelletillegg frå 1. juli 2020 " },
+                    )
+                    text (
+                        bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
+                    )
+                    text (
+                        bokmal { + "må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                        nynorsk { + "må også ektefellen/sambuaren din vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
+                    )
+                    text (
+                        bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjelder også hvis ektefellen/samboeren din du forsørger skal oppholde seg i et annet land." },
+                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjeld også om ektefellen/sambuaren du forsørgjer skal opphalde seg i eit anna land." },
+                    )
+                }
             }
-            includePhrase(TBU1223_Generated)
-            includePhrase(TBU1224_Generated)
-            includePhrase(TBU1100.1_Generated(pe))
-            includePhrase(TBU1074_MedMargin_Generated)
-            includePhrase(TBU1075_Generated(pe))
-            includePhrase(TBU1227_Generated)
-            includePhrase(TBU2119_Generated)
+            title1 {
+                text (
+                    bokmal { + "Du må melde fra om endringer" },
+                    nynorsk { + "Du må melde frå om endringar" },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om." },
+                    nynorsk { + "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om." },
+                )
+            }
+            title1 {
+                text (
+                    bokmal { + "Du har rett til å klage" },
+                    nynorsk { + "Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. " +
+                            "I vedlegget " },
+                    nynorsk { + "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
+                            "I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    bokmal { + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL. " },
+                    nynorsk { + " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL. " },
+                )
+            }
+            title1 {
+                text (
+                    bokmal { + "Du har rett til innsyn" },
+                    nynorsk { + "Du har rett til innsyn" },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram." },
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Orientering om rettar og plikter» for informasjon om korleis du går fram." },
+                )
+            }
+            title1 {
+                text(
+                    bokmal { +"Sjekk utbetalingene dine" },
+                    nynorsk { +"Sjekk utbetalingane dine" },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Se alle utbetalinger du har mottatt: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
+                    nynorsk { + "Du får uføretrygd betalt ut den 20. kvar månad eller seinast siste vyrkedag før denne datoen. Sjå alle utbetalingar du har fått: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Du må som hovedregel betale skatt til Norge" },
+                    nynorsk { + "Du må som hovudregel betale skatt til Noreg" },
+                )
+            }
             //[TBU2120NN, TBU2120]
 
             paragraph {
@@ -703,10 +929,6 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                     nynorsk { + "Når du flyttar frå Noreg, kan dette få betydning for skatten din. Du må sjølv ta kontakt med Skatteetaten." },
                 )
             }
-            includePhrase(TBU1076_MedMargin_Generated)
-            includePhrase(TBU1077_Generated)
-            includePhrase(TBU1231_Generated(pe))
-            includePhrase(TBU2122_Generated(pe))
 
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
