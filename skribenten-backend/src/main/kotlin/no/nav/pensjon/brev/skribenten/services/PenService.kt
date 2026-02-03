@@ -104,7 +104,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             val error = response.body<BestillExstreamBrevResponse.Error>()
             if (error.type == "AdresseIkkeRegistrert") {
                 throw PenDataException(BrevExceptionDto(
-                    tittel = error.type,
+                    tittel = "Adresse ikke registrert",
                     melding = error.message ?: "",
                 ))
             } else {
