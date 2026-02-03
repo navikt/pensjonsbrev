@@ -112,7 +112,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
                             ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”.")},
                     nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di som vi har i saka di." +
                             ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”.")},
-                    english { +"The calculaiton is based on the income information we have in your case."},
+                    english { +"The calculaiton is based on the income information we have in your case." +
+                            ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”.")},
                 )
             }
         }
