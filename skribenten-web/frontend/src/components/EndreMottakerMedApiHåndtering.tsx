@@ -1,5 +1,5 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { BoxNew, Button, HStack, VStack } from "@navikt/ds-react";
+import { Box, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
@@ -66,7 +66,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           props.overrideOppsummering(
             <>
               {props.endreAsIcon && (
-                <BoxNew asChild borderRadius="4">
+                <Box asChild borderRadius="4">
                   <Button
                     icon={<PencilIcon />}
                     onClick={() => setModalÅpen(true)}
@@ -74,7 +74,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
                     type="button"
                     variant="tertiary"
                   />
-                </BoxNew>
+                </Box>
               )}
             </>,
           )

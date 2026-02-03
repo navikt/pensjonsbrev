@@ -1,7 +1,7 @@
 import "~/css/p1.css";
 
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
-import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
@@ -172,7 +172,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
         <FormProvider {...formMethods}>
           <VStack asChild flexGrow="1" minHeight="0">
             <form onSubmit={handleSubmit(onSubmit, onValidationError)}>
-              <VStack asChild flexGrow="1" overflow="hidden" padding="0">
+              <VStack asChild flexGrow="1" overflow="hidden" padding="space-0">
                 <Modal.Body>
                   {isInitialLoading ? (
                     <VStack align="center" flexGrow="1" justify="center">
@@ -185,23 +185,23 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   ) : (
                     <>
                       {saveSuccess && (
-                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
                           <Alert size="small" variant="success">
                             Endringene ble lagret
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
                       {validationError && (
-                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
                           <Alert closeButton onClose={() => setValidationError(null)} size="small" variant="error">
                             {validationError}
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
 
                       <VStack asChild overflow="hidden">
                         <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} size="small" value={activeTab}>
-                          <BoxNew asChild paddingInline="space-20">
+                          <Box asChild paddingInline="space-20">
                             <Tabs.List>
                               <Tabs.Tab
                                 label={
@@ -236,7 +236,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                                 value="institusjon"
                               />
                             </Tabs.List>
-                          </BoxNew>
+                          </Box>
 
                           <Tabs.Panel className="p1-tabs-panel" value="innehaver">
                             <P1InnehaverTab disabled />
@@ -261,11 +261,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                       </VStack>
 
                       {lagreMutation.isError && (
-                        <BoxNew asChild marginBlock="space-16 0" marginInline="space-20">
+                        <Box asChild marginBlock="space-16 space-0" marginInline="space-20">
                           <Alert size="small" variant="error">
                             Noe gikk galt ved lagring av P1. Prøv igjen.
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
                     </>
                   )}
@@ -291,11 +291,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 // Helper component for tab labels with error indicator
 const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => (
   <>
-    <BoxNew as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
+    <Box as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
       {label}
-    </BoxNew>
+    </Box>
     {hasError && (
-      <BoxNew aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
+      <Box aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
     )}
   </>
 );

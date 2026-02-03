@@ -3,7 +3,7 @@ import { ArrowRightIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
-  BoxNew,
+  Box,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -249,7 +249,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     >
       <form onSubmit={form.handleSubmit(onSendValgteBrev)}>
         <Modal.Body>
-          <BoxNew marginBlock="0 space-16">
+          <Box marginBlock="space-0 space-16">
             {queryFold({
               query: alleBrevResult,
               initial: () => null,
@@ -290,16 +290,20 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                     <VStack>
                       <BodyLong>Vedtaksbrev sendes av attestant etter at attestering er gjennomført.</BodyLong>
                       {brevAttestering.map((brev) => (
-                        <List key={brev.id}>
-                          <List.Item>{brev.brevtittel}</List.Item>
-                        </List>
+                        <div key={brev.id}>
+                          <Box asChild marginBlock="space-16">
+                            <List data-aksel-migrated-v8>
+                              <List.Item>{brev.brevtittel}</List.Item>
+                            </List>
+                          </Box>
+                        </div>
                       ))}
                     </VStack>
                   )}
                 </VStack>
               ),
             })}
-          </BoxNew>
+          </Box>
         </Modal.Body>
         <Modal.Footer>
           <HStack gap="space-16">

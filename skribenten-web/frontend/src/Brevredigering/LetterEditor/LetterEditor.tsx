@@ -1,6 +1,6 @@
 import "./editor.css";
 
-import { BoxNew, Heading, VStack } from "@navikt/ds-react";
+import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
@@ -86,7 +86,7 @@ export const LetterEditor = ({
     <VStack align="center" height={editorHeight ?? "auto"}>
       <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        <BoxNew className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
+        <Box className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
           <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
           <Heading
             className="letter-title"
@@ -120,7 +120,7 @@ export const LetterEditor = ({
             ))}
           </div>
           <SignaturView signatur={letter.signatur} />
-        </BoxNew>
+        </Box>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
     </VStack>

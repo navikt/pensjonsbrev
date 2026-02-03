@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, BoxNew, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -50,9 +50,9 @@ const VedtakWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <BoxNew asChild background="default" paddingBlock="space-32 0">
+      <Box asChild background="default" paddingBlock="space-32 space-0">
         <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-      </BoxNew>
+      </Box>
     ),
     error: (err) => {
       if (err.response?.status === 423 && err.response?.data) {
@@ -95,9 +95,9 @@ const VedtakWrapper = () => {
       }
 
       return (
-        <BoxNew background="default" flexGrow="1">
+        <Box background="default" flexGrow="1">
           <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
-        </BoxNew>
+        </Box>
       );
     },
     success: (brev) => (

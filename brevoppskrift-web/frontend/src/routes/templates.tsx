@@ -23,7 +23,7 @@ export const Route = createFileRoute("/templates")({
 
 function TemplateList({ templates, malType }: { templates: string[]; malType: MalType }) {
   return (
-    <VStack gap="2">
+    <VStack gap="space-8">
       {templates.map((templateId) => (
         <Link key={templateId} params={{ malType, templateId }} preload="intent" to="/template/$malType/$templateId">
           {templateId}
