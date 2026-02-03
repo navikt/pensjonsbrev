@@ -208,17 +208,25 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC -> FontType.ITALIC
         }
 
-    private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
-        when {
+    private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> {
+        try {
+            eval(scope)
+        } catch (_: Exception) {
+            return listOf()
+        }
+        return when {
+            this is Expression.Literal && this.value == null -> listOf()
             this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat -> {
+            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Rekursiv -> {
                 // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
                 @Suppress("UNCHECKED_CAST")
-                (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
+                ((first as? StringExpression)?.toContent(scope, fontType) ?: listOf()) + ((second as? StringExpression)?.toContent(scope, fontType) ?: listOf())
             }
             tags.contains(ElementTags.REDIGERBAR_DATA) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            else -> listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
+            else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) }
+                ?: listOf()
         }.mergeLiterals(fontType)
+    }
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =
         fold(emptyList()) { acc, current ->

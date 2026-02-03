@@ -48,18 +48,18 @@ class ExpressionTest {
     }
 
     @Test
-    fun `binary invoke tar tags fra begge indre`() {
+    fun `binary invoke tar ikke tags fra indre`() {
         val op1 = Expression.Literal("hei", tags = setOf(ElementTags.FRITEKST))
         val op2 = Expression.Literal(" du", tags = setOf(ElementTags.REDIGERBAR_DATA))
         val expected = Expression.BinaryInvoke(op1, op2, BinaryOperation.Concat)
-        assertThat(expected.tags).containsExactlyInAnyOrder(ElementTags.FRITEKST, ElementTags.REDIGERBAR_DATA)
+        assertThat(expected.tags).isEmpty()
     }
 
     @Test
-    fun `unary invoke tar tags fra indre`() {
+    fun `unary invoke tar ikke tags fra indre`() {
         val op1 = Expression.Literal(true, tags = setOf(ElementTags.FRITEKST))
         val expected = Expression.UnaryInvoke(op1, UnaryOperation.Not)
-        assertThat(expected.tags).isEqualTo(setOf(ElementTags.FRITEKST))
+        assertThat(expected.tags).isEmpty()
     }
 
     @Test

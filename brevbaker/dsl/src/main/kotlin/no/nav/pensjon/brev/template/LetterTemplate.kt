@@ -124,7 +124,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
-        tags: Set<ElementTags> = value.tags
+        tags: Set<ElementTags> = emptySet()
     ) : Expression<Out>(tags), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
@@ -175,7 +175,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         val first: Expression<In1>,
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>,
-        tags: Set<ElementTags> = first.tags + second.tags
+        tags: Set<ElementTags> = emptySet()
     ) : Expression<Out>(tags = tags), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
 
@@ -185,7 +185,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         }
         override fun hashCode() = Objects.hash(first, second, operation)
 
-        internal fun medTags(tags: Set<ElementTags>) = BinaryInvoke(first, second, operation, (first.tags + second.tags) + tags)
+        internal fun medTags(tags: Set<ElementTags>) = BinaryInvoke(first, second, operation, tags)
     }
 
     final override fun toString(): String {

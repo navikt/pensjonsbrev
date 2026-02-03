@@ -7,14 +7,17 @@ import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.model.format
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.render.LetterMarkupAsserter.Companion.assertThat
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.Year
 import org.assertj.core.api.Assertions.assertThat
@@ -139,6 +142,52 @@ class Letter2MarkupTest {
                 literal("hei")
                 newLine()
                 literal("ha det bra")
+            }
+        }
+    }
+
+
+    // ToContent
+    @Test
+    fun `ingen annotasjoner inn gir ingen annotasjoner ut`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                text(bokmal { +"hei" })
+                text(bokmal { +"hallo" })
+            }
+        }
+
+        assertThat(result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
+            .flatMap { it.content }
+            .map { it as LetterMarkup.ParagraphContent.Text.Literal }
+            .map { it.tags }).allMatch { it.isEmpty() }
+
+        assertThat(result.letterMarkup).hasBlocks {
+            paragraph {
+                literal("hei")
+                literal("hallo")
+            }
+        }
+    }
+
+    @Test
+    fun `bevarer fritekst-tag fra ifNull`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                val ifNull = null.expr().ifNull(Expression.Literal("du", setOf(ElementTags.FRITEKST)))
+                text(bokmal { + ifNull })
+                text(bokmal { +"hallo" })
+            }
+        }
+        val literals = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
+            .flatMap { it.content }
+            .map { it as LetterMarkup.ParagraphContent.Text.Literal }
+        assertThat(literals[0].tags).containsExactly(ElementTags.FRITEKST)
+        assertThat(literals[1].tags).isEmpty()
+        assertThat(result.letterMarkup).hasBlocks {
+            paragraph {
+                literal("du")
+                literal("hallo")
             }
         }
     }
