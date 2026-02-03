@@ -101,9 +101,17 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         return if (response.status.isSuccess()) {
             response.body()
         } else {
-            throw PenServiceException(response.body<BestillExstreamBrevResponse.Error>().let {
-                "Feil ved bestilling av exstreambrev - ${it.type}: ${it.message}"
-            })
+            val error = response.body<BestillExstreamBrevResponse.Error>()
+            if (error.type == "AdresseIkkeRegistrert") {
+                throw PenDataException(BrevExceptionDto(
+                    tittel = error.type,
+                    melding = error.message ?: "",
+                ))
+            } else {
+                throw PenServiceException(error.let {
+                    "Feil ved bestilling av exstreambrev - ${it.type}: ${it.message}"
+                })
+            }
         }
     }
 
