@@ -187,7 +187,7 @@ class Letter2MarkupTest {
         }
         val literals = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
             .flatMap { it.content }
-            .map { it as LetterMarkup.ParagraphContent.Text.Literal }
+            .filterIsInstance<LetterMarkup.ParagraphContent.Text.Literal>()
         assertThat(literals[0].tags).containsExactly(ElementTags.FRITEKST)
         assertThat(literals[1].tags).isEmpty()
         assertThat(result.letterMarkup).hasBlocks {
@@ -203,16 +203,21 @@ class Letter2MarkupTest {
         val aar = 40.expr()
         val result = renderTemplate(EmptyAutobrevdata) {
             paragraph {
-                text(bokmal { +aar.format() + ifElse(aar.greaterThan(1), " years", " year") })
+                text(bokmal { +aar.format() + ifElse(aar.greaterThan(1), Expression.Literal(" years", setOf(ElementTags.FRITEKST)), Expression.Literal(" year")) })
             }
         }
         val variabel = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
             .flatMap { it.content }
-            .map { it as LetterMarkup.ParagraphContent.Text.Variable }
+            .filterIsInstance<LetterMarkup.ParagraphContent.Text.Variable>()
+        val literal = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
+            .flatMap { it.content }
+            .filterIsInstance<LetterMarkup.ParagraphContent.Text.Literal>()
         assertThat(variabel[0].tags).isEmpty()
+        assertThat(literal[0].tags).containsExactly(ElementTags.FRITEKST)
         assertThat(result.letterMarkup).hasBlocks {
             paragraph {
                 variable("40")
+                literal(" years")
             }
         }
     }

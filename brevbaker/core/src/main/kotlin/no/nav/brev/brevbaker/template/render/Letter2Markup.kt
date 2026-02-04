@@ -217,12 +217,32 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         return when {
             this is Expression.Literal && this.value == null -> listOf()
             this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Rekursiv -> {
-                // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
-                @Suppress("UNCHECKED_CAST")
-                ((first as? StringExpression)?.toContent(scope, fontType) ?: listOf()) + ((second as? StringExpression)?.toContent(scope, fontType) ?: listOf())
+            this is Expression.BinaryInvoke<*, *, *> -> {
+                when (operation) {
+                    is BinaryOperation.IfNull<*> -> {
+                        if (first.eval(scope) == null) {
+                            return (second as? StringExpression)?.toContent(scope, fontType) ?: listOf()
+                        } else {
+                            return (first as? StringExpression)?.toContent(scope, fontType) ?: listOf()
+                        }
+                    }
+                    is BinaryOperation.IfElse<*> -> {
+                        if (first.eval(scope) == true) {
+                            ((second as Expression.BinaryInvoke<*, *, *>).first as? StringExpression)?.toContent(scope, fontType) ?: listOf()
+                        } else {
+                            ((second as Expression.BinaryInvoke<*, *, *>).second as? StringExpression)?.toContent(scope, fontType) ?: listOf()
+                        }
+                    }
+                    is BinaryOperation.Concat -> ((first as? StringExpression)?.toContent(scope, fontType) ?: listOf()) + ((second as? StringExpression)?.toContent(scope, fontType) ?: listOf())
+                    else -> {
+                        when {
+                            tags.contains(ElementTags.REDIGERBAR_DATA) || tags.contains(ElementTags.FRITEKST) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+                            else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) } ?: listOf()
+                        }
+                    }
+                }
             }
-            tags.contains(ElementTags.REDIGERBAR_DATA) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+            tags.contains(ElementTags.REDIGERBAR_DATA) || tags.contains(ElementTags.FRITEKST) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
             else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) } ?: listOf()
         }.mergeLiterals(fontType)
     }
