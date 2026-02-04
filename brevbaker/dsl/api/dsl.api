@@ -491,6 +491,7 @@ public abstract class no/nav/pensjon/brev/template/Expression : no/nav/pensjon/b
 	public synthetic fun <init> (Ljava/util/Set;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public abstract fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public final fun getTags ()Ljava/util/Set;
+	public abstract fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun toString ()Ljava/lang/String;
 }
 
@@ -503,6 +504,8 @@ public final class no/nav/pensjon/brev/template/Expression$BinaryInvoke : no/nav
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/BinaryOperation;
 	public final fun getSecond ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -514,6 +517,8 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Argument : 
 	public fun equals (Ljava/lang/Object;)Z
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$FromScope$Argument;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -522,6 +527,8 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Assigned : 
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public final fun getId ()I
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -529,6 +536,8 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Felles : no
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/Expression$FromScope$Felles;
 	public synthetic fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$FromScope$Felles;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -536,6 +545,8 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Language : 
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/Expression$FromScope$Language;
 	public synthetic fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/Language;
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$FromScope$Language;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -546,6 +557,8 @@ public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pens
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$Literal;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -557,6 +570,8 @@ public final class no/nav/pensjon/brev/template/Expression$NullSafeApplication :
 	public final fun getAssigned ()Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;
 	public final fun getInput ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$NullSafeApplication;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 
@@ -568,6 +583,8 @@ public final class no/nav/pensjon/brev/template/Expression$UnaryInvoke : no/nav/
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/UnaryOperation;
 	public final fun getValue ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
+	public fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
+	public synthetic fun medTags (Ljava/util/Set;)Lno/nav/pensjon/brev/template/Expression;
 	public fun stableHashCode ()I
 }
 

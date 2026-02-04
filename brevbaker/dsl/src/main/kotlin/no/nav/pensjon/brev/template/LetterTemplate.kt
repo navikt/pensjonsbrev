@@ -4,6 +4,9 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
 import java.time.LocalDate
@@ -55,6 +58,9 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
+    abstract fun medTags(tags: Set<ElementTags>): Expression<Out>
+
+
     class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
@@ -81,17 +87,22 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
             return value == other.value && tags == other.tags
         }
         override fun hashCode() = Objects.hash(value, tags)
+
+        override fun medTags(tags: Set<ElementTags>) = Literal(value, this.tags + tags)
+
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
         object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
+            override fun medTags(tags: Set<ElementTags>) = Felles
         }
 
         object Language : FromScope<no.nav.pensjon.brev.template.Language>() {
             override fun eval(scope: ExpressionScope<*>) = scope.language
             override fun stableHashCode(): Int = "FromScope.Language".hashCode()
+            override fun medTags(tags: Set<ElementTags>) = Language
         }
 
         class Argument<out Out> @InternKonstruktoer constructor(): FromScope<Out> () {
@@ -100,6 +111,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
             override fun equals(other: Any?): Boolean = other is Argument<*>
             override fun hashCode(): Int = javaClass.hashCode()
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
+            override fun medTags(tags: Set<ElementTags>) = this
         }
 
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {
@@ -118,6 +130,8 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
                 return id == other.id
             }
             override fun hashCode() = Objects.hash(id)
+
+            override fun medTags(tags: Set<ElementTags>) = this
         }
     }
 
@@ -141,7 +155,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         }
         override fun hashCode() = Objects.hash(value, operation, tags)
 
-        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
+        override fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, this.tags + tags)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
@@ -169,6 +183,8 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
         override fun hashCode() = Objects.hash(input, assigned, application)
 
+        override fun medTags(tags: Set<ElementTags>) = NullSafeApplication(input, assigned, application.medTags(application.tags + tags))
+
     }
 
     class BinaryInvoke<In1, In2, out Out>(
@@ -185,7 +201,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         }
         override fun hashCode() = Objects.hash(first, second, operation)
 
-        internal fun medTags(tags: Set<ElementTags>) = BinaryInvoke(first, second, operation, tags)
+        override fun medTags(tags: Set<ElementTags>) = BinaryInvoke(first, second, operation, this.tags + tags)
     }
 
     final override fun toString(): String {
