@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
-import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.util.Objects
@@ -99,8 +98,6 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
 abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? = null) : Operation() {
 
-    interface Rekursiv
-
     class Documentation(val name: String, val syntax: Notation) {
         enum class Notation { PREFIX, INFIX, POSTFIX, FUNCTION }
 
@@ -143,16 +140,16 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     }
 
     object Or : BinaryOperation<Boolean, Boolean, Boolean>(Documentation("or", Documentation.Notation.INFIX)),
-        StableHash by StableHash.of("BinaryOperation.Or"), Rekursiv {
+        StableHash by StableHash.of("BinaryOperation.Or") {
         override fun apply(first: Boolean, second: Boolean): Boolean = first || second
     }
 
     object And : BinaryOperation<Boolean, Boolean, Boolean>(Documentation("and", Documentation.Notation.INFIX)),
-        StableHash by StableHash.of("BinaryOperation.And"), Rekursiv {
+        StableHash by StableHash.of("BinaryOperation.And") {
         override fun apply(first: Boolean, second: Boolean): Boolean = first && second
     }
 
-    object Concat : BinaryOperation<String, String, String>(), StableHash by StableHash.of("BinaryOperation.Concat"), Rekursiv {
+    object Concat : BinaryOperation<String, String, String>(), StableHash by StableHash.of("BinaryOperation.Concat") {
         override fun apply(first: String, second: String): String = first + second
     }
 
@@ -165,11 +162,11 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
     }
 
     class IfNull<T : Any> internal constructor(): BinaryOperation<T?, T, T>(Documentation("?:", Documentation.Notation.INFIX)),
-        StableHash by StableHash.of("BinaryOperation.IfNull"), Rekursiv {
+        StableHash by StableHash.of("BinaryOperation.IfNull") {
         override fun apply(first: T?, second: T): T = first ?: second
     }
 
-    class MapCollection<In1, In2, Out> internal constructor(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>(), Rekursiv {
+    class MapCollection<In1, In2, Out> internal constructor(val mapper: BinaryOperation<In1, In2, Out>) : BinaryOperation<Collection<In1>, In2, Collection<Out>>() {
         override fun apply(first: Collection<In1>, second: In2): Collection<Out> = first.map { mapper.apply(it, second) }
         override fun stableHashCode(): Int = hashCode()
 
@@ -181,23 +178,23 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString() = "MapCollection(mapper=$mapper,doc=$doc)"
     }
 
-    class EnumInList<EnumType : Enum<*>> internal constructor(): BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList"), Rekursiv {
+    class EnumInList<EnumType : Enum<*>> internal constructor(): BinaryOperation<EnumType, List<EnumType>, Boolean>(), StableHash by StableHash.of("BinaryOperation.EnumInList") {
         override fun apply(first: EnumType, second: List<EnumType>): Boolean = second.contains(first)
     }
 
-    class GetElementOrNull<ListType> internal constructor(): BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull"), Rekursiv {
+    class GetElementOrNull<ListType> internal constructor(): BinaryOperation<List<ListType>?, Int, ListType?>(), StableHash by StableHash.of("BinaryOperation.GetElementOrNull") {
         override fun apply(first: List<ListType>?, second: Int): ListType? = first?.getOrNull(second)
     }
 
-    class IfElse<Out> internal constructor(): BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse"), Rekursiv {
+    class IfElse<Out> internal constructor(): BinaryOperation<Boolean, Pair<Out, Out>, Out>(), StableHash by StableHash.of("BinaryOperation.IfElse") {
         override fun apply(first: Boolean, second: Pair<Out, Out>): Out = if (first) second.first else second.second
     }
 
-    class Tuple<In1, In2> internal constructor(): BinaryOperation<In1, In2, Pair<In1, In2>>(), StableHash by StableHash.of("BinaryOperation.Tuple"), Rekursiv {
+    class Tuple<In1, In2> internal constructor(): BinaryOperation<In1, In2, Pair<In1, In2>>(), StableHash by StableHash.of("BinaryOperation.Tuple") {
         override fun apply(first: In1, second: In2): Pair<In1, In2> = first to second
     }
 
-    class Flip<In1, In2, Out> internal constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>(), Rekursiv {
+    class Flip<In1, In2, Out> internal constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()
 
@@ -209,7 +206,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun toString() = "Flip(operation=$operation,doc=$doc)"
     }
 
-    class SafeCall<In1, In2, Out> internal constructor(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>(), Rekursiv {
+    class SafeCall<In1, In2, Out> internal constructor(val operation: BinaryOperation<In1 & Any, In2 & Any, Out>) : BinaryOperation<In1, In2, Out?>() {
         override fun apply(first: In1, second: In2): Out? =
             if (first != null && second != null) {
                 operation.apply(first, second)

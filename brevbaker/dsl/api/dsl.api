@@ -94,14 +94,14 @@ public abstract class no/nav/pensjon/brev/template/BinaryOperation : no/nav/pens
 	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$And : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$And : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$And;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (ZZ)Ljava/lang/Boolean;
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$Concat : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$Concat : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Concat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
@@ -127,7 +127,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$Documentation$No
 	public static fun values ()[Lno/nav/pensjon/brev/template/BinaryOperation$Documentation$Notation;
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$EnumInList : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$EnumInList : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public fun apply (Ljava/lang/Enum;Ljava/util/List;)Ljava/lang/Boolean;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun stableHashCode ()I
@@ -139,7 +139,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$Equal : no/nav/p
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$Flip : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv {
+public final class no/nav/pensjon/brev/template/BinaryOperation$Flip : no/nav/pensjon/brev/template/BinaryOperation {
 	public fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/BinaryOperation;
@@ -148,7 +148,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$Flip : no/nav/pe
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$GetElementOrNull : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$GetElementOrNull : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Ljava/util/List;I)Ljava/lang/Object;
 	public fun stableHashCode ()I
@@ -166,13 +166,13 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$GreaterThanOrEqu
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$IfElse : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$IfElse : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (ZLkotlin/Pair;)Ljava/lang/Object;
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$IfNull : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$IfNull : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun stableHashCode ()I
 }
@@ -203,7 +203,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$LessThanOrEqual 
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$MapCollection : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv {
+public final class no/nav/pensjon/brev/template/BinaryOperation$MapCollection : no/nav/pensjon/brev/template/BinaryOperation {
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Ljava/util/Collection;Ljava/lang/Object;)Ljava/util/Collection;
 	public fun equals (Ljava/lang/Object;)Z
@@ -213,17 +213,14 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$MapCollection : 
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$Or : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$Or : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Or;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (ZZ)Ljava/lang/Boolean;
 	public fun stableHashCode ()I
 }
 
-public abstract interface class no/nav/pensjon/brev/template/BinaryOperation$Rekursiv {
-}
-
-public final class no/nav/pensjon/brev/template/BinaryOperation$SafeCall : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv {
+public final class no/nav/pensjon/brev/template/BinaryOperation$SafeCall : no/nav/pensjon/brev/template/BinaryOperation {
 	public fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getOperation ()Lno/nav/pensjon/brev/template/BinaryOperation;
@@ -232,7 +229,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$SafeCall : no/na
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$Tuple : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/BinaryOperation$Rekursiv, no/nav/pensjon/brev/template/StableHash {
+public final class no/nav/pensjon/brev/template/BinaryOperation$Tuple : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Ljava/lang/Object;Ljava/lang/Object;)Lkotlin/Pair;
 	public fun stableHashCode ()I
