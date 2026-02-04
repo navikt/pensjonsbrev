@@ -73,16 +73,16 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
 
                 paragraph {
                     text (
-                        bokmal { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
-                        nynorsk { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        bokmal { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        nynorsk { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget uføretrygd med en foreløpig beregning. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
                     )
                     text (
                         bokmal { + "<Eller>" },
                         nynorsk { + "<Eller>" },
                     )
                     text (
-                        bokmal { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
-                        nynorsk { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        bokmal { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        nynorsk { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " der du fikk innvilget et forskudd på uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå gjort en endelig beregning av uføretrygden din. Den endelige beregningen har ført til endringer i uføretrygden din fra " + pe.vedtaksdata_virkningfom().format() + "." },
                     )
                 }
             }
@@ -93,8 +93,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
 
                 paragraph {
                     text (
-                        bokmal { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> om foreløpig avslag på søknaden din om uføretrygd. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå innvilget søknaden din om uføretrygd. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "." },
-                        nynorsk { + "Vi viser til vedtak fra <Fritekst: vedtaksdato> om foreløpig avslag på søknaden din om uføretrygd. Ut fra opplysninger vi har fått fra <Fritekst: land>, har vi nå innvilget søknaden din om uføretrygd. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        bokmal { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå innvilget søknaden din om uføretrygd. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "." },
+                        nynorsk { + "Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Ut fra opplysninger vi har fått fra " + fritekst("land") + ", har vi nå innvilget søknaden din om uføretrygd. Du får " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + "." },
                     )
                 }
             }
@@ -194,8 +194,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
             showIf(((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo(""))){
                 paragraph {
                     text (
-                        bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Du får din første utbetaling med nytt beløp i <FRITEKST: måned og år>." },
-                        nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Du får den første utbetalinga di med nytt beløp i <FRITEKST: måned og år>." },
+                        bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Du får din første utbetaling med nytt beløp i " + fritekst("måned og år") + "." },
+                        nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Du får den første utbetalinga di med nytt beløp i " + fritekst("måned og år") + "." },
                     )
                 }
             }
@@ -217,8 +217,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(0) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("slutt_bh_utl"))){
                 paragraph {
                     text (
-                        bokmal { + "Vi kan på grunnlag av bestemmelsene i <FRITEKST: Trygdeavtale> gi unntak fra folketrygdlovens vilkår om medlemskap fram til uføretidspunktet, ved å legge sammen perioder med medlemskap i folketrygden og medlemskap i et annet land Norge har trygdeavtale med." },
-                        nynorsk { + "Vi kan på grunnlag av reglane i <FRITEKST: Trygdeavtale> gi unntak frå vilkåra i folketrygdlova om medlemskap fram til uføretidspunktet, ved å leggje saman periodar med medlemstid i Noreg og medlemstid i eit anna land Noreg har trygdeavtale med." },
+                        bokmal { + "Vi kan på grunnlag av bestemmelsene i " + fritekst("Trygdeavtale") + " gi unntak fra folketrygdlovens vilkår om medlemskap fram til uføretidspunktet, ved å legge sammen perioder med medlemskap i folketrygden og medlemskap i et annet land Norge har trygdeavtale med." },
+                        nynorsk { + "Vi kan på grunnlag av reglane i " + fritekst("Trygdeavtale") + " gi unntak frå vilkåra i folketrygdlova om medlemskap fram til uføretidspunktet, ved å leggje saman periodar med medlemstid i Noreg og medlemstid i eit anna land Noreg har trygdeavtale med." },
                     )
                 }
             }
@@ -227,8 +227,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut().equalTo(0) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("slutt_bh_utl"))){
                 paragraph {
                     text (
-                        bokmal { + "Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vært medlem av den <FRITEKST: nasjonalitet> trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den <FRITEKST: nasjonalitet> trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i <FRITEKST: land>, får du unntak fra vilkåret om medlemskap i folketrygden." },
-                        nynorsk { + "Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vore medlem av den <FRITEKST: Nasjonalitet> trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den <FRITEKST: Nasjonalitet> trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i <FRITEKST: Land>, får du unntak frå vilkåret om medlemskap i folketrygda." },
+                        bokmal { + "Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden." },
+                        nynorsk { + "Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("Land") + ", får du unntak frå vilkåret om medlemskap i folketrygda." },
                     )
                 }
             }
@@ -327,8 +327,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har mottatt melding fra <Fritekst: land> om at de har innvilget søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler, og du vil få utbetalt trygd direkte fra dem. Du kan lese mer om dette i det utenlandske vedtaket." },
-                        nynorsk { + "Vi har mottatt melding fra <Fritekst: land> om at de har innvilget søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler, og du vil få utbetalt trygd direkte fra dem. Du kan lese mer om dette i det utenlandske vedtaket." },
+                        bokmal { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har innvilget søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler, og du vil få utbetalt trygd direkte fra dem. Du kan lese mer om dette i det utenlandske vedtaket." },
+                        nynorsk { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har innvilget søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler, og du vil få utbetalt trygd direkte fra dem. Du kan lese mer om dette i det utenlandske vedtaket." },
                     )
                 }
             }
@@ -339,15 +339,15 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har mottatt melding fra <Fritekst: land> om at de har avslått søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler. Du kan lese mer om dette i det utenlandske vedtaket." },
-                        nynorsk { + "Vi har mottatt melding fra <Fritekst: land> om at de har avslått søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler. Du kan lese mer om dette i det utenlandske vedtaket." },
+                        bokmal { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har avslått søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler. Du kan lese mer om dette i det utenlandske vedtaket." },
+                        nynorsk { + "Vi har mottatt melding fra " + fritekst("land") + " om at de har avslått søknaden din om uføretrygd. De har fattet vedtaket etter egne nasjonale regler. Du kan lese mer om dette i det utenlandske vedtaket." },
                     )
                 }
             }
             paragraph {
                 text (
-                    bokmal { + "Du finner samlet vedtak fra Norge og <Fritekst: land> i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra <Fritekst: utenlandsk trygdemyndighet>." },
-                    nynorsk { + "Du finner samlet vedtak fra Norge og <Fritekst: land> i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra <Fritekst: utenlandsk trygdemyndighet>." },
+                    bokmal { + "Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
+                    nynorsk { + "Du finner samlet vedtak fra Norge og " + fritekst("land") + " i vedlegget «P1- Samlet melding om pensjonsvedtak». Vi har også lagt ved kopi av vedtak fra " + fritekst("utenlandsk trygdemyndighet") + "." },
                 )
             }
 
@@ -1205,8 +1205,8 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
                     nynorsk { + "Nav krever refusjon fra utenlandske trygdemyndigheter" },
                 )
                 text (
-                    bokmal { + "<Fritekst: land> har etterbetalt <Fritekst: sum> kroner for perioden <Fritekst: fom> til og med <Fritekst: tom>. Fordi <Fritekst: begrunnelse> har disse pengene blitt sendt til Nav." },
-                    nynorsk { + "<Fritekst: land> har etterbetalt <Fritekst: sum> kroner for perioden <Fritekst: fom> til og med <Fritekst: tom>. Fordi <Fritekst: begrunnelse> har disse pengene blitt sendt til Nav." },
+                    bokmal { + "" + fritekst("land") + " har etterbetalt " + fritekst("sum") + " kroner for perioden " + fritekst("fom") + " til og med " + fritekst("tom") + ". Fordi " + fritekst("begrunnelse") + " har disse pengene blitt sendt til Nav." },
+                    nynorsk { + "" + fritekst("land") + " har etterbetalt " + fritekst("sum") + " kroner for perioden " + fritekst("fom") + " til og med " + fritekst("tom") + ". Fordi " + fritekst("begrunnelse") + " har disse pengene blitt sendt til Nav." },
                 )
             }
             //[TBU3226]
