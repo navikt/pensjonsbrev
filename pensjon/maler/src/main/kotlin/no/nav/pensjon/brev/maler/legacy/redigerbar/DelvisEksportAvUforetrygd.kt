@@ -60,43 +60,20 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
             val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(LocalDate.now())
+            val bostedsland = ifElse(pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse().equalTo(""),fritekst("land"),pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse())
 
             paragraph {
                 text (
-                    bokmal { + "Vi har mottatt melding <FRITEKST: Dato>, om at du har flyttet til " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                    nynorsk { + "Vi har fått melding <FRITEKST: Dato>, om at du har flytta til " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                )
-
-                //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_BostedslandBeskrivelse) = "") THEN      INCLUDE ENDIF
-                showIf(((pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse()).equalTo(""))){
-                    text (
-                        bokmal { + "<FRITEKST: land>" },
-                        nynorsk { + "<FRITEKST: land>" },
-                    )
-                }
-                text (
-                    bokmal { + ". Vi gjør derfor en ny vurdering om du har rett til uføretrygd." },
-                    nynorsk { + ". Vi vurderer derfor på nytt om du har rett til uføretrygd." },
+                    bokmal { + "Vi har mottatt melding " + fritekst("dato") + ", om at du har flyttet til " + bostedsland + ". Vi gjør derfor en ny vurdering om du har rett til uføretrygd." },
+                    nynorsk { + "Vi har fått melding " + fritekst("dato") + ", om at du har flytta til " + bostedsland + ". Vi vurderer derfor på nytt om du har rett til uføretrygd." },
                 )
             }
             //[TBU2112NN, TBU2112]
 
             paragraph {
                 text (
-                    bokmal { + "Vi har beregnet uføretrygden din på nytt fra " + pe.vedtaksdata_virkningfom().format() + ". Du får en lavere utbetaling fordi du har flyttet til " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                    nynorsk { + "Vi har berekna uføretrygda di på nytt frå " + pe.vedtaksdata_virkningfom().format() + ". Du får ei lågare utbetaling fordi du har flytta til " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                )
-
-                //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_BostedslandBeskrivelse) = "") THEN      INCLUDE ENDIF
-                showIf(((pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse()).equalTo(""))){
-                    text (
-                        bokmal { + "<FRITEKST: land>" },
-                        nynorsk { + "<FRITEKST: land>" },
-                    )
-                }
-                text (
-                    bokmal { + "." },
-                    nynorsk { + "." },
+                    bokmal { + "Vi har beregnet uføretrygden din på nytt fra " + pe.vedtaksdata_virkningfom().format() + ". Du får en lavere utbetaling fordi du har flyttet til " + bostedsland + "." },
+                    nynorsk { + "Vi har berekna uføretrygda di på nytt frå " + pe.vedtaksdata_virkningfom().format() + ". Du får ei lågare utbetaling fordi du har flytta til " + bostedsland + "." },
                 )
             }
 
@@ -350,20 +327,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
             }
             paragraph {
                 text (
-                    bokmal { + "Uføretrygden din er beregnet på grunnlag av at du er bosatt i " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                    nynorsk { + "Uføretrygda di er berekna på grunnlag av at du er busett i " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() },
-                )
-
-                //IF(FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_BostedslandBeskrivelse) = "") THEN      INCLUDE ENDIF
-                showIf(((pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse()).equalTo(""))){
-                    text (
-                        bokmal { + "<FRITEKST bostedland>" },
-                        nynorsk { + "<FRITEKST bostedland>" },
-                    )
-                }
-                text (
-                    bokmal { + ". Hvis du flytter til et annet land må du gi beskjed til Nav. Uføretrygden din kan da bli beregnet på nytt." },
-                    nynorsk { + ". Dersom du flyttar til eit anna land, må du gi beskjed til Nav. Uføretrygda di kan då bli berekna på nytt." },
+                    bokmal { + "Uføretrygden din er beregnet på grunnlag av at du er bosatt i " + bostedsland + ". Hvis du flytter til et annet land må du gi beskjed til Nav. Uføretrygden din kan da bli beregnet på nytt."},
+                    nynorsk { + "Uføretrygda di er berekna på grunnlag av at du er busett i " + bostedsland + ". Dersom du flyttar til eit anna land, må du gi beskjed til Nav. Uføretrygda di kan då bli berekna på nytt."},
                 )
             }
 
@@ -792,12 +757,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                 }
 
                 //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
-                showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
+                showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))){
                     includePhrase(TBU5005_Generated)
-                }
-
-                //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
-                showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv())){
                     includePhrase(TBU5007_Generated)
                 }
             }
