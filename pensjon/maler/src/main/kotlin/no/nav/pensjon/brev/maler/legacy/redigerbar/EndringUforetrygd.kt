@@ -430,8 +430,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i <FRITEKST: måned og år>." },
-                        nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i <FRITEKST: måned og år>." },
+                        bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i " + fritekst("måned og år") + "." },
+                        nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i " + fritekst("måned og år") + "." },
                     )
                 }
             }
@@ -496,8 +496,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har mottatt opplysninger om at du <FRITEKST: sivilstandsendring>. Du har minsteytelse i uføretrygden din. Den endrede sivilstanden din medfører nå at du får uføretrygd på grunnlag av egen opptjening." },
-                        nynorsk { + "Vi har fått opplysningar om at du <FRITEKST: sivilstandsendring>. Du har minsteyting i uføretrygda di. Den endra sivilstanden din fører no til at du får uføretrygd på grunnlag av di eiga opptening." },
+                        bokmal { + "Vi har mottatt opplysninger om at du " + fritekst("sivilstandsendring") + ". Du har minsteytelse i uføretrygden din. Den endrede sivilstanden din medfører nå at du får uføretrygd på grunnlag av egen opptjening." },
+                        nynorsk { + "Vi har fått opplysningar om at du " + fritekst("sivilstandsendring") + ". Du har minsteyting i uføretrygda di. Den endra sivilstanden din fører no til at du får uføretrygd på grunnlag av di eiga opptening." },
                     )
                 }
             }
@@ -612,8 +612,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har kommet fram til at " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. <FRITEKST: konkret begrunnelse>" },
-                        nynorsk { + "Vi har kome fram til at " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uførleiken din kjem av godkjend yrkesskade eller yrkessjukdom. <FRITEKST: konkret begrunnelse>." },
+                        bokmal { + "Vi har kommet fram til at " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. " + fritekst("konkret begrunnelse") + "" },
+                        nynorsk { + "Vi har kome fram til at " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uførleiken din kjem av godkjend yrkesskade eller yrkessjukdom. " + fritekst("konkret begrunnelse") + "." },
                     )
                 }
 
@@ -738,8 +738,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Avdøde må også ha vært medlem i folketrygden, eller mottatt pensjon fra folketrygden, de siste <FRITEKST: tre/fem årene>  før dødsfallet." },
-                        nynorsk { + "Avdøde må også ha vore medlem i folketrygda, eller fått pensjon frå folketrygda, dei siste <FRITEKST: tre/fem åra>  før dødsfallet." },
+                        bokmal { + "Avdøde må også ha vært medlem i folketrygden, eller mottatt pensjon fra folketrygden, de siste " + fritekst("tre/fem årene") + " før dødsfallet." },
+                        nynorsk { + "Avdøde må også ha vore medlem i folketrygda, eller fått pensjon frå folketrygda, dei siste " + fritekst("tre/fem åra") + " før dødsfallet." },
                     )
                 }
             }
@@ -784,16 +784,16 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
                     showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0))){
                         text (
-                            bokmal { + "Ifølge våre opplysninger er du bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletillegg." },
-                            nynorsk { + "Ifølgje våre opplysningar er du busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til ektefelletillegg." },
+                            bokmal { + "Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg." },
+                            nynorsk { + "Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg." },
                         )
                     }
 
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                     showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0))){
                         text (
-                            bokmal { + "Ifølge våre opplysninger er <Fritekst: ektefellen/partneren/samboeren din> bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletetillegg." },
-                            nynorsk { + "Ifølgje våre opplysningar er <Fritekst: ektefelle/partner/sambuar> busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til ektefelletillegg. " },
+                            bokmal { + "Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletetillegg." },
+                            nynorsk { + "Ifølgje våre opplysningar er " + fritekst("ektefelle/partner/sambuar") + " busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg. " },
                         )
                     }
 
@@ -869,8 +869,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                     paragraph {
                         text(
-                            bokmal { +"<FRITEKST: slett det som ikke er aktuelt>" },
-                            nynorsk { +"<Fritekst: slett det som ikke er aktuelt>" },
+                            bokmal { +"" + fritekst("slett det som ikke er aktuelt") + "" },
+                            nynorsk { +"" + fritekst("slett det som ikke er aktuelt") + "" },
                         )
                     }
                 }
@@ -937,8 +937,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                     paragraph {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i <Fritekst: bostedsland>.  Derfor har du ikke lenger rett til barnetillegg" },
-                            nynorsk { +"Ifølgje våre opplysningar er " + pe.ut_dine_ditt_barn_opphor() + " busett i <Fritekst: bostedsland>. Derfor har du ikkje lenger rett til barnetillegg." },
+                            bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i " + fritekst("bostedsland") + ".  Derfor har du ikke lenger rett til barnetillegg" },
+                            nynorsk { +"Ifølgje våre opplysningar er " + pe.ut_dine_ditt_barn_opphor() + " busett i " + fritekst("bostedsland") + ". Derfor har du ikkje lenger rett til barnetillegg." },
                         )
                     }
                 }
@@ -949,8 +949,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                     paragraph {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i <Fritekst: bostedsland>.  Derfor har du ikke lenger rett til barnetillegg." },
-                            nynorsk { +"Ifølgje våre opplysningar er " + pe.ut_dine_ditt_barn_opphor() + " busett i <Fritekst: bostedsland>. Derfor har du ikkje lenger rett til barnetillegg." },
+                            bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i " + fritekst("bostedsland") + ".  Derfor har du ikke lenger rett til barnetillegg." },
+                            nynorsk { +"Ifølgje våre opplysningar er " + pe.ut_dine_ditt_barn_opphor() + " busett i " + fritekst("bostedsland") + ". Derfor har du ikkje lenger rett til barnetillegg." },
                         )
                     }
                 }
@@ -961,8 +961,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                     paragraph {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er du bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til barnetillegg." },
-                            nynorsk { +"Ifølgje våre opplysningar er du busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til barnetillegg." },
+                            bokmal { +"Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til barnetillegg." },
+                            nynorsk { +"Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til barnetillegg." },
                         )
                     }
                 }
@@ -1326,8 +1326,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Du er ikke lenger <FRITEKST: innlagt på institusjon/under straffegjennomføring>, og du får derfor tilbake utbetalingen av uføretrygden." },
-                        nynorsk { + "Du er ikkje lenger <Fritekst: innlagt på institusjon/under straffegjennomføring>, og du får derfor tilbake utbetalinga av uføretrygda." },
+                        bokmal { + "Du er ikke lenger " + fritekst("innlagt på institusjon/under straffegjennomføring") + ", og du får derfor tilbake utbetalingen av uføretrygden." },
+                        nynorsk { + "Du er ikkje lenger " + fritekst("innlagt på institusjon/under straffegjennomføring") + ", og du får derfor tilbake utbetalinga av uføretrygda." },
                     )
                 }
             }
@@ -2248,8 +2248,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Uføretrygden din er endret fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. <Fritekst: Konkret begrunnelse for fastsatt virkningstidspunkt>." },
-                        nynorsk { + "Uføretrygda di er endra frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. <Fritekst: Konkret begrunnelse for fastsatt virkningstidspunkt>." },
+                        bokmal { + "Uføretrygden din er endret fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. " + fritekst("Konkret begrunnelse for fastsatt virkningstidspunkt") + "." },
+                        nynorsk { + "Uføretrygda di er endra frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. " + fritekst("Konkret begrunnelse for fastsatt virkningstidspunkt") + "." },
                     )
                 }
             }
@@ -2268,8 +2268,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_nedsattinntektsevneresultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_2"))){
                 paragraph {
                     text (
-                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til <FRITEKST: dato for opphør> og uføretrygd utbetales for de gjenstående dagene i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
-                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til <FRITEKST: Dato for opphør>, og uføretrygd blir betalt ut for dei dagane som er att i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
+                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
+                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
                     )
                 }
             }
@@ -2278,8 +2278,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_3"))){
                 paragraph {
                     text (
-                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til <FRITEKST: dato for opphør>. I denne måneden får du utbetalt den delen av sykepengene som overstiger uføretrygden." },
-                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til <FRITEKST: Dato for opphør>. I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
+                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til " + fritekst("dato for opphør") + ". I denne måneden får du utbetalt den delen av sykepengene som overstiger uføretrygden." },
+                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til " + fritekst("Dato for opphør") + ". I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
                     )
                 }
             }
@@ -2298,8 +2298,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
                 paragraph {
                     text (
-                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen.<FRITEKST>" },
-                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen.<FRITEKST>." },
+                        bokmal { + "Du har fått innvilget uføretrygd fra " + onsketvirkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Vi mottok søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkårene for rett til uføretrygd var oppfylt før dette, kan uføretrygden innvilges opptil tre måneder før denne datoen. <FRITEKST>" },
+                        nynorsk { + "Du har fått innvilga uføretrygd frå " + onsketvirkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Vi fekk søknaden din " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Dersom vilkåra for rett til uføretrygd var oppfylte før dette, kan vi innvilge uføretrygd opptil tre månader før denne datoen. <FRITEKST>" },
                     )
                 }
             }
@@ -2329,7 +2329,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse(1) = "stdbegr_22_12_1_14") THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse(1).equalTo("stdbegr_22_12_1_14"))){
+            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_14"))){
                 //[TBU3024EN, TBU3024, TBU3024NN]
 
                 paragraph {
@@ -2367,8 +2367,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()).equalTo("stdbegr_12_8_2_1") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse()).notEqualTo("stdbegr_12_8_1_3"))){
                     paragraph {
                         text (
-                            bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. <FRITEKST: begrunnelse for fastsatt IFU>." },
-                            nynorsk { + "Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. <FRITEKST: Begrunnelse for fastsatt IFU>." },
+                            bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                            nynorsk { + "Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner. " + fritekst("Begrunnelse for fastsatt IFU") + "." },
                         )
 
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu > FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt)) THEN      INCLUDE ENDIF
@@ -2613,8 +2613,8 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_kravhode_sokerbt() and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().notEqualTo(0))){
                 paragraph {
                     text (
-                        bokmal { + "Barnetillegget i uføretrygden din er endret fordi <FRITEKST: årsak til endring>." },
-                        nynorsk { + "Barnetillegget i uføretrygda di er endra fordi <Fritekst: årsak til endring>." },
+                        bokmal { + "Barnetillegget i uføretrygden din er endret fordi " + fritekst("årsak til endring") + "." },
+                        nynorsk { + "Barnetillegget i uføretrygda di er endra fordi " + fritekst("årsak til endring") + "." },
                     )
                 }
             }
