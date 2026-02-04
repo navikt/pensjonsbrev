@@ -1,4 +1,4 @@
-import { Button, TextField, VStack } from "@navikt/ds-react";
+import { Box, Button, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -38,22 +38,31 @@ function SaksnummerPage() {
   });
 
   return (
-    //Saksnummer har ingen children som den skal dele styles med, men er likevel brukt som en parent node i route-strukturen
-    //derfor styler vi komponenten selv her, og ikke i parent.
-    //merk at saksnummer/$saksId, også har håndtering for styles og sine children.
-    <form className="page-margins" onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}>
-      <VStack gap="space-24" marginBlock="space-32 space-0" marginInline="auto" width="340px">
-        <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
-        {hentSakContextMutation.error && (
-          <ApiError
-            error={hentSakContextMutation.error}
-            title={hentSakContextMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"}
+    /**
+     * Saksnummer har ingen children som den skal dele styles med, men er likevel brukt som en
+     * parent node i route-strukturen, derfor styler vi komponenten selv her, og ikke i parent. Merk
+     * at saksnummer/$saksId, også har håndtering for styles og sine children.
+     */
+    <Box asChild background="default" minHeight="calc(100vh - var(--header-height))" padding="space-24">
+      <form onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}>
+        <VStack align="center" gap="space-24" padding="space-12">
+          <TextField
+            css={{ display: "flex", flexDirection: "column", alignItems: "center", width: "290px" }}
+            {...register("saksnummer")}
+            autoComplete="off"
+            label="Skriv inn saksnummer"
           />
-        )}
-        <Button loading={hentSakContextMutation.isPending} type="submit">
-          Åpne brevvelger
-        </Button>
-      </VStack>
-    </form>
+          {hentSakContextMutation.error && (
+            <ApiError
+              error={hentSakContextMutation.error}
+              title={hentSakContextMutation.error?.response?.data?.toString() || "Finner ikke saksnummer"}
+            />
+          )}
+          <Button loading={hentSakContextMutation.isPending} type="submit">
+            Åpne brevvelger
+          </Button>
+        </VStack>
+      </form>
+    </Box>
   );
 }
