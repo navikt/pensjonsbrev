@@ -210,23 +210,15 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun recursively(scope: ExpressionScope<*>, fontType: FontType, a: Expression<*>): List<Text> = (a as? StringExpression)?.toContent(scope, fontType) ?: listOf()
 
-    private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> {
-        try {
-            eval(scope)
-        } catch (_: Exception) {
-            return listOf()
-        }
-        val expr = this
-        return when {
-            this is Expression.Literal && this.value == null -> listOf()
-            this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfNull<*> -> recursively(scope, fontType, first.takeIf { it.eval(scope) != null } ?: second)
-            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfElse<*> -> recursively(scope, fontType, (second as Expression.BinaryInvoke<*, *, *>).let { s -> s.first.takeIf { expr.first.eval(scope) == true } ?: s.second })
-            this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat -> recursively(scope, fontType, first) + recursively(scope, fontType, second)
-            tags.contains(ElementTags.REDIGERBAR_DATA) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-            else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) } ?: listOf()
-        }.mergeLiterals(fontType)
-    }
+    private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> = when {
+        this is Expression.Literal && this.value == null -> listOf()
+        this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+        this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfNull<*> -> recursively(scope, fontType, first.takeIf { it.eval(scope) != null } ?: second)
+        this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfElse<*> -> recursively(scope, fontType, (second as Expression.BinaryInvoke<*, *, *>).let { s -> s.first.takeIf { this.first.eval(scope) == true } ?: s.second })
+        this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat -> recursively(scope, fontType, first) + recursively(scope, fontType, second)
+        tags.contains(ElementTags.REDIGERBAR_DATA) -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+        else -> eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it, fontType, tags)) } ?: listOf()
+    }.mergeLiterals(fontType)
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =
         fold(emptyList()) { acc, current ->
