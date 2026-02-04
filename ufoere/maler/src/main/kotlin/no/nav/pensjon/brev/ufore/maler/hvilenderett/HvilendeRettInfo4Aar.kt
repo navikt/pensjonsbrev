@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_S_HVILENDE_RETT_INFO_4_AAR
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -17,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object HvilendeRettInfo4Aar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_S_HVILENDE_RETT_INFO_4_AAR
-    override val kategori = TemplateDescription.Brevkategori.ETTEROPPGJOER
+    override val kategori = Brevkategori.ETTEROPPGJOER
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 
