@@ -180,8 +180,9 @@ class Letter2MarkupTest {
         val result = renderTemplate(EmptyAutobrevdata) {
             paragraph {
                 val ifNull = null.expr().ifNull(Expression.Literal("du", setOf(ElementTags.FRITEKST)))
+                val notNull = "hallo".expr().ifNull(Expression.Literal("hei", setOf(ElementTags.FRITEKST)))
                 text(bokmal { + ifNull })
-                text(bokmal { +"hallo" })
+                text(bokmal { + notNull })
             }
         }
         val literals = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
