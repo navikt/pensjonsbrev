@@ -161,7 +161,13 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                     nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
                 )
             }
-            includePhrase(TBU1092_Generated)
+
+            title1 {
+                text (
+                    bokmal { + "Begrunnelse for vedtaket" },
+                    nynorsk { + "Grunngiving for vedtaket" },
+                )
+            }
 
             //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_FortsattMedlemskap_Minst20ArBotid) = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0) THEN      INCLUDE ENDIF
             showIf((not((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_fortsattmedlemskap_minst20arbotid())) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0))){
