@@ -128,8 +128,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
             }
             paragraph {
                 text (
-                    bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i <FRITEKST: måned og år>." },
-                    nynorsk { + "Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i <FRITEKST Månad og år>." },
+                    bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling i " + fritekst("måned og år") + "." },
+                    nynorsk { + "Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i " + fritekst("måned og år") + "." },
                 )
             }
             paragraph {
@@ -152,8 +152,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
                 paragraph {
                     text (
-                        bokmal { + "Du fikk vedtak om uføretrygd <FRITEKST: Dato>. " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uføretrygden din er beregnet etter regler for yrkesskade eller yrkessykdom. Du kan kun ta med deg denne delen av uføretrygden din til <FRITEKST: Land>. Resten av uføretrygden din blir beregnet på nytt. <FRITEKST: Utfyllende begrunnelse>. Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
-                        nynorsk { + "Du fekk vedtak om uføretrygd <FRITEKST: Dato>. " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uføretrygda di er berekna etter reglar for yrkesskade eller yrkessjukdom. Du kan berre ta med deg denne delen av uføretrygda di til <FRITEKST: Land>. Resten av uføretrygda di blir berekna på nytt. <FRITEKST: Utfyllende begrunnelse>. Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
+                        bokmal { + "Du fikk vedtak om uføretrygd " + fritekst("Dato") + ". " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uføretrygden din er beregnet etter regler for yrkesskade eller yrkessykdom. Du kan kun ta med deg denne delen av uføretrygden din til " + fritekst("Land") + ". Resten av uføretrygden din blir beregnet på nytt. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
+                        nynorsk { + "Du fekk vedtak om uføretrygd " + fritekst("Dato") + ". " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().format() + " prosent av uføretrygda di er berekna etter reglar for yrkesskade eller yrkessjukdom. Du kan berre ta med deg denne delen av uføretrygda di til " + fritekst("Land") + ". Resten av uføretrygda di blir berekna på nytt. " + fritekst("Utfyllende begrunnelse>") + ". Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
                     )
                 }
             }
@@ -164,8 +164,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
                 paragraph {
                     text (
-                        bokmal { + "Du fikk vedtak om uføretrygd <FRITEKST: Dato>. Du må ha bodd i Norge i minst 20 år etter at du ble 16 år. Etter at du ble 16 år har du bodd i Norge fra <FRITEKST: FOM.dato bosatt Norge> til <FRITEKST: TOM.dato bosatt Norge>. Dette er til sammen <FRITEKST: år og måneder>. Fordi du ikke har bodd lenge nok i Norge blir uføretrygden " },
-                        nynorsk { + "Du fekk vedtak om uføretrygd <FRITEKST: Dato>. Du må ha budd i Noreg i minst 20 år etter at du blei 16 år. Etter at du blei 16 år, har du budd i Noreg frå <FRITEKST: FOM.dato bosatt Norge> til <FRITEKST: TOM.dato bosatt Norge>. Dette er til saman <FRITEKST: år og måneder>. Fordi du ikkje har budd lenge nok i Noreg, blir uføretrygda " },
+                        bokmal { + "Du fikk vedtak om uføretrygd " + fritekst("Dato") + ". Du må ha bodd i Norge i minst 20 år etter at du ble 16 år. Etter at du ble 16 år har du bodd i Norge fra " + fritekst("FOM.dato bosatt Norge") + " til " + fritekst("TOM.dato bosatt Norge") + ". Dette er til sammen " + fritekst("år og måneder") + ". Fordi du ikke har bodd lenge nok i Norge blir uføretrygden " },
+                        nynorsk { + "Du fekk vedtak om uføretrygd " + fritekst("Dato") + ". Du må ha budd i Noreg i minst 20 år etter at du blei 16 år. Etter at du blei 16 år, har du budd i Noreg frå " + fritekst("FOM.dato bosatt Norge") + " til " + fritekst("TOM.dato bosatt Norge") + ". Dette er til saman " + fritekst("år og måneder") + ". Fordi du ikkje har budd lenge nok i Noreg, blir uføretrygda " },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) THEN      INCLUDE ENDIF
@@ -184,8 +184,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                         )
                     }
                     text (
-                        bokmal { + "beregnet på nytt. <FRITEKST: Utfyllende begrunnelse>. Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
-                        nynorsk { + "berekna på nytt. <FRITEKST: Utfyllende begrunnelse>. Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
+                        bokmal { + "beregnet på nytt. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
+                        nynorsk { + "berekna på nytt. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
                     )
                 }
             }
@@ -196,8 +196,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
                 paragraph {
                     text (
-                        bokmal { + "Uføretrygden din er beregnet med rettighet som ung ufør. Denne fordelen har du bare rett til så lenge du er medlem av folketrygden. Uføretrygden din er nå beregnet uten denne fordelen. <FRITEKST: Utfyllende begrunnelse>." },
-                        nynorsk { + "Uføretrygda di er berekna med rett som ung ufør. Denne fordelen har du berre rett til så lenge du er medlem av folketrygda. Uføretrygda di er no berekna utan denne fordelen. <FRITEKST: Utfyllende begrunnelse>. " },
+                        bokmal { + "Uføretrygden din er beregnet med rettighet som ung ufør. Denne fordelen har du bare rett til så lenge du er medlem av folketrygden. Uføretrygden din er nå beregnet uten denne fordelen. " + fritekst("Utfyllende begrunnelse") + "." },
+                        nynorsk { + "Uføretrygda di er berekna med rett som ung ufør. Denne fordelen har du berre rett til så lenge du er medlem av folketrygda. Uføretrygda di er no berekna utan denne fordelen. " + fritekst("Utfyllende begrunnelse") + ". " },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
@@ -220,8 +220,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
                 paragraph {
                     text (
-                        bokmal { + "Du fikk vedtak om uføretrygd <FRITEKST: Dato>, med full trygdetid fordi du har flyktningstatus. Denne fordelen har du bare rett til så lenge du er medlem av folketrygden. Uføretrygden " },
-                        nynorsk { + "Du fekk vedtak om uføretrygd <FRITEKST. Dato>, med full trygdetid fordi du har flyktningstatus. Denne fordelen har du berre rett til så lenge du er medlem av folketrygda. Uføretrygda " },
+                        bokmal { + "Du fikk vedtak om uføretrygd " + fritekst("Dato") + ", med full trygdetid fordi du har flyktningstatus. Denne fordelen har du bare rett til så lenge du er medlem av folketrygden. Uføretrygden " },
+                        nynorsk { + "Du fekk vedtak om uføretrygd " + fritekst("Dato") + ", med full trygdetid fordi du har flyktningstatus. Denne fordelen har du berre rett til så lenge du er medlem av folketrygda. Uføretrygda " },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) THEN      INCLUDE ENDIF
@@ -240,8 +240,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
                         )
                     }
                     text (
-                        bokmal { + "er nå beregnet uten denne fordelen. <FRITEKST: Utfyllende begrunnelse>. Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
-                        nynorsk { + "er no berekna utan denne fordelen. <FRITEKST: Utfyllende begrunnelse>. Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
+                        bokmal { + "er nå beregnet uten denne fordelen. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
+                        nynorsk { + "er no berekna utan denne fordelen. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
                     )
                 }
             }
@@ -355,8 +355,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
 
             paragraph {
                 text (
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 12-3 <FRITEKST: Eventuell trygdeavtale>." },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-3 <FRITEKST: Eventuell trygdeavtale>." },
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 12-3 " + fritekst("Eventuell trygdeavtale") + "." },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-3 " + fritekst("Eventuell trygdeavtale") + "." },
                 )
             }
             title1 {
@@ -383,8 +383,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto>
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb())) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().notEqualTo(0))){
                 paragraph {
                     text (
-                        bokmal { + "Barnetillegget i uføretrygden din er endret fordi <FRITEKST: årsak til endring>." },
-                        nynorsk { + "Barnetillegget i uføretrygda di er endra fordi <Fritekst: årsak til endring>." },
+                        bokmal { + "Barnetillegget i uføretrygden din er endret fordi " + fritekst("årsak til endring") + "." },
+                        nynorsk { + "Barnetillegget i uføretrygda di er endra fordi " + fritekst("årsak til endring") +"." },
                     )
                 }
             }
