@@ -73,8 +73,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra <FRITEKST: Forrige Uforegrad> til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent fra " + virkningstidpunkt.format() + "." },
-                        nynorsk { + "Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar frå <FRITEKST: Forrige Uforegrad> til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent frå " + virkningstidpunkt.format() + "." },
+                        bokmal { + "Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent fra " + virkningstidpunkt.format() + "." },
+                        nynorsk { + "Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar frå " + fritekst("Forrige Uforegrad") + " til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent frå " + virkningstidpunkt.format() + "." },
                     )
                 }
             }
@@ -85,8 +85,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra <FRITEKST: Forrige Uforegrad> til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent fra " + virkningstidpunkt.format() + ". Hele uføretrygden din er innvilget med rettighet som ung ufør." },
-                        nynorsk { + "Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar <FRITEKST: Forrige Uforegrad> til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent frå " + virkningstidpunkt.format() + ". Heile uføretrygda di er innvilga med rett som ung ufør. " },
+                        bokmal { + "Vi har innvilget søknaden din om økt uføretrygd som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din øker fra " + fritekst("Forrige Uforegrad") + " til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent fra " + virkningstidpunkt.format() + ". Hele uføretrygden din er innvilget med rettighet som ung ufør." },
+                        nynorsk { + "Vi har innvilga søknaden din om auka uføretrygd som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Uføregraden din aukar " + fritekst("Forrige Uforegrad") + " til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent frå " + virkningstidpunkt.format() + ". Heile uføretrygda di er innvilga med rett som ung ufør. " },
                     )
                 }
             }
@@ -929,7 +929,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1) = "stdbegr_12_17_1_o_1" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse(1).equalTo("stdbegr_12_17_1_o_1") and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))){
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskadebegrunnelse().equalTo("stdbegr_12_17_1_o_1") and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))){
                 paragraph {
                     text (
                         bokmal { + "Dette betyr at uføretrygden din vil bli beregnet etter særbestemmelser som gir deg en høyere uføretrygd." },
@@ -959,8 +959,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Vi har kommet fram til at " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad().format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. <FRITEKST: Konkret begrunnelse>." },
-                        nynorsk { + "Vi har kome fram til at " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad().format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom. <FRITEKST: Konkret begrunnelse>." },
+                        bokmal { + "Vi har kommet fram til at " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad().format() + " prosent av uførheten din skyldes godkjent yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
+                        nynorsk { + "Vi har kome fram til at " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad().format() + " prosent av uførleiken din kjem av ein godkjend yrkesskade eller yrkessjukdom. " + fritekst("Konkret begrunnelse") + "." },
                     )
                 }
 
@@ -998,8 +998,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Vi har kommet fram til at det er andre sykdomsforhold som er årsak til den økte uførheten din. <Fritekst: Konkret begrunnelse>" },
-                        nynorsk { + "Vi har kome fram til at det er andre sjukdomsforhold som er årsak til den auka uførleiken din. <Fritekst: Konkret begrunnelse>" },
+                        bokmal { + "Vi har kommet fram til at det er andre sykdomsforhold som er årsak til den økte uførheten din. " + fritekst("Konkret begrunnelse") + "" },
+                        nynorsk { + "Vi har kome fram til at det er andre sjukdomsforhold som er årsak til den auka uførleiken din. " + fritekst("Konkret begrunnelse") + "" },
                     )
                 }
             }
@@ -1036,8 +1036,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Vi har kommet fram til at det er andre sykdomsforhold som er årsak til den økte uførheten din. <Fritekst: Konkret begrunnelse>" },
-                        nynorsk { + "Vi har kome fram til at det er andre sjukdomsforhold som er årsak til den auka uførleiken din. <Fritekst: Konkret begrunnelse>" },
+                        bokmal { + "Vi har kommet fram til at det er andre sykdomsforhold som er årsak til den økte uførheten din. " + fritekst("Konkret begrunnelse") + "" },
+                        nynorsk { + "Vi har kome fram til at det er andre sjukdomsforhold som er årsak til den auka uførleiken din. " + fritekst("Konkret begrunnelse") + "" },
                     )
                 }
             }
@@ -1075,8 +1075,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).equalTo("ikke_oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskadebegrunnelse()).equalTo("stdbegr_12_17_1_i_1"))){
                 paragraph {
                     text (
-                        bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom. Uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom. <FRITEKST: Konkret begrunnelse>." },
-                        nynorsk { + "Du har ikkje ein godkjend yrkesskade eller yrkessjukdom. Uføretrygda di blir derfor ikkje innvilga etter reglar for yrkesskade eller yrkessjukdom. <Fritekst: Konkret begrunnelse>." },
+                        bokmal { + "Du har ikke en godkjent yrkesskade eller yrkessykdom. Uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom. " + fritekst("Konkret begrunnelse") + "." },
+                        nynorsk { + "Du har ikkje ein godkjend yrkesskade eller yrkessjukdom. Uføretrygda di blir derfor ikkje innvilga etter reglar for yrkesskade eller yrkessjukdom. " + fritekst("Konkret begrunnelse") + "." },
                     )
                 }
             }
@@ -1105,8 +1105,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 //[TBU1302NN, TBU1302]
                 paragraph {
                     text (
-                        bokmal { + "Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til <FRITEKST: dato for opphør> og uføretrygd utbetales for de gjenstående dagene i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
-                        nynorsk { + "Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til <FRITEKST: Dato for opphør>, og uføretrygd blir betalt ut for dei dagane som er att i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
+                        bokmal { + "Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Arbeidsavklaringspengene utbetales fram til " + fritekst("dato for opphør") + " og uføretrygd utbetales for de gjenstående dagene i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
+                        nynorsk { + "Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Arbeidsavklaringspengane blir betalte ut fram til " + fritekst("Dato for opphør") + ", og uføretrygd blir betalt ut for dei dagane som er att i " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_mndvirkningstidpunkt().format() + "." },
                     )
                 }
             }
@@ -1117,8 +1117,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til <FRITEKST: dato for opphør>. I denne måneden får du utbetalt den delen av sykepengene med det beløp som overstiger uføretrygden." },
-                        nynorsk { + "Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til <FRITEKST: Dato for opphør>. I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
+                        bokmal { + "Du har fått innvilget økt uføretrygd fra " + pe.vedtaksdata_virkningfom().format() + ". Dette kaller vi virkningstidspunktet. Du vil få sykepenger fram til " + fritekst("dato for opphør") + ". I denne måneden får du utbetalt den delen av sykepengene med det beløp som overstiger uføretrygden." },
+                        nynorsk { + "Du har fått innvilga auka uføretrygd frå " + pe.vedtaksdata_virkningfom().format() + ". Dette kallar vi verknadstidspunktet. Du får sjukepengar fram til " + fritekst("Dato for opphør") + ". I denne månaden får du utbetalt den delen av sjukepengane som overstig uføretrygda." },
                     )
                 }
             }
@@ -1169,8 +1169,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             paragraph {
                 text (
-                    bokmal { + "Vi har tidligere fastsatt uføretidspunktet ditt til <FRITEKST: Første Uforetidspunkt>. Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
-                    nynorsk { + "Vi har tidlegare fastsett uføretidspunktet ditt til <Fritekst Første Uforetidspunkt>. Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    bokmal { + "Vi har tidligere fastsatt uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden øker, fastsetter vi et nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
+                    nynorsk { + "Vi har tidlegare fastsett uføretidspunktet ditt til " + fritekst("Første Uforetidspunkt") + ". Når uføregraden aukar, fastset vi eit nytt uføretidspunkt. Det nye uføretidspunktet ditt er " + uforetidspunkt.format() + "." },
                 )
             }
             //[TBU1274NN, TBU1274]
@@ -1226,8 +1226,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". <Fritekst: begrunnelse for fastsatt IFU>. " },
-                        nynorsk { + "Inntekta di før du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". <Fritekst: begrunnelse for fastsatt IFU>. " },
+                        bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
+                        nynorsk { + "Inntekta di før du blei ufør, er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + ". " },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu > FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt)) THEN      INCLUDE ENDIF
@@ -1324,8 +1324,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
                 paragraph {
                     text (
-                        bokmal { + "Vi har fastsatt inntekten din før du ble ufør til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". <Fritekst: begrunnelse for fastsatt IFU>." },
-                        nynorsk { + "Vi har fastsett inntekta di før du blei ufør til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". <Fritekst: begrunnelse for fastsatt IFU>." },
+                        bokmal { + "Vi har fastsatt inntekten din før du ble ufør til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        nynorsk { + "Vi har fastsett inntekta di før du blei ufør til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt().format() + " kroner på uføretidspunktet i " + uforetidspunkt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
                     )
 
                     //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Oifu > PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUInntekt(1)) THEN      INCLUDE ENDIF
@@ -2192,14 +2192,14 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "Eit utanlandsk organ krev refusjon" },
                     )
                     text (
-                        bokmal { + "<FRITEKST: land> har varslet Nav at de kan ha utbetalt for mye penger til deg. De har mulighet til å kreve dette tilbake i etterbetalingen av den norske uføretrygden din. Vi vil holde tilbake etterbetalingen inntil vi har fått svar fra <FRITEKST: land>. Har du spørsmål om dette, kan du ta kontakt med <FRITEKST: nasjonalitet> myndigheter." },
-                        nynorsk { + "<FRITEKST: Land> har varsla Nav at dei kan ha betalt ut for mykje pengar til deg. Dei har høve til å krevje dette tilbake i etterbetalinga av den norske uføretrygda di. Vi vil halde tilbake etterbetalinga inntil vi har fått svar frå <FRITEKST: Land>. Har du spørsmål om dette, kan du ta kontakt med <FRITEKST: Nasjonalitet> styresmakter." },
+                        bokmal { + "" + fritekst("land") + " har varslet Nav at de kan ha utbetalt for mye penger til deg. De har mulighet til å kreve dette tilbake i etterbetalingen av den norske uføretrygden din. Vi vil holde tilbake etterbetalingen inntil vi har fått svar fra " + fritekst("land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("nasjonalitet") + " myndigheter." },
+                        nynorsk { + "" + fritekst("Land") + " har varsla Nav at dei kan ha betalt ut for mykje pengar til deg. Dei har høve til å krevje dette tilbake i etterbetalinga av den norske uføretrygda di. Vi vil halde tilbake etterbetalinga inntil vi har fått svar frå " + fritekst("Land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("Nasjonalitet") + " styresmakter." },
                     )
                 }
                 paragraph {
                     text (
-                        bokmal { + "Denne retten har <FRITEKST: land> etter EØS-forordningen 987/2009 artikkel 72." },
-                        nynorsk { + "Denne retten har <FRITEKST: Land> etter EØS-forordninga 987/2009 artikkel 72." },
+                        bokmal { + "Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
+                        nynorsk { + "Denne retten har " + fritekst("Land") + " etter EØS-forordninga 987/2009 artikkel 72." },
                     )
                 }
             }
@@ -2240,8 +2240,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(bostedutland){
                 paragraph {
                     text (
-                        bokmal { + "Du kan sende klagen direkte til Nav eller gjennom <FRITEKST: utenlandsk trygdemyndighet>." },
-                        nynorsk { + "Du kan sende klaga direkte til Nav eller gjennom <FRITEKST: Utenlandsk trygdemyndighet>." },
+                        bokmal { + "Du kan sende klagen direkte til Nav eller gjennom " + fritekst("utenlandsk trygdemyndighet") + "." },
+                        nynorsk { + "Du kan sende klaga direkte til Nav eller gjennom " + fritekst("Utenlandsk trygdemyndighet") + "." },
                     )
                 }
             }
