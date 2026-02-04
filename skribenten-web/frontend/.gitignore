@@ -28,3 +28,6 @@ cypress/screenshots
 
 # Cypress
 cypress/downloads/*
+
+# Local Umami testing (not for production)
+docker-compose.umami.yml

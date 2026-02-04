@@ -1,8 +1,25 @@
 import { BodyShort, Button, Heading, Modal } from "@navikt/ds-react";
+import { useEffect } from "react";
 
 import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { trackEvent } from "~/utils/umami";
 
 function AttestForbiddenModal({ reason, onClose }: { reason: AttestForbiddenReason; onClose: () => void }) {
+  // Track when attestering is blocked
+  useEffect(() => {
+    const reasonLabels: Record<AttestForbiddenReason, string> = {
+      MISSING_ATTESTANT_ROLE: "mangler attestant-rolle",
+      SELF_ATTESTATION: "egen attestering",
+      ALREADY_ATTESTED: "allerede attestert",
+      UNKNOWN_403: "ukjent 403",
+    };
+
+    trackEvent("attestering blokkert", {
+      grunn: reasonLabels[reason],
+      grunnKode: reason,
+    });
+  }, [reason]);
+
   let heading = "";
   let body = "";
 

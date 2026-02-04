@@ -21,7 +21,38 @@ interface UmamiTracker {
 // Extend globalThis to include umami
 declare global {
   var umami: UmamiTracker | undefined;
+  var localAnalyticsEvents: Array<{
+    timestamp: number;
+    type: "event" | "pageview";
+    name: string;
+    data?: unknown;
+  }>;
 }
+
+// Initialize local storage for demo purposes
+if (typeof globalThis.window !== "undefined") {
+  globalThis.localAnalyticsEvents = JSON.parse(sessionStorage.getItem("localAnalyticsEvents") || "[]");
+}
+
+const logToLocalDemo = (type: "event" | "pageview", name: string, data?: unknown) => {
+  if (typeof globalThis.window === "undefined") {
+    return;
+  }
+
+  // Ensure the array exists
+  if (!globalThis.localAnalyticsEvents) {
+    globalThis.localAnalyticsEvents = JSON.parse(sessionStorage.getItem("localAnalyticsEvents") || "[]");
+  }
+
+  const entry = {
+    timestamp: Date.now(),
+    type,
+    name,
+    data,
+  };
+  globalThis.localAnalyticsEvents.unshift(entry);
+  sessionStorage.setItem("localAnalyticsEvents", JSON.stringify(globalThis.localAnalyticsEvents));
+};
 
 /**
  * NAV Taxonomy for event naming
@@ -61,6 +92,15 @@ export type UmamiEventName =
   | "brev ferdigstilt"
   | "brev forhåndsvist"
   | "brev sendt"
+  // Brev status events (informasjonsbrev vs vedtaksbrev)
+  | "brev klar status endret"
+  | "brev distribusjonstype endret"
+  // Pesys navigation events
+  | "pesys inngang"
+  | "pesys redirect"
+  | "pesys feil"
+  // Attestering events
+  | "attestering blokkert"
   // Error events
   | "feil oppstått"
   // Generic events
@@ -106,6 +146,8 @@ export const isUmamiAvailable = (): boolean => {
  * trackEvent("vedlegg lagt til", { type: "PE-001", komponent: "Vedlegg" });
  */
 export const trackEvent = (eventName: UmamiEventName | string, eventData?: UmamiEventData): void => {
+  logToLocalDemo("event", eventName, eventData);
+
   if (!isUmamiAvailable()) {
     // In development without Umami, log to console for debugging
     if (import.meta.env.DEV) {
@@ -136,6 +178,8 @@ export const trackEvent = (eventName: UmamiEventName | string, eventData?: Umami
  * @param url - Optional custom URL to track
  */
 export const trackPageView = (url?: string): void => {
+  logToLocalDemo("pageview", url ?? globalThis.location.pathname);
+
   if (!isUmamiAvailable()) {
     if (import.meta.env.DEV) {
       // eslint-disable-next-line no-console

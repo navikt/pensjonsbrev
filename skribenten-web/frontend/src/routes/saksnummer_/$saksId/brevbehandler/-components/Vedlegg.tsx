@@ -19,7 +19,6 @@ import { Controller, useForm } from "react-hook-form";
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import { useUmami, useUmamiModal } from "~/hooks/useUmami";
 import type { AlltidValgbartVedlegg } from "~/types/brev";
 import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { getErrorMessage } from "~/utils/errorUtils";
@@ -32,11 +31,6 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const queryClient = useQueryClient();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isP1ModalOpen, setIsP1ModalOpen] = useState(false);
-
-  // Umami tracking hooks
-  const { track } = useUmami("Vedlegg");
-  useUmamiModal("LeggTilVedlegg", isModalOpen);
-  useUmamiModal("P1Redigering", isP1ModalOpen);
 
   const isP1Brev = props.brev.brevkode === P1_BREVKODE;
 
@@ -67,18 +61,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
       oppdaterVedlegg(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
     onSuccess: (data) => {
-      // Track successful attachment addition
-      const addedCount = data.valgteVedlegg?.length ?? 0;
-      track("vedlegg lagt til", {
-        antall: addedCount,
-        status: "suksess",
-      });
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
       handleCloseModal();
-    },
-    onError: () => {
-      track("vedlegg lagt til", { status: "feil" });
     },
   });
 
@@ -88,13 +73,8 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
         alltidValgbareVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
       }),
     onSuccess: (data) => {
-      // Track successful attachment removal
-      track("vedlegg fjernet", { status: "suksess" });
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
-    },
-    onError: () => {
-      track("vedlegg fjernet", { status: "feil" });
     },
   });
 

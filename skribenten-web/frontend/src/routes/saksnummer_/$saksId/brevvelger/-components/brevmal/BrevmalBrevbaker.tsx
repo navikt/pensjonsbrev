@@ -5,6 +5,7 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
+import { trackEvent } from "~/utils/umami";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
@@ -119,6 +120,10 @@ const BrevmalBrevbaker = (props: {
       }),
 
     onSuccess: async (response) => {
+      trackEvent("brev opprettet", {
+        brevkode: props.letterTemplate.id,
+        brevtittel: props.letterTemplate.name,
+      });
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",

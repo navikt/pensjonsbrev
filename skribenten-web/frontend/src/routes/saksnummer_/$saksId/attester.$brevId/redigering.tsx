@@ -26,6 +26,7 @@ import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
+import { trackEvent } from "~/utils/umami";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
   component: () => <VedtakWrapper />,
@@ -188,6 +189,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     <form
       onSubmit={form.handleSubmit((v) => {
         onSubmit(v, () => {
+          trackEvent("brev attestert", {
+            brevId: props.brev.info.id.toString(),
+            saksId: props.saksId,
+          });
           navigate({
             to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
             params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
