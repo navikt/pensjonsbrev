@@ -101,7 +101,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
         val resultat = oppdaterBrev(
             brevId = brev.info.id,
             nyttRedigertbrev = nyttRedigertBrev,
-            principal = attestantPrincipal,
+            principal = attestant1Principal,
         )
 
         assertThat(resultat).isSuccess {

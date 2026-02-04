@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
-import no.nav.pensjon.brev.ufore.maler.Sakstype.UFOREP
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype.UFOREP
 import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk

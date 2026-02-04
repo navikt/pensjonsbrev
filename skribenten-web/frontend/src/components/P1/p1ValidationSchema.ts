@@ -16,7 +16,6 @@ const avslagsbegrunnelseEnum = z.enum([
   "PensjonsalderErIkkeNaadd",
   "AndreAarsaker",
 ]);
-const sakstypeEnum = z.enum(["ALDER", "UFORE", "ETTERLATTE"]);
 
 /**
  * ISO date string validator.
@@ -98,13 +97,6 @@ const p1InnvilgetPensjonFormSchema = z
           path: ["pensjonstype"],
         });
       }
-      if (!data.grunnlagInnvilget) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Grunnlag må velges",
-          path: ["grunnlagInnvilget"],
-        });
-      }
     }
   });
 
@@ -165,7 +157,7 @@ export const p1RedigerbarFormSchema = z
   .object({
     innehaver: p1PersonFormSchema,
     forsikrede: p1PersonFormSchema,
-    sakstype: sakstypeEnum,
+    sakstype: z.string(),
     innvilgedePensjoner: z.array(p1InnvilgetPensjonFormSchema),
     avslaattePensjoner: z.array(p1AvslaattPensjonFormSchema),
     utfyllendeInstitusjon: p1UtfyllendeInstitusjonFormSchema,

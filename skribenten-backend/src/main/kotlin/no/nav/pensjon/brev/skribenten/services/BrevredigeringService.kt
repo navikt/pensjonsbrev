@@ -14,8 +14,9 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.jetbrains.exposed.sql.SqlExpressionBuilder.eq
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
 import java.time.temporal.ChronoUnit
@@ -92,58 +93,6 @@ class BrevredigeringService(
             }
         }
     }
-
-    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
-
-    suspend fun hentBrev(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): Dto.Brevredigering? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                val rendretBrev = rendreBrev(brev = brevDto)
-
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            }
-        } else {
-            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-        }
-
-    suspend fun hentBrevAttestering(
-        saksId: Long,
-        brevId: Long,
-        reserverForRedigering: Boolean = false,
-    ): Dto.Brevredigering? =
-        if (reserverForRedigering) {
-            hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-                brevDto.validerKanAttestere(PrincipalInContext.require())
-
-                val signaturAttestant =
-                    brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
-
-                val rendretBrev = rendreBrev(brev = brevDto, signaturAttestant = signaturAttestant)
-
-                transaction {
-                    brevDb.apply {
-                        redigertBrev = brevDto.redigertBrev.updateEditedLetter(rendretBrev.markup)
-                    }.toDto(rendretBrev.letterDataUsage)
-                }
-            }
-        } else {
-            transaction { BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.toDto(null) }
-        }
-
-    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
-        transaction {
-            BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
-                .map { it.toBrevInfo() }
-        }
 
     override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
         transaction {
@@ -326,7 +275,7 @@ class BrevredigeringService(
     ): T? {
         val principal = PrincipalInContext.require()
 
-        return transaction(Connection.TRANSACTION_REPEATABLE_READ) {
+        return transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 ?.apply {
                     if (redigeresAv == null || redigeresAv == principal.navIdent || erReservasjonUtloept()) {

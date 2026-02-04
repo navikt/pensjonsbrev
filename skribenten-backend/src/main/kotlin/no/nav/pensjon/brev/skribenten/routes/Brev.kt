@@ -30,12 +30,12 @@ fun Route.brev(
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
             this.penService = penService
-            this.brevredigeringService = brevredigeringService
+            this.brevredigeringFacade = brevredigeringFacade
         }
 
         get("/info") {
             val brevId = call.parameters.getOrFail<Long>("brevId")
-            val brev = brevredigeringService.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
+            val brev = brevredigeringFacade.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
 
             if (brev != null) {
                 call.respond(HttpStatusCode.OK, brev)

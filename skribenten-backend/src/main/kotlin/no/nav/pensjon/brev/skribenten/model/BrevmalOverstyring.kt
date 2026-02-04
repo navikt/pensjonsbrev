@@ -20,11 +20,6 @@ object BrevmalOverstyring {
             "PE_UT_04_402"
         ),
         "FOERSTEGANGSBEHANDLING" to listOf(
-            "AP_AVSL_TIDLUTTAK",
-            "AP_AVSL_UTTAK",
-            "AP_INNV_AVT_MAN",
-            "AP_INNV_MAN",
-            "BP_AVSL_MAN",
             "PE_AF_04_001",
             "PE_AF_04_010",
             "PE_AF_04_111",
@@ -58,18 +53,6 @@ object BrevmalOverstyring {
             "PE_UT_04_118"
         ),
         "VEDTAK_ENDRING_OG_REVURDERING" to listOf(
-            "AP_AVSL_ENDR",
-            "AP_AVSL_FT_MAN",
-            "AP_AVSL_GJRETT_MAN",
-            "AP_ENDR_EPS_MAN",
-            "AP_ENDR_FT_MAN",
-            "AP_ENDR_GJRETT_MAN",
-            "AP_ENDR_GRAD_MAN",
-            "AP_ENDR_INST_MAN",
-            "AP_ENDR_OPPTJ_MAN",
-            "AP_ENDR_STANS_MAN",
-            "AP_OPPH_FT_MAN",
-            "BP_OPPH_MAN",
             "PE_AF_04_020",
             "PE_AF_04_114",
             "PE_AP_04_020",
@@ -97,8 +80,6 @@ object BrevmalOverstyring {
             "PE_UT_07_100"
         ),
         "VEDTAK_FLYTTE_MELLOM_LAND" to listOf(
-            "AP_ENDR_FLYTT_MAN",
-            "AP_STANS_FLYTT_MAN",
             "PE_AP_04_223",
             "PE_AP_04_224",
             "PE_AP_04_225",
@@ -107,7 +88,6 @@ object BrevmalOverstyring {
             "PE_IY_04_127"
         ),
         "SLUTTBEHANDLING" to listOf(
-            "INFO_P1",
             "PE_AP_04_903",
             "PE_AP_04_904",
             "PE_AP_04_912",
@@ -117,8 +97,6 @@ object BrevmalOverstyring {
             "PE_UT_04_107"
         ),
         "INFORMASJONSBREV" to listOf(
-            "AP_INFO_STID_MAN",
-            "DOD_INFO_RETT_MAN",
             "PE_AP_04_922",
             "PE_BP_01_001",
             "PE_BP_01_002",
@@ -134,9 +112,9 @@ object BrevmalOverstyring {
             "PE_UT_04_001",
             "PE_UT_04_004"
         ),
-        "VARSEL" to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
+        "VARSEL" to listOf("PE_IY_03_051", "PE_IY_03_179"),
         "VEDTAK_EKSPORT" to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
-        "OMSORGSOPPTJENING" to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010", "PE_IY_04_001"),
+        "OMSORGSOPPTJENING" to listOf("PE_IY_04_010", "PE_IY_04_001"),
         "UFOEREPENSJON" to listOf(
             "PE_UP_04_001",
             "PE_UP_04_020",
@@ -172,9 +150,6 @@ object BrevmalOverstyring {
         ),
         "LEVEATTEST" to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
         "FEILUTBETALING" to listOf(
-            "VARSEL_TILBAKEBET",
-            "VEDTAK_TILBAKEKREV",
-            "VEDTAK_TILBAKEKREV_MIDL",
             "PE_IY_04_060",
             "PE_IY_04_061",
             "PE_IY_05_027"

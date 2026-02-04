@@ -1,14 +1,16 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
-import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
 
@@ -21,6 +23,7 @@ class BrevredigeringFacade(
     private val brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
     private val opprettBrevPolicy: OpprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService),
     private val klarTilSendingPolicy: KlarTilSendingPolicy = KlarTilSendingPolicy(),
+    private val attesterBrevPolicy: AttesterBrevPolicy = AttesterBrevPolicy(),
 ) {
 
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
@@ -31,7 +34,7 @@ class BrevredigeringFacade(
         ).runHandler(request)
 
     suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-        newSuspendedTransaction {
+        suspendTransaction {
             OpprettBrevHandler(
                 opprettBrevPolicy = opprettBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
@@ -41,11 +44,29 @@ class BrevredigeringFacade(
             ).handle(request)
         }
 
+    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
+        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
+
+    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
+        transaction {
+            BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
+                .map { it.toBrevInfo() }
+        }
+
     suspend fun hentBrev(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         HentBrevHandler(
             redigerBrevPolicy = redigerBrevPolicy,
             renderService = renderService,
             brevdataService = brevdataService,
+        ).runHandler(request)
+
+    suspend fun hentBrevAttestering(request: HentBrevAttesteringHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        HentBrevAttesteringHandler(
+            attesterBrevPolicy = attesterBrevPolicy,
+            redigerBrevPolicy = redigerBrevPolicy,
+            renderService = renderService,
+            brevdataService = brevdataService,
+            navansattService = navansattService,
         ).runHandler(request)
 
     suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
@@ -69,7 +90,7 @@ class BrevredigeringFacade(
         if (requiresReservasjon(request)) {
             val principal = PrincipalInContext.require()
 
-            val reservasjon = transaction(Connection.TRANSACTION_REPEATABLE_READ) {
+            val reservasjon = transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
                 BrevredigeringEntity.findById(request.brevId)
                     ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
             }
@@ -80,7 +101,7 @@ class BrevredigeringFacade(
             }
         }
 
-        return newSuspendedTransaction {
+        return suspendTransaction {
             handle(request)
         }
     }

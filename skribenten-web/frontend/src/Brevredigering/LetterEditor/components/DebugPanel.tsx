@@ -1,5 +1,6 @@
 import { css, Global } from "@emotion/react";
-import { Accordion, BodyShort, BoxNew, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
+import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
+import type { AkselColor } from "@navikt/ds-react/esm/types";
 import type { Dispatch } from "react";
 import React from "react";
 import { useEffect, useState } from "react";
@@ -60,7 +61,7 @@ export function DebugPanel() {
           }
         `}
       />
-      <BoxNew background="neutral-soft" marginBlock="space-16 0">
+      <Box background="neutral-soft" marginBlock="space-16 space-0">
         <VStack padding="space-16">
           <HStack gap="space-16">
             {mappedSelection ? (
@@ -102,7 +103,7 @@ export function DebugPanel() {
           </HStack>
           <LetterTree state={editorState} />
         </VStack>
-      </BoxNew>
+      </Box>
     </>
   );
 }
@@ -171,7 +172,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         </ExpansionCard.Title>
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
-      <BoxNew asChild background="default">
+      <Box asChild background="default">
         <ExpansionCard.Content>
           <Accordion size="small">
             {block.content.map((c, index) => (
@@ -179,7 +180,7 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
             ))}
           </Accordion>
         </ExpansionCard.Content>
-      </BoxNew>
+      </Box>
     </ExpansionCard>
   );
 };
@@ -270,7 +271,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
   );
 };
 
-function getHighlightColor(isNew: boolean, isEdited: boolean): string {
+function getHighlightColor(isNew: boolean, isEdited: boolean): AkselColor {
   return isNew ? "success" : isEdited ? "accent" : "neutral";
 }
 

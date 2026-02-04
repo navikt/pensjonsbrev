@@ -1,4 +1,4 @@
-import { BodyShort, BoxNew, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { BodyShort, Box, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -35,7 +35,7 @@ const Kvittering = () => {
 
   if (sendteBrevLista.length === 0) {
     return (
-      <BoxNew
+      <Box
         asChild
         background="default"
         height="calc(var(--main-page-content-height) + 48px)"
@@ -57,7 +57,7 @@ const Kvittering = () => {
           </HStack>
           <VerticalDivider />
           {urlReady && (
-            <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+            <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">
               <VStack gap="space-8" marginInline="auto">
                 <Heading size="medium">Hva vil du gjøre nå?</Heading>
                 <NavButtons psak={psak} saksId={saksId} />
@@ -65,12 +65,12 @@ const Kvittering = () => {
             </HStack>
           )}
         </HGrid>
-      </BoxNew>
+      </Box>
     );
   }
 
   return (
-    <BoxNew
+    <Box
       asChild
       background="default"
       height="calc(var(--main-page-content-height) + 48px)"
@@ -86,7 +86,7 @@ const Kvittering = () => {
         </HStack>
         <VerticalDivider />
         {urlReady && (
-          <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
+          <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">
             <VStack gap="space-8" marginInline="auto">
               <Heading size="medium">Hva vil du gjøre nå?</Heading>
               <NavButtons psak={psak} saksId={saksId} />
@@ -94,7 +94,7 @@ const Kvittering = () => {
           </HStack>
         )}
       </HGrid>
-    </BoxNew>
+    </Box>
   );
 };
 

@@ -1,14 +1,14 @@
 import "~/css/p1.css";
 
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
-import { Alert, BoxNew, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, Box, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { type FieldErrors, FormProvider, useForm, useFormState } from "react-hook-form";
+import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
-import { useLandData } from "~/hooks/useLandData";
+import { useLandDataP1 } from "~/hooks/useLandData";
 import type { P1Redigerbar } from "~/types/p1";
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
@@ -57,7 +57,6 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     handleSubmit,
     reset,
     formState: { errors },
-    control,
   } = formMethods;
 
   // Track if form has been initialized with data
@@ -86,7 +85,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     }
   }, [open]);
 
-  const { data: landListe } = useLandData();
+  const { data: landListe } = useLandDataP1();
 
   const lagreMutation = useMutation({
     mutationFn: (formValues: P1RedigerbarForm) => {
@@ -136,6 +135,9 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       // Show which tabs have errors
       const errorLabels = tabsWithErrors.map((t) => t.label).join(", ");
       setValidationError(`Skjemaet har feil som må rettes: ${errorLabels}`);
+    } else if (Object.keys(fieldErrors).length > 0) {
+      // Fallback: If we have errors but couldn't map them to a tab (e.g. sakstype, root errors)
+      setValidationError(`Skjemaet kan ikke lagres pga. ugyldig data (felt: ${Object.keys(fieldErrors).join(", ")})`);
     }
   };
 
@@ -170,7 +172,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
         <FormProvider {...formMethods}>
           <VStack asChild flexGrow="1" minHeight="0">
             <form onSubmit={handleSubmit(onSubmit, onValidationError)}>
-              <VStack asChild flexGrow="1" overflow="hidden" padding="0">
+              <VStack asChild flexGrow="1" overflow="hidden" padding="space-0">
                 <Modal.Body>
                   {isInitialLoading ? (
                     <VStack align="center" flexGrow="1" justify="center">
@@ -183,23 +185,23 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   ) : (
                     <>
                       {saveSuccess && (
-                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
                           <Alert size="small" variant="success">
                             Endringene ble lagret
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
                       {validationError && (
-                        <BoxNew asChild marginBlock="0 space-8" marginInline="space-20">
+                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
                           <Alert closeButton onClose={() => setValidationError(null)} size="small" variant="error">
                             {validationError}
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
 
                       <VStack asChild overflow="hidden">
                         <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} size="small" value={activeTab}>
-                          <BoxNew asChild paddingInline="space-20">
+                          <Box asChild paddingInline="space-20">
                             <Tabs.List>
                               <Tabs.Tab
                                 label={
@@ -234,7 +236,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                                 value="institusjon"
                               />
                             </Tabs.List>
-                          </BoxNew>
+                          </Box>
 
                           <Tabs.Panel className="p1-tabs-panel" value="innehaver">
                             <P1InnehaverTab disabled />
@@ -259,11 +261,11 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                       </VStack>
 
                       {lagreMutation.isError && (
-                        <BoxNew asChild marginBlock="space-16 0" marginInline="space-20">
+                        <Box asChild marginBlock="space-16 space-0" marginInline="space-20">
                           <Alert size="small" variant="error">
                             Noe gikk galt ved lagring av P1. Prøv igjen.
                           </Alert>
-                        </BoxNew>
+                        </Box>
                       )}
                     </>
                   )}
@@ -275,11 +277,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                   <Button disabled={lagreMutation.isPending} onClick={handleCancel} type="button" variant="tertiary">
                     Avbryt
                   </Button>
-                  <SubmitButton
-                    control={control}
-                    isInitialLoading={isInitialLoading}
-                    isLoading={lagreMutation.isPending}
-                  />
+                  <SubmitButton isInitialLoading={isInitialLoading} isLoading={lagreMutation.isPending} />
                 </Modal.Footer>
               </HStack>
             </form>
@@ -293,27 +291,24 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 // Helper component for tab labels with error indicator
 const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => (
   <>
-    <BoxNew as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
+    <Box as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
       {label}
-    </BoxNew>
+    </Box>
     {hasError && (
-      <BoxNew aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
+      <Box aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
     )}
   </>
 );
 
-// Isolated submit button that subscribes to isDirty - prevents parent re-renders
+// Submit button - always enabled after initial load to avoid UX confusion
 interface SubmitButtonProps {
-  control: ReturnType<typeof useForm<P1RedigerbarForm>>["control"];
   isLoading: boolean;
   isInitialLoading: boolean;
 }
 
-const SubmitButton = ({ control, isLoading, isInitialLoading }: SubmitButtonProps) => {
-  const { isDirty } = useFormState({ control });
-
+const SubmitButton = ({ isLoading, isInitialLoading }: SubmitButtonProps) => {
   return (
-    <Button disabled={isInitialLoading || !isDirty} loading={isLoading} size="medium" type="submit" variant="primary">
+    <Button disabled={isInitialLoading} loading={isLoading} size="medium" type="submit" variant="primary">
       Lagre
     </Button>
   );

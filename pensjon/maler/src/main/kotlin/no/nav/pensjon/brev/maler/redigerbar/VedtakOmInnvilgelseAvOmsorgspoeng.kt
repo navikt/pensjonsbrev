@@ -69,7 +69,7 @@ object VedtakOmInnvilgelseAvOmsorgspoeng : RedigerbarTemplate<VedtakOmInnvilgels
                 text(
                     bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første ledd bokstav b, og §§ 20-8 første ledd bokstav b og 20-21." },
                     nynorsk { +"Vedtaket er gjort etter folketrygdlova § 3‑16 første ledd bokstav b, og §§ 20‑8 første ledd bokstav b og 20‑21." },
-                    english { +"The decision has been made persuant to the National Insurance Act § 3-16, first paragraph, letter b, and §§ 20-8, first paragraph, letter b, and 20-21."
+                    english { +"The decision has been made pursuant to the National Insurance Act § 3-16, first paragraph, letter b, and §§ 20-8, first paragraph, letter b, and 20-21."
                     }
                 )
             }

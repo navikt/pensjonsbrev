@@ -41,7 +41,7 @@ describe("P1 med forsidebrev", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
       request.reply(p1BrevData);
     }).as("getP1Data");
-    cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/landForP1", (request) => {
       request.reply(countriesSubset);
     }).as("getLand");
     // Intercept for Vedlegg component - returns empty array since P1 vedlegg is handled separately
@@ -137,5 +137,30 @@ describe("P1 med forsidebrev", () => {
     getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
     cy.contains("Lagre").should("not.be.disabled").click();
     cy.contains("Endringene ble lagret").should("exist");
+  });
+
+  it("håndterer sakstype UFOREP (uføretrygd) korrekt ved lagring", () => {
+    // This test explicitly verifies the fix for the reported bug
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      const uforepData = structuredClone(p1BrevData);
+      uforepData.sakstype = "UFOREP";
+      request.reply(uforepData);
+    });
+
+    openP1Modal();
+    cy.contains("3. Innvilget pensjon").should("be.visible");
+
+    // Modify field to enable save
+    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
+      expect(request.body.sakstype).to.eq("UFOREP");
+      request.reply("200");
+    }).as("saveP1Uforep");
+
+    cy.contains("Lagre").click();
+
+    cy.wait("@saveP1Uforep");
+    cy.contains("Endringene ble lagret").should("be.visible");
   });
 });

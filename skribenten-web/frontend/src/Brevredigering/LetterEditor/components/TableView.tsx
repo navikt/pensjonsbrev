@@ -17,23 +17,36 @@ const tableStyles = css`
   width: 100%;
   table-layout: fixed;
   border-collapse: collapse;
+  margin-block: var(--ax-space-28);
 
   td,
   th {
-    border: 1px solid var(--ax-border-focus);
+    border-bottom: 1px solid var(--ax-border-neutral);
     padding: 2mm;
     overflow-wrap: break-word;
+    font-weight: var(--ax-font-weight-regular);
+    font-size: var(--ax-font-size-medium);
   }
 
   th {
-    background: var(--ax-bg-neutral-soft);
-    font-weight: var(--ax-font-weight-regular);
+    border-bottom: 2px solid var(--ax-border-focus);
+    background: var(--ax-bg-accent-moderate);
+    font-weight: var(--ax-font-weight-bold);
+    text-align: left;
+  }
+
+  tbody > tr:nth-of-type(even) {
+    background: var(--ax-bg-neutral-moderate);
+  }
+
+  tbody > tr:nth-of-type(odd) {
+    background: var(--ax-bg-default);
   }
 `;
 
 const selectedBackgroundStyle = css`
   && {
-    background: var(--ax-bg-info-soft, #d0e7ff);
+    background: var(--ax-bg-accent-soft);
   }
 `;
 

@@ -83,11 +83,15 @@ abstract class BrevredigeringTest {
     private val navAnsattService = FakeNavansattService(
         harTilgangTilEnhet = mapOf(
             Pair(saksbehandler1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
-            Pair(saksbehandler2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true
+            Pair(saksbehandler2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant1Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
+            Pair(attestant2Principal.navIdent.id, PRINCIPAL_NAVENHET_ID) to true,
         ),
         navansatte = mapOf(
             saksbehandler1Principal.navIdent.id to saksbehandler1Principal.fullName,
-            saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName
+            saksbehandler2Principal.navIdent.id to saksbehandler2Principal.fullName,
+            attestant1Principal.navIdent.id to attestant1Principal.fullName,
+            attestant2Principal.navIdent.id to attestant2Principal.fullName,
         )
     )
 
@@ -120,7 +124,8 @@ abstract class BrevredigeringTest {
         const val PRINCIPAL_NAVENHET_ID = "Nebuchadnezzar"
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
-        val attestantPrincipal = MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
+        val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
+        val attestant2Principal = MockPrincipal(NavIdent("The Oracle"), "Gloria Foster", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
 
         val sak1 = Pen.SakSelection(
             saksId = 1234L,
@@ -268,7 +273,7 @@ abstract class BrevredigeringTest {
 
     protected suspend fun attester(
         brev: Dto.Brevredigering,
-        attestant: UserPrincipal = attestantPrincipal,
+        attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
     ) = withPrincipal(attestant) {
         brevredigeringService.attester(

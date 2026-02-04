@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
-enum class BrevSystem { EXSTREAM, DOKSYS, BREVBAKER }
+enum class BrevSystem { EXSTREAM, BREVBAKER }
 
 interface LetterMetadata {
     val brevkode: String
@@ -28,7 +28,7 @@ interface LetterMetadata {
     fun toApi(): Api.Brevmal
 
     /**
-     * Brevmetadata om brevmaler fra pensjon-brevmetadata (Exstream/Doksys)
+     * Brevmetadata om brevmaler fra pensjon-brevmetadata (Exstream)
      */
     data class Legacy(val data: BrevdataDto, private val hasSakstype: ISakstype) : LetterMetadata {
         override val brevkode: String get() = data.brevkodeIBrevsystem
@@ -49,10 +49,7 @@ interface LetterMetadata {
                 name = dekode,
                 id = brevkodeIBrevsystem,
                 spraak = sprak ?: emptyList(),
-                brevsystem = when (brevsystem) {
-                    BrevdataDto.BrevSystem.DOKSYS -> BrevSystem.DOKSYS
-                    BrevdataDto.BrevSystem.GAMMEL -> BrevSystem.EXSTREAM
-                },
+                brevsystem = BrevSystem.EXSTREAM,
                 brevkategori = BrevmalOverstyring.kategori[brevkodeIBrevsystem]?.let { Pen.finnVisningstekst(it) } ?: this.brevkategori?.toKategoriTekst(),
                 dokumentkategoriCode = this.dokumentkategori,
                 redigerbart = redigerbart,

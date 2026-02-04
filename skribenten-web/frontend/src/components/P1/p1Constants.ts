@@ -8,6 +8,7 @@ export const GRUNNLAG_INNVILGET_OPTIONS = [
   { value: "IHenholdTilNasjonalLovgivning", label: "I henhold til nasjonal lovgivning" },
   { value: "ProRata", label: "Pro rata" },
   { value: "MindreEnnEttAar", label: "Mindre enn ett år" },
+  { value: "IKKE_OPPGITT", label: "Ikke oppgitt" },
 ] as const;
 
 export const REDUKSJONSGRUNNLAG_OPTIONS = [
@@ -18,7 +19,7 @@ export const REDUKSJONSGRUNNLAG_OPTIONS = [
 
 export const AVSLAGSBEGRUNNELSE_OPTIONS = [
   { value: "IngenOpptjeningsperioder", label: "Ingen opptjeningsperioder" },
-  { value: "OpptjeningsperiodePaaMindreEnnEttAar", label: "Opptjeningsperiode < 1 år" },
+  { value: "OpptjeningsperiodePaaMindreEnnEttAar", label: "Opptjeningsperiode mindre enn 1 år" },
   {
     value: "KravTilKvalifiseringsperiodeEllerAndreKvalifiseringskravErIkkeOppfylt",
     label: "Kvalifiseringskrav ikke oppfylt",
