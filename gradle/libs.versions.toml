@@ -1,5 +1,5 @@
 [versions]
-kotlinVersion = "2.3.0"
+kotlinVersion = "2.3.10"
 kotlinKspVersion = "2.3.4"
 ktorVersion = "3.4.0"
 assertJVersion = "3.27.7"
