@@ -22,7 +22,7 @@ fun createSamletMeldingOmPensjonsvedtakV2Dto() =
         ),
     )
 
-private val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"
+private const val ADRESSE_EKSEMPEL = "Lillevik Torgvei 1\n4321\nLillevik Østre\nDanmark"
 
 fun createP1VedleggDto() = P1RedigerbarDto(
     innehaver = P1Person(
@@ -58,7 +58,6 @@ fun createP1VedleggDto() = P1RedigerbarDto(
         faksnummer = "12134412",
         telefonnummer = Telefonnummer("+123 45678901"),
         epost = Epost("lars.holm@tøys.nfp.no"),
-        dato = LocalDate.now(),
     )
 )
 

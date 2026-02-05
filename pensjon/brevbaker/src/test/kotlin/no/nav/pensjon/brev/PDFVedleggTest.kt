@@ -101,7 +101,6 @@ fun createP1VedleggDto() = P1RedigerbarDto(
         faksnummer = "12134412",
         telefonnummer = Telefonnummer("+123 45678901"),
         epost = Epost("lars.holm@tøys.nfp.no"),
-        dato = vilkaarligDato,
     )
 )
 
