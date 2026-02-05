@@ -172,15 +172,6 @@ object P1pdfV2Dto {
             institusjon.datoForVedtak?.let { dato ->
                 val formattertDato = dato.format(dateFormatter.withLocale(languageCode.locale()))
                 datoForVedtaketTekst(languageCode, formattertDato)
-            } ?: institusjon.vedtaksdato?.let { dato ->
-                try {
-                    val formattertDato =
-                        LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))
-                    datoForVedtaketTekst(languageCode, formattertDato)
-                } catch (e: Exception) {
-                    logger.warn("Could not parse vedtaksdato: $dato", e)
-                    datoForVedtaketTekst(languageCode, dato)
-                }
             },
         )
     }
