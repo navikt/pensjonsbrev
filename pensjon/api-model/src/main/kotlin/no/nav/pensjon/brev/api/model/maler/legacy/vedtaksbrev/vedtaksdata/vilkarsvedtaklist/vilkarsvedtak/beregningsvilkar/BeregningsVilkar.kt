@@ -9,6 +9,7 @@ data class BeregningsVilkar(
     val ieuinntekt: Kroner?,
     val ifubegrunnelse: String?,
     val ifuinntekt: Kroner?,
+    val ivsbegrunnelse: String?,
     val skadetidspunkt: LocalDate?,
     val trygdetid: Trygdetid?,
     val uforegrad: Int?,
