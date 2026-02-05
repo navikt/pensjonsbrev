@@ -53,7 +53,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjonAvdodAutoDto> {
 
-    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ENDRING_AV_ALDERSPENSJON_PGA_AVDOD_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_OMREGNING_TIL_ENSLIG_PENSJONIST_AUTO
 
     override val template = createTemplate(
         letterDataType = EndringAvAlderspensjonAvdodAutoDto::class,
