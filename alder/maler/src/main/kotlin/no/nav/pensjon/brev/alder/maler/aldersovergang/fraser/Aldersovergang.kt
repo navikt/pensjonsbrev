@@ -15,16 +15,24 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
+import no.nav.pensjon.brev.template.dsl.expression.isNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 // infoGjIkkeInntektsavkorted_002, infoGjInntektsavkortet_001, infoUTAPinnledn_001, infoUTGradertAPinnledn_001, infoUTogAPinnledn_001, infoFamPleierAPinnledn_001, infoAPinnledn_001
 data class InnledningInfoYtelse(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>,
+    val uforegrad: Expression<Int?>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.GJP_FULL)) {
@@ -120,171 +128,6 @@ data class InnledningInfoYtelse(
                     },
                 )
             }
-        }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT)) {
-            paragraph {
-                text(
-                    bokmal {
-                        +
-                        "Uføretrygden din stopper måneden etter at du fyller 67 år. " +
-                                "Da får du automatisk 100 prosent alderspensjon. Du trenger ikke søke om dette."
-                    },
-                    nynorsk {
-                        +
-                        "Uføretrygda di stoppar månaden etter at du fyller 67 år. " +
-                                "Då får du automatisk 100 prosent alderspensjon. Du treng ikkje søkje om dette."
-                    },
-                    english {
-                        +
-                        "Your disability benefit will cease the month after you turn 67. " +
-                                "You will then automatically receive 100 percent retirement pension. You do not need to apply for this."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Alderspensjon blir beregnet etter andre regler enn uføretrygd. " +
-                                "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd."
-                    },
-                    nynorsk {
-                        +"Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
-                                "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd."
-                    },
-                    english {
-                        +"Retirement pension is calculated according to different rules than disability benefit. " +
-                                "Therefore, the amount you receive in retirement pension may differ from what you received in disability benefit."
-                    },
-                )
-            }
-        }.orShowIf(
-            ytelseForAldersovergangKode.isOneOf(
-                YtelseForAldersovergangKode.UT_GRAD,
-                YtelseForAldersovergangKode.UT_AP_GRAD,
-            ),
-        ) {
-            showIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT_GRAD)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Uføretrygden din stopper fra måneden etter at du blir 67 år. " +
-                                    "Hvis du ikke melder fra om noe annet, får du automatisk alderspensjon med en uttaksgrad nærmest mulig den du har i uføretrygd i dag."
-                        },
-                        nynorsk {
-                            +"Uføretrygda di stoppar frå månaden etter at du blir 67 år. " +
-                                    "Om du ikkje melder frå om noko anna, får du automatisk alderspensjon med ein uttaksgrad nærast mogleg den du har i uføretrygd i dag."
-                        },
-                        english {
-                            +"Your disability benefit will cease from the month after you turn 67. " +
-                                    "Unless we receive further information from you, you will automatically receive a retirement pension with a withdrawal rate that is as similar as possible to your current disability benefit rate."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Alderspensjon beregnes etter andre regler enn uføretrygd. " +
-                                    "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd."
-                        },
-                        nynorsk {
-                            +"Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
-                                    "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd."
-                        },
-                        english {
-                            +"Retirement pension is calculated according to different rules than disability benefit. " +
-                                    "Therefore, you will not receive the same amount in retirement pension as you did in disability benefit."
-                        },
-                    )
-                }
-            }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.UT_AP_GRAD)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Uføretrygden din stopper fra måneden etter at du blir 67 år. " +
-                                    "Hvis du ikke melder fra om noe annet, får du automatisk alderspensjon med en uttaksgrad nærmest mulig den du har i uføretrygd og alderspensjon i dag."
-                        },
-                        nynorsk {
-                            +"Uføretrygda di stoppar frå månaden etter at du blir 67 år. " +
-                                    "Om du ikkje melder frå om noko anna, får du automatisk alderspensjon med ein uttaksgrad nærast mogleg den du har i uføretrygd og alderspensjon i dag."
-                        },
-                        english {
-                            +"Your disability benefit will cease from the month after you turn 67. " +
-                                    "Unless we receive further information from you, " +
-                                    "you will automatically receive a retirement pension with a withdrawal rate as close as possible to your current disability benefit rate and retirement pension."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Alderspensjon beregnes etter andre regler enn uføretrygd. " +
-                                    "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd."
-                        },
-                        nynorsk {
-                            +"Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
-                                    "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd."
-                        },
-                        english {
-                            +"Retirement pension is calculated according to different rules than disability benefit. " +
-                                    "Therefore, you will not receive the same amount in retirement pension as you did in disability benefit."
-                        },
-                    )
-                }
-            }
-            title2 {
-                text(
-                    bokmal { +"Du har rett til hel (100 prosent) alderspensjon" },
-                    nynorsk { +"Du har rett til heil (100 prosent) alderspensjon" },
-                    english { +"You are entitled to full (100 percent) retirement pension" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du ønsker hel alderspensjon fra måneden etter at uføretrygden stopper, må du melde fra senest den måneden du fyller 67 år. " +
-                                "Du kan endre pensjonen på $DIN_PENSJON_URL_INNLOGGET. Hvis du ikke kan logge inn, finner du søknadsskjema for alderspensjon på $NAV_URL."
-                    },
-                    nynorsk {
-                        +"Om du ønskjer heil alderspensjon frå månaden etter at uføretrygda stoppar, må du melde frå seinast den månaden du fyller 67 år. " +
-                                "Du kan endre pensjonen på $DIN_PENSJON_URL_INNLOGGET. Om du ikkje kan logge inn, finn du søknadsskjema for alderspensjon på $NAV_URL."
-                    },
-                    english {
-                        +"If you wish to receive full retirement pension from the month after your disability benefit ends, you must notify Nav no later than the month you turn 67. " +
-                                "You can change your pension at $DIN_PENSJON_URL_INNLOGGET. If you are unable to log in, you will find the application form for retirement pension at $NAV_URL."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du kan også velge å ta ut alderspensjonen din med en annen uttaksgrad. " +
-                                "Uttaksgrad er hvor stor andel av pensjonen du tar ut. Du kan ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon."
-                    },
-                    nynorsk {
-                        +"Du kan også velje å ta ut alderspensjonen din med ein annan uttaksgrad. " +
-                                "Uttaksgrad er kor stor del av pensjonen du tar ut. Du kan ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon."
-                    },
-                    english {
-                        +"You may also choose to withdraw your retirement pension at a different withdrawal rate. " +
-                                "The withdrawal rate is the proportion of the pension you choose to take out. You can withdraw 20, 40, 50, 60, 80, or 100 percent retirement pension."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"I pensjonskalkulatoren på $NAV_URL kan du sjekke hvor høy pensjonen blir med ulike uttaksgrader. " +
-                                "Hvis du trenger hjelp til beregningen eller søknaden, kan du kontakte oss på $NAV_KONTAKTSENTER_TELEFON_PENSJON."
-                    },
-                    nynorsk {
-                        +"I pensjonskalkulatoren på $NAV_URL kan du sjekke kor høg pensjonen blir med ulike uttaksgradar. " +
-                                "Om du treng hjelp til berekninga eller søknaden, kan du kontakte oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON."
-                    },
-                    english {
-                        +"You can use the pension calculator at $NAV_URL to check how much your pension will be at different withdrawal rates. " +
-                                "If you need help with the calculation or the application, you can contact us by phone at $NAV_KONTAKTSENTER_TELEFON_PENSJON."
-                    },
-                )
-            }
         }.orShowIf(ytelseForAldersovergangKode.equalTo(YtelseForAldersovergangKode.FAM_PL)) {
             paragraph {
                 text(
@@ -327,6 +170,134 @@ data class InnledningInfoYtelse(
                                 "retirement pension from the National Insurance Scheme starting the month after they turn 67."
                     },
                 )
+            }
+        }
+        ifNotNull(uforegrad) { uforegrad ->
+            showIf(uforegrad.equalTo(100)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +
+                            "Uføretrygden din stopper måneden etter at du fyller 67 år. " +
+                                    "Da får du automatisk 100 prosent alderspensjon. Du trenger ikke søke om dette."
+                        },
+                        nynorsk {
+                            +
+                            "Uføretrygda di stoppar månaden etter at du fyller 67 år. " +
+                                    "Då får du automatisk 100 prosent alderspensjon. Du treng ikkje søkje om dette."
+                        },
+                        english {
+                            +
+                            "Your disability benefit will cease the month after you turn 67. " +
+                                    "You will then automatically receive 100 percent retirement pension. You do not need to apply for this."
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Alderspensjon beregnes etter andre regler enn uføretrygd. " +
+                                    "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd."
+                        },
+                        nynorsk {
+                            +"Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
+                                    "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd."
+                        },
+                        english {
+                            +"Retirement pension is calculated according to different rules than disability benefit. " +
+                                    "Therefore, you will not receive the same amount in retirement pension as you did in disability benefit."
+                        },
+                    )
+                }
+            }.orShowIf( uforegrad.greaterThan(0) and uforegrad.notEqualTo(100)) {
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Uføretrygden din stopper fra måneden etter at du blir 67 år. " +
+                                        "Hvis du ikke melder fra om noe annet, får du automatisk alderspensjon med en uttaksgrad nærmest mulig den du har i uføretrygd og eventuelt alderspensjon i dag."
+                            },
+                            nynorsk {
+                                +"Uføretrygda di stoppar frå månaden etter at du blir 67 år. " +
+                                        "Om du ikkje melder frå om noko anna, får du automatisk alderspensjon med ein uttaksgrad nærast mogleg den du har i uføretrygd og eventuelt alderspensjon i dag."
+                            },
+                            english {
+                                +"Your disability benefit will cease from the month after you turn 67. " +
+                                        "Unless we receive further information from you, " +
+                                        "you will automatically receive a retirement pension with a withdrawal rate as close as possible to your current disability benefit rate and any retirement pension you may receive today."
+                            },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Alderspensjon beregnes etter andre regler enn uføretrygd. " +
+                                        "Derfor får du ikke det samme i alderspensjon som du har hatt i uføretrygd."
+                            },
+                            nynorsk {
+                                +"Alderspensjon blir berekna etter andre reglar enn uføretrygd. " +
+                                        "Derfor får du ikkje det same i alderspensjon som du har hatt i uføretrygd."
+                            },
+                            english {
+                                +"Retirement pension is calculated according to different rules than disability benefit. " +
+                                        "Therefore, you will not receive the same amount in retirement pension as you did in disability benefit."
+                            },
+                        )
+                    }
+                }
+                title2 {
+                    text(
+                        bokmal { +"Du har rett til hel (100 prosent) alderspensjon" },
+                        nynorsk { +"Du har rett til heil (100 prosent) alderspensjon" },
+                        english { +"You are entitled to full (100 percent) retirement pension" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Hvis du ønsker hel alderspensjon fra måneden etter at uføretrygden stopper, må du melde fra senest den måneden du fyller 67 år. " +
+                                    "Du kan endre pensjonen på $DIN_PENSJON_URL_INNLOGGET. Hvis du ikke kan logge inn, finner du søknadsskjema for alderspensjon på $NAV_URL."
+                        },
+                        nynorsk {
+                            +"Om du ønskjer heil alderspensjon frå månaden etter at uføretrygda stoppar, må du melde frå seinast den månaden du fyller 67 år. " +
+                                    "Du kan endre pensjonen på $DIN_PENSJON_URL_INNLOGGET. Om du ikkje kan logge inn, finn du søknadsskjema for alderspensjon på $NAV_URL."
+                        },
+                        english {
+                            +"If you wish to receive full retirement pension from the month after your disability benefit ends, you must notify Nav no later than the month you turn 67. " +
+                                    "You can change your pension at $DIN_PENSJON_URL_INNLOGGET. If you are unable to log in, you will find the application form for retirement pension at $NAV_URL."
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Du kan også velge å ta ut alderspensjonen din med en annen uttaksgrad. " +
+                                    "Uttaksgrad er hvor stor andel av pensjonen du tar ut. Du kan ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon."
+                        },
+                        nynorsk {
+                            +"Du kan også velje å ta ut alderspensjonen din med ein annan uttaksgrad. " +
+                                    "Uttaksgrad er kor stor del av pensjonen du tar ut. Du kan ta ut 20, 40, 50, 60, 80 eller 100 prosent alderspensjon."
+                        },
+                        english {
+                            +"You may also choose to withdraw your retirement pension at a different withdrawal rate. " +
+                                    "The withdrawal rate is the proportion of the pension you choose to take out. You can withdraw 20, 40, 50, 60, 80, or 100 percent retirement pension."
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"I pensjonskalkulatoren på $NAV_URL kan du sjekke hvor høy pensjonen blir med ulike uttaksgrader. " +
+                                    "Hvis du trenger hjelp til beregningen eller søknaden, kan du kontakte oss på $NAV_KONTAKTSENTER_TELEFON_PENSJON."
+                        },
+                        nynorsk {
+                            +"I pensjonskalkulatoren på $NAV_URL kan du sjekke kor høg pensjonen blir med ulike uttaksgradar. " +
+                                    "Om du treng hjelp til berekninga eller søknaden, kan du kontakte oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON."
+                        },
+                        english {
+                            +"You can use the pension calculator at $NAV_URL to check how much your pension will be at different withdrawal rates. " +
+                                    "If you need help with the calculation or the application, you can contact us by phone at $NAV_KONTAKTSENTER_TELEFON_PENSJON."
+                        },
+                    )
             }
         }
     }
