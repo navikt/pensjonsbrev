@@ -151,8 +151,6 @@ class Letter2MarkupTest {
         }
     }
 
-
-    // ToContent
     @Test
     fun `ingen annotasjoner inn gir ingen annotasjoner ut`() {
         val result = renderTemplate(EmptyAutobrevdata) {
@@ -165,7 +163,8 @@ class Letter2MarkupTest {
         assertThat(result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
             .flatMap { it.content }
             .map { it as LetterMarkup.ParagraphContent.Text.Literal }
-            .map { it.tags }).allMatch { it.isEmpty() }
+            .map { it.tags })
+            .allMatch { it.isEmpty() }
 
         assertThat(result.letterMarkup).hasBlocks {
             paragraph {
@@ -245,6 +244,30 @@ class Letter2MarkupTest {
                 literal("tomt")
             }
         }
+    }
+
+    @Test
+    fun `redigerbar data-tag settes riktig`() {
+        val result = renderTemplate(EmptyAutobrevdata) {
+            paragraph {
+                val ifNull = (null.expr().ifNull(Expression.Literal("du", setOf(ElementTags.FRITEKST)))).medTags(setOf(ElementTags.REDIGERBAR_DATA))
+                val notNull = "hallo".expr().medTags(setOf(ElementTags.REDIGERBAR_DATA)).ifNull(Expression.Literal("hei", setOf(ElementTags.FRITEKST)))
+                text(bokmal { + ifNull })
+                text(bokmal { + notNull })
+            }
+        }
+        val literals = result.letterMarkup.blocks.filterIsInstance<LetterMarkup.Block.Paragraph>()
+            .flatMap { it.content }
+            .filterIsInstance<LetterMarkup.ParagraphContent.Text.Literal>()
+        assertThat(literals[0].tags).containsExactly(ElementTags.FRITEKST)
+        assertThat(literals[1].tags).containsExactly(ElementTags.REDIGERBAR_DATA)
+        assertThat(result.letterMarkup).hasBlocks {
+            paragraph {
+                literal("du")
+                literal("hallo")
+            }
+        }
+
     }
 
 }

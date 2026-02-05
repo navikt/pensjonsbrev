@@ -211,7 +211,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
     private fun recursively(scope: ExpressionScope<*>, fontType: FontType, expr: Expression<*>, tags: Set<ElementTags>): List<Text> = (expr as? StringExpression)?.medTags(tags)?.toContent(scope, fontType) ?: listOf()
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> = when {
-        this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+        this is Expression.Literal -> listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, if (tags.contains(ElementTags.FRITEKST)) { tags - ElementTags.REDIGERBAR_DATA } else tags))
         this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfNull<*> -> recursively(scope, fontType, (first.takeIf { it.eval(scope) != null } ?: second), tags)
         this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.IfElse<*> -> recursively(scope, fontType, (second as Expression.BinaryInvoke<*, *, *>).let { s -> s.first.takeIf { this.first.eval(scope) == true } ?: s.second }, tags)
         this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat -> recursively(scope, fontType, first, tags) + recursively(scope, fontType, second, tags)
