@@ -30,6 +30,7 @@ import {
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import { NEW_LINE, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
@@ -416,6 +417,17 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     const offset = getCursorOffset();
     if (offset >= 0) {
+      // Track paste event for analytics
+      const pastedText = event.clipboardData.getData("text/plain");
+      const pasteLength = pastedText.length;
+      if (pasteLength > 0) {
+        trackEvent("tekst limt inn", {
+          brevkode: editorState.info.brevkode,
+          antallTegn: pasteLength,
+          erStor: pasteLength > 200,
+        });
+      }
+
       applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
     }
   };

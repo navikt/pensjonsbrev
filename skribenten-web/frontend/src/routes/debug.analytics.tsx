@@ -57,7 +57,7 @@ function AnalyticsDashboard() {
     return events;
   }, [events, activeTab]);
 
-  // Calculate statistics - focused on two core metrics
+  // Calculate statistics - focused on core metrics
   const stats = useMemo(() => {
     // 1. Attestering funnel
     const brevAttestert = events.filter((e) => e.name === "brev attestert").length;
@@ -78,6 +78,24 @@ function AnalyticsDashboard() {
       {} as Record<string, { count: number; tittel: string }>,
     );
 
+    // 3. Paste tracking - large pastes per template
+    const pasteEvents = events.filter((e) => e.name === "tekst limt inn");
+    const largePastes = pasteEvents.filter((e) => e.data?.erStor === true);
+    const pastesByTemplate = pasteEvents.reduce(
+      (acc, e) => {
+        const brevkode = (e.data?.brevkode as string) || "ukjent";
+        const antallTegn = (e.data?.antallTegn as number) || 0;
+        if (!acc[brevkode]) {
+          acc[brevkode] = { count: 0, totalChars: 0, largePastes: 0 };
+        }
+        acc[brevkode].count += 1;
+        acc[brevkode].totalChars += antallTegn;
+        if (e.data?.erStor) acc[brevkode].largePastes += 1;
+        return acc;
+      },
+      {} as Record<string, { count: number; totalChars: number; largePastes: number }>,
+    );
+
     return {
       total: events.length,
       brevAttestert,
@@ -85,6 +103,9 @@ function AnalyticsDashboard() {
       brevOpprettet: brevOpprettet.length,
       templateUsage,
       completionRate: brevAttestert > 0 ? Math.round((brevSendt / brevAttestert) * 100) : 0,
+      pasteCount: pasteEvents.length,
+      largePasteCount: largePastes.length,
+      pastesByTemplate,
     };
   }, [events]);
 
@@ -190,6 +211,76 @@ function AnalyticsDashboard() {
                           </Table.DataCell>
                           <Table.DataCell style={{ textAlign: "right" }}>
                             <Tag variant="info">{count}</Tag>
+                          </Table.DataCell>
+                        </Table.Row>
+                      ))}
+                  </Table.Body>
+                </Table>
+              )}
+            </VStack>
+          </BoxNew>
+          {/* METRIC 3: Paste Tracking */}
+          <BoxNew background="neutral-soft" borderRadius="large" padding="space-24">
+            <VStack gap="space-16">
+              <VStack gap="space-4">
+                <Heading level="2" size="medium">
+                  3. Innliming av tekst
+                </Heading>
+                <BodyShort size="small" style={{ color: "var(--a-text-subtle)" }}>
+                  <strong>Hvorfor måle dette?</strong> Hyppig innliming av store tekstmengder kan indikere at malen
+                  mangler nødvendig innhold og bør forbedres.
+                </BodyShort>
+              </VStack>
+
+              <HStack gap="space-16">
+                <BoxNew
+                  background="default"
+                  borderRadius="medium"
+                  padding="space-16"
+                  style={{ textAlign: "center", minWidth: "100px" }}
+                >
+                  <Heading level="3" size="xlarge">
+                    {stats.pasteCount}
+                  </Heading>
+                  <BodyShort size="small">Totalt limt inn</BodyShort>
+                </BoxNew>
+                <BoxNew
+                  background={stats.largePasteCount > 0 ? "warning-soft" : "default"}
+                  borderRadius="medium"
+                  padding="space-16"
+                  style={{ textAlign: "center", minWidth: "100px" }}
+                >
+                  <Heading level="3" size="xlarge">
+                    {stats.largePasteCount}
+                  </Heading>
+                  <BodyShort size="small">Store (&gt;200 tegn)</BodyShort>
+                </BoxNew>
+              </HStack>
+
+              {Object.keys(stats.pastesByTemplate).length > 0 && (
+                <Table size="small">
+                  <Table.Header>
+                    <Table.Row>
+                      <Table.HeaderCell>Brevkode</Table.HeaderCell>
+                      <Table.HeaderCell style={{ textAlign: "right" }}>Antall</Table.HeaderCell>
+                      <Table.HeaderCell style={{ textAlign: "right" }}>Store</Table.HeaderCell>
+                      <Table.HeaderCell style={{ textAlign: "right" }}>Snitt tegn</Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Header>
+                  <Table.Body>
+                    {Object.entries(stats.pastesByTemplate)
+                      .sort(([, a], [, b]) => b.largePastes - a.largePastes)
+                      .map(([brevkode, { count, totalChars, largePastes }]) => (
+                        <Table.Row key={brevkode}>
+                          <Table.DataCell>
+                            <code style={{ fontSize: "0.85em" }}>{brevkode}</code>
+                          </Table.DataCell>
+                          <Table.DataCell style={{ textAlign: "right" }}>{count}</Table.DataCell>
+                          <Table.DataCell style={{ textAlign: "right" }}>
+                            <Tag variant={largePastes > 0 ? "warning" : "neutral"}>{largePastes}</Tag>
+                          </Table.DataCell>
+                          <Table.DataCell style={{ textAlign: "right" }}>
+                            {Math.round(totalChars / count)}
                           </Table.DataCell>
                         </Table.Row>
                       ))}
