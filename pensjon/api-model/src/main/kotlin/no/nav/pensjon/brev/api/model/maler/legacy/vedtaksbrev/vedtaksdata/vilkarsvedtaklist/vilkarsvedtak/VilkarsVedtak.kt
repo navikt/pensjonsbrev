@@ -6,6 +6,7 @@ import java.time.LocalDate
 
 data class VilkarsVedtak(
     val beregningsvilkar: BeregningsVilkar?,
+    val begrunnelse: String?,
     val vilkar: Vilkar?,
     val vilkarvirkningfom: LocalDate?,
     val vilkarkravlinjekode: String?,

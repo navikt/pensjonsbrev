@@ -313,6 +313,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.unguforresultat
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskadebegrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskaderesultat
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.begrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarvirkningfom
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkar
@@ -586,6 +587,7 @@ fun Expression<PE>.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_fattbilateral
 fun Expression<PE>.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_framtidigttavtaleland(): Expression<Int> = vedtaksbrev.safe{ vedtaksdata }.safe{ trygdetidavdod }.safe{ ttutlandtrygdeavtale }.safe{ framtidigttavtaleland }.ifNull(0)
 fun Expression<PE>.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_ttnevnerbilateral(): Expression<Int> = vedtaksbrev.safe{ vedtaksdata }.safe{ trygdetidavdod }.safe{ ttutlandtrygdeavtale }.safe{ ttnevnerbilateral }.ifNull(0)
 fun Expression<PE>.vedtaksdata_trygdetidavdod_ttutlandtrygdeavtale_tttellerbilateral(): Expression<Int> = vedtaksbrev.safe{ vedtaksdata }.safe{ trygdetidavdod }.safe{ ttutlandtrygdeavtale }.safe{ tttellerbilateral }.ifNull(0)
+fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ begrunnelse }.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ beregningsvilkar }.safe{ ieubegrunnelse }.ifNull("")
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt(): Expression<Kroner> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ beregningsvilkar }.safe{ ieuinntekt }.ifNull(Kroner(0))
 fun Expression<PE>.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse(): Expression<String> = vedtaksbrev.safe{ vedtaksdata }.safe{ vilkarsvedtaklist }.safe{ vilkarsvedtak }.getOrNull().safe{ beregningsvilkar }.safe{ ifubegrunnelse }.ifNull("")
