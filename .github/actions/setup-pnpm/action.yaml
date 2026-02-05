@@ -1,0 +1,46 @@
+name: 'Setup pnpm'
+description: 'Install and configure pnpm using version from .tool-versions'
+outputs:
+  pnpm-version:
+    description: 'The installed pnpm version'
+    value: ${{ steps.get-version.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: Get pnpm version from .tool-versions
+      id: get-version
+      shell: bash
+      run: |
+        PNPM_VERSION=$(grep '^pnpm ' .tool-versions | awk '{print $2}')
+        if [ -z "$PNPM_VERSION" ]; then
+          echo "Error: pnpm version not found in .tool-versions"
+          exit 1
+        fi
+        echo "version=$PNPM_VERSION" >> $GITHUB_OUTPUT
+        echo "Installing pnpm version: $PNPM_VERSION"
+
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+      with:
+        version: ${{ steps.get-version.outputs.version }}
+        run_install: false
+
+    - name: Get pnpm store directory
+      id: pnpm-cache
+      shell: bash
+      run: |
+        echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
+
+    - name: Verify pnpm installation
+      shell: bash
+      run: |
+        pnpm --version
+        echo "pnpm installed successfully"

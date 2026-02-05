@@ -24,26 +24,28 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+      - uses: ./.github/actions/setup-pnpm
+
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Run ESLint
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Check for typescript errors
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm run check-types
+        run: pnpm run check-types
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm run build
+        run: pnpm run build
 
   verify-frontend:
     name: Verify frontend tests, lint and typescript errors
@@ -56,12 +58,14 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
-          cache: "npm"
-          cache-dependency-path: ${{ inputs.workingDir }}/frontend
+          node-version-file: ".tool-versions"
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+      - uses: ./.github/actions/setup-pnpm
+
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
@@ -71,7 +75,7 @@ jobs:
           install: false
           browser: chrome
           component: false
-          start: npm run dev
+          start: pnpm run dev
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
@@ -85,19 +89,19 @@ jobs:
       - name: Run tests
         if: ${{ inputs.cypress }}
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run test
+        run: pnpm run test
 
       - name: Run ESLint
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run lint
+        run: pnpm run lint
 
       - name: Run stylelint
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run stylelint
+        run: pnpm run stylelint
 
       - name: Check for typescript errors
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run check-types
+        run: pnpm run check-types
 
       - name: Upload failed Cypress screenshots
         uses: actions/upload-artifact@v6

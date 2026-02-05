@@ -42,14 +42,14 @@ docker-compose up -d --build
    ```bash
    ./fetch-secrets.sh
    ```
-3. Sett opp tokens for npm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
+3. Sett opp tokens for pnpm og gradle [se oppsett av packages.read token](#oppsett-av-packagesread-token)
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
 
    ```bash
-   (cd skribenten-web/bff && npm i && npm run build)
-   (cd skribenten-web/frontend && npm i)
-   (cd brevoppskrift-web/bff && npm i && npm run build)
-   (cd brevoppskrift-web/frontend && npm i)
+   (cd skribenten-web/bff && pnpm i && pnpm run build)
+   (cd skribenten-web/frontend && pnpm i)
+   (cd brevoppskrift-web/bff && pnpm i && pnpm run build)
+   (cd brevoppskrift-web/frontend && pnpm i)
    ./gradlew build -x test
    ```
 
@@ -59,7 +59,7 @@ docker-compose up -d --build
    ```
 6. Kjør front-end. Applikasjonen krever at du logger på med en @trygdeetaten.no test bruker med saksbehandler tilganger.
    ```bash
-   npm run dev --prefix skribenten-web/frontend
+   pnpm run dev --prefix skribenten-web/frontend
    ```
 7. Åpne http://localhost:8083/vite-on for å koble front-enden opp mot bff(backend for front-end).
 
@@ -102,13 +102,26 @@ gpr.user=<github brukernavn>
 gpr.token=<packages.read token>
 ```
 
-#### For npm
+#### For pnpm
 
-For å hente npm pakker ved å legge inn brukernavn og samme token som passord med følgende kommando:
+For å sette opp autentisering for @navikt pakker:
+
+1. Sørg for at pnpm er installert med asdf (se `.tool-versions`)
+2. Kjør følgende kommando for å autentisere:
 
 ```bash
-npm login --registry=https://npm.pkg.github.com --auth-type=legacy
+pnpm login --registry=https://npm.pkg.github.com --auth-type=legacy
 ```
+
+Alternativt kan du opprette en `.npmrc` fil i $HOME katalogen din med følgende innhold:
+
+```
+@navikt:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN}
+```
+
+Husk da å legge token-verdien i miljøvariabelen NODE_AUTH_TOKEN.
+
 
 ### Endringer i biblioteks-koden
 

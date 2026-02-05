@@ -4,7 +4,7 @@
   "scripts": {
     "build": "antora antora-playbook.yml",
     "serve": "http-server build/site -c-1",
-    "dev": "onchange 'docs/**/*' 'antora-playbook.yml' -- npm run build"
+    "dev": "onchange 'docs/**/*' 'antora-playbook.yml' -- ${npm_execpath} run build"
   },
   "devDependencies": {
     "@antora/cli": "3.1",
