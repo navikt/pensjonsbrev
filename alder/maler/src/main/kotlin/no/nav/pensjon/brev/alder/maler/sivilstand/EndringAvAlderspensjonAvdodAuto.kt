@@ -313,6 +313,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget.not()
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
+                            or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {
@@ -345,6 +346,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
+                                or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {
