@@ -95,7 +95,7 @@ object P1pdfV2Dto {
                     "Post_code[0]" to utfyllendeInstitusjon.postnummer.value
                     "Country_code[0]" to utfyllendeInstitusjon.landkode.landkode
                     "Office_phone_N[0]" to utfyllendeInstitusjon.telefonnummer?.value
-                    "Date[0]" to formaterDato(LocalDate.now())
+                    "Date[0]" to formaterDato(utfyllendeInstitusjon.dato)
                     "Signature[0]" to felles.signerendeSaksbehandlere?.saksbehandler
                 }
             }
@@ -133,6 +133,16 @@ object P1pdfV2Dto {
             .filter { it.isNotBlank() }
             .joinToString(separator)
 
+    val vurderingsperiodeSeksUker = mapOf(
+        BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
+        ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
+    )
+
+    val seTidligereVedtakFraLand: Map<LanguageCode, String> = mapOf(
+        BOKMAL to "Se tidligere vedtak fra gjeldende land",
+        ENGLISH to "See previous decisions from the relevant country",
+    )
+
     fun innvilgetPensjon(radnummer: Int, innvilgelse: P1RedigerbarDto.InnvilgetPensjon): Map<String, Any?> {
         return mapOf(
             "Institution_awarding_the_pension[$radnummer]" to innvilgelse.institusjon?.let { formatInstitusjon(it) },
@@ -145,6 +155,13 @@ object P1pdfV2Dto {
             "Where_to_adress_the_request[$radnummer]" to innvilgelse.adresseNyVurdering,
         )
     }
+
+    fun vurderingsperiode(
+        erNorskRad: Boolean,
+        vurderingsperiode: String?
+    ): Any? = if (erNorskRad) {
+        vurderingsperiodeSeksUker
+    } else vurderingsperiode ?: seTidligereVedtakFraLand
 
     fun formatInstitusjon(
         institusjon: P1RedigerbarDto.Institusjon,

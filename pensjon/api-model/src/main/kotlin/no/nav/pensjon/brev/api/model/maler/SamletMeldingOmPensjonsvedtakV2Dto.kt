@@ -102,7 +102,7 @@ data class P1RedigerbarDto(
         val institusjonsID: String?,
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
-        val epost: Epost? = null, // skal slettes
+        val epost: Epost?,
         val dato: LocalDate,
     )
 
