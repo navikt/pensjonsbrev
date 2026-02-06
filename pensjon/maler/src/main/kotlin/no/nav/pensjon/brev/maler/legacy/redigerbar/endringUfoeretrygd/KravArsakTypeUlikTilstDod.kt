@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar.endringUfoeretrygd
 
 import no.nav.pensjon.brev.api.model.maler.OpphoerBarnetilleggAutoDtoSelectors.oensketVirkningsDato
 import no.nav.pensjon.brev.api.model.maler.legacy.*
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fodselsdatobarn
 import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbostedsland
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
@@ -36,6 +37,7 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufor
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_total
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_totalnetto
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt
@@ -983,7 +985,6 @@ object KravArsakTypeUlikTilstDod {
                             //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endring_ifu" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad < 100 AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse) = "stdbegr_12_8_2_9") THEN      INCLUDE ENDIF
                             showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().greaterThan(0) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100) and FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()).equalTo("stdbegr_12_8_2_9"))) {
                                 //[TBU2326EN, TBU2326, TBU2326NN]
-
                                 paragraph {
                                     text(
                                         bokmal { +"Inntekten i stillingen din har økt og du får derfor en høyere inntektsgrense. Dette gjør vi for at du skal få riktig utbetaling av uføretrygd." },
@@ -1003,7 +1004,6 @@ object KravArsakTypeUlikTilstDod {
                             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_UT_VirkningstidpunktStorreEnn01012016() = true) THEN      INCLUDE ENDIF
                             showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and pe.ut_virkningstidpunktstorreenn01012016())) {
                                 //[TBU3821EN, TBU3821, TBU3821_NN]
-
                                 paragraph {
                                     text(
                                         bokmal { +"Fordi inntekten din har økt, blir størrelsen på barnetillegget ditt endret." },
@@ -1057,7 +1057,6 @@ object KravArsakTypeUlikTilstDod {
                         //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold") THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))) {
                             //[TBU2328EN, TBU2328, TBU2328NN]
-
                             paragraph {
                                 text(
                                     bokmal { +"Avdøde må også ha vært medlem i folketrygden, eller mottatt pensjon fra folketrygden, de siste <FRITEKST: tre/fem årene>  før dødsfallet." },
@@ -1070,7 +1069,6 @@ object KravArsakTypeUlikTilstDod {
                         //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand= "gift" AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_ut_gjt, PE_UT_KONST_VilkarsVedtakResultat_opphor)) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("gift") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_ut_gjt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
                             //[TBU2329EN, TBU2329, TBU2329NN]
-
                             paragraph {
                                 text(
                                     bokmal { +"Du er tidligere innvilget gjenlevendetillegg i uføretrygden din. Gjenlevendetillegget ditt opphører fra " + oensketVirkningsDato.format() + " fordi du har giftet deg." },
@@ -1083,7 +1081,6 @@ object KravArsakTypeUlikTilstDod {
                         //IF(  PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "samboer1_5"  OR  PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "samboer3_2"  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand <> "gift")  AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_ut_gjt, PE_UT_KONST_VilkarsVedtakResultat_opphor)  ) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer3_2") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().notEqualTo("gift")) and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_ut_gjt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
                             //[TBU2330EN, TBU2330, TBU2330NN]
-
                             paragraph {
                                 text(
                                     bokmal { +"Du er tidligere innvilget gjenlevendetillegg i uføretrygden din. Gjenlevendetillegget ditt opphører fra " + oensketVirkningsDato.format() + " fordi du er i et samboerforhold, og dere har felles barn." },
@@ -1095,112 +1092,13 @@ object KravArsakTypeUlikTilstDod {
 
                         //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring"  AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sokand_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold" ) THEN      INCLUDE ENDIF
                         showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(), pe.ut_konst_vilkarsvedtakresultat_opphor()) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sokand_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))) {
-                            //[TBU2331]
-                            // TODO Logic was different for different language layers.
+                            //[TBU2331EN, TBU2331, TBU2331NN]
                             paragraph {
-
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      EXCLUDE ENDIF
                                 showIf(not((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0)))) {
                                     text(
-                                        bokmal { +"Ektefelletillegg beholdes bare ut den perioden som vedtaket gjelder for. Vi har derfor opphørt ektefelletillegget." },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        bokmal { +"Ifølge våre opplysninger er du bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletillegg." },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        bokmal { +"Ifølge våre opplysninger er <Fritekst: ektefellen/partneren/samboeren din> bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletetillegg." },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        bokmal { +"For å ha rett til ektefelletillegg fra 1. juli 2020 " },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        bokmal { +"må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
-                                    )
-                                }
-                            }
-                            //[TBU2331]
-                            // TODO Logic was different for different language layers.
-                            paragraph {
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      EXCLUDE ENDIF
-                                showIf(not((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0)))) {
-                                    text(
+                                        bokmal { +"Ektefelletillegg beholdes bare ut den perioden som vedtaket gjelder for. Vi har derfor opphørt ektefelletillegget. " },
                                         nynorsk { +"Ektefelletillegget beheld du bare ut perioden vedtaket gjeld for. Vi har derfor stansa ektefelletillegget ditt. " },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"Ifølgje våre opplysningar er du busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til " },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"ektefelletillegg." },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"Ifølgje våre opplysningar er <Fritekst: ektefelle/partner/sambuar> busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til ektefelletillegg. " },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"For å ha rett til ektefelletillegg frå 1. juli 2020 " },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
-                                    )
-                                }
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
-                                    text(
-                                        nynorsk { +"må også ektefellen/sambuaren vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med " },
-                                    )
-                                }
-                            }
-                            //[TBU2331]
-                            // TODO Logic was different for different language layers.
-                            paragraph {
-
-                                //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      EXCLUDE ENDIF
-                                showIf(not((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0)))) {
-                                    text(
                                         english { +"The spouse supplement in connection with your disability benefit has been discontinued, do to a limited time period for the supplement. " },
                                     )
                                 }
@@ -1208,6 +1106,8 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
                                     text(
+                                        bokmal { +"Ifølge våre opplysninger er du bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletillegg." },
+                                        nynorsk { +"Ifølgje våre opplysningar er du busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til ektefelletillegg." },
                                         english { +"According to our information you are living in <Fritekst:bostedsland>. Then you are not eligible for spouse supplement." },
                                     )
                                 }
@@ -1215,6 +1115,8 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
                                     text(
+                                        bokmal { +"Ifølge våre opplysninger er <Fritekst: ektefellen/partneren/samboeren din> bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til ektefelletetillegg." },
+                                        nynorsk { +"Ifølgje våre opplysningar er <Fritekst: ektefelle/partner/sambuar> busett i <Fritekst: bostedsland>. Da har du ikkje lenger rett til ektefelletillegg." },
                                         english { +"According to our information, your <Fritekst: spouse/partner/cohabiting partner> are living in <Fritekst:bostedsland>. Then you are not eligible for spouse supplement." },
                                     )
                                 }
@@ -1222,139 +1124,143 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
                                     text(
-                                        english { +" In order to be entitled to spouse supplement from 1 July 2020" },
+                                        bokmal { +"For å ha rett til ektefelletillegg fra 1. juli 2020 " },
+                                        nynorsk { +"For å ha rett til ektefelletillegg frå 1. juli 2020 " },
+                                        english { +" In order to be entitled to spouse supplement from 1 July 2020 " },
                                     )
                                 }
 
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
                                     text(
+                                        bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                                        nynorsk { +"må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
                                         english { +"you must live either in Norway, within the EEA, or in another country that Norway has a social security agreement with" },
-                                    )
+
+                                        )
                                 }
 
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "eps_opph_ikke_avt_land").greaterThan(0))) {
                                     text(
+                                        bokmal { +"må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                                        nynorsk { +"må også ektefellen/sambuaren vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
                                         english { +"your spouse must also be a resident of and currently reside in Norway, within the EEA, or in another country that Norway has a social security agreement with " },
                                     )
                                 }
                             }
                         }
 
-                        //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skil"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skpa")  AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-                        showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skil") or pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skpa")) and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
-                            //[TBU2332EN, TBU2332, TBU2332NN]
-
-                            paragraph {
-                                text(
-                                    bokmal { +"Vi har mottatt opplysninger om at du har blitt skilt. Vi har derfor opphørt ektefelletillegget." },
-                                    nynorsk { +"Vi har fått opplysningar om at du har blitt skilt. Vi har derfor stansa ektefelletillegget ditt." },
-                                    english { +"We have received information about your divorce, we have therefore canceled the spouse supplement in connection with your disability benefit." },
-                                )
-                            }
-                        }
-
-                        //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "enke" AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-                        showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("enke") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
-                            //[TBU2333EN, TBU2333, TBU2333NN]
-
-                            paragraph {
-                                text(
-                                    bokmal { +"Vi har mottatt opplysninger om at du har blitt enke/enkemann. Vi har derfor opphørt ektefelletillegget." },
-                                    nynorsk { +"Vi har fått opplysningar om at du har blitt enkje/enkjemann. Vi har derfor stansa ektefelletillegget ditt." },
-                                    english { +"We have been informed that you have become a widow/widower. Because of this your spouse supplement has been discontinued." },
-                                )
-                            }
-                        }
-
-                        //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
-                            //[TBU3924_EN, TBU3924, TBU3924_NN]
-
-                            paragraph {
-                                text(
-                                    bokmal { +"Vi har opphørt barnetillegget i uføretrygden din for barn født: " + pe.ut_fodselsdatobarn() },
-                                    nynorsk { +"Vi har stansa barnetillegget i uføretrygda for barn fødd: " + pe.ut_fodselsdatobarn() },
-                                    english { +"The child supplement in your disability benefit has been discontinued for the " + pe.ut_barnet_barna_opphor() + " born: " + pe.ut_fodselsdatobarn_en() },
-                                )
-                            }
-
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_over_18") > 1  )THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_over_18").greaterThan(1))) {
-                                includePhrase(TBU3920_Generated(pe))
-                            }
-
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
-                                //[TBU2607EN, TBU2607, TBU2607_NN]
-
+                            //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skil"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skpa")  AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
+                            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skil") or pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skpa")) and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+                                //[TBU2332EN, TBU2332, TBU2332NN]
                                 paragraph {
                                     text(
-                                        bokmal { +"<FRITEKST: slett det som ikke er aktuelt>" },
-                                        nynorsk { +"<Fritekst: slett det som ikke er aktuelt>" },
-                                        english { +"<Fritekst: slett det som ikke er aktuelt>" },
+                                        bokmal { +"Vi har mottatt opplysninger om at du har blitt skilt. Vi har derfor opphørt ektefelletillegget." },
+                                        nynorsk { +"Vi har fått opplysningar om at du har blitt skilt. Vi har derfor stansa ektefelletillegget ditt." },
+                                        english { +"We have received information about your divorce, we have therefore canceled the spouse supplement in connection with your disability benefit." },
                                     )
                                 }
                             }
 
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
-                                //[TBU3921_EN, TBU3921, TBU3921_NN]
-
+                            //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "enke" AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
+                            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("enke") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+                                //[TBU2333EN, TBU2333, TBU2333NN]
                                 paragraph {
                                     text(
-                                        bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. " + pe.ut_barnet_barna_opphor_stor_forbokstav() + "s andre forelder har rett til et høyere barnetillegg enn det du vil få. Vi har derfor opphørt barnetillegget i uføretrygden din. " },
-                                        nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av begge foreldra og begge får uføretrygd, blir barnetillegget gitt til den som får det høgaste tillegget. Den andre forelderen har rett til eit høgare barnetillegg enn det du vil få. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                                        english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by both parents and both are receiving disability benefit, the child supplement will be given to the parent that receives the highest supplement. The " + pe.ut_barnet_barna_opphor() + "'s other parent is entitled to a higher child supplement than you would receive. Therefore your child supplement in your disability benefit has been discontinued." },
+                                        bokmal { +"Vi har mottatt opplysninger om at du har blitt enke/enkemann. Vi har derfor opphørt ektefelletillegget." },
+                                        nynorsk { +"Vi har fått opplysningar om at du har blitt enkje/enkjemann. Vi har derfor stansa ektefelletillegget ditt." },
+                                        english { +"We have been informed that you have become a widow/widower. Because of this your spouse supplement has been discontinued." },
                                     )
                                 }
                             }
 
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
-                                //[TBU3922_EN, TBU3922, TBU3922_NN]
-
+                            //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
+                            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+                                //[TBU3924_EN, TBU3924, TBU3924_NN]
                                 paragraph {
                                     text(
-                                        bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bor ikke på samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                                        nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bur ikkje på same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor stansa barnetillegget i uføretrygda di." },
-                                        english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by parents who do not live together, the child supplement will be paid to the parent that has the same registered address as the " + pe.ut_barnet_barna_opphor() + ". You do not live at the same registered address as the " + pe.ut_barnet_barna_opphor() + ". Therefore your child supplement in your disability benefit has been discontinued." },
+                                        bokmal { +"Vi har opphørt barnetillegget i uføretrygden din for barn født: " + pe.ut_fodselsdatobarn() },
+                                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda for barn fødd: " + pe.ut_fodselsdatobarn() },
+                                        english { +"The child supplement in your disability benefit has been discontinued for the " + pe.ut_barnet_barna_opphor() + " born: " + pe.ut_fodselsdatobarn_en() },
                                     )
                                 }
-                            }
 
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "mindre_ett_ar_bt_flt") > 1 )  THEN INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "mindre_ett_ar_bt_flt").greaterThan(1))) {
-                                //[TBU3925_EN, TBU3925, TBU3925_NN]
-
-                                paragraph {
-                                    text(
-                                        bokmal { +"Det er mulig å flytte barnetillegget fra den ene til den andre forelderen. Det må imidlertid ha gått et år siden barnetillegget ble overført. I ditt tilfelle har det gått ett år og barnetillegget er overført til den andre forelderen. Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                                        nynorsk { +"Det er mogleg å flytte barnetillegget frå den eine til den andre forelderen. Det må i det minste ha gått eit år sidan barnetillegget blei overført. I ditt tilfelle har det gått eit år og barnetillegget er overført til den andre forelderen. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                                        english { +"It is possible to transfer the child supplement between the parents, but it must have been at least one year since the last time it was transferred. In your case, one year has passed and the child supplement has been transferred to the other parent. Therefore your child supplement in your disability benefit has been discontinued." },
-                                    )
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_over_18") > 1  )THEN      INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_over_18").greaterThan(1))) {
+                                    //[TBU3920_EN, TBU3920, TBU3920_NN]
+                                    paragraph {
+                                        text (
+                                            bokmal { + "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi " + pe.ut_barnet_barna_opphor() + " har fylt 18 år. " },
+                                            nynorsk { + "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi " + pe.ut_barnet_barna_opphor() + " har fylt 18 år." },
+                                            english { + "To be eligible for child supplement, you must support children under 18 years of age. The child supplement in your disability benefit has been discontinued because your " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_has_have() + " turned 18 years of age. " },
+                                        )
+                                    }
                                 }
-                            }
 
-                            //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_innt_over_1g") > 1  )THEN      INCLUDE ENDIF
-                            showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_innt_over_1g").greaterThan(1))) {
-                                //[TBU3923_EN, TBU3923, TBU3923_NN]
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                                    //[TBU2607EN, TBU2607, TBU2607_NN]
+                                    paragraph {
+                                        text(
+                                            bokmal { +"<FRITEKST: slett det som ikke er aktuelt>" },
+                                            nynorsk { +"<Fritekst: slett det som ikke er aktuelt>" },
+                                            english { +"<Fritekst: slett det som ikke er aktuelt>" },
+                                        )
+                                    }
+                                }
 
-                                paragraph {
-                                    text(
-                                        bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " har inntekt over folketrygdens grunnbeløp på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner, har du ikke rett til barnetillegg. " },
-                                        nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " har inntekt over grunnbeløpet i folketrygda på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner, har du ikkje rett til barnetillegg." },
-                                        english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_has_have() + " an income above the national insurance basic amount of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ", you are not eligible for child supplement. " },
-                                    )
-                                    text(
-                                        bokmal { +"Det er opplyst at " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_dit_dine() + " har inntekt over " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner. Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                                        nynorsk { +"Det er opplyst at " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_dit_dine() + " har inntekt over " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                                        english {
-                                            +"
-                                            We have been informed that your " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_has_have() + " an income above NOK " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ". Therefore the child supplement in your disability benefit has been discontinued. " },
-                                            )
-                                        }
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                                    //[TBU3921_EN, TBU3921, TBU3921_NN]
+                                    paragraph {
+                                        text(
+                                            bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. " + pe.ut_barnet_barna_opphor_stor_forbokstav() + "s andre forelder har rett til et høyere barnetillegg enn det du vil få. Vi har derfor opphørt barnetillegget i uføretrygden din. " },
+                                            nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av begge foreldra og begge får uføretrygd, blir barnetillegget gitt til den som får det høgaste tillegget. Den andre forelderen har rett til eit høgare barnetillegg enn det du vil få. Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                            english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by both parents and both are receiving disability benefit, the child supplement will be given to the parent that receives the highest supplement. The " + pe.ut_barnet_barna_opphor() + "'s other parent is entitled to a higher child supplement than you would receive. Therefore your child supplement in your disability benefit has been discontinued." },
+                                        )
+                                    }
+                                }
+
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                                    //[TBU3922_EN, TBU3922, TBU3922_NN]
+                                    paragraph {
+                                        text(
+                                            bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bor ikke på samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor opphørt barnetillegget i uføretrygden din." },
+                                            nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bur ikkje på same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                            english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by parents who do not live together, the child supplement will be paid to the parent that has the same registered address as the " + pe.ut_barnet_barna_opphor() + ". You do not live at the same registered address as the " + pe.ut_barnet_barna_opphor() + ". Therefore your child supplement in your disability benefit has been discontinued." },
+                                        )
+                                    }
+                                }
+
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "mindre_ett_ar_bt_flt") > 1 )  THEN INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "mindre_ett_ar_bt_flt").greaterThan(1))) {
+                                    //[TBU3925_EN, TBU3925, TBU3925_NN]
+                                    paragraph {
+                                        text(
+                                            bokmal { +"Det er mulig å flytte barnetillegget fra den ene til den andre forelderen. Det må imidlertid ha gått et år siden barnetillegget ble overført. I ditt tilfelle har det gått ett år og barnetillegget er overført til den andre forelderen. Vi har derfor opphørt barnetillegget i uføretrygden din." },
+                                            nynorsk { +"Det er mogleg å flytte barnetillegget frå den eine til den andre forelderen. Det må i det minste ha gått eit år sidan barnetillegget blei overført. I ditt tilfelle har det gått eit år og barnetillegget er overført til den andre forelderen. Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                            english { +"It is possible to transfer the child supplement between the parents, but it must have been at least one year since the last time it was transferred. In your case, one year has passed and the child supplement has been transferred to the other parent. Therefore your child supplement in your disability benefit has been discontinued." },
+                                        )
+                                    }
+                                }
+
+                                //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_innt_over_1g") > 1  )THEN      INCLUDE ENDIF
+                                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_innt_over_1g").greaterThan(1))) {
+                                    //[TBU3923_EN, TBU3923, TBU3923_NN]
+                                    paragraph {
+                                        text(
+                                            bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " har inntekt over folketrygdens grunnbeløp på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner, har du ikke rett til barnetillegg. " },
+                                            nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " har inntekt over grunnbeløpet i folketrygda på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner, har du ikkje rett til barnetillegg." },
+                                            english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_has_have() + " an income above the national insurance basic amount of NOK " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ", you are not eligible for child supplement. " },
+                                        )
+                                        text(
+                                            bokmal { +"Det er opplyst at " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_dit_dine() + " har inntekt over " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner. Vi har derfor opphørt barnetillegget i uføretrygden din." },
+                                            nynorsk { +"Det er opplyst at " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_dit_dine() + " har inntekt over " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner. Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                            english { +"We have been informed that your " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_has_have() + " an income above NOK " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + ". Therefore the child supplement in your disability benefit has been discontinued." },
+                                        )
+                                    }
                                 }
                             }
 
@@ -1364,7 +1270,6 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_flyttet_ikke_avt_land").greaterThan(0))) {
                                     //[TBU5009_EN, TBU5009, TBU5009_NN]
-
                                     paragraph {
                                         text(
                                             bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i <Fritekst: bostedsland>.  Derfor har du ikke lenger rett til barnetillegg" },
@@ -1377,12 +1282,11 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_opph_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_opph_ikke_avt_land").greaterThan(0))) {
                                     //[TBU5010_EN, TBU5010, TBU5010_NN]
-
                                     paragraph {
                                         text(
                                             bokmal { +"Ifølge våre opplysninger er " + pe.ut_dine_ditt_barn_opphor() + " bosatt i <Fritekst: bostedsland>.  Derfor har du ikke lenger rett til barnetillegg." },
                                             nynorsk { +"Ifølgje våre opplysningar er " + pe.ut_dine_ditt_barn_opphor() + " busett i <Fritekst: bostedsland>. Derfor har du ikkje lenger rett til barnetillegg." },
-                                            english { +"According to our information, your " + pe.ut_child_children_opphor() + " living in <Fritekst: bostedsland>. Then you are not eligible for child supplement. " },
+                                            english { +"According to our information, your " + pe.ut_child_children_opphor() + " living in <Fritekst: bostedsland>. Then you are not eligible for child supplement." },
                                         )
                                     }
                                 }
@@ -1390,7 +1294,6 @@ object KravArsakTypeUlikTilstDod {
                                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
                                     //[TBU5011_EN, TBU5011, TBU5011_NN]
-
                                     paragraph {
                                         text(
                                             bokmal { +"Ifølge våre opplysninger er du bosatt i <Fritekst: bostedsland>. Derfor har du ikke lenger rett til barnetillegg." },
@@ -1403,12 +1306,11 @@ object KravArsakTypeUlikTilstDod {
                                 //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
                                 showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
                                     //[TBU5006_EN, TBU5006, TBU5006_NN]
-
                                     paragraph {
                                         text(
-                                            bokmal { +"For å ha rett til barnetillegg fra 1. juli 2020" },
+                                            bokmal { +"For å ha rett til barnetillegg fra 1. juli 2020 " },
                                             nynorsk { +"For å ha rett til forsørgingstillegg frå 1. juli 2020 " },
-                                            english { +"In order to be entitled to child supplement from 1 July 2020" },
+                                            english { +"In order to be entitled to child supplement from 1 July 2020 " },
                                         )
                                         text(
                                             bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
@@ -1422,70 +1324,70 @@ object KravArsakTypeUlikTilstDod {
                                         )
                                         text(
                                             bokmal { +"Dette går frem av folketrygdloven §12-15 som gjelder fra 1.juli 2020." },
-                                            nynorsk {
-                                                +"
-                                                Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020" },
-                                                english { +"This is in accordance with the regulations of § 12-15 of the National Insurance Act , which apply from 1 July 2020." },
-                                                )
-                                            }
-                                    }
-                                }
-
-                                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
-                                showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring"))) {
-                                    includePhrase(TBU2222_Generated)
-                                }
-
-                                //IF(PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes_Er_Ulik(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)) THEN     INCLUDE ENDIF
-                                showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes_Er_Ulik(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
-                                    //[TBU2335EN, TBU2335, TBU2335NN]
-
-                                    paragraph {
-
-                                        //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                                        showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) {
-                                            text(
-                                                bokmal { +"Barnetillegg kan gis så lenge du forsørger barn. Det gis som et tillegg til uføretrygden din og opphører når barnet fyller 18 år. " },
-                                                nynorsk { +"Barnetillegg kan bli gitt så lenge du forsørgjer barn. Det blir gitt som eit tillegg til uføretrygda di og blir stansa når barnet ditt fyller 18 år. " },
-                                                english { +"You can receive a child supplement as long as you are supporting a child. This is given as a supplement to your disability benefit, and will be discontinued when the child turns 18 years of age. " },
-                                            )
-                                        }
-
-                                        //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) AND PE_Vedtaksdata_Kravhode_KravArsakType = "soknad_bt" ) THEN      INCLUDE ENDIF
-                                        showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_kravhode_kravarsaktype().equalTo("soknad_bt"))) {
-                                            text(
-                                                bokmal { +"Du er innvilget barnetillegg fordi du forsørger barn." },
-                                                nynorsk { +"Du er innvilga barnetillegg fordi du forsørgjer barn." },
-                                                english { +"You have been granted child supplement because you are supporting children." },
-                                            )
-                                        }
-                                    }
-                                }
-
-                                //IF(  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND (PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "barn_endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "annen_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "begge_for_end_in")  ) THEN      INCLUDE ENDIF
-                                showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("barn_endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("annen_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("begge_for_end_in")))) {
-                                    //[TBU2336EN, TBU2336, TBU2336NN]
-
-                                    paragraph {
-                                        text(
-                                            bokmal { +"Vi har mottatt opplysninger om at inntekten din er endret. Barnetillegget er derfor beregnet på nytt." },
-                                            nynorsk { +"Vi har fått opplysningar om at inntekta di er endra. Barnetillegg er derfor berekna på nytt." },
-                                            english { +"We have new information regarding your income. The child supplement has therefore been recalculated." },
+                                            nynorsk { +"Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020" },
+                                            english { +"This is in accordance with the regulations of § 12-15 of the National Insurance Act, which apply from 1 July 2020." },
                                         )
                                     }
                                 }
+                            }
 
-                                //IF(  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND (PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "barn_endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "annen_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "begge_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "eps_endret_inntekt")  ) THEN      INCLUDE ENDIF
-                                showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("barn_endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("annen_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("begge_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("eps_endret_inntekt")))) {
-                                    //[TBU2337EN, TBU2337, TBU2337NN]
+                            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
+                            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring"))) {
+                                //[TBU2222EN, TBU2222, TBU2222NN]
+                                paragraph {
+                                    text(
+                                        bokmal { +"Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
+                                        nynorsk { +"Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
+                                        english { +"This will not affect your disability benefit, and you will be paid the same amount." },
+                                    )
+                                }
+                            }
 
-                                    paragraph {
+                            //IF(PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes_Er_Ulik(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)) THEN     INCLUDE ENDIF
+                            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes_Er_Ulik(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+                                //[TBU2335EN, TBU2335, TBU2335NN]
+                                paragraph {
+                                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
+                                    showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) {
                                         text(
-                                            bokmal { +"Vi har mottatt opplysninger om at inntekten deres er endret. Barnetillegget er derfor beregnet på nytt." },
-                                            nynorsk { +"Vi har fått opplysningar om at inntekta dykkar er endra. Barnetillegg er derfor berekna på nytt." },
-                                            english { +"We have new information regarding your income. The child supplement has therefore been recalculated." },
+                                            bokmal { +"Barnetillegg kan gis så lenge du forsørger barn. Det gis som et tillegg til uføretrygden din og opphører når barnet fyller 18 år. " },
+                                            nynorsk { +"Barnetillegg kan bli gitt så lenge du forsørgjer barn. Det blir gitt som eit tillegg til uføretrygda di og blir stansa når barnet ditt fyller 18 år. " },
+                                            english { +"You can receive a child supplement as long as you are supporting a child. This is given as a supplement to your disability benefit, and will be discontinued when the child turns 18 years of age. " },
                                         )
                                     }
+
+                                    //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) AND PE_Vedtaksdata_Kravhode_KravArsakType = "soknad_bt" ) THEN      INCLUDE ENDIF
+                                    showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_kravhode_kravarsaktype().equalTo("soknad_bt"))) {
+                                        text(
+                                            bokmal { +"Du er innvilget barnetillegg fordi du forsørger barn." },
+                                            nynorsk { +"Du er innvilga barnetillegg fordi du forsørgjer barn." },
+                                            english { +"You have been granted child supplement because you are supporting children." },
+                                        )
+                                    }
+                                }
+                            }
+
+                            //IF(  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND (PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "barn_endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "annen_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "begge_for_end_in")  ) THEN      INCLUDE ENDIF
+                            showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget() and (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("barn_endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("annen_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("begge_for_end_in")))) {
+                                //[TBU2336EN, TBU2336, TBU2336NN]
+                                paragraph {
+                                    text(
+                                        bokmal { +"Vi har mottatt opplysninger om at inntekten din er endret. Barnetillegget er derfor beregnet på nytt." },
+                                        nynorsk { +"Vi har fått opplysningar om at inntekta di er endra. Barnetillegg er derfor berekna på nytt." },
+                                        english { +"We have new information regarding your income. The child supplement has therefore been recalculated." },
+                                    )
+                                }
+                            }
+
+                            //IF(  PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND (PE_Vedtaksdata_Kravhode_KravArsakType = "endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "barn_endret_inntekt" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "annen_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "begge_for_end_in" OR  PE_Vedtaksdata_Kravhode_KravArsakType  = "eps_endret_inntekt")  ) THEN      INCLUDE ENDIF
+                            showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and (pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("barn_endret_inntekt") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("annen_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("begge_for_end_in") or pe.vedtaksdata_kravhode_kravarsaktype().equalTo("eps_endret_inntekt")))) {
+                                //[TBU2337EN, TBU2337, TBU2337NN]
+                                paragraph {
+                                    text(
+                                        bokmal { +"Vi har mottatt opplysninger om at inntekten deres er endret. Barnetillegget er derfor beregnet på nytt." },
+                                        nynorsk { +"Vi har fått opplysningar om at inntekta dykkar er endra. Barnetillegg er derfor berekna på nytt." },
+                                        english { +"We have new information regarding your income. The child supplement has therefore been recalculated." },
+                                    )
                                 }
                             }
                         }
@@ -1494,4 +1396,5 @@ object KravArsakTypeUlikTilstDod {
             }
         }
     }
+}
 }
