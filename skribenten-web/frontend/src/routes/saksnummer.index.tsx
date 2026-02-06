@@ -6,7 +6,7 @@ import type { AxiosError } from "axios";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakContextDto } from "~/types/apiTypes";
 
@@ -28,9 +28,9 @@ function SaksnummerPage() {
   const search = Route.useSearch();
 
   const hentSakContextMutation = useMutation<SakContextDto, AxiosError<unknown>, { saksnummer: string }>({
-    mutationFn: ({ saksnummer }) => getSakContextQuery(saksnummer, undefined).queryFn(),
+    mutationFn: ({ saksnummer }) => getSakContext(saksnummer, undefined).queryFn(),
     onSuccess: (sakContext, { saksnummer }) => {
-      queryClient.setQueryData(getSakContextQuery(saksnummer, undefined).queryKey, sakContext);
+      queryClient.setQueryData(getSakContext(saksnummer, undefined).queryKey, sakContext);
       return navigate({
         to: "/saksnummer/$saksId/brevvelger",
         params: { saksId: sakContext.sak.saksId.toString() },
@@ -44,7 +44,7 @@ function SaksnummerPage() {
     //derfor styler vi komponenten selv her, og ikke i parent.
     //merk at saksnummer/$saksId, også har håndtering for styles og sine children.
     <form className="page-margins" onSubmit={handleSubmit((values) => hentSakContextMutation.mutate(values))}>
-      <VStack gap="space-24" marginBlock="space-32 0" marginInline="auto" width="340px">
+      <VStack gap="space-24" marginBlock="space-32 space-0" marginInline="auto" width="340px">
         <TextField {...register("saksnummer")} autoComplete="off" label="Saksnummer" />
         {hentSakContextMutation.error && (
           <ApiError

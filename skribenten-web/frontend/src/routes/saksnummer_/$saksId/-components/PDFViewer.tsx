@@ -1,7 +1,7 @@
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 
-import { BoxNew, HStack, VStack } from "@navikt/ds-react";
+import { Box, HStack, VStack } from "@navikt/ds-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { pdfjs } from "react-pdf";
 import { Document, Page as PDFPage } from "react-pdf";
@@ -72,7 +72,7 @@ const PDFViewer = (properties: {
   }, [totalNumberOfPages, handleScroll]);
 
   return (
-    <BoxNew asChild background="neutral-soft" height="var(--main-page-content-height)" ref={pdfContainerReference}>
+    <Box asChild background="neutral-soft" height="var(--main-page-content-height)" ref={pdfContainerReference}>
       <VStack>
         <PDFViewerTopBar
           brevId={properties.brevId}
@@ -96,19 +96,19 @@ const PDFViewer = (properties: {
             onLoadSuccess={(pdf) => setTotalNumberOfPages(pdf.numPages)}
           >
             {Array.from({ length: totalNumberOfPages }, (_, index) => (
-              <BoxNew
+              <Box
                 className={`pdf-page`}
                 id={`page_${index + 1}`}
                 key={`page_${index + 1}`}
-                marginBlock="0 space-16"
+                marginBlock="space-0 space-16"
               >
                 <PDFPage pageNumber={index + 1} scale={scale} />
-              </BoxNew>
+              </Box>
             ))}
           </Document>
         </HStack>
       </VStack>
-    </BoxNew>
+    </Box>
   );
 };
 

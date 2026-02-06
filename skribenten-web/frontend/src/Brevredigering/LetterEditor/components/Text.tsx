@@ -27,7 +27,6 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
             borderRadius: "var(--ax-radius-2)",
             cursor: "default",
             display: "inline-block",
-            lineHeight: "var(--ax-font-line-height-medium)",
             margin: "0 var(--ax-space-1)",
             outline: `${isFocused ? "2px solid var(--ax-border-accent)" : "1px solid var(--ax-border-neutral-strong)"}`,
             padding: "0 var(--ax-space-2)",

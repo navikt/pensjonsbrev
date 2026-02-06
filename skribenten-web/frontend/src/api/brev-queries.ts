@@ -18,7 +18,7 @@ export const brevmetadataKeys = {
   all: ["BREVMETADATA"] as const,
 };
 
-export const getBrevmetadataQuery = {
+export const getBrevmetadata = {
   queryKey: brevmetadataKeys.all,
   queryFn: async () => (await axios.get<LetterMetadata[]>(`${SKRIBENTEN_API_BASE_PATH}/brevmal`)).data,
 };
@@ -55,7 +55,7 @@ export const attesteringBrevKeys = {
   reservasjon: (brevId: number) => [...attesteringBrevKeys.id(brevId), "RESERVASJON"] as const,
 };
 
-export const getBrevAttesteringQuery = (saksId: string, brevId: number, reserver: boolean = true) => ({
+export const getBrevAttestering = (saksId: string, brevId: number, reserver: boolean = true) => ({
   queryKey: attesteringBrevKeys.id(brevId),
   queryFn: async () =>
     (
@@ -70,7 +70,7 @@ export const brevInfoKeys = {
   id: (brevId: number) => [...brevInfoKeys.all, brevId] as const,
 };
 
-export const getBrevInfoQuery = (brevId: number) => ({
+export const getBrevInfo = (brevId: number) => ({
   queryKey: brevInfoKeys.id(brevId),
   queryFn: async () => (await axios.get<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/info`)).data,
 });

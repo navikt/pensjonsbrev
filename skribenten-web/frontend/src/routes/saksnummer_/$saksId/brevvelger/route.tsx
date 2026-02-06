@@ -5,7 +5,7 @@ import {
   Alert,
   Bleed,
   BodyShort,
-  BoxNew,
+  Box,
   Button,
   Heading,
   HStack,
@@ -21,10 +21,10 @@ import { groupBy, partition, sortBy } from "lodash";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 
-import { getBrevmetadataQuery } from "~/api/brev-queries";
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getFavoritterQuery, getSakContextQuery } from "~/api/skribenten-api-endpoints";
-import { BrevbakerIcon, DoksysIcon, ExstreamIcon } from "~/assets/icons";
+import { getBrevmetadata } from "~/api/brev-queries";
+import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
+import { BrevbakerIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
 import type { LetterMetadata } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
@@ -48,8 +48,8 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevvelger")({
   validateSearch: (search): BrevvelgerSearch => brevvelgerSearchSchema.parse(search),
   loaderDeps: ({ search: { vedtaksId } }) => ({ vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    context.queryClient.prefetchQuery(getBrevmetadataQuery);
-    return await context.queryClient.ensureQueryData(getSakContextQuery(saksId, vedtaksId));
+    context.queryClient.prefetchQuery(getBrevmetadata);
+    return await context.queryClient.ensureQueryData(getSakContext(saksId, vedtaksId));
   },
   errorComponent: ({ error }) => <ApiError error={error} title="Klarte ikke hente brevmaler for saken." />,
   component: BrevvelgerPage,
@@ -62,18 +62,18 @@ export interface SubmitTemplateOptions {
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
   const { brevmalKoder } = Route.useLoaderData();
-  const brevmetadata = useQuery({ ...getBrevmetadataQuery, select: metadataMapFromList }).data ?? {};
+  const brevmetadata = useQuery({ ...getBrevmetadata, select: metadataMapFromList }).data ?? {};
 
   const [onSubmitClick, setOnSubmitClick] = useState<Nullable<SubmitTemplateOptions>>(null);
 
   const alleSaksbrevQuery = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId.toString()),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId.toString()),
+    queryKey: hentAlleBrevInfoForSak.queryKey(saksId.toString()),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(saksId.toString()),
   });
 
   return (
-    <BoxNew asChild background="default">
-      <VStack marginInline={{ sm: "0", lg: "auto" }} width="fit-content">
+    <Box asChild background="default">
+      <VStack marginInline={{ sm: "space-0", lg: "auto" }} width="fit-content">
         <BrevvelgerMainContent
           alleSaksbrevQuery={alleSaksbrevQuery}
           brevmalKoder={brevmalKoder}
@@ -88,7 +88,7 @@ export function BrevvelgerPage() {
           saksId={saksId}
         />
       </VStack>
-    </BoxNew>
+    </Box>
   );
 }
 
@@ -116,15 +116,15 @@ const BrevvelgerMainContent = (props: {
   );
 
   return (
-    <BoxNew asChild height="calc(var(--main-page-content-height)">
+    <Box asChild height="calc(var(--main-page-content-height)">
       <HStack wrap={false}>
         {/* Brevmal-liste */}
-        <BoxNew
+        <Box
           asChild
           borderColor="neutral-subtle"
           borderWidth="0 1 0 0"
           minWidth="640px"
-          paddingBlock="space-20 0"
+          paddingBlock="space-20 space-0"
           paddingInline="space-24"
         >
           <VStack gap="space-24" height="100%">
@@ -141,7 +141,7 @@ const BrevvelgerMainContent = (props: {
               openAccordions={openAccordions}
             />
           </VStack>
-        </BoxNew>
+        </Box>
         <BrevmalPanel
           brevId={brevId}
           brevmetadata={brevmetadata}
@@ -152,7 +152,7 @@ const BrevvelgerMainContent = (props: {
           templateId={templateId}
         />
       </HStack>
-    </BoxNew>
+    </Box>
   );
 };
 
@@ -172,7 +172,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
-  const favoritter = useQuery(getFavoritterQuery).data ?? [];
+  const favoritter = useQuery(getFavoritter).data ?? [];
 
   const alleBrevmaler: LetterMetadata[] = useMemo(
     () => brevmalKoder.map((kode) => brevmetadata[kode]).filter((b): b is LetterMetadata => b !== undefined),
@@ -224,7 +224,7 @@ function Brevmaler({
         variant="simple"
       />
       <Bleed asChild marginInline="space-24">
-        <BoxNew asChild overflowY="auto" paddingInline="space-24">
+        <Box asChild overflowY="auto" paddingInline="space-24">
           <Accordion
             css={css`
               .aksel-accordion__content {
@@ -287,11 +287,11 @@ function Brevmaler({
                           title={
                             <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
                               <BrevSystemIcon brevsystem={template.brevsystem} />
-                              <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                              <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
                                 <BodyShort size="small" truncate>
                                   {template.name}
                                 </BodyShort>
-                              </BoxNew>
+                              </Box>
                             </HStack>
                           }
                         />
@@ -302,7 +302,7 @@ function Brevmaler({
               );
             })}
           </Accordion>
-        </BoxNew>
+        </Box>
       </Bleed>
     </VStack>
   );
@@ -354,11 +354,11 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                 title={
                   <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
                     <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
-                    <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                    <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
                       <BodyShort size="small" truncate>
                         {brev.brevtittel}
                       </BodyShort>
-                    </BoxNew>
+                    </Box>
                   </HStack>
                 }
               />
@@ -376,9 +376,6 @@ const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
   switch (props.brevsystem) {
     case BrevSystem.Exstream: {
       return <ExstreamIcon />;
-    }
-    case BrevSystem.DokSys: {
-      return <DoksysIcon />;
     }
     case BrevSystem.Brevbaker: {
       return <BrevbakerIcon />;

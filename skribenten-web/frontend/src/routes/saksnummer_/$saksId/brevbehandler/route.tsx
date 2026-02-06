@@ -1,12 +1,12 @@
 import { PlusIcon } from "@navikt/aksel-icons";
-import { BoxNew, Button, Heading, HGrid, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
+import { Box, Button, Heading, HGrid, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { z } from "zod";
 
-import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
-import { getSakContextQuery } from "~/api/skribenten-api-endpoints";
+import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
   validateSearch: (search): BrevbehandlerSearch => brevbehandlerSearchSchema.parse(search),
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context, params: { saksId }, deps: { vedtaksId } }) => {
-    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
+    const getSakContextQueryOptions = getSakContext(saksId, vedtaksId);
     return await context.queryClient.ensureQueryData(getSakContextQueryOptions);
   },
   component: Brevbehandler,
@@ -37,19 +37,19 @@ function Brevbehandler() {
   //vi henter data her istedenfor i route-loaderen fordi vi vil vise stort sett lik skjermbilde
   //Vi kan muligens gjøre en load i route-loader slik at brevene laster litt fortere
   const alleBrevForSak = useQuery({
-    queryKey: hentAlleBrevForSak.queryKey(saksId),
-    queryFn: () => hentAlleBrevForSak.queryFn(saksId),
+    queryKey: hentAlleBrevInfoForSak.queryKey(saksId),
+    queryFn: () => hentAlleBrevInfoForSak.queryFn(saksId),
   });
 
   return (
-    <BoxNew asChild background="default">
+    <Box asChild background="default">
       <VStack height="calc(var(--main-page-content-height) + 48px)" marginInline="auto">
         {modalÅpen && (
           <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />
         )}
         <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="calc(100% - 48px)">
           {/* Meny */}
-          <BoxNew
+          <Box
             asChild
             borderColor="neutral-subtle"
             borderWidth="0 1 0 0"
@@ -72,20 +72,14 @@ function Brevbehandler() {
               )}
               {alleBrevForSak.isSuccess && <BrevbehandlerMeny brevInfo={alleBrevForSak.data} saksId={saksId} />}
             </VStack>
-          </BoxNew>
+          </Box>
 
           {/* Pdf */}
           {brevId && <BrevForhåndsvisning brevId={brevId} saksId={saksId} />}
         </HGrid>
 
         {/* Footer */}
-        <BoxNew
-          asChild
-          borderColor="neutral-subtle"
-          borderWidth="1 0 0 0"
-          paddingBlock="space-8"
-          paddingInline="space-12"
-        >
+        <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0" paddingBlock="space-8" paddingInline="space-12">
           <HStack gridColumn="footer" justify="space-between">
             <Button
               onClick={() =>
@@ -113,8 +107,8 @@ function Brevbehandler() {
               />
             )}
           </HStack>
-        </BoxNew>
+        </Box>
       </VStack>
-    </BoxNew>
+    </Box>
   );
 }

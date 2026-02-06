@@ -43,9 +43,9 @@ describe("toggle bullet-liet", () => {
 
       cy.get("ul").should("have.length", 0);
       cy.contains("Dette er kun et avsnitt").click();
-      cy.get("li div span").should("not.exist");
+      cy.get("li span").should("not.exist");
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("li div span").contains("Dette er kun et avsnitt");
+      cy.get("li span").contains("Dette er kun et avsnitt");
       cy.get("ul").should("have.length", 1);
     });
 
@@ -64,7 +64,7 @@ describe("toggle bullet-liet", () => {
       cy.contains("Avsnitt med punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
       cy.get("li").should("have.length", 2);
-      cy.get("li div span").eq(1).contains("Avsnitt med punktliste");
+      cy.get("li span").eq(1).contains("Avsnitt med punktliste");
     });
 
     it("lager en punktliste når man allerede har en ItemList i samme blokk etter", () => {
@@ -83,7 +83,7 @@ describe("toggle bullet-liet", () => {
       cy.contains("Avsnitt med punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
       cy.get("li").should("have.length", 2);
-      cy.get("li div span").eq(0).contains("Avsnitt med punktliste");
+      cy.get("li span").eq(0).contains("Avsnitt med punktliste");
     });
 
     it("lager en punktliste når man allerede har en ItemList i samme blokk før og etter", () => {
@@ -107,7 +107,7 @@ describe("toggle bullet-liet", () => {
       cy.getDataCy("editor-bullet-list").click();
       cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 3);
-      cy.get("li div span").eq(1).contains("Avsnitt med punktliste");
+      cy.get("li span").eq(1).contains("Avsnitt med punktliste");
     });
 
     it("lager en punktliste når man allerede har en itemList i en annen blokk før", () => {

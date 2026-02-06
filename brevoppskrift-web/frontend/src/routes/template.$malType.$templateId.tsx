@@ -76,7 +76,7 @@ function TemplateExplorer() {
   return (
     <>
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack align="center" gap="4">
+      <VStack align="center" gap="space-16">
         <Heading size="medium" spacing>
           Oppskrift for {templateId}
         </Heading>
@@ -99,7 +99,7 @@ function SelectLanguage() {
     <Select
       css={css`
         width: 200px;
-        margin-bottom: var(--a-spacing-8);
+        margin-bottom: var(--ax-space-32);
       `}
       data-cy="select-language"
       label="Språk"
@@ -228,7 +228,7 @@ function ContentComponent({ content }: { content: Element }) {
             /* Indent cells that are conditional to an expression */
 
             .expression + .cell {
-              padding-left: var(--a-spacing-4);
+              padding-left: var(--ax-space-16);
             }
 
             .conditional,

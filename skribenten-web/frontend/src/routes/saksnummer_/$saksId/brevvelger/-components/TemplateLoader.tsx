@@ -2,7 +2,7 @@ import { VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
-import { getPreferredLanguageQuery } from "~/api/skribenten-api-endpoints";
+import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { SpraakKode } from "~/types/apiTypes";
 import { BrevSystem } from "~/types/apiTypes";
@@ -10,7 +10,6 @@ import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import type { SubmitTemplateOptions } from "../route";
 import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
-import BrevmalForDoksys from "./brevmal/BrevmalDoksys";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
 import Eblankett from "./brevmal/EBlankett";
 import { hentDefaultValueForSpråk } from "./brevmal/TemplateUtils";
@@ -24,7 +23,7 @@ export const TemplateLoader = (props: {
   enhetsId: string;
   onAddFavorittSuccess?: (templateId: string) => void;
 }) => {
-  const preferredLanguage = useQuery(getPreferredLanguageQuery(props.saksId.toString()))?.data?.spraakKode ?? null;
+  const preferredLanguage = useQuery(getPreferredLanguage(props.saksId.toString()))?.data?.spraakKode ?? null;
 
   return (
     <VStack align="start" gap="space-16">
@@ -78,20 +77,6 @@ function Brevmal({
   }
 
   switch (letterTemplate.brevsystem) {
-    case BrevSystem.DokSys: {
-      return (
-        <BrevmalForDoksys
-          defaultValues={defaultValues}
-          displayLanguages={displayLanguages}
-          key={templateId}
-          letterTemplate={letterTemplate}
-          preferredLanguage={preferredLanguage}
-          saksId={saksId}
-          setOnFormSubmitClick={setOnFormSubmitClick}
-          templateId={templateId}
-        />
-      );
-    }
     case BrevSystem.Exstream: {
       return (
         <BrevmalForExstream

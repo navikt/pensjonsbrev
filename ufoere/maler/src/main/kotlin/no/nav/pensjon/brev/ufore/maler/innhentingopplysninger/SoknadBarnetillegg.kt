@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_SOKNAD_BARNETILLEGG
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -29,7 +30,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Din søknad om barnetillegg i uføretrygd",
+            displayTitle = "Barnetillegg Barn som ikke bor hos bruker",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         ),
@@ -46,7 +47,7 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Dokumentasjon på forsørgelse kan være avtale om delt bosted, samværsavtale, avtale om bidrag. Dokumentasjonen må ha dato og være undertegnet av begge foreldrene. " })
             }
             paragraph {
-                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider nav.no/soknad eller nav.no/ettersende " })
+                text(bokmal { +"Du kan ettersende dokumentasjon digitalt eller i posten. Det er enklest og raskest å ettersende digitalt. Du finner skjemaoversikten og veiledning på våre nettsider ${Constants.SOKNAD_URL} eller ${Constants.ETTERSENDE_URL} " })
             }
             paragraph {
                 text(bokmal { +"Vi ber om at du sender opplysningene til oss innen to uker etter at du har fått dette brevet. " })
@@ -55,9 +56,10 @@ object SoknadBarnetillegg : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { +"Dersom vi ikke får nødvendige opplysninger innen frist, kan søknaden din bli avslått på grunn av manglende opplysninger. " })
             }
             paragraph {
-                text(bokmal { +"Folketrygdloven § 21-3 omhandler opplysningsplikten din til Nav. " })
+                text(bokmal { +"I folketrygdloven § 21-3 finner du informasjon om opplysningsplikten din til Nav. " })
             }
 
+            includePhrase(Felles.MeldFraOmEndringer)
             includePhrase(Felles.HarDuSporsmal)
         }
     }

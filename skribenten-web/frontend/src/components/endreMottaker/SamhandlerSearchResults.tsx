@@ -60,11 +60,12 @@ export function SamhandlerSearchResults({
                 </Table.DataCell>
                 <Table.DataCell align="right">
                   <Button
+                    data-color="neutral"
                     data-cy="velg-samhandler"
                     onClick={() => onSelect(samhandler.idTSSEkstern)}
                     size="xsmall"
                     type="button"
-                    variant="secondary-neutral"
+                    variant="secondary"
                   >
                     Velg
                   </Button>
