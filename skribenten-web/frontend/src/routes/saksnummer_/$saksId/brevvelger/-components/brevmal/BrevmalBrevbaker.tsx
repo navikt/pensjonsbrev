@@ -5,7 +5,6 @@ import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
-import { trackEvent } from "~/utils/umami";
 import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlternativer";
@@ -17,6 +16,7 @@ import type { SpraakKode } from "~/types/apiTypes";
 import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
+import { trackEvent } from "~/utils/umami";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
