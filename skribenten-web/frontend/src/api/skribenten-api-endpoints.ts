@@ -15,6 +15,7 @@ import type {
   HentSamhandlerRequestDto,
   HentsamhandlerResponseDto,
   KontaktAdresseResponse,
+  OrderDoksysLetterRequest,
   OrderEblankettRequest,
   OrderExstreamLetterRequest,
   PreferredLanguage,
@@ -95,32 +96,32 @@ export const orderLetterKeys = {
   brevsystem: (brevsystem: string) => [...orderLetterKeys.all, brevsystem] as const,
 };
 
-export const getSakContext = (saksId: string, vedtaksId: string | undefined) => ({
+export const getSakContextQuery = (saksId: string, vedtaksId: string | undefined) => ({
   queryKey: saksnummerKeys.id(saksId, vedtaksId),
   queryFn: async () =>
     (await axios.get<SakContextDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}`, { params: { vedtaksId } })).data,
   staleTime: 5000,
 });
 
-export const getPreferredLanguage = (saksId: string) => ({
+export const getPreferredLanguageQuery = (saksId: string) => ({
   queryKey: preferredLanguageKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<PreferredLanguage>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/foretrukketSpraak`)).data,
 });
 
-export const getBrukerStatus = (saksId: string) => ({
+export const getBrukerStatusQuery = (saksId: string) => ({
   queryKey: brukerStatusKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<BrukerStatusDto>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brukerstatus`)).data,
 });
 
-export const getKontaktAdresse = (saksId: string) => ({
+export const getKontaktAdresseQuery = (saksId: string) => ({
   queryKey: adresseKeys.saksId(saksId),
   queryFn: async () =>
     (await axios.get<KontaktAdresseResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/adresse`)).data,
 });
 
-export const getFavoritter = {
+export const getFavoritterQuery = {
   queryKey: favoritterKeys.all,
   queryFn: async () => (await axios.get<string[]>(`${SKRIBENTEN_API_BASE_PATH}/me/favourites`)).data,
 };
@@ -150,6 +151,15 @@ export async function deleteFavoritt(id: string) {
 export async function orderExstreamLetter(saksId: string, orderLetterRequest: OrderExstreamLetterRequest) {
   const response = await axios.post<BestillOgRedigerBrevResponse>(
     `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/exstream`,
+    orderLetterRequest,
+  );
+
+  return convertBestillOgRedigerBrevResponse(response);
+}
+
+export async function orderDoksysLetter(saksId: string, orderLetterRequest: OrderDoksysLetterRequest) {
+  const response = await axios.post<BestillOgRedigerBrevResponse>(
+    `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/bestillBrev/doksys`,
     orderLetterRequest,
   );
 
@@ -194,7 +204,7 @@ export const hentSamhandler = {
   },
 };
 
-export const hentSamhandlerAdresse = (idTSSEkstern: string) => ({
+export const hentSamhandlerAdresseQuery = (idTSSEkstern: string) => ({
   queryKey: samhandlerAdresseKeys.idTSSEkstern(idTSSEkstern),
   queryFn: async () => {
     const response = await axios.post<HentSamhandlerAdresseResponseDto>(

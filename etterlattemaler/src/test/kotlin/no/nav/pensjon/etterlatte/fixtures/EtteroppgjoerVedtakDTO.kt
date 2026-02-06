@@ -34,8 +34,7 @@ fun createEtteroppgjoerVedtakBrevDTO() =
             vedleggInnhold = emptyList(),
             utbetaltBeloep = Kroner(4444),
             rettsgebyrBeloep = Kroner(1234),
-            harOpphoer = false,
-            mottattSkatteoppgjoer = false
+            harOpphoer = false
         )
     )
 

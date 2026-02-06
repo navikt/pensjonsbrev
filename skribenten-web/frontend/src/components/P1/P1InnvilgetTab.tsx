@@ -1,5 +1,5 @@
 import { PlusIcon } from "@navikt/aksel-icons";
-import { Box, Button, Heading, Table } from "@navikt/ds-react";
+import { BoxNew, Button, Heading, Table } from "@navikt/ds-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
@@ -23,8 +23,9 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
       <Heading size="small" spacing>
         3. Innvilget pensjon
       </Heading>
+
       <Table className="p1-table p1-table--zebra-stripes" css={{ minWidth: "1200px" }} size="small">
-        <Box asChild background="accent-soft">
+        <BoxNew asChild background="accent-soft">
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>
@@ -63,7 +64,7 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
               </Table.HeaderCell>
             </Table.Row>
           </Table.Header>
-        </Box>
+        </BoxNew>
 
         <Table.Body>
           {fields.map((field, index) => (
@@ -77,11 +78,12 @@ export const P1InnvilgetTab = ({ landListe }: { landListe: LandOption[] }) => {
           ))}
         </Table.Body>
       </Table>
-      <Box asChild marginBlock="space-16 space-0" minWidth="fit-content" width="100%">
+
+      <BoxNew asChild marginBlock="space-16 0" minWidth="fit-content" width="100%">
         <Button icon={<PlusIcon />} onClick={addRow} size="small" type="button" variant="secondary">
           Legg til ny rad
         </Button>
-      </Box>
+      </BoxNew>
     </>
   );
 };

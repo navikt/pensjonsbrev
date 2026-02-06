@@ -3,7 +3,7 @@ import { BodyLong, Button, ErrorMessage, HStack, Modal } from "@navikt/ds-react"
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { hentAlleBrevInfoForSak, slettBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak, slettBrev } from "~/api/sak-api-endpoints";
 import type { BrevInfo } from "~/types/brev";
 
 export const SlettBrev = (properties: {
@@ -32,7 +32,7 @@ export const SlettBrev = (properties: {
           åpen={vilSletteBrev}
         />
       )}
-      <Button data-color="danger" onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="primary">
+      <Button onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="danger">
         <HStack align="center" gap="space-4">
           <TrashIcon fontSize="1.5rem" title="slett-ikon" /> {properties.buttonText}
         </HStack>
@@ -59,7 +59,7 @@ const SlettBrevModal = (properties: {
   const slett = useMutation({
     mutationFn: () => slettBrev(properties.sakId, properties.brevId),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo?.filter((brev) => brev.id !== properties.brevId),
       );
     },
@@ -89,13 +89,7 @@ const SlettBrevModal = (properties: {
             {slett.isSuccess ? "Avbryt" : (properties.texts?.buttonNo ?? "Nei, behold brevet")}
           </Button>
           {!slett.isSuccess ? (
-            <Button
-              data-color="danger"
-              loading={slett.isPending}
-              onClick={() => slett.mutate()}
-              type="button"
-              variant="primary"
-            >
+            <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
               {properties.texts?.buttonYes ?? "Ja, slett brevet"}
             </Button>
           ) : (

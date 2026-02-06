@@ -1,6 +1,7 @@
 import "./editor.css";
 
-import { Box, Heading, VStack } from "@navikt/ds-react";
+import { css } from "@emotion/react";
+import { BoxNew, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
 import type { Dispatch, SetStateAction } from "react";
 import { useCallback, useState } from "react";
@@ -86,11 +87,28 @@ export const LetterEditor = ({
     <VStack align="center" height={editorHeight ?? "auto"}>
       <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
         <EditorMenu canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-        <Box className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
-          <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
+        <BoxNew
+          className="editor"
+          css={css`
+            ${freeze && "cursor: wait;"}
+          `}
+          flexGrow="1"
+          overflowY="auto"
+        >
+          <SakspartView
+            sakspart={letter.sakspart}
+            spraak={editorState.info.spraak}
+            wrapperStyles={css`
+              margin-bottom: 1.88rem;
+            `}
+          />
           <Heading
-            className="letter-title"
-            level="1"
+            css={css`
+              line-height: 30px;
+              margin-bottom: 27px;
+              letter-spacing: 0.45px;
+            `}
+            level="3"
             onDragOver={(e) => {
               e.preventDefault();
               e.dataTransfer.dropEffect = "none";
@@ -119,8 +137,13 @@ export const LetterEditor = ({
               </div>
             ))}
           </div>
-          <SignaturView signatur={letter.signatur} />
-        </Box>
+          <SignaturView
+            signatur={letter.signatur}
+            wrapperStyles={css`
+              margin-bottom: 48px;
+            `}
+          />
+        </BoxNew>
         {showDebug && <DebugPanel />}
       </EditorStateContext.Provider>
     </VStack>

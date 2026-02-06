@@ -102,7 +102,6 @@ interface LetterMarkup {
             }
 
             interface Variable : Text {
-                val tags: Set<ElementTags>
                 override val type: Type
                     get() = Type.VARIABLE
             }

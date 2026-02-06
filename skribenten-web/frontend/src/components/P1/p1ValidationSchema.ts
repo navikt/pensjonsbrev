@@ -97,6 +97,13 @@ const p1InnvilgetPensjonFormSchema = z
           path: ["pensjonstype"],
         });
       }
+      if (!data.grunnlagInnvilget) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Grunnlag må velges",
+          path: ["grunnlagInnvilget"],
+        });
+      }
     }
   });
 

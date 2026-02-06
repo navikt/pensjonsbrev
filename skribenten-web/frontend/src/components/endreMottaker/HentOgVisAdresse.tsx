@@ -1,7 +1,7 @@
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
-import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import { getKontaktAdresseQuery, hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
@@ -14,12 +14,12 @@ import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
  */
 const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; showMottakerTitle?: boolean }) => {
   const samhandlerAdresse = useQuery({
-    ...hentSamhandlerAdresse(properties.samhandlerId as string),
+    ...hentSamhandlerAdresseQuery(properties.samhandlerId as string),
     enabled: !!properties.samhandlerId,
   });
 
   const adresseQuery = useQuery({
-    ...getKontaktAdresse(properties.sakId),
+    ...getKontaktAdresseQuery(properties.sakId),
     enabled: !properties.samhandlerId,
   });
 

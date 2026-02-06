@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
-import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
@@ -26,8 +26,8 @@ export const BrevmalBrevbakerKladd = (props: {
   setOnFormSubmitClick: (v: SubmitTemplateOptions) => void;
 }) => {
   const brevQuery = useQuery({
-    queryKey: hentAlleBrevInfoForSak.queryKey(props.saksId.toString()),
-    queryFn: () => hentAlleBrevInfoForSak.queryFn(props.saksId.toString()),
+    queryKey: hentAlleBrevForSak.queryKey(props.saksId.toString()),
+    queryFn: () => hentAlleBrevForSak.queryFn(props.saksId.toString()),
     select: (data) => data?.find((b) => b.id === props.brevId),
   });
 

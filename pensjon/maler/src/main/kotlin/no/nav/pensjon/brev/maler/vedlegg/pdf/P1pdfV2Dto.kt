@@ -186,10 +186,7 @@ object P1pdfV2Dto {
             institusjon.pin?.let { "PIN: $it" },
             institusjon.saksnummer?.let { if (bokmaal) "Saksnummer: $it" else "Case number: $it" },
 
-            institusjon.datoForVedtak?.let { dato ->
-                val formattertDato = dato.format(dateFormatter.withLocale(languageCode.locale()))
-                datoForVedtaketTekst(languageCode, formattertDato)
-            } ?: institusjon.vedtaksdato?.let { dato ->
+            institusjon.vedtaksdato?.let { dato ->
                 try {
                     val formattertDato =
                         LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))

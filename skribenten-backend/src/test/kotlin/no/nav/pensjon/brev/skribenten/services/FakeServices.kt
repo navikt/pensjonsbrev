@@ -63,7 +63,7 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
     override suspend fun hentSamhandlerAdresse(idTSSEkstern: String): HentSamhandlerAdresseResponseDto = notYetStubbed()
 }
 
-open class FakeP1Service: P1Service {
+open class FakeP1Service(): P1Service {
     override suspend fun lagreP1Data(
         p1DataInput: Api.GeneriskBrevdata,
         brevId: Long,
@@ -147,7 +147,9 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 
 open class PenServiceStub : PenService {
     override suspend fun hentSak(saksId: String): Pen.SakSelection? = notYetStubbed()
+    override suspend fun bestillDoksysBrev(request: Api.BestillDoksysBrevRequest, enhetsId: String, saksId: Long): Pen.BestillDoksysBrevResponse = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
+    override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()

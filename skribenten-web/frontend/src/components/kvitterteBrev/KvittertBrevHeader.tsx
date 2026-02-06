@@ -33,7 +33,7 @@ const hentTagOgTittelForHeader = (args: {
   switch (args.apiStatus) {
     case "error": {
       const tag = (
-        <Tag data-color="danger" size="small" variant="outline">
+        <Tag size="small" variant="error">
           Kunne ikke sende brev
         </Tag>
       );
@@ -42,7 +42,7 @@ const hentTagOgTittelForHeader = (args: {
     case "success": {
       if (args.context === "attestering") {
         const tag = (
-          <Tag data-color="meta-lime" size="small" variant="outline">
+          <Tag size="small" variant="alt2">
             Klar til attestering
           </Tag>
         );
@@ -51,7 +51,7 @@ const hentTagOgTittelForHeader = (args: {
         switch (args.brevInfo.distribusjonstype) {
           case Distribusjonstype.SENTRALPRINT: {
             const tag = (
-              <Tag data-color="success" size="small" variant="outline">
+              <Tag size="small" variant="success">
                 Sendt til mottaker
               </Tag>
             );
@@ -59,7 +59,7 @@ const hentTagOgTittelForHeader = (args: {
           }
           case Distribusjonstype.LOKALPRINT: {
             const tag = (
-              <Tag data-color="info" size="small" variant="outline">
+              <Tag size="small" variant="info">
                 Lokalprint - sendt til joark
               </Tag>
             );

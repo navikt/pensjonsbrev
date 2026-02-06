@@ -147,10 +147,10 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
               error={fieldState.error?.message}
               legend={`Beregnings${SOFT_HYPHEN}grunnlag`}
               onChange={(val) => {
-                radioField.onChange(val === "IKKE_OPPGITT" ? null : val || null);
+                radioField.onChange(val === "IKKE_RELEVANT" ? null : val || null);
               }}
               size="small"
-              value={radioField.value ?? "IKKE_OPPGITT"}
+              value={radioField.value ?? "IKKE_RELEVANT"}
             >
               {GRUNNLAG_INNVILGET_OPTIONS.map((option) => (
                 <Radio key={option.value} value={option.value}>

@@ -1,8 +1,26 @@
 import { z } from "zod";
 
-import type { OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
 import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
+
+export const byggDoksysOnSubmitRequest = (argz: {
+  template: LetterMetadata;
+  vedtaksId: Nullable<string>;
+  formValues: {
+    enhetsId: string;
+    spraak: Nullable<SpraakKode>;
+    brevtittel: Nullable<string>;
+  };
+}): OrderDoksysLetterRequest => {
+  return {
+    brevkode: argz.template.id,
+    enhetsId: argz.formValues.enhetsId,
+    //finnes per nå bare 2 brev i doksys, som begge skal ha språk satt
+    spraak: argz.formValues.spraak!,
+    vedtaksId: argz.vedtaksId ?? null,
+  };
+};
 
 export const byggExstreamOnSubmitRequest = (argz: {
   template: LetterMetadata;

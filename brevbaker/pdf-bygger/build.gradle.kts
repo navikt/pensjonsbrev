@@ -47,6 +47,7 @@ tasks {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     implementation(libs.bundles.logging)
     implementation(libs.kotlinx.coroutines.slf4j)
     implementation(libs.ktor.serialization.jackson)

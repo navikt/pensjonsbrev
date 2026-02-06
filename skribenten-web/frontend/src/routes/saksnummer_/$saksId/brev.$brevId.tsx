@@ -1,5 +1,17 @@
 import { ArrowCirclepathReverseIcon, ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import {
+  BodyLong,
+  BoxNew,
+  Button,
+  Heading,
+  HGrid,
+  HStack,
+  Label,
+  Modal,
+  Skeleton,
+  Tabs,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
@@ -7,7 +19,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrev, getBrevmetadataQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
@@ -73,12 +85,12 @@ function RedigerBrevPage() {
     query: brevQuery,
     initial: () => null,
     pending: () => (
-      <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
+      <BoxNew asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
         <HStack align="stretch" flexGrow="1" gap="space-16" justify="space-around" padding="space-16" wrap={false}>
           <Skeleton height="auto" variant="rectangle" width="33%" />
           <Skeleton height="auto" variant="rectangle" width="66%" />
         </HStack>
-      </Box>
+      </BoxNew>
     ),
     error: (error) => {
       if (error.response?.status === 423 && error.response?.data) {
@@ -88,10 +100,10 @@ function RedigerBrevPage() {
       }
       if (error.response?.status === 409) {
         return (
-          <Box asChild background="default">
+          <BoxNew asChild background="default">
             <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
               <Label size="small">Brevet er arkivert, og kan derfor ikke redigeres.</Label>
-              <Box asChild paddingInline="space-0">
+              <BoxNew asChild paddingInline="0">
                 <Button
                   onClick={() =>
                     navigate({
@@ -105,9 +117,9 @@ function RedigerBrevPage() {
                 >
                   Gå til brevbehandler
                 </Button>
-              </Box>
+              </BoxNew>
             </VStack>
-          </Box>
+          </BoxNew>
         );
       }
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
@@ -187,7 +199,7 @@ function RedigerBrev({
     });
 
   const brevmal = useQuery({
-    ...getBrevmetadata,
+    ...getBrevmetadataQuery,
     select: (data) => data.find((brevmal) => brevmal.id === brev.info.brevkode),
   });
 
@@ -281,7 +293,7 @@ function RedigerBrev({
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
     <FormProvider {...form}>
-      <Box asChild background="default" maxWidth="1106px" minWidth="945px">
+      <BoxNew asChild background="default" maxWidth="1106px" minWidth="945px">
         <VStack asChild flexGrow="1" marginInline="auto">
           <form onSubmit={guardedSubmit}>
             <WarnModal
@@ -308,7 +320,7 @@ function RedigerBrev({
               />
             )}
             <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)">
-              <Box
+              <BoxNew
                 asChild
                 borderColor="neutral-subtle"
                 borderWidth="0 1 0 0"
@@ -323,26 +335,20 @@ function RedigerBrev({
                   <OpprettetBrevSidemenyForm brev={brev} submitOnChange={onTekstValgAndOverstyringChange} />
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
-              </Box>
+              </BoxNew>
               <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
             </HGrid>
-            <Box
+            <BoxNew
               asChild
               background="default"
               borderColor="neutral-subtle"
               borderWidth="1 0 0 0"
-              bottom="space-0"
-              left="space-0"
+              bottom="0"
+              left="0"
               position="sticky"
             >
               <HStack justify="space-between" paddingBlock="space-8" paddingInline="space-16">
-                <Button
-                  data-color="danger"
-                  onClick={() => setVilTilbakestilleMal(true)}
-                  size="small"
-                  type="button"
-                  variant="primary"
-                >
+                <Button onClick={() => setVilTilbakestilleMal(true)} size="small" type="button" variant="danger">
                   <HStack align="center" gap="space-4">
                     <ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />
                     Tilbakestill malen
@@ -370,10 +376,10 @@ function RedigerBrev({
                   </Button>
                 </HStack>
               </HStack>
-            </Box>
+            </BoxNew>
           </form>
         </VStack>
-      </Box>
+      </BoxNew>
     </FormProvider>
   );
 }
@@ -441,25 +447,27 @@ const OpprettetBrevSidemenyForm = ({ brev, submitOnChange }: { brev: BrevRespons
         <Tabs.Tab label="Tekstvalg" value={BrevSidemenyTabs.TEKSTVALG} />
         <Tabs.Tab label="Overstyring" value={BrevSidemenyTabs.OVERSTYRING} />
       </Tabs.List>
+
       <Tabs.Panel value={BrevSidemenyTabs.TEKSTVALG}>
-        <Box marginBlock="space-20 space-0">
+        <BoxNew marginBlock="space-20 0">
           <SaksbehandlerValgModelEditor
             brevkode={brev.info.brevkode}
             fieldsToRender="optional"
             specificationFormElements={specificationFormElements}
             submitOnChange={submitOnChange}
           />
-        </Box>
+        </BoxNew>
       </Tabs.Panel>
+
       <Tabs.Panel value={BrevSidemenyTabs.OVERSTYRING}>
-        <Box marginBlock="space-20 space-0">
+        <BoxNew marginBlock="space-20 0">
           <SaksbehandlerValgModelEditor
             brevkode={brev.info.brevkode}
             fieldsToRender="required"
             specificationFormElements={specificationFormElements}
             submitOnChange={submitOnChange}
           />
-        </Box>
+        </BoxNew>
       </Tabs.Panel>
     </Tabs>
   );

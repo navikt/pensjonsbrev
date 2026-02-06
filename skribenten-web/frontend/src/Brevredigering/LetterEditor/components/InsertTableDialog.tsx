@@ -78,6 +78,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
           ))}
         </VStack>
       </Modal.Body>
+
       <Modal.Footer>
         <HStack gap="space-16">
           <Button data-cy="insert-table-cancel-btn" onClick={onCancel} size="small" type="button" variant="secondary">

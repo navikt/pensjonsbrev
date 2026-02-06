@@ -88,8 +88,7 @@ data class P1RedigerbarDto(
         val institusjonsnavn: String?,
         val pin: String?,
         val saksnummer: String?,
-        val vedtaksdato: String? = null,
-        val datoForVedtak: LocalDate?,
+        val vedtaksdato: String?,
         val land: String?,
     )
 

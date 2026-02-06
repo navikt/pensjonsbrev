@@ -57,11 +57,10 @@ data class EtteroppgjoerVedtakDataDTO(
     val faktiskStoenad: Kroner,
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val rettsgebyrBeloep: Kroner,
-    val harOpphoer: Boolean,
-    val mottattSkatteoppgjoer: Boolean
+    val harOpphoer: Boolean
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
-    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true, harOpphoer, mottattSkatteoppgjoer)
+    val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true, harOpphoer)
 }
 
 @TemplateModelHelpers

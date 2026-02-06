@@ -14,7 +14,7 @@
 // ***********************************************************
 
 import "./commands";
-import "@navikt/ds-css";
+import "@navikt/ds-css/darkside";
 import "../../src/appStyles.css";
 
 import { Theme } from "@navikt/ds-react";

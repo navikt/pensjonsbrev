@@ -1,12 +1,12 @@
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 import { useEffect, useMemo, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
-import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
+import { getBrevAttesteringQuery, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -43,7 +43,7 @@ const VedtakWrapper = () => {
   const { vedtaksId, enhetsId } = Route.useSearch();
 
   const hentBrevQuery = useQuery({
-    ...getBrevAttestering(saksId, Number(brevId)),
+    ...getBrevAttesteringQuery(saksId, Number(brevId)),
     staleTime: Number.POSITIVE_INFINITY,
   });
 
@@ -51,9 +51,9 @@ const VedtakWrapper = () => {
     query: hentBrevQuery,
     initial: () => null,
     pending: () => (
-      <Box asChild background="default" paddingBlock="space-32 space-0">
+      <BoxNew asChild background="default" paddingBlock="space-32 0">
         <CenteredLoader label="Henter brev..." verticalStrategy="flexGrow" />
-      </Box>
+      </BoxNew>
     ),
     error: (err) => {
       if (err.response?.status === 423 && err.response?.data) {
@@ -96,9 +96,9 @@ const VedtakWrapper = () => {
       }
 
       return (
-        <Box background="default" flexGrow="1">
+        <BoxNew background="default" flexGrow="1">
           <ApiError error={err} title="En feil skjedde ved henting av vedtaksbrev" />
-        </Box>
+        </BoxNew>
       );
     },
     success: (brev) => (

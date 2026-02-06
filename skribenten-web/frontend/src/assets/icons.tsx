@@ -17,3 +17,14 @@ export const ExstreamIcon = () => (
     />
   </svg>
 );
+
+export const DoksysIcon = () => (
+  <svg fill="none" height="16" viewBox="0 0 17 16" width="17" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="8.18945" cy="8" fill="#CCE2F0" r="8" />
+    <path
+      d="M6.18947 11.9981L6.1895 4.00193C8.14259 4.00193 11.1895 3.78336 11.1895 7.99995C11.1895 12.2165 7.75194 11.9981 6.18947 11.9981Z"
+      stroke="#523300"
+      strokeWidth="1.71543"
+    />
+  </svg>
+);

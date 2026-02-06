@@ -215,7 +215,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
         } else {
-            listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
+            listOf(VariableImpl(stableHashCode(), eval(scope), fontType))
         }.mergeLiterals(fontType)
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =

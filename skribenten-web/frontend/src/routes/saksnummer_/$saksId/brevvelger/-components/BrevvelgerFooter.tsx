@@ -1,5 +1,5 @@
 import { ArrowRightIcon } from "@navikt/aksel-icons";
-import { Box, Button, HStack } from "@navikt/ds-react";
+import { BoxNew, Button, HStack } from "@navikt/ds-react";
 import { useMutationState } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
@@ -20,7 +20,7 @@ const BrevvelgerFooter = (props: {
   const mutationState = useMutationState({ filters: { status: "pending" } });
 
   return (
-    <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
+    <BoxNew asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
       <HStack gap="space-8" justify="end" paddingBlock="space-8" paddingInline="space-16">
         <Button
           onClick={() =>
@@ -52,7 +52,7 @@ const BrevvelgerFooter = (props: {
           </Button>
         )}
       </HStack>
-    </Box>
+    </BoxNew>
   );
 };
 

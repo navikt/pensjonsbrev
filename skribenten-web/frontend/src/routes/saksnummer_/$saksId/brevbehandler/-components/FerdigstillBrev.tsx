@@ -3,7 +3,7 @@ import { ArrowRightIcon } from "@navikt/aksel-icons";
 import {
   BodyLong,
   BodyShort,
-  Box,
+  BoxNew,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -21,7 +21,7 @@ import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { hentAlleBrevInfoForSak, sendBrev } from "~/api/sak-api-endpoints";
+import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { BestillBrevError, BestillBrevResponse } from "~/types/brev";
 import { type BrevInfo } from "~/types/brev";
@@ -160,8 +160,8 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   const { setBrevListKlarTilAttestering } = useBrevInfoKlarTilAttestering();
 
   const alleBrevResult = useQuery({
-    queryKey: hentAlleBrevInfoForSak.queryKey(properties.sakId),
-    queryFn: () => hentAlleBrevInfoForSak.queryFn(properties.sakId),
+    queryKey: hentAlleBrevForSak.queryKey(properties.sakId),
+    queryFn: () => hentAlleBrevForSak.queryFn(properties.sakId),
     select: (data) => data.filter((brev) => erBrevKlar(brev) || erBrevArkivert(brev) || erBrevKlarTilAttestering(brev)),
   });
 
@@ -226,7 +226,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
         .map(([id]) => Number(id)),
     );
 
-    queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
+    queryClient.setQueryData(hentAlleBrevForSak.queryKey(properties.sakId), (current: BrevInfo[] = []) =>
       current.filter((b) => !sentIds.has(b.id)),
     );
 
@@ -249,7 +249,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
     >
       <form onSubmit={form.handleSubmit(onSendValgteBrev)}>
         <Modal.Body>
-          <Box marginBlock="space-0 space-16">
+          <BoxNew marginBlock="0 space-16">
             {queryFold({
               query: alleBrevResult,
               initial: () => null,
@@ -290,20 +290,16 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                     <VStack>
                       <BodyLong>Vedtaksbrev sendes av attestant etter at attestering er gjennomført.</BodyLong>
                       {brevAttestering.map((brev) => (
-                        <div key={brev.id}>
-                          <Box asChild marginBlock="space-16">
-                            <List data-aksel-migrated-v8>
-                              <List.Item>{brev.brevtittel}</List.Item>
-                            </List>
-                          </Box>
-                        </div>
+                        <List key={brev.id}>
+                          <List.Item>{brev.brevtittel}</List.Item>
+                        </List>
                       ))}
                     </VStack>
                   )}
                 </VStack>
               ),
             })}
-          </Box>
+          </BoxNew>
         </Modal.Body>
         <Modal.Footer>
           <HStack gap="space-16">

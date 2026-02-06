@@ -324,7 +324,6 @@ public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/Di
 
 public final class no/nav/pensjon/brevbaker/api/model/ElementTags : java/lang/Enum {
 	public static final field FRITEKST Lno/nav/pensjon/brevbaker/api/model/ElementTags;
-	public static final field REDIGERBAR_DATA Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/ElementTags;
 	public static fun values ()[Lno/nav/pensjon/brevbaker/api/model/ElementTags;
@@ -582,7 +581,6 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text$Variable : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Text {
-	public abstract fun getTags ()Ljava/util/Set;
 	public fun getType ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 }
 

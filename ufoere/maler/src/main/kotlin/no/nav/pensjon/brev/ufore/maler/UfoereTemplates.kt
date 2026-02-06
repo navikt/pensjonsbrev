@@ -12,12 +12,8 @@ import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.*
-import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettInfo4Aar
-import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHoer
-import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
-import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
-import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.SoknadBarnetillegg
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
@@ -61,23 +57,6 @@ object UfoereTemplates : AllTemplates {
         VarselInstitusjon12_19,
         VarselSoning12_20,
         SoknadBarnetillegg,
-        BrukerLegeerklaering,
-        LegeLegeerklaering,
-        Naeringsinntekter,
-        FlereOpplysningerFirmaInntekt,
-        NySivilstand,
-        SoknadBarnetilleggFosterForelder,
-        SoknadBarnetilleggUtland,
-        TrukketKlage,
-        UtsattKlagefrist,
-        FlereOpplysningerGenerell,
-        OppgittSamboer,
-        EktefelleUtland,
-        AntattDod,
-        HvilendeRettInfo4Aar,
-        HvilendeRettOppHoer,
-        HvilendeRettVarselOpphoer,
-        HvilendeRettMidlertidigOppHoer,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()

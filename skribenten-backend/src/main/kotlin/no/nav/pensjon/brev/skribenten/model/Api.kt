@@ -180,6 +180,13 @@ object Api {
         val redigerbarBrevtittel: Boolean,
     )
 
+    data class BestillDoksysBrevRequest(
+        val brevkode: String,
+        val spraak: SpraakKode,
+        val vedtaksId: Long? = null,
+        val enhetsId: String,
+    )
+
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
@@ -202,6 +209,12 @@ object Api {
         val failureType: FailureType? = null,
     ) {
         enum class FailureType {
+            DOKSYS_BESTILLING_ADDRESS_NOT_FOUND,
+            DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE,
+            DOKSYS_BESTILLING_PERSON_NOT_FOUND,
+            DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
+            DOKSYS_BESTILLING_UNAUTHORIZED,
+            DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
             EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
             EXSTREAM_REDIGERING_GENERELL,
             FERDIGSTILLING_TIMEOUT,

@@ -1,5 +1,5 @@
 body {
-  background: var(--ax-neutral-200);
+  background: var(--a-gray-100);
 }
 
 :root {
@@ -33,12 +33,12 @@ body {
   }
   .expression,
   code {
-    background: var(--ax-accent-200);
+    background: var(--a-blue-100);
   }
 }
 
 .expression {
-  background: var(--ax-meta-purple-200);
+  background: var(--a-purple-100);
   white-space: break-spaces;
 }
 
@@ -49,14 +49,14 @@ body {
 
 @keyframes highlight-animation {
   0% {
-    background-color: var(--ax-warning-500);
+    background-color: var(--a-orange-400);
   }
   100% {
-    background-color: var(--ax-warning-300);
+    background-color: var(--a-orange-200);
   }
 }
 
 .highlight {
-  background: var(--ax-warning-300);
+  background: var(--a-orange-200);
   animation: highlight-animation 0.5s ease-out;
 }

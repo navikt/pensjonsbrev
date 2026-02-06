@@ -13,15 +13,15 @@ export function DataClasses({ templateModelSpecification }: { templateModelSpeci
         position: fixed;
         width: 800px;
         max-width: 20%;
-        background: var(--ax-bg-neutral-soft);
+        background: var(--a-bg-subtle);
         left: 0;
         height: 100%;
-        border-right: 1px solid var(--ax-border-neutral-subtle);
-        padding: var(--ax-space-16);
+        border-right: 1px solid var(--a-border-divider);
+        padding: var(--a-spacing-4);
         white-space: nowrap;
         overflow: scroll;
       `}
-      gap="space-16"
+      gap="4"
     >
       {Object.entries(templateModelSpecification.types).map(([name, value]) => (
         <DataView key={name} name={name} objectTypeSpecification={value} />
@@ -49,11 +49,11 @@ function DataView({
   }, [isHighlighted]);
 
   return (
-    <VStack className={isHighlighted ? "highlight" : undefined} gap="space-4">
+    <VStack className={isHighlighted ? "highlight" : undefined} gap="1">
       <span ref={reference}>
         <span
           css={css`
-            color: var(--ax-danger-600);
+            color: var(--a-red-500);
           `}
         >
           data class
@@ -85,7 +85,7 @@ function DataField({ name, fieldType }: { name: string; fieldType: FieldType }) 
       className={isHighlighted ? "highlight" : undefined}
       css={[
         css`
-          margin-left: var(--ax-space-64);
+          margin-left: var(--a-spacing-16);
         `,
       ]}
       key={name}
@@ -103,7 +103,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
       return (
         <span
           css={css`
-            color: var(--ax-meta-purple-600);
+            color: var(--a-purple-500);
           `}
         >
           {capitalize(fieldType.kind)}
@@ -114,7 +114,7 @@ function Type({ fieldType }: { fieldType: FieldType }) {
       return (
         <span
           css={css`
-            color: var(--ax-success-600);
+            color: var(--a-green-500);
           `}
         >
           {fieldType.values.join(" | ")}

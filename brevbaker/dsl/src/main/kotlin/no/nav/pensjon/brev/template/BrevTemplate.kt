@@ -61,9 +61,6 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
         beskrivelse.takeIf { it.trim().isNotEmpty() }
             ?.let { Literal(it, setOf(ElementTags.FRITEKST)) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
-
-    fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
-        ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {

@@ -13,26 +13,24 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
   <>
     <HStack gap="space-8">
       <Button
-        data-color="neutral"
         disabled={!canUndo}
         icon={<ArrowUndoIcon fontSize="1.5rem" title="Angre (Undo)" />}
         onClick={undo}
         size="small"
         title="Angre (Undo)"
         type="button"
-        variant="tertiary"
+        variant="tertiary-neutral"
       ></Button>
     </HStack>
     <HStack gap="space-8">
       <Button
-        data-color="neutral"
         disabled={!canRedo}
         icon={<ArrowRedoIcon fontSize="1.5rem" title="Gjør om (Redo)" />}
         onClick={redo}
         size="small"
         title="Gjør om (Redo)"
         type="button"
-        variant="tertiary"
+        variant="tertiary-neutral"
       ></Button>
     </HStack>
   </>

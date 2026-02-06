@@ -1,32 +1,26 @@
-import { Box, HGrid, VStack } from "@navikt/ds-react";
+import type { SerializedStyles } from "@emotion/react";
+import { css } from "@emotion/react";
+import { BoxNew, HGrid, VStack } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
 const Saksbehandler = ({ navn }: { navn?: string }) =>
-  navn ? (
-    <Box as="span" data-cy="brev-editor-saksbehandler">
-      {navn}
-    </Box>
-  ) : (
-    <></>
-  );
+  navn ? <BoxNew data-cy="brev-editor-saksbehandler">{navn}</BoxNew> : <></>;
 
-export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
+export const SignaturView = ({ signatur, wrapperStyles }: { signatur: Signatur; wrapperStyles?: SerializedStyles }) => (
   <VStack
-    css={{
-      fontSize: "16px",
-      color: "var(--ax-text-neutral-subtle)",
-      lineHeight: "var(--ax-font-line-height-large)",
-      marginBottom: "48px",
-    }}
+    css={css`
+      opacity: 0.5;
+      font-size: 16.5px;
+      line-height: var(--ax-font-line-height-large);
+      ${wrapperStyles}
+    `}
   >
-    <Box as="span" marginBlock="space-0 space-24">
-      {signatur.hilsenTekst}
-    </Box>
-    <HGrid columns="1fr 1fr" gap="space-8 space-32" marginBlock="space-0 space-24">
+    <span>{signatur.hilsenTekst}</span>
+    <HGrid columns="1fr 1fr" gap="space-32" marginBlock="0 space-24">
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />
       <Saksbehandler navn={signatur.saksbehandlerNavn} />
     </HGrid>
-    <span>{signatur.navAvsenderEnhet}</span>
+    <div>{signatur.navAvsenderEnhet}</div>
   </VStack>
 );

@@ -183,21 +183,4 @@ class Felles {
             }
         }
     }
-    object MeldFraOmEndringer : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Meld fra om endringer" },
-                    nynorsk { +"Meld frå om endringar" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Vi ber om at du holder oss orientert om forhold som kan ha betydning for avgjørelsen av søknaden din. Det kan være endringer i medisinske forhold, arbeid, inntekt, sivilstand og lignende. " },
-                    nynorsk { +"Vi ber om at du held oss orientert om forhold som kan ha noko å seie for avgjerda av søknaden din. Det kan vere endringar i medisinske forhold, arbeid, inntekt, sivilstand og liknande. " },
-                )
-            }
-        }
-    }
-
 }

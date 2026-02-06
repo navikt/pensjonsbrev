@@ -3,7 +3,7 @@ import { PencilIcon, PlusCircleIcon, TrashIcon } from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
-  Box,
+  BoxNew,
   Button,
   Checkbox,
   CheckboxGroup,
@@ -146,12 +146,13 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           />
         )}
       </HStack>
+
       {/* P1 vedlegg with its own edit button */}
       {isP1Brev && (
         <HStack align="center" justify="space-between">
           <BodyShort size="small">P1</BodyShort>
           {!props.erLaast && (
-            <Box asChild borderRadius="4">
+            <BoxNew asChild borderRadius="4">
               <Button
                 data-cy="p1-edit-button"
                 icon={<PencilIcon />}
@@ -160,10 +161,11 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                 type="button"
                 variant="tertiary"
               />
-            </Box>
+            </BoxNew>
           )}
         </HStack>
       )}
+
       {/* Other saved vedlegg */}
       {savedVedlegg.length > 0 && (
         <VStack gap="space-4">
@@ -183,6 +185,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           ))}
         </VStack>
       )}
+
       {/* P1 Edit Modal */}
       {isP1ModalOpen && (
         <P1EditModal
@@ -192,6 +195,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           saksId={props.saksId}
         />
       )}
+
       {/* Add vedlegg modal */}
       <Modal
         css={css`

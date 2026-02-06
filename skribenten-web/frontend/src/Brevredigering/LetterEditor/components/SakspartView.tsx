@@ -1,20 +1,30 @@
+import type { SerializedStyles } from "@emotion/react";
+import { css } from "@emotion/react";
 import { HGrid } from "@navikt/ds-react";
 import { intlFormat } from "date-fns";
 
 import { SpraakKode } from "~/types/apiTypes";
 import type { Sakspart } from "~/types/brevbakerTypes";
 
-export const SakspartView = ({ sakspart, spraak }: { sakspart: Sakspart; spraak: SpraakKode }) => {
+export const SakspartView = ({
+  sakspart,
+  spraak,
+  wrapperStyles,
+}: {
+  sakspart: Sakspart;
+  spraak: SpraakKode;
+  wrapperStyles?: SerializedStyles;
+}) => {
   const dokumentDato = Date.parse(sakspart.dokumentDato);
   return (
     <HGrid
       columns="minmax(10rem, max-content) 1fr min-content"
-      css={{
-        opacity: "0.5",
-        fontSize: "16px",
-        lineHeight: "1.3125rem",
-        marginBottom: "var(--ax-space-40)",
-      }}
+      css={css`
+        opacity: 0.5;
+        font-size: 16.5px;
+        line-height: var(--ax-font-line-height-large);
+        ${wrapperStyles}
+      `}
       gap="space-4 space-8"
     >
       {sakspart.annenMottakerNavn && (

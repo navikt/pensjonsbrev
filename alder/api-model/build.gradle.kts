@@ -20,6 +20,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly(kotlin("stdlib"))
     api(libs.brevbaker.common)
 }
 
@@ -49,9 +50,10 @@ kotlin {
 
 tasks {
     register("verifyPackages") {
-        inputs.files(fileTree("src/main/kotlin").matching { include("**/*.kt") })
+        notCompatibleWithConfigurationCache("Uses script references")
+        val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
         doLast {
-            inputs.files.forEach { file ->
+            files.forEach { file ->
                 val text = file.readText()
                 val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
                     .find(text)?.groupValues?.get(1)

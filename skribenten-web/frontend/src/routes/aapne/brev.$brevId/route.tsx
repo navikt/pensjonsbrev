@@ -3,7 +3,7 @@ import { createFileRoute, redirect } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
 
 import { getUserInfo } from "~/api/bff-endpoints";
-import { getBrevInfo } from "~/api/brev-queries";
+import { getBrevInfoQuery } from "~/api/brev-queries";
 import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
@@ -24,7 +24,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
 
     let brevInfo;
     try {
-      brevInfo = await queryClient.ensureQueryData(getBrevInfo(brevIdNum));
+      brevInfo = await queryClient.ensureQueryData(getBrevInfoQuery(brevIdNum));
     } catch (error) {
       const axiosError = error as AxiosError & { forbidReason?: AttestForbiddenReason };
 

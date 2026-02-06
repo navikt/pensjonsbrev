@@ -70,6 +70,7 @@ kotlin {
 }
 
 dependencies {
+    implementation(kotlin("stdlib"))
     implementation(libs.bundles.logging)
     implementation(libs.ktor.client.cio)
     implementation(libs.ktor.client.content.negotiation)

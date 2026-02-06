@@ -38,25 +38,23 @@ describe("Brevvelger spec", () => {
     cy.get(".aksel-accordion__item").contains("Favoritter").should("not.exist");
 
     cy.contains("Informasjonsbrev").click();
-    cy.get("p:contains('Informasjon om saksbehandlingstid')").should("have.length", 1);
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 1);
+    cy.contains("Informasjon om gjenlevenderettigheter").click();
 
     cy.intercept("POST", "/bff/skribenten-backend/me/favourites", (request) => {
-      expect(request.body).to.eq("INFORMASJON_OM_SAKSBEHANDLINGSTID");
+      expect(request.body).to.eq("DOD_INFO_RETT_MAN");
       request.reply({});
     }).as("Legg til favoritt");
-    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["INFORMASJON_OM_SAKSBEHANDLINGSTID"]).as(
-      "1 favoritt",
-    );
+    cy.intercept("GET", "/bff/skribenten-backend/me/favourites", ["DOD_INFO_RETT_MAN"]).as("1 favoritt");
 
     cy.getDataCy("add-favorite-button").click();
     cy.get(".aksel-accordion__item").contains("Favoritter").should("exist").and("have.length", 1);
     //skal finnes 2 elementer i DOM'en
-    cy.get("p:contains('Informasjon om saksbehandlingstid')").should("have.length", 2);
-    cy.get("p:contains('Informasjon om saksbehandlingstid')").filter(":visible").should("have.length", 1);
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").should("have.length", 2);
+    cy.get("p:contains('Informasjon om gjenlevenderettigheter')").filter(":visible").should("have.length", 1);
 
     cy.intercept("DELETE", "/bff/skribenten-backend/me/favourites", (request) => {
-      expect(request.body).to.eq("INFORMASJON_OM_SAKSBEHANDLINGSTID");
+      expect(request.body).to.eq("DOD_INFO_RETT_MAN");
       request.reply({});
     }).as("Fjern favoritt");
     cy.intercept("GET", "/bff/skribenten-backend/me/favourites", []).as("ingen favoritter");
@@ -93,6 +91,30 @@ describe("Brevvelger spec", () => {
     cy.get("@window-open").should(
       "have.been.calledOnceWithExactly",
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
+    );
+    cy.getDataCy("order-letter-success-message");
+  });
+
+  it("Bestill Doksys brev", () => {
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/doksys", (request) => {
+      expect(request.body).contains({ brevkode: "DOD_INFO_RETT_MAN", spraak: "NB", enhetsId: "4405" });
+      request.reply({ fixture: "bestillBrevDoksys.json" });
+    }).as("bestill doksys");
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("gjenlevende");
+    cy.getDataCy("brevmal-button").click();
+
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
+    cy.getDataCy("order-letter").click();
+    cy.get("@window-open").should(
+      "have.been.calledOnceWithExactly",
+      "mfprocstart9:leaseid=c8cfd547-b80f-442b-8e7f-62f96ff52231",
     );
     cy.getDataCy("order-letter-success-message");
   });
@@ -170,7 +192,7 @@ describe("Brevvelger spec", () => {
   });
 
   it("enhetsId som url param gjenspeiles i form og inputs", () => {
-    cy.visit('/saksnummer/123456/brevvelger?templateId=PE_IY_03_163&enhetsId="4815"', {
+    cy.visit('/saksnummer/123456/brevvelger?templateId=AP_INFO_STID_MAN&enhetsId="4815"', {
       onBeforeLoad(window) {
         cy.stub(window, "open").as("window-open");
       },

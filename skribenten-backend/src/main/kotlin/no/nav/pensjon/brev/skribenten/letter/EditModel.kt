@@ -202,7 +202,6 @@ object Edit {
                 override val text: String,
                 override val fontType: FontType = FontType.PLAIN,
                 override val parentId: Int? = null,
-                val tags: Set<ElementTags> = emptySet(),
             ) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
@@ -245,7 +244,7 @@ fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
 fun ParagraphContent.Text.toEdit(parentId: Int?): Edit.ParagraphContent.Text =
     when (this) {
         is ParagraphContent.Text.Literal -> Edit.ParagraphContent.Text.Literal(id = id, text = text, fontType = fontType.toEdit(), tags = tags, parentId = parentId)
-        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id = id, text = text, fontType = fontType.toEdit(), parentId = parentId, tags = tags)
+        is ParagraphContent.Text.Variable -> Edit.ParagraphContent.Text.Variable(id = id, text = text, fontType = fontType.toEdit(), parentId = parentId)
         is ParagraphContent.Text.NewLine -> Edit.ParagraphContent.Text.NewLine(id = id, parentId = parentId)
     }
 
@@ -313,8 +312,7 @@ fun Edit.ParagraphContent.Text.toMarkup(): ParagraphContent.Text =
         is Edit.ParagraphContent.Text.Variable -> ParagraphContentImpl.TextImpl.VariableImpl(
             id = id ?: 0,
             text = text,
-            fontType = fontType.toMarkup(),
-            tags = tags
+            fontType = fontType.toMarkup()
         )
 
         is Edit.ParagraphContent.Text.NewLine -> ParagraphContentImpl.TextImpl.NewLineImpl(id = id ?: 0)

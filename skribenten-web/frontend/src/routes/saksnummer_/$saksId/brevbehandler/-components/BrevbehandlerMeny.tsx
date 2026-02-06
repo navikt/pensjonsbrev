@@ -21,7 +21,7 @@ import { useMemo, useState } from "react";
 
 import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
-import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
+import { endreDistribusjonstype, hentAlleBrevForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -163,7 +163,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
@@ -174,8 +174,8 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
     mutationFn: (distribusjonstype) =>
       endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
     },
   });
@@ -201,7 +201,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         )}
         saksId={props.saksId}
       />
+
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
+
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
@@ -236,7 +238,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       {!erLaast && (
         <VStack align="start" gap="space-16">
           <Button
-            data-color="neutral"
             onClick={() =>
               navigate({
                 to: "/saksnummer/$saksId/brev/$brevId",
@@ -245,12 +246,13 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
               })
             }
             size="small"
-            variant="secondary"
+            variant="secondary-neutral"
           >
             Fortsett redigering
           </Button>
         </VStack>
       )}
+
       {erLaast && (
         <RadioGroup
           data-cy="brevbehandler-distribusjonstype"

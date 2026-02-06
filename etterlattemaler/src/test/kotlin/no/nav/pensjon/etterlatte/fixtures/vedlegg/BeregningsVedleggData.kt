@@ -11,9 +11,9 @@ fun lagBeregningsVedleggData() = BeregningsVedleggData(
     etteroppgjoersAar = 2025,
     utbetalingData = EtteroppgjoerUtbetalingDTO(
         stoenadUtbetalt = Kroner(1500),
-        faktiskStoenad = Kroner(2000),
-        avviksBeloep = Kroner(500)
-    ),
+            faktiskStoenad = Kroner(2000),
+            avviksBeloep = Kroner(500)
+        ),
     grunnlag = EtteroppgjoerGrunnlagDTO(
         fom = YearMonth.now(),
         tom = YearMonth.now(),
@@ -25,6 +25,5 @@ fun lagBeregningsVedleggData() = BeregningsVedleggData(
         inntekt = Kroner(700),
         pensjonsgivendeInntektHeleAaret = Kroner(2000)
     ),
-    erVedtak = false,
-    mottattSkatteoppgjoer = true
+    erVedtak = false
 )

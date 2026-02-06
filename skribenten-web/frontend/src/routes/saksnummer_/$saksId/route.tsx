@@ -1,17 +1,17 @@
 import { css } from "@emotion/react";
 import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, CopyButton, HStack, Tag } from "@navikt/ds-react";
+import { BodyShort, BoxNew, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { z } from "zod";
 
 import {
-  getBrukerStatus,
-  getFavoritter,
-  getKontaktAdresse,
-  getPreferredLanguage,
-  getSakContext,
+  getBrukerStatusQuery,
+  getFavoritterQuery,
+  getKontaktAdresseQuery,
+  getPreferredLanguageQuery,
+  getSakContextQuery,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SakContextDto } from "~/types/apiTypes";
@@ -33,12 +33,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId")({
 
   loaderDeps: ({ search }) => ({ vedtaksId: search.vedtaksId }),
   loader: async ({ context: { queryClient }, params: { saksId }, deps: { vedtaksId } }) => {
-    const getSakContextQueryOptions = getSakContext(saksId, vedtaksId);
+    const getSakContextQueryOptions = getSakContextQuery(saksId, vedtaksId);
 
-    queryClient.prefetchQuery(getKontaktAdresse(saksId));
-    queryClient.prefetchQuery(getFavoritter);
-    queryClient.prefetchQuery(getPreferredLanguage(saksId));
-    queryClient.prefetchQuery(getBrukerStatus(saksId));
+    queryClient.prefetchQuery(getKontaktAdresseQuery(saksId));
+    queryClient.prefetchQuery(getFavoritterQuery);
+    queryClient.prefetchQuery(getPreferredLanguageQuery(saksId));
+    queryClient.prefetchQuery(getBrukerStatusQuery(saksId));
 
     return await queryClient.ensureQueryData(getSakContextQueryOptions);
   },
@@ -69,7 +69,7 @@ function SakLayout() {
 function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const sak = sakContext.sak;
   const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
-  const { data: brukerStatus } = useQuery(getBrukerStatus(sak.saksId.toString()));
+  const { data: brukerStatus } = useQuery(getBrukerStatusQuery(sak.saksId.toString()));
 
   const dateOfBirth = useMemo(() => {
     if (!sak.foedselsdato) return undefined;
@@ -87,7 +87,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   }, [brukerStatus]);
 
   return (
-    <Box
+    <BoxNew
       asChild
       background="default"
       borderColor="neutral-subtle"
@@ -128,26 +128,14 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
           {brukerStatus?.erSkjermet && (
             <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
+              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Egen ansatt
               </Tag>
             </BodyShort>
           )}
           {brukerStatus?.vergemaal && (
             <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
+              <Tag css={{ borderRadius: "var(--ax-radius-4)" }} icon={<FileIcon />} size="small" variant="neutral">
                 Vergemål
               </Tag>
             </BodyShort>
@@ -156,10 +144,9 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
             <BodyShort>
               <Tag
                 css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="danger"
                 icon={<ParagraphIcon />}
                 size="small"
-                variant="strong"
+                variant="error-filled"
               >
                 Diskresjon
               </Tag>
@@ -173,7 +160,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           </BodyShort>
         </HStack>
       </HStack>
-    </Box>
+    </BoxNew>
   );
 }
 

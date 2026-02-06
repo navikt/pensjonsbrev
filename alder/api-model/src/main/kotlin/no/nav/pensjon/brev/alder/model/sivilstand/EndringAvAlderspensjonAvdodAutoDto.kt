@@ -31,7 +31,9 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
-    val borINorge: Boolean,
+    val opplysningerBruktIBeregningenAlderDto: OpplysningerBruktIBeregningenAlderDto?,
+    val opplysningerOmAvdoedBruktIBeregningDto: OpplysningerOmAvdoedBruktIBeregningDto?,
+    val informasjonOmMedlemskap: InformasjonOmMedlemskap? = null,
 
     ): AutobrevData {
 
@@ -41,7 +43,6 @@ data class EndringAvAlderspensjonAvdodAutoDto (
         val regelverkType: AlderspensjonRegelverkType,
         val uttaksgrad: Int,
         val minstenivaIndividuellInnvilget: Boolean,
-        val innvilgetFor67: Boolean?,
     )
 
     data class BeregnetPensjonPerManed(
@@ -56,6 +57,5 @@ data class EndringAvAlderspensjonAvdodAutoDto (
         val ektefelletilleggOpphort: Boolean,
         val gjenlevendesAlder: Int,
         val avdodNavn: String,
-        val avdodHarYtelse: Boolean?,
     )
 }

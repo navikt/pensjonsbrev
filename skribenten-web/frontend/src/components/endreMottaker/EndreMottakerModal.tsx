@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Box, Modal, Tabs } from "@navikt/ds-react";
+import { BoxNew, Modal, Tabs } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
@@ -216,7 +216,7 @@ const ModalTabs = (properties: {
               <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
             )}
           </Tabs.List>
-          <Box marginBlock="space-16 space-0">
+          <BoxNew marginBlock="space-16 0">
             <Tabs.Panel value="samhandler">
               <SøkOgVelgSamhandlerForm
                 control={properties.control}
@@ -238,7 +238,7 @@ const ModalTabs = (properties: {
                 }}
               />
             </Tabs.Panel>
-          </Box>
+          </BoxNew>
         </Tabs>
       )}
     </div>

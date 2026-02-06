@@ -36,6 +36,17 @@ object Pen {
 
     data class Avtaleland(val navn: String, val kode: String)
 
+    data class BestillDoksysBrevResponse(val journalpostId: String?, val failure: FailureType? = null) {
+        enum class FailureType {
+            ADDRESS_NOT_FOUND,
+            UNAUTHORIZED,
+            PERSON_NOT_FOUND,
+            UNEXPECTED_DOKSYS_ERROR,
+            INTERNAL_SERVICE_CALL_FAILIURE,
+            TPS_CALL_FAILIURE,
+        }
+    }
+
     data class BestillExstreamBrevResponse(
         val journalpostId: String,
     ) {

@@ -1,11 +1,11 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { Box, Button, HStack, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
-import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
+import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import type { BrevInfo, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
@@ -25,8 +25,8 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
   const mottakerMutation = useMutation<BrevInfo, AxiosError, Mottaker>({
     mutationFn: (mottaker) => endreMottaker(props.saksId, props.brev.id, { mottaker: mottaker }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
@@ -37,10 +37,8 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
   const fjernMottakerMutation = useMutation<void, AxiosError>({
     mutationFn: () => fjernOverstyrtMottaker({ saksId: props.saksId, brevId: props.brev.id }),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brevInfo) =>
-          brevInfo.id === props.brev.id ? { ...props.brev, mottaker: null } : brevInfo,
-        ),
+      queryClient.setQueryData(hentAlleBrevForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
+        currentBrevInfo.map((brev) => (brev.id === props.brev.id ? { ...props.brev, mottaker: null } : brev)),
       );
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
     },
@@ -66,7 +64,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           props.overrideOppsummering(
             <>
               {props.endreAsIcon && (
-                <Box asChild borderRadius="4">
+                <BoxNew asChild borderRadius="4">
                   <Button
                     icon={<PencilIcon />}
                     onClick={() => setModalÅpen(true)}
@@ -74,7 +72,7 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
                     type="button"
                     variant="tertiary"
                   />
-                </Box>
+                </BoxNew>
               )}
             </>,
           )

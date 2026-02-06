@@ -1,7 +1,7 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, HStack, TextField } from "@navikt/ds-react";
+import { BodyShort, BoxNew, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import React, { useEffect, useState } from "react";
 
@@ -29,7 +29,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
   const navigate = useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
-    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0">
+    <BoxNew asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0">
       <HStack
         align="center"
         css={{ zIndex: 3 }}
@@ -38,7 +38,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
         paddingBlock="space-8"
         paddingInline="space-16"
         position="sticky"
-        top="space-0"
+        top="0"
       >
         {viewerControls && (
           <HStack align="center" gap="space-16">
@@ -66,7 +66,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
           />
         )}
       </HStack>
-    </Box>
+    </BoxNew>
   );
 };
 
@@ -221,12 +221,11 @@ const BasicPDFViewerButton = (properties: {
           height: fit-content;
         `
       }
-      data-color="neutral"
       disabled={properties.disabled}
       icon={properties.icon}
       onClick={properties.onClick}
       type="button"
-      variant="tertiary"
+      variant="tertiary-neutral"
     />
   );
 };

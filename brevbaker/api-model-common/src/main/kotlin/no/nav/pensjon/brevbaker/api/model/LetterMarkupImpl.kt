@@ -107,8 +107,7 @@ data class LetterMarkupImpl(
             data class VariableImpl(
                 override val id: Int,
                 override val text: String,
-                override val fontType: FontType = FontType.PLAIN,
-                override val tags: Set<ElementTags> = emptySet()
+                override val fontType: FontType = FontType.PLAIN
             ) : ParagraphContent.Text.Variable {
                 override val type = ParagraphContent.Type.VARIABLE
             }

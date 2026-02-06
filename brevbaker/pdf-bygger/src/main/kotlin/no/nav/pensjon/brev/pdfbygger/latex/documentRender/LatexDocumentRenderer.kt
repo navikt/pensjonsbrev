@@ -76,7 +76,7 @@ internal object LatexDocumentRenderer {
     }
 
     private fun LatexAppendable.appendXmpData(letter: LetterMarkup, language: Language) {
-        appendCmd("Title", letter.title.xmpDataTitle(), escape = true)
+        appendCmd("Title", letter.title.xmpDataTitle(), escape = false) // allerede escapet i renderTexts
         appendCmd("Language", language.locale().toLanguageTag())
         appendCmd("Publisher", letter.signatur.navAvsenderEnhet)
         appendCmd("Date", letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE))

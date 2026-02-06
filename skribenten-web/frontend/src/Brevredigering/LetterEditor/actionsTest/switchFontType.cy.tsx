@@ -73,7 +73,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
@@ -166,7 +166,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(5);
+            expect(el[0].childNodes[0].childNodes).to.have.length(5);
           });
       });
       it("handles switching plain/italic/plain", () => {
@@ -174,7 +174,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
@@ -253,7 +253,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(5);
+            expect(el[0].childNodes[0].childNodes).to.have.length(5);
           });
       });
       it("handles switching plain/bold/italic", () => {
@@ -261,7 +261,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget for").then((el) => {
           const element = el![0] as HTMLElement;
@@ -393,14 +393,14 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget").dblclick().type("{leftarrow}{leftarrow}");
         cy.getDataCy("fonttype-bold").click();
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
         cy.contains(
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
@@ -428,7 +428,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
       });
       it("handles switching plain/italic/plain", () => {
@@ -436,14 +436,14 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget").dblclick().type("{leftarrow}{leftarrow}");
         cy.getDataCy("fonttype-italic").click();
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
         cy.contains(
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
@@ -471,7 +471,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
       });
       it("handles switching plain/bold/italic", () => {
@@ -479,14 +479,14 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(3);
+            expect(el[0].childNodes[0].childNodes).to.have.length(3);
           });
         cy.contains("Er laget").dblclick().type("{leftarrow}{leftarrow}");
         cy.getDataCy("fonttype-bold").click();
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
         cy.contains(
           "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av",
@@ -540,7 +540,7 @@ describe("Switch font type ", () => {
         cy.get(".PARAGRAPH")
           .eq(0)
           .then((el) => {
-            expect(el[0].childNodes).to.have.length(4);
+            expect(el[0].childNodes[0].childNodes).to.have.length(4);
           });
       });
     });
@@ -552,7 +552,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
@@ -562,7 +562,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
       cy.getDataCy("fonttype-bold").click();
@@ -571,7 +571,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
     });
     it("plain/italic/plain", () => {
@@ -579,7 +579,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
@@ -589,7 +589,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
@@ -599,7 +599,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
     });
     it("plain/bold/italic", () => {
@@ -607,7 +607,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
@@ -618,7 +618,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-style", "normal");
@@ -632,7 +632,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
     });
     it("merker deler av en variabel skal endre fonttypen på hele", () => {
@@ -640,7 +640,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
 
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
@@ -661,7 +661,7 @@ describe("Switch font type ", () => {
       cy.get(".PARAGRAPH")
         .eq(0)
         .then((el) => {
-          expect(el[0].childNodes).to.have.length(3);
+          expect(el[0].childNodes[0].childNodes).to.have.length(3);
         });
       cy.contains("VARIABLE-MED-LITT-LENGDE").should("have.css", "font-weight", "400");
     });

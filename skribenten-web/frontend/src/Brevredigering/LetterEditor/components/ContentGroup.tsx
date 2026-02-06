@@ -66,7 +66,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
-    <>
+    <div>
       {contents.map((content, _contentIndex) => {
         switch (content.type) {
           case LITERAL: {
@@ -118,7 +118,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
           }
         }
       })}
-    </>
+    </div>
   );
 }
 
@@ -590,6 +590,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
       css={{
+        lineHeight: "var(--ax-font-line-height-medium)",
         ...(erFritekst && {
           color: "var(--ax-accent-600)",
           textDecoration: "underline",

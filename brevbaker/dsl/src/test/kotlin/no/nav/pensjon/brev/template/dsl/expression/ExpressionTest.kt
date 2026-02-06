@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.Kroner
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Test
@@ -45,21 +43,6 @@ class ExpressionTest {
         val expected = Expression.BinaryInvoke(op1, Expression.Literal(op2), BinaryOperation.Concat)
 
         assertEquals(expected, op1 + op2)
-    }
-
-    @Test
-    fun `binary invoke tar tags fra begge indre`() {
-        val op1 = Expression.Literal("hei", tags = setOf(ElementTags.FRITEKST))
-        val op2 = Expression.Literal(" du", tags = setOf(ElementTags.REDIGERBAR_DATA))
-        val expected = Expression.BinaryInvoke(op1, op2, BinaryOperation.Concat)
-        assertThat(expected.tags).containsExactlyInAnyOrder(ElementTags.FRITEKST, ElementTags.REDIGERBAR_DATA)
-    }
-
-    @Test
-    fun `unary invoke tar tags fra indre`() {
-        val op1 = Expression.Literal(true, tags = setOf(ElementTags.FRITEKST))
-        val expected = Expression.UnaryInvoke(op1, UnaryOperation.Not)
-        assertThat(expected.tags).isEqualTo(setOf(ElementTags.FRITEKST))
     }
 
     @Test

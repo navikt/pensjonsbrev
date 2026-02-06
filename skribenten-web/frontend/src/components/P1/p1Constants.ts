@@ -8,7 +8,6 @@ export const GRUNNLAG_INNVILGET_OPTIONS = [
   { value: "IHenholdTilNasjonalLovgivning", label: "I henhold til nasjonal lovgivning" },
   { value: "ProRata", label: "Pro rata" },
   { value: "MindreEnnEttAar", label: "Mindre enn ett år" },
-  { value: "IKKE_OPPGITT", label: "Ikke oppgitt" },
 ] as const;
 
 export const REDUKSJONSGRUNNLAG_OPTIONS = [

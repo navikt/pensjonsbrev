@@ -1,4 +1,4 @@
-import { Box, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { BoxNew, Button, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { VerticalDivider } from "~/components/Divider";
@@ -44,7 +44,7 @@ function Kvittering() {
   const kvitterteBrev: KvittertBrev[] = [...sendtBrevList, ...attestList];
 
   return (
-    <Box
+    <BoxNew
       asChild
       background="default"
       height="calc(var(--main-page-content-height) + 48px)"
@@ -52,11 +52,11 @@ function Kvittering() {
       width="fit-content"
     >
       <HGrid columns="minmax(304px, 384px) 1px minmax(640px, 720px)">
-        <Box overflow="auto" paddingBlock="space-20" paddingInline="space-16">
+        <BoxNew overflow="auto" paddingBlock="space-20" paddingInline="space-16">
           <KvitterteBrev kvitterteBrev={kvitterteBrev} sakId={saksId} />
-        </Box>
+        </BoxNew>
         <VerticalDivider />
-        <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="space-0">
+        <HStack justify="center" overflow="auto" paddingBlock="space-20" paddingInline="0">
           <VStack align="start" gap="space-16">
             <Heading size="medium">Hva vil du gjøre nå?</Heading>
             <Button
@@ -94,6 +94,6 @@ function Kvittering() {
           </VStack>
         </HStack>
       </HGrid>
-    </Box>
+    </BoxNew>
   );
 }

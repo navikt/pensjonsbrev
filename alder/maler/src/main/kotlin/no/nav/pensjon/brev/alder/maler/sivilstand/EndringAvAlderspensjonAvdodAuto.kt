@@ -7,18 +7,21 @@ import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
+import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningeromavdodbruktiberegningen.vedleggOpplysningerOmAvdoedBruktIBeregning
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterEOES
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
 import no.nav.pensjon.brev.alder.model.*
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.harEndretPensjon
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.innvilgetFor67
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.minstenivaIndividuellInnvilget
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.regelverkType
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.totalPensjon
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AlderspensjonVedVirkSelectors.uttaksgrad
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.avdodHarYtelse
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.avdodNavn
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.ektefelletilleggOpphort
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.AvdodInformasjonSelectors.gjenlevendesAlder
@@ -29,13 +32,15 @@ import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAut
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.alderspensjonVedVirk
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.avdodInformasjon
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.beregnetPensjonPerManed
-import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.borINorge
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.etterBetaling
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.harBarnUnder18
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.informasjonOmMedlemskap
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdGjeldende
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.institusjonsoppholdVedVirk
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.maanedligPensjonFoerSkattDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.opplysningerBruktIBeregningenAlderDto
+import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.opplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.orienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDtoSelectors.virkFom
@@ -53,7 +58,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjonAvdodAutoDto> {
 
-    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_OMREGNING_TIL_ENSLIG_PENSJONIST_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ENDRING_AV_ALDERSPENSJON_AUTO
 
     override val template = createTemplate(
         letterDataType = EndringAvAlderspensjonAvdodAutoDto::class,
@@ -223,17 +228,12 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                     )
                 }
             }
-            val brukerMaaSokeSelv =
-            (avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
-            and (
-                (borINorge.not() and avdodInformasjon.avdodHarYtelse.notEqualTo(true))
-                or
-                (alderspensjonVedVirk.innvilgetFor67.equalTo(true) and alderspensjonVedVirk.uttaksgrad.equalTo(0)))
-                )
 
-            showIf(brukerMaaSokeSelv.not()
+            showIf(
+                alderspensjonVedVirk.harEndretPensjon.not()
                         and avdodInformasjon.sivilstandAvdoed.notEqualTo(SivilstandAvdoed.SAMBOER3_2)
-                        and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
+                        and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)
+            ) {
                 paragraph {
                     text(
                         bokmal { +"Nå skal vi vurdere om du har rettigheter etter avdøde. Du vil få et nytt vedtak fra oss innen tre måneder." },
@@ -246,7 +246,10 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                 }
             }
 
-            showIf(brukerMaaSokeSelv and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)) {
+            showIf(
+                alderspensjonVedVirk.harEndretPensjon
+                        and alderspensjonVedVirk.regelverkType.notEqualTo(AlderspensjonRegelverkType.AP2025)
+            ) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha rettigheter etter avdøde. Derfor bør du søke om gjenlevenderett i alderspensjonen." },
@@ -313,7 +316,6 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget.not()
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
-                            or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {
@@ -346,7 +348,6 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
-                                or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {
@@ -783,7 +784,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
             }
 
             includePhrase(RettTilAAKlage)
-            includePhrase(RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
+            includePhrase(RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
             includePhrase(HarDuSpoersmaalAlder)
         }
         includeAttachment(
@@ -798,6 +799,10 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
             vedleggMaanedligPensjonFoerSkattAp2025,
             maanedligPensjonFoerSkattAP2025Dto,
         )
+        includeAttachmentIfNotNull(vedleggOpplysningerBruktIBeregningenAlder,opplysningerBruktIBeregningenAlderDto)
+        includeAttachmentIfNotNull(vedleggOpplysningerOmAvdoedBruktIBeregning, opplysningerOmAvdoedBruktIBeregningDto)
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.EOES))
+        includeAttachment(vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES, informasjonOmMedlemskap.equalTo(InformasjonOmMedlemskap.UTENFOR_EOES))
     }
 
 }

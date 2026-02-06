@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.aldersovergang
 
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.InfoInntektAP
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.borMedSivilstand
@@ -65,6 +66,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoSoekeAP(ytelseForAldersovergang))
                 includePhrase(InfoSoekeAnnenGradAP(ytelseForAldersovergang))
                 includePhrase(InfoSkattAP(ytelseForAldersovergang))
+                includePhrase(InfoInntektAP)
                 includePhrase(InfoArbeidsinntekt)
                 includePhrase(InfoBoddArbeidetUtlandet)
                 includePhrase(InfoPensjonFraAndreAP)

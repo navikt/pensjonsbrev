@@ -8,9 +8,8 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
-import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
+import org.jetbrains.exposed.sql.transactions.experimental.newSuspendedTransaction
+import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 import java.time.Instant
 
@@ -34,7 +33,7 @@ class BrevredigeringFacade(
         ).runHandler(request)
 
     suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-        suspendTransaction {
+        newSuspendedTransaction {
             OpprettBrevHandler(
                 opprettBrevPolicy = opprettBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
@@ -90,7 +89,7 @@ class BrevredigeringFacade(
         if (requiresReservasjon(request)) {
             val principal = PrincipalInContext.require()
 
-            val reservasjon = transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
+            val reservasjon = transaction(Connection.TRANSACTION_REPEATABLE_READ) {
                 BrevredigeringEntity.findById(request.brevId)
                     ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
             }
@@ -101,7 +100,7 @@ class BrevredigeringFacade(
             }
         }
 
-        return suspendTransaction {
+        return newSuspendedTransaction {
             handle(request)
         }
     }

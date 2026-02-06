@@ -1,4 +1,4 @@
-import "@navikt/ds-css";
+import "@navikt/ds-css/darkside";
 import "./appStyles.css";
 
 import { Theme } from "@navikt/ds-react";

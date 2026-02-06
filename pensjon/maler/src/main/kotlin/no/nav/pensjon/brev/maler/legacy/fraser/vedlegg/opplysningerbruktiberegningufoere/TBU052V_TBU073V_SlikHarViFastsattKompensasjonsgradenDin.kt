@@ -87,68 +87,46 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
             (pe.ut_tbu056v() and (pe.pebrevkode()
                 .notEqualTo("PE_UT_04_114") and pe.pebrevkode().notEqualTo("PE_UT_04_102") and pe.pebrevkode().notEqualTo(
                 "PE_UT_05_100"
-            ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")))) {
+            ) and pe.pebrevkode().notEqualTo("PE_UT_07_100")))){
             //[TBU052V-TBU073V]
 
             paragraph {
-                text(
-                    bokmal {
-                        +"Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                            .format() + "."
-                    },
-                    nynorsk {
-                        +"Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                            .format() + "."
-                    },
-                    english {
-                        +"Your income before you became disabled has been determined to be " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
-                            .format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
-                            .format() + "."
-                    },
+                text (
+                    bokmal { + "Inntekten din før du ble ufør er fastsatt til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                        .format() + ". For å kunne fastsette kompensasjonsgraden din, må denne inntekten oppjusteres til dagens verdi. Oppjustert til dagens verdi tilsvarer dette en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format() + "." },
+                    nynorsk { + "Inntekta di før du blei ufør er fastsett til " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                        .format() + ". For å kunne fastsetje kompensasjonsgraden din, må inntekta oppjusterast til dagens verdi. Oppjustert til dagens verdi utgjer dette ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format() + "." },
+                    english { + "Your income before you became disabled has been determined to be " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
+                        .format() + ". To establish your degree of compensation this is adjusted to today’s value and is equivalent to an income of " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
+                        .format() + "." },
                 )
             }
 
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().equalTo(100)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har rett til 100 prosent uføretrygd, som utgjør " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                        nynorsk {
-                            +"Du har rett til 100 prosent uføretrygd, som utgjer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                        english {
-                            +"For you, a 100-percent disability benefit will total " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per year."
-                        },
-                    )
-                }
+            paragraph {
+                text (
+                    bokmal { + "Du har rett til 100 prosent uføretrygd, som utgjør " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per år." },
+                    nynorsk { + "Du har rett til 100 prosent uføretrygd, som utgjer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per år." },
+                    english { + "For you, a 100-percent disability benefit will total " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per year." },
+                )
             }
 
-            showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().lessThan(100)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                        nynorsk {
-                            +"Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per år."
-                        },
-                        english {
-                            +"You are entitled to " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-                                .format() + " percent disability benefit. This equals " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
-                                .format() + " per year, as a 100-percent disability benefit."
-                        },
-                    )
-                }
+            paragraph {
+                text (
+                    bokmal { + "Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                        .format() + " prosent uføretrygd. Regnet om til 100 prosent uføretrygd, utgjør dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per år." },
+                    nynorsk { + "Du har rett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                        .format() + " prosent uføretrygd. Rekna om til 100 prosent uføretrygd, utgjer dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per år." },
+                    english { + "You are entitled to " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+                        .format() + " percent disability benefit. This equals " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                        .format() + " per year, as a 100-percent disability benefit." },
+                )
             }
 
             paragraph {

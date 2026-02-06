@@ -206,7 +206,7 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 )
             }
 
-            title1 {
+            paragraph {
                 text (
                     bokmal { + "Slik fastsetter vi uføregraden din" },
                     nynorsk { + "Slik fastset vi uføregraden din" },

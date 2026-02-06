@@ -111,7 +111,6 @@ private val nay =
         pin = "1234",
         saksnummer = "1234",
         vedtaksdato = "1.Januar 2020",
-        datoForVedtak = LocalDate.of(2020, Month.JANUARY, 1),
         land = "Norge"
     )
 

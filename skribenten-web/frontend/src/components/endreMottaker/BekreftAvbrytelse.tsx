@@ -10,7 +10,7 @@ const BekreftAvbrytelse = (properties: { onBekreftAvbryt: () => void; onIkkeAvbr
         <Button onClick={properties.onIkkeAvbryt} type="button" variant="secondary">
           Nei, ikke avbryt
         </Button>
-        <Button data-color="danger" onClick={properties.onBekreftAvbryt} type="button" variant="primary">
+        <Button onClick={properties.onBekreftAvbryt} type="button" variant="danger">
           Ja, avbryt
         </Button>
       </HStack>

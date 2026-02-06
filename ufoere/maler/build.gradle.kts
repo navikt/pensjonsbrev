@@ -1,6 +1,6 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-val ufoereApiModelVersion = 67
+val ufoereApiModelVersion = 64
 
 val apiModelJavaTarget: String by System.getProperties()
 
@@ -18,6 +18,7 @@ repositories {
 }
 
 dependencies {
+    compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
     api("no.nav.pensjon.ufoere.brev:api-model:${ufoereApiModelVersion}")
@@ -47,9 +48,10 @@ kotlin {
 
 tasks {
     register("verifyPackages") {
-        inputs.files(fileTree("src/main/kotlin").matching { include("**/*.kt") })
+        notCompatibleWithConfigurationCache("Uses script references")
+        val files = fileTree("src/main/kotlin").matching { include("**/*.kt") }
         doLast {
-            inputs.files.forEach { file ->
+            files.forEach { file ->
                 val text = file.readText()
                 val pkg = Regex("""package\s+([a-zA-Z0-9\._]+)""")
                     .find(text)?.groupValues?.get(1)
