@@ -4,6 +4,8 @@
  * This module provides utilities for tracking user behavior with Umami analytics.
  * It follows NAV's taxonomy and guidelines for event naming and data collection.
  *
+ * Uses @navikt/nav-dekoratoren-moduler for proper integration with NAV's analytics infrastructure.
+ *
  * @see https://aksel.nav.no/god-praksis/artikler/umami-maling
  * @see https://umami.is/docs/tracking
  *
@@ -13,14 +15,13 @@
  * - Search field content that may contain PII
  */
 
-// Umami tracking function type
-interface UmamiTracker {
-  track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
-}
+import { getAnalyticsInstance } from "@navikt/nav-dekoratoren-moduler";
 
-// Extend globalThis to include umami
+// Get the analytics instance for skribenten-web
+const analytics = getAnalyticsInstance("skribenten-web");
+
+// Extend globalThis for local demo storage
 declare global {
-  var umami: UmamiTracker | undefined;
   var localAnalyticsEvents: Array<{
     timestamp: number;
     type: "event" | "pageview";
@@ -57,18 +58,6 @@ const logToLocalDemo = (type: "event" | "pageview", name: string, data?: unknown
 /**
  * NAV Taxonomy for event naming
  * Following the standard: {action} {object} {context?}
- *
- * Common actions:
- * - klikk (click)
- * - vis (view/show)
- * - åpne (open)
- * - lukke (close)
- * - endre (change)
- * - laste (load)
- * - sende (submit)
- * - velge (select)
- * - fjerne (remove)
- * - legge til (add)
  */
 
 export type UmamiEventName =
@@ -126,14 +115,10 @@ export interface UmamiEventData {
 }
 
 /**
- * Check if Umami is available and tracking is enabled
+ * Check if analytics is available (browser environment)
  */
 export const isUmamiAvailable = (): boolean => {
-  return (
-    typeof globalThis.window !== "undefined" &&
-    globalThis.umami !== undefined &&
-    typeof globalThis.umami.track === "function"
-  );
+  return typeof globalThis.window !== "undefined";
 };
 
 /**
@@ -166,7 +151,8 @@ export const trackEvent = (eventName: UmamiEventName | string, eventData?: Umami
         >)
       : undefined;
 
-    globalThis.umami?.track(eventName, cleanedData);
+    // Use NAV's official analytics instance
+    analytics(eventName, cleanedData);
   } catch {
     // Silently fail - analytics should not break the app
   }
@@ -189,8 +175,8 @@ export const trackPageView = (url?: string): void => {
   }
 
   try {
-    // Umami tracks page views automatically, but we can manually trigger if needed
-    globalThis.umami?.track(url ?? globalThis.location.pathname);
+    // Use NAV's analytics instance for page views
+    analytics("besøk", { destinasjon: url ?? globalThis.location.pathname });
   } catch {
     // Silently fail - analytics should not break the app
   }
