@@ -10,7 +10,7 @@ fun Route.landRoute() {
         call.respond(Landkoder.landkoderMedNavn)
     }
     get("/landForP1") {
-        call.respond((eoesLand + nordiskTrygdeavtaleland + trygdeavtaleMedStorbritanniaLand).distinct())
+        call.respond((eoesLand + nordiskTrygdeavtaleland + trygdeavtaleMedStorbritanniaLand + sveits).distinct())
     }
 }
 
@@ -72,4 +72,8 @@ private val trygdeavtaleMedStorbritanniaLand = Landkoder.landkoderMedNavn.filter
         "JE", // Jersey
         "GB", // Storbritannia
     )
+}
+
+private val sveits = Landkoder.landkoderMedNavn.filter {
+    it.kode.landkode == "CH" // Sveits
 }
