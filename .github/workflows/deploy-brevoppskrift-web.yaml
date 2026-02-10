@@ -17,5 +17,5 @@ jobs:
     uses: ./.github/workflows/.build-frontend.yaml
     secrets: inherit
     with:
-      working2Dir: brevoppskrift-web
+      workingDir: brevoppskrift-web
       deployToProd: false

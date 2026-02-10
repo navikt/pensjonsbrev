@@ -17,4 +17,4 @@ env:
 outboundApps:
   - application: pensjon-brevbaker
     namespace: pensjonsbrev
-    cluster: dev-gcp
+    clusster: dev-gcp
