@@ -1,0 +1,13 @@
+name: Validate nais config
+on:
+  pull_request:
+    paths:
+      - '**/.nais/**'
+
+jobs:
+  wrapper-validation:
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v6
+      - run: |
+          sh validate-nais.sh
