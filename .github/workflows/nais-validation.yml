@@ -7,9 +7,20 @@ on:
       - "validate-nais.sh"
 
 jobs:
-  wrapper-validation:
+  validate:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - run: |
           sh validate-nais.sh
+
+  "klarTilMerge":
+    name: "Klar til merge"
+    needs: [validate]
+    if: ${{ github.event_name == 'pull_request' }}
+    runs-on: "ubuntu-latest"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: ./.github/pr
