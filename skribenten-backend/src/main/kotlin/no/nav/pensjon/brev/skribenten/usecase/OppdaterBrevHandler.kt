@@ -16,7 +16,7 @@ class OppdaterBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
-) : BrevredigeringHandler<OppdaterBrevHandler.Request> {
+) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
         override val brevId: Long,

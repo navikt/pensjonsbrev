@@ -20,7 +20,7 @@ class HentBrevAttesteringHandler(
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
-) : BrevredigeringHandler<HentBrevAttesteringHandler.Request> {
+) : BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering> {
 
     data class Request(
         override val brevId: Long,

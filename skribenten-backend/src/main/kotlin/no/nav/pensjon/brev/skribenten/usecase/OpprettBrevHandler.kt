@@ -20,8 +20,8 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
-interface OpprettBrevHandler {
-    suspend fun handle(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
+interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dto.Brevredigering, BrevredigeringError> {
+    override suspend fun handle(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError>
 }
 
 class OpprettBrevHandlerImpl(

@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class EndreDistribusjonstypeHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
-) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request> {
+) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> {
 
     data class Request(override val brevId: Long, val type: Distribusjonstype) : BrevredigeringRequest
 

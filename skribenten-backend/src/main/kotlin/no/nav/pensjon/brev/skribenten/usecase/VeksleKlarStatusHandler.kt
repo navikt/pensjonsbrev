@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class VeksleKlarStatusHandler(
     private val klarTilSendingPolicy: KlarTilSendingPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
-) : BrevredigeringHandler<VeksleKlarStatusHandler.Request> {
+) : BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering> {
 
     data class Request(override val brevId: Long, val klar: Boolean) : BrevredigeringRequest
 

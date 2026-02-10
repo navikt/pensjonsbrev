@@ -58,6 +58,9 @@ object BrevredigeringFacadeFactory {
             endreMottaker = EndreMottakerHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevdataService = brevdataService
+            ),
+            reserverBrev = ReserverBrevHandler(
+                brevreservasjonPolicy = brevreservasjonPolicy
             )
         )
     }

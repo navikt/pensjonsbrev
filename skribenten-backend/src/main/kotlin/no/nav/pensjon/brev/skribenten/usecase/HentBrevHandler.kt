@@ -14,7 +14,7 @@ class HentBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
-) : BrevredigeringHandler<HentBrevHandler.Request> {
+) : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
         override val brevId: Long,

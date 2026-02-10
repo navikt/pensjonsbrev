@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.domain.*
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
@@ -10,17 +11,16 @@ import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
-import java.time.Instant
 
 class BrevredigeringFacade(
-    private val brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
     private val opprettBrev: OpprettBrevHandler,
-    private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request>,
-    private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request>,
-    private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request>,
-    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request>,
-    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request>,
-    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request>,
+    private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>,
+    private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering>,
+    private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>,
+    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering>,
+    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering>,
+    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering>,
+    private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
 ) {
 
     suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -55,23 +55,21 @@ class BrevredigeringFacade(
     suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         endreMottaker.runHandler(request)
 
-    private suspend fun <Request : BrevredigeringRequest> BrevredigeringHandler<Request>.runHandler(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
-        if (requiresReservasjon(request)) {
-            val principal = PrincipalInContext.require()
+    suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
+        suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
+            reserverBrev.handle(request)?.onError { rollback() }
+        }
 
-            val reservasjon = transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
-                BrevredigeringEntity.findById(request.brevId)
-                    ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
-            }
-            if (reservasjon == null) {
-                return null
-            } else if (reservasjon is Outcome.Failure) {
-                return failure(reservasjon.error)
-            }
+    private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
+        if (requiresReservasjon(request)) {
+            // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
+            reserverBrev(ReserverBrevHandler.Request(request.brevId))
+                ?.onError { return failure(it) }
+                ?: return null
         }
 
         return suspendTransaction {
-            handle(request)
+            handle(request)?.onError { rollback() }
         }
     }
 }
