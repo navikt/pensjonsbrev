@@ -57,6 +57,7 @@
     "cypress": "15.9.0",
     "happy-dom": "20.3.9",
     "jsdom": "27.4.0",
+    "lint-staged": "16.2.7",
     "postcss-styled-syntax": "0.7.1",
     "stylelint": "17.0.0",
     "stylelint-config-standard": "40.0.0",
