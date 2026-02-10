@@ -18,15 +18,13 @@ function validateApp() {
       result=$(nais -v validate --vars-file "$env" --var image=placeholder "$appYaml" 2>&1)
       status=$?
 
-      if [ $status -gt 0 ] || echo $result | grep -q "Missing template variable for" ; then
-        echo -e -n "\e[1;31m ❌\e[00m"
+      if [ $status -gt 0 ] || echo $result | grep -q "Missing template variable" ; then
         printResult=1
         success=1
       else
-        echo -e -n "\e[0;32m ✓ \e[00m"
         printResult=0
       fi
-      echo -e "\t $(basename "$env")"
+      echo "$(basename "$env") $status (0 er OK)"
       if [ $printResult -gt 0 ] ; then
         echo "$result" | sed 's/^/        /'
       fi
