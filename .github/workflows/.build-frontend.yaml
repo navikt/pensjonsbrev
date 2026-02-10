@@ -32,6 +32,8 @@ jobs:
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build frontend
         working-directory: ${{ inputs.workingDir }}/frontend
