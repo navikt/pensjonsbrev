@@ -24,7 +24,7 @@ function validateApp() {
       else
         printResult=0
       fi
-      echo "\t $(basename "$env") $status (0 er OK)"
+      echo "$(basename "$env") $status (0 er OK)"
       if [ $printResult -gt 0 ] ; then
         echo "$result" | sed 's/^/        /'
       fi

@@ -12,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       - run: |
-          sh validate-nais.sh
+          bash validate-nais.sh
 
   "klarTilMerge":
     name: "Klar til merge"
