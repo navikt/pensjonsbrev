@@ -49,15 +49,12 @@ export const updateContentText: Action<
         updateLiteralText(itemContent, text);
         textWasUpdated = true;
       } else {
-        // eslint-disable-next-line no-console
         console.warn("Cannot update text of:", itemContent.type);
       }
     } else {
-      // eslint-disable-next-line no-console
       console.warn("Cannot update text of ItemList, itemIndex and itemContentIndex is missing.");
     }
   } else {
-    // eslint-disable-next-line no-console
     console.warn("Cannot update text of non-literal content");
   }
   if (textWasUpdated) {

@@ -129,5 +129,5 @@ export const P1InnehaverTab = ({ disabled }: P1InnehaverTabProps) => {
       </Table>
     </>
   );
-  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : tabContent;
 };

@@ -113,7 +113,9 @@ export const removeTableColumn: Action<LetterEditorState, []> = withPatches((dra
   if (!isTable(table)) return;
 
   table.header.colSpec.splice(col, 1);
-  table.rows.forEach((row) => row.cells.splice(col, 1));
+  for (const row of table.rows) {
+    row.cells.splice(col, 1);
+  }
   updateDefaultHeaderLabels(table);
   draft.saveStatus = "DIRTY";
 });
@@ -142,7 +144,9 @@ export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches(
   // (e.g. header.deletedColSpecs, row.deletedCells),
   // replace these direct splices with addElements(...)
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
-  table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
+  for (const row of table.rows) {
+    row.cells.splice(at, 0, newRow(1).cells[0]);
+  }
   updateDefaultHeaderLabels(table);
   draft.saveStatus = "DIRTY";
 });
@@ -158,7 +162,9 @@ export const insertTableColumnRight: Action<LetterEditorState, []> = withPatches
   // (e.g. header.deletedColSpecs, row.deletedCells),
   // replace these direct splices with addElements(...)
   table.header.colSpec.splice(at, 0, ...newColSpec(1));
-  table.rows.forEach((row) => row.cells.splice(at, 0, newRow(1).cells[0]));
+  for (const row of table.rows) {
+    row.cells.splice(at, 0, newRow(1).cells[0]);
+  }
   updateDefaultHeaderLabels(table);
   draft.saveStatus = "DIRTY";
 });

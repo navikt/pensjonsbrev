@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import type { Draft } from "immer";
 
 import {
@@ -20,7 +19,7 @@ import {
   removeElements,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import { mergeRecipe, MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
+import { MergeTarget, mergeRecipe } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
 import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";

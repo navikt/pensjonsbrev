@@ -1,7 +1,7 @@
 import { Heading, VStack } from "@navikt/ds-react";
 
 import LetterTemplateTags from "~/components/LetterTemplateTags";
-import { type LetterMetadata } from "~/types/apiTypes";
+import type { LetterMetadata } from "~/types/apiTypes";
 
 export default function LetterTemplateHeading({ letterTemplate }: { letterTemplate: LetterMetadata }) {
   return (
