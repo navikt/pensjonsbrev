@@ -103,7 +103,7 @@ data class P1RedigerbarDto(
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
         val epost: Epost?,
-        val dato: LocalDate,
+        val dato: LocalDate? = null, // skal slettes
     )
 
     @JvmInline
