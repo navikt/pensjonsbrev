@@ -34,12 +34,12 @@ import type {
 } from "~/Brevredigering/LetterEditor/model/state";
 import type {
   AnyBlock,
+  Table as BrevbakerTable,
   Cell,
   ColumnSpec,
   Content,
   LiteralValue,
   Row,
-  Table as BrevbakerTable,
   TextContent,
 } from "~/types/brevbakerTypes";
 import { FontType, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
@@ -60,14 +60,14 @@ export const paste: Action<LetterEditorState, [literalIndex: LiteralIndex, offse
     } else if (clipboard.types.includes("text/plain")) {
       insertTextInLetter(draft, clipboard.getData("text/plain"), FontType.PLAIN, false);
     } else {
-      log("unsupported clipboard datatype(s) - " + JSON.stringify(clipboard.types));
+      log(`unsupported clipboard datatype(s) - ${JSON.stringify(clipboard.types)}`);
     }
   });
 
 export function logPastedClipboard(clipboardData: DataTransfer) {
   log("available paste types - ", clipboardData.types);
-  log("pasted html content - " + clipboardData.getData("text/html"));
-  log("pasted plain content - " + clipboardData.getData("text/plain"));
+  log(`pasted html content - ${clipboardData.getData("text/html")}`);
+  log(`pasted plain content - ${clipboardData.getData("text/plain")}`);
 }
 
 /**
@@ -77,13 +77,13 @@ export function logPastedClipboard(clipboardData: DataTransfer) {
  * - will add a new literal instead of modifying current if offset is 0
  *
  * @param draft state to update
- * @param str text to insert
+ * @param insertString text to insert
  * @param fontType fontType of text to insert
  * @param multipartPaste str is part of larger paste
  */
 function insertTextInLetter(
   draft: Draft<LetterEditorState>,
-  str: string,
+  insertString: string,
   fontType: FontType,
   multipartPaste: boolean = true,
 ) {
@@ -100,27 +100,32 @@ function insertTextInLetter(
       const existingText = text(content);
       const safeOffset = Math.min(Math.max(0, offset), existingText.length);
 
-      const newText = existingText.slice(0, safeOffset) + str + existingText.slice(safeOffset);
+      const newText = existingText.slice(0, safeOffset) + insertString + existingText.slice(safeOffset);
       updateLiteralText(content, newText);
-      draft.focus.cursorPosition = safeOffset + str.length;
+      draft.focus.cursorPosition = safeOffset + insertString.length;
     } else if (offset > 0 && offset < text(content).length) {
       // We can't modify existing literal due to other fontType, so we need to split it and insert pasted text in between.
       const literalPart2 = splitLiteralAtOffset(content, offset);
       const contentIndex = getContentIndex(draft.focus) + 1;
 
       addElements(
-        [newLiteral({ editedText: str, fontType }), literalPart2],
+        [newLiteral({ editedText: insertString, fontType }), literalPart2],
         contentIndex,
         parent.content,
         parent.deletedContent,
       );
       setContentIndex(draft.focus, contentIndex);
-      draft.focus.cursorPosition = str.length;
+      draft.focus.cursorPosition = insertString.length;
     } else {
       const insertAtIndex = offset <= 0 ? getContentIndex(draft.focus) : getContentIndex(draft.focus) + 1;
-      addElements([newLiteral({ editedText: str, fontType })], insertAtIndex, parent.content, parent.deletedContent);
+      addElements(
+        [newLiteral({ editedText: insertString, fontType })],
+        insertAtIndex,
+        parent.content,
+        parent.deletedContent,
+      );
       setContentIndex(draft.focus, insertAtIndex);
-      draft.focus.cursorPosition = str.length;
+      draft.focus.cursorPosition = insertString.length;
     }
     draft.saveStatus = "DIRTY";
   } else if (content !== undefined) {
@@ -139,15 +144,15 @@ type InsertTextContext = {
 };
 
 // Ensures there's a Literal at `index` inside a TextContent[]; creates one if needed.
-function ensureLiteralAtIndex(arr: Draft<TextContent[]>, index: number): Draft<LiteralValue> {
-  while (arr.length <= index) {
-    arr.push(newLiteral({ editedText: "" }));
+function ensureLiteralAtIndex(textContents: Draft<TextContent[]>, index: number): Draft<LiteralValue> {
+  while (textContents.length <= index) {
+    textContents.push(newLiteral({ editedText: "" }));
   }
-  const elementAtIndex = arr.at(index);
+  const elementAtIndex = textContents.at(index);
   if (isLiteral(elementAtIndex)) return elementAtIndex;
-  const lit = newLiteral({ editedText: "" });
-  arr.splice(index, 0, lit);
-  return lit;
+  const literal = newLiteral({ editedText: "" });
+  textContents.splice(index, 0, literal);
+  return literal;
 }
 
 function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTextContext | undefined {
@@ -171,8 +176,8 @@ function getInsertTextContentContext(draft: Draft<LetterEditorState>): InsertTex
         deletedContent: [],
       },
       getContentIndex: () => focus.cellContentIndex ?? 0,
-      setContentIndex: (f, value) => {
-        (f as Draft<TableCellIndex>).cellContentIndex = value;
+      setContentIndex: (focus, value) => {
+        (focus as Draft<TableCellIndex>).cellContentIndex = value;
       },
     };
   }
@@ -228,10 +233,10 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
   if (parsedAndCombinedHtml.length === 0) {
     //trenger ikke å lime inn tomt innhold
     return;
-  } else if (parsedAndCombinedHtml.every((e) => e.type === "TEXT")) {
-    parsedAndCombinedHtml.forEach((e) => {
-      insertTextInLetter(draft, e.text, e.font, false);
-    });
+  } else if (parsedAndCombinedHtml.every((element) => element.type === "TEXT")) {
+    for (const element of parsedAndCombinedHtml) {
+      insertTextInLetter(draft, element.text, element.font, false);
+    }
   } else {
     insertTraversedElements(draft, parsedAndCombinedHtml);
   }
@@ -240,8 +245,8 @@ function insertHtmlClipboardInLetter(draft: Draft<LetterEditorState>, clipboard:
 
 // Ensure that every table row has exactly the same number of cells (colCount)
 function normalizeCells(cells: ReadonlyArray<TableCell>, colCount: number): TableCell[] {
-  return Array.from({ length: Math.max(0, colCount) }, (_, i) => ({
-    content: cells[i]?.content ?? [],
+  return Array.from({ length: Math.max(0, colCount) }, (_, index) => ({
+    content: cells[index]?.content ?? [],
   }));
 }
 
@@ -251,7 +256,7 @@ function createCell(cell: TableCell): Cell {
     parentId: null,
     text:
       cell.content.length > 0
-        ? cell.content.map((txt) => newLiteral({ editedText: txt.text, fontType: txt.font }))
+        ? cell.content.map((content) => newLiteral({ editedText: content.text, fontType: content.font }))
         : [newLiteral({ editedText: "" })],
   };
 }
@@ -276,23 +281,23 @@ function createTable(colSpec: ColumnSpec[], rows: Row[]): BrevbakerTable {
 }
 
 // Insert a parsed table element at current focus.
-function insertTable(draft: Draft<LetterEditorState>, el: Table) {
+function insertTable(draft: Draft<LetterEditorState>, tableElement: Table) {
   if (isTableCellIndex(draft.focus)) {
     return;
   }
-  if ((el.headerCells?.length ?? 0) === 0 && el.rows.length === 0) {
+  if ((tableElement.headerCells?.length ?? 0) === 0 && tableElement.rows.length === 0) {
     return;
   }
 
-  const headerCells = el.headerCells ?? [];
+  const headerCells = tableElement.headerCells ?? [];
   // Determine the column count if there’s no header.
-  const bodyColMax = Math.max(1, ...el.rows.map((row) => row.cells.length));
+  const bodyColMax = Math.max(1, ...tableElement.rows.map((row) => row.cells.length));
   //if there’s a header, use its length; otherwise, use the widest body row.
   const colCount = headerCells.length > 0 ? headerCells.length : bodyColMax;
   // If there are no header cells, we promote the first row to header.
   // This is to ensure that the table has a header row if it was pasted without one (pasted from Word for example)
   const hasHeader = headerCells.length > 0;
-  const shouldPromoteFirstRowToHeader = !hasHeader && el.rows.length > 0;
+  const shouldPromoteFirstRowToHeader = !hasHeader && tableElement.rows.length > 0;
 
   const getHeaderSpec = (cells: TableCell[]) =>
     cells.map((cell) => {
@@ -305,10 +310,10 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
 
   const headerSpecSource = hasHeader
     ? getHeaderSpec(headerCells)
-    : getHeaderSpec(normalizeCells(el.rows[0]?.cells ?? [], colCount));
+    : getHeaderSpec(normalizeCells(tableElement.rows[0]?.cells ?? [], colCount));
 
   const colSpec = newColSpec(colCount, headerSpecSource);
-  const bodyRows = shouldPromoteFirstRowToHeader ? el.rows.slice(1) : el.rows;
+  const bodyRows = shouldPromoteFirstRowToHeader ? tableElement.rows.slice(1) : tableElement.rows;
 
   const rows: Row[] = bodyRows.map((row) => createRow(row, colCount));
 
@@ -338,38 +343,38 @@ function insertTable(draft: Draft<LetterEditorState>, el: Table) {
 }
 
 function insertTraversedElements(draft: Draft<LetterEditorState>, elements: TraversedElement[]) {
-  elements.forEach((el) => {
-    switch (el.type) {
+  for (const element of elements) {
+    switch (element.type) {
       case "TEXT": {
-        insertTextInLetter(draft, el.text, el.font);
+        insertTextInLetter(draft, element.text, element.font);
         break;
       }
       case "H1": {
-        insertBlock(draft, "TITLE1", el.content);
+        insertBlock(draft, "TITLE1", element.content);
         break;
       }
       case "H2": {
-        insertBlock(draft, "TITLE2", el.content);
+        insertBlock(draft, "TITLE2", element.content);
         break;
       }
       case "H3": {
-        insertBlock(draft, "TITLE3", el.content);
+        insertBlock(draft, "TITLE3", element.content);
         break;
       }
       case "P": {
-        insertBlock(draft, "PARAGRAPH", el.content);
+        insertBlock(draft, "PARAGRAPH", element.content);
         break;
       }
       case "ITEM": {
-        insertItem(draft, el);
+        insertItem(draft, element);
         break;
       }
       case "TABLE": {
-        insertTable(draft, el);
+        insertTable(draft, element);
         break;
       }
     }
-  });
+  }
 }
 
 function insertBlock(
@@ -387,14 +392,18 @@ function insertBlock(
       insertTextElement(draft, content);
     } else {
       // If we're at the start of a non-empty block then we want to insert a new block to preserve IDs of existing block and it's content.
-      const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      const literals = content.map((textContent) =>
+        newLiteral({ editedText: textContent.text, fontType: textContent.font }),
+      );
       const block = type === "PARAGRAPH" ? newParagraph({ content: literals }) : newTitle({ type, content: literals });
       addElements([block], draft.focus.blockIndex, draft.redigertBrev.blocks, draft.redigertBrev.deletedBlocks);
       draft.focus.blockIndex += 1;
     }
   } else if (isItemContentIndex(draft.focus) && isAtStartOfItem(draft.focus) && isItemList(blockContent)) {
     // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
-    const literals = content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+    const literals = content.map((textContent) =>
+      newLiteral({ editedText: textContent.text, fontType: textContent.font }),
+    );
     addElements([newItem({ content: literals })], draft.focus.itemIndex, blockContent.items, blockContent.deletedItems);
     draft.focus.itemIndex++;
   } else {
@@ -403,20 +412,20 @@ function insertBlock(
 }
 
 function insertTextElement(draft: Draft<LetterEditorState>, content: Text[]) {
-  content.forEach((t) => {
-    insertTextInLetter(draft, t.text, t.font);
-  });
+  for (const textContent of content) {
+    insertTextInLetter(draft, textContent.text, textContent.font);
+  }
   splitRecipe(draft, draft.focus, draft.focus.cursorPosition ?? 0);
 }
 
-function insertItem(draft: Draft<LetterEditorState>, el: ItemElement) {
+function insertItem(draft: Draft<LetterEditorState>, element: ItemElement) {
   const currentBlock = draft.redigertBrev.blocks[draft.focus.blockIndex];
   const blockContent = currentBlock.content[draft.focus.contentIndex];
 
   if (isItemContentIndex(draft.focus) && isItemList(blockContent)) {
     if (isAtStartOfItem(draft.focus)) {
       // If we're at the start of an Item then we want to preserve any potential existing IDs, so we instead insert a new item.
-      const literals = el.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
+      const literals = element.content.map((t) => newLiteral({ editedText: t.text, fontType: t.font }));
       addElements(
         [newItem({ content: literals })],
         draft.focus.itemIndex,
@@ -425,12 +434,12 @@ function insertItem(draft: Draft<LetterEditorState>, el: ItemElement) {
       );
       draft.focus.itemIndex++;
     } else {
-      insertTextElement(draft, el.content);
+      insertTextElement(draft, element.content);
     }
   } else if (!isItemContentIndex(draft.focus) && !isItemList(blockContent)) {
     // We're also validating that current blockContent isn't an ItemList, because then the focus should also have been an ItemContentIndex.
     toggleItemListAndSplitAtCursor(draft, currentBlock);
-    insertTextElement(draft, el.content);
+    insertTextElement(draft, element.content);
   }
 }
 
@@ -625,7 +634,9 @@ function traverseTable(element: Element, font: FontType): Table {
       }
     });
     // Drop whitespace-only TEXT nodes so the cell content contains only meaningful text.
-    return cellContentElements.filter((txt) => txt.type !== "TEXT" || txt.text.trim().length > 0);
+    return cellContentElements.filter(
+      (textContent) => textContent.type !== "TEXT" || textContent.text.trim().length > 0,
+    );
   };
 
   let rowElements = Array.from(element.querySelectorAll("tr"));
@@ -692,6 +703,9 @@ function traverseTextContainer(
           return child.content;
         }
         case "TABLE": {
+          return [];
+        }
+        default: {
           return [];
         }
       }
@@ -771,7 +785,7 @@ function moveOuterTextIntoNeighbouringParagraphs(elements: TraversedElement[]): 
     if (current.type === "TEXT" && next?.type === "P") {
       return [{ ...next, content: mergeNeighbouringText([current, ...next.content]) }, ...acc.slice(1)];
     } else {
-      return [current, ...acc];
+      return [current].concat(acc);
     }
   }, []);
 }
@@ -800,6 +814,9 @@ function traverseItemChildren(item: Element, font: FontType): Text[] {
       }
       case "TABLE": {
         // Should not happen, but if it does, we just ignore it.
+        return [];
+      }
+      default: {
         return [];
       }
     }
@@ -854,7 +871,7 @@ function mergeNeighbouringText<T extends TraversedElement>(elements: T[]): T[] {
     if (previous?.type === "TEXT" && curr.type === "TEXT" && previous?.font === curr.font) {
       return [...acc.slice(0, -1), { ...previous, text: cleansePastedText(previous.text + curr.text) }];
     } else {
-      return [...acc, curr];
+      return acc.concat(curr);
     }
   }, []);
 }
@@ -863,8 +880,6 @@ function cleansePastedText(str: string): string {
   return cleanseText(str).replaceAll(/\s+/g, " ");
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function log(message: string, ...obj: any[]) {
-  // eslint-disable-next-line no-console
-  console.log("Skribenten:pasteHandler: " + message, ...obj);
+function log(message: string, ...obj: unknown[]) {
+  console.info(`Skribenten:pasteHandler: ${message}`, ...obj);
 }

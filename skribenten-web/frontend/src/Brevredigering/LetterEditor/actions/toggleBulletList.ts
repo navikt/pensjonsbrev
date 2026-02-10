@@ -25,13 +25,16 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
 );
 
 /**
- * Når vi lager et punkt, så må vi ta høyde for at det kan være en punktliste før, etter, eller ingen punktliste.
- * Det kan finnes punktliste i blokk før, blokk etter, eller begge. Det kan også være punktliste i samme blokk, før / etter / begge, på literalen vi er på
+ * Når vi lager et punkt, så må vi ta høyde for at det kan være en punktliste før, etter, eller
+ * ingen punktliste.  Det kan finnes punktliste i blokk før, blokk etter, eller begge. Det kan også
+ * være punktliste i samme blokk, før / etter / begge, på literalen vi er på
  *
- * Det vil si at når vi converterer en literal til en ny punktliste, merger vi med nabo-punktlistene, hvis de eksisterer
- * Så må vi sjekke om det finnes nabo-punktlister på blokk-nivå, og merge de også
+ * Det vil si at når vi converterer en literal til en ny punktliste, merger vi med
+ * nabo-punktlistene, hvis de eksisterer Så må vi sjekke om det finnes nabo-punktlister på
+ * blokk-nivå, og merge de også
  *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til editorstaten til å være på rett plass
+ * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til
+ * editorstaten til å være på rett plass
  */
 const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
   draft.saveStatus = "DIRTY";

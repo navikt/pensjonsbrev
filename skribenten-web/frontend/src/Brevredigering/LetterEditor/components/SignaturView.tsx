@@ -7,9 +7,7 @@ const Saksbehandler = ({ navn }: { navn?: string }) =>
     <Box as="span" data-cy="brev-editor-saksbehandler">
       {navn}
     </Box>
-  ) : (
-    <></>
-  );
+  ) : null;
 
 export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <VStack

@@ -6,8 +6,8 @@ import type {
   BrevStatus,
   BrevType,
   Mottaker,
-  NavAnsatt,
   NAVEnhet,
+  NavAnsatt,
   SaksbehandlerValg,
 } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
