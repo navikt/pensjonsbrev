@@ -4,7 +4,7 @@
  * This module provides utilities for tracking user behavior with Umami analytics.
  * It follows NAV's taxonomy and guidelines for event naming and data collection.
  *
- * Uses @navikt/nav-dekoratoren-moduler for proper integration with NAV's analytics infrastructure.
+ * Uses NAV's sporing.js script which exposes window.umami for tracking.
  *
  * @see https://aksel.nav.no/god-praksis/artikler/umami-maling
  * @see https://umami.is/docs/tracking
@@ -15,13 +15,14 @@
  * - Search field content that may contain PII
  */
 
-import { getAnalyticsInstance } from "@navikt/nav-dekoratoren-moduler";
+// Umami tracking function type (exposed by sporing.js)
+interface UmamiTracker {
+  track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
+}
 
-// Get the analytics instance for skribenten-web
-const analytics = getAnalyticsInstance("skribenten-web");
-
-// Extend globalThis for local demo storage
+// Extend globalThis to include umami from sporing.js
 declare global {
+  var umami: UmamiTracker | undefined;
   var localAnalyticsEvents: Array<{
     timestamp: number;
     type: "event" | "pageview";
@@ -115,10 +116,14 @@ export interface UmamiEventData {
 }
 
 /**
- * Check if analytics is available (browser environment)
+ * Check if Umami is available (sporing.js loaded)
  */
 export const isUmamiAvailable = (): boolean => {
-  return typeof globalThis.window !== "undefined";
+  return (
+    typeof globalThis.window !== "undefined" &&
+    globalThis.umami !== undefined &&
+    typeof globalThis.umami.track === "function"
+  );
 };
 
 /**
@@ -151,8 +156,8 @@ export const trackEvent = (eventName: UmamiEventName | string, eventData?: Umami
         >)
       : undefined;
 
-    // Use NAV's official analytics instance
-    analytics(eventName, cleanedData);
+    // Use umami.track() exposed by sporing.js
+    globalThis.umami?.track(eventName, cleanedData);
   } catch {
     // Silently fail - analytics should not break the app
   }
@@ -175,8 +180,8 @@ export const trackPageView = (url?: string): void => {
   }
 
   try {
-    // Use NAV's analytics instance for page views
-    analytics("besøk", { destinasjon: url ?? globalThis.location.pathname });
+    // Track page view using umami.track()
+    globalThis.umami?.track(url ?? globalThis.location.pathname);
   } catch {
     // Silently fail - analytics should not break the app
   }

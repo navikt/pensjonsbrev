@@ -59,13 +59,9 @@ jobs:
           node-version: "24"
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
