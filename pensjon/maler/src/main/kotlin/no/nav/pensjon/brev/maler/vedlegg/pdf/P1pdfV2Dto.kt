@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -120,8 +119,6 @@ object P1pdfV2Dto {
 
     fun LocalDate.formater(language: LanguageCode): String? =
         dateFormatter(language).format(this)
-
-    val logger = LoggerFactory.getLogger(P1pdfV2Dto::class.java)
 
     val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
