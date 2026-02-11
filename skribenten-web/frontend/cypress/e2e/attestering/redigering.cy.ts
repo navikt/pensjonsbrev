@@ -13,8 +13,6 @@ describe("attestant redigering", () => {
     cy.intercept("put", "/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", (req) => {
       req.reply({ ...defaultBrev, redigertBrev: req.body });
     }).as("hurtiglagreRedigertBrev");
-
-    cy.viewport(1200, 1400);
   });
 
   it("Autolagrer brev etter redigering", () => {

@@ -1,12 +1,12 @@
 .editor {
   align-self: start;
-  max-width: 694px;
+  max-width: 720px;
   min-width: 480px;
   width: 100%;
-  /*clamp: minimum, ideal, max */
-  padding: 0 clamp(1rem, 2vw, 4rem);
+  padding: 0 var(--ax-space-48);
   /* make scrollbar reach the top with padding-top rathern than margin-top */
-  padding-top: var(--ax-space-24);
+  padding-top: var(--ax-space-12);
+  margin: 0 auto;
 
   [contenteditable] {
     &:focus-within {
