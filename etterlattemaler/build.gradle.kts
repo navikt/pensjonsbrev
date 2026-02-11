@@ -18,7 +18,9 @@ repositories {
 dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
-    implementation(libs.jackson.annotations)
+    implementation(libs.jackson.annotations) {
+        because("Konverteringa mellom vår modell og slate-modellen i Slatemodell.kt")
+    }
 
     testImplementation(libs.bundles.junit)
 
