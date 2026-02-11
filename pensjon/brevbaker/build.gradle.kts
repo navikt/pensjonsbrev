@@ -107,8 +107,6 @@ dependencies {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
 
-    testImplementation(libs.pdfbox)
-
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))
 }
