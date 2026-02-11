@@ -79,7 +79,7 @@ interface LetterMetadata {
                 id = name,
                 brevsystem = BrevSystem.BREVBAKER,
                 spraak = this.languages.map { it.toSpraakKode() },
-                brevkategori = kategori.let { Pen.finnVisningstekst(it.kode) },
+                brevkategori = kategori.let { Pen.finnVisningstekst(it) },
                 dokumentkategoriCode = metadata.brevtype.toDokumentkategoriCode(),
                 redigerbart = true,
                 redigerbarBrevtittel = false,

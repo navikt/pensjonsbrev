@@ -49,7 +49,7 @@ interface TemplateDescription {
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
 
         @JvmInline
-        value class Brevkategori @InternKonstruktoer constructor(val kode: String)
+        value class Brevkategori @InternKonstruktoer constructor(override val kode: String) : IBrevkategori
 
         @JvmInline
         value class Sakstype @InternKonstruktoer constructor(val kode: String)
