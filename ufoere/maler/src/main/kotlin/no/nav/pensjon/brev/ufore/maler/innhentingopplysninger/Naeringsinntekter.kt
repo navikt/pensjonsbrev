@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDtoSelectors.SaksbehandlervalgSelectors.ikkeMottattInntektsskjema
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
@@ -24,7 +25,7 @@ object Naeringsinntekter : RedigerbarTemplate<InnhentingOpplysningerNaeringsinnt
     override val featureToggle = FeatureToggles.innhentingOpplysninger.toggle
 
     override val kode = UT_INNH_OPPL_NAERINGSINNTEKTER
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

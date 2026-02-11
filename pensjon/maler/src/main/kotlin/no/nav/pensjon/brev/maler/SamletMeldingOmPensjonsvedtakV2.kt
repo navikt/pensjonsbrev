@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSel
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2DtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.vedlegg.pdf.P1pdfV2Dto
 import no.nav.pensjon.brev.maler.vedlegg.pdf.informasjonOmP1Vedlegg
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -29,7 +30,7 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
     override val featureToggle = FeatureToggles.samletMeldingOmPensjonsvedtakV2.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2 // BREVKODEN MÅ VÆRE I SYNC MED P1SERVICE I SKRIBENTEN!
-    override val kategori = TemplateDescription.Brevkategori.SLUTTBEHANDLING
+    override val kategori = Brevkategori.SLUTTBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.ALDER, Sakstype.UFOREP, Sakstype.GJENLEV, Sakstype.BARNEP)
 

@@ -145,4 +145,26 @@ object Pen {
     }
 
     val sakstypeForLegacybrev = Sakstype("GENRL")
+
+    // TODO: Dette bør flyttes over en annen plass, feks i brevbaker-appen, og serveres derifra
+    private val brevkategoriTilVisningstekst = mapOf(
+        "ETTEROPPGJOER" to "Etteroppgjør",
+        "FEILUTBETALING" to "Feilutbetaling",
+        "FOERSTEGANGSBEHANDLING" to "Førstegangsbehandling",
+        "FRITEKSTBREV" to "Fritekstbrev",
+        "LetterMetadata" to "Informasjonsbrev",
+        "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
+        "KLAGE_OG_ANKE" to "Klage og anke",
+        "LEVEATTEST" to "Leveattest",
+        "OMSORGSOPPTJENING" to "Omsorgsopptjening",
+        "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
+        "SLUTTBEHANDLING" to "Sluttbehandling",
+        "UFOEREPENSJON" to "Uførepensjon",
+        "BrevdataDto" to "Varsel",
+        "VEDTAK_EKSPORT" to "Vedtak - eksport",
+        "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
+        "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
+    )
+
+    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
 }

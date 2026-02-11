@@ -48,6 +48,8 @@ interface TemplateDescription {
         override fun toString(): String =
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
 
+        @JvmInline
+        value class Brevkategori @InternKonstruktoer constructor(override val kode: String) : IBrevkategori
 
         @JvmInline
         value class Sakstype @InternKonstruktoer constructor(val kode: String)
@@ -63,23 +65,7 @@ interface TemplateDescription {
         VEDTAK
     }
 
-    // TODO: Gjer om denne til interface, fleire av desse er pensjonsspesifikke
-    enum class Brevkategori {
-        ETTEROPPGJOER,
-        FEILUTBETALING,
-        FOERSTEGANGSBEHANDLING,
-        FRITEKSTBREV,
-        INFORMASJONSBREV,
-        INNHENTE_OPPLYSNINGER,
-        KLAGE_OG_ANKE,
-        LEVEATTEST,
-        OMSORGSOPPTJENING,
-        POSTERINGSGRUNNLAG,
-        SLUTTBEHANDLING,
-        UFOEREPENSJON,
-        VARSEL,
-        VEDTAK_EKSPORT,
-        VEDTAK_ENDRING_OG_REVURDERING,
-        VEDTAK_FLYTTE_MELLOM_LAND,
+    interface IBrevkategori {
+        val kode: String
     }
 }
