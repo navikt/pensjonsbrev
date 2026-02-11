@@ -18,15 +18,11 @@ repositories {
 dependencies {
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
+    implementation(libs.jackson.annotations)
 
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
-    }
-
-    // JUnit 5
     testImplementation(libs.bundles.junit)
 
+    testImplementation(libs.ktor.serialization.jackson)
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(libs.ktor.server.callId)
 }
