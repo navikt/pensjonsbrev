@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 import no.nav.pensjon.brevbaker.api.model.Kroner
 
 
-data class Ektefelletillegg(
-    val etinnvilget: Boolean?,
-    val etnetto: Kroner?,
+data class Ektefellegarantitillegg(
+    val egtinnvilget: Boolean?,
+    val egtnetto: Kroner?,
 )

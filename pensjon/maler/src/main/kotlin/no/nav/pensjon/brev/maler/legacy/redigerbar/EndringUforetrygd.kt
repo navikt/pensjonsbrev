@@ -3,10 +3,23 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.barn_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.barn_opph_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.bruker_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_flyttet_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_opph_ikke_avt_land
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.annen_forld_rett_bt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_innt_over_1g
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_over_18
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.mindre_ett_ar_bt_flt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphoersbegrunnelse
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortGjenlevendetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
@@ -33,10 +46,9 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
-import kotlin.and
 
 @TemplateModelHelpers
-object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
@@ -63,7 +75,6 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             val pe = pesysData.pe
 
             val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-            val virkningstidpunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningstidpunkt().ifNull(LocalDate.now())
             val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
             val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
 
@@ -131,7 +142,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf(pesysData.opphortBarnetillegg){
                 paragraph {
                     text (
                         bokmal { + "Vi har vedtatt at barnetillegget i uføretrygden din opphører fra " + onsketvirkningsdato.format() + " for barn født " + pe.ut_fodselsdatobarn() },
@@ -141,7 +152,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf(pesysData.opphortEktefelletillegg){
                 //[TBU2291EN, TBU2291, TBU2291NN]
 
                 paragraph {
@@ -217,7 +228,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_ut_gjt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_ut_gjt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf(pesysData.opphortGjenlevendetillegg){
                 //[TBU2297EN, TBU2297, TBU2297NN]
 
                 paragraph {
@@ -745,7 +756,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand= "gift" AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_ut_gjt, PE_UT_KONST_VilkarsVedtakResultat_opphor)) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("gift") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_ut_gjt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("gift") and pesysData.opphortGjenlevendetillegg)){
                 //[TBU2329EN, TBU2329, TBU2329NN]
 
                 paragraph {
@@ -757,7 +768,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(  PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "samboer1_5"  OR  PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand = "samboer3_2"  AND  PE_Vedtaksdata_BeregningsData_Beregning_BeregningBrukerSivilstand <> "gift")  AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_ut_gjt, PE_UT_KONST_VilkarsVedtakResultat_opphor)  ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer3_2") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().notEqualTo("gift")) and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_ut_gjt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer1_5") or pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().equalTo("samboer3_2") and pe.vedtaksdata_beregningsdata_beregning_beregningbrukersivilstand().notEqualTo("gift")) and pesysData.opphortGjenlevendetillegg)){
                 //[TBU2330EN, TBU2330, TBU2330NN]
 
                 paragraph {
@@ -769,12 +780,12 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring"  AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sokand_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold" ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(),pe.ut_konst_vilkarsvedtakresultat_opphor()) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sokand_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))){
+            showIf((pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring") and pesysData.opphortEktefelletillegg and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sokand_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))){
                 //[TBU2331]
                 paragraph {
 
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      EXCLUDE ENDIF
-                    showIf(not((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0)))){
+                    showIf(not(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)){
                         text (
                             bokmal { + "Ektefelletillegg beholdes bare ut den perioden som vedtaket gjelder for. Vi har derfor opphørt ektefelletillegget." },
                             nynorsk { + "Ektefelletillegget beheld du bare ut perioden vedtaket gjeld for. Vi har derfor stansa ektefelletillegget ditt. " },
@@ -782,7 +793,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     }
 
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                    showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0))){
+                    showIf(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land){
                         text (
                             bokmal { + "Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg." },
                             nynorsk { + "Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg." },
@@ -790,7 +801,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     }
 
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                    showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0))){
+                    showIf((pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)){
                         text (
                             bokmal { + "Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletetillegg." },
                             nynorsk { + "Ifølgje våre opplysningar er " + fritekst("ektefelle/partner/sambuar") + " busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg. " },
@@ -798,33 +809,17 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     }
 
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                    showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0))){
+                    showIf((pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)){
                         text (
-                            bokmal { + "For å ha rett til ektefelletillegg fra 1. juli 2020 " },
-                            nynorsk { + "For å ha rett til ektefelletillegg frå 1. juli 2020 " },
-                        )
-                    }
-
-                    //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                    showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0))){
-                        text (
-                            bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
-                            nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
-                        )
-                    }
-
-                    //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-                    showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"eps_opph_ikke_avt_land").greaterThan(0))){
-                        text (
-                            bokmal { + "må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
-                            nynorsk { + "må også ektefellen/sambuaren vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med " },
+                            bokmal { + "For å ha rett til ektefelletillegg fra 1. juli 2020 må du og ektefellen/samboeren din enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med. " },
+                            nynorsk { + "For å ha rett til ektefelletillegg frå 1. juli 2020 må du og ektefellen/sambuaren din enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med. " },
                         )
                     }
                 }
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skil"  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "skpa")  AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skil") or pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skpa")) and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skil") or pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("skpa")) and pesysData.opphortEktefelletillegg)){
                 //[TBU2332EN, TBU2332, TBU2332NN]
 
                 paragraph {
@@ -836,7 +831,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningBenyttetSivilstand = "enke" AND  PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("enke") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and pe.vedtaksdata_beregningsdata_beregning_beregningbenyttetsivilstand().equalTo("enke") and pesysData.opphortEktefelletillegg)){
                 //[TBU2333EN, TBU2333, TBU2333NN]
 
                 paragraph {
@@ -848,7 +843,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+            showIf(pesysData.opphortBarnetillegg) {
                 //[TBU3924_EN, TBU3924, TBU3924_NN]
 
                 paragraph {
@@ -859,12 +854,17 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_over_18") > 1  )THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_over_18").greaterThan(1))) {
-                    includePhrase(TBU3920_Generated(pe))
+                showIf(pesysData.bt_over_18) {
+                    paragraph {
+                        text (
+                            bokmal { + "For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi " + pe.ut_barnet_barna_opphor() + " har fylt 18 år. " },
+                            nynorsk { + "For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi " + pe.ut_barnet_barna_opphor() + " har fylt 18 år." },
+                        )
+                    }
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                showIf(pesysData.annen_forld_rett_bt) {
                     //[TBU2607EN, TBU2607, TBU2607_NN]
 
                     paragraph {
@@ -876,7 +876,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                showIf(pesysData.annen_forld_rett_bt) {
                     //[TBU3921_EN, TBU3921, TBU3921_NN]
 
                     paragraph {
@@ -888,7 +888,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "annen_forld_rett_bt") > 1  )THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "annen_forld_rett_bt").greaterThan(1))) {
+                showIf(pesysData.annen_forld_rett_bt) {
                     //[TBU3922_EN, TBU3922, TBU3922_NN]
 
                     paragraph {
@@ -900,7 +900,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "mindre_ett_ar_bt_flt") > 1 )  THEN INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "mindre_ett_ar_bt_flt").greaterThan(1))) {
+                showIf(pesysData.mindre_ett_ar_bt_flt) {
                     //[TBU3925_EN, TBU3925, TBU3925_NN]
 
                     paragraph {
@@ -912,7 +912,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bt_innt_over_1g") > 1  )THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bt_innt_over_1g").greaterThan(1))) {
+                showIf(pesysData.bt_innt_over_1g) {
                     //[TBU3923_EN, TBU3923, TBU3923_NN]
 
                     paragraph {
@@ -929,10 +929,10 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)) AND (Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(),pe.ut_konst_vilkarsvedtakresultat_opphor())) and (FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"bruker_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"barn_flyttet_ikke_avt_land").greaterThan(0) or FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(),"barn_opph_ikke_avt_land").greaterThan(0))) {
+            showIf(pesysData.opphortBarnetillegg and (pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_opph_ikke_avt_land)) {
 
                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_flyttet_ikke_avt_land").greaterThan(0))) {
+                showIf(pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land) {
                     //[TBU5009_EN, TBU5009, TBU5009_NN]
 
                     paragraph {
@@ -944,7 +944,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_opph_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "barn_opph_ikke_avt_land").greaterThan(0))) {
+                showIf(pesysData.opphoersbegrunnelse.barn_opph_ikke_avt_land) {
                     //[TBU5010_EN, TBU5010, TBU5010_NN]
 
                     paragraph {
@@ -956,7 +956,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "bruker_flyttet_ikke_avt_land") > 0) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_Contains(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_begrunnelse(), "bruker_flyttet_ikke_avt_land").greaterThan(0))) {
+                showIf(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land) {
                     //[TBU5011_EN, TBU5011, TBU5011_NN]
 
                     paragraph {
@@ -968,13 +968,13 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
 
                 //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor) ) THEN      INCLUDE ENDIF
-                showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(), pe.ut_konst_vilkarsvedtakresultat_opphor()))) {
+                showIf(pesysData.opphortBarnetillegg) {
                     //[TBU5006_EN, TBU5006, TBU5006_NN]
 
                     paragraph {
                         text(
                             bokmal { +"For å ha rett til barnetillegg fra 1. juli 2020" },
-                            nynorsk { +"For å ha rett til forsørgingstillegg frå 1. juli 2020 " },
+                            nynorsk { +"For å ha rett til barnetillegg frå 1. juli 2020 " },
                         )
                         text(
                             bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
@@ -993,7 +993,9 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
-            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring"))){
+            // TODO: Er YrkesskadeResultat her vesentlig for logikken? Eller er dette en mulig bug fra tidligere, "false" henger heller ikke sammen med "innvilget" brukt andre steder. Velger å fjerne sjekken på yrkesskade inntil videre.
+            // showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring"))){
+            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("sivilstandsendring"))){
                 paragraph {
                     text (
                         bokmal { + "Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
@@ -1333,7 +1335,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_et, PE_UT_KONST_VilkarsVedtakResultat_opphor)) THEN      INCLUDE ENDIF
-            showIf((FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_et(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf(pesysData.opphortEktefelletillegg){
                 //[TBU2500EN, TBU2500, TBU2500NN]
 
                 paragraph {
@@ -1629,7 +1631,7 @@ object EndringUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(  PE_UT_KravLinjeKode_Og_PaaFolgende_bt_ikkeInnv() AND ( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5" ) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo" AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)  ) THEN      INCLUDE ENDIF
-            showIf((pe.ut_kravlinjekode_og_paafolgende_bt_ikkeinnv() and ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5")) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo") and FUNKSJON_PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(pe.ut_konst_kralinjekode_bt(),pe.ut_konst_vilkarsvedtakresultat_opphor()))){
+            showIf((pe.ut_kravlinjekode_og_paafolgende_bt_ikkeinnv() and ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5")) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo") and pesysData.opphortBarnetillegg)){
                 //[TBU2350EN, TBU2350, TBU2350NN]
 
                 paragraph {
