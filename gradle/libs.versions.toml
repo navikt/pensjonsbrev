@@ -90,7 +90,7 @@ flyway-database-postgresql = { module = "org.flywaydb:flyway-database-postgresql
 # Test
 assertJ = { module = "org.assertj:assertj-core", version.ref = "assertJVersion" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter",  version.ref = "jupiterVersion" }
-junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version = "6.0.2" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher",  version.ref = "jupiterVersion" }
 testcontainers-postgresql = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainersPostgresqlVersion"}
 testcontainers-core = { module = "org.testcontainers:testcontainers", version.ref = "testcontainersCoreVersion" }
 
