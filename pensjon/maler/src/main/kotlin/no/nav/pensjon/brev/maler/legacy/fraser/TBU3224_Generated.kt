@@ -22,7 +22,7 @@ data class TBU3224_Generated(
 		paragraph {
 			ifNotNull(pe.vedtaksdata_virkningfom()){ virkFom ->
 				text (
-					bokmal { + "Du får etterbetalt uføretrygd fra " + virkFom.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra NAV eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
+					bokmal { + "Du får etterbetalt uføretrygd fra " + virkFom.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
 				)
 			}
 		}
