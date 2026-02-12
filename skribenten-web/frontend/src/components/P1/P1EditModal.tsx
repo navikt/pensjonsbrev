@@ -1,7 +1,17 @@
 import "~/css/p1.css";
 
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
-import { Alert, Box, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
+import {
+  Alert,
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Loader,
+  Modal,
+  Tabs,
+  VStack,
+} from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
@@ -22,7 +32,12 @@ import { mapP1DtoToForm, mapP1FormToDto } from "./p1Mappings";
 import { p1RedigerbarFormSchema } from "./p1ValidationSchema";
 import { useP1Override } from "./useP1Override";
 
-type P1TabKey = "innehaver" | "forsikret" | "innvilget" | "avslag" | "institusjon";
+type P1TabKey =
+  | "innehaver"
+  | "forsikret"
+  | "innvilget"
+  | "avslag"
+  | "institusjon";
 
 type P1EditingModalProps = {
   brevId: number;
@@ -31,7 +46,12 @@ type P1EditingModalProps = {
   onClose: () => void;
 };
 
-export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalProps) => {
+export const P1EditModal = ({
+  brevId,
+  saksId,
+  open,
+  onClose,
+}: P1EditingModalProps) => {
   const [activeTab, setActiveTab] = useState<P1TabKey>("innvilget");
   const [validationError, setValidationError] = useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -97,16 +117,21 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       // ie makes the isDirty false again
       reset(savedFormValues);
 
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
-      queryClient.invalidateQueries({ queryKey: getP1Override.queryKey(brevId) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(brevId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getP1Override.queryKey(brevId),
+      });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
       setSaveSuccess(true);
-      // Clear any existing timeout before setting a new one
       if (successTimeoutRef.current) {
         clearTimeout(successTimeoutRef.current);
       }
-      // Auto-hide success message after 3 seconds
-      successTimeoutRef.current = setTimeout(() => setSaveSuccess(false), 3000);
+      successTimeoutRef.current = setTimeout(() => {
+        setSaveSuccess(false);
+        onClose();
+      }, 1000);
     },
   });
 
@@ -120,13 +145,25 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     // Find tabs with errors and navigate to first one
     const tabsWithErrors: { tab: P1TabKey; label: string }[] = [];
 
-    if (fieldErrors.innehaver) tabsWithErrors.push({ tab: "innehaver", label: "1. Personopplysninger om innehaveren" });
+    if (fieldErrors.innehaver)
+      tabsWithErrors.push({
+        tab: "innehaver",
+        label: "1. Personopplysninger om innehaveren",
+      });
     if (fieldErrors.forsikrede)
-      tabsWithErrors.push({ tab: "forsikret", label: "2. Personopplysninger om den forsikrede" });
-    if (fieldErrors.innvilgedePensjoner) tabsWithErrors.push({ tab: "innvilget", label: "3. Innvilget pensjon" });
-    if (fieldErrors.avslaattePensjoner) tabsWithErrors.push({ tab: "avslag", label: "4. Avslag på pensjon" });
+      tabsWithErrors.push({
+        tab: "forsikret",
+        label: "2. Personopplysninger om den forsikrede",
+      });
+    if (fieldErrors.innvilgedePensjoner)
+      tabsWithErrors.push({ tab: "innvilget", label: "3. Innvilget pensjon" });
+    if (fieldErrors.avslaattePensjoner)
+      tabsWithErrors.push({ tab: "avslag", label: "4. Avslag på pensjon" });
     if (fieldErrors.utfyllendeInstitusjon)
-      tabsWithErrors.push({ tab: "institusjon", label: "5. Institusjonen som har fylt ut skjemaet" });
+      tabsWithErrors.push({
+        tab: "institusjon",
+        label: "5. Institusjonen som har fylt ut skjemaet",
+      });
 
     if (tabsWithErrors.length > 0) {
       // Navigate to first tab with errors
@@ -137,7 +174,9 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       setValidationError(`Skjemaet har feil som må rettes: ${errorLabels}`);
     } else if (Object.keys(fieldErrors).length > 0) {
       // Fallback: If we have errors but couldn't map them to a tab (e.g. sakstype, root errors)
-      setValidationError(`Skjemaet kan ikke lagres pga. ugyldig data (felt: ${Object.keys(fieldErrors).join(", ")})`);
+      setValidationError(
+        `Skjemaet kan ikke lagres pga. ugyldig data (felt: ${Object.keys(fieldErrors).join(", ")})`,
+      );
     }
   };
 
@@ -166,7 +205,9 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
         size="medium"
       >
         <Modal.Header>
-          <Heading size="small">Overstyring av vedlegg - P1 samlet melding om pensjonsvedtak</Heading>
+          <Heading size="small">
+            Overstyring av vedlegg - P1 samlet melding om pensjonsvedtak
+          </Heading>
         </Modal.Header>
 
         <FormProvider {...formMethods}>
@@ -180,32 +221,55 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                     </VStack>
                   ) : isP1Error ? (
                     <VStack align="center" flexGrow="1" justify="center">
-                      <ApiError error={p1Error} title="Kunne ikke laste P1-data" />
+                      <ApiError
+                        error={p1Error}
+                        title="Kunne ikke laste P1-data"
+                      />
                     </VStack>
                   ) : (
                     <>
                       {saveSuccess && (
-                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
+                        <Box
+                          asChild
+                          marginBlock="space-0 space-8"
+                          marginInline="space-20"
+                        >
                           <Alert size="small" variant="success">
                             Endringene ble lagret
                           </Alert>
                         </Box>
                       )}
                       {validationError && (
-                        <Box asChild marginBlock="space-0 space-8" marginInline="space-20">
-                          <Alert closeButton onClose={() => setValidationError(null)} size="small" variant="error">
+                        <Box
+                          asChild
+                          marginBlock="space-0 space-8"
+                          marginInline="space-20"
+                        >
+                          <Alert
+                            closeButton
+                            onClose={() => setValidationError(null)}
+                            size="small"
+                            variant="error"
+                          >
                             {validationError}
                           </Alert>
                         </Box>
                       )}
 
                       <VStack asChild overflow="hidden">
-                        <Tabs onChange={(v) => setActiveTab(v as P1TabKey)} size="small" value={activeTab}>
+                        <Tabs
+                          onChange={(v) => setActiveTab(v as P1TabKey)}
+                          size="small"
+                          value={activeTab}
+                        >
                           <Box asChild paddingInline="space-20">
                             <Tabs.List>
                               <Tabs.Tab
                                 label={
-                                  <TabLabel hasError={hasInnehaverError} label="1. Personopplysninger om innehaveren" />
+                                  <TabLabel
+                                    hasError={hasInnehaverError}
+                                    label="1. Personopplysninger om innehaveren"
+                                  />
                                 }
                                 value="innehaver"
                               />
@@ -219,11 +283,21 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                                 value="forsikret"
                               />
                               <Tabs.Tab
-                                label={<TabLabel hasError={hasInnvilgetError} label="3. Innvilget pensjon" />}
+                                label={
+                                  <TabLabel
+                                    hasError={hasInnvilgetError}
+                                    label="3. Innvilget pensjon"
+                                  />
+                                }
                                 value="innvilget"
                               />
                               <Tabs.Tab
-                                label={<TabLabel hasError={hasAvslagError} label="4. Avslag på pensjon" />}
+                                label={
+                                  <TabLabel
+                                    hasError={hasAvslagError}
+                                    label="4. Avslag på pensjon"
+                                  />
+                                }
                                 value="avslag"
                               />
                               <Tabs.Tab
@@ -238,15 +312,24 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                             </Tabs.List>
                           </Box>
 
-                          <Tabs.Panel className="p1-tabs-panel" value="innehaver">
+                          <Tabs.Panel
+                            className="p1-tabs-panel"
+                            value="innehaver"
+                          >
                             <P1InnehaverTab disabled />
                           </Tabs.Panel>
 
-                          <Tabs.Panel className="p1-tabs-panel" value="forsikret">
+                          <Tabs.Panel
+                            className="p1-tabs-panel"
+                            value="forsikret"
+                          >
                             <P1ForsikredeTab disabled />
                           </Tabs.Panel>
 
-                          <Tabs.Panel className="p1-tabs-panel" value="innvilget">
+                          <Tabs.Panel
+                            className="p1-tabs-panel"
+                            value="innvilget"
+                          >
                             <P1InnvilgetTab landListe={landListe || []} />
                           </Tabs.Panel>
 
@@ -254,14 +337,21 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
                             <P1AvslagTab landListe={landListe || []} />
                           </Tabs.Panel>
 
-                          <Tabs.Panel className="p1-tabs-panel" value="institusjon">
+                          <Tabs.Panel
+                            className="p1-tabs-panel"
+                            value="institusjon"
+                          >
                             <P1InstitusjonTab disabled />
                           </Tabs.Panel>
                         </Tabs>
                       </VStack>
 
                       {lagreMutation.isError && (
-                        <Box asChild marginBlock="space-16 space-0" marginInline="space-20">
+                        <Box
+                          asChild
+                          marginBlock="space-16 space-0"
+                          marginInline="space-20"
+                        >
                           <Alert size="small" variant="error">
                             Noe gikk galt ved lagring av P1. Prøv igjen.
                           </Alert>
@@ -274,10 +364,18 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 
               <HStack asChild justify="space-between">
                 <Modal.Footer>
-                  <Button disabled={lagreMutation.isPending} onClick={handleCancel} type="button" variant="tertiary">
+                  <Button
+                    disabled={lagreMutation.isPending}
+                    onClick={handleCancel}
+                    type="button"
+                    variant="tertiary"
+                  >
                     Avbryt
                   </Button>
-                  <SubmitButton isInitialLoading={isInitialLoading} isLoading={lagreMutation.isPending} />
+                  <SubmitButton
+                    isInitialLoading={isInitialLoading}
+                    isLoading={lagreMutation.isPending}
+                  />
                 </Modal.Footer>
               </HStack>
             </form>
@@ -289,13 +387,26 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
 };
 
 // Helper component for tab labels with error indicator
-const TabLabel = ({ label, hasError }: { label: string; hasError: boolean }) => (
+const TabLabel = ({
+  label,
+  hasError,
+}: {
+  label: string;
+  hasError: boolean;
+}) => (
   <>
     <Box as="span" width={hasError ? "calc(100% - 8px)" : "100%"}>
       {label}
     </Box>
     {hasError && (
-      <Box aria-label="Har feil" as="div" background="danger-strong" borderRadius="full" height="8px" width="8px" />
+      <Box
+        aria-label="Har feil"
+        as="div"
+        background="danger-strong"
+        borderRadius="full"
+        height="8px"
+        width="8px"
+      />
     )}
   </>
 );
@@ -308,8 +419,14 @@ interface SubmitButtonProps {
 
 const SubmitButton = ({ isLoading, isInitialLoading }: SubmitButtonProps) => {
   return (
-    <Button disabled={isInitialLoading} loading={isLoading} size="medium" type="submit" variant="primary">
-      Lagre
+    <Button
+      disabled={isInitialLoading}
+      loading={isLoading}
+      size="medium"
+      type="submit"
+      variant="primary"
+    >
+      Lagre og lukk
     </Button>
   );
 };
