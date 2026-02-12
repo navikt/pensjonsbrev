@@ -23,6 +23,9 @@ data class EndringUfoeretrygdDto(
         val mindre_ett_ar_bt_flt: Boolean,
         val opphoersbegrunnelse: Opphoersbegrunnelse,
 
+        val fodselsdatobarn: String?,
+        val antallBarnOpphor: Int,
+
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?
     ) : FagsystemBrevdata
 
