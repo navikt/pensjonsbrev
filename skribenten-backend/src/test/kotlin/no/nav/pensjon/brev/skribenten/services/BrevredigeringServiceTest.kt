@@ -165,7 +165,7 @@ class BrevredigeringServiceTest {
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }
 
-    private val principalNavEnhetId = EnhetId("Nebuchadnezzar")
+    private val principalNavEnhetId = EnhetId("9876")
 
 
     private val sak1 = Pen.SakSelection(

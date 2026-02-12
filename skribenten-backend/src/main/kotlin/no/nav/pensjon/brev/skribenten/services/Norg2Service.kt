@@ -58,6 +58,10 @@ data class NavEnhet(
 )
 
 @JvmInline
-value class EnhetId(val value: String)
+value class EnhetId(val value: String) {
+    init {
+        require(value.length == 4) { "Vi forventer at enhetsnummer er fire sifre, dette var ${value.length} langt"}
+    }
+}
 
 class Norg2EnhetException(enhetId: EnhetId) : IllegalStateException("Fant ikke enhet med id $enhetId i NORG2")

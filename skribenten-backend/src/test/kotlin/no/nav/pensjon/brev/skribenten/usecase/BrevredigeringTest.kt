@@ -121,7 +121,7 @@ abstract class BrevredigeringTest {
             initADGroups()
         }
 
-        val PRINCIPAL_NAVENHET_ID = EnhetId("Nebuchadnezzar")
+        val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
         val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))

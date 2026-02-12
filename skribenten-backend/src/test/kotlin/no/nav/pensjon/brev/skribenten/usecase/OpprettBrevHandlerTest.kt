@@ -74,7 +74,7 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
             opprettBrev(
                 sak = sak1,
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
-                avsenderEnhetsId = EnhetId("The Matrix"),
+                avsenderEnhetsId = EnhetId("9998"),
             )
         }
         assertThat(brev).isFailure<IkkeTilgangTilEnhet, _, _>()
