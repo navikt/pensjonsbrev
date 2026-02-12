@@ -47,7 +47,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
                 response.body()
             } else {
                 logger.error("Feil ved henting av enhet $enhetId. Status: ${response.status} Message: ${response.bodyAsText()}")
-                throw IllegalStateException("Feil ved henting av enhet $enhetId")
+                throw Norg2EnhetException(enhetId)
             }
         }
 }
@@ -56,3 +56,5 @@ data class NavEnhet(
     val enhetNr: String,
     val navn: String
 )
+
+class Norg2EnhetException(enhetId: String) : IllegalStateException("Fant ikke enhet med id $enhetId i NORG2")
