@@ -34,7 +34,7 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_MED_ENDRING
+    override val kode = Pesysbrevkoder.Redigerbar.UT_DELVIS_EKSPORT_AV_UFORETRYGD
     override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
