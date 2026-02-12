@@ -139,26 +139,31 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         avsenderEnhetsId: String?
     ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
-            if (avsenderEnhetsId != null) {
-                url {
-                    parameters.append("enhetsId", avsenderEnhetsId)
-                    vedtaksId?.let { parameters.append("vedtaksId", it.toString()) }
+            mapOf(
+                "enhetsId" to avsenderEnhetsId,
+                "vedtaksId" to vedtaksId?.toString(),
+            )
+                .filter { it.value != null }
+                .takeIf { it.isNotEmpty() }
+                ?.let { params ->
+                    url {
+                        params.forEach { (key, value) -> parameters.append(key, value!!) }
+                    }
                 }
-            }
-        }.brevdataOrThrow()
+        }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
     override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): P1VedleggDataResponse =
         client.get("brev/skribenten/sak/$saksId/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
             }
-        }.brevdataOrThrow()
+        }.brevdataOrThrow(saksId = saksId)
 
-    private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(): Data =
+    private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(saksId: Long, vedtaksId: Long? = null): Data =
         when {
             status.isSuccess() -> body<BrevdataResponseWrapper<Data>>().data
             status == HttpStatusCode.UnprocessableEntity -> throw PenDataException(body<BrevdataFeilResponse>().feil)
-            else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}")
+            else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}. Saksid: $saksId ${vedtaksId?.let { ", vedtaksId: $it" }}")
         }
 
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse =
