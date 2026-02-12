@@ -41,7 +41,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
     override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =
         cache.cached(Cacheomraade.NORG, enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
-            val response = client.get("api/v1/enhet/$enhetId")
+            val response = client.get("api/v1/enhet/${enhetId.value}")
 
             if (response.status.isSuccess()) {
                 response.body()
