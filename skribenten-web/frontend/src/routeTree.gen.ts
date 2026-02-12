@@ -11,7 +11,6 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as SaksnummerIndexRouteImport } from './routes/saksnummer.index'
-import { Route as DebugAnalyticsRouteImport } from './routes/debug.analytics'
 import { Route as SaksnummerSaksIdRouteRouteImport } from './routes/saksnummer_/$saksId/route'
 import { Route as SaksnummerSaksIdKvitteringRouteRouteImport } from './routes/saksnummer_/$saksId/kvittering/route'
 import { Route as SaksnummerSaksIdBrevvelgerRouteRouteImport } from './routes/saksnummer_/$saksId/brevvelger/route'
@@ -30,11 +29,6 @@ const IndexRoute = IndexRouteImport.update({
 const SaksnummerIndexRoute = SaksnummerIndexRouteImport.update({
   id: '/saksnummer/',
   path: '/saksnummer/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DebugAnalyticsRoute = DebugAnalyticsRouteImport.update({
-  id: '/debug/analytics',
-  path: '/debug/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SaksnummerSaksIdRouteRoute = SaksnummerSaksIdRouteRouteImport.update({
@@ -93,8 +87,7 @@ const SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/saksnummer/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
-  '/debug/analytics': typeof DebugAnalyticsRoute
-  '/saksnummer': typeof SaksnummerIndexRoute
+  '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
   '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
@@ -107,7 +100,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/saksnummer/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
-  '/debug/analytics': typeof DebugAnalyticsRoute
   '/saksnummer': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
@@ -122,7 +114,6 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/saksnummer_/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
-  '/debug/analytics': typeof DebugAnalyticsRoute
   '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer_/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
@@ -138,8 +129,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/saksnummer/$saksId'
-    | '/debug/analytics'
-    | '/saksnummer'
+    | '/saksnummer/'
     | '/aapne/brev/$brevId'
     | '/saksnummer/$saksId/brevbehandler'
     | '/saksnummer/$saksId/brevvelger'
@@ -152,7 +142,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/saksnummer/$saksId'
-    | '/debug/analytics'
     | '/saksnummer'
     | '/aapne/brev/$brevId'
     | '/saksnummer/$saksId/brevbehandler'
@@ -166,7 +155,6 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/saksnummer_/$saksId'
-    | '/debug/analytics'
     | '/saksnummer/'
     | '/aapne/brev/$brevId'
     | '/saksnummer_/$saksId/brevbehandler'
@@ -181,7 +169,6 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SaksnummerSaksIdRouteRoute: typeof SaksnummerSaksIdRouteRouteWithChildren
-  DebugAnalyticsRoute: typeof DebugAnalyticsRoute
   SaksnummerIndexRoute: typeof SaksnummerIndexRoute
   AapneBrevBrevIdRouteRoute: typeof AapneBrevBrevIdRouteRoute
 }
@@ -198,15 +185,8 @@ declare module '@tanstack/react-router' {
     '/saksnummer/': {
       id: '/saksnummer/'
       path: '/saksnummer'
-      fullPath: '/saksnummer'
+      fullPath: '/saksnummer/'
       preLoaderRoute: typeof SaksnummerIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/debug/analytics': {
-      id: '/debug/analytics'
-      path: '/debug/analytics'
-      fullPath: '/debug/analytics'
-      preLoaderRoute: typeof DebugAnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/saksnummer_/$saksId': {
@@ -307,7 +287,6 @@ const SaksnummerSaksIdRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SaksnummerSaksIdRouteRoute: SaksnummerSaksIdRouteRouteWithChildren,
-  DebugAnalyticsRoute: DebugAnalyticsRoute,
   SaksnummerIndexRoute: SaksnummerIndexRoute,
   AapneBrevBrevIdRouteRoute: AapneBrevBrevIdRouteRoute,
 }

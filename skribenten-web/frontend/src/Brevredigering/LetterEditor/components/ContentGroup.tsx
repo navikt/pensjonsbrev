@@ -129,7 +129,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             return null;
         }
       })}
-    </div>
+    </>
   );
 }
 
@@ -231,7 +231,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     const offset = getCursorOffset();
     if (event.shiftKey) {
-      applyAction(Actions.addNewLine, setEditorState, { ...literalIndex, cursorPosition: offset });
+      applyAction(Actions.addNewLine, setEditorState, {
+        ...literalIndex,
+        cursorPosition: offset,
+      });
     } else {
       applyAction(Actions.split, setEditorState, literalIndex, offset);
     }
@@ -357,7 +360,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - Y_COORD_SAFETY_MARGIN });
+        gotoCoordinates({
+          x: caretCoordinates.x,
+          y: next.bottom - Y_COORD_SAFETY_MARGIN,
+        });
         event.preventDefault();
       }
     }
@@ -376,7 +382,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.top + Y_COORD_SAFETY_MARGIN });
+        gotoCoordinates({
+          x: caretCoordinates.x,
+          y: next.top + Y_COORD_SAFETY_MARGIN,
+        });
         event.preventDefault();
       }
     }
