@@ -78,6 +78,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
             val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
             val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
+            val paragraf22_12_or_22_13 = if (virkningbegrunnelseStdbegr_22_12_1_5.equalTo("stdbegr_22_12_1_5").equals(true)) "22-13" else "22-12"
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_uu" AND PE_Vedtaksdata_Kravhode_KravGjelder <> "sok_ys" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endret_inntekt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "barn_endret_inntekt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "eps_endret_inntekt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "begge_for_end_inn" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_klage" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "omgj_etter_anke" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("sok_uu") and pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("sok_ys") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endret_inntekt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("barn_endret_inntekt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("eps_endret_inntekt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("begge_for_end_inn") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("omgj_etter_klage") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("omgj_etter_anke") and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()))){
@@ -1349,42 +1350,21 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2342EN, TBU2342, TBU2342NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo" AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes_Er_Ulik(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))){
-                //[TBU2343]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1402,21 +1382,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2344]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1434,63 +1404,31 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2345EN, TBU2345, TBU2345NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 og " + paragraf22_12_or_22_13 + "."},
+                    )
                 }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2346EN, TBU2346, TBU2346NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2347]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1508,21 +1446,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2348]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1540,22 +1468,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //PE_Vedtaksdata_Kravhode_KravArsakType = "soknad_bt"
             showIf(pe.vedtaksdata_kravhode_kravarsaktype().equalTo("soknad_bt")){
-                //[TBU2349EN, TBU2349, TBU2349NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og 22-13 og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16 og 22-13 og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og 22-12 og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16 og 22-12 og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsregler for barnetillegg i uføretrygden." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
+                    )
                 }
             }
 
@@ -1587,8 +1504,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_Kravhode_KravArsakType = "endring_ifu" AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IFUBegrunnelse(1) = "stdbegr_12_8_2_9" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_kravhode_kravarsaktype().equalTo("endring_ifu") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse().equalTo("stdbegr_12_8_2_9") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
-                //[TBU2352EN, TBU2352, TBU2352NN]
-
                 paragraph {
                     text (
                         bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og forskrift om uføretrygd fra folketrygden § 2-3." },
@@ -1599,63 +1514,31 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3352EN, TBU3352, TBU3352NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-19 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-19 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-19 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-19 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-19 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-19 og " + paragraf22_12_or_22_13 + "."},
+                    )
                 }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3353EN, TBU3353, TBU3353NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-19 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-19 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-19 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-19 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-19 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-19 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3354]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1673,21 +1556,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3355]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1705,63 +1578,31 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3356EN, TBU3356, TBU3356NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-20 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-20 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-20 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-20 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-20 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-20 og " + paragraf22_12_or_22_13 + "."},
+                    )
                 }
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo") THEN      INCLUDE ENDIF
             showIf((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3357EN, TBU3357, TBU3357NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-20 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-20 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-20 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-20 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-20 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-20 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3358]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1779,21 +1620,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3359]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1811,63 +1642,31 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3710EN, TBU3710, TBU3710NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-19 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-19 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-19 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-19 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-19 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-19 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3711EN, TBU3711, TBU3711NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 til 12-19 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 til 12-19 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 til 12-19 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 til 12-19 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 til 12-19 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 til 12-19 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3712]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og" + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1885,21 +1684,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
-                //[TBU3713]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1917,63 +1706,30 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3714EN, TBU3714, TBU3714NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-20 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-20 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-20 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-20 og 22-12." },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-20 og " + paragraf22_12_or_22_13 + "." },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-20 og " + paragraf22_12_or_22_13 + "." },
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget())) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3715EN, TBU3715, TBU3715NN]
-
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og 22-13." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og 22-13." },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og 22-12." },
-                        )
-                    }
-                }
+                text (
+                    bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og " + paragraf22_12_or_22_13 + "." },
+                    nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og " + paragraf22_12_or_22_13 + "." },
+                )
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3716]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 },
+                    )
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
@@ -1995,21 +1751,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
-                //[TBU3717]
                 paragraph {
-                    //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                    showIf(virkningbegrunnelseStdbegr_22_12_1_5){
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og 22-13" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og 22-13" },
-                        )
-                    }.orShow {
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og 22-12" },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og 22-12" },
-                        )
-                    }
+                    text (
+                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 },
+                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 },
+                    )
+
 
                     //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
                     showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
