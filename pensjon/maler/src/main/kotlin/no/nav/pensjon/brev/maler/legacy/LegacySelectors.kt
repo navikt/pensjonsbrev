@@ -19,8 +19,16 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_antallbarnserkullogfelles
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor_dit_dine
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor_forsorga_forsorgde
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor_has_have
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor_is_are
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_barnet_barna_opphor_stor_forbokstav
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_child_children_opphor
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_dine_ditt_barn_opphor
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_etteroppgjorfratrekklistebrukeretterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfatta10netto_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfattbilateral_avdod
@@ -32,6 +40,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektsgrense_faktisk_minus_60000
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektslandtruehvorbruktliktrue_avdod
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_konst_kralinjekode_bt
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_konst_kralinjekode_et
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_konst_kralinjekode_ut_gjt
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_konst_vilkarsvedtakresultat_opphor
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_nettoakk_pluss_nettorestar
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_sisteopptjeningarlikuforetidspunkt
@@ -391,6 +403,17 @@ fun Expression<PE>.ut_avviksbeloptfbutenminus(): Expression<Kroner> = vedtaksbre
 fun Expression<PE>.ut_avviksbeloptsbutenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb().absoluteValue()
 fun Expression<PE>.ut_avviksbeloputenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop()
 fun Expression<PE>.ut_avviksbelopututenminus(): Expression<Kroner> = vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop().absoluteValue()
+fun Expression<PE>.ut_barnet_barna_opphor(): Expression<String> = functions.pe_ut_barnet_barna_opphor.ifNull("")
+fun Expression<PE>.ut_barnet_barna_opphor_has_have(): Expression<String> = functions.pe_ut_barnet_barna_opphor_has_have.ifNull("")
+fun Expression<PE>.ut_barnet_barna_opphor_dit_dine(): Expression<String> = functions.pe_ut_barnet_barna_opphor_dit_dine.ifNull("")
+fun Expression<PE>.ut_dine_ditt_barn_opphor(): Expression<String> = functions.pe_ut_dine_ditt_barn_opphor.ifNull("")
+fun Expression<PE>.ut_child_children_opphor(): Expression<String> = functions.pe_ut_child_children_opphor.ifNull("")
+fun Expression<PE>.ut_barnet_barna_opphor_is_are(): Expression<String> = functions.pe_ut_barnet_barna_opphor_is_are.ifNull("")
+fun Expression<PE>.ut_barnet_barna_opphor_forsorga_forsorgde(): Expression<String> = functions.pe_ut_barnet_barna_opphor_forsorga_forsorgde.ifNull("")
+fun Expression<PE>.ut_barnet_barna_opphor_stor_forbokstav(): Expression<String> = functions.pe_ut_barnet_barna_opphor_stor_forbokstav.ifNull("")
+fun Expression<PE>.ut_konst_kralinjekode_et(): Expression<String> = functions.pe_ut_konst_kralinjekode_et.ifNull("")
+fun Expression<PE>.ut_konst_kralinjekode_bt(): Expression<String> = functions.pe_ut_konst_kralinjekode_bt.ifNull("")
+fun Expression<PE>.ut_konst_kralinjekode_ut_gjt(): Expression<String> = functions.pe_ut_konst_kralinjekode_ut_gjt.ifNull("")
 fun Expression<PE>.ut_btfbinntektbruktiavkortningminusbtfbfribelop(): Expression<Kroner> = functions.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop.ifNull(Kroner(0))
 fun Expression<PE>.ut_btsbinntektbruktiavkortningminusbtsbfribelop(): Expression<Kroner> = functions.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop.ifNull(Kroner(0))
 fun Expression<PE>.ut_etteroppgjorfratrekklistebrukeretterbetaling() = functions.pe_ut_etteroppgjorfratrekklistebrukeretterbetaling
@@ -407,6 +430,7 @@ fun Expression<PE>.ut_inntektsgrense_faktisk_minus_60000(): Expression<Kroner> =
 fun Expression<PE>.ut_inntektslandtruehvorbruktlikfalse_avdod(): Expression<Boolean> = functions.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
 fun Expression<PE>.ut_inntektslandtruehvorbruktliktrue_avdod(): Expression<Boolean> = functions.pe_ut_inntektslandtruehvorbruktliktrue_avdod
 fun Expression<PE>.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv(): Expression<Int> = functions.pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv.ifNull(0)
+fun Expression<PE>.ut_konst_vilkarsvedtakresultat_opphor(): Expression<String> = functions.pe_ut_konst_vilkarsvedtakresultat_opphor.ifNull("")
 fun Expression<PE>.ut_nettoakk_pluss_nettorestar(): Expression<Kroner> = functions.pe_ut_nettoakk_pluss_nettorestar
 fun Expression<PE>.ut_oifuperiode_else_oifu(): Expression<Kroner> = vedtaksbrev.safe{ vedtaksdata }.safe{ beregningsdata }.safe{ beregningufore }.safe{ oifuvirkningstidspunkt }.ifNull(Kroner(0))
 fun Expression<PE>.ut_sisteopptjeningarlikuforetidspunkt(): Expression<Boolean> = functions.pe_ut_sisteopptjeningarlikuforetidspunkt

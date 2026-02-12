@@ -57,6 +57,19 @@ data class PE(
         val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
         val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
         val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
-        val pe_ut_fodselsdatobarn: LocalDate?
+        val pe_ut_fodselsdatobarn: LocalDate?,
+        val pe_ut_konst_vilkarsvedtakresultat_opphor: String,
+        val pe_ut_barnet_barna_opphor: String,
+        val pe_ut_barnet_barna_opphor_has_have: String,
+        val pe_ut_barnet_barna_opphor_dit_dine: String,
+        val pe_ut_dine_ditt_barn_opphor: String,
+        val pe_ut_child_children_opphor: String,
+        val pe_ut_barnet_barna_opphor_is_are: String,
+        val pe_ut_barnet_barna_opphor_forsorga_forsorgde: String,
+        val pe_ut_barnet_barna_opphor_stor_forbokstav: String,
+        val pe_ut_konst_kralinjekode_et: String,
+        val pe_ut_konst_kralinjekode_bt: String,
+        val pe_ut_konst_kralinjekode_ut_gjt: String,
+
         )
 }

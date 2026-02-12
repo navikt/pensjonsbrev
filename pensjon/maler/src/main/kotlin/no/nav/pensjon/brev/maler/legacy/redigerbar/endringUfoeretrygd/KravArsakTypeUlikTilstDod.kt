@@ -5,11 +5,23 @@ import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_personbost
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor_dit_dine
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor_forsorga_forsorgde
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor_has_have
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor_is_are
+import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_opphor_stor_forbokstav
+import no.nav.pensjon.brev.maler.legacy.ut_child_children_opphor
+import no.nav.pensjon.brev.maler.legacy.ut_dine_ditt_barn_opphor
 import no.nav.pensjon.brev.maler.legacy.ut_fodselsdatobarn
 import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_ingen_er_false
 import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_ingen_er_true
 import no.nav.pensjon.brev.maler.legacy.ut_forsorgeransvar_siste_er_true
 import no.nav.pensjon.brev.maler.legacy.ut_inntektsgrense_faktisk
+import no.nav.pensjon.brev.maler.legacy.ut_konst_kralinjekode_bt
+import no.nav.pensjon.brev.maler.legacy.ut_konst_kralinjekode_et
+import no.nav.pensjon.brev.maler.legacy.ut_konst_kralinjekode_ut_gjt
+import no.nav.pensjon.brev.maler.legacy.ut_konst_vilkarsvedtakresultat_opphor
 import no.nav.pensjon.brev.maler.legacy.ut_virkningstidpunktstorreenn01012016
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter
 import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar
@@ -698,7 +710,6 @@ object KravArsakTypeUlikTilstDod {
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_EktefelleGarantiTillegg_EGTinnvilget = false) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold") and not(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefellegarantitillegg_egtinnvilget()))) {
                 //[TBU2305EN, TBU2305, TBU2305NN]
-
                 paragraph {
                     text(
                         bokmal { +"Du har uføretrygd med minsteytelse. Størrelsen på minsteytelsen er avhengig av sivilstanden din." },
@@ -711,7 +722,6 @@ object KravArsakTypeUlikTilstDod {
             //IF(  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true  AND PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring" AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true OR PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = true)  ) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() and pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))) {
                 //[TBU2305_1EN, TBU2305_1, TBU2305_1NN]
-
                 paragraph {
                     text(
                         bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Utbetalingen din endres derfor til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " ganger folketrygdens grunnbeløp." },
@@ -724,7 +734,6 @@ object KravArsakTypeUlikTilstDod {
             //IF(  (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = false OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false)) AND PE_Vedtaksdata_Kravhode_KravArsakType = "sivilstandsendring"  ) THEN      INCLUDE ENDIF
             showIf(((not(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) or (not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))) and pe.vedtaksdata_kravhode_kravarsaktype().equalTo("sivilstandsendring"))) {
                 //[TBU2305_2EN, TBU2305_2, TBU2305_2NN]
-
                 paragraph {
                     text(
                         bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
@@ -1215,7 +1224,7 @@ object KravArsakTypeUlikTilstDod {
                             paragraph {
                                 text(
                                     bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. " + pe.ut_barnet_barna_opphor_stor_forbokstav() + "s andre forelder har rett til et høyere barnetillegg enn det du vil få. Vi har derfor opphørt barnetillegget i uføretrygden din. " },
-                                    nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av begge foreldra og begge får uføretrygd, blir barnetillegget gitt til den som får det høgaste tillegget. Den andre forelderen har rett til eit høgare barnetillegg enn det du vil få. Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                    nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsorga_forsorgde() + " av begge foreldra og begge får uføretrygd, blir barnetillegget gitt til den som får det høgaste tillegget. Den andre forelderen har rett til eit høgare barnetillegg enn det du vil få. Vi har derfor stansa barnetillegget i uføretrygda di." },
                                     english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by both parents and both are receiving disability benefit, the child supplement will be given to the parent that receives the highest supplement. The " + pe.ut_barnet_barna_opphor() + "'s other parent is entitled to a higher child supplement than you would receive. Therefore your child supplement in your disability benefit has been discontinued." },
                                 )
                             }
@@ -1227,7 +1236,7 @@ object KravArsakTypeUlikTilstDod {
                             paragraph {
                                 text(
                                     bokmal { +"Når " + pe.ut_barnet_barna_opphor() + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bor ikke på samme folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                                    nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsørga_forsørgde() + " av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bur ikkje på same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor stansa barnetillegget i uføretrygda di." },
+                                    nynorsk { +"Når " + pe.ut_barnet_barna_opphor() + " blir " + pe.ut_barnet_barna_opphor_forsorga_forsorgde() + " av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Du bur ikkje på same folkeregistrerte adresse som " + pe.ut_barnet_barna_opphor() + ". Vi har derfor stansa barnetillegget i uføretrygda di." },
                                     english { +"When the " + pe.ut_barnet_barna_opphor() + " " + pe.ut_barnet_barna_opphor_is_are() + " supported by parents who do not live together, the child supplement will be paid to the parent that has the same registered address as the " + pe.ut_barnet_barna_opphor() + ". You do not live at the same registered address as the " + pe.ut_barnet_barna_opphor() + ". Therefore your child supplement in your disability benefit has been discontinued." },
                                 )
                             }
