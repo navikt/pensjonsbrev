@@ -7,6 +7,7 @@ import { getBrevInfoQuery } from "~/api/brev-queries";
 import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
+import type { BrevInfo } from "~/types/brev";
 import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 import { trackEvent } from "~/utils/umami";
 
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
       throw new Error("Ugyldig brev-ID mottatt fra Pesys. Gå tilbake til Pesys og prøv igjen.");
     }
 
-    let brevInfo;
+    let brevInfo: BrevInfo;
     try {
       brevInfo = await queryClient.ensureQueryData(getBrevInfoQuery(brevIdNum));
     } catch (error) {

@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
 import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -44,7 +45,7 @@ enum class EksempelbrevRedigerbartBrevkode : Brevkode.Redigerbart {
 object EksempelbrevRedigerbart : RedigerbarTemplate<EksempelRedigerbartDto> {
 
     override val kode: Brevkode.Redigerbart = EksempelbrevRedigerbartBrevkode.TESTBREV_REDIGERBART
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 

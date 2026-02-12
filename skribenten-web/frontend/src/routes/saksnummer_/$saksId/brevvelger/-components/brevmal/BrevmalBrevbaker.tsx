@@ -11,8 +11,7 @@ import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlterna
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type { SpraakKode } from "~/types/apiTypes";
+import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
@@ -116,7 +115,7 @@ const BrevmalBrevbaker = (props: {
         avsenderEnhetsId: values.enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
         mottaker: values.mottaker,
-        vedtaksId: vedtaksId ? Number.parseInt(vedtaksId) : null,
+        vedtaksId: vedtaksId ? Number.parseInt(vedtaksId, 10) : null,
       }),
 
     onSuccess: async (response) => {

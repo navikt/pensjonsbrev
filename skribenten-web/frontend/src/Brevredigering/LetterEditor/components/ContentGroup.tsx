@@ -1,4 +1,5 @@
-import React, { useEffect, useRef } from "react";
+import type React from "react";
+import { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -28,8 +29,16 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
-import { NEW_LINE, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
-import { ElementTags, FontType, ITEM_LIST, LITERAL, VARIABLE } from "~/types/brevbakerTypes";
+import {
+  ElementTags,
+  FontType,
+  ITEM_LIST,
+  LITERAL,
+  NEW_LINE,
+  TABLE,
+  TITLE_INDEX,
+  VARIABLE,
+} from "~/types/brevbakerTypes";
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
@@ -66,39 +75,39 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
-    <div>
-      {contents.map((content, _contentIndex) => {
+    <>
+      {contents.map((content, contentIndex) => {
         switch (content.type) {
           case LITERAL: {
             const updatedLiteralIndex =
               "itemIndex" in literalIndex
-                ? { ...literalIndex, itemContentIndex: _contentIndex }
-                : { ...literalIndex, contentIndex: _contentIndex };
-            return <EditableText content={content} key={_contentIndex} literalIndex={updatedLiteralIndex} />;
+                ? { ...literalIndex, itemContentIndex: contentIndex }
+                : { ...literalIndex, contentIndex: contentIndex };
+            return <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />;
           }
           case NEW_LINE:
           case VARIABLE: {
             return (
               <Text
                 content={content}
-                key={_contentIndex}
+                key={contentIndex}
                 literalIndex={{
                   blockIndex: literalIndex.blockIndex,
-                  contentIndex: _contentIndex,
+                  contentIndex: contentIndex,
                 }}
               />
             );
           }
           case ITEM_LIST: {
             return (
-              <ul key={_contentIndex}>
-                {content.items.map((item, _itemIndex) => (
-                  <li key={_itemIndex}>
+              <ul key={contentIndex}>
+                {content.items.map((_item, itemIndex) => (
+                  <li key={itemIndex}>
                     <ContentGroup
                       literalIndex={{
                         blockIndex: literalIndex.blockIndex,
-                        contentIndex: _contentIndex,
-                        itemIndex: _itemIndex,
+                        contentIndex: contentIndex,
+                        itemIndex: itemIndex,
                       }}
                     />
                   </li>
@@ -110,12 +119,14 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             return (
               <TableView
                 blockIndex={literalIndex.blockIndex}
-                contentIndex={_contentIndex}
-                key={_contentIndex}
+                contentIndex={contentIndex}
+                key={contentIndex}
                 node={content}
               />
             );
           }
+          default:
+            return null;
         }
       })}
     </div>
@@ -582,12 +593,15 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   return (
+    /**
+     * biome-ignore lint/a11y/noStaticElementInteractions: Behandles som redigerbar, og derfor
+     * interaktiv, tekst
+     */
     <span
-      // contentEditable='plaintext-only' blocks rich text content and prevents
-      // unhandled native bold/italic/underline formatting from interfering with
-      // Skribenten-styling. However, Cypress and jsdom/happy-dom do not handle
-      // 'plaintext-only' well, and browser native formatting shortcuts and
-      // pasting can be blocked/overridden in event handlers.
+      // contentEditable='plaintext-only' blocks rich text content and prevents unhandled native
+      // bold/italic/underline formatting from interfering with Skribenten-styling. However, Cypress
+      // and jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
+      // shortcuts and pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
       css={{
         lineHeight: "var(--ax-font-line-height-medium)",

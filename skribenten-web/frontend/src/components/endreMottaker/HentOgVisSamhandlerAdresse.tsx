@@ -5,8 +5,8 @@ import type { AxiosError } from "axios";
 import { hentSamhandlerAdresseQuery } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import type { SamhandlerTypeCode } from "~/types/apiTypes";
-import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 import type { Nullable } from "~/types/Nullable";
+import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 

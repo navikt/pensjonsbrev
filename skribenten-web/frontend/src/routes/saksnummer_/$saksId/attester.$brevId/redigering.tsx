@@ -24,7 +24,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import { type AttestForbiddenReason } from "~/utils/parseAttest403";
+import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
@@ -118,7 +118,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const showDebug = useSearch({
     strict: false,
-    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
+    select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
   const reservasjonQuery = useQuery({
@@ -142,7 +142,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
       oppdaterBrev({
-        saksId: Number.parseInt(props.saksId),
+        saksId: Number.parseInt(props.saksId, 10),
         brevId: props.brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,

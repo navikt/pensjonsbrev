@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
 import { BodyShort, BoxNew, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 import { VerticalDivider } from "~/components/Divider";
 import { SlettBrev } from "~/components/SlettBrev";

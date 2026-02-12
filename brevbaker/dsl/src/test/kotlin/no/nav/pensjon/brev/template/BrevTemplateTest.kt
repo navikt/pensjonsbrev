@@ -27,7 +27,7 @@ private class BrevTemplateTest {
     private val testExpressionScope = ExpressionScope(EmptyAutobrevdata, FellesFactory.felles, Language.Bokmal)
 
     private object EksempelBrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
-        override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+        override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
         override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
         override val sakstyper = setOf(object : ISakstype {
             override val kode = "ALDER"
@@ -91,4 +91,11 @@ private class BrevTemplateTest {
         }
     }
 
+}
+
+
+enum class Brevkategori : TemplateDescription.IBrevkategori {
+    INNHENTE_OPPLYSNINGER;
+
+    override val kode: String = name
 }

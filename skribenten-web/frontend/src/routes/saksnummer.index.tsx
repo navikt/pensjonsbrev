@@ -1,9 +1,7 @@
 import { Button, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
-import { useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import React from "react";
 import { useForm } from "react-hook-form";
 
 import { getSakContextQuery } from "~/api/skribenten-api-endpoints";

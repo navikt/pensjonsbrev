@@ -23,8 +23,7 @@ import { z } from "zod";
 
 import { hentAlleBrevForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevError, BestillBrevResponse } from "~/types/brev";
-import { type BrevInfo } from "~/types/brev";
+import type { BestillBrevError, BestillBrevResponse, BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 

@@ -1,6 +1,5 @@
 import type { UserInfo } from "~/api/bff-endpoints";
-import type { BrevInfo } from "~/types/brev";
-import { type BrevStatus, type NavAnsatt } from "~/types/brev";
+import type { BrevInfo, BrevStatus, NavAnsatt } from "~/types/brev";
 
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
   switch (status.type) {

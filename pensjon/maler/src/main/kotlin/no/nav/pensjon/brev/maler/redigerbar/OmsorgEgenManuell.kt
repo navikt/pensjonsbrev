@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDtoSelect
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringOutline
 import no.nav.pensjon.brev.maler.fraser.OmsorgEgenerklaeringTittel
 import no.nav.pensjon.brev.maler.vedlegg.egenerklaeringPleieOgOmsorgsarbeidManuell
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -24,7 +25,7 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_OMSORG_EGEN_MANUELL
 
-    override val kategori = TemplateDescription.Brevkategori.OMSORGSOPPTJENING
+    override val kategori = Brevkategori.OMSORGSOPPTJENING
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.OMSORG)
     override val template = createTemplate(

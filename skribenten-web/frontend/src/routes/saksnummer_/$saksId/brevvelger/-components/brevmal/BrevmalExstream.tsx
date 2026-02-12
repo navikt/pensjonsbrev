@@ -9,8 +9,7 @@ import type { z } from "zod";
 import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
-import type { SpraakKode } from "~/types/apiTypes";
-import { type LetterMetadata, type OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { LetterMetadata, OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
 import type { SubmitTemplateOptions } from "../../route";

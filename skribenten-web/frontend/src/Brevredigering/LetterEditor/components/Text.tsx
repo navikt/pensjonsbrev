@@ -21,6 +21,12 @@ export const Text = ({ content, literalIndex }: TextProperties) => {
     }
     case VARIABLE: {
       return (
+        /**
+         * biome-ignore lint/a11y/useKeyWithClickEvents: Klikk trenger ikke en tilsvarende
+         * tastehendelse her siden det håndteres i ContentGroup.tsx
+         * biome-ignore lint/a11y/noStaticElementInteractions: Ikke egentlig en interaksjon, hjelper
+         * oss bare med å holde oversikt over fokus
+         */
         <span
           css={{
             background: "var(--ax-bg-neutral-moderate)",

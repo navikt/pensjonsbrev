@@ -16,7 +16,7 @@ import type { EditedLetter } from "~/types/brevbakerTypes";
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
 const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
-  const { editorState, setEditorState, onSaveSuccess: onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const { mutate, isError } = useMutation<BrevResponse, AxiosError, EditedLetter>({
     mutationFn: (redigertBrev: EditedLetter) => {

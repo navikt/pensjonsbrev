@@ -3,8 +3,7 @@ import "react-pdf/dist/Page/AnnotationLayer.css";
 
 import { BoxNew, HStack, VStack } from "@navikt/ds-react";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { pdfjs } from "react-pdf";
-import { Document, Page as PDFPage } from "react-pdf";
+import { Document, Page as PDFPage, pdfjs } from "react-pdf";
 
 import { CenteredLoader } from "~/components/CenteredLoader";
 

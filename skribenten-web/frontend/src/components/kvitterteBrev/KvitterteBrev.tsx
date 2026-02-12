@@ -9,7 +9,7 @@ import type { Nullable } from "~/types/Nullable";
 
 import AccordionContent from "./KvittertBrevContent";
 import AccordionHeader from "./KvittertBrevHeader";
-import { getPriorityKey, kvitteringSorteringsPrioritet, type KvittertBrev } from "./KvitterteBrevUtils";
+import { getPriorityKey, type KvittertBrev, kvitteringSorteringsPrioritet } from "./KvitterteBrevUtils";
 
 const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[] }) => {
   const sorted = properties.kvitterteBrev.toSorted(

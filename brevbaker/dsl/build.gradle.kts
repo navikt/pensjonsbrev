@@ -26,7 +26,6 @@ dependencies {
     implementation(kotlin("stdlib"))
     implementation(libs.brevbaker.common)
 
-    // JUnit 5
     testImplementation(libs.bundles.junit)
     testImplementation(kotlin("reflect"))
 
