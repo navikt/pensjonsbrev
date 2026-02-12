@@ -33,7 +33,7 @@ class ExternalAPIServiceTest {
         laastForRedigering = false,
         distribusjonstype = Distribusjonstype.SENTRALPRINT,
         mottaker = null,
-        avsenderEnhetId = "0001",
+        avsenderEnhetId = EnhetId("0001"),
         spraak = LanguageCode.BOKMAL,
         journalpostId = null,
         attestertAv = null,

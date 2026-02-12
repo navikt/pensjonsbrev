@@ -19,7 +19,7 @@ class LegacyBrevServiceTest {
 
     private val principalIdent = NavIdent("kulIdent1234")
     private val principal = MockPrincipal(principalIdent, "Kul saksbehandler")
-    private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "Nav Ozzzlo")
+    private val principalSinNAVEnhet = NAVAnsattEnhet(EnhetId("1111"), "Nav Ozzzlo")
 
 
     private val exstreamBrevMetadata = BrevdataDto(
@@ -99,7 +99,7 @@ class LegacyBrevServiceTest {
                         vedtaksId = null,
                         idTSSEkstern = null,
                         brevtittel = null,
-                        enhetsId = "9999"
+                        enhetsId = EnhetId("9999")
                     ),
                     saksId = 3333L
                 )
@@ -156,7 +156,7 @@ class LegacyBrevServiceTest {
                 legacyBrevService.bestillOgRedigerEblankett(
                     gjelderPid = "9999", request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
-                        enhetsId = "9999",
+                        enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",
                         landkode = "NO",
                     ),

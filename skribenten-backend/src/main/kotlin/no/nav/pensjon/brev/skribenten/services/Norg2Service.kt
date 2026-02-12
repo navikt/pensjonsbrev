@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface Norg2Service {
-    suspend fun getEnhet(enhetId: String): NavEnhet
+    suspend fun getEnhet(enhetId: EnhetId): NavEnhet
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
@@ -38,7 +38,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
         install(CallIdFromContext)
     }
 
-    override suspend fun getEnhet(enhetId: String): NavEnhet =
+    override suspend fun getEnhet(enhetId: EnhetId): NavEnhet =
         cache.cached(Cacheomraade.NORG, enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             val response = client.get("api/v1/enhet/$enhetId")
@@ -53,8 +53,11 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
 }
 
 data class NavEnhet(
-    val enhetNr: String,
+    val enhetNr: EnhetId,
     val navn: String
 )
 
-class Norg2EnhetException(enhetId: String) : IllegalStateException("Fant ikke enhet med id $enhetId i NORG2")
+@JvmInline
+value class EnhetId(val value: String)
+
+class Norg2EnhetException(enhetId: EnhetId) : IllegalStateException("Fant ikke enhet med id $enhetId i NORG2")

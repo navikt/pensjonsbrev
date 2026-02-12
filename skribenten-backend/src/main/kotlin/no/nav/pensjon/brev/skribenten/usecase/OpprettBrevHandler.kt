@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
@@ -31,7 +32,7 @@ class OpprettBrevHandler(
         val vedtaksId: Long?,
         val brevkode: Brevkode.Redigerbart,
         val spraak: LanguageCode,
-        val avsenderEnhetsId: String,
+        val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean = false,
         val mottaker: Dto.Mottaker? = null,

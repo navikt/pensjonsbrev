@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -28,7 +29,7 @@ interface Brevredigering {
     val vedtaksId: Long?
     val brevkode: Brevkode.Redigerbart
     val spraak: LanguageCode
-    val avsenderEnhetId: String
+    val avsenderEnhetId: EnhetId
     val saksbehandlerValg: SaksbehandlerValg
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
@@ -120,7 +121,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             opprettetAv: NavIdent,
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            avsenderEnhetId: String,
+            avsenderEnhetId: EnhetId,
             saksbehandlerValg: SaksbehandlerValg,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,

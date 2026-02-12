@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -25,7 +26,7 @@ open class BrevredigeringStub : Brevredigering {
     override val vedtaksId: Long get() = notYetStubbed()
     override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()
-    override val avsenderEnhetId: String get() = notYetStubbed()
+    override val avsenderEnhetId: EnhetId get() = notYetStubbed()
     override val saksbehandlerValg: SaksbehandlerValg get() = notYetStubbed()
     override val redigertBrev: Edit.Letter get() = notYetStubbed()
     override val redigertBrevHash: Hash<Edit.Letter> get() = notYetStubbed()

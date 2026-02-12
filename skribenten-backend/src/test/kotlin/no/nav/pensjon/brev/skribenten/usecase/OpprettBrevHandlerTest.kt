@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil.ANNEN
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -73,7 +74,7 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
             opprettBrev(
                 sak = sak1,
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
-                avsenderEnhetsId = "The Matrix",
+                avsenderEnhetsId = EnhetId("The Matrix"),
             )
         }
         assertThat(brev).isFailure<IkkeTilgangTilEnhet, _, _>()

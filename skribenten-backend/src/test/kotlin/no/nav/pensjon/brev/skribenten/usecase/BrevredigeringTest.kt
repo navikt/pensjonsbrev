@@ -121,7 +121,7 @@ abstract class BrevredigeringTest {
             initADGroups()
         }
 
-        const val PRINCIPAL_NAVENHET_ID = "Nebuchadnezzar"
+        val PRINCIPAL_NAVENHET_ID = EnhetId("Nebuchadnezzar")
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
         val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
@@ -225,7 +225,7 @@ abstract class BrevredigeringTest {
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
         vedtaksId: Long? = null,
         sak: Pen.SakSelection = sak1,
-        avsenderEnhetsId: String = PRINCIPAL_NAVENHET_ID,
+        avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
             OpprettBrevHandler.Request(

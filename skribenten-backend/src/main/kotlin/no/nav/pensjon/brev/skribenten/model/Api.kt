@@ -26,7 +26,7 @@ object Api {
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
-        val avsenderEnhetsId: String,
+        val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
@@ -186,14 +186,14 @@ object Api {
         val vedtaksId: Long? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
-        val enhetsId: String,
+        val enhetsId: EnhetId,
     )
 
     data class BestillEblankettRequest(
         val brevkode: String,
         val landkode: String,
         val mottakerText: String,
-        val enhetsId: String,
+        val enhetsId: EnhetId,
     )
 
     data class BestillOgRedigerBrevResponse(
