@@ -152,7 +152,7 @@ object P1PDFDto {
     )
 
     val adresseNyVurderingNorgeNAY = mapOf(
-        BOKMAL to "NAV Arbeid og Ytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
+        BOKMAL to "Nav Arbeid og Ytelser\nPostboks 6600 Etterstad\n0607 Oslo\nNorge",
         ENGLISH to "The Norwegian Labour and Welfare Administration\nPostboks 6600 Etterstad\n0607 Oslo\nNorway",
     )
 

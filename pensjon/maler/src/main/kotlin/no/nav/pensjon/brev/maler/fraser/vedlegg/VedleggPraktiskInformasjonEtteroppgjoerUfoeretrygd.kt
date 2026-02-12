@@ -146,7 +146,7 @@ object InntekterSomKanHoldesUtenforEtteroppgjoeret :
                     text (
                         bokmal { + "Store etterbetalinger og pengestøtte fra Nav, hvis pengestøtten er pensjonsgivende og etterbetalingen har skjedd i 2024 eller senere."},
                         nynorsk { + "Store etterbetalingar og pengestøtte frå Nav dersom pengestøtta er pensjonsgivande og etterbetalinga blei gjort i 2024 eller seinare."},
-                        english { + "Large retroactive payments and benefits from NAV, where the benefit counts as pensionable income, and the retroactive payment was made in 2024 or later."},
+                        english { + "Large retroactive payments and benefits from Nav, where the benefit counts as pensionable income, and the retroactive payment was made in 2024 or later."},
                     )
                 }
                 item {

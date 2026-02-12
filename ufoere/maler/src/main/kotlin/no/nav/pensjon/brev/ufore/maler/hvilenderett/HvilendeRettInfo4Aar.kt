@@ -73,7 +73,7 @@ object HvilendeRettInfo4Aar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 list { 
                     item {
                         text(
-                            bokmal { + "Du korrigerer selv forventet inntekt i Inntektsplanleggeren din. Denne finner du på Ditt NAV // Din Uføretrygd // Inntektsplanlegger." },
+                            bokmal { + "Du korrigerer selv forventet inntekt i Inntektsplanleggeren din. Denne finner du på Ditt Nav // Din Uføretrygd // Inntektsplanlegger." },
                         )
                     }
                     item {
