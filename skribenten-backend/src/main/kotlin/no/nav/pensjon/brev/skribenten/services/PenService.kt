@@ -139,12 +139,17 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         avsenderEnhetsId: String?
     ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
-            if (avsenderEnhetsId != null) {
-                url {
-                    parameters.append("enhetsId", avsenderEnhetsId)
-                    vedtaksId?.let { parameters.append("vedtaksId", it.toString()) }
+            mapOf(
+                "enhetsId" to avsenderEnhetsId,
+                "vedtaksId" to vedtaksId?.toString(),
+            )
+                .filter { it.value != null }
+                .takeIf { it.isNotEmpty() }
+                ?.let { params ->
+                    url {
+                        params.forEach { (key, value) -> parameters.append(key, value!!) }
+                    }
                 }
-            }
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
     override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): P1VedleggDataResponse =
