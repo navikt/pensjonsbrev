@@ -44,7 +44,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet NAV 08-07.08. " })
+                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen fire uker. Erklæringen sendes elektronisk. " })
