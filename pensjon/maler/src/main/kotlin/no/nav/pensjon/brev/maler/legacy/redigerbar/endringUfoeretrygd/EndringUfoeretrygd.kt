@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -68,7 +70,7 @@ object EndringUfoeretrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             )
         }
         outline {
-
+includePhrase(KravArsakTypeUlikTilstDod.TBU2287til2297(pesysData.pe))
 
         }
     }

@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfatta10netto_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfattbilateral_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfatteos_avdod
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fodselsdatobarn
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_forstegangstjenesteikkenull
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_trukket_fra_personinntekt
@@ -418,6 +419,7 @@ fun Expression<PE>.ut_uforetrygdetteroppgjor_periodefom_year(): Expression<Int> 
 fun Expression<PE>.ut_vilfylle67ivirkningfomar(): Expression<Boolean> = functions.pe_ut_vilfylle67ivirkningfomar
 fun Expression<PE>.ut_vilkargjelderpersonalder(): Expression<Int> = functions.pe_ut_vilkargjelderpersonalder
 fun Expression<PE>.ut_virkningfomar(): Expression<Int> = functions.pe_ut_virkningfomar
+fun Expression<PE>.ut_fodselsdatobarn(): Expression<LocalDate?> = functions.pe_ut_fodselsdatobarn
 fun Expression<PE>.ut_virkningstidpunktarminus1ar(): Expression<Int> = functions.pe_ut_virkningstidpunktarminus1ar
 fun Expression<PE>.vedtakfattetdato_minus_1mnd(): Expression<LocalDate> = vedtaksbrev.safe{ vedtaksdata }.safe{ vedtakfattetdatominus1mnd }.ifNull(LocalDate.of(1000,1,1))
 fun Expression<PE>.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter(): Expression<Kroner> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ instopphfasteutgifterperiodeliste }.safe{ instopphfasteutgifterperiode }.getOrNull().safe{ fasteutgifter }.ifNull(Kroner(0))
