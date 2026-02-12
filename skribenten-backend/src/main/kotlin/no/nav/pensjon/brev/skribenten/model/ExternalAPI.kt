@@ -18,7 +18,7 @@ object ExternalAPI {
         val brevkode: Brevkode.Redigerbart,
         val tittel: String,
         val brevtype: LetterMetadata.Brevtype,
-        val avsenderEnhetsId: String?,
+        val avsenderEnhetsId: String,
         val spraak: SpraakKode,
         val opprettetAv: NavIdent,
         val sistRedigertAv: NavIdent,

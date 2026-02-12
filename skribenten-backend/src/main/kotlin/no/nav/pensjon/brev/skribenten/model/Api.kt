@@ -26,7 +26,7 @@ object Api {
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
-        val avsenderEnhetsId: String?,
+        val avsenderEnhetsId: String,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
@@ -64,7 +64,7 @@ object Api {
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
-        val avsenderEnhet: NavEnhet?,
+        val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
         val journalpostId: Long?,
         val vedtaksId: Long?,

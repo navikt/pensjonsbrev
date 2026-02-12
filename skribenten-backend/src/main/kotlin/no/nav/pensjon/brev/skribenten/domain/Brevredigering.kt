@@ -28,7 +28,7 @@ interface Brevredigering {
     val vedtaksId: Long?
     val brevkode: Brevkode.Redigerbart
     val spraak: LanguageCode
-    val avsenderEnhetId: String?
+    val avsenderEnhetId: String
     val saksbehandlerValg: SaksbehandlerValg
     val redigertBrev: Edit.Letter
     val redigertBrevHash: Hash<Edit.Letter>
@@ -120,7 +120,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             opprettetAv: NavIdent,
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
-            avsenderEnhetId: String?,
+            avsenderEnhetId: String,
             saksbehandlerValg: SaksbehandlerValg,
             redigertBrev: Edit.Letter,
             brevtype: LetterMetadata.Brevtype,

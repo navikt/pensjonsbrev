@@ -39,7 +39,7 @@ object Dto {
         val laastForRedigering: Boolean,
         val distribusjonstype: Distribusjonstype,
         val mottaker: Mottaker?,
-        val avsenderEnhetId: String?,
+        val avsenderEnhetId: String,
         val spraak: LanguageCode,
         val journalpostId: Long?,
         val attestertAv: NavIdent?,

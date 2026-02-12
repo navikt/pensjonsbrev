@@ -90,7 +90,7 @@ object BrevredigeringTable : LongIdTable() {
     val vedtaksId: Column<Long?> = long("vedtaksId").nullable()
     val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
     val spraak: Column<LanguageCode> = varchar("spraak", length = 50).transform(LanguageCode::valueOf, LanguageCode::name)
-    val avsenderEnhetId: Column<String?> = varchar("avsenderEnhetId", 50).nullable()
+    val avsenderEnhetId: Column<String> = varchar("avsenderEnhetId", 50)
     val saksbehandlerValg = json<SaksbehandlerValg>("saksbehandlerValg", databaseObjectMapper::writeValueAsString, ::readJsonString)
     val redigertBrevKryptert: Column<Edit.Letter> = encryptedBinary("redigertBrevKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)

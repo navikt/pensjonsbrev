@@ -15,7 +15,7 @@ class BrevdataService(private val penService: PenService, private val samhandler
         saksId: Long,
         vedtaksId: Long?,
         brevkode: Brevkode.Redigerbart,
-        avsenderEnhetsId: String?,
+        avsenderEnhetsId: String,
         mottaker: Dto.Mottaker?,
         signatur: SignerendeSaksbehandlere
     ): BrevdataResponse.Data {

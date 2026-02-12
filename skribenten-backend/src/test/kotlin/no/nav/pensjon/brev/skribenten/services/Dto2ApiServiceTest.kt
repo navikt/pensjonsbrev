@@ -21,7 +21,7 @@ class Dto2ApiServiceTest {
     private val saksbehandler = NavIdent("Z123")
     private val attestant = NavIdent("A 456")
 
-    private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
+    private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(mapOf("123" to NavEnhet("123", "En vanlig enhet"))), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
         Dto2ApiService(
             brevbakerService = FakeBrevbakerService(
                 redigerbareMaler = mutableMapOf(Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
@@ -97,7 +97,7 @@ class Dto2ApiServiceTest {
         sistredigertAv: NavIdent = saksbehandler,
         redigeresAv: NavIdent? = null,
         laastForRedigering: Boolean = false,
-        avsenderEnhetId: String? = null,
+        avsenderEnhetId: String = "123",
         mottaker: Dto.Mottaker? = null,
         attestertAv: NavIdent? = null,
     ) = Dto.BrevInfo(

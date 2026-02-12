@@ -53,7 +53,7 @@ open class FakeNavansattService(
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
-    override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
+    override suspend fun getEnhet(enhetId: String) = enheter[enhetId] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
 open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
@@ -152,7 +152,7 @@ open class PenServiceStub : PenService {
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
-    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data = notYetStubbed()
+    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
     override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
 }

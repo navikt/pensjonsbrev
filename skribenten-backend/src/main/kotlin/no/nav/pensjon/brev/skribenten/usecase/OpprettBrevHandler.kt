@@ -31,7 +31,7 @@ class OpprettBrevHandler(
         val vedtaksId: Long?,
         val brevkode: Brevkode.Redigerbart,
         val spraak: LanguageCode,
-        val avsenderEnhetsId: String?,
+        val avsenderEnhetsId: String,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean = false,
         val mottaker: Dto.Mottaker? = null,

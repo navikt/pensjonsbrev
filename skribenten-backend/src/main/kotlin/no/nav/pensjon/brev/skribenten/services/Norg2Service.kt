@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
 import org.slf4j.LoggerFactory
 
 interface Norg2Service {
-    suspend fun getEnhet(enhetId: String): NavEnhet?
+    suspend fun getEnhet(enhetId: String): NavEnhet
 }
 
 // docs: https://confluence.adeo.no/display/FEL/NORG2+-+Teknisk+beskrivelse - trykk på droppdown
@@ -38,8 +38,8 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
         install(CallIdFromContext)
     }
 
-    override suspend fun getEnhet(enhetId: String): NavEnhet? =
-        cache.cached(Cacheomraade.NORG , enhetId) {
+    override suspend fun getEnhet(enhetId: String): NavEnhet =
+        cache.cached(Cacheomraade.NORG, enhetId) {
             //https://confluence.adeo.no/pages/viewpage.action?pageId=174848376
             val response = client.get("api/v1/enhet/$enhetId")
 
@@ -47,7 +47,7 @@ class Norg2ServiceHttp(val config: Config, val cache: Cache) : Norg2Service {
                 response.body()
             } else {
                 logger.error("Feil ved henting av enhet $enhetId. Status: ${response.status} Message: ${response.bodyAsText()}")
-                null
+                throw IllegalStateException("Feil ved henting av enhet $enhetId")
             }
         }
 }

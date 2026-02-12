@@ -221,7 +221,7 @@ class BrevredigeringServiceTest {
 
         override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
