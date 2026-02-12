@@ -15,6 +15,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BestillBrevResponse, BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
+import { trackEvent } from "~/utils/umami";
 
 import BrevForhåndsvisning from "../brevbehandler/-components/BrevForhåndsvisning";
 import { useSendtBrev } from "../kvittering/-components/SendtBrevContext";
@@ -62,7 +63,10 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
               onClick={() =>
                 navigate({
                   to: "/saksnummer/$saksId/attester/$brevId/redigering",
-                  params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
+                  params: {
+                    saksId: props.saksId,
+                    brevId: props.brev.info.id.toString(),
+                  },
                   search: {
                     vedtaksId: props.brev.info.vedtaksId?.toString() ?? undefined,
                     enhetsId: props.brev.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
@@ -122,6 +126,11 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
       return sendBrev(props.saksId, props.brevId);
     },
     onSuccess: (response) => {
+      trackEvent("brev sendt", {
+        brevId: props.brevId,
+        saksId: props.saksId,
+        type: "attestering",
+      });
       setBrevResult(props.brevId, {
         status: "success",
         brevInfo: cachedBrevData!.info,

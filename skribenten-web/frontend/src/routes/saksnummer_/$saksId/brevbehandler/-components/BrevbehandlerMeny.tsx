@@ -31,6 +31,7 @@ import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -163,13 +164,17 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
-      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: getBrev.queryKey(props.brev.id),
+      });
     },
   });
 
   const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
+      endreDistribusjonstype(props.saksId, props.brev.id, {
+        distribusjon: distribusjonstype,
+      }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
@@ -202,7 +207,23 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
-        onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
+        onChange={(event) => {
+          const isKlar = event.target.checked;
+          const brevType = erVedtaksbrev(props.brev) ? "vedtaksbrev" : "informasjonsbrev";
+          const klarStatus = isKlar
+            ? erVedtaksbrev(props.brev)
+              ? "klart for attestering"
+              : "klart for sending"
+            : "ikke klar";
+
+          trackEvent("brev klar status endret", {
+            brevType,
+            klarStatus,
+            erKlar: isKlar,
+          });
+
+          laasForRedigeringMutation.mutate(isKlar);
+        }}
         size="small"
       >
         {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
@@ -245,7 +266,13 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             </HStack>
           }
           legend=""
-          onChange={(v) => distribusjonstypeMutation.mutate(v)}
+          onChange={(v) => {
+            const distribusjonstype = v === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint";
+            trackEvent("brev distribusjonstype endret", {
+              distribusjonstype,
+            });
+            distribusjonstypeMutation.mutate(v);
+          }}
           size="small"
           value={props.brev.distribusjonstype}
         >

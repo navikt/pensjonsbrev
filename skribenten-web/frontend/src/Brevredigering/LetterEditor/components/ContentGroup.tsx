@@ -39,6 +39,7 @@ import {
   TITLE_INDEX,
   VARIABLE,
 } from "~/types/brevbakerTypes";
+import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
@@ -230,7 +231,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     event.preventDefault();
     const offset = getCursorOffset();
     if (event.shiftKey) {
-      applyAction(Actions.addNewLine, setEditorState, { ...literalIndex, cursorPosition: offset });
+      applyAction(Actions.addNewLine, setEditorState, {
+        ...literalIndex,
+        cursorPosition: offset,
+      });
     } else {
       applyAction(Actions.split, setEditorState, literalIndex, offset);
     }
@@ -356,7 +360,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineAbove(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.bottom - Y_COORD_SAFETY_MARGIN });
+        gotoCoordinates({
+          x: caretCoordinates.x,
+          y: next.bottom - Y_COORD_SAFETY_MARGIN,
+        });
         event.preventDefault();
       }
     }
@@ -375,7 +382,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const next = findOnLineBelow(element);
 
       if (next) {
-        gotoCoordinates({ x: caretCoordinates.x, y: next.top + Y_COORD_SAFETY_MARGIN });
+        gotoCoordinates({
+          x: caretCoordinates.x,
+          y: next.top + Y_COORD_SAFETY_MARGIN,
+        });
         event.preventDefault();
       }
     }
@@ -427,6 +437,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     const offset = getCursorOffset();
     if (offset >= 0) {
+      const pastedText = event.clipboardData.getData("text/plain");
+      const pasteLength = pastedText.length;
+      if (pasteLength > 0) {
+        trackEvent("tekst limt inn", {
+          brevkode: editorState.info.brevkode,
+          antallTegn: pasteLength,
+          erStor: pasteLength > 200,
+        });
+      }
+
       applyAction(Actions.paste, setEditorState, literalIndex, offset, event.clipboardData);
     }
   };
