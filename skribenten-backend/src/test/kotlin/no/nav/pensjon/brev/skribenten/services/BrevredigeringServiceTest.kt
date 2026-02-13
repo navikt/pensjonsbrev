@@ -204,7 +204,7 @@ class BrevredigeringServiceTest {
     private val penService = FakePenService()
 
     class FakePenService(
-        var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
+        var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
         var sendBrevResponse: Pen.BestillBrevResponse? = null,
     ) : PenServiceStub() {
@@ -219,7 +219,7 @@ class BrevredigeringServiceTest {
 
         val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
 
-        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
 
         override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
             pesysBrevdata.also {

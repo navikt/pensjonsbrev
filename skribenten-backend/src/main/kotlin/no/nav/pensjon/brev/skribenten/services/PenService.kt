@@ -38,7 +38,7 @@ import kotlin.jvm.java
 private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 
 interface PenService {
-    suspend fun hentSak(saksId: String): Pen.SakSelection?
+    suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
     suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
@@ -82,8 +82,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
             else -> throw PenServiceException("Feil ved kall til PEN: ${bodyAsText()}")
         }
 
-    override suspend fun hentSak(saksId: String): Pen.SakSelection? =
-        client.get("brev/skribenten/sak/$saksId").bodyOrThrow<SakResponseDto>()?.let {
+    override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? =
+        client.get("brev/skribenten/sak/${saksId.id}").bodyOrThrow<SakResponseDto>()?.let {
             Pen.SakSelection(
                 saksId = it.saksId,
                 foedselsnr = it.foedselsnr,

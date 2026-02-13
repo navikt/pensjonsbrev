@@ -88,8 +88,8 @@ class AuthorizeAnsattSakTilgangTest {
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to emptyList()))
 
     private val defaultPenService = object : PenServiceStub() {
-        private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId.toString() }
-        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
+        private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId }
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
     }
 
     private fun basicAuthTestApplication(
@@ -150,9 +150,9 @@ class AuthorizeAnsattSakTilgangTest {
     fun `bruker faar tilgang til sak naar krav er oppfylt`() = basicAuthTestApplication(
         pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to emptyList()))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
     }
 
     @Test
@@ -165,7 +165,7 @@ class AuthorizeAnsattSakTilgangTest {
     fun `krever at ansatt har gruppe for FortroligAdresse`() = basicAuthTestApplication(
         pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.FORTROLIG)))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
@@ -193,7 +193,7 @@ class AuthorizeAnsattSakTilgangTest {
         ) { client ->
             val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
@@ -204,7 +204,7 @@ class AuthorizeAnsattSakTilgangTest {
         ) { client ->
             val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
@@ -215,12 +215,12 @@ class AuthorizeAnsattSakTilgangTest {
         ) { client ->
             val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
     fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
-        override suspend fun hentSak(saksId: String) = null
+        override suspend fun hentSak(saksId: SaksId) = null
     }) { client ->
         val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)

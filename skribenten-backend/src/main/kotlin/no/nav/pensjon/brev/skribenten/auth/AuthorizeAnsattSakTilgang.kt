@@ -31,7 +31,7 @@ val AuthorizeAnsattSakTilgang =
         on(PrincipalInContext.Hook) { call ->
             if (call.isHandled) return@on
 
-            val saksId = call.parameters.getOrFail<SaksId>(SAKSID_PARAM)
+            val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
             validerTilgangTilSak(call, saksId)
         }
     }
@@ -59,7 +59,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
     val pdlService = pluginConfig.pdlService
     val penService = pluginConfig.penService
 
-    val sak = penService.hentSak(saksId.id.toString())
+    val sak = penService.hentSak(saksId)
 
     if (sak != null) {
         call.attributes.put(SakKey, sak)
