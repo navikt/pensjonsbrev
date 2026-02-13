@@ -166,7 +166,7 @@ class BrevredigeringFacadeTest {
             laastForRedigering = false,
             distribusjonstype = Distribusjonstype.SENTRALPRINT,
             mottaker = null,
-            avsenderEnhetId = null,
+            avsenderEnhetId = EnhetId("9876"),
             spraak = LanguageCode.ENGLISH,
             journalpostId = null,
             attestertAv = null,
