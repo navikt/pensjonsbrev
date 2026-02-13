@@ -3,7 +3,7 @@ import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, 
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
@@ -26,6 +26,7 @@ import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
+import { trackEvent } from "~/utils/umami";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
@@ -126,7 +127,10 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   if (reservasjon) {
     return (
       <Modal
-        header={{ heading: "Brevet redigeres av noen andre", closeButton: false }}
+        header={{
+          heading: "Brevet redigeres av noen andre",
+          closeButton: false,
+        }}
         onClose={() => {}}
         open={!reservasjon.vellykket}
         width={478}
@@ -142,7 +146,12 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
             Ja, åpne på nytt
           </Button>
           <Button
-            onClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            onClick={() =>
+              navigate({
+                to: BrevvelgerRoute.fullPath,
+                search: { enhetsId, vedtaksId },
+              })
+            }
             type="button"
             variant="tertiary"
           >
@@ -172,10 +181,14 @@ function RedigerBrev({
 }) {
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
+  const editorStartTime = useRef(Date.now());
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
   const [warnOpen, setWarnOpen] = useState(false);
-  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+  const [warn, setWarn] = useState<{
+    kind: WarnModalKind;
+    count?: number;
+  } | null>(null);
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
@@ -248,6 +261,12 @@ function RedigerBrev({
       },
       {
         onSuccess: () => {
+          const varighetSekunder = Math.round((Date.now() - editorStartTime.current) / 1000);
+          trackEvent("tid brukt i editor", {
+            brevkode: brev.info.brevkode,
+            varighetSekunder,
+            varighetMinutter: Math.round(varighetSekunder / 60),
+          });
           navigateDone?.();
         },
       },

@@ -1,8 +1,5 @@
 interface UmamiTracker {
-  track: (
-    eventName: string,
-    eventData?: Record<string, string | number | boolean>,
-  ) => void;
+  track: (eventName: string, eventData?: Record<string, string | number | boolean>) => void;
 }
 
 declare global {
@@ -18,7 +15,8 @@ export type UmamiEventName =
   | "tekst limt inn"
   | "pesys redirect"
   | "pesys feil"
-  | "attestering blokkert";
+  | "attestering blokkert"
+  | "tid brukt i editor";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;
@@ -29,10 +27,7 @@ const isUmamiAvailable = (): boolean =>
   globalThis.umami !== undefined &&
   typeof globalThis.umami.track === "function";
 
-export const trackEvent = (
-  eventName: UmamiEventName,
-  eventData?: UmamiEventData,
-): void => {
+export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData): void => {
   if (!isUmamiAvailable()) {
     if (import.meta.env.DEV) {
       // biome-ignore lint/suspicious/noConsole: intentional dev logging
@@ -43,9 +38,10 @@ export const trackEvent = (
 
   try {
     const cleanedData = eventData
-      ? (Object.fromEntries(
-          Object.entries(eventData).filter(([, v]) => v !== undefined),
-        ) as Record<string, string | number | boolean>)
+      ? (Object.fromEntries(Object.entries(eventData).filter(([, v]) => v !== undefined)) as Record<
+          string,
+          string | number | boolean
+        >)
       : undefined;
 
     globalThis.umami?.track(eventName, cleanedData);
