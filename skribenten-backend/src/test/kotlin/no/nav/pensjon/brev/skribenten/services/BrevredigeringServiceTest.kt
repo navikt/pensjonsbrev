@@ -156,7 +156,7 @@ class BrevredigeringServiceTest {
         ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-        override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
+        override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }
@@ -333,7 +333,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { BrevredigeringEntity[brev.info.id].journalpostId = 123L }
+        transaction { BrevredigeringEntity[brev.info.id.id].journalpostId = 123L }
 
         val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
@@ -353,8 +353,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(hentBrev(brevId = 1337)).isNull()
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = 1337)).isFalse()
+        assertThat(hentBrev(brevId = BrevId(1337))).isNull()
+        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
     }
 
     @Test
@@ -363,7 +363,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id.id) }).isEmpty()
         }
 
         assertThat(
@@ -375,7 +375,7 @@ class BrevredigeringServiceTest {
         transaction {
             val brevredigering = BrevredigeringEntity[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id.id) }).hasSize(1)
             assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
         }
     }
@@ -387,12 +387,12 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
+        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(1) }
 
         brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
         transaction {
             assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(0)
         }
     }
 
@@ -411,7 +411,7 @@ class BrevredigeringServiceTest {
             }
         }.toTypedArray())
         transaction {
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(1)
         }
     }
 
@@ -967,7 +967,7 @@ class BrevredigeringServiceTest {
     }
 
     private suspend fun hentBrev(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Dto.Brevredigering? {

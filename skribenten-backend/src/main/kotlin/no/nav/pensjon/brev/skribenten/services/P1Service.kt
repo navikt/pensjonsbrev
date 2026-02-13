@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
@@ -20,30 +21,30 @@ sealed class P1Exception(override val message: String): Exception(){
 
 interface P1Service {
 
-    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: SaksId): P1Data?
-    suspend fun hentP1Data(brevId: Long, saksId: SaksId): Api.GeneriskBrevdata?
+    suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): P1Data?
+    suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata?
     suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long?,
+        brevId: BrevId?,
         saksId: SaksId
     ): BrevdataResponse.Data
 }
 
 class P1ServiceImpl(private val penService: PenService) : P1Service {
 
-    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: Long, saksId: SaksId): P1Data = transaction {
+    override suspend fun lagreP1Data(p1DataInput: Api.GeneriskBrevdata, brevId: BrevId, saksId: SaksId): P1Data = transaction {
         val brevredigering = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
         if (brevredigering != null) {
             P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
                 p1Data.p1data = p1DataInput
-            } ?: P1Data.new(brevId) {
+            } ?: P1Data.new(brevId.id) {
                 p1data = p1DataInput
             }
         } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
     }
 
-    override suspend fun hentP1Data(brevId: Long, saksId: SaksId): Api.GeneriskBrevdata? = suspendTransaction {
+    override suspend fun hentP1Data(brevId: BrevId, saksId: SaksId): Api.GeneriskBrevdata? = suspendTransaction {
         BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)?.let {
             it.p1Data?.p1data
                 ?: penService.hentP1VedleggData(saksId, it.spraak)
@@ -53,7 +54,7 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long?,
+        brevId: BrevId?,
         saksId: SaksId
     ): BrevdataResponse.Data = if (brevkode.kode() == P1_BREVKODE && brevId != null) {
         brevdataResponse.copy(

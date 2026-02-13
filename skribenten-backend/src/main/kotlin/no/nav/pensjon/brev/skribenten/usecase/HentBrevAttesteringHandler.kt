@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -25,7 +26,7 @@ class HentBrevAttesteringHandler(
 ) : BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering> {
 
     data class Request(
-        override val brevId: Long,
+        override val brevId: BrevId,
         val reserverForRedigering: Boolean = false,
     ) : BrevredigeringRequest
 

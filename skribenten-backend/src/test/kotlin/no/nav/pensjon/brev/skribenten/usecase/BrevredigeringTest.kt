@@ -225,7 +225,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun oppdaterBrev(
-        brevId: Long,
+        brevId: BrevId,
         nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
@@ -242,7 +242,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun hentBrev(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {

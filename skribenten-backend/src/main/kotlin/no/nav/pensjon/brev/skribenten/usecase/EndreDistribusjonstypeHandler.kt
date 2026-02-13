@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
@@ -16,7 +17,7 @@ class EndreDistribusjonstypeHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> {
 
-    data class Request(override val brevId: Long, val type: Distribusjonstype) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val type: Distribusjonstype) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null

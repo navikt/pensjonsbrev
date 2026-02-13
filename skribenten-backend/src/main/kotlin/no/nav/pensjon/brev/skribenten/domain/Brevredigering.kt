@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -110,11 +111,12 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
         private set
 
     companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: SaksId?) =
+        fun findById(id: BrevId) = findById(id.id)
+        fun findByIdAndSaksId(id: BrevId, saksId: SaksId?) =
             if (saksId == null) {
                 findById(id)
             } else {
-                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
+                find { (BrevredigeringTable.id eq id.id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }
 
         fun opprettBrev(
@@ -145,6 +147,8 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             this.redigertBrev = redigertBrev
             this.brevtype = brevtype
         }
+
+        operator fun get(id: BrevId) = get(id.id)
     }
 
     override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
@@ -221,7 +225,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =
         Dto.BrevInfo(
-            id = id.value,
+            id = BrevId(id.value),
             saksId = saksId,
             vedtaksId = vedtaksId,
             opprettetAv = opprettetAv,

@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -50,7 +51,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
     suspend fun `kan ikke oppdatere brevredigering som ikke eksisterer`() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val oppdatert = oppdaterBrev(
-            brevId = 1099,
+            brevId = BrevId(1099),
             nyeSaksbehandlerValg = saksbehandlerValg,
             nyttRedigertbrev = nyttRedigertBrev,
         )

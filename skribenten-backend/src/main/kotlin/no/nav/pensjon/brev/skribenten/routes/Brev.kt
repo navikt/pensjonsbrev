@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
@@ -34,7 +35,7 @@ fun Route.brev(
         }
 
         get("/info") {
-            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
             val brev = brevredigeringFacade.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
 
             if (brev != null) {
@@ -48,7 +49,7 @@ fun Route.brev(
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
                 OppdaterBrevHandler.Request(
-                    brevId = call.parameters.getOrFail<Long>("brevId"),
+                    brevId = BrevId(call.parameters.getOrFail<Long>("brevId")),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
@@ -58,14 +59,14 @@ fun Route.brev(
         }
 
         get("/reservasjon") {
-            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
             brevredigeringService.fornyReservasjon(brevId)
                 ?.also { call.respond(it) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         post("/tilbakestill") {
-            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
             respond(brevredigeringService.tilbakestill(brevId))
         }
     }

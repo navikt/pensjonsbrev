@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -22,7 +23,7 @@ import org.junit.jupiter.api.Test
 class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
 
     private suspend fun hentBrevAttestering(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: MockPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
@@ -182,7 +183,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `returnerer null når brev ikke finnes`() {
-        val hentet = hentBrevAttestering(brevId = 9999, reserverForRedigering = false)
+        val hentet = hentBrevAttestering(brevId = BrevId(9999), reserverForRedigering = false)
 
         assertThat(hentet).isNull()
     }

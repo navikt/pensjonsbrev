@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -21,7 +22,7 @@ class OppdaterBrevHandler(
 ) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
-        override val brevId: Long,
+        override val brevId: BrevId,
         val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,

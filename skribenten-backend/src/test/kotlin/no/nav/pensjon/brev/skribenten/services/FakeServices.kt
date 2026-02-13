@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -68,19 +69,19 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
 open class FakeP1Service: P1Service {
     override suspend fun lagreP1Data(
         p1DataInput: Api.GeneriskBrevdata,
-        brevId: Long,
+        brevId: BrevId,
         saksId: SaksId,
     ): P1Data? = notYetStubbed()
 
     override suspend fun hentP1Data(
-        brevId: Long,
+        brevId: BrevId,
         saksId: SaksId,
     ): Api.GeneriskBrevdata? = notYetStubbed()
 
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long?,
+        brevId: BrevId?,
         saksId: SaksId,
     ): BrevdataResponse.Data = brevdataResponse
 }
@@ -107,7 +108,7 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
     override suspend fun renderMarkup(

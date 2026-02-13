@@ -52,7 +52,7 @@ object Api {
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
 
     data class BrevInfo(
-        val id: Long,
+        val id: BrevId,
         val saksId: SaksId,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
