@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -12,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class EndreDistribusjonstypeHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> {
 
     data class Request(override val brevId: Long, val type: Distribusjonstype) : BrevredigeringRequest
@@ -28,6 +30,6 @@ class EndreDistribusjonstypeHandler(
             brev.redigeresAv = null
         }
 
-        return success(brev.toDto(null))
+        return success(brev.toDto(brevreservasjonPolicy, null))
     }
 }

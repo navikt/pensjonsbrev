@@ -85,7 +85,7 @@ class OpprettBrevHandlerImpl(
             brev.settMottaker(request.mottaker, pesysData.felles.annenMottakerNavn)
         }
 
-        return success(brev.toDto(rendretBrev.letterDataUsage))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 
     private suspend fun principalSignatur(principal: UserPrincipal): String =

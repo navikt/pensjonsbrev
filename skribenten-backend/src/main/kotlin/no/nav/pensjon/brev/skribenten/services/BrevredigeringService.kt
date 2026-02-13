@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
@@ -58,6 +59,8 @@ class BrevredigeringService(
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
     }
 
+    private val brevreservasjonPolicy = BrevreservasjonPolicy()
+
     suspend fun delvisOppdaterBrev(
         saksId: Long,
         brevId: Long,
@@ -74,7 +77,7 @@ class BrevredigeringService(
 
                 brevDb.redigeresAv = null
 
-                BrevredigeringEntity.reload(brevDb, true)?.toDto(null)
+                BrevredigeringEntity.reload(brevDb, true)?.toDto(brevreservasjonPolicy, null)
             }
         }
 
@@ -97,7 +100,7 @@ class BrevredigeringService(
     override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
-                .map { it.toBrevInfo() }
+                .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
     suspend fun fornyReservasjon(brevId: Long): Api.ReservasjonResponse? =
@@ -118,7 +121,7 @@ class BrevredigeringService(
     ): Api.PdfResponse? {
         val (brevredigering, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-                .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
+                .let { it?.toDto(brevreservasjonPolicy, null) to it?.document?.firstOrNull()?.toDto() }
         }
         return brevredigering?.let {
             val pesysBrevdata = penService.hentPesysBrevdata(
@@ -189,14 +192,14 @@ class BrevredigeringService(
                     if (frigiReservasjon) {
                         redigeresAv = null
                     }
-                }.toDto(rendretBrev.letterDataUsage)
+                }.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage)
             }
         }
 
     suspend fun sendBrev(saksId: Long, brevId: Long): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-                .let { it?.toDto(null) to it?.document?.firstOrNull()?.toDto() }
+                .let { it?.toDto(brevreservasjonPolicy, null) to it?.document?.firstOrNull()?.toDto() }
         }
 
         return if (brev != null && document != null) {
@@ -261,7 +264,7 @@ class BrevredigeringService(
                     brevDb.apply {
                         saksbehandlerValg = tilbakestiltValg
                         redigertBrev = rendretBrev.markup.toEdit()
-                    }.toDto(rendretBrev.letterDataUsage)
+                    }.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage)
                 }
             } else {
                 throw BrevmalFinnesIkke("Finner ikke brevmal for brevkode ${brevDto.info.brevkode}")
@@ -391,6 +394,10 @@ class BrevredigeringService(
             navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
                 ?: principal.fullName
         }
+
+    private inner class ReservertBrevScope(val brevDb: BrevredigeringEntity) {
+        val brevDto = brevDb.toDto(brevreservasjonPolicy, null)
+    }
 }
 
 private suspend fun BrevdataResponse.Data.withP1DataIfP1(
@@ -453,11 +460,6 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
         }
     } else this
 }
-
-private class ReservertBrevScope(val brevDb: BrevredigeringEntity) {
-    val brevDto = brevDb.toDto(null)
-}
-
 
 private fun Document.toDto(): Dto.Document =
     Dto.Document(

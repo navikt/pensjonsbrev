@@ -45,11 +45,11 @@ class BrevredigeringFacadeTest {
         val request = HentBrevHandler.Request(brevId = 42L)
 
         createFacade(
-            reserverBrev = reserverBrev,
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
                 override suspend fun handle(request: HentBrevHandler.Request) = null
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = true
             },
+            reserverBrev = reserverBrev,
         ).hentBrev(request)
 
         assertThat(reserverBrev.reservertBrevId).isEqualTo(request.brevId)
@@ -61,11 +61,11 @@ class BrevredigeringFacadeTest {
         val request = HentBrevHandler.Request(brevId = 42L)
 
         createFacade(
-            reserverBrev = reserverBrev,
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
                 override suspend fun handle(request: HentBrevHandler.Request) = null
                 override fun requiresReservasjon(request: HentBrevHandler.Request) = false
             },
+            reserverBrev = reserverBrev,
         ).hentBrev(request)
 
         assertThat(reserverBrev.reservertBrevId).isNull()
@@ -75,7 +75,7 @@ class BrevredigeringFacadeTest {
     suspend fun `ruller tilbake transaksjon om handler feiler`() {
         val interceptor = DidRollbackInterceptor()
         val facade = createFacade(
-            reserverBrev = ReserverBrevStub(), hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
+            hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
                 override suspend fun handle(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
                     // Rollback i ytre transaksjon vil også utløse rollback i denne indre transaksjonen.
                     transaction {
@@ -83,7 +83,9 @@ class BrevredigeringFacadeTest {
                     }
                     return failure(RedigerBrevPolicy.KanIkkeRedigere.LaastBrev)
                 }
-            })
+            },
+            reserverBrev = ReserverBrevStub(),
+        )
 
         facade.hentBrev(HentBrevHandler.Request(123L))
         assertThat(interceptor.didRollback).isTrue()
@@ -93,7 +95,6 @@ class BrevredigeringFacadeTest {
     suspend fun `ruller ikke tilbake transaksjon om handler er vellykket`() {
         val interceptor = DidRollbackInterceptor()
         val facade = createFacade(
-            reserverBrev = ReserverBrevStub(),
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
                 override suspend fun handle(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
                     // Rollback i ytre transaksjon vil også utløse rollback i denne indre transaksjonen.
@@ -102,7 +103,8 @@ class BrevredigeringFacadeTest {
                     }
                     return success(brevredigering)
                 }
-            }
+            },
+            reserverBrev = ReserverBrevStub(),
         )
 
         facade.hentBrev(HentBrevHandler.Request(123L))
@@ -121,7 +123,7 @@ class BrevredigeringFacadeTest {
                     }
                     return failure(BrevreservasjonPolicy.ReservertAvAnnen(reservasjon))
                 }
-            }
+            },
         )
         facade.hentBrev(HentBrevHandler.Request(123L))
         assertThat(interceptor.didRollback).isTrue()
@@ -143,7 +145,7 @@ class BrevredigeringFacadeTest {
                     }
                     return success(reservasjon)
                 }
-            }
+            },
         )
         facade.hentBrev(HentBrevHandler.Request(123L))
         assertThat(interceptor.didRollback).isFalse()
@@ -217,6 +219,7 @@ private fun createFacade(
     endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
+    brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
         opprettBrev = opprettBrev,
@@ -227,6 +230,7 @@ private fun createFacade(
         endreDistribusjonstype = endreDistribusjonstype,
         endreMottaker = endreMottaker,
         reserverBrev = reserverBrev,
+        brevreservasjonPolicy = brevreservasjonPolicy,
     )
 }
 

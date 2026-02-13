@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.*
@@ -21,6 +22,7 @@ class BrevredigeringFacade(
     private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering>,
     private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
     suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
@@ -32,12 +34,12 @@ class BrevredigeringFacade(
         oppdaterBrev.runHandler(request)
 
     fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
+        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
 
     fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
-                .map { it.toBrevInfo() }
+                .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
     suspend fun hentBrev(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =

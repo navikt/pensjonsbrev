@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -16,6 +17,7 @@ class OppdaterBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
@@ -46,6 +48,6 @@ class OppdaterBrevHandler(
             brev.redigeresAv = null
         }
 
-        return success(brev.toDto(rendretBrev.letterDataUsage))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 }

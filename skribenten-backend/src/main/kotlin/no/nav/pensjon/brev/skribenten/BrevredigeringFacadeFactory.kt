@@ -34,12 +34,14 @@ object BrevredigeringFacadeFactory {
             oppdaterBrev = OppdaterBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 renderService = renderService,
-                brevdataService = brevdataService
+                brevdataService = brevdataService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             hentBrev = HentBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 renderService = renderService,
                 brevdataService = brevdataService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             hentBrevAttestering = HentBrevAttesteringHandler(
                 attesterBrevPolicy = attesterBrevPolicy,
@@ -47,22 +49,26 @@ object BrevredigeringFacadeFactory {
                 renderService = renderService,
                 brevdataService = brevdataService,
                 navansattService = navansattService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             veksleKlarStatus = VeksleKlarStatusHandler(
                 klarTilSendingPolicy = klarTilSendingPolicy,
-                redigerBrevPolicy = redigerBrevPolicy
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             endreDistribusjonstype = EndreDistribusjonstypeHandler(
-                redigerBrevPolicy = redigerBrevPolicy
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             endreMottaker = EndreMottakerHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
-                brevdataService = brevdataService
+                brevdataService = brevdataService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             reserverBrev = ReserverBrevHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy
-            )
+            ),
+            brevreservasjonPolicy = brevreservasjonPolicy,
         )
     }
-
 }
