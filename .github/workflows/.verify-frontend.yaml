@@ -66,6 +66,8 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
