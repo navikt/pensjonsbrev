@@ -82,6 +82,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
             val virkningbegrunnelseStdbegr_22_12_1_5 = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse().equalTo("stdbegr_22_12_1_5")
             val paragraf22_12_or_22_13 = if (virkningbegrunnelseStdbegr_22_12_1_5.equals(true)) "22-13" else "22-12"
+            val overgangsregler2016bokmal = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsregler for barnetillegg i uføretrygden" else ""
+            val overgangsregler2016nynorsk = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsreglar for barnetillegg i uføretrygda" else ""
             val fodselsdatoBarn = pesysData.fodselsdatobarn.ifNull("")
             val barnet_barna_opphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna" else "barnet"
             val barnet_barna_opphor_forsørga_forsørgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
@@ -1376,20 +1378,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "."},
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "."},
                     )
                 }
             }
@@ -1398,20 +1388,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1440,20 +1418,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1462,20 +1428,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1550,34 +1504,20 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                 paragraph {
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + "."},
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + "."},
-                        )
-                    }
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "."},
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "."},
+                    )
                 }
             }
 
             //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                 paragraph {
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + " og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + "."},
-                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + "."},
-                        )
-                    }
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "."},
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "."},
+                    )
                 }
             }
 
@@ -1605,20 +1545,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1627,20 +1555,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +" " },
-                        nynorsk { +" " },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1669,20 +1585,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og" + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +". " },
-                        nynorsk { +". " },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og" + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1691,20 +1595,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 },
-                    )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +". " },
-                        nynorsk { +". " },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
@@ -1733,25 +1625,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = ""overgangsregler_2016""
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("")) {
-                        text(
-                            bokmal { +"." },
-                            nynorsk { +"." },
-                        )
-                    }
                 }
             }
 
@@ -1759,24 +1635,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 },
-                    )
-
-
-                    //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                    showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
-                        text(
-                            bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
-                            nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                        )
-                    }
-                    text(
-                        bokmal { +"." },
-                        nynorsk { +"." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og " + paragraf22_12_or_22_13 + overgangsregler2016nynorsk + "." },
                     )
                 }
             }
+
             title1 {
                 text(
                     bokmal { +"Dette er virkningstidspunktet ditt" },
