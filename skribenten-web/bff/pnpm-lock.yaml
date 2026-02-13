@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@navikt/oasis':
         specifier: ^4.1.1
-        version: 4.1.2
+        version: 4.1.4
       '@navikt/vite-mode':
         specifier: 0.13.6
         version: 0.13.6(express@5.2.1)
@@ -142,12 +142,12 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
-  '@navikt/oasis@4.1.2':
-    resolution: {integrity: sha512-RD6C3TGhEoAxDYh20iK6iIdIY1gAtOgqM08O/W2RKjEadxWVTBDuN8FFJLr8Qoibg6ZQzYsSBXluRuJmoQvirg==, tarball: https://npm.pkg.github.com/download/@navikt/oasis/4.1.2/71dd8c0ce6b1e944771e742fb6db0e2898e4bb43}
+  '@navikt/oasis@4.1.4':
+    resolution: {integrity: sha512-v+LW8V5CTiHkfIXhceQ8RXRtrBktCK8wSFYmiR6hmzl9CJRYRLUpFC7YbLiC7jwHIuLHKUyl+Zawf8zQm6fDeQ==, tarball: https://npm.pkg.github.com/download/@navikt/oasis/4.1.4/0d9c93820b9b6d93b1bd9da134feb95461ad8a47}
     engines: {node: ^20.19.0 || >= 22.12.0 || 24.x || 25.x}
 
-  '@navikt/texas@4.1.2':
-    resolution: {integrity: sha512-x35tbJoWmMwNi2OdIDoJdeFiUGpjJpjcqkMhxO3hdZWMNirMXhfGE/CV5Cy0/5whVU7NZXuRx2Ak4L3FWMWj+Q==, tarball: https://npm.pkg.github.com/download/@navikt/texas/4.1.2/1186a3e4a52af4b774eb768a5081821f02f28605}
+  '@navikt/texas@4.1.4':
+    resolution: {integrity: sha512-WS+agfWCqHyCtIpn/iQHNBRwn1gzCQDe0NY9Tz5ErrBsWHNxtqIV7W2eAmRUa3DLrZGHczoQhup+PYT6UX/SpQ==, tarball: https://npm.pkg.github.com/download/@navikt/texas/4.1.4/1725aca0fa0b803e0048212c3e202d24c10f3c3b}
     engines: {node: ^20.19.0 || >= 22.12.0 || 24.x || 25.x}
 
   '@navikt/vite-mode@0.13.6':
@@ -204,8 +204,8 @@ packages:
   '@types/morgan@1.9.10':
     resolution: {integrity: sha512-sS4A1zheMvsADRVfT0lYbJ4S9lmsey8Zo2F7cnbYjWHP67Q0AwMYuuzLlkIM2N8gAbb9cubhIVFwcIN2XyYCkA==}
 
-  '@types/node@25.2.0':
-    resolution: {integrity: sha512-DZ8VwRFUNzuqJ5khrvwMXHmvPe+zGayJhr2CDNiKB1WBE1ST8Djl00D0IC4vvNmHMdj6DlbYRIaFE7WHjlDl5w==}
+  '@types/node@25.2.3':
+    resolution: {integrity: sha512-m0jEgYlYz+mDJZ2+F4v8D1AyQb+QzsNqRuI7xg1VQX/KlKS0qT9r1Mo16yo5F/MtifXFgaofIFsdFMox2SxIbQ==}
 
   '@types/qs@6.14.0':
     resolution: {integrity: sha512-eOunJqu0K1923aExK6y8p6fsihYEn/BYuQ4g0CxAAgFc4b/ZLN4CrsRZ55srTdqoiLzU2B2evC+apEIxprEzkQ==}
@@ -399,8 +399,8 @@ packages:
     resolution: {integrity: sha512-P8BjAsXvZS+VIDUI11hHCQEv74YT67YUi5JJFNWIqL235sBmjX4+qx9Muvls5ivyNENctx46xQLQ3aTuE7ssaQ==}
     engines: {node: '>=6'}
 
-  caniuse-lite@1.0.30001767:
-    resolution: {integrity: sha512-34+zUAMhSH+r+9eKmYG+k2Rpt8XttfE4yXAjoZvkAPs15xcYQhyBYdalJ65BzivAvGRMViEjy6oKr/S91loekQ==}
+  caniuse-lite@1.0.30001769:
+    resolution: {integrity: sha512-BCfFL1sHijQlBGWBMuJyhZUhzo7wer5sVj9hqekB/7xn0Ypy+pER/edCYQm4exbXj4WiySGp40P8UuTh6w1srg==}
 
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
@@ -1248,8 +1248,8 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
-  qs@6.14.1:
-    resolution: {integrity: sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==}
+  qs@6.14.2:
+    resolution: {integrity: sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==}
     engines: {node: '>=0.6'}
 
   range-parser@1.2.1:
@@ -1321,8 +1321,8 @@ packages:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
 
-  semver@7.7.3:
-    resolution: {integrity: sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==}
+  semver@7.7.4:
+    resolution: {integrity: sha512-vFKC2IEtQnVhpT78h1Yp8wzwrf8CM+MzKMHGJZfBtzhZNycRFnXsHk6E5TxIkkMsgNS7mdX3AGB7x2QM2di4lA==}
     engines: {node: '>=10'}
     hasBin: true
 
@@ -1594,14 +1594,14 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
-  '@navikt/oasis@4.1.2':
+  '@navikt/oasis@4.1.4':
     dependencies:
-      '@navikt/texas': 4.1.2
+      '@navikt/texas': 4.1.4
       '@opentelemetry/api': 1.9.0
       jose: 6.1.3
       prom-client: 15.1.3
 
-  '@navikt/texas@4.1.2': {}
+  '@navikt/texas@4.1.4': {}
 
   '@navikt/vite-mode@0.13.6(express@5.2.1)':
     dependencies:
@@ -1617,11 +1617,11 @@ snapshots:
   '@types/body-parser@1.19.6':
     dependencies:
       '@types/connect': 3.4.38
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
   '@types/connect@3.4.38':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
   '@types/cookie-parser@1.4.10(@types/express@5.0.6)':
     dependencies:
@@ -1631,7 +1631,7 @@ snapshots:
 
   '@types/express-serve-static-core@5.1.1':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
       '@types/qs': 6.14.0
       '@types/range-parser': 1.2.7
       '@types/send': 1.2.1
@@ -1646,7 +1646,7 @@ snapshots:
 
   '@types/http-proxy@1.17.17':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
   '@types/json-schema@7.0.15': {}
 
@@ -1658,9 +1658,9 @@ snapshots:
 
   '@types/morgan@1.9.10':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
-  '@types/node@25.2.0':
+  '@types/node@25.2.3':
     dependencies:
       undici-types: 7.16.0
 
@@ -1670,12 +1670,12 @@ snapshots:
 
   '@types/send@1.2.1':
     dependencies:
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
   '@types/serve-static@2.2.0':
     dependencies:
       '@types/http-errors': 2.0.5
-      '@types/node': 25.2.0
+      '@types/node': 25.2.3
 
   '@typescript-eslint/eslint-plugin@8.53.1(@typescript-eslint/parser@8.53.1(eslint@9.39.2)(typescript@5.9.3))(eslint@9.39.2)(typescript@5.9.3)':
     dependencies:
@@ -1745,7 +1745,7 @@ snapshots:
       '@typescript-eslint/visitor-keys': 8.53.1
       debug: 4.4.3
       minimatch: 9.0.5
-      semver: 7.7.3
+      semver: 7.7.4
       tinyglobby: 0.2.15
       ts-api-utils: 2.4.0(typescript@5.9.3)
       typescript: 5.9.3
@@ -1883,7 +1883,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.7.2
       on-finished: 2.4.1
-      qs: 6.14.1
+      qs: 6.14.2
       raw-body: 3.0.2
       type-is: 2.0.1
     transitivePeerDependencies:
@@ -1905,7 +1905,7 @@ snapshots:
   browserslist@4.28.1:
     dependencies:
       baseline-browser-mapping: 2.9.19
-      caniuse-lite: 1.0.30001767
+      caniuse-lite: 1.0.30001769
       electron-to-chromium: 1.5.286
       node-releases: 2.0.27
       update-browserslist-db: 1.2.3(browserslist@4.28.1)
@@ -1933,7 +1933,7 @@ snapshots:
 
   callsites@3.1.0: {}
 
-  caniuse-lite@1.0.30001767: {}
+  caniuse-lite@1.0.30001769: {}
 
   chalk@4.1.2:
     dependencies:
@@ -2257,7 +2257,7 @@ snapshots:
       pluralize: 8.0.0
       regexp-tree: 0.1.27
       regjsparser: 0.13.0
-      semver: 7.7.3
+      semver: 7.7.4
       strip-indent: 4.1.1
 
   eslint-scope@8.4.0:
@@ -2352,7 +2352,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.7
-      qs: 6.14.1
+      qs: 6.14.2
       range-parser: 1.2.1
       router: 2.2.0
       send: 1.2.1
@@ -2903,7 +2903,7 @@ snapshots:
 
   punycode@2.3.1: {}
 
-  qs@6.14.1:
+  qs@6.14.2:
     dependencies:
       side-channel: 1.1.0
 
@@ -2995,7 +2995,7 @@ snapshots:
 
   semver@6.3.1: {}
 
-  semver@7.7.3: {}
+  semver@7.7.4: {}
 
   send@1.2.1:
     dependencies:
