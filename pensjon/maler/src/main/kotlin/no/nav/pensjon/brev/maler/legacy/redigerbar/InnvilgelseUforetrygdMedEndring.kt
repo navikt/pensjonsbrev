@@ -54,7 +54,7 @@ object InnvilgelseUforetrygdMedEndring : RedigerbarTemplate<InnvilgelseUfoeretry
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygdm med endring" },
+                bokmal { +"Nav har innvilget søknaden din om uføretrygd med endring" },
                 nynorsk { +"Nav har innvilget søknaden din om uføretrygd med endring" },
             )
         }
