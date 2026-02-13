@@ -97,16 +97,21 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       // ie makes the isDirty false again
       reset(savedFormValues);
 
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
-      queryClient.invalidateQueries({ queryKey: getP1Override.queryKey(brevId) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(brevId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: getP1Override.queryKey(brevId),
+      });
       queryClient.invalidateQueries({ queryKey: getBrev.queryKey(brevId) });
       setSaveSuccess(true);
-      // Clear any existing timeout before setting a new one
       if (successTimeoutRef.current) {
         clearTimeout(successTimeoutRef.current);
       }
-      // Auto-hide success message after 3 seconds
-      successTimeoutRef.current = setTimeout(() => setSaveSuccess(false), 3000);
+      successTimeoutRef.current = setTimeout(() => {
+        setSaveSuccess(false);
+        onClose();
+      }, 1000);
     },
   });
 
@@ -120,13 +125,23 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
     // Find tabs with errors and navigate to first one
     const tabsWithErrors: { tab: P1TabKey; label: string }[] = [];
 
-    if (fieldErrors.innehaver) tabsWithErrors.push({ tab: "innehaver", label: "1. Personopplysninger om innehaveren" });
+    if (fieldErrors.innehaver)
+      tabsWithErrors.push({
+        tab: "innehaver",
+        label: "1. Personopplysninger om innehaveren",
+      });
     if (fieldErrors.forsikrede)
-      tabsWithErrors.push({ tab: "forsikret", label: "2. Personopplysninger om den forsikrede" });
+      tabsWithErrors.push({
+        tab: "forsikret",
+        label: "2. Personopplysninger om den forsikrede",
+      });
     if (fieldErrors.innvilgedePensjoner) tabsWithErrors.push({ tab: "innvilget", label: "3. Innvilget pensjon" });
     if (fieldErrors.avslaattePensjoner) tabsWithErrors.push({ tab: "avslag", label: "4. Avslag på pensjon" });
     if (fieldErrors.utfyllendeInstitusjon)
-      tabsWithErrors.push({ tab: "institusjon", label: "5. Institusjonen som har fylt ut skjemaet" });
+      tabsWithErrors.push({
+        tab: "institusjon",
+        label: "5. Institusjonen som har fylt ut skjemaet",
+      });
 
     if (tabsWithErrors.length > 0) {
       // Navigate to first tab with errors
@@ -309,7 +324,7 @@ interface SubmitButtonProps {
 const SubmitButton = ({ isLoading, isInitialLoading }: SubmitButtonProps) => {
   return (
     <Button disabled={isInitialLoading} loading={isLoading} size="medium" type="submit" variant="primary">
-      Lagre
+      Lagre og lukk
     </Button>
   );
 };
