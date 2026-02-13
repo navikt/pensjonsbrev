@@ -63,7 +63,7 @@ object AdhocInformasjonHvilendeRett4Aar : AutobrevTemplate<EmptyAutobrevdata> {
                 list { 
                     item {
                         text(
-                            bokmal { + "Du korrigerer selv forventet inntekt i Inntektsplanleggeren din. Denne finner du på Ditt NAV // Din Uføretrygd // Inntektsplanlegger." },
+                            bokmal { + "Du korrigerer selv forventet inntekt i Inntektsplanleggeren din. Denne finner du på Ditt Nav // Din Uføretrygd // Inntektsplanlegger." },
                         )
                     }
                     item {

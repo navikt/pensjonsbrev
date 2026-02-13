@@ -20,6 +20,7 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
   const hentPdfQuery = useQuery({
     queryKey: hentPdfForBrev.queryKey(properties.brevId),
     queryFn: () => hentPdfForBrev.queryFn(properties.saksId, properties.brevId),
+    refetchOnWindowFocus: false,
   });
 
   const brevInfo = useQuery(getBrevInfo(properties.brevId));

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -17,7 +18,7 @@ object VarselOmMuligAvslag : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_051
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_OM_MULIG_AVSLAG
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.VARSEL
+    override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all
 

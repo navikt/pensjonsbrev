@@ -162,8 +162,8 @@ export function isAtSameBlockContent(first: LiteralIndex, second: LiteralIndex):
 
 export function isAtSameItem(first: ItemContentIndex, second: ItemContentIndex): boolean {
   return (
-    first.blockIndex === first.blockIndex &&
-    second.contentIndex === second.contentIndex &&
+    first.blockIndex === second.blockIndex &&
+    first.contentIndex === second.contentIndex &&
     first.itemIndex === second.itemIndex
   );
 }

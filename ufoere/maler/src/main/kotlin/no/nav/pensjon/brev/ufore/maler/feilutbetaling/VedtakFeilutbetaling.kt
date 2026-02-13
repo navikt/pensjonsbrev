@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetaling
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.SaksbehandlervalgSelectors.sivilstandEndret
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -41,7 +42,7 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = UT_VEDTAK_FEILUTBETALING
-    override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
+    override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

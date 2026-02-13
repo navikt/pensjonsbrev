@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -29,7 +30,7 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
     override val featureToggle = FeatureToggles.vedtakOmFjerningAvOmsorgspoeng.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_VEDTAK_OM_FJERNING_AV_OMSORGSOPPTJENING
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon // Litt usikker på denne
 

@@ -1,9 +1,10 @@
 import type { SerializedStyles } from "@emotion/react";
 import { css } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
-import { BodyShort, BoxNew, Button, HStack, TextField } from "@navikt/ds-react";
+import { BodyShort, Box, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 import { VerticalDivider } from "~/components/Divider";
 import { SlettBrev } from "~/components/SlettBrev";
@@ -29,7 +30,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
   const navigate = useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
-    <BoxNew asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0">
+    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0">
       <HStack
         align="center"
         css={{ zIndex: 3 }}
@@ -38,7 +39,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
         paddingBlock="space-8"
         paddingInline="space-16"
         position="sticky"
-        top="0"
+        top="space-0"
       >
         {viewerControls && (
           <HStack align="center" gap="space-16">
@@ -66,7 +67,7 @@ const PDFViewerTopBar = ({ sakId, brevId, utenSlettKnapp, viewerControls }: PDFV
           />
         )}
       </HStack>
-    </BoxNew>
+    </Box>
   );
 };
 
@@ -221,11 +222,12 @@ const BasicPDFViewerButton = (properties: {
           height: fit-content;
         `
       }
+      data-color="neutral"
       disabled={properties.disabled}
       icon={properties.icon}
       onClick={properties.onClick}
       type="button"
-      variant="tertiary-neutral"
+      variant="tertiary"
     />
   );
 };

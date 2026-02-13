@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.venterPaaSvarAFP
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.SaksbehandlerValgSelectors.soeknadMottattFraUtland
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -20,7 +21,7 @@ object InformasjonOmSaksbehandlingstid : RedigerbarTemplate<InformasjonOmSaksbeh
 
     // AP_INFO_STID_MAN (MF 000130)
     override val kode = Pesysbrevkoder.Redigerbar.INFORMASJON_OM_SAKSBEHANDLINGSTID
-    override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.pensjon
 

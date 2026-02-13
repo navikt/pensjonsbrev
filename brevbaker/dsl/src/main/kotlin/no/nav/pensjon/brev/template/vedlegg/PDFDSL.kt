@@ -4,7 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.util.Objects
 
 @PDFVedleggMarker
-class PDFVedlegg() {
+class PDFVedlegg {
     private val muterbarSider: MutableList<Side> = mutableListOf()
     val sider: List<Side>
         get() = muterbarSider
@@ -41,7 +41,7 @@ class Side(val filnavn: String) {
 }
 
 @PDFVedleggMarker
-class Felt() {
+class Felt {
     private val muterbareFelt: MutableMap<String, Map<LanguageCode, String?>?> = mutableMapOf()
     val felt: Map<String, Map<LanguageCode, String?>?>
         get() = muterbareFelt
@@ -55,6 +55,9 @@ class Felt() {
     }
 
     infix fun String.to(verdi: Any?) {
+        if (verdi is Map<*, *>) {
+            throw IllegalArgumentException("Forventa ikke å legge til map her. Bruk infix-versjonen to Map<LanguageCode, String?> for å legge til map av språk til tekst")
+        }
         muterbareFelt[this] = verdi?.let { leggTilPaaAlleSpraak(it.toString()) }
     }
 

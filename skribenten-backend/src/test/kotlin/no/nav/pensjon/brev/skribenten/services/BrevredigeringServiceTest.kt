@@ -38,7 +38,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.sql.transactions.transaction
+import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeAll
@@ -96,7 +97,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
         brevkontekst = TemplateDescription.Brevkontekst.ALLE,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
@@ -109,7 +110,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("UFOEREPENSJON"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
@@ -122,7 +123,7 @@ class BrevredigeringServiceTest {
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         ),
-        kategori = TemplateDescription.Brevkategori.VARSEL,
+        kategori = TemplateDescription.Redigerbar.Brevkategori("VARSEL"),
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )

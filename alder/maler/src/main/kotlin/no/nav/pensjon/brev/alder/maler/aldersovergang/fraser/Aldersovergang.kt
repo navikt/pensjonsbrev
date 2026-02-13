@@ -859,23 +859,17 @@ data class InfoSkattAP(
                 bokmal {
                     +
                     "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Ellers trekkes det " +
-                            "30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
-                            "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
+                            "30 prosent skatt av alderspensjonen."
                 },
                 nynorsk {
                     +
                     "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Elles blir det " +
-                            "trekt 30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
+                            "trekt 30 prosent skatt av alderspensjonen."
                 },
                 english {
                     +
                     "When you start drawing retirement pension, you should change your tax deduction card. " +
-                            "Otherwise, 30 percent of the pension will be deducted from your pension. You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
+                            "Otherwise, 30 percent of the pension will be deducted from your pension."
                 },
             )
         }
@@ -892,45 +886,17 @@ data class InfoSkattAP(
         paragraph {
             text(
                 bokmal {
-                    +
-                    "Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
+                    +"Du endrer skattekortet på $SKATTEETATEN_PENSJONIST_URL. " +
                             "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
                 },
                 nynorsk {
-                    +
-                    "Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
+                    +"Du endrar skattekortet på  $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
                 },
                 english {
-                    +
-                    "You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
-                },
-            )
-        }
-        paragraph {
-            text(
-                bokmal {
-                    +
-                    "Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
-                            "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
-                },
-                nynorsk {
-                    +
-                    "Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
-                },
-                english {
-                    +
-                    "You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
-                },
+                    +"You can change your tax card at $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Nav receives your tax card electronically. Therefore, you should not send it to us."
+                }
             )
         }
 

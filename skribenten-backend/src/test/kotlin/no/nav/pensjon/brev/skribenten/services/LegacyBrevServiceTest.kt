@@ -11,7 +11,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
-private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
 private const val forventaJournalpostId = "1234"
 private const val forventaDokumentId = "5678"
@@ -42,27 +41,8 @@ class LegacyBrevServiceTest {
         brevgruppe = "brevgruppe",
     )
 
-    private val doksysBrevmetadata = BrevdataDto(
-        redigerbart = true,
-        dekode = "doksys",
-        brevkategori = BrevkategoriCode.INFORMASJON,
-        dokType = DokumentType.U,
-        sprak = listOf(SpraakKode.NB),
-        visIPselv = true,
-        utland = "utland",
-        brevregeltype = BrevregeltypeCode.OVRIGE,
-        brevkravtype = "brevkravtype",
-        brevkontekst = BrevkontekstCode.ALLTID,
-        dokumentkategori = DokumentkategoriCode.IB,
-        synligForVeileder = true,
-        prioritet = 1234,
-        brevkodeIBrevsystem = "doksys",
-        brevsystem = BrevSystem.DOKSYS,
-        brevgruppe = null,
-    )
-
     private val brevmetadataService = FakeBrevmetadataService(
-        maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
+        maler = mapOf("exstream" to exstreamBrevMetadata),
     )
 
     private val safService = object : SafServiceStub() {
@@ -81,21 +61,8 @@ class LegacyBrevServiceTest {
     }
 
     private val penService = object : PenServiceStub() {
-        override suspend fun bestillDoksysBrev(
-            request: Api.BestillDoksysBrevRequest,
-            enhetsId: String,
-            saksId: Long,
-        ): Pen.BestillDoksysBrevResponse = Pen.BestillDoksysBrevResponse(forventaJournalpostId)
-
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
             Pen.BestillExstreamBrevResponse(forventaJournalpostId)
-
-        override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String) =
-            if(journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) {
-                Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL)
-            } else {
-                notYetStubbed("Mangler stub for redigerDoksysBrev med journalpostId: $journalpostId og dokumentId: $dokumentId")
-            }
 
         override suspend fun redigerExstreamBrev(journalpostId: String) =
             if (journalpostId == forventaJournalpostId) {
@@ -194,43 +161,6 @@ class LegacyBrevServiceTest {
                         landkode = "NO",
                     ),
                     saksId = 3333L
-                )
-            }
-            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
-        }
-    }
-
-    @Test
-    fun `kan bestille doksys brev med riktig tilgang`() {
-        runBlocking {
-            val bestillBrevResult = withPrincipal(principal) {
-                legacyBrevService.bestillOgRedigerDoksysBrev(
-                    Api.BestillDoksysBrevRequest(
-                        brevkode = "doksys",
-                        spraak = SpraakKode.NB,
-                        vedtaksId = null,
-                        enhetsId = principalSinNAVEnhet.id
-                    ),
-                    3333L
-                )
-            }
-            assertThat(bestillBrevResult.failureType).isNull()
-            assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_DOKSYS_URL)
-        }
-    }
-
-    @Test
-    fun `bestill doksys brev feiler med manglende tilgang`() {
-        runBlocking {
-            val bestillBrevResult = withPrincipal(principal) {
-                legacyBrevService.bestillOgRedigerDoksysBrev(
-                    Api.BestillDoksysBrevRequest(
-                        brevkode = "doksys",
-                        spraak = SpraakKode.NB,
-                        vedtaksId = null,
-                        enhetsId = "9999"
-                    ),
-                    3333L
                 )
             }
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)

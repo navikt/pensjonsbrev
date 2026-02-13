@@ -7,6 +7,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseData
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -17,38 +18,41 @@ class OmstillingsstoenadInnvilgelseTest {
     fun `lavEllerIngenInntekt brukes som default hvis omsRettUtenTidsbegrensning ikke er satt`() {
         val dto = OmstillingsstoenadInnvilgelseDTO(
             innhold = emptyList(),
-            beregning = lagOmstillingsstoenadBeregning(),
-            innvilgetMindreEnnFireMndEtterDoedsfall = false,
-            lavEllerIngenInntekt = true,
-            harUtbetaling = false,
-            etterbetaling = null,
-            tidligereFamiliepleier = false,
-            bosattUtland = false,
-            erSluttbehandling = false,
-            datoVedtakOmgjoering = null,
+            data = OmstillingsstoenadInnvilgelseData(
+                beregning = lagOmstillingsstoenadBeregning(),
+                innvilgetMindreEnnFireMndEtterDoedsfall = false,
+                lavEllerIngenInntekt = true,
+                harUtbetaling = false,
+                etterbetaling = null,
+                tidligereFamiliepleier = false,
+                bosattUtland = false,
+                erSluttbehandling = false,
+                datoVedtakOmgjoering = null,
+            )
         )
 
-        assertEquals(true, dto.omsRettUtenTidsbegrensning)
+        assertEquals(true, dto.data.omsRettUtenTidsbegrensning)
     }
-
 
     @Test
     fun `omsRettUtenTidsbegrensning overstyrer lavEllerIngenInntekt`() {
         val dto = OmstillingsstoenadInnvilgelseDTO(
             innhold = emptyList(),
-            beregning = lagOmstillingsstoenadBeregning(),
-            innvilgetMindreEnnFireMndEtterDoedsfall = false,
-            lavEllerIngenInntekt = true,
-            harUtbetaling = false,
-            etterbetaling = null,
-            omsRettUtenTidsbegrensning = false,
-            tidligereFamiliepleier = false,
-            bosattUtland = false,
-            erSluttbehandling = false,
-            datoVedtakOmgjoering = null
+            data = OmstillingsstoenadInnvilgelseData(
+                beregning = lagOmstillingsstoenadBeregning(),
+                innvilgetMindreEnnFireMndEtterDoedsfall = false,
+                lavEllerIngenInntekt = true,
+                harUtbetaling = false,
+                etterbetaling = null,
+                omsRettUtenTidsbegrensning = false,
+                tidligereFamiliepleier = false,
+                bosattUtland = false,
+                erSluttbehandling = false,
+                datoVedtakOmgjoering = null
+            )
         )
 
-        assertEquals(false, dto.omsRettUtenTidsbegrensning)
+        assertEquals(false, dto.data.omsRettUtenTidsbegrensning)
     }
 
 }
@@ -56,7 +60,7 @@ class OmstillingsstoenadInnvilgelseTest {
 
 fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = OmstillingsstoenadBeregning(
     innhold = listOf(),
-        virkningsdato = vilkaarligDato,
+    virkningsdato = vilkaarligDato,
     beregningsperioder = listOf(),
     sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
         datoFOM = LocalDate.of(2024, 2, 1),
@@ -83,7 +87,7 @@ fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = Omstillingss
         navnAvdoed = "Elvis Presley",
         trygdetidsperioder = emptyList(),
     ),
-        oppphoersdato = vilkaarligDato,
+    oppphoersdato = vilkaarligDato,
     opphoerNesteAar = false,
     erYrkesskade = false
 )
