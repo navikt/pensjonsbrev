@@ -139,7 +139,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
-        client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
+        client.get("brev/skribenten/sak/${saksId.id}/brevdata/${brevkode.kode()}") {
             mapOf(
                 "enhetsId" to avsenderEnhetsId.value,
                 "vedtaksId" to vedtaksId?.toString(),
@@ -154,7 +154,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1VedleggDataResponse =
-        client.get("brev/skribenten/sak/$saksId/p1data") {
+        client.get("brev/skribenten/sak/${saksId.id}/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
             }
