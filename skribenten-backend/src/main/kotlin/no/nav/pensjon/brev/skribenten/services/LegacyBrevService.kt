@@ -122,7 +122,7 @@ class LegacyBrevService(
                         fagomradeKode = "PEN", // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = brevtittel, // Visningsnavn
                         kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
-                        saksid = saksId.toString(),
+                        saksid = saksId,
                         saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
                         saksbehandlerid = PrincipalInContext.require().navIdent.id,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
