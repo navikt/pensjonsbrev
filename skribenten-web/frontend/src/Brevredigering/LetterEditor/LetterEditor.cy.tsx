@@ -59,6 +59,10 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
 describe("<LetterEditor />", () => {
   beforeEach(() => {
     cy.viewport(800, 1400);
+    // Wait for fonts to load before running tests
+    cy.document().then((doc) => {
+      return doc.fonts.ready;
+    });
   });
 
   describe("Navigation", () => {
