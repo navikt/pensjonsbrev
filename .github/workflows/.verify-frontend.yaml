@@ -58,7 +58,7 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
-          cache-dependency-path: ${{ inputs.workingDir }}/frontend
+          cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
