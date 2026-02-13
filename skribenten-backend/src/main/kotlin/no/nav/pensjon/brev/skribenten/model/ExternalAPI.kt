@@ -13,7 +13,7 @@ object ExternalAPI {
     data class BrevInfo(
         val url: String,
         val id: Long,
-        val saksId: Long,
+        val saksId: SaksId,
         val vedtaksId: Long?,
         val journalpostId: Long?,
         val brevkode: Brevkode.Redigerbart,

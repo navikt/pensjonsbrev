@@ -169,7 +169,7 @@ class BrevredigeringServiceTest {
 
 
     private val sak1 = Pen.SakSelection(
-        saksId = 1234L,
+        saksId = SaksId(1234L),
         foedselsnr = "12345678910",
         foedselsdato = LocalDate.now().minusYears(42),
         navn = Pen.SakSelection.Navn("a", "b", "c"),
@@ -211,7 +211,7 @@ class BrevredigeringServiceTest {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
         data class PesysBrevdatakallRequest(
-            val saksId: Long,
+            val saksId: SaksId,
             val vedtaksId: Long?,
             val brevkode: Brevkode.Redigerbart,
             val avsenderEnhetsId: EnhetId?,
@@ -221,7 +221,7 @@ class BrevredigeringServiceTest {
 
         override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
@@ -232,7 +232,7 @@ class BrevredigeringServiceTest {
             } ?: notYetStubbed("Mangler sendBrevResponse stub")
 
         fun verifyHentPesysBrevdata(
-            saksId: Long,
+            saksId: SaksId,
             vedtaksId: Long?,
             brevkode: Brevkode.Redigerbart,
             avsenderEnhetsId: EnhetId?,
@@ -301,7 +301,7 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             assertThat(
                 brevredigeringService.hentEllerOpprettPdf(
-                    saksId = sak1.saksId + 1,
+                    saksId = SaksId(sak1.saksId.id + 1),
                     brevId = brev.info.id,
                 )
             ).isNull()
@@ -313,11 +313,11 @@ class BrevredigeringServiceTest {
             )
             assertThat(
                 brevredigeringService.sendBrev(
-                    saksId = sak1.saksId + 1,
+                    saksId = SaksId(sak1.saksId.id + 1),
                     brevId = brev.info.id
                 )
             ).isNull()
-            assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId + 1, brevId = brev.info.id)).isFalse()
+            assertThat(brevredigeringService.slettBrev(saksId = SaksId(sak1.saksId.id + 1), brevId = brev.info.id)).isFalse()
         }
     }
 
@@ -667,7 +667,7 @@ class BrevredigeringServiceTest {
             Pen.SendRedigerbartBrevRequest(
                 templateDescription = informasjonsbrev,
                 dokumentDato = LocalDate.now(),
-                saksId = 1234,
+                saksId = SaksId(1234),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
@@ -709,7 +709,7 @@ class BrevredigeringServiceTest {
             Pen.SendRedigerbartBrevRequest(
                 templateDescription = informasjonsbrev,
                 dokumentDato = LocalDate.now(),
-                saksId = 1234,
+                saksId = SaksId(1234),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
@@ -932,8 +932,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
-        val sak2 = sak1.copy(saksId = sak1.saksId + 1)
-        val sak3 = sak1.copy(saksId = sak2.saksId + 1)
+        val sak2 = sak1.copy(saksId = SaksId(sak1.saksId.id + 1))
+        val sak3 = sak1.copy(saksId = SaksId(sak2.saksId.id + 1))
         val forventedeBrev = listOf(
             opprettBrev(sak = sak1),
             opprettBrev(sak = sak1),

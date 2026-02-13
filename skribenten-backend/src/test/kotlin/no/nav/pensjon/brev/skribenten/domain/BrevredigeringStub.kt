@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
@@ -22,7 +23,7 @@ import java.time.Instant
 
 open class BrevredigeringStub : Brevredigering {
     override val id: EntityID<Long> get() = notYetStubbed()
-    override val saksId: Long get() = notYetStubbed()
+    override val saksId: SaksId get() = notYetStubbed()
     override val vedtaksId: Long get() = notYetStubbed()
     override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
     override val spraak: LanguageCode get() = notYetStubbed()

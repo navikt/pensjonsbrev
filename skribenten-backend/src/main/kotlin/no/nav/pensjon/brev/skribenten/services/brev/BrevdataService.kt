@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -13,7 +14,7 @@ import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 class BrevdataService(private val penService: PenService, private val samhandlerService: SamhandlerService) {
 
     suspend fun hentBrevdata(
-        saksId: Long,
+        saksId: SaksId,
         vedtaksId: Long?,
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId,

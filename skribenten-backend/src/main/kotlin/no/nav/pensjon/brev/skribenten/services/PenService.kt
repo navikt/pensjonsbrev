@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -43,8 +44,8 @@ interface PenService {
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult?
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
-    suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata
+    suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
+    suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
     data class KravStoettetAvDatabyggerResult(
@@ -133,7 +134,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         client.get("brev/skribenten/vedtak/$vedtaksId/isKravStoettetAvDatabygger").bodyOrThrow()
 
     override suspend fun hentPesysBrevdata(
-        saksId: Long,
+        saksId: SaksId,
         vedtaksId: Long?,
         brevkode: Brevkode.Redigerbart,
         avsenderEnhetsId: EnhetId
@@ -152,18 +153,18 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 }
         }.brevdataOrThrow(saksId = saksId, vedtaksId = vedtaksId)
 
-    override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): P1VedleggDataResponse =
+    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): P1VedleggDataResponse =
         client.get("brev/skribenten/sak/$saksId/p1data") {
             url {
                 parameters.append("spraak", spraak.name)
             }
         }.brevdataOrThrow(saksId = saksId)
 
-    private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(saksId: Long, vedtaksId: Long? = null): Data =
+    private suspend inline fun <reified Data : Any> HttpResponse.brevdataOrThrow(saksId: SaksId, vedtaksId: Long? = null): Data =
         when {
             status.isSuccess() -> body<BrevdataResponseWrapper<Data>>().data
             status == HttpStatusCode.UnprocessableEntity -> throw PenDataException(body<BrevdataFeilResponse>().feil)
-            else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}. Saksid: $saksId ${vedtaksId?.let { ", vedtaksId: $it" }}")
+            else -> throw PenServiceException("Feil ved kall til PEN: ${status.value} - ${bodyAsText()}. Saksid: ${saksId.id} ${vedtaksId?.let { ", vedtaksId: $it" }}")
         }
 
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse =
@@ -175,7 +176,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
 
     private data class SakResponseDto(
-        val saksId: Long,
+        val saksId: SaksId,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -101,7 +102,7 @@ class LegacyBrevServiceTest {
                         brevtittel = null,
                         enhetsId = EnhetId("9999")
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
@@ -121,7 +122,7 @@ class LegacyBrevServiceTest {
                         brevtittel = null,
                         enhetsId = principalSinNAVEnhet.id
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
@@ -141,7 +142,7 @@ class LegacyBrevServiceTest {
                         mottakerText = "en tekst",
                         landkode = "NO",
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
@@ -160,7 +161,7 @@ class LegacyBrevServiceTest {
                         mottakerText = "en tekst",
                         landkode = "NO",
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)

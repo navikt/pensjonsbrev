@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
@@ -25,7 +26,7 @@ import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
     val id: EntityID<Long>
-    val saksId: Long
+    val saksId: SaksId
     val vedtaksId: Long?
     val brevkode: Brevkode.Redigerbart
     val spraak: LanguageCode
@@ -108,7 +109,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
         private set
 
     companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: Long?) =
+        fun findByIdAndSaksId(id: Long, saksId: SaksId?) =
             if (saksId == null) {
                 findById(id)
             } else {
@@ -116,7 +117,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             }
 
         fun opprettBrev(
-            saksId: Long,
+            saksId: SaksId,
             vedtaksId: Long?,
             opprettetAv: NavIdent,
             brevkode: Brevkode.Redigerbart,

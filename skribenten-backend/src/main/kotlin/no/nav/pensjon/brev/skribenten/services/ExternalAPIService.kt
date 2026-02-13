@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.ExternalAPI
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
@@ -18,7 +19,7 @@ class ExternalAPIService(
         private val logger = LoggerFactory.getLogger(ExternalAPIService::class.java)
     }
 
-    suspend fun hentAlleBrevForSaker(saksIder: Set<Long>): List<ExternalAPI.BrevInfo> {
+    suspend fun hentAlleBrevForSaker(saksIder: Set<SaksId>): List<ExternalAPI.BrevInfo> {
         val alleBrev = hentBrevService.hentBrevForAlleSaker(saksIder)
         val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevbakerService.getRedigerbarTemplate(it) }
 

@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
@@ -28,7 +29,7 @@ class OpprettBrevHandler(
     private val navansattService: NavansattService,
 ) {
     data class Request(
-        val saksId: Long,
+        val saksId: SaksId,
         val vedtaksId: Long?,
         val brevkode: Brevkode.Redigerbart,
         val spraak: LanguageCode,
