@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.Instant
@@ -18,7 +19,7 @@ object ExternalAPI {
         val brevkode: Brevkode.Redigerbart,
         val tittel: String,
         val brevtype: LetterMetadata.Brevtype,
-        val avsenderEnhetsId: String?,
+        val avsenderEnhetsId: EnhetId,
         val spraak: SpraakKode,
         val opprettetAv: NavIdent,
         val sistRedigertAv: NavIdent,

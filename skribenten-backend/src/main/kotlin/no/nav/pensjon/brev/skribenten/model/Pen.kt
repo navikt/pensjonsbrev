@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -63,7 +64,7 @@ object Pen {
             val fagsystem: String? = null,
             val gjelder: String? = null,
             val innhold: String? = null,
-            val journalenhet: String? = null,
+            val journalenhet: EnhetId? = null,
             val kategori: String? = null,
             val kravtype: String? = null,
             val land: String? = null,
@@ -88,7 +89,7 @@ object Pen {
         val dokumentDato: LocalDate,
         val saksId: Long,
         val brevkode: Brevkode.Redigerbart,
-        val enhetId: String?,
+        val enhetId: EnhetId,
         val pdf: ByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?

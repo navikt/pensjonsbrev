@@ -165,7 +165,7 @@ class BrevredigeringServiceTest {
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }
 
-    private val principalNavEnhetId = "Nebuchadnezzar"
+    private val principalNavEnhetId = EnhetId("9876")
 
 
     private val sak1 = Pen.SakSelection(
@@ -214,14 +214,14 @@ class BrevredigeringServiceTest {
             val saksId: Long,
             val vedtaksId: Long?,
             val brevkode: Brevkode.Redigerbart,
-            val avsenderEnhetsId: String?,
+            val avsenderEnhetsId: EnhetId?,
         )
 
         val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
 
         override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
@@ -235,7 +235,7 @@ class BrevredigeringServiceTest {
             saksId: Long,
             vedtaksId: Long?,
             brevkode: Brevkode.Redigerbart,
-            avsenderEnhetsId: String?,
+            avsenderEnhetsId: EnhetId?,
         ) {
             assertThat(utfoerteHentPesysBrevdataKall.distinct()).contains(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
         }

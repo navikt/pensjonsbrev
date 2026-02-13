@@ -82,7 +82,7 @@ class LegacyBrevService(
 
     private suspend fun bestillExstreamBrevPen(
         brevkode: String,
-        enhetsId: String,
+        enhetsId: EnhetId,
         gjelderPid: String,
         idTSSEkstern: String? = null,
         metadata: BrevdataDto,
@@ -145,7 +145,7 @@ class LegacyBrevService(
             }
         }
 
-    private suspend fun harTilgangTilEnhet(enhetsId: String): Boolean =
+    private suspend fun harTilgangTilEnhet(enhetsId: EnhetId): Boolean =
         navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
 
 }

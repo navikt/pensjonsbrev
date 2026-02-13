@@ -43,7 +43,7 @@ interface PenService {
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult?
-    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data
+    suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data
     suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata
     suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse
 
@@ -136,11 +136,11 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         saksId: Long,
         vedtaksId: Long?,
         brevkode: Brevkode.Redigerbart,
-        avsenderEnhetsId: String?
+        avsenderEnhetsId: EnhetId
     ): BrevdataResponse.Data =
         client.get("brev/skribenten/sak/$saksId/brevdata/${brevkode.kode()}") {
             mapOf(
-                "enhetsId" to avsenderEnhetsId,
+                "enhetsId" to avsenderEnhetsId.value,
                 "vedtaksId" to vedtaksId?.toString(),
             )
                 .filter { it.value != null }

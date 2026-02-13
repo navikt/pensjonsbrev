@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.norskAdresse
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.samhandler
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.Companion.utenlandskAdresse
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
@@ -39,7 +40,7 @@ object Dto {
         val laastForRedigering: Boolean,
         val distribusjonstype: Distribusjonstype,
         val mottaker: Mottaker?,
-        val avsenderEnhetId: String?,
+        val avsenderEnhetId: EnhetId,
         val spraak: LanguageCode,
         val journalpostId: Long?,
         val attestertAv: NavIdent?,

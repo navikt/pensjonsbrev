@@ -34,10 +34,10 @@ fun notYetStubbed(description: String? = null): Nothing =
     throw NotYetStubbedException(description ?: "This method has not yet been stubbed in the test setup.")
 
 open class FakeNavansattService(
-    val harTilgangTilEnhet: Map<Pair<String, String>, Boolean> = emptyMap(),
+    val harTilgangTilEnhet: Map<Pair<String, EnhetId>, Boolean> = emptyMap(),
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId) =
         harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
@@ -53,7 +53,7 @@ open class FakeNavansattService(
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
-    override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
+    override suspend fun getEnhet(enhetId: EnhetId) = enheter[enhetId.value] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
 open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
@@ -152,7 +152,7 @@ open class PenServiceStub : PenService {
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
-    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data = notYetStubbed()
+    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
     override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
 }

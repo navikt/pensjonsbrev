@@ -53,7 +53,7 @@ fun Route.sakBrev(
         post<Api.OpprettBrevRequest> { request ->
             val sak: Pen.SakSelection = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
-            val avsenderEnhetsId = request.avsenderEnhetsId?.takeIf { it.isNotBlank() }
+            val avsenderEnhetsId = request.avsenderEnhetsId
 
             val brev = brevredigeringFacade.opprettBrev(
                 OpprettBrevHandler.Request(
