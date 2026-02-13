@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
 import org.slf4j.LoggerFactory
@@ -90,7 +91,7 @@ class LegacyBrevService(
         saksId: SaksId,
         spraak: SpraakKode,
         brevtittel: String,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         landkode: String? = null,
         mottakerText: String? = null,
         saksbehandler: Navansatt,
@@ -130,7 +131,7 @@ class LegacyBrevService(
                         mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
                         sensitivt = false
                     ),
-                    vedtaksInformasjon = vedtaksId?.toString()
+                    vedtaksInformasjon = vedtaksId?.id?.toString()
                 )
             ).let { Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId) }
         }

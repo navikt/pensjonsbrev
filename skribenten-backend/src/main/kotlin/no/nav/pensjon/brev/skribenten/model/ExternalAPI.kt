@@ -14,7 +14,7 @@ object ExternalAPI {
         val url: String,
         val id: Long,
         val saksId: SaksId,
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
         val journalpostId: Long?,
         val brevkode: Brevkode.Redigerbart,
         val tittel: String,

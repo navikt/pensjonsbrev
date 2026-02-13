@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
@@ -151,9 +152,9 @@ open class PenServiceStub : PenService {
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
-    override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? = notYetStubbed()
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
+    override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
     override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
 }

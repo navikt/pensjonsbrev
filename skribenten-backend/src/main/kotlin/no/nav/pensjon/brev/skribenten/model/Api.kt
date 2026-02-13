@@ -30,7 +30,7 @@ object Api {
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
     )
 
     data class OppdaterBrevRequest(
@@ -67,7 +67,7 @@ object Api {
         val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
         val journalpostId: Long?,
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -183,7 +183,7 @@ object Api {
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val vedtaksId: Long? = null,
+        val vedtaksId: VedtaksId? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
         val enhetsId: EnhetId,

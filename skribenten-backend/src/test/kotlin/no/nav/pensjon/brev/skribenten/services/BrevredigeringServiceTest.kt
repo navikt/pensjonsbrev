@@ -212,7 +212,7 @@ class BrevredigeringServiceTest {
 
         data class PesysBrevdatakallRequest(
             val saksId: SaksId,
-            val vedtaksId: Long?,
+            val vedtaksId: VedtaksId?,
             val brevkode: Brevkode.Redigerbart,
             val avsenderEnhetsId: EnhetId?,
         )
@@ -221,7 +221,7 @@ class BrevredigeringServiceTest {
 
         override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
@@ -233,7 +233,7 @@ class BrevredigeringServiceTest {
 
         fun verifyHentPesysBrevdata(
             saksId: SaksId,
-            vedtaksId: Long?,
+            vedtaksId: VedtaksId?,
             brevkode: Brevkode.Redigerbart,
             avsenderEnhetsId: EnhetId?,
         ) {
@@ -323,7 +323,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `status er KLAR om vedtaksbrev er laast og det er attestert`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1)
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1))
 
         assertThat(
             withPrincipal(saksbehandler1Principal) {
@@ -569,7 +569,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
 
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
@@ -580,7 +580,7 @@ class BrevredigeringServiceTest {
         }
         assertThat(attesteringsResultat?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
 
-        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
+        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -588,7 +588,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
 
         withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
@@ -600,7 +600,7 @@ class BrevredigeringServiceTest {
             }
         }
 
-        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
+        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -608,7 +608,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
@@ -628,7 +628,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
         withPrincipal(saksbehandler1Principal) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
@@ -952,7 +952,7 @@ class BrevredigeringServiceTest {
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
     ) = withPrincipal(principal) {
         val result = brevredigeringFacade.opprettBrev(

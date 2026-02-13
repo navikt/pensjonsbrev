@@ -223,7 +223,7 @@ abstract class BrevredigeringTest {
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
