@@ -42,9 +42,6 @@ importers:
       '@types/express':
         specifier: 5.0.6
         version: 5.0.6
-      '@types/lusca':
-        specifier: ^1.7.5
-        version: 1.7.5
       '@types/morgan':
         specifier: ^1.9.10
         version: 1.9.10
@@ -197,9 +194,6 @@ packages:
 
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
-
-  '@types/lusca@1.7.5':
-    resolution: {integrity: sha512-l49gAf8pu2iMzbKejLcz6Pqj+51H2na6BgORv1ElnE8ByPFcBdh/eZ0WNR1Va/6ZuNSZa01Hoy1DTZ3IZ+y+kA==}
 
   '@types/morgan@1.9.10':
     resolution: {integrity: sha512-sS4A1zheMvsADRVfT0lYbJ4S9lmsey8Zo2F7cnbYjWHP67Q0AwMYuuzLlkIM2N8gAbb9cubhIVFwcIN2XyYCkA==}
@@ -1651,10 +1645,6 @@ snapshots:
   '@types/json-schema@7.0.15': {}
 
   '@types/json5@0.0.29': {}
-
-  '@types/lusca@1.7.5':
-    dependencies:
-      '@types/express': 5.0.6
 
   '@types/morgan@1.9.10':
     dependencies:
