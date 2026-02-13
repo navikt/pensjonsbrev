@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -160,7 +161,9 @@ object P1DataTable : IdTable<Long>() {
 
 class P1Data(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
     var p1data by P1DataTable.p1data
-    companion object : LongEntityClass<P1Data>(P1DataTable)
+    companion object : LongEntityClass<P1Data>(P1DataTable) {
+        fun new(id: BrevId, init: P1Data.() -> Unit) = new(id.id, init)
+    }
 }
 
 object OneShotJobTable : IdTable<String>() {
@@ -178,7 +181,9 @@ object ValgteVedleggTable : IdTable<Long>() {
 
 class ValgteVedlegg(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
     var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
-    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable)
+    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable) {
+        fun new(id: BrevId, init: ValgteVedlegg.() -> Unit) = new(id.id, init)
+    }
 }
 
 

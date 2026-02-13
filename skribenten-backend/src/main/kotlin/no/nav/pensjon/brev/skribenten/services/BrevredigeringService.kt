@@ -72,7 +72,7 @@ class BrevredigeringService(
                     if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
                         brevDb.document.singleOrNull()?.delete()
                     }
-                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId.id) { oppdater(alltidValgbareVedlegg) })
+                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) })
                 }
 
                 brevDb.redigeresAv = null
@@ -233,9 +233,9 @@ class BrevredigeringService(
                     transaction {
                         if (it.journalpostId != null) {
                             if (it.error == null) {
-                                BrevredigeringEntity[brevId.id].delete()
+                                BrevredigeringEntity[brevId].delete()
                             } else {
-                                BrevredigeringEntity[brevId.id].journalpostId = it.journalpostId
+                                BrevredigeringEntity[brevId].journalpostId = it.journalpostId
                             }
                         }
                     }
@@ -367,7 +367,7 @@ class BrevredigeringService(
 
         return transaction {
             val update: Document.() -> Unit = {
-                this.brevredigering = BrevredigeringEntity[brevredigering.info.id.id]
+                this.brevredigering = BrevredigeringEntity[brevredigering.info.id]
                 this.pdf = pdf.file
                 this.dokumentDato = pesysData.felles.dokumentDato
                 this.redigertBrevHash = brevredigering.redigertBrevHash

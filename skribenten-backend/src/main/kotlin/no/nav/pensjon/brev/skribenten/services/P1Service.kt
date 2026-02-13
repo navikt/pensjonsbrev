@@ -38,7 +38,7 @@ class P1ServiceImpl(private val penService: PenService) : P1Service {
         if (brevredigering != null) {
             P1Data.findSingleByAndUpdate(P1DataTable.id eq brevredigering.id) { p1Data ->
                 p1Data.p1data = p1DataInput
-            } ?: P1Data.new(brevId.id) {
+            } ?: P1Data.new(brevId) {
                 p1data = p1DataInput
             }
         } else throw IllegalArgumentException("Fant ikke brev med id: $brevId")
