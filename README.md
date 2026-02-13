@@ -46,10 +46,10 @@ docker-compose up -d --build
 4. Kjør følgende for å bygge alle applikasjonene og publisere docker images til lokalt registry:
 
    ```bash
-   (cd skribenten-web/bff && pnpm i && pnpm run build)
-   (cd skribenten-web/frontend && pnpm i)
-   (cd brevoppskrift-web/bff && pnpm i && pnpm run build)
-   (cd brevoppskrift-web/frontend && pnpm i)
+   (cd skribenten-web/bff && pnpm i --frozen-lockfile && pnpm run build)
+   (cd skribenten-web/frontend && pnpm i --frozen-lockfile)
+   (cd brevoppskrift-web/bff && pnpm i --frozen-lockfile && pnpm run build)
+   (cd brevoppskrift-web/frontend && pnpm i --frozen-lockfile)
    ./gradlew build -x test
    ```
 
