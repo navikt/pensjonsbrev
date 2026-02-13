@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -108,7 +109,7 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
-    val journalpostId: Column<Long?> = long("journalpostId").nullable()
+    val journalpostId: Column<JournalpostId?> = long("journalpostId").transform(::JournalpostId, JournalpostId::id).nullable()
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }

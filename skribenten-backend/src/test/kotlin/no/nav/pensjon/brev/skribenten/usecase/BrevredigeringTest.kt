@@ -189,7 +189,7 @@ abstract class BrevredigeringTest {
             brevdata = Api.GeneriskBrevdata()
         )
 
-        val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
+        val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         fun LetterMarkupImpl.medSignatur(saksbehandler: String?, attestant: String?) =
             copy(
@@ -289,7 +289,7 @@ abstract class BrevredigeringTest {
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
         assertThat(sendBrev(brev)).isNotNull()

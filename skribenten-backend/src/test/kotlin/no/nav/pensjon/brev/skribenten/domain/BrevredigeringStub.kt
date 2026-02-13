@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -40,7 +41,7 @@ open class BrevredigeringStub : Brevredigering {
     override val opprettet: Instant get() = notYetStubbed()
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
-    override val journalpostId: Long get() = notYetStubbed()
+    override val journalpostId: JournalpostId get() = notYetStubbed()
     override val document: Iterable<Document> get() = notYetStubbed()
     override val mottaker: Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()

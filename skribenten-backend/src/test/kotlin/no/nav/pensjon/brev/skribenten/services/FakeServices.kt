@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -151,7 +152,7 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 open class PenServiceStub : PenService {
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
-    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
+    override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
@@ -167,7 +168,7 @@ open class PdlServiceStub : PdlService {
 }
 
 open class SafServiceStub : SafService {
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = notYetStubbed()
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse = notYetStubbed()
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray = notYetStubbed()
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult = notYetStubbed()
+    override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse = notYetStubbed()
+    override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray = notYetStubbed()
 }

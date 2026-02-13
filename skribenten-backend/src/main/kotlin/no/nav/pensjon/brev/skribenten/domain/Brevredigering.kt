@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -50,7 +51,7 @@ interface Brevredigering {
     val opprettet: Instant
     val sistredigert: Instant
     val sistReservert: Instant?
-    val journalpostId: Long?
+    val journalpostId: JournalpostId?
     val document: Iterable<Document>
     val mottaker: Mottaker?
     val p1Data: P1Data?

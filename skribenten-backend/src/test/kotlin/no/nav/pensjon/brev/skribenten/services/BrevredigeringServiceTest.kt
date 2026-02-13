@@ -268,7 +268,7 @@ class BrevredigeringServiceTest {
         navansattService = navAnsattService
     )
 
-    private val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
+    private val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
     @BeforeEach
     fun clearMocks() {
@@ -333,7 +333,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { BrevredigeringEntity[brev.info.id.id].journalpostId = 123L }
+        transaction { BrevredigeringEntity[brev.info.id.id].journalpostId = JournalpostId(123L) }
 
         val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
@@ -638,7 +638,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -672,7 +672,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -724,7 +724,7 @@ class BrevredigeringServiceTest {
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
@@ -786,7 +786,7 @@ class BrevredigeringServiceTest {
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
@@ -799,7 +799,7 @@ class BrevredigeringServiceTest {
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
         assertThat(hentBrev(brev.info.id)).isNotNull()
 
-        penService.sendBrevResponse = Pen.BestillBrevResponse(991, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(991), null)
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 

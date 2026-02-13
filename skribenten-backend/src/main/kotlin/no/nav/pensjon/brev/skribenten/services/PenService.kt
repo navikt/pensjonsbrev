@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -41,7 +42,7 @@ private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 interface PenService {
     suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
-    suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
+    suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
@@ -117,8 +118,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         }
     }
 
-    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse? =
-        client.get("brev/dokument/exstream/$journalpostId")
+    override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse? =
+        client.get("brev/dokument/exstream/${journalpostId.id}")
             .bodyOrThrow()
 
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =

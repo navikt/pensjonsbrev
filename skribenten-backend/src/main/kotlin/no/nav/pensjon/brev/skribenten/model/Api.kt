@@ -66,7 +66,7 @@ object Api {
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val vedtaksId: VedtaksId?,
     )
 
@@ -198,7 +198,7 @@ object Api {
 
     data class BestillOgRedigerBrevResponse(
         val url: String? = null,
-        val journalpostId: String? = null,
+        val journalpostId: JournalpostId? = null,
         val failureType: FailureType? = null,
     ) {
         enum class FailureType {

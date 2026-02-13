@@ -33,7 +33,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
     class KanIkkeReservereBrevredigeringException(message: String, val response: Api.ReservasjonResponse) :
         BrevredigeringException(message)
 
-    class ArkivertBrevException(val brevId: BrevId, val journalpostId: Long) :
+    class ArkivertBrevException(val brevId: BrevId, val journalpostId: JournalpostId) :
         BrevredigeringException("Brev med id $brevId er allerede arkivert i journalpost $journalpostId")
 
     class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)

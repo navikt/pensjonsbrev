@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -119,7 +120,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
         veksleKlarStatus(brev, klar = true).resultOrFail()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 

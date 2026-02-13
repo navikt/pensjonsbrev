@@ -42,7 +42,7 @@ object Dto {
         val mottaker: Mottaker?,
         val avsenderEnhetId: EnhetId,
         val spraak: LanguageCode,
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val attestertAv: NavIdent?,
         val status: BrevStatus,
     )
