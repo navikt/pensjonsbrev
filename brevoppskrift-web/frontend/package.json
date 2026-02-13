@@ -13,7 +13,7 @@
     "lint:fix": "eslint --fix .",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "lint-and-check-types": "pnpm run check-types && pnpm run lint && pnpm run stylelint"
+    "lint-and-check-types": "${npm_execpath} run check-types && ${npm_execpath} run lint && ${npm_execpath} run stylelint"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
