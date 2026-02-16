@@ -710,6 +710,9 @@ packages:
       '@types/react': ^17.0.30 || ^18 || ^19
       react: ^17 || ^18 || ^19
       react-dom: ^17 || ^18 || ^19
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
 
   '@navikt/ds-tokens@8.4.1':
     resolution: {integrity: sha512-MafU7Om2zj5sn7uL5P57EAeV0n6/duU1IKuBW0ghUZE47A/cRJS/oG+PQTwg3FYBgXKkpInsx70k0oL+D7NR5A==, tarball: https://npm.pkg.github.com/download/@navikt/ds-tokens/8.4.1/3800c18a0f04a870966a7f2679bccecc43773ff2}
@@ -3250,11 +3253,12 @@ snapshots:
       '@floating-ui/react-dom': 2.1.7(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       '@navikt/aksel-icons': 8.1.0
       '@navikt/ds-tokens': 8.4.1
-      '@types/react': 19.2.9
       date-fns: 4.1.0
       react: 19.2.3
       react-day-picker: 9.7.0(react@19.2.3)
       react-dom: 19.2.3(react@19.2.3)
+    optionalDependencies:
+      '@types/react': 19.2.9
 
   '@navikt/ds-tokens@8.4.1': {}
 
