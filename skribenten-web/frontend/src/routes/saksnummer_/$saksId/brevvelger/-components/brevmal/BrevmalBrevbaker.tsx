@@ -1,10 +1,8 @@
-import { zodResolver } from "@hookform/resolvers/zod";
 import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm, useWatch } from "react-hook-form";
-import type { z } from "zod";
 
 import { createBrev, getBrev } from "~/api/brev-queries";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
@@ -14,8 +12,8 @@ import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse } from "~/types/brev";
-
+import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
+import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import type { SubmitTemplateOptions } from "../../route";
@@ -24,9 +22,13 @@ import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
 import SelectLanguage from "./components/SelectLanguage";
-import { brevmalBrevbakerFormSchema } from "./TemplateUtils";
 
-type BrevbakerFormData = z.infer<typeof brevmalBrevbakerFormSchema>;
+interface BrevbakerFormData {
+  enhetsId: string;
+  spraak: SpraakKode;
+  saksbehandlerValg: SaksbehandlerValg;
+  mottaker: Nullable<Mottaker>;
+}
 
 const EksisterendeKladdModal = (props: {
   åpen: boolean;
@@ -126,7 +128,6 @@ const BrevmalBrevbaker = (props: {
   });
 
   const form = useForm<BrevbakerFormData>({
-    resolver: zodResolver(brevmalBrevbakerFormSchema),
     defaultValues: {
       enhetsId: props.defaultValues.enhetsId,
       spraak: props.defaultValues.spraak,

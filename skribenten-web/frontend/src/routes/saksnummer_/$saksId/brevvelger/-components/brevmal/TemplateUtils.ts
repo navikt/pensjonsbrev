@@ -2,7 +2,6 @@ import { z } from "zod";
 
 import type { OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
 import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
 export const byggExstreamOnSubmitRequest = (argz: {
@@ -83,13 +82,6 @@ export const createValidationSchema = (template: LetterMetadata) => {
       }
     });
 };
-
-export const brevmalBrevbakerFormSchema = z.object({
-  spraak: z.enum(SpraakKode),
-  enhetsId: z.string().min(1, "Du må velge avsenderenhet"),
-  saksbehandlerValg: z.custom<SaksbehandlerValg>(),
-  mottaker: z.custom<Nullable<Mottaker>>(),
-});
 
 //regel er at hvis brukerens foretrukne språk er tilgjengelig, og malen støtter det, skal den være valgt, ellers skal den første språkkoden i malen være valgt
 export const hentDefaultValueForSpråk = (preferredLanguage: Nullable<SpraakKode>, tilgjengeligeSpråk: SpraakKode[]) => {
