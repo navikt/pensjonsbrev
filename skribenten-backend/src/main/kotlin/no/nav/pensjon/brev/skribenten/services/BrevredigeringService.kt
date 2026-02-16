@@ -46,7 +46,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
 }
 
 interface HentBrevService {
-    fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo>
+    fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo>
 }
 
 class BrevredigeringService(
@@ -62,7 +62,7 @@ class BrevredigeringService(
     private val brevreservasjonPolicy = BrevreservasjonPolicy()
 
     suspend fun delvisOppdaterBrev(
-        saksId: Long,
+        saksId: SaksId,
         brevId: Long,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
     ): Dto.Brevredigering? =
@@ -85,7 +85,7 @@ class BrevredigeringService(
      * Slett brev med id.
      * @return `true` om brevet ble slettet, false om brevet ikke eksisterer,
      */
-    fun slettBrev(saksId: Long, brevId: Long): Boolean {
+    fun slettBrev(saksId: SaksId, brevId: Long): Boolean {
         return transaction {
             val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
             if (brev != null) {
@@ -97,7 +97,7 @@ class BrevredigeringService(
         }
     }
 
-    override fun hentBrevForAlleSaker(saksIder: Set<Long>): List<Dto.BrevInfo> =
+    override fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
@@ -117,7 +117,7 @@ class BrevredigeringService(
         }
 
     suspend fun hentEllerOpprettPdf(
-        saksId: Long, brevId: Long
+        saksId: SaksId, brevId: Long
     ): Api.PdfResponse? {
         val (brevredigering, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
@@ -162,7 +162,7 @@ class BrevredigeringService(
     }
 
     suspend fun attester(
-        saksId: Long,
+        saksId: SaksId,
         brevId: Long,
         nyeSaksbehandlerValg: SaksbehandlerValg?,
         nyttRedigertbrev: Edit.Letter?,
@@ -196,7 +196,7 @@ class BrevredigeringService(
             }
         }
 
-    suspend fun sendBrev(saksId: Long, brevId: Long): Pen.BestillBrevResponse? {
+    suspend fun sendBrev(saksId: SaksId, brevId: Long): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(brevreservasjonPolicy, null) to it?.document?.firstOrNull()?.toDto() }
@@ -273,7 +273,7 @@ class BrevredigeringService(
 
     private suspend fun <T> hentBrevMedReservasjon(
         brevId: Long,
-        saksId: Long? = null,
+        saksId: SaksId? = null,
         block: suspend ReservertBrevScope.() -> T
     ): T? {
         val principal = PrincipalInContext.require()

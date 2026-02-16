@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -43,7 +44,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `informasjonsbrev i vedtakskontekst faar status KLAR`() {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV, vedtaksId = 1).resultOrFail()
+        val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess {
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
@@ -52,7 +53,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `vedtaksbrev faar status ATTESTERING`() {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1).resultOrFail()
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess {
             assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
@@ -61,7 +62,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `attestering fjernes om brevet laases opp igjen`() {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1).resultOrFail()
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 

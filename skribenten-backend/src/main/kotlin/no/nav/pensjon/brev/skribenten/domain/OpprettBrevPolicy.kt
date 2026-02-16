@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
@@ -42,7 +43,7 @@ class OpprettBrevPolicy(
     }
 
     data class Parametre(
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
         val brevtype: LetterMetadata.Brevtype,
     )
 
