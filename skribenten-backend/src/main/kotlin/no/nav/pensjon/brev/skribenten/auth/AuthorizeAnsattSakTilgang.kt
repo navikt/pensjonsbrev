@@ -7,6 +7,7 @@ import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -30,7 +31,7 @@ val AuthorizeAnsattSakTilgang =
         on(PrincipalInContext.Hook) { call ->
             if (call.isHandled) return@on
 
-            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+            val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
             validerTilgangTilSak(call, saksId)
         }
     }
@@ -46,14 +47,14 @@ val AuthorizeAnsattSakTilgangForBrev =
             val brev = pluginConfig.brevredigeringFacade.hentBrevInfo(brevId)
 
             if (brev != null) {
-                validerTilgangTilSak(call, brev.saksId.toString())
+                validerTilgangTilSak(call, brev.saksId)
             }
         }
     }
 
 private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(
     call: ApplicationCall,
-    saksId: String
+    saksId: SaksId
 ) {
     val pdlService = pluginConfig.pdlService
     val penService = pluginConfig.penService

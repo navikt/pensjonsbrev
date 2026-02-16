@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
@@ -47,7 +48,7 @@ class BrevredigeringFacade(
     fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
 
-    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
+    fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
                 .map { it.toBrevInfo() }

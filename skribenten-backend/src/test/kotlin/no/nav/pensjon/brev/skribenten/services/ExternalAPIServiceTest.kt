@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -18,7 +19,7 @@ import java.time.Instant
 class ExternalAPIServiceTest {
 
     private val skribentenWebUrl = "https://our-cool-url"
-    val saksId = 1L
+    val saksId = SaksId(1L)
     val brevDto = Dto.BrevInfo(
         id = 2L,
         saksId = saksId,
@@ -55,7 +56,7 @@ class ExternalAPIServiceTest {
     private val externalAPIService = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to skribentenWebUrl)).toConfig(),
         hentBrevService = object : HentBrevService {
-            override fun hentBrevForAlleSaker(saksIder: Set<Long>) = listOf(brevDto)
+            override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevDto)
         },
         brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
     )

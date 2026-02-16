@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil.ANNEN
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
@@ -36,7 +37,7 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `kan opprette brev i vedtakskontekst`() {
-        val vedtaksId: Long = 5678
+        val vedtaksId = VedtaksId(5678)
 
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = vedtaksId)
         assertThat(brev).isSuccess {

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
@@ -38,7 +39,7 @@ fun Route.sakRoute(
 
         get {
             val sak: Pen.SakSelection = call.attributes[SakKey]
-            val vedtaksId: String? = call.request.queryParameters["vedtaksId"]
+            val vedtaksId: VedtaksId? = call.request.queryParameters["vedtaksId"]?.let { VedtaksId(it.toLong()) }
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
                 brevmalService.hentBrevmalerForVedtak(

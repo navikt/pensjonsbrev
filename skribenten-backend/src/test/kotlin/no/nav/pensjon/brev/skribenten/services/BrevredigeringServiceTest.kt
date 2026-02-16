@@ -169,7 +169,7 @@ class BrevredigeringServiceTest {
 
 
     private val sak1 = Pen.SakSelection(
-        saksId = 1234L,
+        saksId = SaksId(1234L),
         foedselsnr = "12345678910",
         foedselsdato = LocalDate.now().minusYears(42),
         navn = Pen.SakSelection.Navn("a", "b", "c"),
@@ -204,24 +204,24 @@ class BrevredigeringServiceTest {
     private val penService = FakePenService()
 
     class FakePenService(
-        var saker: MutableMap<String, Pen.SakSelection> = mutableMapOf(),
+        var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
         var sendBrevResponse: Pen.BestillBrevResponse? = null,
     ) : PenServiceStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
         data class PesysBrevdatakallRequest(
-            val saksId: Long,
-            val vedtaksId: Long?,
+            val saksId: SaksId,
+            val vedtaksId: VedtaksId?,
             val brevkode: Brevkode.Redigerbart,
             val avsenderEnhetsId: EnhetId?,
         )
 
         val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
 
-        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")
@@ -232,8 +232,8 @@ class BrevredigeringServiceTest {
             } ?: notYetStubbed("Mangler sendBrevResponse stub")
 
         fun verifyHentPesysBrevdata(
-            saksId: Long,
-            vedtaksId: Long?,
+            saksId: SaksId,
+            vedtaksId: VedtaksId?,
             brevkode: Brevkode.Redigerbart,
             avsenderEnhetsId: EnhetId?,
         ) {
@@ -301,7 +301,7 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             assertThat(
                 brevredigeringService.hentEllerOpprettPdf(
-                    saksId = sak1.saksId + 1,
+                    saksId = SaksId(sak1.saksId.id + 1),
                     brevId = brev.info.id,
                 )
             ).isNull()
@@ -313,17 +313,17 @@ class BrevredigeringServiceTest {
             )
             assertThat(
                 brevredigeringService.sendBrev(
-                    saksId = sak1.saksId + 1,
+                    saksId = SaksId(sak1.saksId.id + 1),
                     brevId = brev.info.id
                 )
             ).isNull()
-            assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId + 1, brevId = brev.info.id)).isFalse()
+            assertThat(brevredigeringService.slettBrev(saksId = SaksId(sak1.saksId.id + 1), brevId = brev.info.id)).isFalse()
         }
     }
 
     @Test
     fun `status er KLAR om vedtaksbrev er laast og det er attestert`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = 1)
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1))
 
         assertThat(
             withPrincipal(saksbehandler1Principal) {
@@ -569,7 +569,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
 
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
@@ -580,7 +580,7 @@ class BrevredigeringServiceTest {
         }
         assertThat(attesteringsResultat?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
 
-        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
+        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -588,7 +588,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
 
         withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
@@ -600,7 +600,7 @@ class BrevredigeringServiceTest {
             }
         }
 
-        penService.verifyHentPesysBrevdata(sak1.saksId, 1, Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
+        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -608,7 +608,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
@@ -628,7 +628,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1,
+            vedtaksId = VedtaksId(1),
         )
         withPrincipal(saksbehandler1Principal) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
@@ -667,7 +667,7 @@ class BrevredigeringServiceTest {
             Pen.SendRedigerbartBrevRequest(
                 templateDescription = informasjonsbrev,
                 dokumentDato = LocalDate.now(),
-                saksId = 1234,
+                saksId = SaksId(1234),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
@@ -709,7 +709,7 @@ class BrevredigeringServiceTest {
             Pen.SendRedigerbartBrevRequest(
                 templateDescription = informasjonsbrev,
                 dokumentDato = LocalDate.now(),
-                saksId = 1234,
+                saksId = SaksId(1234),
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
@@ -932,8 +932,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
-        val sak2 = sak1.copy(saksId = sak1.saksId + 1)
-        val sak3 = sak1.copy(saksId = sak2.saksId + 1)
+        val sak2 = sak1.copy(saksId = SaksId(sak1.saksId.id + 1))
+        val sak3 = sak1.copy(saksId = SaksId(sak2.saksId.id + 1))
         val forventedeBrev = listOf(
             opprettBrev(sak = sak1),
             opprettBrev(sak = sak1),
@@ -952,7 +952,7 @@ class BrevredigeringServiceTest {
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
     ) = withPrincipal(principal) {
         val result = brevredigeringFacade.opprettBrev(

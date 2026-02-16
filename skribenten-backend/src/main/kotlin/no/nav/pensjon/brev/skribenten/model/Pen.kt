@@ -26,7 +26,7 @@ object Pen {
     fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode]
 
     data class SakSelection(
-        val saksId: Long,
+        val saksId: SaksId,
         val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
@@ -74,7 +74,7 @@ object Pen {
             val saksbehandlernavn: String? = null,
             val saksbehandlerid: String? = null,
             val sensitivt: Boolean? = null,
-            val saksid: String? = null,
+            val saksid: SaksId? = null,
             val tillattelektroniskvarsling: Boolean? = null,
             val tilleggsbeskrivelse: String? = null,
         )
@@ -87,7 +87,7 @@ object Pen {
     data class SendRedigerbartBrevRequest(
         val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
-        val saksId: Long,
+        val saksId: SaksId,
         val brevkode: Brevkode.Redigerbart,
         val enhetId: EnhetId,
         val pdf: ByteArray,

@@ -91,7 +91,7 @@ class MottakerTest {
 
     private fun createBrevredigering() = transaction {
         BrevredigeringEntity.opprettBrev(
-            saksId = 123L,
+            saksId = SaksId(123L),
             opprettetAv = principal,
             brevkode = Testbrevkoder.TESTBREV,
             spraak = LanguageCode.BOKMAL,
