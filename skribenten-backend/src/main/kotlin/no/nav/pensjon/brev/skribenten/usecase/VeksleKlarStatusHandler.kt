@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
@@ -14,7 +15,8 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class VeksleKlarStatusHandler(
     private val klarTilSendingPolicy: KlarTilSendingPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
-) : BrevredigeringHandler<VeksleKlarStatusHandler.Request> {
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering> {
 
     data class Request(override val brevId: Long, val klar: Boolean) : BrevredigeringRequest
 
@@ -23,7 +25,7 @@ class VeksleKlarStatusHandler(
 
         // Om ingen endring, returner vellykket uten å gjøre noe
         if (brev.laastForRedigering == request.klar) {
-            return success(brev.toDto(null))
+            return success(brev.toDto(brevreservasjonPolicy, null))
         }
 
         val principal = PrincipalInContext.require()
@@ -40,7 +42,7 @@ class VeksleKlarStatusHandler(
 
         brev.markerSomKlar()
         brev.redigeresAv = null
-        return success(brev.toDto(null))
+        return success(brev.toDto(brevreservasjonPolicy, null))
     }
 
     private fun settBrevTilKladd(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.Brevredigering, BrevredigeringError> {
@@ -48,7 +50,7 @@ class VeksleKlarStatusHandler(
 
         brev.markerSomKladd()
         brev.redigeresAv = null
-        return success(brev.toDto(null))
+        return success(brev.toDto(brevreservasjonPolicy, null))
     }
 
 }

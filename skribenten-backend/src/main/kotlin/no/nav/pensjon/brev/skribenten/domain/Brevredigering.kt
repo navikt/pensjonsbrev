@@ -57,8 +57,8 @@ interface Brevredigering {
     val attestertAvNavIdent: NavIdent?
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
-    val reservasjon: Reservasjon?
 
+    fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon?
     fun reserver(
         fra: Instant,
         saksbehandler: NavIdent,
@@ -70,8 +70,8 @@ interface Brevredigering {
     fun markerSomKladd()
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
-    fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
-    fun toBrevInfo(): Dto.BrevInfo
+    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
+    fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
 class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering {
@@ -150,19 +150,18 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
     override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
 
     // TODO: Vurder å ekstrahere dette som en egen entitet i egen tabell
-    override val reservasjon: Reservasjon?
-        get() {
-            val reservertAv = this.redigeresAv ?: return null
-            val sistReservert = this.sistReservert ?: return null
+    override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? {
+        val reservertAv = this.redigeresAv ?: return null
+        val sistReservert = this.sistReservert ?: return null
 
-            return Reservasjon(
-                vellykket = true,
-                reservertAv = reservertAv,
-                timestamp = sistReservert,
-                expiresIn = BrevreservasjonPolicy.timeout,
-                redigertBrevHash = this.redigertBrevHash,
-            ).takeIf { BrevreservasjonPolicy.isValid(it, Instant.now()) }
-        }
+        return Reservasjon(
+            vellykket = true,
+            reservertAv = reservertAv,
+            timestamp = sistReservert,
+            expiresIn = policy.timeout,
+            redigertBrevHash = this.redigertBrevHash,
+        ).takeIf { policy.erGyldig(it, Instant.now()) }
+    }
 
     override fun reserver(
         fra: Instant,
@@ -172,7 +171,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
         policy.kanReservere(this, fra, saksbehandler).then {
             redigeresAv = saksbehandler
             sistReservert = fra.truncatedTo(ChronoUnit.MILLIS)
-            return@then reservasjon!!
+            return@then gjeldendeReservasjon(policy)!!
         }
 
     override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
@@ -210,9 +209,9 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
         }
     }
 
-    override fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
         Dto.Brevredigering(
-            info = toBrevInfo(),
+            info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
             saksbehandlerValg = saksbehandlerValg,
@@ -220,7 +219,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             valgteVedlegg = valgteVedlegg?.valgteVedlegg
         )
 
-    override fun toBrevInfo(): Dto.BrevInfo =
+    override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =
         Dto.BrevInfo(
             id = id.value,
             saksId = saksId,
@@ -229,7 +228,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             opprettet = opprettet,
             sistredigertAv = sistRedigertAv,
             sistredigert = sistredigert,
-            redigeresAv = reservasjon?.reservertAv,
+            redigeresAv = gjeldendeReservasjon(brevreservasjonPolicy)?.reservertAv,
             brevkode = brevkode,
             laastForRedigering = laastForRedigering,
             distribusjonstype = distribusjonstype,

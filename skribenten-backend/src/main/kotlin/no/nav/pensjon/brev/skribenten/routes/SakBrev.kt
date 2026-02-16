@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.usecase.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -56,7 +56,7 @@ fun Route.sakBrev(
             val avsenderEnhetsId = request.avsenderEnhetsId
 
             val brev = brevredigeringFacade.opprettBrev(
-                OpprettBrevHandler.Request(
+                OpprettBrevHandlerImpl.Request(
                     saksId = sak.saksId,
                     vedtaksId = request.vedtaksId,
                     brevkode = request.brevkode,

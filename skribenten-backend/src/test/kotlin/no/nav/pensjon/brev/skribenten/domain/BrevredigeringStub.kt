@@ -48,37 +48,14 @@ open class BrevredigeringStub : Brevredigering {
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()
-    override val reservasjon: Reservasjon get() = notYetStubbed()
 
-    override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> {
-        notYetStubbed()
-    }
-
-    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
-        notYetStubbed()
-    }
-
-    override fun markerSomKlar() {
-        notYetStubbed()
-    }
-
-    override fun markerSomKladd() {
-        notYetStubbed()
-    }
-
-    override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
-        notYetStubbed()
-    }
-
-    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? {
-        notYetStubbed()
-    }
-
-    override fun toDto(coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering {
-        notYetStubbed()
-    }
-
-    override fun toBrevInfo(): Dto.BrevInfo {
-        notYetStubbed()
-    }
+    override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
+    override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
+    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
+    override fun markerSomKlar(): Unit = notYetStubbed()
+    override fun markerSomKladd(): Unit = notYetStubbed()
+    override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
+    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? = notYetStubbed()
+    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
+    override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
 }

@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.NavansattService
@@ -20,7 +21,8 @@ class HentBrevAttesteringHandler(
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
-) : BrevredigeringHandler<HentBrevAttesteringHandler.Request> {
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering> {
 
     data class Request(
         override val brevId: Long,
@@ -31,7 +33,7 @@ class HentBrevAttesteringHandler(
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         if (!request.reserverForRedigering) {
-            return success(brev.toDto(null))
+            return success(brev.toDto(brevreservasjonPolicy, null))
         }
 
         val principal = PrincipalInContext.require()
@@ -52,7 +54,7 @@ class HentBrevAttesteringHandler(
         val rendretBrev = renderService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 
-        return success(brev.toDto(rendretBrev.letterDataUsage))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 
     override fun requiresReservasjon(request: Request): Boolean =

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -12,7 +13,8 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class EndreMottakerHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevdataService: BrevdataService,
-) : BrevredigeringHandler<EndreMottakerHandler.Request> {
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> {
 
     data class Request(override val brevId: Long, val mottaker: Dto.Mottaker?) : BrevredigeringRequest
 
@@ -25,7 +27,7 @@ class EndreMottakerHandler(
         brev.settMottaker(request.mottaker, request.mottaker?.hentAnnenMottakerNavn())
         brev.redigeresAv = null
 
-        return success(brev.toDto(null))
+        return success(brev.toDto(brevreservasjonPolicy, null))
     }
 
     private suspend fun Dto.Mottaker.hentAnnenMottakerNavn(): String? =
