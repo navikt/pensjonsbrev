@@ -5,6 +5,5 @@ data class BeregningYtelsesKomp(
     val barnetilleggfelles: BarnetilleggFelles?,
     val barnetilleggserkull: BarnetilleggSerkull?,
     val ektefelletillegg: Ektefelletillegg?,
-    val ektefellegarantitillegg: Ektefellegarantitillegg?,
     val gjenlevendetillegg: Gjenlevendetillegg?,
 )
