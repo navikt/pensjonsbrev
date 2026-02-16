@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -39,14 +38,14 @@ import java.time.Month
 private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
     saksId = SaksId(1337),
-    foedselsnr = Foedselsnummer("12345"),
+    foedselsnr = "12345",
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = SaksId(7007),
-    foedselsnr = Foedselsnummer("007"),
+    foedselsnr = "007",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
@@ -54,7 +53,7 @@ private val sakVikafossen = Pen.SakSelection(
 
 private val generellSak0001 = Pen.SakSelection(
     saksId = SaksId(7008),
-    foedselsnr = Foedselsnummer("12345"),
+    foedselsnr = "12345",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
@@ -62,7 +61,7 @@ private val generellSak0001 = Pen.SakSelection(
 
 private val generellSak0002 = Pen.SakSelection(
     saksId = SaksId(7009),
-    foedselsnr = Foedselsnummer("12345"),
+    foedselsnr = "12345",
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
@@ -76,12 +75,12 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<Foedselsnummer, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
-        override suspend fun hentAdressebeskyttelse(fnr: Foedselsnummer, behandlingsnummer: Pdl.Behandlingsnummer?) =
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
+        override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
             adressebeskyttelser[Pair(fnr, behandlingsnummer)]
                 ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
 
-        override suspend fun hentBrukerContext(fnr: Foedselsnummer, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
+        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
@@ -125,7 +124,7 @@ class AuthorizeAnsattSakTilgangTest {
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
                     get("/sakFromPlugin/{saksId}") {
                         val sak = call.attributes[SakKey]
-                        call.respond(successResponse(sak.foedselsnr.value))
+                        call.respond(successResponse(sak.foedselsnr))
                     }
                     get("/{saksId}") {
                         val saksId = call.parameters.getOrFail("saksId")
@@ -231,7 +230,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
         pdlService = object : PdlServiceStub() {
-            override suspend fun hentAdressebeskyttelse(fnr: Foedselsnummer, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
                 throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
         }
     ) { client ->
@@ -245,7 +244,7 @@ class AuthorizeAnsattSakTilgangTest {
     ) { client ->
         val response = client.get("/sak/sakFromPlugin/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.foedselsnr.value), response.bodyAsText())
+        assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
     }
 
     @Test

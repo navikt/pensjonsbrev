@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -56,7 +55,7 @@ class PensjonRepresentasjonService(
         PENSJON_VERGE_PENGEMOTTAKER,
     }
 
-    suspend fun harVerge(fnr: Foedselsnummer): Boolean? =
+    suspend fun harVerge(fnr: String): Boolean? =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
             fnr,
@@ -65,7 +64,7 @@ class PensjonRepresentasjonService(
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
                     contentType(ContentType.Application.Json)
-                    setBody(HasRepresentantRequest(fnr.value, RelevanteRepresentasjonstyper.entries))
+                    setBody(HasRepresentantRequest(fnr, RelevanteRepresentasjonstyper.entries))
                 }
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value

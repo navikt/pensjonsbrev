@@ -87,7 +87,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
-                            gjelderPid = sak.foedselsnr.value,
+                            gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -99,7 +99,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
-                            gjelderPid = sak.foedselsnr.value,
+                            gjelderPid = sak.foedselsnr,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -110,7 +110,7 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr.value)
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
 
             if (adresse != null) {
                 call.respond(adresse)
@@ -121,7 +121,7 @@ fun Route.sakRoute(
 
         get("/foretrukketSpraak") {
             val sak = call.attributes[SakKey]
-            call.respond(krrService.getPreferredLocale(sak.foedselsnr.value))
+            call.respond(krrService.getPreferredLocale(sak.foedselsnr))
         }
 
         get("/pdf/{journalpostId}") {
