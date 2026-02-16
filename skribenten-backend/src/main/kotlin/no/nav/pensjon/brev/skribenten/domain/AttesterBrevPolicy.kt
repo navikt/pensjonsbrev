@@ -12,9 +12,9 @@ class AttesterBrevPolicy {
     fun kanAttestere(brev: Brevredigering, principal: UserPrincipal): Outcome<Boolean, KanIkkeAttestere> {
         return when {
             !principal.isAttestant() -> failure(KanIkkeAttestere.HarIkkeAttestantrolle(principal.navIdent))
-            brev.opprettetAv == principal.navIdent -> failure(KanIkkeAttestere.KanIkkeAttestereEgetBrev(principal.navIdent, BrevId(brev.id.value)))
+            brev.opprettetAv == principal.navIdent -> failure(KanIkkeAttestere.KanIkkeAttestereEgetBrev(principal.navIdent, brev.id.value))
             brev.attestertAvNavIdent != null && brev.attestertAvNavIdent != principal.navIdent -> failure(
-                KanIkkeAttestere.AlleredeAttestertAvAnnen(BrevId(brev.id.value), brev.attestertAvNavIdent!!)
+                KanIkkeAttestere.AlleredeAttestertAvAnnen(brev.id.value, brev.attestertAvNavIdent!!)
             )
             else -> success(true)
         }

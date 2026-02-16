@@ -22,13 +22,13 @@ import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
+import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
-    val id: EntityID<Long>
+    val id: EntityID<BrevId>
     val saksId: SaksId
     val vedtaksId: VedtaksId?
     val brevkode: Brevkode.Redigerbart
@@ -76,7 +76,7 @@ interface Brevredigering {
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
-class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering {
+class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
     override var saksId by BrevredigeringTable.saksId
         private set
     // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
@@ -111,13 +111,12 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
     override var brevtype by BrevredigeringTable.brevtype
         private set
 
-    companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
-        fun findById(id: BrevId) = findById(id.id)
+    companion object : EntityClass<BrevId, BrevredigeringEntity>(BrevredigeringTable) {
         fun findByIdAndSaksId(id: BrevId, saksId: SaksId?) =
             if (saksId == null) {
                 findById(id)
             } else {
-                find { (BrevredigeringTable.id eq id.id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
+                find { (BrevredigeringTable.id eq id) and (BrevredigeringTable.saksId eq saksId) }.firstOrNull()
             }
 
         fun opprettBrev(
@@ -148,8 +147,6 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
             this.redigertBrev = redigertBrev
             this.brevtype = brevtype
         }
-
-        operator fun get(id: BrevId) = get(id.id)
     }
 
     override val isVedtaksbrev get() = brevtype == LetterMetadata.Brevtype.VEDTAKSBREV
@@ -226,7 +223,7 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =
         Dto.BrevInfo(
-            id = BrevId(id.value),
+            id = id.value,
             saksId = saksId,
             vedtaksId = vedtaksId,
             opprettetAv = opprettetAv,

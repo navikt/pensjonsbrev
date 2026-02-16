@@ -52,7 +52,7 @@ object Dto {
     }
 
     data class Document(
-        val brevredigeringId: Long,
+        val brevredigeringId: BrevId,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
         val redigertBrevHash: Hash<Edit.Letter>,

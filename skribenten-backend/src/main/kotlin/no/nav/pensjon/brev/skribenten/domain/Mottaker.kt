@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.skribenten.db.MottakerTable
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
+import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.v1.dao.EntityClass
 
 enum class MottakerType { SAMHANDLER, NORSK_ADRESSE, UTENLANDSK_ADRESSE }
 
-class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+class Mottaker(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
     var type by MottakerTable.type
     var tssId by MottakerTable.tssId
     var navn by MottakerTable.navn
@@ -20,7 +21,8 @@ class Mottaker(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) 
     var manueltAdressertTil by MottakerTable.manueltAdressertTil
     var landkode by MottakerTable.landkode
 
-    companion object : LongEntityClass<Mottaker>(MottakerTable) {
+    companion object : EntityClass<BrevId, Mottaker>(MottakerTable) {
+
         fun opprettMottaker(brevredigering: Brevredigering, mottaker: Dto.Mottaker): Mottaker {
             return new(brevredigering.id.value) {
                 oppdater(mottaker)

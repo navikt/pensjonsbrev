@@ -45,6 +45,8 @@ import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.v1.dao.EntityClass
 import org.jetbrains.exposed.v1.dao.LongEntity
 import org.jetbrains.exposed.v1.dao.LongEntityClass
 import org.jetbrains.exposed.v1.javatime.date
@@ -92,7 +94,10 @@ private inline fun <reified T> readJsonBinary(json: ByteArray): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
-object BrevredigeringTable : LongIdTable() {
+object BrevredigeringTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = long("id").transform(::BrevId, BrevId::id).autoIncrement().entityId()
+    override val primaryKey = PrimaryKey(id)
+
     val saksId: Column<SaksId> = long("saksId").index().transform(::SaksId, SaksId::id)
     val vedtaksId: Column<VedtaksId?> = long("vedtaksId").transform(::VedtaksId, VedtaksId::id).nullable()
     val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
@@ -117,7 +122,7 @@ object BrevredigeringTable : LongIdTable() {
 }
 
 object DocumentTable : LongIdTable() {
-    val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val brevredigering: Column<EntityID<BrevId>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
@@ -135,8 +140,8 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Document>(DocumentTable)
 }
 
-object MottakerTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object MottakerTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 128).nullable()
@@ -152,8 +157,8 @@ object MottakerTable : IdTable<Long>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-object P1DataTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object P1DataTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val p1data: Column<Api.GeneriskBrevdata> = encryptedBinary("p1data")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
@@ -162,11 +167,9 @@ object P1DataTable : IdTable<Long>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class P1Data(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+class P1Data(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
     var p1data by P1DataTable.p1data
-    companion object : LongEntityClass<P1Data>(P1DataTable) {
-        fun new(id: BrevId, init: P1Data.() -> Unit) = new(id.id, init)
-    }
+    companion object : EntityClass<BrevId, P1Data>(P1DataTable)
 }
 
 object OneShotJobTable : IdTable<String>() {
@@ -175,18 +178,16 @@ object OneShotJobTable : IdTable<String>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-object ValgteVedleggTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object ValgteVedleggTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class ValgteVedlegg(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+class ValgteVedlegg(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
     var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
-    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable) {
-        fun new(id: BrevId, init: ValgteVedlegg.() -> Unit) = new(id.id, init)
-    }
+    companion object : EntityClass<BrevId, ValgteVedlegg>(ValgteVedleggTable)
 }
 
 

@@ -373,7 +373,7 @@ class BrevredigeringService(
                 this.redigertBrevHash = brevredigering.redigertBrevHash
                 this.brevdataHash = brevdataHash
             }
-            Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id.id, update)?.pdf
+            Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
                 ?: Document.new(update).pdf
         }
     }

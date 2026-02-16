@@ -363,7 +363,7 @@ class BrevredigeringServiceTest {
 
         transaction {
             assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id.id) }).isEmpty()
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
         }
 
         assertThat(
@@ -375,7 +375,7 @@ class BrevredigeringServiceTest {
         transaction {
             val brevredigering = BrevredigeringEntity[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id.id) }).hasSize(1)
+            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
             assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
         }
     }
@@ -387,12 +387,12 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
         }
-        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(1) }
+        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
 
         brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
         transaction {
             assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(0)
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
         }
     }
 
@@ -411,7 +411,7 @@ class BrevredigeringServiceTest {
             }
         }.toTypedArray())
         transaction {
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id.id }).hasSize(1)
+            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
         }
     }
 

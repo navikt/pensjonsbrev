@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
@@ -24,7 +25,7 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import java.time.Instant
 
 open class BrevredigeringStub : Brevredigering {
-    override val id: EntityID<Long> get() = notYetStubbed()
+    override val id: EntityID<BrevId> get() = notYetStubbed()
     override val saksId: SaksId get() = notYetStubbed()
     override val vedtaksId: VedtaksId get() = notYetStubbed()
     override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
