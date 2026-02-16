@@ -5,22 +5,22 @@ export default {
    * problems.
    */
   "!(*.{ts,tsx,cts,mts,css})": [
-    "biome format", // reformats and writes to disk
+    "biome format --write", // reformats and writes to disk
     "biome check",
   ],
   "*.{ts,cts,mts}": [
-    "biome format", // reformats and writes to disk
+    "biome format --write", // reformats and writes to disk
     "biome check",
     () => "tsc --noEmit", // use function to pick up tsconfig.json
   ],
   "*.tsx": [
-    "biome format", // reformats and writes to disk
+    "biome format --write", // reformats and writes to disk
     "biome check",
     () => "tsc --noEmit", // use function to pick up tsconfig.json
     "stylelint",
   ],
   "*.css": [
-    "biome format", // reformats and writes to disk
+    "biome format --write", // reformats and writes to disk
     "biome check",
     "stylelint",
   ],
