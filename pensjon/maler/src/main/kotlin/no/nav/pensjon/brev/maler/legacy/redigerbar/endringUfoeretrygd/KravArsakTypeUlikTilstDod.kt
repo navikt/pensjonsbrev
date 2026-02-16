@@ -1993,101 +1993,46 @@ object KravArsakTypeUlikTilstDod {
 
 
                 //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = true  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "endring_ifu" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo"  ) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))){
+                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget() and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("endring_ifu") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_hs") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().notEqualTo("reduksjon_fo"))) {
                     //[TBU2348]
                     // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
                     paragraph {
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " },
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " },
+                            english { +"The decision has been made pursuant to Section 12-8 to 12-18 and " },
                         )
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-12" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-12" },
+                                nynorsk { +"22-12" },
+                                english { +"22-12" },
                             )
                         }
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-13" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-13" },
+                                nynorsk { +"22-13" },
+                                english { +"22-13" },
                             )
                         }
 
                         //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                bokmal { + " og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
+                            text(
+                                bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                                nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
+                                english { +" of the Norwegian National Insurance Act" }
                             )
                         }
-                        text (
-                            bokmal { + "." },
-                        )
-                    }
-                    //[TBU2348]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-13" },
-                            )
-                        }
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                nynorsk { + " og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                            )
-                        }
-                        text (
-                            nynorsk { + "." },
-                        )
-                    }
-                    //[TBU2348]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            english { + "The decision has been made pursuant to Section 12-8 to 12-18 and " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-13" },
-                            )
-                        }
-                        text (
-                            english { + " of the Norwegian National Insurance Act" },
-                        )
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                english { + " and the transitional provisions for the child supplement in your disability benefit" },
-                            )
-                        }
-                        text (
-                            english { + "." },
+                        text(
+                            bokmal { +"." },
+                            nynorsk { +"." },
+                            english { +"." },
                         )
                     }
                 }
@@ -2240,201 +2185,89 @@ object KravArsakTypeUlikTilstDod {
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
+                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().equalTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                     //[TBU3354]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
                     paragraph {
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " },
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " },
+                            english { +"The decision has been made pursuant to Section 12-8 to 12-16, 12-19 and " },
                         )
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-12" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-12" },
+                                nynorsk { +"22-12" },
+                                english { +"22-12" },
                             )
                         }
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-13" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-13" },
+                                nynorsk { +"22-13" },
+                                english { +"22-13" },
                             )
                         }
 
                         //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                bokmal { + " og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
+                            text(
+                                bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                                nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
+                                english { +" and the transitional provisions for the child supplement in your disability benefit" },
                             )
                         }
-                        text (
-                            bokmal { + "." },
-                        )
-                    }
-                    //[TBU3354]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-13" },
-                            )
-                        }
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                nynorsk { + " og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                            )
-                        }
-                        text (
-                            nynorsk { + "." },
-                        )
-                    }
-                    //[TBU3354]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            english { + "The decision has been made pursuant to Section 12-8 to 12-16, 12-19 and " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-13" },
-                            )
-                        }
-                        text (
-                            english { + " of the Norwegian National Insurance Act" },
-                        )
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                english { + " and the transitional provisions for the child supplement in your disability benefit" },
-                            )
-                        }
-                        text (
-                            english { + "." },
+                        text(
+                            bokmal { +"." },
+                            nynorsk { +"." },
+                            english { +" of the Norwegian National Insurance Act." }
                         )
                     }
                 }
 
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  ) THEN      INCLUDE ENDIF
-                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))){
+                showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                     //[TBU3355]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
                     paragraph {
-                        text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " },
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " },
+                            english { +"The decision has been made pursuant to Section 12-8 to 12-17, 12-19 and " },
                         )
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-12" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-12" },
+                                nynorsk { +"22-12" },
+                                english { +"22-12" },
                             )
                         }
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                bokmal { + "22-13" },
+                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))) {
+                            text(
+                                bokmal { +"22-13" },
+                                nynorsk { +"22-13" },
+                                english { +"22-13" },
                             )
                         }
 
                         //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                bokmal { + " og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")) {
+                            text(
+                                bokmal { +" og forskrift om overgangsregler for barnetillegg i uføretrygden" },
+                                nynorsk { +" og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
+                                english { +" and the transitional provisions for the child supplement in your disability benefit" },
                             )
                         }
-                        text (
-                            bokmal { + "." },
-                        )
-                    }
-                    //[TBU3355]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                nynorsk { + "22-13" },
-                            )
-                        }
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                nynorsk { + " og forskrift om overgangsreglar for barnetillegg i uføretrygda" },
-                            )
-                        }
-                        text (
-                            nynorsk { + "." },
-                        )
-                    }
-                    //[TBU3355]
-                    // TODO Failure while merging. Expected conditional for all language variants. Needs manual merge.
-                    paragraph {
-                        text (
-                            english { + "The decision has been made pursuant to Section 12-8 to 12-17, 12-19 and " },
-                        )
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-12" },
-                            )
-                        }
-
-                        //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) = "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
-                        showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
-                            text (
-                                english { + "22-13" },
-                            )
-                        }
-                        text (
-                            english { + " of the Norwegian National Insurance Act" },
-                        )
-
-                        //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_BarnetilleggRegelverkType = "overgangsregler_2016"
-                        showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")){
-                            text (
-                                english { + " and the transitional provisions for the child supplement in your disability benefit" },
-                            )
-                        }
-                        text (
-                            english { + "." },
+                        text(
+                            bokmal { +"." },
+                            nynorsk { +"." },
+                            english { +" of the Norwegian National Insurance Act." },
                         )
                     }
                 }
@@ -2518,12 +2351,16 @@ object KravArsakTypeUlikTilstDod {
                     paragraph {
                         text (
                             bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " },
+                            nynorsk { + "" },
+                            english { + "" },
                         )
 
                         //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5") THEN      INCLUDE ENDIF
                         showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).notEqualTo("stdbegr_22_12_1_5"))){
                             text (
                                 bokmal { + "22-12" },
+                                nynorsk { + "22-12" },
+                                english { + "22-13" },
                             )
                         }
 
@@ -2531,6 +2368,8 @@ object KravArsakTypeUlikTilstDod {
                         showIf((FUNKSJON_FF_GetArrayElement_String(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()).equalTo("stdbegr_22_12_1_5"))){
                             text (
                                 bokmal { + "22-13" },
+                                nynorsk { + "22-13" },
+                                english { + "22-13" },
                             )
                         }
 
@@ -2542,6 +2381,8 @@ object KravArsakTypeUlikTilstDod {
                         }
                         text (
                             bokmal { + "." },
+                            nynorsk { + "." },
+                            english { + "." },
                         )
                     }
                     //[TBU3358]
@@ -2610,7 +2451,7 @@ object KravArsakTypeUlikTilstDod {
                         )
                     }
                 }
-
+/*
                 //IF( (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true)  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_Gjenlevendetillegg_GTinnvilget = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_fo"  ) THEN      INCLUDE ENDIF
                 showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() or pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_fo"))){
                     //[TBU3359]
@@ -3259,7 +3100,7 @@ object KravArsakTypeUlikTilstDod {
                     }
                 }
             }
-        }
+        }*/
     }
 }
 
