@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.PesysDataSelectors.opphortBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -30,7 +30,7 @@ import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
+object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlyttingUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
@@ -49,8 +49,8 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                bokmal { +"Endring av uføretrygd ved flytting til annet land" },
+                nynorsk { +"Endring av uføretrygd ved flytting til anna land" },
             )
         }
         outline {
