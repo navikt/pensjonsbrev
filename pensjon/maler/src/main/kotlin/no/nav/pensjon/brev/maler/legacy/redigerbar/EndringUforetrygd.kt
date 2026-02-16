@@ -828,7 +828,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     //IF(Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "barn_flyttet_ikke_avt_land") > 0 OR Contains(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse, "eps_opph_ikke_avt_land") > 0 ) THEN      INCLUDE ENDIF
                     showIf((pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)) {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletetillegg." },
+                            bokmal { +"Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg." },
                             nynorsk { +"Ifølgje våre opplysningar er " + fritekst("ektefelle/partner/sambuar") + " busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg. " },
                         )
                     }
@@ -894,8 +894,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                     paragraph {
                         text(
-                            bokmal { +"" + fritekst("slett det som ikke er aktuelt") + "" },
-                            nynorsk { +"" + fritekst("slett det som ikke er aktuelt") + "" },
+                            bokmal { + fritekst("slett det som ikke er aktuelt") },
+                            nynorsk { + fritekst("slett det som ikke er aktuelt") },
                         )
                     }
                 }
