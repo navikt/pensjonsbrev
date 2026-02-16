@@ -24,10 +24,16 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
       sistredigert: "2024-01-01",
       sistredigertAv: { id: "Z123", navn: "Z entotre" },
       opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+      status: {
+        type: "UnderRedigering",
+        redigeresAv: { id: "Z123", navn: "Z entotre" },
+      },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
       mottaker: null,
-      avsenderEnhet: null,
+      avsenderEnhet: {
+        enhetNr: "0001",
+        navn: "NAV Familie- og pensjonsytelser",
+      },
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
@@ -179,7 +185,11 @@ describe("<LetterEditor />", () => {
   describe("Focus", () => {
     it("invalid focus is ignored", () => {
       const invalidCursorPosition = (exampleLetter1.blocks[0].content[2] as LiteralValue).text.length + 10;
-      const invalidFocus = { blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition };
+      const invalidFocus = {
+        blockIndex: 0,
+        contentIndex: 2,
+        cursorPosition: invalidCursorPosition,
+      };
       cy.mount(<EditorWithState focus={invalidFocus} initial={exampleLetter1} />);
 
       cy.contains("Informasjon om saksbehandlingstiden vår");

@@ -6,7 +6,7 @@ import type { Nullable } from "./Nullable";
 export type OpprettBrevRequest = {
   brevkode: string;
   spraak: SpraakKode;
-  avsenderEnhetsId: Nullable<string>;
+  avsenderEnhetsId: string;
   saksbehandlerValg: SaksbehandlerValg;
   mottaker: Nullable<Mottaker>;
   vedtaksId: Nullable<number>;
@@ -77,7 +77,7 @@ export type BrevInfo = {
   status: BrevStatus;
   distribusjonstype: Distribusjonstype;
   mottaker: Nullable<Mottaker>;
-  avsenderEnhet: Nullable<NAVEnhet>;
+  avsenderEnhet: NAVEnhet;
   spraak: SpraakKode;
   journalpostId: Nullable<number>;
   vedtaksId: Nullable<number>;
@@ -86,7 +86,10 @@ export type BrevInfo = {
 
 export type BrevStatus = Kladd | UnderRedigering | Attestering | Klar | Arkivert;
 export type Kladd = { type: "Kladd" };
-export type UnderRedigering = { type: "UnderRedigering"; redigeresAv: NavAnsatt };
+export type UnderRedigering = {
+  type: "UnderRedigering";
+  redigeresAv: NavAnsatt;
+};
 export type Attestering = { type: "Attestering" };
 export type Klar = { type: "Klar" };
 export type Arkivert = { type: "Arkivert" };
