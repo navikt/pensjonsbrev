@@ -10,6 +10,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -23,6 +24,7 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -138,12 +140,12 @@ object MottakerTable : IdTable<Long>() {
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 128).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val poststed: Column<String?> = varchar("poststed", 50).nullable()
     val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
     val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
     val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
-    val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
