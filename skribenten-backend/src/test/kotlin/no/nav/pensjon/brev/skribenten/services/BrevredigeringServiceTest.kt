@@ -333,7 +333,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { BrevredigeringEntity[brev.info.id.id].journalpostId = JournalpostId(123L) }
+        transaction { BrevredigeringEntity[brev.info.id].journalpostId = JournalpostId(123L) }
 
         val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
