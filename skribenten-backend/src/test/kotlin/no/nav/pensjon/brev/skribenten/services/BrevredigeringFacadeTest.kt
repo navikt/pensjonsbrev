@@ -10,7 +10,9 @@ import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.Dto.BrevInfo
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
@@ -152,9 +154,9 @@ class BrevredigeringFacadeTest {
     }
 
     private val brevredigering = Dto.Brevredigering(
-        info = Dto.BrevInfo(
+        info = BrevInfo(
             id = 1,
-            saksId = 1,
+            saksId = SaksId(1),
             vedtaksId = null,
             opprettetAv = NavIdent("11"),
             opprettet = Instant.now(),
