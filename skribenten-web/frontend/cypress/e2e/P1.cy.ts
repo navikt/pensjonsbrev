@@ -16,7 +16,6 @@ const getInnvilgetFelt = (index: number, felt: string) => cy.get(`[data-cy="innv
 describe("P1 med forsidebrev", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
     cy.fixture("helloWorldPdf.txt", "base64").then((pdfBase64) => {
       cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/pdf", (request) => {
         request.reply({

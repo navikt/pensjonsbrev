@@ -33,7 +33,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Run ESLint
+      - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm run lint
 
@@ -58,36 +58,12 @@ jobs:
         with:
           node-version: "24"
           cache: "npm"
-          cache-dependency-path: ${{ inputs.workingDir }}/frontend
+          cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
 
-      - name: Cypress run e2e tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: false
-          start: npm run dev
-
-      - name: Cypress run component tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: true
-
-      - name: Run tests
-        if: ${{ inputs.cypress }}
-        working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run test
-
-      - name: Run ESLint
+      - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run lint
 
@@ -98,6 +74,30 @@ jobs:
       - name: Check for typescript errors
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run check-types
+
+      - name: Run tests
+        if: ${{ inputs.cypress }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npm run test
+
+      - name: Cypress run component tests
+        if: ${{ inputs.cypress }}
+        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
+        with:
+          working-directory: ${{ inputs.workingDir }}/frontend
+          install: false
+          browser: chrome
+          component: true
+
+      - name: Cypress run e2e tests
+        if: ${{ inputs.cypress }}
+        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
+        with:
+          working-directory: ${{ inputs.workingDir }}/frontend
+          install: false
+          browser: chrome
+          component: false
+          start: npm run dev
 
       - name: Upload failed Cypress screenshots
         uses: actions/upload-artifact@v6

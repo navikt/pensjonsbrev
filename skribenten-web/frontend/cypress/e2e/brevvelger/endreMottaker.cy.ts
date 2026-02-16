@@ -1,7 +1,6 @@
 describe("Endrer på mottaker", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
 
     cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
       expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });

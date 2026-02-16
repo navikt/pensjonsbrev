@@ -1,0 +1,5 @@
+{
+  "biome.configurationPath": "./skribenten-web/frontend/biome.json",
+  "biome.lsp.bin": "./skribenten-web/frontend/node_modules/.bin/biome",
+  "git.allowNoVerifyCommit": true
+}

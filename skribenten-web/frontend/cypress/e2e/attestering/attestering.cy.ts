@@ -13,7 +13,6 @@ const vedtaksBrev = nyBrevResponse({
 describe("attestering", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
   });
 
   it("sender et brev til attestering", () => {
