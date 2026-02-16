@@ -163,8 +163,8 @@ open class PenServiceStub : PenService {
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering> = notYetStubbed()
-    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
+    override suspend fun hentAdressebeskyttelse(fnr: Foedselsnummer, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering> = notYetStubbed()
+    override suspend fun hentBrukerContext(fnr: Foedselsnummer, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {

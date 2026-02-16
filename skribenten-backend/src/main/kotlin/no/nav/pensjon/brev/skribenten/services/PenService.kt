@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
@@ -179,7 +180,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
     private data class SakResponseDto(
         val saksId: SaksId,
-        val foedselsnr: String,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,

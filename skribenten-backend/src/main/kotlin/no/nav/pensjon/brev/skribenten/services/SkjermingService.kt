@@ -14,11 +14,12 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 
 interface SkjermingService {
-    suspend fun hentSkjerming(fnr: String): Boolean?
+    suspend fun hentSkjerming(fnr: Foedselsnummer): Boolean?
 }
 
 private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
@@ -34,11 +35,11 @@ class SkjermingServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    override suspend fun hentSkjerming(fnr: String): Boolean? =
+    override suspend fun hentSkjerming(fnr: Foedselsnummer): Boolean? =
         cache.cached(Cacheomraade.SKJERMING, fnr, ttl = { 5.minutes }) {
             val response = client.post {
                 contentType(ContentType.Application.Json)
-                setBody(mapOf("personident" to fnr))
+                setBody(mapOf("personident" to fnr.value))
             }
             return@cached if (response.status.isSuccess()) {
                 response.body<Boolean>()
