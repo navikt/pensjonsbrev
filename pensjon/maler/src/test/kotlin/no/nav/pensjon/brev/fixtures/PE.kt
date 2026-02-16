@@ -488,7 +488,6 @@ fun createBeregningYtelsesKomp() =
         barnetilleggserkull = createBarnetilleggSerkull(),
         ektefelletillegg = createEktefelletillegg(),
         gjenlevendetillegg = createGjenlevendetillegg(),
-        ektefellegarantitillegg = null,
     )
 
 fun createEktefelletillegg() =
