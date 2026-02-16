@@ -54,8 +54,8 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                bokmal { +"Nav har innvilget søknaden din om økning av uføregrad" },
+                nynorsk { +"Nav har innvilget søknaden din om auka uføregrad" },
             )
         }
         outline {
