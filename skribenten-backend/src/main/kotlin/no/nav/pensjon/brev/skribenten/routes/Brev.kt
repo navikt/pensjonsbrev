@@ -35,7 +35,7 @@ fun Route.brev(
         }
 
         get("/info") {
-            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
+            val brevId = call.parameters.brevId()
             val brev = brevredigeringFacade.hentBrevInfo(brevId)?.let { dto2ApiService.toApi(it) }
 
             if (brev != null) {
@@ -49,7 +49,7 @@ fun Route.brev(
             val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
             val resultat = brevredigeringFacade.oppdaterBrev(
                 OppdaterBrevHandler.Request(
-                    brevId = BrevId(call.parameters.getOrFail<Long>("brevId")),
+                    brevId = call.parameters.brevId(),
                     nyeSaksbehandlerValg = null,
                     nyttRedigertbrev = request,
                     frigiReservasjon = frigiReservasjon,
@@ -59,15 +59,17 @@ fun Route.brev(
         }
 
         get("/reservasjon") {
-            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
+            val brevId = call.parameters.brevId()
             brevredigeringService.fornyReservasjon(brevId)
                 ?.also { call.respond(it) }
                 ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
         }
 
         post("/tilbakestill") {
-            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
+            val brevId = call.parameters.brevId()
             respond(brevredigeringService.tilbakestill(brevId))
         }
     }
 }
+
+fun Parameters.brevId() = BrevId(getOrFail<Long>("brevId"))

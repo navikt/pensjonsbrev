@@ -5,10 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.routes.brevId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -44,7 +44,7 @@ class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangC
 val AuthorizeAnsattSakTilgangForBrev =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
         on(PrincipalInContext.Hook) { call ->
-            val brevId = BrevId(call.parameters.getOrFail<Long>("brevId"))
+            val brevId = call.parameters.brevId()
             val brev = pluginConfig.brevredigeringFacade.hentBrevInfo(brevId)
 
             if (brev != null) {
