@@ -64,9 +64,7 @@
     "vite": "7.3.1",
     "vitest": "4.0.18"
   },
-  "overrides": {
-    "cypress": {
-      "qs": ">=6.14.1"
-    }
+  "pnpm": {
+    "onlyBuiltDependencies": ["cypress"]
   }
 }
