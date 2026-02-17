@@ -18,7 +18,7 @@
     "gjelderNavn": "Test Testeson",
     "gjelderFoedselsnummer": "12345678910",
     "saksnummer": "1234",
-    "dokumentDato": "15.03.2024"
+    "dokumentDato": "2024-03-15"
   },
   "blocks": [
     {
@@ -45,7 +45,7 @@
         {
           "id": 13,
           "parentId": 1,
-          "text": "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Poenget er å teste [CP1-3] at caret går til nærmeste side av variable.",
+          "text": "Er laget for å teste piltast opp og ned innad samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at caret går til nærmeste side av variable.",
           "type": "LITERAL",
           "fontType": "PLAIN",
           "editedFontType": null,

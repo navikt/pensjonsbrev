@@ -1,7 +1,6 @@
 describe("Oppretter brevbakerbrev", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
   });
 
   it("kun obligatoriske felter vises ved opprettelse av brev", () => {

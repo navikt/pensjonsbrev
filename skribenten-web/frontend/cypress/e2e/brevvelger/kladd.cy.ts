@@ -3,7 +3,6 @@ import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils"
 describe("Kladd", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
 
     cy.visit("/saksnummer/123456/brevvelger");
   });
