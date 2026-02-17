@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -28,11 +29,11 @@ object Pen {
 
     data class SakSelection(
         val saksId: SaksId,
-        val foedselsnr: String,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
-        val pid: Pid = Pid(foedselsnr), // TODO fjern defaultverdi når pen har starta å sende med
+        val pid: Pid = Pid(foedselsnr.value), // TODO fjern defaultverdi når pen har starta å sende med
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

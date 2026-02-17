@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
@@ -93,7 +94,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
-                pid = it.pid ?: Pid(it.foedselsnr), // TODO fjern fallback når pen sender med pid
+                pid = it.pid ?: Pid(it.foedselsnr.value), // TODO fjern fallback når pen sender med pid
             )
         }
 
@@ -181,7 +182,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
     private data class SakResponseDto(
         val saksId: SaksId,
-        val foedselsnr: String,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,

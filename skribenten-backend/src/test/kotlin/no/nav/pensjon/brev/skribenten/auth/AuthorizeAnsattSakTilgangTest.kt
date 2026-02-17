@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -39,7 +40,7 @@ import java.time.Month
 private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
     saksId = SaksId(1337),
-    foedselsnr = "12345",
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
@@ -47,7 +48,7 @@ private val testSak = Pen.SakSelection(
 )
 private val sakVikafossen = Pen.SakSelection(
     saksId = SaksId(7007),
-    foedselsnr = "007",
+    foedselsnr = Foedselsnummer("007"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
@@ -56,7 +57,7 @@ private val sakVikafossen = Pen.SakSelection(
 
 private val generellSak0001 = Pen.SakSelection(
     saksId = SaksId(7008),
-    foedselsnr = "12345",
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
@@ -65,7 +66,7 @@ private val generellSak0001 = Pen.SakSelection(
 
 private val generellSak0002 = Pen.SakSelection(
     saksId = SaksId(7009),
-    foedselsnr = "12345",
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
@@ -129,7 +130,7 @@ class AuthorizeAnsattSakTilgangTest {
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
                     get("/sakFromPlugin/{saksId}") {
                         val sak = call.attributes[SakKey]
-                        call.respond(successResponse(sak.foedselsnr))
+                        call.respond(successResponse(sak.foedselsnr.value))
                     }
                     get("/{saksId}") {
                         val saksId = call.parameters.getOrFail("saksId")
@@ -249,7 +250,7 @@ class AuthorizeAnsattSakTilgangTest {
     ) { client ->
         val response = client.get("/sak/sakFromPlugin/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
+        assertEquals(successResponse(testSak.foedselsnr.value), response.bodyAsText())
     }
 
     @Test
