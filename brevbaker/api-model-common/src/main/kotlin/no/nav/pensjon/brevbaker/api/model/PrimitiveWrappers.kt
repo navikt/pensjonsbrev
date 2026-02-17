@@ -12,7 +12,9 @@ interface IntValue {
 value class Telefonnummer(val value: String)
 
 @JvmInline
-value class Pid(val value: String)
+value class Pid(val value: String) {
+    override fun toString() = value
+}
 
 @JvmInline
 value class Foedselsnummer(val value: String)
