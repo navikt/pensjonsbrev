@@ -58,5 +58,12 @@ data class PE(
         val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
         val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
         val pe_grunnlag_persongrunnlagsliste_uforehistorikkgarantigrad: Int,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall: String,
+        val pe_ut_tbu4071_btfbinnvilget: Boolean,
+        val pe_ut_inntekt_høyere_lavere: String,
+        val pe_ut_fradrag_høyere_lavere: String,
+        val pe_ut_bruttoetterreduksjonbt_høyere_lavere: String,
+        val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto: Kroner,
+        val pe_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto: Kroner,
         )
 }
