@@ -57,5 +57,6 @@ data class PE(
         val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
         val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
         val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
+        val pe_grunnlag_persongrunnlagsliste_uforehistorikkgarantigrad: Int,
         )
 }
