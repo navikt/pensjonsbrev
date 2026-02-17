@@ -69,6 +69,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
     val sanksjon: Boolean,
+    val sanksjonType: SanksjonType?,
     val institusjon: Boolean = false,
 )
 
@@ -140,3 +141,11 @@ data class ForskjelligAvdoedPeriode(
     val senereAvdoed: Avdoed?,
     val senereVirkningsdato: LocalDate,
 )
+
+enum class SanksjonType {
+    BORTFALL,
+    OPPHOER,
+    STANS,
+    UTESTENGING,
+    IKKE_INNVILGET_PERIODE,
+}

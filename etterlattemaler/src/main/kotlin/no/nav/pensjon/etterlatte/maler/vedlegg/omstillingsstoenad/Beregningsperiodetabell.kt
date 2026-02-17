@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
@@ -12,8 +14,10 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.institusjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjonType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
+import no.nav.pensjon.etterlatte.maler.SanksjonType
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
@@ -63,9 +67,12 @@ data class Beregningsperiodetabell(
                             includePhrase(KronerText(periode.utbetaltBeloep))
                             showIf(periode.sanksjon) {
                                 text(
-                                    bokmal { +" - sanksjon" },
-                                    nynorsk { +" - sanksjon" },
-                                    english { +" - sanction" },
+                                    bokmal { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                        "stans", "sanksjon")},
+                                    nynorsk { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                        "stans", "sanksjon") },
+                                    english { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                        "stopped", "sanction") },
                                 )
                             }
                             showIf(periode.institusjon) {
