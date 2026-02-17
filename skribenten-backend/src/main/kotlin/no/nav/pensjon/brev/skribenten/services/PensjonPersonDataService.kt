@@ -60,7 +60,7 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         val response = client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
-                header("pid", pid)
+                header("pid", pid.value)
             }
         }
 
