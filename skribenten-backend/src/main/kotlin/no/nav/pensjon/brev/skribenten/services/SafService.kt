@@ -28,7 +28,7 @@ private val hentDokumenterQuery = SafService::class.java.getResource(HENT_DOKUME
 
 private const val TIMEOUT = 60
 
-data class JournalVariables(val journalpostId: Long)
+data class JournalVariables(val journalpostId: String)
 data class JournalQuery(
     val query: String,
     val variables: JournalVariables
@@ -84,7 +84,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
             setBody(
                 JournalQuery(
                     query = hentJournalStatusQuery,
-                    variables = JournalVariables(journalpostId.id)
+                    variables = JournalVariables(journalpostId.id.toString())
                 )
             )
         }
@@ -131,7 +131,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
             setBody(
                 JournalQuery(
                     query = hentDokumenterQuery,
-                    variables = JournalVariables(journalpostId.id)
+                    variables = JournalVariables(journalpostId.id.toString())
                 )
             )
         }
