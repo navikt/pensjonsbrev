@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.BrevInfo
@@ -44,7 +45,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer brev for handler som krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = 42L)
+        val request = HentBrevHandler.Request(brevId = BrevId(42L))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -60,7 +61,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer ikke brev for handler som ikke krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = 42L)
+        val request = HentBrevHandler.Request(brevId = BrevId(42L))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -89,7 +90,7 @@ class BrevredigeringFacadeTest {
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -109,7 +110,7 @@ class BrevredigeringFacadeTest {
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isFalse()
     }
 
@@ -127,7 +128,7 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -149,13 +150,13 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isFalse()
     }
 
     private val brevredigering = Dto.Brevredigering(
         info = BrevInfo(
-            id = 1,
+            id = BrevId(1),
             saksId = SaksId(1),
             vedtaksId = null,
             opprettetAv = NavIdent("11"),
@@ -200,7 +201,7 @@ private class DidRollbackInterceptor : StatementInterceptor {
 }
 
 private class ReserverBrevStub : UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> {
-    var reservertBrevId: Long? = null
+    var reservertBrevId: BrevId? = null
         private set
 
     override suspend fun handle(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError> {

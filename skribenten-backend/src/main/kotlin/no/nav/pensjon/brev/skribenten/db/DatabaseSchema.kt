@@ -10,6 +10,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -19,8 +20,11 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -41,6 +45,8 @@ import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
+import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.v1.dao.EntityClass
 import org.jetbrains.exposed.v1.dao.LongEntity
 import org.jetbrains.exposed.v1.dao.LongEntityClass
 import org.jetbrains.exposed.v1.javatime.date
@@ -88,7 +94,10 @@ private inline fun <reified T> readJsonBinary(json: ByteArray): T =
         throw DatabaseJsonDeserializeException(e)
     }
 
-object BrevredigeringTable : LongIdTable() {
+object BrevredigeringTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = long("id").transform(::BrevId, BrevId::id).autoIncrement().entityId()
+    override val primaryKey = PrimaryKey(id)
+
     val saksId: Column<SaksId> = long("saksId").index().transform(::SaksId, SaksId::id)
     val vedtaksId: Column<VedtaksId?> = long("vedtaksId").transform(::VedtaksId, VedtaksId::id).nullable()
     val brevkode: Column<Brevkode.Redigerbart> = varchar("brevkode", length = 50).transform({ RedigerbarBrevkode(it) }, Brevkode.Redigerbart::kode)
@@ -107,13 +116,13 @@ object BrevredigeringTable : LongIdTable() {
     val opprettet: Column<Instant> = timestamp("opprettet")
     val sistredigert: Column<Instant> = timestamp("sistredigert")
     val sistReservert: Column<Instant?> = timestamp("sistReservert").nullable()
-    val journalpostId: Column<Long?> = long("journalpostId").nullable()
+    val journalpostId: Column<JournalpostId?> = long("journalpostId").transform(::JournalpostId, JournalpostId::id).nullable()
     val attestertAvNavIdent: Column<NavIdent?> = varchar("attestertAvNavIdent", length = 50).transform(::NavIdent, NavIdent::id).nullable()
     val brevtype: Column<LetterMetadata.Brevtype> = varchar("brevtype", length = 50).transform(LetterMetadata.Brevtype::valueOf, LetterMetadata.Brevtype::name)
 }
 
 object DocumentTable : LongIdTable() {
-    val brevredigering: Column<EntityID<Long>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+    val brevredigering: Column<EntityID<BrevId>> = reference("brevredigering", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val dokumentDato: Column<LocalDate> = date("dokumentDato")
     val pdfKryptert: Column<ByteArray> = encryptedBinary("pdfKryptert")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
@@ -131,25 +140,25 @@ class Document(id: EntityID<Long>) : LongEntity(id) {
     companion object : LongEntityClass<Document>(DocumentTable)
 }
 
-object MottakerTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object MottakerTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
     val tssId: Column<String?> = varchar("tssId", 50).nullable()
     val navn: Column<String?> = varchar("navn", 128).nullable()
-    val postnummer: Column<String?> = varchar("postnummer", 4).nullable()
+    val postnummer: Column<NorskPostnummer?> = varchar("postnummer", 4).transform(::NorskPostnummer, NorskPostnummer::value).nullable()
     val poststed: Column<String?> = varchar("poststed", 50).nullable()
     val adresselinje1: Column<String?> = varchar("adresselinje1", 128).nullable()
     val adresselinje2: Column<String?> = varchar("adresselinje2", 128).nullable()
     val adresselinje3: Column<String?> = varchar("adresselinje3", 128).nullable()
-    val landkode: Column<String?> = varchar("landkode", 2).nullable()
+    val landkode: Column<Landkode?> = varchar("landkode", 2).transform(::Landkode, Landkode::landkode).nullable()
     val manueltAdressertTil: Column<ManueltAdressertTil> = varchar("manueltAdressertTil", 50)
         .transform(ManueltAdressertTil::valueOf, ManueltAdressertTil::name)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-object P1DataTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object P1DataTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val p1data: Column<Api.GeneriskBrevdata> = encryptedBinary("p1data")
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
         .transform(::readJsonBinary, databaseObjectMapper::writeValueAsBytes)
@@ -158,9 +167,9 @@ object P1DataTable : IdTable<Long>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class P1Data(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+class P1Data(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
     var p1data by P1DataTable.p1data
-    companion object : LongEntityClass<P1Data>(P1DataTable)
+    companion object : EntityClass<BrevId, P1Data>(P1DataTable)
 }
 
 object OneShotJobTable : IdTable<String>() {
@@ -169,16 +178,16 @@ object OneShotJobTable : IdTable<String>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-object ValgteVedleggTable : IdTable<Long>() {
-    override val id: Column<EntityID<Long>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
+object ValgteVedleggTable : IdTable<BrevId>() {
+    override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class ValgteVedlegg(brevredigeringId: EntityID<Long>) : LongEntity(brevredigeringId) {
+class ValgteVedlegg(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
     var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
-    companion object : LongEntityClass<ValgteVedlegg>(ValgteVedleggTable)
+    companion object : EntityClass<BrevId, ValgteVedlegg>(ValgteVedleggTable)
 }
 
 

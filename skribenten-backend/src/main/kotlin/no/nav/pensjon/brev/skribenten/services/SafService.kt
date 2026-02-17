@@ -14,6 +14,7 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withTimeoutOrNull
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.seconds
@@ -38,13 +39,13 @@ enum class JournalpostLoadingResult {
 }
 
 interface SafService {
-    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult
-    suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse
-    suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray?
+    suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult
+    suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse
+    suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray?
 
     data class HentDokumenterResponse(val data: Journalposter?, val errors: JsonNode?) {
         data class Journalposter(val journalpost: Journalpost)
-        data class Journalpost(val journalpostId: String, val dokumenter: List<Dokument>)
+        data class Journalpost(val journalpostId: JournalpostId, val dokumenter: List<Dokument>)
         data class Dokument(val dokumentInfoId: String)
     }
 }
@@ -71,19 +72,19 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
     data class HentJournalStatusResponse(val data: HentJournalpostData?, val errors: JsonNode?)
     data class HentJournalpostData(val journalpost: JournalPost)
 
-    data class JournalPost(val journalpostId: String, val journalstatus: Journalstatus)
+    data class JournalPost(val journalpostId: JournalpostId, val journalstatus: Journalstatus)
     @Suppress("unused")
     enum class Journalstatus {
         MOTTATT, JOURNALFOERT, FERDIGSTILT, EKSPEDERT, UNDER_ARBEID, FEILREGISTRERT, UTGAAR, AVBRUTT, UKJENT_BRUKER, RESERVERT, OPPLASTING_DOKUMENT, UKJENT,
     }
 
-    private suspend fun getStatus(journalpostId: String): JournalpostLoadingResult {
+    private suspend fun getStatus(journalpostId: JournalpostId): JournalpostLoadingResult {
         val response = client.post("") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
                     query = hentJournalStatusQuery,
-                    variables = JournalVariables(journalpostId)
+                    variables = JournalVariables(journalpostId.id.toString())
                 )
             )
         }
@@ -110,7 +111,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
         }
     }
 
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult =
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult =
         withTimeoutOrNull(TIMEOUT.seconds) {
             for (i in 1..TIMEOUT) {
                 delay(1000)
@@ -124,13 +125,13 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
             return@withTimeoutOrNull JournalpostLoadingResult.NOT_READY
         } ?: JournalpostLoadingResult.NOT_READY
 
-    private suspend fun getDocumentsInJournal(journalpostId: String): HentDokumenterResponse {
+    private suspend fun getDocumentsInJournal(journalpostId: JournalpostId): HentDokumenterResponse {
         val response = client.post("") {
             contentType(ContentType.Application.Json)
             setBody(
                 JournalQuery(
                     query = hentDokumenterQuery,
-                    variables = JournalVariables(journalpostId)
+                    variables = JournalVariables(journalpostId.id.toString())
                 )
             )
         }
@@ -144,16 +145,16 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
         }
     }
 
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse =
+    override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse =
         getDocumentsInJournal(journalpostId)
 
     /*
      * man kan spesifisere hvilket 'variantFormat' vi vil ha - per nå er vi bare interesert i 'ARKIV' versjonen
      */
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray? {
+    override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray? {
         val dokumentInfoId = hentFoersteDokumentInfoIdFraJournalpost(journalpostId)
         return if (dokumentInfoId != null) {
-            val response = client.get("$safRestUrl/hentdokument/$journalpostId/$dokumentInfoId/ARKIV")
+            val response = client.get("$safRestUrl/hentdokument/${journalpostId.id}/$dokumentInfoId/ARKIV")
             if (response.status.isSuccess()) {
                 response.body()
             } else {
@@ -170,7 +171,7 @@ class SafServiceHttp(config: Config, authService: AuthService) : SafService, Ser
     /*
      *  Vi sender 1 dokument per journalpost
      */
-    private suspend fun hentFoersteDokumentInfoIdFraJournalpost(journalpostId: String): String? =
+    private suspend fun hentFoersteDokumentInfoIdFraJournalpost(journalpostId: JournalpostId): String? =
         getDocumentsInJournal(journalpostId).data?.journalpost?.dokumenter?.firstOrNull()?.dokumentInfoId
 
     override suspend fun ping() =

@@ -54,7 +54,7 @@
     "globals": "17.1.0",
     "postcss-styled-syntax": "0.7.1",
     "prettier": "3.8.1",
-    "stylelint": "17.0.0",
+    "stylelint": "17.1.1",
     "stylelint-config-standard": "40.0.0",
     "typescript": "5.9.3",
     "vite": "7.3.1",

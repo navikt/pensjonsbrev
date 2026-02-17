@@ -189,7 +189,7 @@ abstract class BrevredigeringTest {
             brevdata = Api.GeneriskBrevdata()
         )
 
-        val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
+        val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         fun LetterMarkupImpl.medSignatur(saksbehandler: String?, attestant: String?) =
             copy(
@@ -225,7 +225,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun oppdaterBrev(
-        brevId: Long,
+        brevId: BrevId,
         nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
@@ -242,7 +242,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun hentBrev(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
@@ -289,7 +289,7 @@ abstract class BrevredigeringTest {
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
         assertThat(sendBrev(brev)).isNotNull()

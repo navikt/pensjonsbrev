@@ -3,7 +3,6 @@ import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils"
 describe("Kladd", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
 
     cy.visit("/saksnummer/123456/brevvelger");
   });
@@ -22,7 +21,10 @@ describe("Kladd", () => {
           status: { type: "Kladd" },
           distribusjonstype: "SENTRALPRINT",
           mottaker: null,
-          avsenderEnhet: null,
+          avsenderEnhet: {
+            enhetNr: "0001",
+            navn: "NAV Familie- og pensjonsytelser",
+          },
           spraak: "EN",
         },
       ]);
@@ -55,7 +57,10 @@ describe("Kladd", () => {
             status: { type: "Kladd" },
             distribusjonstype: "SENTRALPRINT",
             mottaker: null,
-            avsenderEnhet: null,
+            avsenderEnhet: {
+              enhetNr: "0001",
+              navn: "NAV Familie- og pensjonsytelser",
+            },
             spraak: "EN",
           },
         ]);

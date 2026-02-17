@@ -12,10 +12,10 @@ import java.time.Instant
 object ExternalAPI {
     data class BrevInfo(
         val url: String,
-        val id: Long,
+        val id: BrevId,
         val saksId: SaksId,
         val vedtaksId: VedtaksId?,
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val brevkode: Brevkode.Redigerbart,
         val tittel: String,
         val brevtype: LetterMetadata.Brevtype,

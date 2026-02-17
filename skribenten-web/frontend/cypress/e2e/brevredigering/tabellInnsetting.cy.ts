@@ -24,7 +24,6 @@ const waitAfterAutosave = () => {
 describe("Tabell innsetting og redigering via kontekstmeny", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 900);
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", { fixture: "brevResponse.json" }).as(
       "brev",

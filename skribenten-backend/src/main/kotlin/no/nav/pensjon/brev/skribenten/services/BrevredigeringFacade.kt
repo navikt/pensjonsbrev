@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -36,7 +37,7 @@ class BrevredigeringFacade(
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         oppdaterBrev.runHandler(request)
 
-    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
+    fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
 
     fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =

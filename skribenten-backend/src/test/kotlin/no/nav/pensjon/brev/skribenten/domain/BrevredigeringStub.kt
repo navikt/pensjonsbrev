@@ -6,8 +6,10 @@ import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -23,7 +25,7 @@ import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import java.time.Instant
 
 open class BrevredigeringStub : Brevredigering {
-    override val id: EntityID<Long> get() = notYetStubbed()
+    override val id: EntityID<BrevId> get() = notYetStubbed()
     override val saksId: SaksId get() = notYetStubbed()
     override val vedtaksId: VedtaksId get() = notYetStubbed()
     override val brevkode: Brevkode.Redigerbart get() = notYetStubbed()
@@ -40,7 +42,7 @@ open class BrevredigeringStub : Brevredigering {
     override val opprettet: Instant get() = notYetStubbed()
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
-    override val journalpostId: Long get() = notYetStubbed()
+    override val journalpostId: JournalpostId get() = notYetStubbed()
     override val document: Iterable<Document> get() = notYetStubbed()
     override val mottaker: Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()

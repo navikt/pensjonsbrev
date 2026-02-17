@@ -42,7 +42,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.13",
+    "@biomejs/biome": "2.3.14",
     "@navikt/aksel-stylelint": "8.1.0",
     "@tanstack/react-query-devtools": "5.91.2",
     "@tanstack/react-router-devtools": "1.157.15",
@@ -57,17 +57,15 @@
     "cypress": "15.9.0",
     "happy-dom": "20.3.9",
     "jsdom": "27.4.0",
+    "lint-staged": "16.2.7",
     "postcss-styled-syntax": "0.7.1",
-    "stylelint": "17.0.0",
+    "stylelint": "17.1.1",
     "stylelint-config-standard": "40.0.0",
     "typescript": "5.9.3",
     "vite": "7.3.1",
     "vitest": "4.0.18"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "cypress",
-      "esbuild"
-    ]
+    "onlyBuiltDependencies": ["cypress", "esbuild"]
   }
 }

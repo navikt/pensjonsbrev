@@ -111,7 +111,6 @@ function isOfFailureType(error: string): error is FailureType {
 }
 
 function mapFailureTypes(failureType: FailureType) {
-  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (failureType) {
     case "EXSTREAM_BESTILLING_ADRESSE_MANGLER": {
       return "Fant ikke adresse på brukeren.";

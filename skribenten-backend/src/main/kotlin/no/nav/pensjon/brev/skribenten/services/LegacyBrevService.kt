@@ -6,6 +6,7 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -137,7 +138,7 @@ class LegacyBrevService(
         }
     }
 
-    private suspend fun redigerExstreamBrev(journalpostId: String): Api.BestillOgRedigerBrevResponse =
+    private suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Api.BestillOgRedigerBrevResponse =
         when (safService.waitForJournalpostStatusUnderArbeid(journalpostId)) {
             ERROR -> Api.BestillOgRedigerBrevResponse(failureType = SAF_ERROR)
             NOT_READY -> Api.BestillOgRedigerBrevResponse(failureType = FERDIGSTILLING_TIMEOUT)

@@ -38,7 +38,7 @@ object Pen {
     data class Avtaleland(val navn: String, val kode: String)
 
     data class BestillExstreamBrevResponse(
-        val journalpostId: String,
+        val journalpostId: JournalpostId,
     ) {
         data class Error(
             val type: String,
@@ -132,7 +132,7 @@ object Pen {
     }
 
     data class BestillBrevResponse(
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
@@ -153,7 +153,7 @@ object Pen {
         "FEILUTBETALING" to "Feilutbetaling",
         "FOERSTEGANGSBEHANDLING" to "Førstegangsbehandling",
         "FRITEKSTBREV" to "Fritekstbrev",
-        "LetterMetadata" to "Informasjonsbrev",
+        "INFORMASJONSBREV" to "Informasjonsbrev",
         "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
         "KLAGE_OG_ANKE" to "Klage og anke",
         "LEVEATTEST" to "Leveattest",
@@ -161,7 +161,7 @@ object Pen {
         "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
         "SLUTTBEHANDLING" to "Sluttbehandling",
         "UFOEREPENSJON" to "Uførepensjon",
-        "BrevdataDto" to "Varsel",
+        "VARSEL" to "Varsel",
         "VEDTAK_EKSPORT" to "Vedtak - eksport",
         "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"

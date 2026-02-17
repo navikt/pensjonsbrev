@@ -27,6 +27,7 @@ function SelectEnhet() {
           ))}
         </Select>
       )}
+      rules={{ required: "Du må velge avsenderenhet" }}
     />
   );
 }

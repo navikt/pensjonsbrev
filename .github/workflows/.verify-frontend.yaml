@@ -35,7 +35,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Run ESLint
+      - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/bff
         run: pnpm run lint
 
@@ -69,31 +69,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Cypress run e2e tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: false
-          start: pnpm run dev
-
-      - name: Cypress run component tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@2ad32e649e4db26c07674ebae31a297601dbcbaf
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: true
-
-      - name: Run tests
-        if: ${{ inputs.cypress }}
-        working-directory: ${{ inputs.workingDir }}/frontend
-        run: pnpm run test
-
-      - name: Run ESLint
+      - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/frontend
         run: pnpm run lint
 
@@ -104,6 +80,30 @@ jobs:
       - name: Check for typescript errors
         working-directory: ${{ inputs.workingDir }}/frontend
         run: pnpm run check-types
+
+      - name: Run tests
+        if: ${{ inputs.cypress }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npm run test
+
+      - name: Cypress run component tests
+        if: ${{ inputs.cypress }}
+        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        with:
+          working-directory: ${{ inputs.workingDir }}/frontend
+          install: false
+          browser: chrome
+          component: true
+
+      - name: Cypress run e2e tests
+        if: ${{ inputs.cypress }}
+        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        with:
+          working-directory: ${{ inputs.workingDir }}/frontend
+          install: false
+          browser: chrome
+          component: false
+          start: npm run dev
 
       - name: Upload failed Cypress screenshots
         uses: actions/upload-artifact@v6
