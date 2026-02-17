@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brevbaker.api.model.Pid
 
 fun Route.sakRoute(
     brevbakerService: BrevbakerService,
@@ -63,8 +62,8 @@ fun Route.sakRoute(
         get("/brukerstatus") {
             coroutineScope {
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
-                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
+                val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
+                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
                 val person = pdlService.hentBrukerContext(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
                 if (person != null) {
                     call.respond(
@@ -88,7 +87,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
-                            gjelderPid = Pid(sak.foedselsnr),
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -100,7 +99,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
-                            gjelderPid = Pid(sak.foedselsnr),
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -111,7 +110,7 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            val adresse = pensjonPersonDataService.hentKontaktadresse(Pid(sak.foedselsnr))
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.pid)
 
             if (adresse != null) {
                 call.respond(adresse)
@@ -122,7 +121,7 @@ fun Route.sakRoute(
 
         get("/foretrukketSpraak") {
             val sak = call.attributes[SakKey]
-            call.respond(krrService.getPreferredLocale(sak.foedselsnr))
+            call.respond(krrService.getPreferredLocale(sak.pid))
         }
 
         get("/pdf/{journalpostId}") {

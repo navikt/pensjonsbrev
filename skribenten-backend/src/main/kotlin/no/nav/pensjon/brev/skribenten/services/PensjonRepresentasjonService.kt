@@ -3,7 +3,6 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.Config
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
@@ -56,16 +55,16 @@ class PensjonRepresentasjonService(
         PENSJON_VERGE_PENGEMOTTAKER,
     }
 
-    suspend fun harVerge(fnr: String): Boolean? =
+    suspend fun harVerge(pid: Pid): Boolean? =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
-            fnr,
+            pid,
             ttl = { 10.minutes }
         ){
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
                     contentType(ContentType.Application.Json)
-                    setBody(HasRepresentantRequest(Pid(fnr), RelevanteRepresentasjonstyper.entries))
+                    setBody(HasRepresentantRequest(pid, RelevanteRepresentasjonstyper.entries))
                 }
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value

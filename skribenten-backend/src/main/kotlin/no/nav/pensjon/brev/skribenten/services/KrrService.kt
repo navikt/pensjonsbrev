@@ -19,6 +19,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 
 class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
@@ -58,7 +59,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    data class KontaktinfoKRRResponse(val personer: Map<String, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<String, Feiltype>)
+    data class KontaktinfoKRRResponse(val personer: Map<Pid, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<Pid, Feiltype>)
 
     private data class KontaktinfoRequest(val personidenter: List<String>)
 
@@ -72,11 +73,11 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
         }
     }
 
-    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
+    suspend fun getPreferredLocale(pid: Pid): KontaktinfoResponse {
         val response = client.post("/rest/v1/personer") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(KontaktinfoRequest(listOf(pid)))
+            setBody(KontaktinfoRequest(listOf(pid.value)))
         }
         return if (response.status.isSuccess()) {
             val body = response.body<KontaktinfoKRRResponse>()
