@@ -1,7 +1,7 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.2/schema.json",
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-  "files": { "includes": ["**", "!src/routeTree.gen.ts"] },
+  "files": { "includes": ["**", "!!**/dist"] },
   "formatter": {
     "attributePosition": "auto",
     "bracketSameLine": false,
@@ -14,8 +14,9 @@
     "lineWidth": 120
   },
   "linter": {
+    "enabled": true,
     "rules": {
-      "recommended": true,
+      "recommended": false,
       "complexity": {
         "noAdjacentSpacesInRegex": "error",
         "noArguments": "error",
@@ -29,11 +30,11 @@
         "useFlatMap": "error"
       },
       "correctness": {
+        "noUndeclaredVariables": "error",
         "noUnusedImports": "error",
         "noUnusedLabels": "error",
         "noUnusedPrivateClassMembers": "error",
-        "noUnusedVariables": "error",
-        "useExhaustiveDependencies": "off"
+        "noUnusedVariables": "error"
       },
       "nursery": {
         "noDuplicateEnumValues": "error",
@@ -55,7 +56,6 @@
         "useThrowNewError": "error"
       },
       "suspicious": {
-        "noArrayIndexKey": "off",
         "noCatchAssign": "error",
         "noCompareNegZero": "error",
         "noConstantBinaryExpressions": "error",
@@ -65,6 +65,7 @@
             "allow": ["error", "info", "warn"]
           }
         },
+        "noEmptyBlockStatements": "error",
         "noExplicitAny": "error",
         "noExtraNonNullAssertion": "error",
         "noIrregularWhitespace": "error",
@@ -73,7 +74,8 @@
         "noUselessRegexBackrefs": "error",
         "noVar": "error"
       }
-    }
+    },
+    "includes": ["**", "!**/dist/"]
   },
   "assist": {
     "actions": {
@@ -101,36 +103,5 @@
     "formatter": {
       "selfCloseVoidElements": "always"
     }
-  },
-  "overrides": [
-    {
-      "includes": [
-        "**/*.cy.tsx",
-        "**/*.spec.ts",
-        "**/*.spec.tsx",
-        "**/*.test.ts",
-        "**/*.test.tsx",
-        "cypress/**/*.cy.ts",
-        "test/**/*.ts",
-        "test/**/*.tsx"
-      ],
-      "linter": {
-        "rules": {
-          "suspicious": {
-            "noFocusedTests": "error"
-          }
-        }
-      }
-    },
-    {
-      "includes": ["cypress/support/**/*.ts"],
-      "linter": {
-        "rules": {
-          "style": {
-            "noNamespace": "off"
-          }
-        }
-      }
-    }
-  ]
+  }
 }

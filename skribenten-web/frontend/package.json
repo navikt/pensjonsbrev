@@ -4,22 +4,22 @@
   "type": "module",
   "version": "0.0.0",
   "scripts": {
-    "dev": "vite --host",
     "build": "tsc && vite build",
-    "cypress": "cypress open",
-    "cypress:e2e": "cypress run -b chrome",
-    "cypress:component": "cypress run --component -b chrome",
-    "preview": "vite preview",
     "check-types": "tsc --noemit",
-    "test": "vitest --config ./vite.config.ts",
-    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run cypress:e2e",
-    "lint": "biome check .",
-    "lint:fix": "biome check --write .",
+    "cypress": "cypress open",
+    "cypress:component": "cypress run --component -b chrome",
+    "cypress:e2e": "cypress run -b chrome",
+    "dev": "vite --host",
     "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:write": "biome check --write .",
+    "lint-and-check-types": "${npm_execpath} run format && ${npm_execpath} run lint && ${npm_execpath} run stylelint && ${npm_execpath} run check-types",
+    "preview": "vite preview",
     "stylelint": "stylelint '**/*.{tsx,css}'",
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "lint-and-check-types": "${npm_execpath} run check-types && ${npm_execpath} run lint && ${npm_execpath} run stylelint",
-    "tsc:watch": "tsc --watch"
+    "test": "vitest --config ./vite.config.ts",
+    "tsc:watch": "tsc --watch",
+    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run cypress:e2e"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -42,7 +42,7 @@
     "zod": "4.3.6"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.3.14",
+    "@biomejs/biome": "2.4.2",
     "@navikt/aksel-stylelint": "8.1.0",
     "@tanstack/react-query-devtools": "5.91.2",
     "@tanstack/react-router-devtools": "1.157.15",
