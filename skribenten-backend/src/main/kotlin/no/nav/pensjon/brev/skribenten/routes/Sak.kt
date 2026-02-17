@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
@@ -124,7 +125,7 @@ fun Route.sakRoute(
         }
 
         get("/pdf/{journalpostId}") {
-            val journalpostId = call.parameters.getOrFail("journalpostId")
+            val journalpostId = JournalpostId(call.parameters.getOrFail<Long>("journalpostId"))
             val pdf = safService.hentPdfForJournalpostId(journalpostId)
             if (pdf != null) {
                 call.respondBytes(pdf, ContentType.Application.Pdf, HttpStatusCode.OK)

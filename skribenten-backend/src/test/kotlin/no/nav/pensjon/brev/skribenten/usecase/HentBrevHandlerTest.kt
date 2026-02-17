@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -80,7 +81,7 @@ class HentBrevHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `returnerer null når brev ikke finnes`() {
-        val hentet = hentBrev(brevId = 9999, reserverForRedigering = false)
+        val hentet = hentBrev(brevId = BrevId(9999), reserverForRedigering = false)
 
         assertThat(hentet).isNull()
     }

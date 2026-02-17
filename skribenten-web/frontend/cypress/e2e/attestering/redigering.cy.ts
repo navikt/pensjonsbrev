@@ -53,30 +53,30 @@ describe("attestant redigering", () => {
 
   it("Blokkerer redigering om brev er reservert av noen andre", () => {
     cy.visit("/saksnummer/123456/attester/1/redigering");
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", { fixture: "brevreservasjon_opptatt.json" }).as(
-      "brevreservasjon_opptatt",
-    );
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon_opptatt.json",
+    }).as("brevreservasjon_opptatt");
     cy.wait("@brevreservasjon_opptatt");
     cy.contains("Brevet er utilgjengelig for deg fordi Hugo Weaving har brevet åpent.").should("exist");
     cy.contains("Nei, gå til brevbehandler").should("exist");
     cy.contains("Nei, gå til brevbehandler").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
+    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?enhetsId=0001");
   });
 
   it("Gjenoppta redigering", () => {
     cy.visit("/saksnummer/123456/attester/1/redigering");
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", { fixture: "brevreservasjon_opptatt.json" }).as(
-      "brevreservasjon_opptatt",
-    );
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon_opptatt.json",
+    }).as("brevreservasjon_opptatt");
     cy.wait("@brevreservasjon_opptatt");
     cy.contains("Brevet er utilgjengelig for deg fordi Hugo Weaving har brevet åpent.").should("exist");
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/attestering?reserver=true", {
       fixture: "brevResponse_ny_hash.json",
     }).as("brev_ny_hash");
-    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", { fixture: "brevreservasjon_ny_hash.json" }).as(
-      "brevreservasjon_ny_hash",
-    );
+    cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
+      fixture: "brevreservasjon_ny_hash.json",
+    }).as("brevreservasjon_ny_hash");
     cy.contains("Ja, åpne på nytt").click();
     cy.wait("@brev_ny_hash");
 

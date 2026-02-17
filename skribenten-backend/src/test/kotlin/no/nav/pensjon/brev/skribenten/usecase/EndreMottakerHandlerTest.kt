@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import org.assertj.core.api.Assertions.assertThat
@@ -14,7 +15,7 @@ import org.junit.jupiter.api.Test
 
 class EndreMottakerHandlerTest : BrevredigeringTest() {
 
-    private suspend fun endreMottaker(brevId: Long, mottaker: Dto.Mottaker?, principal: UserPrincipal = saksbehandler1Principal) =
+    private suspend fun endreMottaker(brevId: BrevId, mottaker: Dto.Mottaker?, principal: UserPrincipal = saksbehandler1Principal) =
         withPrincipal(principal) {
             brevredigeringFacade.endreMottaker(EndreMottakerHandler.Request(brevId, mottaker))
         }

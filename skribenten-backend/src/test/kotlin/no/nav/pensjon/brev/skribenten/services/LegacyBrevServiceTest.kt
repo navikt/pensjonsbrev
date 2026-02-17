@@ -4,6 +4,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -13,7 +14,8 @@ import org.junit.jupiter.api.Test
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
 
-private const val forventaJournalpostId = "1234"
+private val forventaJournalpostId = JournalpostId(1234)
+
 private const val forventaDokumentId = "5678"
 
 class LegacyBrevServiceTest {
@@ -47,8 +49,8 @@ class LegacyBrevServiceTest {
     )
 
     private val safService = object : SafServiceStub() {
-        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
-        override suspend fun getFirstDocumentInJournal(journalpostId: String): SafService.HentDokumenterResponse =
+        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId) = JournalpostLoadingResult.READY
+        override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): SafService.HentDokumenterResponse =
             SafService.HentDokumenterResponse(
                 data = SafService.HentDokumenterResponse.Journalposter(
                     SafService.HentDokumenterResponse.Journalpost(
@@ -65,7 +67,7 @@ class LegacyBrevServiceTest {
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
             Pen.BestillExstreamBrevResponse(forventaJournalpostId)
 
-        override suspend fun redigerExstreamBrev(journalpostId: String) =
+        override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) =
             if (journalpostId == forventaJournalpostId) {
                 Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)
             } else {

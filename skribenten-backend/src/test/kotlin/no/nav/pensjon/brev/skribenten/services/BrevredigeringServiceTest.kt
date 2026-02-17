@@ -156,7 +156,7 @@ class BrevredigeringServiceTest {
         ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
 
         override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-        override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
+        override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
         override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
     }
@@ -268,7 +268,7 @@ class BrevredigeringServiceTest {
         navansattService = navAnsattService
     )
 
-    private val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
+    private val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
     @BeforeEach
     fun clearMocks() {
@@ -333,7 +333,7 @@ class BrevredigeringServiceTest {
     @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
-        transaction { BrevredigeringEntity[brev.info.id].journalpostId = 123L }
+        transaction { BrevredigeringEntity[brev.info.id].journalpostId = JournalpostId(123L) }
 
         val oppdatertBrev = hentBrev(brev.info.id)
         assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
@@ -353,8 +353,8 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(hentBrev(brevId = 1337)).isNull()
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = 1337)).isFalse()
+        assertThat(hentBrev(brevId = BrevId(1337))).isNull()
+        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
     }
 
     @Test
@@ -638,7 +638,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -664,7 +664,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
             ), true
         )
@@ -672,7 +672,7 @@ class BrevredigeringServiceTest {
 
     @Test
     fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(123, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         brevbakerService.renderPdfResultat = letterResponse
         brevbakerService.renderMarkupResultat = { letter }
@@ -706,7 +706,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
             ), false
         )
@@ -724,7 +724,7 @@ class BrevredigeringServiceTest {
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
@@ -786,7 +786,7 @@ class BrevredigeringServiceTest {
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
@@ -799,7 +799,7 @@ class BrevredigeringServiceTest {
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
         assertThat(hentBrev(brev.info.id)).isNotNull()
 
-        penService.sendBrevResponse = Pen.BestillBrevResponse(991, null)
+        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(991), null)
 
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
@@ -860,7 +860,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
                     Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
                     mottaker.tssId,
@@ -967,7 +967,7 @@ class BrevredigeringServiceTest {
     }
 
     private suspend fun hentBrev(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Dto.Brevredigering? {

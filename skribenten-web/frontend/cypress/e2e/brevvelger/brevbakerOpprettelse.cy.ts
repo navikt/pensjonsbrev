@@ -32,7 +32,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
     cy.wait("@getBrevmal");
     cy.contains("Åpne brev").click();
-    cy.get(".aksel-error-message").should("have.length", 3);
+    cy.get(".aksel-error-message").should("have.length", 4);
   });
 
   it("oppretter brev", () => {
@@ -112,7 +112,7 @@ describe("Oppretter brevbakerbrev", () => {
       expect(req.body).deep.equal({
         brevkode: "PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS",
         spraak: "NB",
-        avsenderEnhetsId: "",
+        avsenderEnhetsId: "4405",
         mottaker: null,
         saksbehandlerValg: {},
         vedtaksId: null,
@@ -121,6 +121,7 @@ describe("Oppretter brevbakerbrev", () => {
     });
 
     cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.contains("Åpne brev").click();
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
   });
@@ -134,12 +135,16 @@ describe("Oppretter brevbakerbrev", () => {
         "modelSpecification",
       );
     });
-    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", { fixture: "brevResponseTestBrev.json" });
+    cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev", {
+      fixture: "brevResponseTestBrev.json",
+    });
 
     cy.visit("/saksnummer/123456/brevvelger?templateId=BRUKERTEST_BREV_PENSJON_2025");
     cy.wait("@modelSpecification");
 
     cy.contains("Brevvelger").should("exist");
+
+    cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
 
     cy.contains("Mot trær og natur").should("not.exist");
 
