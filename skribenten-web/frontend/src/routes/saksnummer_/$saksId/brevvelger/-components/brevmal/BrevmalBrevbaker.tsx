@@ -12,7 +12,12 @@ import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
+import type {
+  BrevInfo,
+  BrevResponse,
+  Mottaker,
+  SaksbehandlerValg,
+} from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
@@ -47,11 +52,17 @@ const EksisterendeKladdModal = (props: {
       width={500}
     >
       <Modal.Body>
-        <BodyShort>Du har en eksisterende kladd basert på samme brevmal.</BodyShort>
+        <BodyShort>
+          Du har en eksisterende kladd basert på samme brevmal.
+        </BodyShort>
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="space-16">
-          <Button onClick={props.onFormSubmit} type="button" variant="secondary">
+          <Button
+            onClick={props.onFormSubmit}
+            type="button"
+            variant="secondary"
+          >
             Lag nytt brev
           </Button>
           <Button
@@ -88,7 +99,8 @@ const BrevmalBrevbaker = (props: {
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const formRef = useRef<HTMLFormElement>(null);
-  const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] = useState<boolean>(false);
+  const [åpnerNyttBrevOgHarKladd, setÅpnerNyttBrevOgHarKladd] =
+    useState<boolean>(false);
   const { enhetsId, vedtaksId } = Route.useSearch();
 
   const alleSaksbrevQuery = useQuery({
@@ -100,13 +112,19 @@ const BrevmalBrevbaker = (props: {
     return alleSaksbrevQuery.data
       ?.filter((brev: BrevInfo) => brev.brevkode === props.letterTemplate.id)
       .toSorted((a, b) => {
-        return new Date(a.opprettet).getTime() - new Date(b.opprettet).getTime();
+        return (
+          new Date(a.opprettet).getTime() - new Date(b.opprettet).getTime()
+        );
       })
       .at(-1);
   }, [alleSaksbrevQuery.data, props.letterTemplate.id]);
   const harEksisterendeKladd = !!sistOpprettetKladd;
 
-  const opprettBrevMutation = useMutation<BrevResponse, Error, BrevbakerFormData>({
+  const opprettBrevMutation = useMutation<
+    BrevResponse,
+    Error,
+    BrevbakerFormData
+  >({
     mutationFn: async (values) =>
       createBrev(props.saksId, {
         brevkode: props.letterTemplate.id,
@@ -122,7 +140,7 @@ const BrevmalBrevbaker = (props: {
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
-        search: { enhetsId, vedtaksId },
+        search: { enhetsId: response.info.avsenderEnhet.enhetNr, vedtaksId },
       });
     },
   });
@@ -143,6 +161,24 @@ const BrevmalBrevbaker = (props: {
       form.setValue("enhetsId", enhetsId);
     }
   }, [enhetsId, form]);
+
+  const userSelectedEnhetsId = useWatch({
+    control: form.control,
+    name: "enhetsId",
+  });
+
+  // Sync user selected enhetsId with URL, but only if it differs from the URL enhetsId.
+  // This allows the user to select an enhet and have that reflected in the URL,
+  // but prevents overwriting the user's selection if they have already selected
+  // an enhet and then the URL enhetsId changes for some reason.
+  useEffect(() => {
+    if (userSelectedEnhetsId && userSelectedEnhetsId !== enhetsId) {
+      navigate({
+        search: (previous) => ({ ...previous, enhetsId: userSelectedEnhetsId }),
+        replace: true,
+      });
+    }
+  }, [userSelectedEnhetsId, enhetsId, navigate]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -188,14 +224,21 @@ const BrevmalBrevbaker = (props: {
           <VStack flexGrow="1" gap="space-32">
             <VStack gap="space-8">
               <VStack>
-                <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
+                <OppsummeringAvMottaker
+                  mottaker={mottaker}
+                  saksId={props.saksId}
+                  withTitle
+                />
 
                 {modalÅpen && (
                   <EndreMottakerModal
                     error={null}
                     isPending={null}
                     onBekreftNyMottaker={(mottaker) => {
-                      form.setValue("mottaker", mapEndreMottakerValueTilMottaker(mottaker));
+                      form.setValue(
+                        "mottaker",
+                        mapEndreMottakerValueTilMottaker(mottaker),
+                      );
                       setModalÅpen(false);
                     }}
                     onClose={() => setModalÅpen(false)}
@@ -205,21 +248,42 @@ const BrevmalBrevbaker = (props: {
                 )}
               </VStack>
               <HStack>
-                <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
+                <Button
+                  onClick={() => setModalÅpen(true)}
+                  size="small"
+                  type="button"
+                  variant="secondary"
+                >
                   Endre mottaker
                 </Button>
                 {mottaker !== null && (
-                  <Button onClick={() => form.setValue("mottaker", null)} size="small" type="button" variant="tertiary">
+                  <Button
+                    onClick={() => form.setValue("mottaker", null)}
+                    size="small"
+                    type="button"
+                    variant="tertiary"
+                  >
                     Tilbakestill mottaker
                   </Button>
                 )}
               </HStack>
             </VStack>
             <SelectEnhet />
-            <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
-            <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
+            <SelectLanguage
+              preferredLanguage={props.preferredLanguage}
+              sorterteSpråk={props.displayLanguages}
+            />
+            <BrevmalAlternativer
+              brevkode={props.letterTemplate.id}
+              onlyShowRequired
+            />
           </VStack>
-          {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
+          {opprettBrevMutation.isError && (
+            <ApiError
+              error={opprettBrevMutation.error}
+              title="Bestilling feilet"
+            />
+          )}
         </BrevmalFormWrapper>
       </FormProvider>
     </VStack>
