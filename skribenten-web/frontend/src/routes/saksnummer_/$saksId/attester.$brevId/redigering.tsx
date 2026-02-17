@@ -76,7 +76,9 @@ const VedtakWrapper = () => {
       }
 
       if (err.response?.status === 403) {
-        const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
+        const axiosError = err as AxiosError & {
+          forbidReason?: AttestForbiddenReason;
+        };
         const reason = axiosError.forbidReason;
         if (reason) {
           return (
@@ -153,7 +155,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
-      attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id, request: requestData }),
+      attesterBrev({
+        saksId: props.saksId,
+        brevId: props.brev.info.id,
+        request: requestData,
+      }),
 
     onSuccess: onSaveSuccess,
     onError: (err) => {
@@ -190,10 +196,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         onSubmit(v, () => {
           navigate({
             to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
-            params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
+            params: {
+              saksId: props.saksId,
+              brevId: props.brev.info.id.toString(),
+            },
             search: {
               vedtaksId: props.brev.info?.vedtaksId?.toString(),
-              enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+              enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
             },
           });
         });
@@ -256,7 +265,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   params: { saksId: props.saksId },
                   search: {
                     vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
                   },
                 })
               }

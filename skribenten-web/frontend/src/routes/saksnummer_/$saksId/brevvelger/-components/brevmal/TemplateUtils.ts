@@ -83,11 +83,6 @@ export const createValidationSchema = (template: LetterMetadata) => {
     });
 };
 
-export const brevmalBrevbakerFormSchema = z.object({
-  spraak: z.enum(SpraakKode),
-  enhetsId: z.string(),
-});
-
 //regel er at hvis brukerens foretrukne språk er tilgjengelig, og malen støtter det, skal den være valgt, ellers skal den første språkkoden i malen være valgt
 export const hentDefaultValueForSpråk = (preferredLanguage: Nullable<SpraakKode>, tilgjengeligeSpråk: SpraakKode[]) => {
   if (preferredLanguage && tilgjengeligeSpråk.includes(preferredLanguage)) {

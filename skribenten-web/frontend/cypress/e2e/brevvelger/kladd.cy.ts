@@ -21,7 +21,10 @@ describe("Kladd", () => {
           status: { type: "Kladd" },
           distribusjonstype: "SENTRALPRINT",
           mottaker: null,
-          avsenderEnhet: null,
+          avsenderEnhet: {
+            enhetNr: "0001",
+            navn: "NAV Familie- og pensjonsytelser",
+          },
           spraak: "EN",
         },
       ]);
@@ -54,7 +57,10 @@ describe("Kladd", () => {
             status: { type: "Kladd" },
             distribusjonstype: "SENTRALPRINT",
             mottaker: null,
-            avsenderEnhet: null,
+            avsenderEnhet: {
+              enhetNr: "0001",
+              navn: "NAV Familie- og pensjonsytelser",
+            },
             spraak: "EN",
           },
         ]);
