@@ -15,6 +15,8 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -68,19 +70,19 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
 open class FakeP1Service: P1Service {
     override suspend fun lagreP1Data(
         p1DataInput: Api.GeneriskBrevdata,
-        brevId: Long,
+        brevId: BrevId,
         saksId: SaksId,
     ): P1Data? = notYetStubbed()
 
     override suspend fun hentP1Data(
-        brevId: Long,
+        brevId: BrevId,
         saksId: SaksId,
     ): Api.GeneriskBrevdata? = notYetStubbed()
 
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long?,
+        brevId: BrevId?,
         saksId: SaksId,
     ): BrevdataResponse.Data = brevdataResponse
 }
@@ -107,7 +109,7 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
     override suspend fun renderMarkup(
@@ -150,7 +152,7 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 open class PenServiceStub : PenService {
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
-    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
+    override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
     override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? = notYetStubbed()
     override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
@@ -166,7 +168,7 @@ open class PdlServiceStub : PdlService {
 }
 
 open class SafServiceStub : SafService {
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = notYetStubbed()
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse = notYetStubbed()
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray = notYetStubbed()
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult = notYetStubbed()
+    override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse = notYetStubbed()
+    override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray = notYetStubbed()
 }

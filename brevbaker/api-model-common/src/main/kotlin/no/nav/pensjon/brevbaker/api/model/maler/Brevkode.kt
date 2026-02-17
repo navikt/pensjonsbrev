@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler
 
-interface Brevkode<T: Brevkode<T>> {
+sealed interface Brevkode<T: Brevkode<T>> {
 
     interface Automatisk : Brevkode<Automatisk>
 

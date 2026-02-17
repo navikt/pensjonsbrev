@@ -27,7 +27,7 @@ object Dto {
     )
 
     data class BrevInfo(
-        val id: Long,
+        val id: BrevId,
         val saksId: SaksId,
         val vedtaksId: VedtaksId?,
         val opprettetAv: NavIdent,
@@ -42,7 +42,7 @@ object Dto {
         val mottaker: Mottaker?,
         val avsenderEnhetId: EnhetId,
         val spraak: LanguageCode,
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val attestertAv: NavIdent?,
         val status: BrevStatus,
     )
@@ -52,7 +52,7 @@ object Dto {
     }
 
     data class Document(
-        val brevredigeringId: Long,
+        val brevredigeringId: BrevId,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
         val redigertBrevHash: Hash<Edit.Letter>,

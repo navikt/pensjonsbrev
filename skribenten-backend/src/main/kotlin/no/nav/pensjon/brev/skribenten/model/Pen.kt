@@ -38,7 +38,7 @@ object Pen {
     data class Avtaleland(val navn: String, val kode: String)
 
     data class BestillExstreamBrevResponse(
-        val journalpostId: String,
+        val journalpostId: JournalpostId,
     ) {
         data class Error(
             val type: String,
@@ -132,7 +132,7 @@ object Pen {
     }
 
     data class BestillBrevResponse(
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)

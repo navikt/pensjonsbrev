@@ -4,7 +4,6 @@ import io.ktor.http.*
 import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -73,7 +72,7 @@ fun Route.sakBrev(
 
         route("/{brevId}") {
             get {
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
                 val reserver = call.request.queryParameters["reserver"].toBoolean()
 
                 val brev = brevredigeringFacade.hentBrev(
@@ -87,7 +86,7 @@ fun Route.sakBrev(
             }
 
             put<Api.OppdaterBrevRequest> { request ->
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
                 val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
                 val result = brevredigeringFacade.oppdaterBrev(
@@ -103,7 +102,7 @@ fun Route.sakBrev(
             }
 
             patch<Api.DelvisOppdaterBrevRequest> { request ->
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
                 val sak: Pen.SakSelection = call.attributes[SakKey]
 
                 val brev = brevredigeringService.delvisOppdaterBrev(
@@ -116,7 +115,7 @@ fun Route.sakBrev(
             }
 
             put<Api.DistribusjonstypeRequest>("/distribusjon") { request ->
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
 
                 val brev = brevredigeringFacade.endreDistribusjonstype(
                     EndreDistribusjonstypeHandler.Request(
@@ -129,7 +128,7 @@ fun Route.sakBrev(
             }
 
             put<Api.OppdaterKlarStatusRequest>("/status") { request ->
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
 
                 val resultat = brevredigeringFacade.veksleKlarStatus(
                     VeksleKlarStatusHandler.Request(
@@ -142,7 +141,7 @@ fun Route.sakBrev(
             }
 
             delete {
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
                 val sak: Pen.SakSelection = call.attributes[SakKey]
 
                 if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
@@ -154,7 +153,7 @@ fun Route.sakBrev(
 
             route("/mottaker") {
                 put<Api.OppdaterMottakerRequest> { request ->
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val resultat = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
                     )
@@ -163,7 +162,7 @@ fun Route.sakBrev(
                 }
 
                 delete {
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val resultat = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
                     )
@@ -174,7 +173,7 @@ fun Route.sakBrev(
 
             route("/pdf") {
                 get {
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     val pdf = brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
 
@@ -186,7 +185,7 @@ fun Route.sakBrev(
                 }
 
                 post("/send") {
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val sak: Pen.SakSelection = call.attributes[SakKey]
 
                     val resultat = brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
@@ -201,7 +200,7 @@ fun Route.sakBrev(
 
             route("/attestering") {
                 get {
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val reserver = call.request.queryParameters["reserver"].toBoolean()
 
                     val resultat = brevredigeringFacade.hentBrevAttestering(
@@ -215,7 +214,7 @@ fun Route.sakBrev(
                 }
 
                 put<Api.OppdaterAttesteringRequest> { request ->
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
@@ -233,7 +232,7 @@ fun Route.sakBrev(
 
             route("/p1") {
                 get {
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     val p1Data = p1Service.hentP1Data(brevId, sak.saksId)
                     if (p1Data != null) {
@@ -245,14 +244,14 @@ fun Route.sakBrev(
                 }
 
                 post<Api.GeneriskBrevdata> { p1Data ->
-                    val brevId = call.parameters.getOrFail<Long>("brevId")
+                    val brevId = call.parameters.brevId()
                     val sak: Pen.SakSelection = call.attributes[SakKey]
                     call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))
                 }
             }
 
             get("/alltidValgbareVedlegg") {
-                val brevId = call.parameters.getOrFail<Long>("brevId")
+                val brevId = call.parameters.brevId()
                 call.respond(brevbakerService.getAlltidValgbareVedlegg(brevId))
             }
         }

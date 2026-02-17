@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -21,7 +22,7 @@ class ExternalAPIServiceTest {
     private val skribentenWebUrl = "https://our-cool-url"
     val saksId = SaksId(1L)
     val brevDto = Dto.BrevInfo(
-        id = 2L,
+        id = BrevId(2L),
         saksId = saksId,
         vedtaksId = null,
         opprettetAv = NavIdent("Sakson"),

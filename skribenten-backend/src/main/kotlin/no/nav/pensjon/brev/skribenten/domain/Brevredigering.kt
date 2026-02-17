@@ -4,8 +4,10 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
@@ -20,13 +22,13 @@ import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.eq
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
+import org.jetbrains.exposed.v1.dao.Entity
+import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 
 interface Brevredigering {
-    val id: EntityID<Long>
+    val id: EntityID<BrevId>
     val saksId: SaksId
     val vedtaksId: VedtaksId?
     val brevkode: Brevkode.Redigerbart
@@ -49,7 +51,7 @@ interface Brevredigering {
     val opprettet: Instant
     val sistredigert: Instant
     val sistReservert: Instant?
-    val journalpostId: Long?
+    val journalpostId: JournalpostId?
     val document: Iterable<Document>
     val mottaker: Mottaker?
     val p1Data: P1Data?
@@ -74,7 +76,7 @@ interface Brevredigering {
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
-class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering {
+class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredigering {
     override var saksId by BrevredigeringTable.saksId
         private set
     // Det er forventet at vedtaksId kun har verdi om brevet er i vedtakskontekst
@@ -109,8 +111,8 @@ class BrevredigeringEntity(id: EntityID<Long>) : LongEntity(id), Brevredigering 
     override var brevtype by BrevredigeringTable.brevtype
         private set
 
-    companion object : LongEntityClass<BrevredigeringEntity>(BrevredigeringTable) {
-        fun findByIdAndSaksId(id: Long, saksId: SaksId?) =
+    companion object : EntityClass<BrevId, BrevredigeringEntity>(BrevredigeringTable) {
+        fun findByIdAndSaksId(id: BrevId, saksId: SaksId?) =
             if (saksId == null) {
                 findById(id)
             } else {
