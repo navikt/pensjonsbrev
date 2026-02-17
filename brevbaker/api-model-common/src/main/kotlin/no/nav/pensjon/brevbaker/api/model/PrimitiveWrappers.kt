@@ -12,6 +12,9 @@ interface IntValue {
 value class Telefonnummer(val value: String)
 
 @JvmInline
+value class Pid(val value: String)
+
+@JvmInline
 value class Foedselsnummer(val value: String)
 
 @JvmInline

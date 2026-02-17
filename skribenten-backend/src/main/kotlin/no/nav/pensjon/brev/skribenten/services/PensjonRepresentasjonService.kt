@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -43,7 +44,7 @@ class PensjonRepresentasjonService(
     }
 
     data class HasRepresentantRequest(
-        val representertPid: String,
+        val representertPid: Pid,
         val validRepresentasjonstyper: List<RelevanteRepresentasjonstyper>,
     )
 
@@ -64,7 +65,7 @@ class PensjonRepresentasjonService(
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
                     contentType(ContentType.Application.Json)
-                    setBody(HasRepresentantRequest(fnr, RelevanteRepresentasjonstyper.entries))
+                    setBody(HasRepresentantRequest(Pid(fnr), RelevanteRepresentasjonstyper.entries))
                 }
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value

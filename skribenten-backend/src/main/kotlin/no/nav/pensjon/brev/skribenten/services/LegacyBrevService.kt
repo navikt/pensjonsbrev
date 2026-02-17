@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
@@ -23,7 +24,7 @@ class LegacyBrevService(
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
 
-    suspend fun bestillOgRedigerExstreamBrev(gjelderPid: String, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse {
+    suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
@@ -53,7 +54,7 @@ class LegacyBrevService(
     }
 
     suspend fun bestillOgRedigerEblankett(
-        gjelderPid: String,
+        gjelderPid: Pid,
         request: Api.BestillEblankettRequest,
         saksId: SaksId,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
@@ -86,7 +87,7 @@ class LegacyBrevService(
     private suspend fun bestillExstreamBrevPen(
         brevkode: String,
         enhetsId: EnhetId,
-        gjelderPid: String,
+        gjelderPid: Pid,
         idTSSEkstern: String? = null,
         metadata: BrevdataDto,
         saksId: SaksId,
@@ -129,7 +130,7 @@ class LegacyBrevService(
                         saksbehandlerid = PrincipalInContext.require().navIdent.id,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                         land = landkode.takeIf { isEblankett },
-                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
+                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid.value,
                         sensitivt = false
                     ),
                     vedtaksInformasjon = vedtaksId?.id?.toString()

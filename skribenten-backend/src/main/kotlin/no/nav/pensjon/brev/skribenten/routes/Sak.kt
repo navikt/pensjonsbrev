@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.Pid
 
 fun Route.sakRoute(
     brevbakerService: BrevbakerService,
@@ -87,7 +88,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
-                            gjelderPid = sak.foedselsnr,
+                            gjelderPid = Pid(sak.foedselsnr),
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -99,7 +100,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
-                            gjelderPid = sak.foedselsnr,
+                            gjelderPid = Pid(sak.foedselsnr),
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -110,7 +111,7 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+            val adresse = pensjonPersonDataService.hentKontaktadresse(Pid(sak.foedselsnr))
 
             if (adresse != null) {
                 call.respond(adresse)

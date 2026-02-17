@@ -14,6 +14,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -55,7 +56,7 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    suspend fun hentKontaktadresse(pid: String): KontaktAdresseResponseDto? {
+    suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? {
         val response = client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
