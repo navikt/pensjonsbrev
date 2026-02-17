@@ -33,7 +33,6 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
-import no.nav.pensjon.brev.maler.legacy.NyBeregningUforetrygdEndringOpptjening
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
@@ -134,7 +133,6 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
-        NyBeregningUforetrygdEndringOpptjening,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
