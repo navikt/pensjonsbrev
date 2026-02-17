@@ -9,7 +9,7 @@ import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.dao.Entity
 import kotlin.reflect.KProperty
 
-fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>): WithHash<Edit.Letter> =
+fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>) =
     WithHash(this, hash)
 
 fun <T> Table.hashColumn(name: String): Column<Hash<T>> =
