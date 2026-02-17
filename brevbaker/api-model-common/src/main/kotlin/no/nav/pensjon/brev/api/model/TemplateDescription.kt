@@ -49,10 +49,14 @@ interface TemplateDescription {
             "Redigerbar(name='$name', letterDataClass='$letterDataClass', languages=$languages, metadata=$metadata, kategori=$kategori, brevkontekst=$brevkontekst, sakstyper=$sakstyper)"
 
         @JvmInline
-        value class Brevkategori @InternKonstruktoer constructor(override val kode: String) : IBrevkategori
+        value class Brevkategori @InternKonstruktoer constructor(override val kode: String) : IBrevkategori {
+            override fun toString() = kode
+        }
 
         @JvmInline
-        value class Sakstype @InternKonstruktoer constructor(val kode: String)
+        value class Sakstype @InternKonstruktoer constructor(val kode: String) {
+            override fun toString() = kode
+        }
     }
 
     enum class Brevkontekst {

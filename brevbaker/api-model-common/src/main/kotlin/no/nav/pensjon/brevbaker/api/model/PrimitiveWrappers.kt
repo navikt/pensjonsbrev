@@ -9,25 +9,39 @@ interface IntValue {
 }
 
 @JvmInline
-value class Telefonnummer(val value: String)
+value class Telefonnummer(val value: String) {
+    override fun toString() = value
+}
 
 @JvmInline
-value class Foedselsnummer(val value: String)
+value class Foedselsnummer(val value: String) {
+    override fun toString() = value
+}
 
 @JvmInline
-value class Kroner(override val value: Int) : IntValue
+value class Kroner(override val value: Int) : IntValue {
+    override fun toString() = value.toString()
+}
 
 @JvmInline
-value class Year(override val value: Int) : IntValue
+value class Year(override val value: Int) : IntValue {
+    override fun toString() = value.toString()
+}
 
 @JvmInline
-value class Months(override val value: Int) : IntValue
+value class Months(override val value: Int) : IntValue {
+    override fun toString() = value.toString()
+}
 
 @JvmInline
-value class Days(override val value: Int) : IntValue
+value class Days(override val value: Int) : IntValue {
+    override fun toString() = value.toString()
+}
 
 @JvmInline
-value class Percent(override val value: Int) : IntValue
+value class Percent(override val value: Int) : IntValue {
+    override fun toString() = value.toString()
+}
 
 class Broek(val teller: Int, val nevner: Int) {
     override fun equals(other: Any?): Boolean {
