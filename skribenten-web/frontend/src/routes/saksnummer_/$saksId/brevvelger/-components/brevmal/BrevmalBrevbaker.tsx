@@ -167,10 +167,8 @@ const BrevmalBrevbaker = (props: {
     name: "enhetsId",
   });
 
-  // Sync user selected enhetsId with URL, but only if it differs from the URL enhetsId.
-  // This allows the user to select an enhet and have that reflected in the URL,
-  // but prevents overwriting the user's selection if they have already selected
-  // an enhet and then the URL enhetsId changes for some reason.
+  // Update URL when user changes the selected enhet in the form.
+  // Skip update if form value already matches URL to prevent redundant navigation.
   useEffect(() => {
     if (userSelectedEnhetsId && userSelectedEnhetsId !== enhetsId) {
       navigate({
