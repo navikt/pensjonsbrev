@@ -664,7 +664,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
             ), true
         )
@@ -706,7 +706,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
             ), false
         )
@@ -860,7 +860,7 @@ class BrevredigeringServiceTest {
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
                 enhetId = principalNavEnhetId,
                 pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id}",
+                eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
                     Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
                     mottaker.tssId,

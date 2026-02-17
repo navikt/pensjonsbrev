@@ -225,7 +225,7 @@ class BrevredigeringService(
                         templateDescription = template,
                         brevkode = brev.info.brevkode,
                         pdf = document.pdf,
-                        eksternReferanseId = "skribenten:${brev.info.id}",
+                        eksternReferanseId = "skribenten:${brev.info.id.id}",
                         mottaker = brev.info.mottaker?.toPen(),
                     ),
                     distribuer = brev.info.distribusjonstype == Distribusjonstype.SENTRALPRINT,
