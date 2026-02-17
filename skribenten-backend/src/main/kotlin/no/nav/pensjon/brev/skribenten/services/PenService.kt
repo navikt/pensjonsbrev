@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java
@@ -92,6 +93,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
+                pid = it.pid ?: Pid(it.foedselsnr), // TODO fjern fallback når pen sender med pid
             )
         }
 
@@ -184,6 +186,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         val navn: Navn,
         val sakType: ISakstype,
         val enhetId: String?,
+        val pid: Pid? = null,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

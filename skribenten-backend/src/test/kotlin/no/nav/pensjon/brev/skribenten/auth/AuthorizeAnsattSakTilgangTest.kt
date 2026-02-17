@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -76,11 +77,11 @@ class AuthorizeAnsattSakTilgangTest {
     private val creds = BasicAuthCredentials("test", "123")
 
     private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
-        override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
-            adressebeskyttelser[Pair(fnr, behandlingsnummer)]
-                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
+        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            adressebeskyttelser[Pair(ident.value, behandlingsnummer)]
+                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $ident og behandlingsnummer $behandlingsnummer")
 
-        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
+        override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
@@ -230,7 +231,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
         pdlService = object : PdlServiceStub() {
-            override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
                 throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
         }
     ) { client ->
