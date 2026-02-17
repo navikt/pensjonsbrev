@@ -22,7 +22,7 @@ class ExternalAPIServiceTest {
     private val skribentenWebUrl = "https://our-cool-url"
     val saksId = SaksId(1L)
     val brevDto = Dto.BrevInfo(
-        id = BrevId(2L),
+        id = BrevId(214L),
         saksId = saksId,
         vedtaksId = null,
         opprettetAv = NavIdent("Sakson"),
@@ -66,6 +66,6 @@ class ExternalAPIServiceTest {
     @Test
     fun `legger til url for aa aapne brev i skribenten`(): Unit = runBlocking {
         val brev = externalAPIService.hentAlleBrevForSaker(setOf(saksId)).single()
-        assertThat(brev.url).startsWith(skribentenWebUrl).endsWith("/${brev.id}")
+        assertThat(brev.url).startsWith(skribentenWebUrl).endsWith("/214")
     }
 }
