@@ -223,7 +223,7 @@ private fun createFacade(
     endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
-    hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Api.PdfResponse> = handlerStub(),
+    hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(

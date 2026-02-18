@@ -68,7 +68,7 @@ class BrevredigeringService(
             transaction {
                 if (alltidValgbareVedlegg != null) {
                     if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
-                        brevDb.document.singleOrNull()?.delete()
+                        brevDb.document = null
                     }
                     brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) })
                 }
@@ -152,7 +152,7 @@ class BrevredigeringService(
     suspend fun sendBrev(saksId: SaksId, brevId: BrevId): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-                .let { it?.toDto(brevreservasjonPolicy, null) to it?.document?.firstOrNull()?.toDto() }
+                .let { it?.toDto(brevreservasjonPolicy, null) to it?.document }
         }
 
         return if (brev != null && document != null) {
@@ -318,28 +318,6 @@ class BrevredigeringService(
         val brevDto = brevDb.toDto(brevreservasjonPolicy, null)
     }
 }
-
-private suspend fun BrevdataResponse.Data.withP1DataIfP1(
-    brevinfo: Dto.BrevInfo,
-    p1Service: P1Service
-): BrevdataResponse.Data =
-    p1Service.patchMedP1DataOmP1(
-        this,
-        brevkode = brevinfo.brevkode,
-        brevId = brevinfo.id,
-        saksId = brevinfo.saksId
-    )
-
-
-private fun Felles.medSignerendeSaksbehandlere(signatur: LetterMarkup.Signatur): Felles =
-    signatur.saksbehandlerNavn?.let {
-        medSignerendeSaksbehandlere(
-            SignerendeSaksbehandlere(
-                saksbehandler = it,
-                attesterendeSaksbehandler = signatur.attesterendeSaksbehandlerNavn
-            )
-        )
-    } ?: this
 
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
     redigertBrev.alleFritekstFelterErRedigert() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")

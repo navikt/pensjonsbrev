@@ -254,6 +254,13 @@ abstract class BrevredigeringTest {
         )
     }
 
+    protected suspend fun slettBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Boolean, BrevredigeringError>? = withPrincipal(principal) {
+        success(brevredigeringService.slettBrev(saksId = brev.info.saksId, brevId = brev.info.id))
+    }
+
     protected suspend fun attester(
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
@@ -296,7 +303,7 @@ abstract class BrevredigeringTest {
         success(Unit)
     }
 
-    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Api.PdfResponse, BrevredigeringError>? =
+    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
         }

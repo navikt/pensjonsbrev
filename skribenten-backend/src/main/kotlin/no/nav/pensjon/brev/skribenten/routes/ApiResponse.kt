@@ -37,6 +37,17 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
+@JvmName("apiRespondHentDocumentResult")
+suspend fun RoutingContext.apiRespond(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Dto.HentDocumentResult, BrevredigeringError>?,
+    successStatus: HttpStatusCode = HttpStatusCode.OK
+) {
+    respondOutcome(dto2ApiService, outcome) { brevInfo ->
+        respond(status = successStatus, dto2ApiService.toApi(brevInfo))
+    }
+}
+
 suspend fun <T> RoutingContext.respondOutcome(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<T, BrevredigeringError>?,

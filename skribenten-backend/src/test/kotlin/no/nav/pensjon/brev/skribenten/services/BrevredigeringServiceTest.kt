@@ -1,9 +1,6 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import io.ktor.http.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -15,10 +12,8 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -34,14 +29,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.Instant
 import java.time.LocalDate
 import java.time.temporal.ChronoUnit
@@ -333,216 +323,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `hentPdf skal opprette et Document med referanse til Brevredigering`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        transaction {
-            assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
-            assertThat(DocumentEntity.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
-        }
-
-        assertThat(
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-            }
-        ).isSuccess {
-            assertThat(it).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
-        }
-
-
-
-        transaction {
-            val brevredigering = BrevredigeringEntity[brev.info.id]
-            assertThat(brevredigering.document).hasSize(1)
-            assertThat(DocumentEntity.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
-            assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
-        }
-    }
-
-    @Test
-    fun `sletter relaterte documents ved sletting av brevredigering`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        assertThat(
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-            }
-        ).isSuccess()
-        transaction { assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
-
-        brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
-        transaction {
-            assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
-            assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
-        }
-    }
-
-    @Test
-    fun `dobbel oppretting av pdf er ikke mulig`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        awaitAll(*(0..<10).map {
-            async(Dispatchers.IO) {
-                withPrincipal(saksbehandler1Principal) {
-                    brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-                }
-            }
-        }.toTypedArray())
-        transaction {
-            assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
-        }
-    }
-
-    @Test
-    fun `Document redigertBrevHash er stabil`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
-
-            transaction { BrevredigeringEntity[brev.info.id].document.first().delete() }
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
-
-            assertThat(firstHash).isEqualTo(secondHash)
-        }
-    }
-
-    @Test
-    fun `Document redigertBrevHash endres basert paa redigertBrev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-        }
-        val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
-
-        transaction {
-            BrevredigeringEntity[brev.info.id].redigertBrev =
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
-        }
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-        }
-        val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
-
-        assertThat(firstHash).isNotEqualTo(secondHash)
-    }
-
-    @Test
-    fun `hentPdf rendrer ny pdf om den ikke eksisterer`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess {
-                assertThat(it).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
-            }
-        }
-    }
-
-    @Test
-    fun `hentPdf rendrer ny pdf om den ikke er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        stagePdf("min første pdf".encodeToByteArray())
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-
-            transaction {
-                BrevredigeringEntity[brev.info.id].redigertBrev =
-                    letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
-            }
-
-            stagePdf("min andre pdf".encodeToByteArray())
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess {
-                assertThat(it).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
-            }
-        }
-    }
-
-    @Test
-    fun `hentPdf rendrer ny pdf om pesysdata er endra`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            stagePdf("min andre pdf".encodeToByteArray())
-            penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            assertThat(first).isNotEqualTo(second)
-            assertThat(second).isSuccess {
-                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
-            }
-        }
-    }
-
-    @Test
-    fun `hentPdf informerer om at rendretBrev er endret pga pesysdata`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            stagePdf("min andre pdf".encodeToByteArray())
-            brevbakerService.renderMarkupResultat = {
-                letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"), LiteralImpl(99, "new text"))))
-                    .medSignatur(
-                        saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
-                        attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
-                    )
-            }
-            penService.pesysBrevdata =
-                brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            assertThat(first).isNotEqualTo(second)
-            assertThat(second).isSuccess {
-                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
-            }
-        }
-    }
-
-    @Test
-    fun `hentPdf rendrer ny pdf om dokumentdato er endra`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            stagePdf("min første pdf".encodeToByteArray())
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-
-            stagePdf("min andre pdf".encodeToByteArray())
-            penService.pesysBrevdata = brevdataResponseData.copy(
-                felles = brevdataResponseData.felles.copy(
-                    dokumentDato = LocalDate.now().plusDays(2),
-                    saksnummer = sak1.saksId.toString(),
-                )
-            )
-            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
-            assertThat(second).isSuccess {
-                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
-            }
-        }
-    }
-
-    @Test
-    fun `hentPdf rendrer ikke ny pdf om den er basert paa gjeldende redigertBrev`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            stagePdf("min andre pdf".encodeToByteArray())
-            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
-
-            assertThat(first).isEqualTo(second)
-        }
-    }
-
-    @Test
     fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
         val brev = opprettBrev(
             saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
@@ -702,9 +482,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess { pdf ->
-                assertThat(pdf).isNotNull()
-            }
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
 
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
@@ -753,7 +531,7 @@ class BrevredigeringServiceTest {
         // verifiser forskjellig hash
         transaction {
             val redigering = BrevredigeringEntity[brev.info.id]
-            assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document.first().redigertBrevHash)
+            assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document!!.redigertBrevHash)
         }
 
         withPrincipal(saksbehandler1Principal) {
@@ -768,9 +546,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess { pdf ->
-                assertThat(pdf).isNotNull()
-            }
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(

@@ -80,6 +80,11 @@ object Dto {
         }
     }
 
+    data class HentDocumentResult(
+        val document: Document,
+        val rendretBrevErEndret: Boolean,
+    )
+
     @ConsistentCopyVisibility
     data class Mottaker private constructor(
         val type: MottakerType,

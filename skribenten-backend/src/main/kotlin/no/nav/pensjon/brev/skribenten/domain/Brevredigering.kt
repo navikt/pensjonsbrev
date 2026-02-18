@@ -52,7 +52,7 @@ interface Brevredigering {
     val sistredigert: Instant
     val sistReservert: Instant?
     val journalpostId: JournalpostId?
-    val document: Iterable<DocumentEntity>
+    var document: Dto.Document?
     val mottaker: Mottaker?
     val p1Data: P1Data?
     val valgteVedlegg: ValgteVedlegg?
@@ -72,7 +72,6 @@ interface Brevredigering {
     fun markerSomKladd()
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
-    fun settDokument(dokumentDto: Dto.Document)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
@@ -104,7 +103,37 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistredigert by BrevredigeringTable.sistredigert
     override var sistReservert by BrevredigeringTable.sistReservert
     override var journalpostId by BrevredigeringTable.journalpostId
-    override val document by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+
+    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    override var document: Dto.Document?
+        get() = _documentEntityList.firstOrNull()?.toDto()
+        set(documentDto) {
+            if (documentDto == null) {
+                _documentEntityList.forEach { it.delete() }
+                return
+            }
+
+            val existingDocument = _documentEntityList.firstOrNull()
+
+            if (existingDocument != null) {
+                existingDocument.apply {
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+            } else {
+                DocumentEntity.new {
+                    this.brevredigering = this@BrevredigeringEntity
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+                this.refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
+            }
+        }
+
     override val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
     override val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
@@ -209,29 +238,6 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
                 .also { refresh(flush = true) }
         } else {
             mottaker?.oppdater(mottakerDto)
-        }
-    }
-
-    // TODO: endre til property setter
-    override fun settDokument(dokumentDto: Dto.Document) {
-        val existingDocument = document.firstOrNull()
-
-        if (existingDocument != null) {
-            existingDocument.apply {
-                this.pdf = dokumentDto.pdf
-                this.dokumentDato = dokumentDto.dokumentDato
-                this.redigertBrevHash = dokumentDto.redigertBrevHash
-                this.brevdataHash = dokumentDto.brevdataHash
-            }
-        } else {
-            DocumentEntity.new {
-                this.brevredigering = this@BrevredigeringEntity
-                this.pdf = dokumentDto.pdf
-                this.dokumentDato = dokumentDto.dokumentDato
-                this.redigertBrevHash = dokumentDto.redigertBrevHash
-                this.brevdataHash = dokumentDto.brevdataHash
-            }
-            this.refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
         }
     }
 
