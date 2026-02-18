@@ -10,24 +10,21 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TBU3224_Generated(
     val pe: Expression<PE>,
-) : OutlinePhrase<LangBokmalNynorsk>() {
-    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-		//[TBU3224]
+) : OutlinePhrase<LangBokmal>() {
+    override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+        //[TBU3224]
 
-		title1 {
-			text (
-				bokmal { + "Etterbetaling av uføretrygd" },
-                nynorsk { + "Etterbetaling av uføretrygd" },
-			)
-		}
-		paragraph {
-			ifNotNull(pe.vedtaksdata_virkningfom()){ virkFom ->
-				text (
-					bokmal { + "Du får etterbetalt uføretrygd fra " + virkFom.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-                    nynorsk { + "Du får etterbetalt uføretrygd frå " + virkFom.format() + ". Beløpet blir vanlegvis utbetalt i løpet av sju virkedager. Det kan bli berekna fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinka med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
-				)
-			}
-		}
+        title1 {
+            text (
+                bokmal { + "Etterbetaling av uføretrygd" },
+            )
+        }
+        paragraph {
+            ifNotNull(pe.vedtaksdata_virkningfom()){ virkFom ->
+                text (
+                    bokmal { + "Du får etterbetalt uføretrygd fra " + virkFom.format() + ". Beløpet blir vanligvis utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i etterbetalingen for skatt og ytelser du har mottatt fra Nav eller andre, som for eksempel tjenestepensjonsordninger. I disse tilfellene kan etterbetalingen bli forsinket med inntil ni uker. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen." },
+                )
+            }
+        }
     }
 }
-        
