@@ -22,7 +22,6 @@ import java.time.LocalDate
 
 class HentEllerOpprettPdfHandlerTest : BrevredigeringTest() {
 
-
     @Test
     suspend fun `hentPdf skal opprette et Document med referanse til Brevredigering`() {
         val brev = opprettBrev().resultOrFail()
