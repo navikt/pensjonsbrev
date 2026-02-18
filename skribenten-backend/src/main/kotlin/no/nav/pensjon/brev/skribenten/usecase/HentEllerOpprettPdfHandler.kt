@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.P1Service
@@ -19,7 +20,7 @@ class HentEllerOpprettPdfHandler(
 ) : BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> {
 
     data class Request(
-        override val brevId: Long,
+        override val brevId: BrevId,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? {
