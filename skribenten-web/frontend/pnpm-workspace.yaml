@@ -1,2 +1,5 @@
+onlyBuiltDependencies:
+- cypress
+- esbuild
 publicHoistPattern:
-- "pdfjs-dist"
+- pdfjs-dist
