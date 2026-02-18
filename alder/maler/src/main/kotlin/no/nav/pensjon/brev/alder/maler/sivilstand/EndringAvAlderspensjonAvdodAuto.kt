@@ -472,15 +472,15 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         english { +"Your spouse supplement will end" }
                     )
                 }
-
-                paragraph {
-                    text(
-                        bokmal { +"Du forsørger ikke lenger en " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor opphører ektefelletillegget ditt." },
-                        nynorsk { +"Du forsørgjer ikkje lenger for ein " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Derfor vert ektefelletillegget ditt avslutta." },
-                        english { +"You no longer provide for a " + avdodInformasjon.sivilstandAvdoed.ubestemtForm() + ". Your spouse supplement will therefore end." }
-                    )
+                ifNotNull(avdodInformasjon.sivilstandAvdoed) {  sivilstandAvdoed ->
+                    paragraph {
+                        text(
+                            bokmal { +"Du forsørger ikke lenger en " + sivilstandAvdoed.ubestemtForm() + ". Derfor opphører ektefelletillegget ditt." },
+                            nynorsk { +"Du forsørgjer ikkje lenger for ein " + sivilstandAvdoed.ubestemtForm() + ". Derfor vert ektefelletillegget ditt avslutta." },
+                            english { +"You no longer provide for a " + sivilstandAvdoed.ubestemtForm() + ". Your spouse supplement will therefore end." }
+                        )
+                    }
                 }
-
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter forskrift om omregning av uførepensjon til uføretrygd § 8." },

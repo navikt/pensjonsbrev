@@ -52,7 +52,7 @@ data class EndringAvAlderspensjonAvdodAutoDto (
     )
 
     data class AvdodInformasjon (
-        val sivilstandAvdoed: SivilstandAvdoed,
+        val sivilstandAvdoed: SivilstandAvdoed?,
         val ektefelletilleggOpphort: Boolean,
         val gjenlevendesAlder: Int,
         val avdodNavn: String,
