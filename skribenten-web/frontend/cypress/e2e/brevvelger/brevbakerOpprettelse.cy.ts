@@ -66,7 +66,8 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter brev som har non-nullable boolean felt", () => {
@@ -96,7 +97,8 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("kan opprette brev som har tom saksbehandlerValg", () => {
@@ -123,7 +125,8 @@ describe("Oppretter brevbakerbrev", () => {
     cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter brev som har tomme nullable enum felt", () => {
@@ -152,7 +155,8 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
 
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter ikke brev som har tomme non-nullable enum felt", () => {
@@ -184,7 +188,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.contains("Åpne brev").click();
 
-    cy.url().should("not.eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("not.eq", "/saksnummer/123456/brev/1");
     cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
 
     cy.contains("Mot trær og natur").click();
@@ -192,6 +196,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("@errorMessage").should("not.exist");
 
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 });
