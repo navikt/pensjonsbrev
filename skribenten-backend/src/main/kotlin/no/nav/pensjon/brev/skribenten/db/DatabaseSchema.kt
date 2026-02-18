@@ -130,16 +130,6 @@ object DocumentTable : LongIdTable() {
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
 }
 
-class Document(id: EntityID<Long>) : LongEntity(id) {
-    var brevredigering by BrevredigeringEntity referencedOn DocumentTable.brevredigering
-    var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdfKryptert
-    var redigertBrevHash by DocumentTable.redigertBrevHash
-    var brevdataHash by DocumentTable.brevdataHash
-
-    companion object : LongEntityClass<Document>(DocumentTable)
-}
-
 object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)

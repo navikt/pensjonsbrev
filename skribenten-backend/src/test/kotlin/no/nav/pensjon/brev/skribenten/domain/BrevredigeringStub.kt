@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
@@ -43,7 +42,7 @@ open class BrevredigeringStub : Brevredigering {
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
     override val journalpostId: JournalpostId get() = notYetStubbed()
-    override val document: Iterable<Document> get() = notYetStubbed()
+    override val document: Iterable<DocumentEntity> get() = notYetStubbed()
     override val mottaker: Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
     override val valgteVedlegg: ValgteVedlegg get() = notYetStubbed()
@@ -58,6 +57,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun markerSomKladd(): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? = notYetStubbed()
+    override fun settDokument(dokumentDto: Dto.Document): Unit = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
 }

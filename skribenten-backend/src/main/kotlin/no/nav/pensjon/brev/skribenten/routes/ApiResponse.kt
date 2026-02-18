@@ -37,7 +37,7 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
-private suspend fun <T> RoutingContext.respondOutcome(
+suspend fun <T> RoutingContext.respondOutcome(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<T, BrevredigeringError>?,
     successResponse: suspend RoutingCall.(T) -> Unit

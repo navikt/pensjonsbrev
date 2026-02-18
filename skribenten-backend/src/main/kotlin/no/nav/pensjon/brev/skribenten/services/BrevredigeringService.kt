@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.R
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
@@ -53,7 +52,6 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val navansattService: NavansattService,
     private val penService: PenService,
-    private val p1Service: P1Service,
 ) : HentBrevService {
     companion object {
         val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
@@ -115,51 +113,6 @@ class BrevredigeringService(
                 redigertBrevHash = brevDto.redigertBrevHash,
             )
         }
-
-    suspend fun hentEllerOpprettPdf(
-        saksId: SaksId, brevId: BrevId
-    ): Api.PdfResponse? {
-        val (brevredigering, document) = transaction {
-            BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-                .let { it?.toDto(brevreservasjonPolicy, null) to it?.document?.firstOrNull()?.toDto() }
-        }
-        return brevredigering?.let {
-            val pesysBrevdata = penService.hentPesysBrevdata(
-                saksId = brevredigering.info.saksId,
-                vedtaksId = brevredigering.info.vedtaksId,
-                brevkode = brevredigering.info.brevkode,
-                avsenderEnhetsId = brevredigering.info.avsenderEnhetId
-            ).withP1DataIfP1(brevredigering.info, p1Service)
-
-            val nyBrevdataHash = Hash.read(pesysBrevdata)
-
-            // dokumentDato er en del av pesysBrevdata.felles, så vi trenger ikke sjekke den eksplisitt her
-            if (document != null && document.redigertBrevHash == brevredigering.redigertBrevHash && nyBrevdataHash == document.brevdataHash) {
-                Api.PdfResponse(pdf = document.pdf, rendretBrevErEndret = false)
-            } else {
-                // render markup to check if letterMarkup has changed due to changed brevdata
-                val rendretBrevErEndret = brevbakerService.renderMarkup(
-                    brevkode = brevredigering.info.brevkode,
-                    spraak = brevredigering.info.spraak,
-                    brevdata = GeneriskRedigerbarBrevdata(
-                        pesysData = pesysBrevdata.brevdata,
-                        saksbehandlerValg = brevredigering.saksbehandlerValg,
-                    ),
-                    felles = pesysBrevdata.felles
-                        .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur)
-                        .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                ).let {
-                    // sjekker kun blocks her fordi det er eneste situasjonen hvor vi ønsker å informere bruker om å se over endringer
-                    brevredigering.redigertBrev.updateEditedLetter(it.markup).blocks != brevredigering.redigertBrev.blocks
-                }
-
-                Api.PdfResponse(
-                    pdf = opprettPdf(brevredigering, pesysBrevdata, nyBrevdataHash),
-                    rendretBrevErEndret = rendretBrevErEndret
-                )
-            }
-        }
-    }
 
     suspend fun attester(
         saksId: SaksId,
@@ -344,40 +297,6 @@ class BrevredigeringService(
         )
     }
 
-    private suspend fun opprettPdf(
-        brevredigering: Dto.Brevredigering,
-        pesysData: BrevdataResponse.Data,
-        brevdataHash: Hash<BrevdataResponse.Data>,
-    ): ByteArray {
-        val pdf = brevbakerService.renderPdf(
-            brevkode = brevredigering.info.brevkode,
-            spraak = brevredigering.info.spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = brevredigering.saksbehandlerValg,
-            ),
-            // Brevbaker bruker signaturer fra redigertBrev, men felles er nødvendig fordi den kan brukes i vedlegg.
-            felles = pesysData.felles
-                .medAnnenMottakerNavn(brevredigering.redigertBrev.sakspart.annenMottakerNavn)
-                .medSignerendeSaksbehandlere(brevredigering.redigertBrev.signatur),
-            redigertBrev = brevredigering.redigertBrev.withSakspart(dokumentDato = pesysData.felles.dokumentDato)
-                .toMarkup(),
-            alltidValgbareVedlegg = brevredigering.valgteVedlegg ?: emptyList(),
-        )
-
-        return transaction {
-            val update: Document.() -> Unit = {
-                this.brevredigering = BrevredigeringEntity[brevredigering.info.id]
-                this.pdf = pdf.file
-                this.dokumentDato = pesysData.felles.dokumentDato
-                this.redigertBrevHash = brevredigering.redigertBrevHash
-                this.brevdataHash = brevdataHash
-            }
-            Document.findSingleByAndUpdate(DocumentTable.brevredigering eq brevredigering.info.id, update)?.pdf
-                ?: Document.new(update).pdf
-        }
-    }
-
     private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
         if (this == null) {
             return
@@ -461,14 +380,6 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
     } else this
 }
 
-private fun Document.toDto(): Dto.Document =
-    Dto.Document(
-        brevredigeringId = brevredigering.id.value,
-        dokumentDato = dokumentDato,
-        pdf = pdf,
-        redigertBrevHash = redigertBrevHash,
-        brevdataHash = brevdataHash
-    )
 
 private fun BrevredigeringEntity.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true

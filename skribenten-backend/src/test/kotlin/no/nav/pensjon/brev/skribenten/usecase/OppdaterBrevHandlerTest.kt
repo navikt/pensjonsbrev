@@ -116,8 +116,8 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
     suspend fun `brev kan ikke endres om det er arkivert`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
-        veksleKlarStatus(brev, klar = true).resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, klar = true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
             JournalpostId(991),

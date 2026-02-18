@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -222,6 +223,7 @@ private fun createFacade(
     endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
+    hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Api.PdfResponse> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
@@ -234,6 +236,7 @@ private fun createFacade(
         endreMottaker = endreMottaker,
         reserverBrev = reserverBrev,
         brevreservasjonPolicy = brevreservasjonPolicy,
+        hentEllerOpprettPdf = hentEllerOpprettPdf,
     )
 }
 

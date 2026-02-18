@@ -5,11 +5,10 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import org.jetbrains.exposed.v1.core.eq
@@ -26,6 +25,7 @@ class BrevredigeringFacade(
     private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering>,
     private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Api.PdfResponse>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
@@ -65,6 +65,9 @@ class BrevredigeringFacade(
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
             reserverBrev.handle(request)?.onError { rollback() }
         }
+
+    suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Api.PdfResponse, BrevredigeringError>? =
+        hentEllerOpprettPdf.runHandler(request)
 
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {

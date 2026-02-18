@@ -15,10 +15,10 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
@@ -258,15 +258,15 @@ class BrevredigeringServiceTest {
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
-        penService = penService,
-        p1Service = FakeP1Service()
+        penService = penService
     )
 
     private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevbakerService = brevbakerService,
         penService = penService,
         samhandlerService = FakeSamhandlerService(),
-        navansattService = navAnsattService
+        navansattService = navAnsattService,
+        p1Service = FakeP1Service()
     )
 
     private val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
@@ -287,32 +287,6 @@ class BrevredigeringServiceTest {
 
         penService.pesysBrevdata = brevdataResponseData
         penService.sendBrevResponse = bestillBrevresponse
-    }
-
-    @Test
-    fun `brev must belong to provided saksId`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(
-                brevredigeringService.hentEllerOpprettPdf(
-                    saksId = SaksId(sak1.saksId.id + 1),
-                    brevId = brev.info.id,
-                )
-            ).isNull()
-
-            // Må generere pdf nå, slik at sendBrev ikke returnerer null pga. manglende dokument
-            brevredigeringService.hentEllerOpprettPdf(
-                saksId = sak1.saksId,
-                brevId = brev.info.id,
-            )
-            assertThat(
-                brevredigeringService.sendBrev(
-                    saksId = SaksId(sak1.saksId.id + 1),
-                    brevId = brev.info.id
-                )
-            ).isNull()
-            assertThat(brevredigeringService.slettBrev(saksId = SaksId(sak1.saksId.id + 1), brevId = brev.info.id)).isFalse()
-        }
     }
 
     @Test
@@ -364,19 +338,23 @@ class BrevredigeringServiceTest {
 
         transaction {
             assertThat(BrevredigeringEntity[brev.info.id].document).isEmpty()
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
+            assertThat(DocumentEntity.find { DocumentTable.brevredigering.eq(brev.info.id) }).isEmpty()
         }
 
         assertThat(
             withPrincipal(saksbehandler1Principal) {
-                brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+                brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
             }
-        ).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
+        ).isSuccess {
+            assertThat(it).isEqualTo(Api.PdfResponse(pdf = stagetPDF, rendretBrevErEndret = false))
+        }
+
+
 
         transaction {
             val brevredigering = BrevredigeringEntity[brev.info.id]
             assertThat(brevredigering.document).hasSize(1)
-            assertThat(Document.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
+            assertThat(DocumentEntity.find { DocumentTable.brevredigering.eq(brev.info.id) }).hasSize(1)
             assertThat(brevredigering.document.first().pdf).isEqualTo(stagetPDF)
         }
     }
@@ -385,15 +363,17 @@ class BrevredigeringServiceTest {
     fun `sletter relaterte documents ved sletting av brevredigering`(): Unit = runBlocking {
         val brev = opprettBrev()
 
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-        }
-        transaction { assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
+        assertThat(
+            withPrincipal(saksbehandler1Principal) {
+                brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            }
+        ).isSuccess()
+        transaction { assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1) }
 
         brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)
         transaction {
             assertThat(BrevredigeringEntity.findById(brev.info.id)).isNull()
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
+            assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(0)
         }
     }
 
@@ -404,15 +384,12 @@ class BrevredigeringServiceTest {
         awaitAll(*(0..<10).map {
             async(Dispatchers.IO) {
                 withPrincipal(saksbehandler1Principal) {
-                    brevredigeringService.hentEllerOpprettPdf(
-                        sak1.saksId,
-                        brev.info.id,
-                    )
+                    brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
                 }
             }
         }.toTypedArray())
         transaction {
-            assertThat(Document.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
+            assertThat(DocumentEntity.find { DocumentTable.brevredigering eq brev.info.id }).hasSize(1)
         }
     }
 
@@ -421,11 +398,11 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
             transaction { BrevredigeringEntity[brev.info.id].document.first().delete() }
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
             assertThat(firstHash).isEqualTo(secondHash)
@@ -437,7 +414,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
         }
         val firstHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
@@ -446,7 +423,7 @@ class BrevredigeringServiceTest {
                 letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "blue pill")))).toEdit()
         }
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
         }
         val secondHash = transaction { BrevredigeringEntity[brev.info.id].document.first().redigertBrevHash }
 
@@ -458,8 +435,9 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            val response = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-            assertThat(response).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess {
+                assertThat(it).isEqualTo(Api.PdfResponse(stagetPDF, rendretBrevErEndret = false))
+            }
         }
     }
 
@@ -469,7 +447,7 @@ class BrevredigeringServiceTest {
         stagePdf("min første pdf".encodeToByteArray())
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
 
             transaction {
                 BrevredigeringEntity[brev.info.id].redigertBrev =
@@ -477,9 +455,9 @@ class BrevredigeringServiceTest {
             }
 
             stagePdf("min andre pdf".encodeToByteArray())
-            val pdf = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
-
-            assertThat(pdf).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess {
+                assertThat(it).isEqualTo(Api.PdfResponse("min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+            }
         }
     }
 
@@ -488,14 +466,16 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             stagePdf("min andre pdf".encodeToByteArray())
             penService.pesysBrevdata = brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             assertThat(first).isNotEqualTo(second)
-            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+            assertThat(second).isSuccess {
+                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+            }
         }
     }
 
@@ -504,7 +484,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             stagePdf("min andre pdf".encodeToByteArray())
             brevbakerService.renderMarkupResultat = {
@@ -516,10 +496,12 @@ class BrevredigeringServiceTest {
             }
             penService.pesysBrevdata =
                 brevdataResponseData.copy(brevdata = Api.GeneriskBrevdata().also { it["a"] = "b" })
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             assertThat(first).isNotEqualTo(second)
-            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+            assertThat(second).isSuccess {
+                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = true))
+            }
         }
     }
 
@@ -528,7 +510,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
 
             stagePdf("min andre pdf".encodeToByteArray())
             penService.pesysBrevdata = brevdataResponseData.copy(
@@ -537,10 +519,12 @@ class BrevredigeringServiceTest {
                     saksnummer = sak1.saksId.toString(),
                 )
             )
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             assertThat(brevbakerService.renderPdfKall.last().sakspart.dokumentDato).isEqualTo(penService.pesysBrevdata!!.felles.dokumentDato)
-            assertThat(second).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+            assertThat(second).isSuccess {
+                assertThat(it).isEqualTo(Api.PdfResponse(pdf = "min andre pdf".encodeToByteArray(), rendretBrevErEndret = false))
+            }
         }
     }
 
@@ -549,10 +533,10 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
             stagePdf("min første pdf".encodeToByteArray())
-            val first = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val first = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             stagePdf("min andre pdf".encodeToByteArray())
-            val second = brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            val second = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
 
             assertThat(first).isEqualTo(second)
         }
@@ -569,7 +553,7 @@ class BrevredigeringServiceTest {
         val attesteringsResultat = withPrincipal(attestantPrincipal) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
         }
         assertThat(attesteringsResultat?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
@@ -588,7 +572,7 @@ class BrevredigeringServiceTest {
         withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             assertThrows<HarIkkeAttestantrolleException> {
                 brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
             }
@@ -605,7 +589,7 @@ class BrevredigeringServiceTest {
             vedtaksId = VedtaksId(1),
         )
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
 
@@ -631,7 +615,7 @@ class BrevredigeringServiceTest {
 
         withPrincipal(attestantPrincipal) {
             brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
         }
         assertEquals(brevbakerService.renderPdfKall.first().signatur.attesterendeSaksbehandlerNavn, attestantPrincipal.fullName)
@@ -651,7 +635,7 @@ class BrevredigeringServiceTest {
         withPrincipal(saksbehandler1Principal) {
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
@@ -693,7 +677,7 @@ class BrevredigeringServiceTest {
                     )
                 )
             ).isSuccess()
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)!!
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
         }
 
@@ -718,8 +702,10 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev(reserverForRedigering = true)
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
-            assertThat(pdf).isNotNull()
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess { pdf ->
+                assertThat(pdf).isNotNull()
+            }
+
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
         }
@@ -741,7 +727,7 @@ class BrevredigeringServiceTest {
     fun `kan ikke sende brev som ikke er markert klar til sending`(): Unit = runBlocking {
         val brev = opprettBrev()
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
         }
 
         assertThrows<BrevIkkeKlartTilSendingException> {
@@ -754,7 +740,7 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             brevredigeringFacade.oppdaterBrev(
                 OppdaterBrevHandler.Request(
                     brevId = brev.info.id,
@@ -782,8 +768,9 @@ class BrevredigeringServiceTest {
         val brev = opprettBrev()
 
         withPrincipal(saksbehandler1Principal) {
-            val pdf = brevredigeringService.hentEllerOpprettPdf(brev.info.saksId, brev.info.id)
-            assertThat(pdf).isNotNull()
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess { pdf ->
+                assertThat(pdf).isNotNull()
+            }
         }
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
@@ -846,7 +833,7 @@ class BrevredigeringServiceTest {
         val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker)
         withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.hentEllerOpprettPdf(sak1.saksId, brev.info.id)
+            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
                 .isSuccess()
         }
