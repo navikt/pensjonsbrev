@@ -5,15 +5,13 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -30,7 +28,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -2133,93 +2130,17 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
             }
-            title1 {
-                text (
-                    bokmal { + "Du må melde fra om endringer" },
-                    nynorsk { + "Du må melde frå om endringar" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om." },
-                    nynorsk { + "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om." },
-                )
-            }
-            title1 {
-                text(
-                    bokmal { + "Du har rett til å klage " },
-                    nynorsk { + "Du har rett til å klage " },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. " +
-                            "I vedlegget " },
-                    nynorsk { + "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
-                            "I vedlegget " },
-                )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
-                text(
-                    bokmal { + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL. " },
-                    nynorsk { + " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL. " },
-                )
-            }
-
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl")){
-                paragraph {
-                    text (
-                        bokmal { + "Du kan sende klagen direkte til Nav eller gjennom " + fritekst("utenlandsk trygdemyndighet") + "." },
-                        nynorsk { + "Du kan sende klaga direkte til Nav eller gjennom " + fritekst("utenlandsk trygdemyndighet") + "." },
-                    )
-                }
-            }
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-            title1 {
-                text (
-                    bokmal { + "Sjekk utbetalingene dine" },
-                    nynorsk { + "Sjekk utbetalingane dine" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Se alle utbetalinger du har mottatt: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
-                    nynorsk { + "Du får uføretrygd betalt ut den 20. kvar månad eller seinast siste vyrkedag før denne datoen. Sjå alle utbetalingar du har fått: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
-                )
-            }
-            title1 {
-                text (
-                    bokmal { + "Skattekort" },
-                    nynorsk { + "Skattekort" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Uføretrygd skattlegges som lønnsinntekt. Du trenger ikke levere skattekortet ditt til Nav fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten. Du bør likevel sjekke at du har riktig skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalget «uføretrygd» når du logger deg inn på $NAV_URL, kan du se hvilket skattetrekk som er registrert hos Nav." },
-                    nynorsk { + "Uføretrygd blir skattlagd som lønsinntekt. Du treng ikkje levere skattekortet ditt til Nav, fordi skatteopplysningane dine blir sende elektronisk frå Skatteetaten. Du bør likevel sjekke at du har rett skattekort. Skattekortet kan du endre på $SKATTEETATEN_URL. Under menyvalet «uføretrygd» når du logger deg inn på $NAV_URL, kan du sjå kva skattetrekk som er registrert hos Nav." },
-                )
-            }
-
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_bo_utl")){
-                //[TBU1229EN, TBU1229, TBU1229NN]
-
-                paragraph {
-                    text (
-                        bokmal { + "Skatt for deg som bor i utlandet" },
-                        nynorsk { + "Skatt for deg som bur i utlandet" },
-                    )
-                    text (
-                        bokmal { + "Selv om du ikke er bosatt i Norge, men får norsk uføretrygd, må du som hovedregel betale kildeskatt til Norge. Nav vil trekke 15 prosent kildeskatt av uføretrygden din. Du må selv ta kontakt med Skatteetaten dersom du skal søke om skattefritak fra Norge, eller nytt skattekort. Mer informasjon om kildeskatt får du på $SKATTEETATEN_URL." },
-                        nynorsk { + "Sjølv om du ikkje er busett i Noreg, men får norsk uføretrygd, må du som hovudregel betale kjeldeskatt til Noreg. Nav vil trekkje 15 prosent kjeldeskatt av uføretrygda di. Du må sjølv ta kontakt med Skatteetaten dersom du skal søkje om skattefritak frå Noreg eller nytt skattekort. Meir informasjon om kjeldeskatt får du på $SKATTEETATEN_URL." },
-                    )
-                }
-            }
+            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
+            includePhrase(Ufoeretrygd.Skattekort)
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.orienteringOmRettigheterUfoere)
     }
 }
