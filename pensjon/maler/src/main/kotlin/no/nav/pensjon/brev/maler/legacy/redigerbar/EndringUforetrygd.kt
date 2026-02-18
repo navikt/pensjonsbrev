@@ -166,7 +166,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 paragraph {
                     text(
                         bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører fra " + onsketvirkningsdato.format() + " for barn født " + fritekst("fødselsdato barnet/barna") + "." },
-                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di frå " + onsketvirkningsdato.format() + " for barn fødd " + fritekst("fødselsdato barnet/barna") + "."  },
+                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di frå " + onsketvirkningsdato.format() + " for barn fødd " + fritekst("fødselsdato barnet/barna") + "." },
                     )
                 }
             }
@@ -869,8 +869,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { +"Vi har opphørt barnetillegget i uføretrygden din for barn født " + fritekst("fødselsdato barnet/barna") + "."  },
-                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda for barn fødd " + fritekst("fødselsdato barnet/barna") + "."  },
+                        bokmal { +"Vi har opphørt barnetillegget i uføretrygden din for barn født " + fritekst("fødselsdato barnet/barna") + "." },
+                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda for barn fødd " + fritekst("fødselsdato barnet/barna") + "." },
                     )
                 }
 
