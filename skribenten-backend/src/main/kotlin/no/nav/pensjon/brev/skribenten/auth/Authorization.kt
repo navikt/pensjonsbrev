@@ -91,7 +91,9 @@ class InvalidAuthorization(msg: String, cause: Throwable? = null) : Exception(ms
 class MissingClaimException(msg: String) : UnauthorizedException(msg)
 
 @JvmInline
-value class UserAccessToken(val token: String)
+value class UserAccessToken(val token: String) {
+    override fun toString() = token
+}
 
 interface UserPrincipal {
     val accessToken: UserAccessToken
