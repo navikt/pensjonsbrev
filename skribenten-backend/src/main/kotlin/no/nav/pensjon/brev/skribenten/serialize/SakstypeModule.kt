@@ -13,4 +13,6 @@ object SakstypeModule : SimpleModule() {
 }
 
 @JvmInline
-value class Sakstype(override val kode: String) : ISakstype
+value class Sakstype(override val kode: String) : ISakstype {
+    override fun toString() = kode
+}

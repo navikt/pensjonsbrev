@@ -4,7 +4,9 @@ import com.typesafe.config.Config
 import kotlin.reflect.KProperty
 
 @JvmInline
-value class ADGroup(val id: String)
+value class ADGroup(val id: String) {
+    override fun toString() = id
+}
 
 object ADGroups {
     var pensjonUtland: ADGroup by LateinitStringBackingField()

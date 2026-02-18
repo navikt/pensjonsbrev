@@ -207,6 +207,8 @@ value class NorskPostnummer(val value: String) {
         "Norske postnummer skal være fire siffer, men dette var ${value.length}: $value"
     }
 
+    override fun toString() = value
+
     companion object {
         private val regex = Regex("^[0-9]{4}$")
     }
