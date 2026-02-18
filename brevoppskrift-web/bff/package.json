@@ -21,6 +21,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.2",
     "@types/express": "5.0.6",
+    "lint-staged": "16.2.7",
     "typescript": "5.9.3"
   }
 }

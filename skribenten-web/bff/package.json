@@ -28,6 +28,7 @@
     "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
     "@types/morgan": "^1.9.10",
+    "lint-staged": "16.2.7",
     "typescript": "5.9.3"
   }
 }
