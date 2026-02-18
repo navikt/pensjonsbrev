@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPE
 
 fun createEndringUfoeretrygdDto() =
@@ -26,9 +27,9 @@ fun createEndringUfoeretrygdDto() =
                 barn_flyttet_ikke_avt_land = true,
                 barn_opph_ikke_avt_land = true,
             ),
-            fodselsdatobarn = "01.01.2020",
             antallBarnOpphor = 1,
 
-            maanedligUfoeretrygdFoerSkatt = null
+            maanedligUfoeretrygdFoerSkatt = null,
+            orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()
         ),
     )

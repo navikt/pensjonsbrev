@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPE
 
 fun createInnvilgelseUfoeretrygdDto() =
@@ -11,6 +12,7 @@ fun createInnvilgelseUfoeretrygdDto() =
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPE(),
-            maanedligUfoeretrygdFoerSkatt = null
+            maanedligUfoeretrygdFoerSkatt = null,
+            createOrienteringOmRettigheterUfoereDto()
         ),
     )
