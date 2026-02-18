@@ -1,0 +1,678 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= Brevmal-DSL: Beste praksis
+
+Dette dokumentet beskriver anbefalte mønstre og vanlige fallgruver ved utvikling av brevmaler.
+
+== Generelle prinsipper
+
+=== Skriv for mennesker, ikke maskiner
+
+Brev skal være lett å forstå for mottakeren. Prioriter:
+
+* **Tydelig språk** - Unngå fagsjargong og kompliserte setninger
+* **Logisk struktur** - Grupper relatert informasjon sammen
+* **Visuell oversikt** - Bruk overskrifter, lister og tabeller for å gjøre innholdet lett å skanne
+
+=== Hold maler enkle
+
+* Hver mal bør ha ett klart formål
+* Begrens kompleksiteten - trekk ut kompleks logikk i fraser
+* Hvis en mal blir over 300 linjer, vurder å dele opp innholdet
+
+=== Tenk på vedlikehold
+
+Kode skrives én gang, men leses mange ganger. Gjør det lett for neste utvikler:
+
+* Bruk beskrivende variabelnavn
+* Kommenter kompleks logikk
+* Organiser fraser i logiske grupper
+* Dokumenter spesielle krav eller edge cases
+
+== Datamodell-design
+
+=== Bruk non-nullable for påkrevde verdier
+
+[source,kotlin]
+----
+// ✅ Bra - uforegrad er påkrevd for brevet
+data class UforetrygdDto(
+    val uforegrad: Int,  // Ikke nullable - brevet krever denne verdien
+    val virkningFom: LocalDate
+)
+
+// ❌ Dårlig - unødvendig nullable verdi
+data class UforetrygdDto(
+    val uforegrad: Int?,  // Nullable selv om brevet alltid trenger den
+    val virkningFom: LocalDate?
+)
+----
+
+=== Grupper relaterte felter
+
+Hvis felt A kun er relevant når felt B har en verdi, grupper dem i en nøstet dataklasse:
+
+[source,kotlin]
+----
+// ✅ Bra - barnetilleggsdata er gruppert
+data class UforetrygdDto(
+    val uforegrad: Int,
+    val barnetillegg: Barnetillegg?
+) {
+    data class Barnetillegg(
+        val maanedligBeloep: Kroner,
+        val barn: List<Barn>,
+        val fradrag: Kroner
+    )
+}
+
+// ❌ Dårlig - flate nullable felt
+data class UforetrygdDto(
+    val uforegrad: Int,
+    val barnetilleggBeloep: Kroner?,
+    val barnetilleggBarn: List<Barn>?,
+    val barnetilleggFradrag: Kroner?
+)
+----
+
+Dette gjør det tydeligere i koden når barnetillegg er relevant:
+
+[source,kotlin]
+----
+// Med gruppert struktur
+ifNotNull(barnetillegg) { bt ->
+    // Her vet vi at alle barnetilleggsdata finnes
+    paragraph {
+        text(bokmal { +"Barnetillegg: " + bt.maanedligBeloep.format() })
+    }
+}
+
+// Med flat struktur - må sjekke alle feltene
+ifNotNull(barnetilleggBeloep, barnetilleggBarn, barnetilleggFradrag) { beloep, barn, fradrag ->
+    // Upraktisk og feilutsatt
+}
+----
+
+=== Bruk passende typer
+
+[source,kotlin]
+----
+// ✅ Bra - bruker domenespesifikke typer
+data class UforetrygdDto(
+    val beloep: Kroner,           // Ikke Int
+    val dato: LocalDate,          // Ikke String
+    val sivilstand: Sivilstand    // Ikke String
+)
+
+// ❌ Dårlig - primitive typer
+data class UforetrygdDto(
+    val beloep: Int,              // Mangler kontekst
+    val dato: String,             // Må parses
+    val sivilstand: String        // Ingen typesikkerhet
+)
+----
+
+== Teksthåndtering
+
+=== Bruk text { } for moderne syntaks
+
+Den nyere syntaks-en med text-builder er mer lesbar:
+
+[source,kotlin]
+----
+// ✅ Bra - moderne syntaks
+text(
+    bokmal {
+        +"Du får "
+        +beloep.format()
+        +" kroner per måned."
+    },
+    nynorsk {
+        +"Du får "
+        +beloep.format()
+        +" kroner per månad."
+    }
+)
+
+// ⚠️ Fungerer, men mindre lesbart
+textExpr(
+    bokmal { +"Du får " + beloep.format() + " kroner per måned." },
+    nynorsk { +"Du får " + beloep.format() + " kroner per månad." }
+)
+----
+
+=== Unngå repetisjon av tekst
+
+[source,kotlin]
+----
+// ✅ Bra - gjenbrukbar frase
+includePhrase(Felles.RettTilAKlage)
+includePhrase(Felles.HarDuSporsmal)
+
+// ❌ Dårlig - kopiert tekst i hver mal
+paragraph {
+    text(
+        bokmal { +"Du har rett til å klage på dette vedtaket innen 6 uker..." },
+        nynorsk { +"Du har rett til å klage på dette vedtaket innan 6 veker..." }
+    )
+}
+----
+
+=== Bruk quoted() for sitattegn
+
+[source,kotlin]
+----
+// ✅ Bra - språkriktige anførselstegn
+text(
+    bokmal {
+        +"Vi viser til "
+        +"folketrygdloven".quoted()
+        +"."
+    }
+)
+// Resultat: Vi viser til «folketrygdloven».
+
+// ❌ Dårlig - manuelle anførselstegn
+text(bokmal { +"Vi viser til «folketrygdloven»." })
+----
+
+== Betinget logikk
+
+=== Bruk orShow i stedet for separate showIf-blokker
+
+Gjør det tydelig at betingelsene er gjensidig utelukkende:
+
+[source,kotlin]
+----
+// ✅ Bra - tydelig if/else-struktur
+showIf(borINorge) {
+    paragraph {
+        text(bokmal { +"Utbetaling den 20. hver måned." })
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Utbetaling til utenlandsk konto." })
+    }
+}
+
+// ❌ Dårlig - uklart at det er if/else
+showIf(borINorge) {
+    paragraph {
+        text(bokmal { +"Utbetaling den 20. hver måned." })
+    }
+}
+showIf(not(borINorge)) {
+    paragraph {
+        text(bokmal { +"Utbetaling til utenlandsk konto." })
+    }
+}
+----
+
+=== Trekk ut komplekse betingelser til variabler
+
+Gi betingelser beskrivende navn:
+
+[source,kotlin]
+----
+// ✅ Bra - lesbar betingelse med navn
+val harBarnetillegg = barnetilleggSerkull or barnetilleggFelles
+val ingenTillegg = not(harBarnetillegg) and not(ektefelletillegg)
+
+showIf(ingenTillegg) {
+    paragraph {
+        text(bokmal { +"Du får " + totalNetto.format() + " per måned." })
+    }
+}
+
+// ❌ Dårlig - uleselig inline betingelse
+showIf(
+    not(barnetilleggSerkull) and
+    not(barnetilleggFelles) and
+    not(ektefelletillegg) and
+    not(gjenlevendetillegg)
+) {
+    // Hva betyr egentlig denne betingelsen?
+}
+----
+
+=== Bruk isOneOf for enum-sjekker
+
+[source,kotlin]
+----
+// ✅ Bra - kortfattet og lesbart
+showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.REGISTRERT_PARTNER)) {
+    text(bokmal { +"Du er gift eller registrert partner" })
+}
+
+// ❌ Dårlig - unødvendig verbose
+showIf(
+    sivilstand.equalTo(Sivilstand.GIFT) or
+    sivilstand.equalTo(Sivilstand.REGISTRERT_PARTNER)
+) {
+    text(bokmal { +"Du er gift eller registrert partner" })
+}
+----
+
+=== Bruk ifNotNull i stedet for manuell null-sjekk
+
+[source,kotlin]
+----
+// ✅ Bra - trygt og gir tilgang til utpakket verdi
+ifNotNull(avtaleland) { land ->
+    text(bokmal { +"Avtalen med " + land })
+}
+
+// ❌ Dårlig - risikerer feil
+showIf(avtaleland.notNull()) {
+    // Må fortsatt håndtere nullable verdi
+    text(bokmal { +"Avtalen med " + avtaleland.ifNull("".expr()) })
+}
+----
+
+=== Unngå dyp nøsting
+
+[source,kotlin]
+----
+// ❌ Dårlig - dyp nøsting som er vanskelig å lese
+ifNotNull(a) { a ->
+    ifNotNull(b) { b ->
+        ifNotNull(c) { c ->
+            ifNotNull(d) { d ->
+                paragraph {
+                    text(bokmal { +a + b + c + d })
+                }
+            }
+        }
+    }
+}
+
+// ✅ Bedre - multi-parameter ifNotNull
+ifNotNull(a, b) { a, b ->
+    ifNotNull(c, d) { c, d ->
+        paragraph {
+            text(bokmal { +a + b + c + d })
+        }
+    }
+}
+
+// ✅ Enda bedre - grupper data i modellen
+data class Data(
+    val gruppe1: Gruppe1?,
+    val gruppe2: Gruppe2?
+) {
+    data class Gruppe1(val a: String, val b: String)
+    data class Gruppe2(val c: String, val d: String)
+}
+
+ifNotNull(gruppe1, gruppe2) { g1, g2 ->
+    paragraph {
+        text(bokmal { +g1.a + g1.b + g2.c + g2.d })
+    }
+}
+----
+
+== Fraser
+
+=== Organiser fraser logisk
+
+[source]
+----
+fraser/
+├── common/
+│   ├── Felles.kt              # Generiske fraser (klage, kontakt, etc.)
+│   ├── Lovhenvisninger.kt     # Standardreferanser til lover
+│   └── Constants.kt           # URL-er og konstanter
+├── uforetrygd/
+│   ├── BeregningFraser.kt     # Beregningsforklaringer
+│   └── VilkaarFraser.kt       # Vilkårsbeskrivelser
+└── barnetillegg/
+    └── BarnetilleggFraser.kt  # Barnetillegg-spesifikke fraser
+----
+
+=== Lag parametriserte fraser
+
+I stedet for mange varianter av samme frase, lag én parametrisert frase:
+
+[source,kotlin]
+----
+// ✅ Bra - én parametrisert frase
+data class UtbetalingsInfo(
+    val beloep: Expression<Kroner>,
+    val utbetalingsdato: Expression<Int>
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        paragraph {
+            text(
+                bokmal {
+                    +"Du får utbetalt "
+                    +beloep.format()
+                    +" kroner den "
+                    +utbetalingsdato.format()
+                    +". hver måned."
+                }
+            )
+        }
+    }
+}
+
+// ❌ Dårlig - mange spesialiserte fraser
+object Utbetaling20 : OutlinePhrase<...>() { ... }
+object Utbetaling21 : OutlinePhrase<...>() { ... }
+object UtbetalingUtland : OutlinePhrase<...>() { ... }
+----
+
+=== Bruk riktig frase-type
+
+[cols="1,2,3"]
+|===
+|Type |Brukes i |Kan inneholde
+
+|`TextOnlyPhrase`
+|Inne i tekst-blokker
+|Kun tekst og inline-elementer
+
+|`ParagraphPhrase`
+|Inne i avsnitt
+|Tekst, lister, tabeller
+
+|`OutlinePhrase`
+|På outline-nivå
+|Avsnitt, overskrifter
+|===
+
+[source,kotlin]
+----
+// ✅ Bra - riktig type for bruk
+data class Overskrift(...) : OutlinePhrase<...>() {
+    override fun OutlineOnlyScope<...>.template() {
+        title1 { text(...) }
+        paragraph { text(...) }
+    }
+}
+
+// ❌ Dårlig - feil type
+data class Overskrift(...) : ParagraphPhrase<...>() {
+    // Kan ikke bruke title1 her!
+}
+----
+
+== Tabeller
+
+=== Høyrejuster tallkolonner
+
+[source,kotlin]
+----
+// ✅ Bra - tall er høyrejustert
+table(
+    header = {
+        column { text(bokmal { +"Beskrivelse" }) }
+        column(alignment = ColumnAlignment.RIGHT) {
+            text(bokmal { +"Beløp" })
+        }
+    }
+) {
+    // ...
+}
+----
+
+=== Bruk columnSpan for proporsjoner
+
+[source,kotlin]
+----
+// ✅ Bra - første kolonne får dobbel bredde
+table(
+    header = {
+        column(columnSpan = 2) {  // 2/3 av plassen
+            text(bokmal { +"Beskrivelse" })
+        }
+        column(columnSpan = 1) {  // 1/3 av plassen
+            text(bokmal { +"Beløp" })
+        }
+    }
+) {
+    // ...
+}
+----
+
+=== Bruk fet skrift i header
+
+[source,kotlin]
+----
+// ✅ Bra - tydelig header
+column {
+    text(bokmal { +"Måned" }, FontType.BOLD)
+}
+
+// ❌ Dårlig - header ser ut som innhold
+column {
+    text(bokmal { +"Måned" })
+}
+----
+
+== Testing
+
+=== Test alle betingelsesgrener
+
+[source,kotlin]
+----
+@Test
+fun `test med barnetillegg`() {
+    val dto = createDto(harBarnetillegg = true)
+    val result = MittBrev.render(dto, Bokmal)
+    assertThat(result).contains("Barnetillegg")
+}
+
+@Test
+fun `test uten barnetillegg`() {
+    val dto = createDto(harBarnetillegg = false)
+    val result = MittBrev.render(dto, Bokmal)
+    assertThat(result).doesNotContain("Barnetillegg")
+}
+----
+
+=== Test nullable verdier
+
+[source,kotlin]
+----
+@Test
+fun `test med avtaleland`() {
+    val dto = createDto(avtaleland = "Sverige")
+    val result = MittBrev.render(dto, Bokmal)
+    assertThat(result).contains("trygdeavtalen med Sverige")
+}
+
+@Test
+fun `test uten avtaleland`() {
+    val dto = createDto(avtaleland = null)
+    val result = MittBrev.render(dto, Bokmal)
+    assertThat(result).doesNotContain("trygdeavtalen")
+}
+----
+
+=== Test tomme lister
+
+[source,kotlin]
+----
+@Test
+fun `test med tom liste`() {
+    val dto = createDto(perioder = emptyList())
+    val result = MittBrev.render(dto, Bokmal)
+    // Verifiser at brevet håndterer tom liste riktig
+}
+
+@Test
+fun `test med flere elementer`() {
+    val dto = createDto(perioder = listOf(periode1, periode2, periode3))
+    val result = MittBrev.render(dto, Bokmal)
+    // Verifiser at alle elementene vises
+}
+----
+
+=== Test alle språk
+
+[source,kotlin]
+----
+@ParameterizedTest
+@EnumSource(Language::class)
+fun `test alle språk`(language: Language) {
+    val dto = createDto()
+    val result = MittBrev.render(dto, language)
+
+    // Verifiser grunnleggende struktur
+    assertThat(result).isNotEmpty()
+    assertThat(result).doesNotContain("null")
+}
+----
+
+== Anti-patterns
+
+=== ❌ Vanlig Kotlin if/else for brevlogikk
+
+IMPORTANT: Dette er en av de vanligste feilene!
+
+[source,kotlin]
+----
+// ❌ FEIL - evalueres ved kompilering, ikke ved brevgenerering!
+val tekst = if (enExpression.equals(true)) {
+    "ja"
+} else {
+    "nei"
+}
+
+// ✅ RIKTIG - bruk DSL-uttrykk
+val tekst = ifElse(enExpression, "ja".expr(), "nei".expr())
+
+// Eller enda bedre - bruk showIf for visning
+showIf(enExpression) {
+    text(bokmal { +"ja" })
+}.orShow {
+    text(bokmal { +"nei" })
+}
+----
+
+**Hvorfor feiler vanlig if/else?**
+
+Vanlig Kotlin `if/else` evaluerer `Expression`-objekter ved kompilering. Den sjekker om objektreferansene er like, ikke verdiene de representerer ved kjøretid.
+
+=== ❌ Dupliserte showIf-betingelser
+
+[source,kotlin]
+----
+// ❌ Dårlig - ytre og indre showIf har samme betingelse
+showIf(harBarnetillegg) {
+    paragraph {
+        showIf(harBarnetillegg) {  // Redundant!
+            text(bokmal { +"Du har barnetillegg." })
+        }
+    }
+}
+
+// ✅ Bra - ingen redundans
+showIf(harBarnetillegg) {
+    paragraph {
+        text(bokmal { +"Du har barnetillegg." })
+    }
+}
+----
+
+=== ❌ Ustrukturert flat logikk
+
+[source,kotlin]
+----
+// ❌ Dårlig - mange uavhengige showIf etter hverandre
+showIf(betingelse1) { paragraph { text(...) } }
+showIf(betingelse2) { paragraph { text(...) } }
+showIf(betingelse3) { paragraph { text(...) } }
+showIf(betingelse4) { paragraph { text(...) } }
+showIf(betingelse5) { paragraph { text(...) } }
+
+// ✅ Bedre - grupper relatert logikk
+title1 { text(Bokmal to "Yrkesskade") }
+showIf(harYrkesskade) {
+    includePhrase(YrkesskadeInfo(yrkesskadegrad, resultat))
+}
+
+title1 { text(Bokmal to "Barnetillegg") }
+showIf(harBarnetillegg) {
+    includePhrase(BarnetilleggInfo(barnetilleggData))
+}
+----
+
+=== ❌ Forretningslogikk i maler
+
+[source,kotlin]
+----
+// ❌ FEIL - forretningslogikk hører ikke hjemme i malen
+val nettoBeloep = bruttoBeloep - fradrag - skatt
+
+// ✅ RIKTIG - beregn i DTO eller service-lag
+data class BeregningDto(
+    val bruttoBeloep: Kroner,
+    val fradrag: Kroner,
+    val skatt: Kroner,
+    val nettoBeloep: Kroner  // Forhåndsberegnet
+)
+----
+
+=== ❌ Hard-kodede URL-er og tekster
+
+[source,kotlin]
+----
+// ❌ Dårlig - hard-kodet URL
+text(Bokmal to "Les mer på https://nav.no/uforetrygd")
+
+// ✅ Bedre - URL i konstant
+object Constants {
+    val URL_UFORETRYGD = "https://nav.no/uforetrygd".expr()
+}
+
+text(bokmal { +"Les mer på " + Constants.URL_UFORETRYGD })
+
+// ✅ Enda bedre - i frase
+includePhrase(Felles.LesMerOmUforetrygd)
+----
+
+=== ❌ Unødvendig komplekse Expression-operasjoner
+
+[source,kotlin]
+----
+// ❌ Dårlig - kompleks Expression-gymnastikk
+val tekst = streng1 + " " + streng2 + " " + streng3
+
+text(bokmal { +tekst })
+
+// ✅ Bedre - direkte i text-builder
+text(
+    bokmal {
+        +streng1
+        +" "
+        +streng2
+        +" "
+        +streng3
+    }
+)
+----
+
+== Sjekkliste for code review
+
+Når du reviewer brevmaler, sjekk:
+
+- [ ] Brukes `@TemplateModelHelpers`?
+- [ ] Er alle påkrevde språk implementert?
+- [ ] Brukes DSL-konstruksjoner (`showIf`, `ifElse`) i stedet for vanlig Kotlin?
+- [ ] Er nullable verdier håndtert med `ifNotNull`?
+- [ ] Er komplekse betingelser trukket ut til navngitte variabler?
+- [ ] Er gjenbrukbart innhold lagt i fraser?
+- [ ] Er tabeller korrekt formatert (header med fet skrift, tall høyrejustert)?
+- [ ] Er det tester for alle betingelsesgrener?
+- [ ] Er forretningslogikk lagt utenfor malen?
+- [ ] Er malen under 300 linjer, eller burde den deles opp?
+
+== Ytterligere ressurser
+
+* xref:brevbaker-dsl-referanse.adoc[DSL Referanse] - Komplett oversikt over elementer
+* xref:brevbaker-dsl-guide.adoc[Utviklingsguide] - Steg-for-steg eksempler
+* xref:brevbaker-dsl-avansert.adoc[Avanserte emner] - Fraser, vedlegg og kompleks logikk
+

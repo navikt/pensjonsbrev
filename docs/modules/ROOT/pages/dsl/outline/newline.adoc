@@ -1,0 +1,53 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= newline
+
+`newline` setter inn et linjeskift.
+
+== Syntaks
+
+[source,kotlin]
+----
+newline()
+----
+
+== Eksempel
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Første linje" })
+    newline()
+    text(bokmal { +"Andre linje" })
+}
+----
+
+== Bruk sparsomt
+
+NOTE: Bruk heller separate `paragraph`-blokker for å skille innhold. `newline` er kun for tilfeller der du trenger linjeskift innenfor samme avsnitt.
+
+[source,kotlin]
+----
+// Foretrukket - separate avsnitt
+paragraph {
+    text(bokmal { +"Første avsnitt" })
+}
+paragraph {
+    text(bokmal { +"Andre avsnitt" })
+}
+
+// Kun når nødvendig - newline i samme avsnitt
+paragraph {
+    text(bokmal { +"Linje 1" })
+    newline()
+    text(bokmal { +"Linje 2 (samme avsnitt)" })
+}
+----
+
+== Relaterte elementer
+
+* xref:dsl/outline/paragraph.adoc[paragraph] - Avsnitt
+* xref:dsl/outline/text.adoc[text] - Tekst
+

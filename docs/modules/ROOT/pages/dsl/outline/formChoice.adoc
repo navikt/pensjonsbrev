@@ -1,0 +1,43 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= formChoice
+
+`formChoice` definerer et flervalgsfelt for redigerbare brev.
+
+== Syntaks
+
+[source,kotlin]
+----
+formChoice {
+    text(
+        bokmal { +"Velg alternativ:" },
+        nynorsk { +"Vel alternativ:" },
+    )
+}
+----
+
+== Eksempel
+
+[source,kotlin]
+----
+paragraph {
+    formChoice {
+        text(
+            bokmal { +"Velg årsak:" },
+            nynorsk { +"Vel årsak:" },
+        )
+    }
+}
+----
+
+== Kun for redigerbare brev
+
+NOTE: `formChoice` kan kun brukes i `RedigerbarTemplate`.
+
+== Relaterte elementer
+
+* xref:dsl/outline/formText.adoc[formText] - Fritektsfelt
+* xref:dsl/letter-template/index.adoc[Letter Template] - Maltyper
+

@@ -1,0 +1,99 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= includeAttachment
+
+`includeAttachment` inkluderer et vedlegg i brevet.
+
+== Syntaks
+
+[source,kotlin]
+----
+includeAttachment(template, attachmentData)
+includeAttachment(template, attachmentData, predicate)
+----
+
+== Parametere
+
+[cols="2,3"]
+|===
+|Parameter |Beskrivelse
+
+|`template`
+|Vedleggsmalen som skal inkluderes
+
+|`attachmentData`
+|Data som sendes til vedlegget
+
+|`predicate`
+|Betingelse for inkludering (valgfri)
+|===
+
+== Eksempler
+
+=== Fast vedlegg
+
+Vedlegget inkluderes alltid:
+
+[source,kotlin]
+----
+createTemplate(...) {
+    title { ... }
+    outline { ... }
+
+    includeAttachment(beregningDetaljer, beregningsdata)
+}
+----
+
+=== Betinget vedlegg
+
+Vedlegget inkluderes kun hvis predicate er true:
+
+[source,kotlin]
+----
+includeAttachment(
+    template = yrkesskadeDetaljer,
+    attachmentData = yrkesskadeData,
+    predicate = harYrkesskade
+)
+----
+
+=== Flere vedlegg
+
+[source,kotlin]
+----
+createTemplate(...) {
+    title { ... }
+    outline { ... }
+
+    includeAttachment(vedlegg1, data1)
+    includeAttachment(vedlegg2, data2, predicate = visVedlegg2)
+    includeAttachment(vedlegg3, data3)
+}
+----
+
+== Plassering
+
+`includeAttachment` må plasseres på template-nivå, utenfor `outline`:
+
+[source,kotlin]
+----
+createTemplate(...) {
+    title { ... }
+
+    outline {
+        // Hovedinnhold
+    }
+
+    // Vedlegg kommer etter outline
+    includeAttachment(vedlegg, data)
+}
+----
+
+== Relaterte elementer
+
+* xref:dsl/attachment/includeAttachmentIfNotNull.adoc[includeAttachmentIfNotNull]
+* xref:dsl/attachment/index.adoc[Attachment] - Oversikt
+* xref:dsl/attachment-template/index.adoc[Attachment Template]
+

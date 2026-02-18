@@ -1,0 +1,92 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= Attachment
+
+Vedlegg er separate dokumenter som følger brevet. De har egen tittel og innhold.
+
+== Oversikt
+
+* xref:dsl/attachment/includeAttachment.adoc[includeAttachment] - Inkludere vedlegg i brev
+* xref:dsl/attachment/includeAttachmentIfNotNull.adoc[includeAttachmentIfNotNull] - Betinget inkludering
+* xref:dsl/attachment-template/index.adoc[Attachment Template] - Definere vedleggsmaler
+
+== Inkludere vedlegg
+
+=== Fast vedlegg
+
+[source,kotlin]
+----
+createTemplate(...) {
+    title { ... }
+    outline { ... }
+
+    includeAttachment(beregningDetaljer, beregningsdata)
+}
+----
+
+=== Betinget vedlegg
+
+[source,kotlin]
+----
+// Med predicate
+includeAttachment(
+    template = beregningDetaljer,
+    attachmentData = beregningsdata,
+    predicate = harKompleksBeregning
+)
+
+// Basert på nullable data
+includeAttachmentIfNotNull(
+    template = beregningDetaljer,
+    attachmentData = beregningsdata  // null = ikke inkludert
+)
+----
+
+== Eksempel på komplett brev med vedlegg
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+object MittBrev : AutobrevTemplate<MittBrevDto> {
+    override val kode = Pesysbrevkoder.AutoBrev.MITT_BREV
+
+    override val template = createTemplate(
+        name = kode.name,
+        letterDataType = MittBrevDto::class,
+        languages = languages(Bokmal, Nynorsk),
+        letterMetadata = LetterMetadata(...)
+    ) {
+        title {
+            text(bokmal { +"Vedtak" })
+        }
+
+        outline {
+            paragraph {
+                text(bokmal { +"Hovedinnhold..." })
+            }
+        }
+
+        // Fast vedlegg
+        includeAttachment(beregningDetaljer, beregningsdata)
+
+        // Betinget vedlegg
+        includeAttachment(
+            yrkesskadeDetaljer,
+            yrkesskadeData,
+            predicate = harYrkesskade
+        )
+
+        // Vedlegg kun hvis data finnes
+        includeAttachmentIfNotNull(ekstraVedlegg, ekstraData)
+    }
+}
+----
+
+== Relaterte elementer
+
+* xref:dsl/attachment/includeAttachment.adoc[includeAttachment]
+* xref:dsl/attachment/includeAttachmentIfNotNull.adoc[includeAttachmentIfNotNull]
+* xref:dsl/attachment-template/index.adoc[Attachment Template]
+

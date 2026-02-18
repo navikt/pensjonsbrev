@@ -1,0 +1,87 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= ifElse
+
+`ifElse` velger mellom to verdier basert på en betingelse. Brukes for inline betinget verdivalg, ikke visning.
+
+== Syntaks
+
+[source,kotlin]
+----
+ifElse(betingelse, verdiHvisTrue, verdiHvisFalse)
+----
+
+== Eksempler
+
+=== Velge mellom ord
+
+[source,kotlin]
+----
+text(
+    bokmal {
+        +"Barnetillegget gjelder "
+        +ifElse(flereBarn, "barna", "barnet")
+        +" dine."
+    }
+)
+----
+
+=== Velge mellom uttrykk
+
+[source,kotlin]
+----
+val tekst = ifElse(
+    erGift,
+    "ektefelle".expr(),
+    "samboer".expr()
+)
+----
+
+=== Dynamisk grammatikk
+
+[source,kotlin]
+----
+val antallBarn = barn.size()
+val barneOrd = ifElse(antallBarn.equalTo(1), "barn", "barna")
+
+text(
+    bokmal {
+        +"Barnetillegget gjelder "
+        +barneOrd
+        +" som bor sammen med deg."
+    }
+)
+----
+
+== Forskjell fra showIf
+
+IMPORTANT: `ifElse` velger mellom verdier. `showIf` viser/skjuler innhold.
+
+[source,kotlin]
+----
+// ifElse - for å velge en verdi
+val ord = ifElse(flereBarn, "barna", "barnet")
+text(bokmal { +"Gjelder " + ord })
+
+// showIf - for å vise/skjule
+showIf(flereBarn) {
+    text(bokmal { +"Gjelder barna" })
+}.orShow {
+    text(bokmal { +"Gjelder barnet" })
+}
+----
+
+Bruk `ifElse` når bare ett ord/uttrykk skal variere.
+Bruk `showIf` når større deler av innholdet er forskjellig.
+
+== Scope
+
+`ifElse` er et uttrykk som kan brukes hvor som helst en `Expression<T>` forventes.
+
+== Relaterte elementer
+
+* xref:dsl/outline/showIf.adoc[showIf] - Betinget visning
+* xref:dsl/outline/text.adoc[text] - Tekstelement
+

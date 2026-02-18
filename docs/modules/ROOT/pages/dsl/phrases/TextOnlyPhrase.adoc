@@ -1,0 +1,64 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= TextOnlyPhrase
+
+`TextOnlyPhrase` er fraser kun med tekst. Brukes for inline tekst-fragmenter.
+
+== Syntaks
+
+[source,kotlin]
+----
+object MinFrase : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // innhold
+    }
+}
+----
+
+== Tilgjengelige elementer
+
+Inne i `TextOnlyPhrase` kan du bruke:
+
+* `text` - Tekst
+* `eval` - Inline uttrykk
+* `newline` - Linjeskift
+* `showIf`, `ifNotNull`, `forEach` - Kontrollstrukturer
+
+== Eksempel
+
+[source,kotlin]
+----
+data class BeloepMedEnhet(
+    val beloep: Expression<Kroner>
+) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            bokmal { +beloep.format() + " kroner" },
+            nynorsk { +beloep.format() + " kroner" },
+            english { +beloep.format() + " kroner" },
+        )
+    }
+}
+----
+
+== Bruk
+
+[source,kotlin]
+----
+text(
+    bokmal {
+        +"Du får utbetalt "
+        includePhrase(BeloepMedEnhet(maanedligBeloep))
+        +" per måned."
+    }
+)
+----
+
+== Relaterte elementer
+
+* xref:dsl/phrases/index.adoc[Phrases] - Oversikt
+* xref:dsl/phrases/OutlinePhrase.adoc[OutlinePhrase] - Fraser med avsnitt
+* xref:dsl/phrases/ParagraphPhrase.adoc[ParagraphPhrase] - Fraser i avsnitt
+

@@ -1,0 +1,165 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= forEach
+
+`forEach` itererer over en samling og repeterer innhold for hvert element.
+
+== Syntaks
+
+[source,kotlin]
+----
+forEach(samling) { element ->
+    // innhold for hvert element
+}
+----
+
+== Eksempler
+
+=== Iterere i outline
+
+[source,kotlin]
+----
+forEach(perioder) { periode ->
+    paragraph {
+        text(
+            bokmal {
+                +"Periode: "
+                +periode.fom.format()
+                +" - "
+                +periode.tom.format()
+            }
+        )
+    }
+}
+----
+
+=== Iterere i liste
+
+[source,kotlin]
+----
+list {
+    forEach(barn) { barn ->
+        item {
+            text(
+                bokmal {
+                    +barn.navn
+                    +" (født "
+                    +barn.fodselsdato.format()
+                    +")"
+                }
+            )
+        }
+    }
+}
+----
+
+=== Iterere i tabell
+
+[source,kotlin]
+----
+table(
+    header = {
+        column { text(bokmal { +"Måned" }) }
+        column(alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }) }
+    }
+) {
+    forEach(utbetalinger) { utbetaling ->
+        row {
+            cell { eval(utbetaling.maaned.format()) }
+            cell { eval(utbetaling.beloep.format()) }
+        }
+    }
+}
+----
+
+=== Med betinget logikk
+
+[source,kotlin]
+----
+forEach(perioder) { periode ->
+    showIf(periode.aktiv) {
+        row {
+            cell { eval(periode.beskrivelse) }
+            cell { eval(periode.beloep.format()) }
+        }
+    }
+}
+----
+
+=== Nøstet forEach
+
+[source,kotlin]
+----
+forEach(ytelser) { ytelse ->
+    title2 {
+        text(bokmal { +ytelse.navn })
+    }
+
+    paragraph {
+        table(...) {
+            forEach(ytelse.utbetalinger) { utbetaling ->
+                row {
+                    cell { eval(utbetaling.maaned.format()) }
+                    cell { eval(utbetaling.beloep.format()) }
+                }
+            }
+        }
+    }
+}
+----
+
+== Samlingsoperasjoner
+
+Før `forEach` kan du transformere samlingen:
+
+[source,kotlin]
+----
+// Filter
+val aktivePerioder = perioder.filter { it.aktiv }
+forEach(aktivePerioder) { ... }
+
+// Map
+val beloep = perioder.map { it.beloep }
+forEach(beloep) { ... }
+
+// Kombinert
+val aktiveBeloep = perioder.filter { it.aktiv }.map { it.beloep }
+----
+
+== Sjekke om samling er tom
+
+[source,kotlin]
+----
+showIf(perioder.isNotEmpty()) {
+    paragraph {
+        text(bokmal { +"Du har følgende perioder:" })
+    }
+
+    forEach(perioder) { periode ->
+        paragraph { ... }
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Du har ingen registrerte perioder." })
+    }
+}
+----
+
+== Scope
+
+`forEach` kan brukes i:
+
+* `outline` - Hovedinnhold
+* `paragraph` - Avsnitt
+* `list` - Lister
+* `table` - Tabeller
+
+== Relaterte elementer
+
+* xref:dsl/outline/showIf.adoc[showIf] - Betinget visning
+* xref:dsl/outline/ifNotNull.adoc[ifNotNull] - Null-sikker visning
+* xref:dsl/outline/table.adoc[table] - Tabell
+* xref:dsl/outline/list.adoc[list] - Liste
+

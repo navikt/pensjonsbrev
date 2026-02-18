@@ -1,0 +1,144 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= paragraph
+
+`paragraph` definerer et avsnitt med innhold. Avsnitt gir mellomrom mellom innholdselementer.
+
+== Syntaks
+
+[source,kotlin]
+----
+paragraph {
+    text(...)
+    list { ... }
+    table(...) { ... }
+}
+----
+
+== Tilgjengelige elementer
+
+Inne i `paragraph` kan du bruke:
+
+[cols="2,3,2"]
+|===
+|Element |Beskrivelse |Dokumentasjon
+
+|`text`
+|Tekst
+|xref:dsl/outline/text.adoc[text]
+
+|`list`
+|Punktliste
+|xref:dsl/outline/list.adoc[list]
+
+|`table`
+|Tabell
+|xref:dsl/outline/table.adoc[table]
+
+|`newline`
+|Linjeskift
+|xref:dsl/outline/newline.adoc[newline]
+
+|`eval`
+|Inline uttrykk
+|xref:dsl/outline/eval.adoc[eval]
+
+|`formText`
+|Fritektsfelt (redigerbare brev)
+|xref:dsl/outline/formText.adoc[formText]
+
+|`formChoice`
+|Flervalgsfelt (redigerbare brev)
+|xref:dsl/outline/formChoice.adoc[formChoice]
+
+|`includePhrase`
+|Inkluder frase
+|xref:dsl/phrases/includePhrase.adoc[includePhrase]
+
+|`showIf`
+|Betinget visning
+|xref:dsl/outline/showIf.adoc[showIf]
+
+|`ifNotNull`
+|Null-sikker visning
+|xref:dsl/outline/ifNotNull.adoc[ifNotNull]
+
+|`forEach`
+|Iterasjon
+|xref:dsl/outline/forEach.adoc[forEach]
+|===
+
+== Eksempler
+
+=== Enkelt avsnitt
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal { +"Vi har behandlet søknaden din." },
+        nynorsk { +"Vi har behandla søknaden din." },
+    )
+}
+----
+
+=== Avsnitt med flere elementer
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal { +"For å beholde ytelsen må du:" },
+        nynorsk { +"For å behalde ytinga må du:" },
+    )
+
+    list {
+        item {
+            text(bokmal { +"Melde fra om endringer" })
+        }
+        item {
+            text(bokmal { +"Sende inn dokumentasjon" })
+        }
+    }
+}
+----
+
+=== Avsnitt med betinget innhold
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal { +"Du får utbetalt " + beloep.format() + " kroner." },
+        nynorsk { +"Du får utbetalt " + beloep.format() + " kroner." },
+    )
+
+    showIf(harTillegg) {
+        newline()
+        text(
+            bokmal { +"I tillegg får du barnetillegg." },
+            nynorsk { +"I tillegg får du barnetillegg." },
+        )
+    }
+}
+----
+
+== Scope
+
+`paragraph`-blokken bruker `ParagraphScope`. Dette gir tilgang til tekst, lister og tabeller.
+
+== Beste praksis
+
+* Hold avsnitt fokusert på ett tema
+* Bruk lister for punktvis informasjon
+* Bruk tabeller for strukturert data
+* Del lange avsnitt i flere korte
+
+== Relaterte elementer
+
+* xref:dsl/outline/index.adoc[outline] - Hovedinnhold
+* xref:dsl/outline/text.adoc[text] - Tekstelement
+* xref:dsl/outline/list.adoc[list] - Punktliste
+* xref:dsl/outline/table.adoc[table] - Tabell

@@ -1,0 +1,84 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= ParagraphPhrase
+
+`ParagraphPhrase` er fraser som brukes inne i avsnitt. Kan inneholde tekst, lister og tabeller.
+
+== Syntaks
+
+[source,kotlin]
+----
+object MinFrase : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // innhold
+    }
+}
+----
+
+== Tilgjengelige elementer
+
+Inne i `ParagraphPhrase` kan du bruke:
+
+* `text` - Tekst
+* `list` - Punktliste
+* `table` - Tabell
+* `includePhrase` - Andre fraser
+* `showIf`, `ifNotNull`, `forEach` - Kontrollstrukturer
+
+== Eksempel
+
+[source,kotlin]
+----
+data class MeldepliktListe(
+    val inkluderInntekt: Expression<Boolean>,
+    val inkluderSivilstand: Expression<Boolean>,
+) : ParagraphPhrase<LangBokmalNynorskEnglish>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        text(
+            bokmal { +"Du har plikt til å melde fra om:" },
+            nynorsk { +"Du har plikt til å melde frå om:" },
+        )
+
+        list {
+            showIf(inkluderInntekt) {
+                item {
+                    text(
+                        bokmal { +"Endringer i inntekt" },
+                        nynorsk { +"Endringar i inntekt" },
+                    )
+                }
+            }
+
+            showIf(inkluderSivilstand) {
+                item {
+                    text(
+                        bokmal { +"Endringer i sivilstand" },
+                        nynorsk { +"Endringar i sivilstand" },
+                    )
+                }
+            }
+        }
+    }
+}
+----
+
+== Bruk
+
+[source,kotlin]
+----
+paragraph {
+    includePhrase(MeldepliktListe(
+        inkluderInntekt = true.expr(),
+        inkluderSivilstand = harEktefelle
+    ))
+}
+----
+
+== Relaterte elementer
+
+* xref:dsl/phrases/index.adoc[Phrases] - Oversikt
+* xref:dsl/phrases/OutlinePhrase.adoc[OutlinePhrase] - Fraser med avsnitt
+* xref:dsl/phrases/TextOnlyPhrase.adoc[TextOnlyPhrase] - Fraser kun med tekst
+

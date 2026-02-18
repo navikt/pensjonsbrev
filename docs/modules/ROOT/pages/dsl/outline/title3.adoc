@@ -1,0 +1,33 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= title3
+
+`title3` definerer en nivå 3 overskrift i brevet.
+
+== Syntaks
+
+[source,kotlin]
+----
+title3 {
+    text(
+        bokmal { +"Nivå 3 overskrift" },
+        nynorsk { +"Nivå 3 overskrift" },
+    )
+}
+----
+
+== Beste praksis
+
+WARNING: Bruk `title3` svært sparsomt. Vanligvis holder `title1` og `title2`.
+
+* Vurder om innholdet kan struktureres annerledes
+* Dyp nøsting gjør brev vanskeligere å lese
+
+== Relaterte elementer
+
+* xref:dsl/outline/title1.adoc[title1] - Hovedoverskrift
+* xref:dsl/outline/title2.adoc[title2] - Underoverskrift
+* xref:dsl/outline/index.adoc[outline] - Hovedinnhold
+

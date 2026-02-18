@@ -1,0 +1,126 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= OutlinePhrase
+
+`OutlinePhrase` er fraser som kan inneholde avsnitt og overskrifter. Brukes for større innholdsseksjoner.
+
+== Syntaks
+
+[source,kotlin]
+----
+object MinFrase : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        // innhold
+    }
+}
+----
+
+== Tilgjengelige elementer
+
+Inne i `OutlinePhrase` kan du bruke:
+
+* `paragraph` - Avsnitt
+* `title1`, `title2`, `title3` - Overskrifter
+* `includePhrase` - Andre fraser
+* `showIf`, `ifNotNull`, `forEach` - Kontrollstrukturer
+
+== Eksempler
+
+=== Enkel frase
+
+[source,kotlin]
+----
+object RettTilAKlage : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(
+                bokmal { +"Du har rett til å klage" },
+                nynorsk { +"Du har rett til å klage" },
+                english { +"You have the right to appeal" },
+            )
+        }
+
+        paragraph {
+            text(
+                bokmal { +"Du kan klage på vedtaket innen 6 uker." },
+                nynorsk { +"Du kan klage på vedtaket innan 6 veker." },
+                english { +"You may appeal within 6 weeks." },
+            )
+        }
+    }
+}
+----
+
+=== Parametrisert frase
+
+[source,kotlin]
+----
+data class BeregningsDetaljer(
+    val harFlerePerioder: Expression<Boolean>,
+    val perioder: Expression<Collection<Periode>>,
+    val gjeldendePeriode: Expression<Periode>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        title1 {
+            text(bokmal { +"Beregning" })
+        }
+
+        includePhrase(TabellGjeldendePeriode(gjeldendePeriode))
+
+        showIf(harFlerePerioder) {
+            paragraph {
+                text(bokmal { +"Du har flere perioder:" })
+            }
+
+            forEach(perioder) { periode ->
+                includePhrase(TabellPeriode(periode))
+            }
+        }
+    }
+}
+----
+
+=== Frase med tilgang til rot-modellen
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+data class UforetrygdOppsummering<Lang : LanguageSupport>(
+) : OutlinePhrase<Lang, UforetrygdDto>() {
+    override fun OutlineOnlyScope<Lang, UforetrygdDto>.template() {
+        paragraph {
+            text(
+                bokmal {
+                    +"Du har "
+                    +uforegrad.format()  // Tilgang via @TemplateModelHelpers
+                    +" prosent uføregrad"
+                }
+            )
+        }
+    }
+}
+----
+
+== Bruk
+
+[source,kotlin]
+----
+outline {
+    includePhrase(RettTilAKlage)
+
+    includePhrase(BeregningsDetaljer(
+        harFlerePerioder = perioder.size().greaterThan(1),
+        perioder = perioder,
+        gjeldendePeriode = gjeldendePeriode
+    ))
+}
+----
+
+== Relaterte elementer
+
+* xref:dsl/phrases/index.adoc[Phrases] - Oversikt
+* xref:dsl/phrases/ParagraphPhrase.adoc[ParagraphPhrase] - Fraser i avsnitt
+* xref:dsl/phrases/includePhrase.adoc[includePhrase] - Inkludere fraser
+

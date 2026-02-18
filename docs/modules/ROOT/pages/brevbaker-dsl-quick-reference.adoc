@@ -1,0 +1,339 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Brevmal-DSL: Quick Reference
+
+Dette er en kompakt referanse til de mest brukte DSL-elementene. For detaljer, se xref:brevbaker-dsl-referanse.adoc[Komplett referanse].
+
+== Template Structure
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+object MittBrev : AutobrevTemplate<DtoType> {
+    override val kode = Pesysbrevkoder.AutoBrev.BREVKODE
+    override val template = createTemplate(
+        name = kode.name,
+        letterDataType = DtoType::class,
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(...)
+    ) {
+        title { text(...) }
+        outline { /* content */ }
+        includeAttachment(vedlegg, data)
+    }
+}
+----
+
+== Text
+
+[source,kotlin]
+----
+// Modern syntax
+text(
+    bokmal { +"Text " + variable.format() + " more text" },
+    nynorsk { +"Tekst " + variable.format() + " meir tekst" }
+)
+
+// Legacy syntax
+textExpr(
+    Bokmal to "Text ".expr() + variable.format() + " more text",
+)
+----
+
+== Expressions
+
+[source,kotlin]
+----
+// Literals
+100.expr()
+"text".expr()
+true.expr()
+
+// Formatting
+intValue.format()
+kroner.format()
+dato.format()
+desimal.format(scale = 2)
+
+// Comparisons
+a.equalTo(b)              // ==
+a.notEqualTo(b)           // !=
+a.greaterThan(b)          // >
+a.lessThan(b)             // <
+a.greaterThanOrEqual(b)   // >=
+a.lessThanOrEqual(b)      // <=
+
+// Logic
+a and b
+a or b
+not(a)
+
+// Null handling
+value.notNull()
+value.isNull()
+value.ifNull(default)
+
+// Enum
+sivilstand.isOneOf(GIFT, PARTNER)
+
+// Collections
+list.size()
+list.isEmpty()
+list.isNotEmpty()
+list.map { it.property }
+list.filter { it.active }
+----
+
+== Control Structures
+
+[source,kotlin]
+----
+// If
+showIf(condition) {
+    paragraph { ... }
+}
+
+// If/else
+showIf(cond1) {
+    ...
+}.orShow {
+    ...
+}
+
+// If/elseif/else
+showIf(cond1) {
+    ...
+}.orShowIf(cond2) {
+    ...
+}.orShow {
+    ...
+}
+
+// Null check
+ifNotNull(nullableValue) { value ->
+    text(bokmal { +value })
+}
+
+// Multiple nullables
+ifNotNull(val1, val2) { v1, v2 ->
+    ...
+}
+
+// With fallback
+ifNotNull(primary) { ... }
+.orIfNotNull(secondary) { ... }
+.orShow { ... }
+
+// Loop
+forEach(collection) { item ->
+    paragraph { ... }
+}
+
+// Conditional expression (not visibility!)
+val txt = ifElse(condition, "yes".expr(), "no".expr())
+----
+
+== Document Elements
+
+[source,kotlin]
+----
+// Outline elements
+outline {
+    title1 { text(...) }
+    title2 { text(...) }
+    title3 { text(...) }
+    paragraph { /* content */ }
+    includePhrase(MyPhrase)
+}
+
+// Paragraph elements
+paragraph {
+    text(...)
+    newline()
+    list { item { ... } }
+    table(...) { row { cell { ... } } }
+    formText(size = Size.LONG) { ... }
+    formChoice { ... }
+    includePhrase(MyPhrase)
+}
+
+// Text elements
+text(
+    bokmal {
+        +"Text"
+        +variable.format()
+        +"More text"
+    }
+)
+eval(expression)
+newline()
+----
+
+== Lists
+
+[source,kotlin]
+----
+list {
+    item { text(...) }
+
+    showIf(condition) {
+        item { text(...) }
+    }
+
+    forEach(items) { item ->
+        item { text(bokmal { +item.name }) }
+    }
+}
+----
+
+== Tables
+
+[source,kotlin]
+----
+table(
+    header = {
+        column(columnSpan = 2) {
+            text(bokmal { +"Description" }, FontType.BOLD)
+        }
+        column(alignment = ColumnAlignment.RIGHT) {
+            text(bokmal { +"Amount" }, FontType.BOLD)
+        }
+    }
+) {
+    row {
+        cell { text(...) }
+        cell { eval(amount.format()) }
+    }
+
+    forEach(rows) { row ->
+        row {
+            cell { eval(row.desc) }
+            cell { eval(row.amount.format()) }
+        }
+    }
+}
+----
+
+== Phrases
+
+[source,kotlin]
+----
+// Outline phrase
+object MyPhrase : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        paragraph { text(...) }
+    }
+}
+
+// Parameterized phrase
+data class GreetingPhrase(
+    val name: Expression<String>
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        paragraph {
+            text(bokmal { +"Hello " + name })
+        }
+    }
+}
+
+// Usage
+includePhrase(MyPhrase)
+includePhrase(GreetingPhrase(userName))
+----
+
+== Attachments
+
+[source,kotlin]
+----
+// Define
+val myAttachment = createAttachment<LangBokmalNynorsk, DtoType>(
+    title = newText(
+        bokmal { +"Attachment Title" },
+        nynorsk { +"Vedleggstittel" }
+    ),
+    includeSakspart = false
+) {
+    paragraph { text(...) }
+}
+
+// Include (always)
+includeAttachment(myAttachment, data)
+
+// Include (with condition)
+includeAttachment(myAttachment, data, predicate = condition)
+
+// Include (if not null)
+includeAttachmentIfNotNull(myAttachment, nullableData)
+----
+
+== Common Patterns
+
+[source,kotlin]
+----
+// Named conditions
+val isMarried = sivilstand.isOneOf(GIFT, PARTNER)
+val hasIncome = income.greaterThan(0.expr())
+val shouldReduce = isMarried and hasIncome
+
+// Dynamic grammar
+val itemOrItems = ifElse(count.equalTo(1), "item", "items")
+
+// Safe nullable access
+ifNotNull(optionalField) { field ->
+    text(bokmal { +"Value: " + field })
+}
+
+// Filter and map
+val activeNames = items
+    .filter { it.active }
+    .map { it.name }
+----
+
+== Anti-Patterns to Avoid
+
+[source,kotlin]
+----
+// ❌ DON'T use Kotlin if/else for template logic
+val text = if (condition.equals(true)) "yes" else "no"
+
+// ✅ DO use DSL
+val text = ifElse(condition, "yes".expr(), "no".expr())
+
+// ❌ DON'T duplicate conditions
+showIf(cond) {
+    showIf(cond) { ... }  // Redundant!
+}
+
+// ✅ DO use proper nesting
+showIf(cond) {
+    paragraph { ... }
+}
+
+// ❌ DON'T do business logic in templates
+val result = value1 * value2 / 100
+
+// ✅ DO calculations in DTO/service layer
+data class Dto(val result: Int)  // Pre-calculated
+----
+
+== Quick Tips
+
+* Use `@TemplateModelHelpers` for type-safe selectors
+* Use modern `text { bokmal { ... } }` syntax
+* Right-align number columns with `ColumnAlignment.RIGHT`
+* Use `FontType.BOLD` for table headers
+* Group related fields in nested data classes
+* Extract complex conditions to named variables
+* Use phrases for reusable content
+* Test all conditional branches
+* Keep templates under 300 lines
+
+== Documentation Links
+
+* xref:brevbaker-dsl-oversikt.adoc[Overview] - Start here if new
+* xref:brevbaker-dsl-referanse.adoc[Reference] - Complete API docs
+* xref:brevbaker-dsl-guide.adoc[Guide] - Step-by-step tutorial
+* xref:brevbaker-dsl-beste-praksis.adoc[Best Practices] - Patterns and anti-patterns
+* xref:brevbaker-dsl-avansert.adoc[Advanced] - Complex scenarios
+

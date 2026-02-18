@@ -1,0 +1,185 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+:toc:
+
+= Brevmal-DSL
+
+Brevmal-DSL er et Kotlin-basert domenespesifikt språk for å definere brevmaler i NAV.
+
+== Hvorfor DSL?
+
+DSL-en er utviklet for å:
+
+* Sikre **typesikkerhet** - Kotlin-kompilatoren verifiserer at malen er korrekt
+* Garantere **null-safety** - Ingen risiko for NPE eller at "null" havner i brev
+* Støtte **flerspråklighet** - Innebygd støtte for bokmål, nynorsk og engelsk
+* Muliggjøre **gjenbruk** - Fraser kan deles mellom maler
+
+== Designfilosofi
+
+=== Informasjonsmodellen er viktig
+
+Informasjonsmodellen bør ta hensyn til virkelighetsbildet:
+
+* Gruppér relaterte verdier i nøstede data-klasser
+* Bruk non-nullable for påkrevde verdier
+
+=== Logikk hører hjemme utenfor malen
+
+Malen skal håndtere:
+
+* Visningslogikk (hva skal vises når)
+* Formatering av data
+* Strukturering av innhold
+
+Forretningslogikk og beregninger skal foregå utenfor brevmalen.
+
+== Grunnleggende eksempel
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+object MittBrev : AutobrevTemplate<MittBrevDto> {
+
+    override val kode = Pesysbrevkoder.AutoBrev.MITT_BREV
+
+    override val template = createTemplate(
+        name = kode.name,
+        letterDataType = MittBrevDto::class,
+        languages = languages(Bokmal, Nynorsk),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Mitt vedtaksbrev",
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+    ) {
+        title {
+            text(
+                bokmal { +"Tittel på brevet" },
+                nynorsk { +"Tittel på brevet" },
+            )
+        }
+
+        outline {
+            paragraph {
+                text(
+                    bokmal { +"Dette er innholdet." },
+                    nynorsk { +"Dette er innhaldet." },
+                )
+            }
+        }
+    }
+}
+----
+
+== Dokumentstruktur
+
+[plantuml, format=svg]
+----
+@startuml
+skinparam component {
+  BackgroundColor LightBlue
+  BorderColor Navy
+}
+
+[outline]
+[attachment]
+[letter]
+
+
+[title123] AS "title 1/2/3"
+[paragraph]
+
+[text]
+[list]
+[table]
+
+outline --> title123
+title123 --> text
+attachment --> outline
+letter --> outline
+outline --> paragraph
+paragraph --> text
+paragraph --> list
+paragraph --> table
+letter --> attachment
+
+@enduml
+----
+
+== DSL-referanse
+
+=== Mal-nivå
+* xref:dsl/letter-template/index.adoc[Letter Template] - Hvordan definere en brevmal
+* xref:dsl/attachment-template/index.adoc[Attachment Template] - Hvordan definere vedleggsmaler
+
+=== Innholdselementer
+* xref:dsl/outline/index.adoc[Outline] - Hovedinnholdet i brevet
+* xref:dsl/attachment/index.adoc[Attachment] - Inkludering av vedlegg
+* xref:dsl/phrases/index.adoc[Phrases] - Gjenbrukbare innholdskomponenter
+
+== Maltyper
+
+[cols="1,2,3"]
+|===
+|Type |Interface |Beskrivelse
+
+|Automatisk brev
+|`AutobrevTemplate<Dto>`
+|Sendes automatisk uten redigering
+
+|Redigerbart brev
+|`RedigerbarTemplate<Dto>`
+|Kan redigeres av saksbehandler
+|===
+
+== Språkstøtte
+
+[source,kotlin]
+----
+// Kun bokmål
+languages(Bokmal)
+
+// Bokmål og nynorsk
+languages(Bokmal, Nynorsk)
+
+// Alle tre språk
+languages(Bokmal, Nynorsk, English)
+----
+
+== Expression-systemet
+
+Dynamiske verdier håndteres via `Expression<T>`. Dette sikrer at logikk evalueres ved brevgenerering:
+
+[source,kotlin]
+----
+// Formatering
+beloep.format()         // Kroner → "12 345"
+dato.format()           // LocalDate → "01.01.2025"
+
+// Sammenligning
+verdi.greaterThan(100.expr())
+verdi.equalTo(annenVerdi)
+
+// Null-håndtering
+verdi.ifNull(standardVerdi)
+
+// Logiske operatorer
+betingelse1 and betingelse2
+betingelse1 or betingelse2
+----
+
+== Vanlige anti-patterns
+
+IMPORTANT: Bruk aldri vanlig Kotlin `if/else` for brevlogikk!
+
+[source,kotlin]
+----
+// ❌ FEIL - evalueres ved kompilering
+val tekst = if (enExpression.equals(true)) "ja" else "nei"
+
+// ✅ RIKTIG - bruk DSL-uttrykk
+val tekst = ifElse(enExpression, "ja".expr(), "nei".expr())
+----
+
+

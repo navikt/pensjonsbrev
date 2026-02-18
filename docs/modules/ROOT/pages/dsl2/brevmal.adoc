@@ -1,0 +1,11 @@
+
+= Autobrev mal
+
+* kort om hva det er
+* dokumentasjon av ulike innstillinger/metadata
+* brevkoder
+* includeAttachment
+
+== Redigerbar mal
+
+* ulike felter som er unike i tillegg til autobrevmaler
