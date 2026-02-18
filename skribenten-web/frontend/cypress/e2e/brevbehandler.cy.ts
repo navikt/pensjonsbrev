@@ -258,7 +258,13 @@ describe("Brevbehandler", () => {
     cy.contains(brevSomSendesSomLokalPrint.brevtittel).should("not.exist");
   });
 
-  it("viser pdf når er brev er valgt", () => {
+  it("viser pdf når et brev er valgt", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
+      request.reply([kladdBrev]);
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1", (request) => {
+      request.reply(kladdBrev);
+    });
     cy.fixture("helloWorldPdf.txt", "base64").then((pdfBase64) => {
       cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1/pdf", (request) => {
         request.reply({
@@ -267,12 +273,11 @@ describe("Brevbehandler", () => {
             rendretBrevErEndret: false,
           },
         });
-      });
+      }).as("pdf");
     });
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
-      request.reply([kladdBrev]);
-    });
+
     cy.contains(kladdBrev.brevtittel).click();
+    cy.wait("@pdf");
     cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
     cy.contains("Hello World").should("be.visible");
   });
