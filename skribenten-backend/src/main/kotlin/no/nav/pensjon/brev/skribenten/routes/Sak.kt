@@ -62,9 +62,9 @@ fun Route.sakRoute(
         get("/brukerstatus") {
             coroutineScope {
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
-                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
-                val person = pdlService.hentBrukerContext(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
+                val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
+                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
+                val person = pdlService.hentBrukerContext(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(
@@ -87,7 +87,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerExstreamBrev(
-                            gjelderPid = sak.foedselsnr,
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -99,7 +99,7 @@ fun Route.sakRoute(
 
                     call.respond(
                         legacyBrevService.bestillOgRedigerEblankett(
-                            gjelderPid = sak.foedselsnr,
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -110,7 +110,7 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.pid)
 
             if (adresse != null) {
                 call.respond(adresse)
@@ -121,7 +121,7 @@ fun Route.sakRoute(
 
         get("/foretrukketSpraak") {
             val sak = call.attributes[SakKey]
-            call.respond(krrService.getPreferredLocale(sak.foedselsnr))
+            call.respond(krrService.getPreferredLocale(sak.pid))
         }
 
         get("/pdf/{journalpostId}") {
