@@ -6,9 +6,6 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.FORSOERGINGSTILLEGG_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
-import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
-import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -470,9 +467,7 @@ data class InfoOenskeSokeAP(
 // infoAPSivilstand_001
 data class InfoSivilstandAP(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>,
-    val borMedSivilstand: Expression<BorMedSivilstand?>,
-    val over2G: Expression<Boolean?>,
-    val kronebelop2G: Expression<Kroner?>,
+    val kronebelop2G: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
@@ -490,77 +485,19 @@ data class InfoSivilstandAP(
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du har ektefelle, samboer eller partner, skal pensjonen din kontrolleres mot den andre partens inntekt." },
-                    nynorsk { +"Om du har ektefelle, sambuar eller partnar, blir pensjonen din kontrollert mot inntekta til den andre parten." },
-                    english { +"If you have a spouse or partner, your pension will be checked against their income." },
+                    bokmal {
+                        +"Hvis du har en ektefelle, partner eller samboer som har inntekt under " + kronebelop2G.format() + " kroner (2 ganger folketrygdens grunnbeløp), " +
+                                "er det viktig at du gir oss beskjed. Da kan du ha rett til høyere alderspensjon."
+                    },
+                    nynorsk {
+                        +"Om du har ein ektefelle, partnar eller sambuar som har inntekt under " + kronebelop2G.format() + " kroner (2 gonger grunnbeløpet i folketrygda), " +
+                                "er det viktig at du gir oss beskjed. Då kan du ha rett til høgare alderspensjon."
+                    },
+                    english {
+                        +"If you have a spouse, partner, or cohabitant with an income below NOK " + kronebelop2G.format() + " (twice the National Insurance basic amount), " +
+                                "it is important that you inform us. You may then be entitled to a higher retirement pension."
+                    },
                 )
-            }
-
-            ifNotNull(borMedSivilstand) { borMedSivilstand ->
-                paragraph {
-                    showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.EKTEFELLE)) {
-                        text(
-                            bokmal { +"Du er registrert som gift." },
-                            nynorsk { +"Du er registrert som gift." },
-                            english { +" You are registered as married." }
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { +"Du er registrert som " + borMedSivilstand.ubestemtForm() + "." },
-                            nynorsk { +"Du er registrert som " + borMedSivilstand.ubestemtForm() + "." },
-                            english { +" You are registered as " + borMedSivilstand.ubestemtForm() + "." }
-                        )
-                    }
-                }
-                showIf(borMedSivilstand.isNotAnyOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
-                            nynorsk { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
-                            english { +"We have registered that your " + borMedSivilstand.bestemtForm() + " " }
-                        )
-                        ifNotNull(over2G) { over2G ->
-                            ifNotNull(kronebelop2G) { kronebelop2G ->
-                                showIf(over2G) {
-                                    text(
-                                        bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon, uføretrygd eller omstillingsstønad." },
-                                        nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon, uføretrygd eller omstillingsstønad." },
-                                        english { +"has an income of over " + kronebelop2G.format() + " or their own pension, disability benefit or adjustment allowance." })
-
-                                }.orShow {
-                                    text(
-                                        bokmal { +"ikke har egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                        nynorsk { +"ikkje har eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
-                                        english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
-
-                                }
-                            }
-                        }
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har registrert at du og ektefellen din er registrert med forskjellig bosted, eller en av dere bor på institusjon." },
-                            nynorsk { +"Vi har registrert at du og ektefellen din er registrerte med forskjellig bustad, eller ein av dykk bur på institusjon." },
-                            english { +"We have registered that you and your spouse are registered at different residences, or that one of you is living in an institution." }
-                        )
-                    }
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"Du er registrert som enslig." },
-                        nynorsk { +"Du er registrert som einsleg." },
-                        english { +"You are registered as single." }
-                    )
-                }
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Hvis dette ikke er riktig, må du kontakte oss." },
-                    nynorsk { +"Om dette ikkje er rett, må du kontakte oss." },
-                    english { +"If this is incorrect, please contact us. " })
             }
         }
     }
