@@ -172,8 +172,8 @@ list {
 
 == Se også
 
-* xref:dsl/kontroll-struktur/forEach.adoc[forEach]
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
-* xref:dsl/tabeller.adoc[Tabeller]
+* xref:dsl/kontroll-struktur/forEach.adoc[]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
+* xref:dsl/tabeller.adoc[]
 * xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 

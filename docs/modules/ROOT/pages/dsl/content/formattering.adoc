@@ -396,7 +396,7 @@ text(
 |Complete the form 'Søknad om uføretrygd'.
 |===
 
-NOTE: Bokmål og nynorsk bruker «» (guillemets), mens engelsk bruker '' (enkle anførselstegn).
+NOTE: Bokmål og nynorsk bruker «» (guillemets), mens engelsk bruker ' ' (enkle anførselstegn).
 
 == Se også
 

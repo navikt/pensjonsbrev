@@ -22,11 +22,11 @@ Disse returnerer `Expression<Boolean>` som kan brukes i xref:dsl/kontroll-strukt
 
 |`greaterThan()`
 |Større enn
-|`uforegrad.greaterThan(50.expr())`
+|`uforegrad.greaterThan(50)`
 
 |`lessThan()`
 |Mindre enn
-|`alder.lessThan(67.expr())`
+|`alder.lessThan(67)`
 
 |`greaterThanOrEqual()`
 |Større enn eller lik
@@ -34,7 +34,11 @@ Disse returnerer `Expression<Boolean>` som kan brukes i xref:dsl/kontroll-strukt
 
 |`lessThanOrEqual()`
 |Mindre enn eller lik
-|`antall.lessThanOrEqual(5.expr())`
+|`antall.lessThanOrEqual(5)`
+
+|`isOneOf()`
+|Er én av flere enum-verdier
+|`sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.SAMBOER)`
 |===
 
 === Eksempler
@@ -42,7 +46,7 @@ Disse returnerer `Expression<Boolean>` som kan brukes i xref:dsl/kontroll-strukt
 [source,kotlin]
 ----
 // Sjekk uføregrad
-showIf(uforegrad.greaterThan(50.expr())) {
+showIf(uforegrad.greaterThan(50)) {
     text(bokmal { +"Du har høy uføregrad." })
 }
 
@@ -76,8 +80,8 @@ showIf(sivilstand.equalTo(Sivilstand.GIFT)) {
 [source,kotlin]
 ----
 // Kombinere betingelser
-showIf(harBarnetillegg and borINorge) {
-    text(bokmal { +"Du får norsk barnetillegg." })
+showIf(harBarnetillegg and harFellesBarn) {
+    text(bokmal { +"Du får barnetillegg for felles barn." })
 }
 
 // Eller-betingelse
@@ -85,7 +89,7 @@ showIf(erPensjonist or erUfoer) {
     text(bokmal { +"Du mottar ytelse fra NAV." })
 }
 
-// Negering
+// Motsatt verdi
 showIf(not(harSamboer)) {
     text(bokmal { +"Du er enslig." })
 }
@@ -158,7 +162,7 @@ showIf(ytelse.isOneOf(YtelseType.UFORETRYGD, YtelseType.ALDERSPENSJON)) {
 [source,kotlin]
 ----
 showIf(barn.isNotEmpty()) {
-    text(bokmal { +"Du har registrerte barn." })
+    text(bokmal { +"Vi har registrert at du har barn:" })
 
     list {
         forEach(barn) { enkeltBarn ->
@@ -167,7 +171,7 @@ showIf(barn.isNotEmpty()) {
     }
 }
 
-showIf(perioder.size().greaterThan(1.expr())) {
+showIf(perioder.size().greaterThan(1)) {
     text(bokmal { +"Du har flere perioder." })
 }
 ----
@@ -190,10 +194,11 @@ showIf(skalRedusereYtelse) {
     includePhrase(InntektsavkortingInfo)
 }
 ----
+TIP: Vurder om logikken kan flyttes ut av malen, eller om antall felter kan minimeres.
 
 == Se også
 
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
-* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull]
-* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[]
+* xref:dsl/kontroll-struktur/oversikt.adoc[]
 

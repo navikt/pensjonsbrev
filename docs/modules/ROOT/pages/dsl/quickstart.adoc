@@ -93,10 +93,10 @@ Malen over er bare en liten del av den fullstendige funksjonaliteten brevmal-dsl
 
 Videre lesing:
 
-* xref:dsl/stegvis_guide_nytt_brev.adoc[Steg-for-steg guide til nytt brev]
-* xref:dsl/oversikt_funksjonalitet.adoc[Oversikt over DSL-funksjonalitet]
-* xref:dsl/scopes.adoc[Scopes - hvor kan du bruke hva?]
-* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer (showIf, forEach, etc.)]
-* xref:dsl/fraser/oversikt.adoc[Fraser - gjenbrukbart innhold]
-* xref:dsl/formattering/oversikt.adoc[Formattering av verdier]
+* xref:dsl/stegvis_guide_nytt_brev.adoc[]
+* xref:dsl/oversikt_funksjonalitet.adoc[]
+* xref:dsl/scopes.adoc[]
+* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/formattering/oversikt.adoc[]
 

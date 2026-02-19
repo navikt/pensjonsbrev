@@ -29,7 +29,7 @@
 *** Formattering
 **** xref:dsl/formattering/oversikt.adoc[Oversikt]
 *** Predikat
-**** xref:dsl/predikat/oversikt.adoc[Oversikt]
+**** xref:dsl/predikat/predikat.adoc[Oversikt]
 
 .Skribenten
 * xref:skribenten-101.adoc[Veiledning (101)]

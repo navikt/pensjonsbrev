@@ -86,7 +86,7 @@ override val template = createTemplate(
 }
 ----
 
-TIP: Se xref:dsl/vedlegg.adoc[Vedlegg] for mer om hvordan du bruker vedlegg.
+TIP: Se xref:dsl/vedlegg.adoc[] for mer om hvordan du bruker vedlegg.
 
 [[OutlineScope]]
 == OutlineScope
@@ -150,7 +150,7 @@ outline {
 }
 ----
 
-TIP: Se xref:dsl/fraser/oversikt.adoc[Fraser] for mer om gjenbrukbare innholdselementer.
+TIP: Se xref:dsl/fraser/oversikt.adoc[] for mer om gjenbrukbare innholdselementer.
 
 [[ParagraphScope]]
 == ParagraphScope
@@ -235,7 +235,7 @@ paragraph {
 }
 ----
 
-TIP: Se xref:dsl/lister.adoc[Lister] og xref:dsl/tabeller.adoc[Tabeller] for mer detaljer.
+TIP: Se xref:dsl/lister.adoc[] og xref:dsl/tabeller.adoc[] for mer detaljer.
 
 [[TextScope]]
 == TextScope
@@ -291,7 +291,7 @@ paragraph {
 }
 ----
 
-TIP: Se xref:dsl/formattering/oversikt.adoc[Formattering] for mer om hvordan du formaterer ulike datatyper.
+TIP: Se xref:dsl/content/formattering.adoc[] for mer om hvordan du formaterer ulike datatyper.
 
 [[PlainTextScope]]
 == PlainTextScope
@@ -330,7 +330,7 @@ title1 {
 
 == Kontrollstrukturer i alle scopes
 
-I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[kontrollstrukturer]
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[]
 for å styre hvilke elementer som vises basert på data:
 
 [source,kotlin]
@@ -362,7 +362,7 @@ outline {
 
 == Se også
 
-* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
-* xref:dsl/fraser/oversikt.adoc[Fraser]
-* xref:dsl/formattering/oversikt.adoc[Formattering]
+* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/content/formattering.adoc[]
 

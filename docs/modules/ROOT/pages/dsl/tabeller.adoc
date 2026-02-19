@@ -228,8 +228,8 @@ Hold celleinnholdet enkelt med tekst og verdier.
 
 == Se også
 
-* xref:dsl/lister.adoc[Lister]
-* xref:dsl/kontroll-struktur/forEach.adoc[forEach]
-* xref:dsl/formattering/oversikt.adoc[Formattering]
+* xref:dsl/lister.adoc[]
+* xref:dsl/kontroll-struktur/forEach.adoc[]
+* xref:dsl/content/formattering.adoc[]
 * xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 

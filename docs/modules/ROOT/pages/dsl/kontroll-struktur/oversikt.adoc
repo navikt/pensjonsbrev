@@ -14,23 +14,23 @@ Dette gjør det mulig å lage dynamiske brev som tilpasser seg mottakerens situa
 
 |`showIf`
 |Vis eller skjul innhold basert på en betingelse. Kan kombineres med `orShow` og `orShowIf` for alternativer.
-|xref:dsl/kontroll-struktur/showIf.adoc[Les mer]
+|xref:dsl/kontroll-struktur/showIf.adoc[]
 
 |`ifNotNull`
 |Vis innhold kun når en nullable verdi finnes. Gir tilgang til den utnullede verdien i blokken.
-|xref:dsl/kontroll-struktur/ifNotNull.adoc[Les mer]
+|xref:dsl/kontroll-struktur/ifNotNull.adoc[]
 
 |`forEach`
 |Gjenta innhold for hvert element i en liste. Brukes ofte i lister og tabeller.
-|xref:dsl/kontroll-struktur/forEach.adoc[Les mer]
+|xref:dsl/kontroll-struktur/forEach.adoc[]
 |===
 
-TIP: For dynamisk tekstinnhold som entall/flertall, se xref:dsl/content/ifElse.adoc[ifElse] under xref:dsl/content/oversikt.adoc[Innhold].
+TIP: For dynamisk tekstinnhold som entall/flertall, se xref:dsl/content/ifElse.adoc[]
 
-IMPORTANT: Bruk alltid DSL-funksjonene (`showIf`, `ifElse`, etc.) for betinget innhold – vanlig Kotlin `if`/`else` fungerer ikke som forventet. Betingelser må være `Expression<Boolean>`, se xref:dsl/predikat/oversikt.adoc[Predikater].
+IMPORTANT: Bruk alltid DSL-funksjonene (`showIf`, `ifElse`, etc.) for betinget innhold – vanlig Kotlin `if`/`else` fungerer ikke som forventet. Betingelser må være `Expression<Boolean>`, se xref:dsl/predikat/predikat.adoc[].
 
 == Se også
 
-* xref:dsl/predikat/oversikt.adoc[Predikater og sammenligninger]
-* xref:dsl/scopes.adoc[Scopes]
+* xref:dsl/predikat/predikat.adoc[]
+* xref:dsl/scopes.adoc[]
 

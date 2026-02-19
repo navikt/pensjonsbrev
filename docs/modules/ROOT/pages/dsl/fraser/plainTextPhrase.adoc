@@ -43,11 +43,11 @@ Bruk `PlainTextOnlyPhrase` for:
 * Andre steder som krever ren tekst som kolonne-heading i tabeller
 * Kan også brukes i ParagraphScope og TextOnlyScope (generelt steder hvor du kan bruke text funksjonen).
 
-For tekst med variabler, bruk xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase].
+For tekst med variabler, bruk xref:dsl/fraser/textOnlyPhrase.adoc[].
 
 == Se også
 
-* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
-* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/fraser/textOnlyPhrase.adoc[]
 * xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
 

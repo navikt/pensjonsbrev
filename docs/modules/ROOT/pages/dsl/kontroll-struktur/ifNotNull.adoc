@@ -105,7 +105,7 @@ TIP: Hvis flere felter alltid hører sammen, grupper dem i datamodellen istedenf
 
 == Se også
 
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf - betinget visning]
-* xref:dsl/kontroll-struktur/forEach.adoc[forEach - løkker]
-* xref:dsl/kontroll-struktur/oversikt.adoc[Oversikt kontrollstrukturer]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
+* xref:dsl/kontroll-struktur/forEach.adoc[]
+* xref:dsl/kontroll-struktur/oversikt.adoc[]
 

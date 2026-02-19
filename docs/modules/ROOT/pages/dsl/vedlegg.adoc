@@ -203,5 +203,5 @@ Bruk betinget inkludering hvis vedlegget kun er relevant i noen tilfeller.
 == Se også
 
 * xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
 

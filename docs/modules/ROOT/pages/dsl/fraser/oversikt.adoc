@@ -12,19 +12,19 @@ De sikrer konsistent innhold på tvers av brev og gjør vedlikehold enklere.
 |===
 |Type |Kan inneholde |Kan inkluderes i
 
-|xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+|xref:dsl/fraser/outlinePhrase.adoc[]
 |Avsnitt, overskrifter (title1/2/3)
 |`OutlineScope`
 
-|xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+|xref:dsl/fraser/paragraphPhrase.adoc[]
 |Tekst, lister, tabeller, skjemafelt
 |`ParagraphScope`
 
-|xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+|xref:dsl/fraser/textOnlyPhrase.adoc[]
 |Tekst med variabler, formattering, linjeskift
 |`TextScope`, `ParagraphScope`
 
-|xref:dsl/fraser/plainTextPhrase.adoc[PlainTextOnlyPhrase]
+|xref:dsl/fraser/plainTextPhrase.adoc[]
 |Tekst med variabler
 |`PlainTextScope`, `TextScope`, `ParagraphScope`
 |===
@@ -99,8 +99,8 @@ Hver frase bør ha ett tydelig ansvar. Lag separate fraser for klage, spørsmål
 
 Se de individuelle sidene for eksempler på definisjon og bruk:
 
-* xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
-* xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
-* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
-* xref:dsl/fraser/plainTextPhrase.adoc[PlainTextOnlyPhrase]
+* xref:dsl/fraser/outlinePhrase.adoc[]
+* xref:dsl/fraser/paragraphPhrase.adoc[]
+* xref:dsl/fraser/textOnlyPhrase.adoc[]
+* xref:dsl/fraser/plainTextPhrase.adoc[]
 

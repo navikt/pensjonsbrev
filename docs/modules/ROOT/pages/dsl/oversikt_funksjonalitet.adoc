@@ -6,7 +6,7 @@
 En brevmal inneholder en nøstet struktur av elementer som brukes til å representere innhold.
 Strukturen består av ulike DSL-scopes som gir deg tilgang til relevante funksjoner på hvert nivå.
 
-TIP: Se xref:dsl/quickstart.adoc[Kom i gang] for en rask introduksjon til mal-utvikling.
+TIP: Se xref:dsl/quickstart.adoc[] for en rask introduksjon til mal-utvikling.
 
 == Scopes og funksjoner
 
@@ -14,16 +14,16 @@ Brevmal-DSL'en definerer ulike scopes hvor du kan definere ulike typer innhold.
 DSL'en gjør kun tilgjengelig det innholdet som kan eksistere i en gitt kontekst,
 noe som gjør det enklere å utforske muligheter og unngå feil.
 
-For detaljert dokumentasjon av hvert scope, se xref:dsl/scopes.adoc[Scopes].
+For detaljert dokumentasjon av hvert scope, se xref:dsl/scopes.adoc[].
 
 === Kontrollstrukturer
-I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[kontrollstrukturer]
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[]
 for å styre visning av innhold:
 
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf] - betinget visning
-* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull] - null-sikker visning
-* xref:dsl/kontroll-struktur/forEach.adoc[forEach] - løkker over lister
-* xref:dsl/content/ifElse.adoc[ifElse] - velg mellom verdier
+* xref:dsl/kontroll-struktur/showIf.adoc[] - betinget visning
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[] - null-sikker visning
+* xref:dsl/kontroll-struktur/forEach.adoc[] - løkker over lister
+* xref:dsl/content/ifElse.adoc[] - velg mellom verdier
 
 === Scope-hierarki
 
@@ -58,7 +58,7 @@ OutlineScope {
     paragraph { ParagraphScope }
 }
 ----
-(1) : xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+(1) : xref:dsl/fraser/outlinePhrase.adoc[]
 
 ==== xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 Inne i avsnitt - tekst, lister, tabeller:
@@ -67,8 +67,8 @@ Inne i avsnitt - tekst, lister, tabeller:
 ParagraphScope {
     includePhrase([Paragraph, Text, PlainText]Phrase)
     text(...)
-    list { ... }        // Se: xref:dsl/lister.adoc[Lister]
-    table { ... }       // Se: xref:dsl/tabeller.adoc[Tabeller]
+    list { ... }        // Se: xref:dsl/lister.adoc[]
+    table { ... }       // Se: xref:dsl/tabeller.adoc[]
     formText            // For redigerbare brev
     formChoice          // For redigerbare brev
     newline
@@ -81,7 +81,7 @@ Tekst med variabler og formattering:
 ----
 TextScope {
     includePhrase([Text, PlainText]Phrase)
-    text(...)           // Se: xref:dsl/formattering/oversikt.adoc[Formattering]
+    text(...)           // Se: xref:dsl/content/formattering.adoc[]
 }
 ----
 
@@ -97,7 +97,7 @@ PlainTextScope {
 
 == Fraser
 
-Fraser er gjenbrukbare innholdsblokker. Se xref:dsl/fraser/oversikt.adoc[Fraser] for full dokumentasjon.
+Fraser er gjenbrukbare innholdsblokker. Se xref:dsl/fraser/oversikt.adoc[] for full dokumentasjon.
 
 [cols="2,2,2"]
 |===
@@ -105,29 +105,29 @@ Fraser er gjenbrukbare innholdsblokker. Se xref:dsl/fraser/oversikt.adoc[Fraser]
 
 |OutlinePhrase
 |OutlineScope
-|xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+|xref:dsl/fraser/outlinePhrase.adoc[]
 
 |ParagraphPhrase
 |ParagraphScope
-|xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+|xref:dsl/fraser/paragraphPhrase.adoc[]
 
 |TextOnlyPhrase
 |TextScope
-|xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+|xref:dsl/fraser/textOnlyPhrase.adoc[]
 
 |PlainTextPhrase
 |PlainTextScope
-|xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase]
+|xref:dsl/fraser/plainTextPhrase.adoc[]
 |===
 
 == Uttrykk og predikater
 
-For å sammenligne verdier og lage betingelser, se xref:dsl/predikat/oversikt.adoc[Predikater og sammenligninger].
+For å sammenligne verdier og lage betingelser, se xref:dsl/predikat/predikat.adoc[].
 
 == Videre lesing
 
-* xref:dsl/stegvis_guide_nytt_brev.adoc[Steg-for-steg guide til nytt brev]
-* xref:dsl/scopes.adoc[Detaljert dokumentasjon av scopes]
-* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
-* xref:dsl/fraser/oversikt.adoc[Fraser]
-* xref:dsl/formattering/oversikt.adoc[Formattering]
+* xref:dsl/stegvis_guide_nytt_brev.adoc[]
+* xref:dsl/scopes.adoc[]
+* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/content/formattering.adoc[]

@@ -70,7 +70,7 @@ TIP: For større innholdsforskjeller er `showIf`/`orShow` mer lesbart enn lange 
 
 == Se også
 
-* xref:dsl/kontroll-struktur/showIf.adoc[showIf - for visning/skjuling av innhold]
-* xref:dsl/content/oversikt.adoc[Oversikt innhold]
-* xref:dsl/predikat/oversikt.adoc[Predikater og betingelser]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
+* xref:dsl/content/oversikt.adoc[]
+* xref:dsl/predikat/predikat.adoc[]
 

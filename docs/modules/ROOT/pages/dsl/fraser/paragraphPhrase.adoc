@@ -80,8 +80,8 @@ outline {
 
 == Se også
 
-* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
-* xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
-* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/fraser/outlinePhrase.adoc[]
+* xref:dsl/fraser/textOnlyPhrase.adoc[]
 * xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 

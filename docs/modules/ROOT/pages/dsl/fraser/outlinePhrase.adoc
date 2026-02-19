@@ -76,7 +76,7 @@ outline {
 
 == Se også
 
-* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
-* xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/fraser/paragraphPhrase.adoc[]
 * xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
 
