@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.expression.IntToKroner
 import no.nav.pensjon.brev.template.expression.IntToYear
-import no.nav.pensjon.brevbaker.api.model.IntValue
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.IntValue
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 
 val intValueSelector = object : TemplateModelSelector<IntValue, Int> {
     override val className: String = "no.nav.pensjon.brev.api.model.IntValue"

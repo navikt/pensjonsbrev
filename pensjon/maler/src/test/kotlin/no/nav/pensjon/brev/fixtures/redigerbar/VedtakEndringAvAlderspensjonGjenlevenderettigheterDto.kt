@@ -9,8 +9,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 import java.time.Month
 

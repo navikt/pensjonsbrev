@@ -3,8 +3,8 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.Broek
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Broek
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import java.time.LocalDate
 
 @Suppress("unused")

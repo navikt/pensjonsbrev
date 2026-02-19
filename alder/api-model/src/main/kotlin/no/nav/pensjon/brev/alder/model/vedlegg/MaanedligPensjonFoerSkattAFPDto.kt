@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.model.vedlegg
 import no.nav.pensjon.brev.alder.model.BeloepEndring
 import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 @Suppress("unused")

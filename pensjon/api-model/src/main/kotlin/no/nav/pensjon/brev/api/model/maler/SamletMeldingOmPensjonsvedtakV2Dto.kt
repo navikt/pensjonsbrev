@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brevbaker.api.model.PDFVedleggData
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 
 data class SamletMeldingOmPensjonsvedtakV2Dto(

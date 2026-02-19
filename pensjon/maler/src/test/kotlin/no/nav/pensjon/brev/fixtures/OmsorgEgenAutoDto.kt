@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.fixtures
 
 import no.nav.pensjon.brev.api.model.maler.OmsorgEgenAutoDto
 import no.nav.pensjon.brev.api.model.vedlegg.*
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 
 fun createOmsorgEgenAutoDto() =
     OmsorgEgenAutoDto(

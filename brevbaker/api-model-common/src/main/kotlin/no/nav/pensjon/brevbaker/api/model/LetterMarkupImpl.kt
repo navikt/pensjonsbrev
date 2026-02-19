@@ -1,6 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent

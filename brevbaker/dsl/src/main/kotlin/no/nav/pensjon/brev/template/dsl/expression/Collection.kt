@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 fun <T> Expression<Collection<T>>.isEmpty(): Expression<Boolean> =
     UnaryOperation.IsEmpty(this)

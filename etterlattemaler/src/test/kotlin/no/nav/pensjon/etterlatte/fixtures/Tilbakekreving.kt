@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.tilbakekreving.*
 import java.time.LocalDate

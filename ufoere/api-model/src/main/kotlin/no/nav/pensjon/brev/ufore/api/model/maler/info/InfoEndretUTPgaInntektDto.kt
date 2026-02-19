@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.info
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 data class InfoEndretUTPgaInntektDto(
     val loependeInntektsAvkortning: LoependeInntektsAvkortning,

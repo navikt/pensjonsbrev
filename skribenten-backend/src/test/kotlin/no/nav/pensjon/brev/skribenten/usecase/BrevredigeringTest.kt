@@ -21,6 +21,9 @@ import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl

@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds

@@ -32,9 +32,9 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java

@@ -5,10 +5,10 @@ import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
 import no.nav.pensjon.brev.template.dsl.expression.select
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.IntValue
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.IntValue
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 
 @JvmName("formatTelefonnummerStandard")
 fun Telefonnummer.format() =

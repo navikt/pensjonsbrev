@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.AlderspensjonBeregnetEtter
 import no.nav.pensjon.brev.api.model.MetaforceSivilstand
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 object MaanedligPensjonFoerSkattTabell {

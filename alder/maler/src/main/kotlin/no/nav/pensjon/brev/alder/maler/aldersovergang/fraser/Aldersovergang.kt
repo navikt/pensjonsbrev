@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 // infoGjIkkeInntektsavkorted_002, infoGjInntektsavkortet_001, infoUTAPinnledn_001, infoUTGradertAPinnledn_001, infoUTogAPinnledn_001, infoFamPleierAPinnledn_001, infoAPinnledn_001
 data class InnledningInfoYtelse(

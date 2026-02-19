@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 
 @Suppress("unused")
 data class VedtakAvslagPaaOmsorgsopptjeningDto(

@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 // omregnUTBTDodEPSInnledn_001, omregnUTDodEPSInnledn1_001, omregnBTDodEPSInnledn_001, omregnUTBTSBDodEPSInnledn_001, omregnUTDodEPSInnledn2_001

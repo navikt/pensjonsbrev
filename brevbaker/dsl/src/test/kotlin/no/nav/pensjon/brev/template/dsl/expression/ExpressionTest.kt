@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.dsl.expression
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brevbaker.api.model.ElementTags
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals

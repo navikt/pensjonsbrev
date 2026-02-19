@@ -11,8 +11,8 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
 

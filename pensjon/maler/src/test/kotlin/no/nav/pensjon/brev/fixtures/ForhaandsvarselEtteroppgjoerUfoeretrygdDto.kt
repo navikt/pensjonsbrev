@@ -7,8 +7,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.*
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.Barnetillegg.Saerkullsbarn
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Fratrekk
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto.InntektOgFratrekk.Inntekt
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 
 fun createForhaandsvarselEtteroppgjoerUfoeretrygdDto() =
     ForhaandsvarselEtteroppgjoerUfoeretrygdDto(

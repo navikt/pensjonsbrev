@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 data class UforetrygdEtteroppgjorDetaljBruker(
     val fratrekkliste: FratrekkListe?,

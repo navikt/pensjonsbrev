@@ -19,7 +19,7 @@ import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import org.slf4j.LoggerFactory
 
 class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {

@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element.Outline
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element.ParagraphContent.Text
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer.flattenLiteralConcat
 import no.nav.pensjon.brev.template.render.TemplateDocumentationRenderer.mergeLiterals
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

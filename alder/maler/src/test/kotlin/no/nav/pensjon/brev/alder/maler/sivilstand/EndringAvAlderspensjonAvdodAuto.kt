@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.Institusjon
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto(
     alderspensjonVedVirk = EndringAvAlderspensjonAvdodAutoDto.AlderspensjonVedVirk(

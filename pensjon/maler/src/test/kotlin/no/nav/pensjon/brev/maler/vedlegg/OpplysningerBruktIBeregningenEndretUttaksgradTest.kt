@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningenEndret
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Percent
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource

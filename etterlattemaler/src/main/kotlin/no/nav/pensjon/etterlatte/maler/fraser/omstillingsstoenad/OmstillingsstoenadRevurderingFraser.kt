@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRevurderingRedigertbartUtfall
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRevurderingRedigertbartUtfallSelectors.sisteBeregningsperiode

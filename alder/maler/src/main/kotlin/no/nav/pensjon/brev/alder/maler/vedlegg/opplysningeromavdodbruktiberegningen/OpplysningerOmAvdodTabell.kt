@@ -63,10 +63,10 @@ import no.nav.pensjon.brev.template.dsl.TableHeaderScope
 import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Broek
-import no.nav.pensjon.brevbaker.api.model.BroekSelectors.nevner
-import no.nav.pensjon.brevbaker.api.model.BroekSelectors.teller
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Broek
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappersSelectors.BroekSelectors.nevner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappersSelectors.BroekSelectors.teller
 import java.time.LocalDate
 
 data class OpplysningerOmAvdodTabell(

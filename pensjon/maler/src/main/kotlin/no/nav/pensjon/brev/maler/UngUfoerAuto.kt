@@ -26,7 +26,8 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // BrevTypeKode: PE_BA_04_505
 @TemplateModelHelpers

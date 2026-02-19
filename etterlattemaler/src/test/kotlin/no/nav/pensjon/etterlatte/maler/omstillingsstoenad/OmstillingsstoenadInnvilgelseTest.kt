@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad
 
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode

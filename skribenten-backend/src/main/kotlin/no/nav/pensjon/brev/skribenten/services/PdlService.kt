@@ -15,7 +15,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 

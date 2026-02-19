@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 data class OmstillingsstoenadEtterbetaling(

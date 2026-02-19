@@ -9,8 +9,8 @@ import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlage
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligPensjonFoerSkattDto
 import no.nav.pensjon.brevbaker.api.model.DisplayText
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Percent
 
 @Suppress("unused")
 data class AvslagPaaGjenlevenderettIAlderspensjonDto(

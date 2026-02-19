@@ -711,7 +711,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$CurrencyForma
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-ALD0akc (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-nqG0Erg (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public final fun getDenominator ()Z
 	public fun stableHashCode ()I
 }
@@ -733,7 +733,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$DoubleFormat 
 public final class no/nav/pensjon/brev/template/LocalizedFormatter$FoedselsnummerFormat : no/nav/pensjon/brev/template/LocalizedFormatter {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$FoedselsnummerFormat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-yNUeFbo (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-bW6CiDc (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -775,7 +775,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$ShortDateForm
 public final class no/nav/pensjon/brev/template/LocalizedFormatter$TelefonnummerFormat : no/nav/pensjon/brev/template/LocalizedFormatter {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$TelefonnummerFormat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-OO461GQ (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-bpZjEks (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -919,7 +919,7 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$AbsoluteValue : n
 public final class no/nav/pensjon/brev/template/UnaryOperation$AbsoluteValueKroner : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$AbsoluteValueKroner;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-GMmqa-Q (I)I
+	public fun apply-bP-bUM4 (I)I
 	public fun stableHashCode ()I
 }
 
@@ -1427,12 +1427,12 @@ public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
 	public static final fun equalToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Kroner;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Kroner;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Percent;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Percent;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Year;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Year;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

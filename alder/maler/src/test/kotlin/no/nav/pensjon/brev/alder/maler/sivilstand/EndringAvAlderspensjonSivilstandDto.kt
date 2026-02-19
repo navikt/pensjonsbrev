@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.alder.model.KravArsakType
 import no.nav.pensjon.brev.alder.model.MetaforceSivilstand
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createEndringAvAlderspensjonSivilstandDto() =

@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAF
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.SivilstandAvdoed
 import no.nav.pensjon.brev.alder.model.sivilstand.VedtakOmregningAFPTilEnsligPensjonistAutoDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createVedtakOmregningAFPTilEnsligPensjonistAutoDto() =

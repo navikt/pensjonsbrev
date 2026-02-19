@@ -5,9 +5,9 @@ import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.FellesFactory
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

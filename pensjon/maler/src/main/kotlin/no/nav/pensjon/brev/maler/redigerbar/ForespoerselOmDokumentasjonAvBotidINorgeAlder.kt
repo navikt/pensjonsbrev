@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.FoedselsnummerSelectors.value
+import no.nav.pensjon.brevbaker.api.model.BrevWrappersSelectors.FoedselsnummerSelectors.value
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers

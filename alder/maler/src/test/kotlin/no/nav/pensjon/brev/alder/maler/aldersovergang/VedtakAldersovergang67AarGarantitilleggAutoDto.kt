@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.aldersovergang.AlderspensjonVedVirk
 import no.nav.pensjon.brev.alder.model.aldersovergang.BeregnetPensjonPerManedVedVirk
 import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakAldersovergang67AarGarantitilleggAutoDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createVedtakAldersovergang67AarGarantitilleggAutoDto(): VedtakAldersovergang67AarGarantitilleggAutoDto =

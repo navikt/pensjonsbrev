@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.engine.mock.*
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningInfo
 import no.nav.pensjon.brev.alder.model.aldersovergang.OpptjeningType
 import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakEndringAFPEndretOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createVedtakEndringAFPEndretOpptjeningAutoDto(): VedtakEndringAFPEndretOpptjeningAutoDto =

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.felles
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"

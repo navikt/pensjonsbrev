@@ -144,7 +144,7 @@ import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderA
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
 import no.nav.pensjon.brev.maler.vedlegg.createOpplysningerBruktIBeregningenEndretUttaksgradDto
 import no.nav.pensjon.brev.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 import kotlin.reflect.KClass
 
 object Fixtures : LetterDataFactory {

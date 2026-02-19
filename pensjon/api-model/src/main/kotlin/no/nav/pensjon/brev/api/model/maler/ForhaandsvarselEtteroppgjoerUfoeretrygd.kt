@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler
 
 import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerOmEtteroppgjoeretDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 @Suppress("unused")
 data class ForhaandsvarselEtteroppgjoerUfoeretrygdDto(

@@ -3,7 +3,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType

@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgP
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.aldersovergang.VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 fun createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() =
     VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto(

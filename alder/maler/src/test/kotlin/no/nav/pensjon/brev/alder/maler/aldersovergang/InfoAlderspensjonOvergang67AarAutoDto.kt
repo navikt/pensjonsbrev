@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.fixtures.alder
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 fun createInfoAlderspensjonOvergang67AarAutoDto() =
     InfoAlderspensjonOvergang67AarAutoDto(

@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.template.dsl.expression
 import no.nav.pensjon.brev.template.BinaryOperation
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brevbaker.api.model.IntValue
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Percent
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.IntValue
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
 
 // Comparable
 @JvmName("notEqualToComparable")

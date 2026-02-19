@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDto
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createMaanedligPensjonFoerSkattAFPOffentligDto() =

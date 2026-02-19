@@ -1,5 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 import java.util.Objects
 

@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.*
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createOpphoerBarnetilleggAutoDto() =

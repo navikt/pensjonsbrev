@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.*
 import no.nav.pensjon.brev.api.model.maler.P1RedigerbarDto.AvslaattPensjon
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakV2Dto
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 import java.time.Month
 

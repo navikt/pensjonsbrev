@@ -20,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 
 private object TilleggspensjonenBold : ParagraphPhrase<LangBokmalNynorskEnglish>() {
     override fun ParagraphOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {

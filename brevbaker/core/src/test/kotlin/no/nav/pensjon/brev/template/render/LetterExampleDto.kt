@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.time.LocalDate
 
 fun createLetterExampleDto() =
