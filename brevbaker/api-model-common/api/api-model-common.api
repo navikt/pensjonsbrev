@@ -80,10 +80,6 @@ public final class no/nav/pensjon/brev/api/model/BestillRedigertBrevRequest : no
 public abstract interface class no/nav/pensjon/brev/api/model/BrevRequest {
 }
 
-public abstract interface class no/nav/pensjon/brev/api/model/ISakstype {
-	public abstract fun getKode ()Ljava/lang/String;
-}
-
 public final class no/nav/pensjon/brev/api/model/LetterResponse {
 	public fun <init> ([BLjava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -122,6 +118,10 @@ public final class no/nav/pensjon/brev/api/model/TemplateDescription$Brevkonteks
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori {
+	public abstract fun getKode ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/TemplateDescription$ISakstype {
 	public abstract fun getKode ()Ljava/lang/String;
 }
 

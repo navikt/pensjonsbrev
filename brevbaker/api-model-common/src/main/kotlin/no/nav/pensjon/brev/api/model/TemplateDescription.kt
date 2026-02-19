@@ -72,4 +72,8 @@ interface TemplateDescription {
     interface IBrevkategori {
         val kode: String
     }
+
+    interface ISakstype {
+        val kode: String
+    }
 }

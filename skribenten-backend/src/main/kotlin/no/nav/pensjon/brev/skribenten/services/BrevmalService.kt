@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata

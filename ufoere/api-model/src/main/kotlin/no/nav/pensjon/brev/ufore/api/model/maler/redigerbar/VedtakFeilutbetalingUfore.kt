@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata

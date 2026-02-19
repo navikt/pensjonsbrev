@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata

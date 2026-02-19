@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.SpraakKode

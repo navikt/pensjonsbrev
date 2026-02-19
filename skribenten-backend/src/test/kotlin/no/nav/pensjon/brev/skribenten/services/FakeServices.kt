@@ -5,7 +5,7 @@ import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
