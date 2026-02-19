@@ -105,5 +105,7 @@ data class GarantipensjonSatsTypeText(
                 english { + "ordinary rate" },
             )
         }
+
     }
+
 }
