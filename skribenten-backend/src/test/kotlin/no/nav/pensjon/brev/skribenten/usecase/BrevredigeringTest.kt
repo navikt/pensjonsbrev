@@ -94,9 +94,8 @@ abstract class BrevredigeringTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        p1Service = FakeP1Service()
     )
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService)
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
 
     protected companion object Fixtures {
         init {
@@ -255,6 +254,13 @@ abstract class BrevredigeringTest {
         )
     }
 
+    protected suspend fun slettBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Boolean, BrevredigeringError>? = withPrincipal(principal) {
+        success(brevredigeringService.slettBrev(saksId = brev.info.saksId, brevId = brev.info.id))
+    }
+
     protected suspend fun attester(
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
@@ -286,7 +292,7 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError> = withPrincipal(principal) {
-        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
@@ -297,11 +303,10 @@ abstract class BrevredigeringTest {
         success(Unit)
     }
 
-    /**
-     * TODO: Potensielt midlertidig frem til refaktorering er ferdig
-     */
-    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal) =
-        withPrincipal(principal) { brevredigeringService.hentEllerOpprettPdf(saksId = brev.info.saksId, brevId = brev.info.id) }
+    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+        }
 
     /**
      * TODO: Potensielt midlertidig frem til refaktorering er ferdig

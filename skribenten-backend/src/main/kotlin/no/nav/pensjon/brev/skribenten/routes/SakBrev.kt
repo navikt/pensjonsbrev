@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
 import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
 import no.nav.pensjon.brev.skribenten.usecase.HentBrevAttesteringHandler
 import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.HentEllerOpprettPdfHandler
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
@@ -174,14 +175,9 @@ fun Route.sakBrev(
             route("/pdf") {
                 get {
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
-                    val pdf = brevredigeringService.hentEllerOpprettPdf(sak.saksId, brevId)
 
-                    if (pdf != null) {
-                        call.respond(pdf)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-                    }
+                    val result = brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brevId))
+                    apiRespond(dto2ApiService, result)
                 }
 
                 post("/send") {

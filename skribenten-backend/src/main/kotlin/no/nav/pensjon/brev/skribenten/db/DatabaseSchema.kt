@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -128,16 +127,6 @@ object DocumentTable : LongIdTable() {
         .transform(KrypteringService::dekrypter, KrypteringService::krypter)
     val redigertBrevHash: Column<Hash<Edit.Letter>> = hashColumn("redigertBrevHash")
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
-}
-
-class Document(id: EntityID<Long>) : LongEntity(id) {
-    var brevredigering by BrevredigeringEntity referencedOn DocumentTable.brevredigering
-    var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdfKryptert
-    var redigertBrevHash by DocumentTable.redigertBrevHash
-    var brevdataHash by DocumentTable.brevdataHash
-
-    companion object : LongEntityClass<Document>(DocumentTable)
 }
 
 object MottakerTable : IdTable<BrevId>() {

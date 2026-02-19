@@ -52,7 +52,7 @@ interface Brevredigering {
     val sistredigert: Instant
     val sistReservert: Instant?
     val journalpostId: JournalpostId?
-    val document: Iterable<Document>
+    var document: Dto.Document?
     val mottaker: Mottaker?
     val p1Data: P1Data?
     val valgteVedlegg: ValgteVedlegg?
@@ -103,7 +103,37 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistredigert by BrevredigeringTable.sistredigert
     override var sistReservert by BrevredigeringTable.sistReservert
     override var journalpostId by BrevredigeringTable.journalpostId
-    override val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+
+    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    override var document: Dto.Document?
+        get() = _documentEntityList.firstOrNull()?.toDto()
+        set(documentDto) {
+            if (documentDto == null) {
+                _documentEntityList.forEach { it.delete() }
+                return
+            }
+
+            val existingDocument = _documentEntityList.firstOrNull()
+
+            if (existingDocument != null) {
+                existingDocument.apply {
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+            } else {
+                DocumentEntity.new {
+                    this.brevredigering = this@BrevredigeringEntity
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+                this.refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
+            }
+        }
+
     override val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
     override val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id

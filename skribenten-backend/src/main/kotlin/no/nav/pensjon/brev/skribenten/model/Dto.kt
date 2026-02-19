@@ -52,11 +52,10 @@ object Dto {
     }
 
     data class Document(
-        val brevredigeringId: BrevId,
         val dokumentDato: LocalDate,
         val pdf: ByteArray,
         val redigertBrevHash: Hash<Edit.Letter>,
-        val brevdataHash: Hash<BrevdataResponse.Data>?,
+        val brevdataHash: Hash<BrevdataResponse.Data>,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -64,7 +63,6 @@ object Dto {
 
             other as Document
 
-            if (brevredigeringId != other.brevredigeringId) return false
             if (dokumentDato != other.dokumentDato) return false
             if (!pdf.contentEquals(other.pdf)) return false
             if (redigertBrevHash != other.redigertBrevHash) return false
@@ -74,14 +72,18 @@ object Dto {
         }
 
         override fun hashCode(): Int {
-            var result = brevredigeringId.hashCode()
-            result = 31 * result + dokumentDato.hashCode()
+            var result = dokumentDato.hashCode()
             result = 31 * result + pdf.contentHashCode()
             result = 31 * result + redigertBrevHash.hashCode()
             result = 31 * result + brevdataHash.hashCode()
             return result
         }
     }
+
+    data class HentDocumentResult(
+        val document: Document,
+        val rendretBrevErEndret: Boolean,
+    )
 
     @ConsistentCopyVisibility
     data class Mottaker private constructor(
