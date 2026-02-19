@@ -1,11 +1,23 @@
 #!/bin/sh
+
+# Exit with error if any operation fails
 set -e
 
-DIRS="brevoppskrift-web/bff brevoppskrift-web/frontend skribenten-web/bff skribenten-web/frontend"
+# Directories that should be formatted, linted and typechecked
+DIRS=(
+  brevoppskrift-web/bff
+  brevoppskrift-web/frontend
+  skribenten-web/bff
+  skribenten-web/frontend
+)
 
-for dir in $DIRS; do
+for dir in ${DIRS[@]}; do
+  # Check if the necessary dependency has been installed in respective $dir
   if [ -d "$dir/node_modules/lint-staged" ]; then
     echo 📂 $dir
+    # Run the installed 'lint-staged' package in $dir
+    # Root config for lint-staged in [root]/lint-staged.config.ts
+    # lint-staged only processes commit-ready/staged files in $dir
     npx --prefix $dir lint-staged -v --cwd $dir
   else
     echo "💡 run 'npm --prefix $dir ci' to prepare pre-commit checks"
