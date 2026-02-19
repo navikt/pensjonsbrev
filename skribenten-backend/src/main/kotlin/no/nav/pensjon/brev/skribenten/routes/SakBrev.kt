@@ -111,14 +111,14 @@ fun Route.sakBrev(
             put<Api.DistribusjonstypeRequest>("/distribusjon") { request ->
                 val brevId = call.parameters.brevId()
 
-                val brev = brevredigeringFacade.endreDistribusjonstype(
+                val brevInfo = brevredigeringFacade.endreDistribusjonstype(
                     EndreDistribusjonstypeHandler.Request(
                         brevId = brevId,
                         type = request.distribusjon,
                     )
                 )
 
-                apiRespond(dto2ApiService, brev)
+                apiRespond(dto2ApiService, brevInfo)
             }
 
             put<Api.ValgteVedleggRequest>("/valgteVedlegg") { request ->
@@ -131,20 +131,20 @@ fun Route.sakBrev(
                     )
                 )
 
-                apiRespond(dto2ApiService, brev?.then { it.info })
+                apiRespond(dto2ApiService, brev)
             }
 
             put<Api.OppdaterKlarStatusRequest>("/status") { request ->
                 val brevId = call.parameters.brevId()
 
-                val resultat = brevredigeringFacade.veksleKlarStatus(
+                val brevInfo = brevredigeringFacade.veksleKlarStatus(
                     VeksleKlarStatusHandler.Request(
                         brevId = brevId,
                         klar = request.klar,
                     )
                 )
 
-                apiRespond(dto2ApiService, resultat?.then { it.info })
+                apiRespond(dto2ApiService, brevInfo)
             }
 
             delete {
@@ -161,20 +161,20 @@ fun Route.sakBrev(
             route("/mottaker") {
                 put<Api.OppdaterMottakerRequest> { request ->
                     val brevId = call.parameters.brevId()
-                    val resultat = brevredigeringFacade.endreMottaker(
+                    val brevInfo = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
                     )
 
-                    apiRespond(dto2ApiService, resultat?.then { it.info })
+                    apiRespond(dto2ApiService, brevInfo)
                 }
 
                 delete {
                     val brevId = call.parameters.brevId()
-                    val resultat = brevredigeringFacade.endreMottaker(
+                    val brevInfo = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
                     )
 
-                    apiRespond(dto2ApiService, resultat?.then { it.info })
+                    apiRespond(dto2ApiService, brevInfo)
                 }
             }
 
