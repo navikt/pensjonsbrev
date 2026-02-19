@@ -1,0 +1,368 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Scopes i brevmal-DSL
+
+Scopes definerer hvilke funksjoner og elementer som er tilgjengelige på ulike nivåer i brevmalen.
+Dette sikrer at du kun kan legge til innhold som gir mening i den gitte konteksten.
+
+== Oversikt over scopes
+
+Brevmaler er bygget opp av nøstede scopes som gir deg tilgang til ulike funksjoner:
+
+[cols="2,3"]
+|===
+|Scope |Beskrivelse
+
+|<<TemplateRootScope>>
+|Ytterste scope - inneholder tittel, outline og vedlegg
+
+|<<OutlineScope>>
+|Hoveddelen av brevet - overskrifter og avsnitt
+
+|<<ParagraphScope>>
+|Inne i et avsnitt - tekst, lister, tabeller
+
+|<<TextScope>>
+|Tekst med formatering og variabler
+
+|<<PlainTextScope>>
+|Kun ren tekst uten formatering
+|===
+
+[[TemplateRootScope]]
+== TemplateRootScope
+
+Dette er det ytterste scopet i en mal. Her definerer du brevets hovedstruktur:
+tittel, innhold og vedlegg.
+
+=== Tilgjengelige funksjoner
+
+[source,kotlin]
+----
+createTemplate(...) {
+    // TemplateRootScope
+
+    title {
+        // Brevets tittel (PlainTextScope)
+    }
+
+    outline {
+        // Brevets hovedinnhold (OutlineScope)
+    }
+
+    // Legg til vedlegg
+    includeAttachment(vedlegg, data)
+
+    // Betinget vedlegg
+    includeAttachmentIfNotNull(vedlegg, nullableData)
+}
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+override val template = createTemplate(
+    name = kode.name,
+    letterDataType = MittBrevDto::class,
+    languages = languages(Bokmal, Nynorsk),
+    letterMetadata = LetterMetadata(...)
+) {
+    title {
+        text(
+            bokmal { +"Vedtak om uføretrygd" },
+            nynorsk { +"Vedtak om uføretrygd" }
+        )
+    }
+
+    outline {
+        paragraph {
+            text(bokmal { +"Her kommer brevets innhold." })
+        }
+    }
+
+    includeAttachment(beregningsDetaljer, beregningsData)
+}
+----
+
+TIP: Se xref:dsl/vedlegg.adoc[Vedlegg] for mer om hvordan du bruker vedlegg.
+
+[[OutlineScope]]
+== OutlineScope
+
+OutlineScope er scopet for hoveddelen av brevet. Her kan du legge til overskrifter,
+avsnitt og inkludere fraser.
+
+=== Tilgjengelige funksjoner
+
+[source,kotlin]
+----
+outline {
+    // Overskrifter (nivå 1-3)
+    title1 { /* PlainTextScope */ }
+    title2 { /* PlainTextScope */ }
+    title3 { /* PlainTextScope */ }
+
+    // Avsnitt
+    paragraph { /* ParagraphScope */ }
+
+    // Inkluder OutlinePhrase
+    includePhrase(MinFrase)
+}
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+outline {
+    title1 {
+        text(
+            bokmal { +"Dette har vi bestemt" },
+            nynorsk { +"Dette har vi bestemt" }
+        )
+    }
+
+    paragraph {
+        text(
+            bokmal { +"Vi har behandlet søknaden din." },
+            nynorsk { +"Vi har behandla søknaden din." }
+        )
+    }
+
+    title2 {
+        text(
+            bokmal { +"Hva betyr dette for deg?" },
+            nynorsk { +"Kva betyr dette for deg?" }
+        )
+    }
+
+    paragraph {
+        text(
+            bokmal { +"Fra neste måned får du ny utbetaling." },
+            nynorsk { +"Frå neste månad får du ny utbetaling." }
+        )
+    }
+
+    // Gjenbrukbar frase
+    includePhrase(Felles.RettTilAKlage)
+}
+----
+
+TIP: Se xref:dsl/fraser/oversikt.adoc[Fraser] for mer om gjenbrukbare innholdselementer.
+
+[[ParagraphScope]]
+== ParagraphScope
+
+ParagraphScope brukes inne i avsnitt og gir tilgang til tekst, lister og tabeller.
+
+=== Tilgjengelige funksjoner
+
+[source,kotlin]
+----
+paragraph {
+    // Tekst
+    text(...)
+
+    // Linjeskift
+    newline()
+
+    // Lister
+    list {
+        item { /* tekstinnhold */ }
+    }
+
+    // Tabeller
+    table(header = { ... }) {
+        row { ... }
+    }
+
+    // Skjemafelt (kun redigerbare brev)
+    formText(size = ...) { ... }
+    formChoice { ... }
+
+    // Inkluder fraser
+    includePhrase(MinParagraphFrase)
+}
+----
+
+=== Eksempel med liste
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal { +"For å få ytelsen må du:" },
+        nynorsk { +"For å få ytinga må du:" }
+    )
+
+    list {
+        item {
+            text(
+                bokmal { +"Være mellom 18 og 67 år" },
+                nynorsk { +"Vere mellom 18 og 67 år" }
+            )
+        }
+        item {
+            text(
+                bokmal { +"Ha vært medlem av folketrygden" },
+                nynorsk { +"Ha vore medlem av folketrygda" }
+            )
+        }
+    }
+}
+----
+
+=== Eksempel med tabell
+
+[source,kotlin]
+----
+paragraph {
+    table(
+        header = {
+            column { text(bokmal { +"Periode" }, FontType.BOLD) }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Beløp" }, FontType.BOLD)
+            }
+        }
+    ) {
+        row {
+            cell { text(bokmal { +"Januar" }) }
+            cell { eval(januarBeloep.format()) }
+        }
+    }
+}
+----
+
+TIP: Se xref:dsl/lister.adoc[Lister] og xref:dsl/tabeller.adoc[Tabeller] for mer detaljer.
+
+[[TextScope]]
+== TextScope
+
+TextScope brukes for tekst med variabler og formattering.
+Her kan du blande statisk tekst og dynamiske verdier.
+
+=== Tilgjengelige funksjoner
+
+[source,kotlin]
+----
+text(
+    bokmal {
+        // Statisk tekst
+        +"Du får "
+
+        // Variabler med formattering
+        +beloep.format()
+
+        // Mer tekst
+        +" kroner per måned."
+
+        // Sitattegn
+        +"folketrygdloven".quoted()
+    }
+)
+
+// Enkel evaluering av uttrykk
+eval(beloep.format())
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal {
+            +"Uføregraden din er "
+            +uforegrad.format()
+            +" prosent, og du får utbetalt "
+            +maanedligBeloep.format()
+            +" kroner før skatt."
+        },
+        nynorsk {
+            +"Uføregraden din er "
+            +uforegrad.format()
+            +" prosent, og du får utbetalt "
+            +maanedligBeloep.format()
+            +" kroner før skatt."
+        }
+    )
+}
+----
+
+TIP: Se xref:dsl/formattering/oversikt.adoc[Formattering] for mer om hvordan du formaterer ulike datatyper.
+
+[[PlainTextScope]]
+== PlainTextScope
+
+PlainTextScope er det enkleste tekst-scopet og brukes primært for titler
+og andre steder hvor det kun tillates ren tekst.
+
+=== Tilgjengelige funksjoner
+
+[source,kotlin]
+----
+title1 {
+    // PlainTextScope
+    text(
+        bokmal { +"Overskriftstekst" },
+        nynorsk { +"Overskriftstekst" }
+    )
+
+    // Inkluder PlainTextPhrase
+    includePhrase(MinTekstFrase)
+}
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+title1 {
+    text(
+        bokmal { +"Vedtak om alderspensjon" },
+        nynorsk { +"Vedtak om alderspensjon" },
+        english { +"Decision on retirement pension" }
+    )
+}
+----
+
+== Kontrollstrukturer i alle scopes
+
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[kontrollstrukturer]
+for å styre hvilke elementer som vises basert på data:
+
+[source,kotlin]
+----
+outline {
+    showIf(harBarnetillegg) {
+        title2 {
+            text(bokmal { +"Om barnetillegget ditt" })
+        }
+
+        paragraph {
+            text(bokmal { +"Du får barnetillegg for barna dine." })
+        }
+    }
+
+    ifNotNull(ektefelle) { person ->
+        paragraph {
+            text(bokmal { +"Ektefellen din heter " + person.navn + "." })
+        }
+    }
+
+    forEach(perioder) { periode ->
+        paragraph {
+            text(bokmal { +"Periode: " + periode.fom.format() })
+        }
+    }
+}
+----
+
+== Se også
+
+* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
+* xref:dsl/fraser/oversikt.adoc[Fraser]
+* xref:dsl/formattering/oversikt.adoc[Formattering]
+

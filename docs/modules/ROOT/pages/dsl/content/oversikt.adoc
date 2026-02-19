@@ -1,0 +1,23 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Innhold
+
+Funksjoner for å bygge og tilpasse tekstinnhold dynamisk i brevmaler.
+
+== Oversikt
+
+[cols="2,3,2"]
+|===
+|Funksjon |Bruksområde |Dokumentasjon
+
+|`ifElse`
+|Velg mellom to verdier basert på en betingelse. Nyttig for små tekstforskjeller som entall/flertall.
+|xref:dsl/content/ifElse.adoc[Les mer]
+|===
+
+== Se også
+
+* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
+* xref:dsl/formattering/oversikt.adoc[Formattering]
+

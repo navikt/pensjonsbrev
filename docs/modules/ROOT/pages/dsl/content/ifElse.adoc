@@ -1,0 +1,76 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= ifElse - velg mellom verdier
+
+`ifElse` brukes for å velge mellom to verdier basert på en betingelse.
+Dette er nyttig for å tilpasse tekst dynamisk uten å dele opp teksten i flere text() blokker.
+
+== Forskjell fra showIf
+
+[source,kotlin]
+----
+
+paragraph {
+    showIf(harBarnetillegg) {
+        text(bokmal { +"Du har barnetillegg" })
+    }.orShow {
+        text(bokmal { +"Du har ikke barnetillegg" })
+    }
+}
+
+paragraph {
+    text(
+        bokmal {
+            +"Du "
+            +ifElse(harBarnetillegg, "har", "har ikke")
+            +" barnetillegg."
+        }
+    )
+}
+----
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+val resultat = ifElse(betingelse, verdiHvisSann, verdiHvisUsann)
+----
+
+== Bruk i tekst
+
+Det vanligste bruksområdet er å tilpasse enkeltord eller fraser:
+
+=== Entall/flertall
+
+[source,kotlin]
+----
+text(
+    bokmal {
+        + "Du har " + antallUtbetalinger.format() + " "
+        + ifElse(antallUtbetalinger.equalTo(1), "utbetaling", "utbetalinger")
+        +" denne måneden."
+    },
+    nynorsk {
+        + "Du har " + antallUtbetalinger.format() + " "
+        + ifElse(antallUtbetalinger.equalTo(1), "utbetaling", "utbetalingar")
+        + " denne månaden."
+    },
+    english {
+        + "You have " + antallUtbetalinger.format() + " "
+        + ifElse(antallUtbetalinger.equalTo(1), "payment", "payments")
+        + " this month."
+    }
+)
+----
+
+TIP: Bruk `ifElse` for små variasjoner i teksten, som entall/flertall eller enkeltord.
+
+TIP: For større innholdsforskjeller er `showIf`/`orShow` mer lesbart enn lange `ifElse`-uttrykk.
+
+== Se også
+
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf - for visning/skjuling av innhold]
+* xref:dsl/content/oversikt.adoc[Oversikt innhold]
+* xref:dsl/predikat/oversikt.adoc[Predikater og betingelser]
+

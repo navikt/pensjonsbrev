@@ -1,0 +1,207 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Vedlegg
+
+Vedlegg er separate dokumenter som kan inkluderes i et brev.
+De brukes for tilleggsinformasjon som beregningsdetaljer, rettigheter eller annen utfyllende informasjon.
+
+== Definere et vedlegg
+
+Vedlegg defineres med `createAttachment`:
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+val beregningsDetaljer = createAttachment<LangBokmalNynorsk, BeregningDto>(
+    title = newText(
+        bokmal { +"Beregning av uføretrygd" },
+        nynorsk { +"Utrekning av uføretrygd" }
+    ),
+    includeSakspart = false
+) {
+    paragraph {
+        text(
+            bokmal { +"Her finner du detaljert beregning av uføretrygden din." },
+            nynorsk { +"Her finn du detaljert utrekning av uføretrygda di." }
+        )
+    }
+
+    // Innholdet bruker OutlineScope
+    title1 {
+        text(bokmal { +"Grunnlag" })
+    }
+
+    paragraph {
+        table(header = { ... }) {
+            ...
+        }
+    }
+}
+----
+
+=== Parametere
+
+[cols="2,3"]
+|===
+|Parameter |Beskrivelse
+
+|`title`
+|Tittelen på vedlegget
+
+|`includeSakspart`
+|Om sakspartinformasjon skal vises (navn, adresse osv.)
+
+|`<Data>`
+|Datatypen vedlegget bruker (kan være Unit hvis ingen data trengs)
+|===
+
+== Inkludere vedlegg i brev
+
+=== Alltid inkludert
+
+[source,kotlin]
+----
+override val template = createTemplate(...) {
+    title { ... }
+    outline { ... }
+
+    // Inkluder vedlegg med data
+    includeAttachment(beregningsDetaljer, beregningsData)
+}
+----
+
+=== Betinget inkludering
+
+Med predikat:
+[source,kotlin]
+----
+includeAttachment(
+    beregningsDetaljer,
+    beregningsData,
+    predicate = visBeregning
+)
+----
+
+Hvis data kan være null:
+[source,kotlin]
+----
+// Inkluderes kun hvis data ikke er null
+includeAttachmentIfNotNull(ekstraDetaljer, nullableData)
+----
+
+== Vedlegg med samme data som brevet
+
+Hvis vedlegget bruker samme data som hovedbrevet:
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+val rettigheterVedlegg = createAttachment<LangBokmalNynorsk, MittBrevDto>(
+    title = newText(bokmal { +"Dine rettigheter" }),
+    includeSakspart = false
+) {
+    // Har tilgang til alle felt fra MittBrevDto
+    paragraph {
+        text(bokmal { +"Du har " + uforegrad.format() + " prosent uføregrad." })
+    }
+}
+
+// I malen
+includeAttachment(rettigheterVedlegg, letterData)
+----
+
+== Vedlegg uten data
+
+For vedlegg som ikke trenger data fra brevet:
+
+[source,kotlin]
+----
+val generellInfoVedlegg = createAttachment<LangBokmalNynorsk, Unit>(
+    title = newText(bokmal { +"Generell informasjon" }),
+    includeSakspart = false
+) {
+    paragraph {
+        text(bokmal { +"Her er generell informasjon om NAV." })
+    }
+}
+
+// I malen
+includeAttachment(generellInfoVedlegg, Unit)
+----
+
+== Eksempel: Komplett vedlegg
+
+[source,kotlin]
+----
+@TemplateModelHelpers
+val detaljertBeregning = createAttachment<LangBokmalNynorsk, BeregningDto>(
+    title = newText(
+        bokmal { +"Detaljert beregning" },
+        nynorsk { +"Detaljert utrekning" }
+    ),
+    includeSakspart = false
+) {
+    title1 {
+        text(
+            bokmal { +"Slik har vi beregnet uføretrygden din" },
+            nynorsk { +"Slik har vi rekna ut uføretrygda di" }
+        )
+    }
+
+    paragraph {
+        table(
+            header = {
+                column { text(bokmal { +"Grunnlag" }, FontType.BOLD) }
+                column(alignment = ColumnAlignment.RIGHT) {
+                    text(bokmal { +"Beløp" }, FontType.BOLD)
+                }
+            }
+        ) {
+            row {
+                cell { text(bokmal { +"Grunnbeløp" }) }
+                cell { eval(grunnbeloep.format()) }
+            }
+            row {
+                cell { text(bokmal { +"Din uføregrad" }) }
+                cell { eval(uforegrad.format()) }
+            }
+        }
+    }
+
+    showIf(harBarnetillegg) {
+        title2 {
+            text(bokmal { +"Barnetillegg" })
+        }
+
+        paragraph {
+            text(bokmal { +"Du får barnetillegg for følgende barn:" })
+
+            list {
+                forEach(barn) { enkeltBarn ->
+                    item {
+                        text(bokmal { +enkeltBarn.navn })
+                    }
+                }
+            }
+        }
+    }
+}
+----
+
+== Beste praksis
+
+=== Bruk vedlegg for utfyllende informasjon
+Hold hovedbrevet kort og konsist. Flytt detaljer til vedlegg.
+
+=== Gi vedlegg beskrivende titler
+Tittelen bør tydelig si hva vedlegget inneholder.
+
+=== Vurder om vedlegget alltid er relevant
+Bruk betinget inkludering hvis vedlegget kun er relevant i noen tilfeller.
+
+== Se også
+
+* xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
+

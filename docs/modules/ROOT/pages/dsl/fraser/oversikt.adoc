@@ -1,0 +1,106 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Fraser
+
+Fraser er gjenbrukbare innholdsblokker som kan inkluderes i flere brevmaler.
+De sikrer konsistent innhold på tvers av brev og gjør vedlikehold enklere.
+
+== Oversikt over fraser
+
+[cols="2,3,2"]
+|===
+|Type |Kan inneholde |Kan inkluderes i
+
+|xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+|Avsnitt, overskrifter (title1/2/3)
+|`OutlineScope`
+
+|xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+|Tekst, lister, tabeller, skjemafelt
+|`ParagraphScope`
+
+|xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+|Tekst med variabler, formattering, linjeskift
+|`TextScope`, `ParagraphScope`
+
+|xref:dsl/fraser/plainTextPhrase.adoc[PlainTextOnlyPhrase]
+|Tekst med variabler
+|`PlainTextScope`, `TextScope`, `ParagraphScope`
+|===
+
+== Hvorfor bruke fraser?
+
+=== Konsistens
+Samme tekst skrives kun én gang og gjenbrukes i alle brev som trenger den.
+
+=== Vedlikehold
+Endringer i en frase oppdaterer automatisk alle brev som bruker den.
+
+=== Lesbarhet
+Maler blir kortere og lettere å forstå.
+
+== Velge riktig frasetype
+
+[source,kotlin]
+----
+// OutlinePhrase - for avsnitt og overskrifter
+outline {
+    includePhrase(MinOutlinePhrase)
+}
+
+// ParagraphPhrase - for innhold i avsnitt
+paragraph {
+    includePhrase(MinParagraphPhrase)
+}
+
+// TextOnlyPhrase - for tekstfragmenter
+item {
+    includePhrase(InformasjonTilDegSomBorIUtlandet)
+    includePhrase(InformasjonTilDegSomBorIUtlandet)
+}
+
+// PlainTextOnlyPhrase - for tekst som ikke kan inneholde formattering
+// , f.eks hoved-tittel på ett brev
+title {
+    includePhrase(OmsorgEgenerklaeringTittel)
+}
+----
+
+== Organisering av fraser
+
+Det anbefales å organisere fraser der de hører hjemme domene-messig:
+
+----
+maler/
+├── fraser/
+│   ├── felles/
+│   │   ├── RettTilAKlage.kt
+│   │   ├── HarDuSpoersmaal.kt
+│   │   └── RettTilInnsyn.kt
+│   ├── uforetrygd/
+│   │   └── Inntektsavkorting.kt
+│   └── barnetillegg/
+│       └── BarnetilleggInfo.kt
+└── MittBrev.kt
+----
+
+[TIP]
+.Navngivning
+====
+Bruk beskrivende navn som sier hva frasen inneholder, f.eks. `RettTilAKlage` i stedet for `Frase1`.
+====
+
+[TIP]
+.Hold fraser fokuserte
+====
+Hver frase bør ha ett tydelig ansvar. Lag separate fraser for klage, spørsmål og innsyn i stedet for én stor `KlageOgSpoersmaalOgInnsyn`.
+====
+
+Se de individuelle sidene for eksempler på definisjon og bruk:
+
+* xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+* xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+* xref:dsl/fraser/plainTextPhrase.adoc[PlainTextOnlyPhrase]
+

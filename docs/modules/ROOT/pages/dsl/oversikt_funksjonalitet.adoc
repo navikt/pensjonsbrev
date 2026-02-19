@@ -1,0 +1,133 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Brevmal struktur
+
+En brevmal inneholder en nøstet struktur av elementer som brukes til å representere innhold.
+Strukturen består av ulike DSL-scopes som gir deg tilgang til relevante funksjoner på hvert nivå.
+
+TIP: Se xref:dsl/quickstart.adoc[Kom i gang] for en rask introduksjon til mal-utvikling.
+
+== Scopes og funksjoner
+
+Brevmal-DSL'en definerer ulike scopes hvor du kan definere ulike typer innhold.
+DSL'en gjør kun tilgjengelig det innholdet som kan eksistere i en gitt kontekst,
+noe som gjør det enklere å utforske muligheter og unngå feil.
+
+For detaljert dokumentasjon av hvert scope, se xref:dsl/scopes.adoc[Scopes].
+
+=== Kontrollstrukturer
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[kontrollstrukturer]
+for å styre visning av innhold:
+
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf] - betinget visning
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull] - null-sikker visning
+* xref:dsl/kontroll-struktur/forEach.adoc[forEach] - løkker over lister
+* xref:dsl/content/ifElse.adoc[ifElse] - velg mellom verdier
+
+=== Scope-hierarki
+
+[source]
+----
+createTemplate(...){ TemplateRootScope }
+createAttachment(...){ OutlineScope }
+----
+
+==== xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
+Ytterste scope - definerer brevets struktur:
+[source]
+----
+TemplateRootScope {
+    title { PlainTextScope }
+    outline { OutlineScope }
+    includeAttachment
+    includeAttachmentIfNotNull
+}
+----
+Se: xref:dsl/vedlegg.adoc[]
+
+==== xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
+Hoveddelen av brevet - overskrifter og avsnitt:
+[source]
+----
+OutlineScope {
+    includePhrase(OutlinePhrase) <1>
+    title1 { PlainTextScope }
+    title2 { PlainTextScope }
+    title3 { PlainTextScope }
+    paragraph { ParagraphScope }
+}
+----
+(1) : xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+
+==== xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+Inne i avsnitt - tekst, lister, tabeller:
+[source]
+----
+ParagraphScope {
+    includePhrase([Paragraph, Text, PlainText]Phrase)
+    text(...)
+    list { ... }        // Se: xref:dsl/lister.adoc[Lister]
+    table { ... }       // Se: xref:dsl/tabeller.adoc[Tabeller]
+    formText            // For redigerbare brev
+    formChoice          // For redigerbare brev
+    newline
+}
+----
+
+==== xref:dsl/scopes.adoc#TextScope[TextScope]
+Tekst med variabler og formattering:
+[source]
+----
+TextScope {
+    includePhrase([Text, PlainText]Phrase)
+    text(...)           // Se: xref:dsl/formattering/oversikt.adoc[Formattering]
+}
+----
+
+==== xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
+Kun ren tekst (brukes i titler):
+[source]
+----
+PlainTextScope {
+    includePhrase(PlainTextPhrase)
+    text(...)
+}
+----
+
+== Fraser
+
+Fraser er gjenbrukbare innholdsblokker. Se xref:dsl/fraser/oversikt.adoc[Fraser] for full dokumentasjon.
+
+[cols="2,2,2"]
+|===
+|Frasetype |Brukes i |Dokumentasjon
+
+|OutlinePhrase
+|OutlineScope
+|xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+
+|ParagraphPhrase
+|ParagraphScope
+|xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+
+|TextOnlyPhrase
+|TextScope
+|xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+
+|PlainTextPhrase
+|PlainTextScope
+|xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase]
+|===
+
+== Uttrykk og predikater
+
+For å sammenligne verdier og lage betingelser, se xref:dsl/predikat/oversikt.adoc[Predikater og sammenligninger].
+
+== Videre lesing
+
+* xref:dsl/stegvis_guide_nytt_brev.adoc[Steg-for-steg guide til nytt brev]
+* xref:dsl/scopes.adoc[Detaljert dokumentasjon av scopes]
+* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
+* xref:dsl/fraser/oversikt.adoc[Fraser]
+* xref:dsl/formattering/oversikt.adoc[Formattering]

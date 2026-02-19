@@ -1,0 +1,111 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= ifNotNull - håndtering av nullable verdier
+
+`ifNotNull` brukes for å trygt håndtere verdier som kan være null.
+Innholdet vises kun hvis verdien finnes, og du får tilgang til den ikke-nullable verdien inne i blokken.
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+ifNotNull(nullableVerdi) { verdi ->
+    // Her er verdi garantert ikke null
+    paragraph {
+        text(bokmal { +"Verdien er: " + verdi })
+    }
+}
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+// Anta at ektefelle kan være null i datamodellen
+ifNotNull(ektefelle) { person ->
+    paragraph {
+        text(
+            bokmal { +"Ektefellen din, " + person.navn + ", er også registrert i saken." },
+            nynorsk { +"Ektefellen din, " + person.navn + ", er også registrert i saka." }
+        )
+    }
+}
+----
+
+== Flere nullable verdier
+
+Du kan sjekke flere nullable verdier samtidig. Blokken kjøres kun hvis *alle* verdiene finnes:
+
+[source,kotlin]
+----
+ifNotNull(trygdetidFom, trygdetidTom) { fom, tom ->
+    paragraph {
+        text(
+            bokmal {
+                + "Du har vært medlem av folketrygden fra "
+                + fom.format() + " til " + tom.format() + "."
+            }
+        )
+    }
+}
+----
+
+== Med alternativ (orShow)
+
+Bruk `orShow` for å vise innhold når verdien er null:
+
+[source,kotlin]
+----
+ifNotNull(avtaleland) { land ->
+    paragraph {
+        text(bokmal { +"Vedtaket er gjort etter avtalen med " + land + "." })
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Vedtaket er gjort etter norsk lov." })
+    }
+}
+----
+
+== Kjeding med orIfNotNull
+
+For å prøve flere nullable verdier i rekkefølge:
+
+[source,kotlin]
+----
+ifNotNull(primaerAdresse) { adresse ->
+    text(bokmal { +"Adressen din er: " + adresse })
+}.orIfNotNull(sekundaerAdresse) { adresse ->
+    text(bokmal { +"Alternativ adresse: " + adresse })
+}.orShow {
+    text(bokmal { +"Vi har ingen registrert adresse." })
+}
+----
+
+== Kombinere med showIf
+
+Du kan nøste `ifNotNull` og `showIf`:
+
+[source,kotlin]
+----
+ifNotNull(barnetillegg) { bt ->
+    showIf(bt.beloep.greaterThan(0.expr())) {
+        paragraph {
+            text(bokmal { +"Du får " + bt.beloep.format() + " kroner i barnetillegg." })
+        }
+    }
+}
+----
+== Beste praksis
+
+=== Grupper relaterte nullable felter
+
+TIP: Hvis flere felter alltid hører sammen, grupper dem i datamodellen istedenfor.
+
+== Se også
+
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf - betinget visning]
+* xref:dsl/kontroll-struktur/forEach.adoc[forEach - løkker]
+* xref:dsl/kontroll-struktur/oversikt.adoc[Oversikt kontrollstrukturer]
+

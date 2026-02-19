@@ -1,0 +1,84 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= showIf - betinget visning
+
+`showIf` brukes for å vise innhold kun når en betingelse er oppfylt.
+Dette er den mest brukte kontrollstrukturen i brevmaler.
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+showIf(betingelse) {
+    // Innhold som vises når betingelsen er sann
+}
+----
+Se: xref:dsl/predikat/oversikt.adoc[]
+
+
+=== Eksempel
+
+[source,kotlin]
+----
+outline {
+    showIf(harBarnetillegg) {
+        title2 {
+            text(
+                bokmal { +"Barnetillegg" },
+                nynorsk { +"Barnetillegg" }
+            )
+        }
+
+        paragraph {
+            text(
+                bokmal { +"Du får barnetillegg fordi du har barn under 18 år." },
+                nynorsk { +"Du får barnetillegg fordi du har barn under 18 år." }
+            )
+        }
+    }
+}
+----
+
+== showIf med orShow (if/else)
+
+Bruk `orShow` for å vise alternativt innhold når betingelsen ikke er oppfylt:
+
+[source,kotlin]
+----
+showIf(borINorge) {
+    paragraph {
+        text(bokmal { +"Utbetaling skjer den 20. hver måned." })
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Utbetaling til utenlandsk konto kan ta lengre tid." })
+    }
+}
+----
+
+== Kjeding med orShowIf
+
+For flere gjensidig utelukkende betingelser, bruk `orShowIf`:
+
+[source,kotlin]
+----
+showIf(sivilstand.equalTo(Sivilstand.GIFT)) {
+    text(bokmal { +"Du er gift." })
+}.orShowIf(sivilstand.equalTo(Sivilstand.SAMBOER)) {
+    text(bokmal { +"Du er samboer." })
+}.orShowIf(sivilstand.equalTo(Sivilstand.SKILT)) {
+    text(bokmal { +"Du er skilt." })
+}.orShow {
+    text(bokmal { +"Du er enslig." })
+}
+----
+
+TIP: Navngi komplekse betingelser i variabler for lesbarhet, og evt flytt de inn i fagsystem om mulig.
+
+== Se også
+
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull - håndtering av nullable verdier]
+* xref:dsl/predikat/oversikt.adoc[Predikater og sammenligninger]
+* xref:dsl/kontroll-struktur/oversikt.adoc[Oversikt kontrollstrukturer]
+

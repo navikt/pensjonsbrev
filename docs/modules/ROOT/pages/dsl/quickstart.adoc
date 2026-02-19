@@ -1,0 +1,102 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Utvikling av brevmaler i brevbakeren
+
+Brevbakeren inneholder brevmaler i form av vår egen Kotlin DSL(Domain specific language)
+DSL'en er utviklet for å kun inneholde de elementene vi trenger for å representere innholdet i brev i nav.
+
+Vi har bevisst utelatt funksjonalitet som ikke direkte har med visningslogikk å gjøre, f. eks aritmetiske operasjoner for tall.
+
+Mal-spåket er laget spesifikt for å gjøre det mindre sannsynlig at man implementerer tekniske feil i maler og at disse fører til at et brev produserers med uheldige feil og mangler. Dette inkluderer blant null-safety, slik at det ikke er mulig å bruke nullable inndata på en måte hvor man risikerer NPE eller at teksten "null" havner i produserte brev.
+
+Informasjonsmodellen bør ta hensyn til virkelighetsbildet når det gjelder hvordan data er knyttet sammen og nullabillity. For eksempel om det ikke gir mening å ha verdi A uten verdi B så bør det vurderes om disse skal grupperes sammen (i en nøstet data-klasse). Om brevet krever en verdi C så bør den vær non-nullable slik at brevproduksjonen kan feile allerede der hvor man populerer opp informasjonsmodellen.
+
+Denne guiden er laget for å komme i gang med mal-utvikling, men inneholder ikke en komplett liste over funksjonalitet.
+
+== Eksempel på en enkel mal
+Her er ett eksempel på en veldig lite komplisert mal:
+[%nowrap, kotlin, ]
+----
+// Annotasjon som gjør at malen blir plukket opp av en kode-generator. Det vil da genereres extension functions og properties basert på data-klassen som er angitt for malen som gir deg lett tilgang til feltene i en dataklasse i scopet til malen.
+@TemplateModelHelpers                 // Det finnes også RedigerbarTemplate som er for brev som kan redigeres i skribenten.
+object EksempelBrev : AutobrevTemplate<EksempelDto> {
+
+    // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
+    override val kode = Aldersbrevkoder.AutoBrev.EKSEMPEL_BREV
+
+    override val template = createTemplate(
+        // Metadata
+
+        // Støttede språk som type-parameter. Disse brukes for å sjekke at du har inkludert innhold for alle språk-lag ved compile-time
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+
+            //Tittel som settes i arkivet. Det er denne tittelen som vises for saksbehandler.
+            displayTitle = "Nav har beregnet for høyt gjenlevendetillegg",
+
+            // Distribusjonstype. Avgjør hvordan varslingen ved distribusjon blir. [VEDTAK,VIKTIG,ANNET]
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+
+            // VEDTAKSBREV,INFORMASJONSBREV fører til endringer i signatur/slutt-tekst og første-side
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+    ) {
+
+        // Her starter DSL.
+
+        // Hoved-tittel til brevet
+        title {
+            text(
+                bokmal { + "Nav har endret utbetalingen din" },
+                nynorsk { + "Nav har endret utbetalingen din" },
+                english { + "Nav har endret utbetalingen din" }
+            )
+        }
+
+        outline {
+            title1 {
+                text(
+                    bokmal { + "Vedtak" },
+                    nynorsk { + "Vedtak" },
+                    english { + "Decision" }
+                )
+            }
+            paragraph {
+                text(
+                    // beloep er en generert funksjon som plukker feltet. Alle verdier må formatteres riktig gitt visnings-språk
+                    // , så ulike typer har egen format(). Her vil f.eks Kroner(1000) bli vist som "1 000" på norsk
+                    bokmal { + "Du får "+ beloep.format() + " kroner før skatt." },
+                    nynorsk { + "Du får "+ beloep.format() + " kroner før skatt." },
+                    english { + "You will receive NOK "+ beloep.format() + " before tax." }
+                )
+            }
+            // includePhrase inkluderer gjenbrukbare blokker med innhold
+            includePhrase(RettTilAAKlage)
+            includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(HarDuSpoersmaalAlder)
+        }
+
+        // inkluderer vedlegg
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
+    }
+}
+
+// Data modell som bestillende system sender til brevbakeren.
+// Denne legges inn i api-model og selectors må genereres deretter.
+data class EksempelDto(
+    val beloep: Kroner
+)
+----
+
+Malen over er bare en liten del av den fullstendige funksjonaliteten brevmal-dsl'en har å tilby.
+
+Videre lesing:
+
+* xref:dsl/stegvis_guide_nytt_brev.adoc[Steg-for-steg guide til nytt brev]
+* xref:dsl/oversikt_funksjonalitet.adoc[Oversikt over DSL-funksjonalitet]
+* xref:dsl/scopes.adoc[Scopes - hvor kan du bruke hva?]
+* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer (showIf, forEach, etc.)]
+* xref:dsl/fraser/oversikt.adoc[Fraser - gjenbrukbart innhold]
+* xref:dsl/formattering/oversikt.adoc[Formattering av verdier]
+

@@ -1,0 +1,403 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Formattering
+
+Formattering brukes for å konvertere verdier fra datamodellen til lesbar tekst.
+Alle verdier må formateres før de kan vises i brevet.
+
+== Tall
+
+=== Heltall (Int)
+
+Heltall formateres med `format()`.
+
+.Input data
+[source,kotlin]
+----
+val uforegrad: Expression<Int> = 75.expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Du har " + uforegrad.format() + " prosent uføregrad." },
+    english { +"You have a " + uforegrad.format() + " percent degree of disability." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Du har 75 prosent uføregrad.
+
+|English
+|You have a 75 percent degree of disability.
+|===
+
+=== Kroner
+
+`Kroner`-typen formateres automatisk med tusenskilletegn og valutanavn.
+
+.Input data
+[source,kotlin]
+----
+val beloep: Expression<Kroner> = Kroner(12345).expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Du får utbetalt " + beloep.format() + "." },
+    english { +"You will receive " + beloep.format() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Du får utbetalt 12 345 kroner.
+
+|English
+|You will receive NOK 12,345.
+|===
+
+TIP: Bruk `format(denominator = false)` for å utelate "kroner"/"NOK".
+
+=== Desimaltall (Double)
+
+Desimaltall formateres med angitt antall desimaler via `scale`-parameteren.
+
+.Input data
+[source,kotlin]
+----
+val prosent: Expression<Double> = 66.666.expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Prosentsatsen er " + prosent.format(scale = 2) + " %." },
+    english { +"The percentage is " + prosent.format(scale = 2) + " %." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Prosentsatsen er 66,67 %.
+
+|English
+|The percentage is 66.67 %.
+|===
+
+== Datoer
+
+=== LocalDate - full dato
+
+Standard datoformatering med `format()`.
+
+.Input data
+[source,kotlin]
+----
+val virkningFom: Expression<LocalDate> = LocalDate.of(2025, 1, 15).expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Vedtaket gjelder fra " + virkningFom.format() + "." },
+    english { +"The decision is effective from " + virkningFom.format() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Vedtaket gjelder fra 15. januar 2025.
+
+|English
+|The decision is effective from 15 January 2025.
+|===
+
+=== LocalDate - kort format
+
+Bruk `format(short = true)` for kortere datoformat.
+
+.Input data
+[source,kotlin]
+----
+val dato: Expression<LocalDate> = LocalDate.of(2025, 1, 15).expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Dato: " + dato.format(short = true) },
+    english { +"Date: " + dato.format(short = true) }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Dato: 15.01.2025
+
+|English
+|Date: 15/01/2025
+|===
+
+=== LocalDate - måned og år
+
+Bruk `formatMonthYear()` for å vise kun måned og år.
+
+.Input data
+[source,kotlin]
+----
+val dato: Expression<LocalDate> = LocalDate.of(2025, 1, 15).expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Utbetalingen starter i " + dato.formatMonthYear() + "." },
+    english { +"Payment starts in " + dato.formatMonthYear() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Utbetalingen starter i januar 2025.
+
+|English
+|Payment starts in January 2025.
+|===
+
+=== Month - månedsnavn
+
+Formater en `Month`-verdi til månedsnavn.
+
+.Input data
+[source,kotlin]
+----
+val maaned: Expression<Month> = Month.JANUARY.expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Vedtaket gjelder fra " + maaned.format() + "." },
+    english { +"The decision is effective from " + maaned.format() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Vedtaket gjelder fra januar.
+
+|English
+|The decision is effective from January.
+|===
+
+TIP: Bruk `format(short = true)` for forkortet månedsnavn (f.eks. "jan." / "Jan").
+
+=== Year - årstall
+
+`Year`-typen er en wrapper rundt `Int` og formateres med `format()`.
+
+.Input data
+[source,kotlin]
+----
+val inntektsaar: Expression<Year> = Year(2025).expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Inntektsåret " + inntektsaar.format() },
+    english { +"Income year " + inntektsaar.format() }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Inntektsåret 2025
+
+|English
+|Income year 2025
+|===
+
+=== Telefonnummer
+
+Telefonnummer formateres med mellomrom for lesbarhet.
+
+.Input data
+[source,kotlin]
+----
+val telefon: Expression<Telefonnummer> = Telefonnummer("55553333").expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Ring oss på " + telefon.format() + "." },
+    english { +"Call us at " + telefon.format() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Ring oss på 55 55 33 33.
+
+|English
+|Call us at 55 55 33 33.
+|===
+
+=== Fødselsnummer
+
+Fødselsnummer formateres med mellomrom mellom fødselsdato og personnummer.
+
+.Input data
+[source,kotlin]
+----
+val fnr: Expression<Foedselsnummer> = Foedselsnummer("12345678901").expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Fødselsnummer: " + fnr.format() },
+    english { +"National identity number: " + fnr.format() }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Fødselsnummer: 123456 78901
+
+|English
+|National identity number: 123456 78901
+|===
+
+== Samlinger
+
+=== Collection<String>
+
+Lister av strenger formateres med komma og "og"/"and" før siste element.
+
+.Input data
+[source,kotlin]
+----
+val ytelser: Expression<Collection<String>> = listOf("uføretrygd", "barnetillegg", "gjenlevendetillegg").expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Du mottar " + ytelser.format() + "." },
+    english { +"You receive " + ytelser.format() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Du mottar uføretrygd, barnetillegg og gjenlevendetillegg.
+
+|English
+|You receive uføretrygd, barnetillegg and gjenlevendetillegg.
+|===
+
+== Tekst med sitattegn
+
+Bruk `quoted()` for å legge til språkriktige anførselstegn rundt tekst.
+Kan også brukes på expressions
+
+.Input data
+[source,kotlin]
+----
+val skjemanavn: Expression<String> = "Søknad om uføretrygd".expr()
+----
+
+.Kode
+[source,kotlin]
+----
+text(
+    bokmal { +"Fyll ut skjemaet " + skjemanavn.quoted() + "." },
+    english { +"Complete the form " + skjemanavn.quoted() + "." }
+)
+
+//alternativt:
+
+text(
+    bokmal { +"Fyll ut skjemaet " + "Søknad om uføretrygd".quoted() + "." },
+    english { +"Complete the form " + "Søknad om uføretrygd".quoted() + "." }
+)
+----
+
+.Output
+[cols="1,2"]
+|===
+|Språk |Resultat
+
+|Bokmål
+|Fyll ut skjemaet «Søknad om uføretrygd».
+
+|English
+|Complete the form 'Søknad om uføretrygd'.
+|===
+
+NOTE: Bokmål og nynorsk bruker «» (guillemets), mens engelsk bruker '' (enkle anførselstegn).
+
+== Se også
+
+* xref:dsl/scopes.adoc#TextScope[TextScope]

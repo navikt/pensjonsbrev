@@ -1,0 +1,199 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Predikater og sammenligninger
+
+Predikater brukes for å lage betingelser som styrer visning av innhold.
+Disse returnerer `Expression<Boolean>` som kan brukes i xref:dsl/kontroll-struktur/showIf.adoc[showIf] og andre kontrollstrukturer.
+
+== Sammenligningsoperatorer
+
+[cols="2,2,3"]
+|===
+|Funksjon |Betydning |Eksempel
+
+|`equalTo()`
+|Er lik
+|`sivilstand.equalTo(Sivilstand.GIFT)`
+
+|`notEqualTo()`
+|Er ikke lik
+|`status.notEqualTo(Status.AVSLUTTET)`
+
+|`greaterThan()`
+|Større enn
+|`uforegrad.greaterThan(50.expr())`
+
+|`lessThan()`
+|Mindre enn
+|`alder.lessThan(67.expr())`
+
+|`greaterThanOrEqual()`
+|Større enn eller lik
+|`beloep.greaterThanOrEqual(minsteBeloep)`
+
+|`lessThanOrEqual()`
+|Mindre enn eller lik
+|`antall.lessThanOrEqual(5.expr())`
+|===
+
+=== Eksempler
+
+[source,kotlin]
+----
+// Sjekk uføregrad
+showIf(uforegrad.greaterThan(50.expr())) {
+    text(bokmal { +"Du har høy uføregrad." })
+}
+
+// Sjekk sivilstand
+showIf(sivilstand.equalTo(Sivilstand.GIFT)) {
+    text(bokmal { +"Du er gift." })
+}
+----
+
+== Logiske operatorer
+
+[cols="2,2,3"]
+|===
+|Operator |Betydning |Eksempel
+
+|`and`
+|Begge må være sanne
+|`harBarn and borINorge`
+
+|`or`
+|Minst én må være sann
+|`erPensjonist or erUfoer`
+
+|`not()`
+|Motsatt verdi
+|`not(harSamboer)`
+|===
+
+=== Eksempler
+
+[source,kotlin]
+----
+// Kombinere betingelser
+showIf(harBarnetillegg and borINorge) {
+    text(bokmal { +"Du får norsk barnetillegg." })
+}
+
+// Eller-betingelse
+showIf(erPensjonist or erUfoer) {
+    text(bokmal { +"Du mottar ytelse fra NAV." })
+}
+
+// Negering
+showIf(not(harSamboer)) {
+    text(bokmal { +"Du er enslig." })
+}
+
+// Kompleks kombinasjon
+showIf((harBarn and borINorge) or harSaerligTillegg) {
+    text(bokmal { +"Du kan ha rett til tillegg." })
+}
+----
+
+== Null-sjekker
+
+[cols="2,3"]
+|===
+|Funksjon |Beskrivelse
+
+|`notNull()`
+|Returnerer true hvis verdien ikke er null
+
+|`isNull()`
+|Returnerer true hvis verdien er null
+|===
+
+[source,kotlin]
+----
+showIf(ektefelle.notNull()) {
+    text(bokmal { +"Du har registrert ektefelle." })
+}
+
+showIf(barnetillegg.isNull()) {
+    text(bokmal { +"Du har ikke barnetillegg." })
+}
+----
+
+TIP: For å bruke verdien hvis den finnes, bruk xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull] i stedet.
+
+== Enum-operasjoner
+
+=== isOneOf
+
+Sjekk om en enum-verdi er én av flere verdier:
+
+[source,kotlin]
+----
+showIf(sivilstand.isOneOf(Sivilstand.GIFT, Sivilstand.REGISTRERT_PARTNER)) {
+    text(bokmal { +"Du er gift eller har registrert partner." })
+}
+
+showIf(ytelse.isOneOf(YtelseType.UFORETRYGD, YtelseType.ALDERSPENSJON)) {
+    text(bokmal { +"Du mottar pensjon eller uføretrygd." })
+}
+----
+
+== Samlingsoperasjoner
+
+[cols="2,3"]
+|===
+|Funksjon |Beskrivelse
+
+|`isEmpty()`
+|Returnerer true hvis samlingen er tom
+
+|`isNotEmpty()`
+|Returnerer true hvis samlingen har elementer
+
+|`size()`
+|Returnerer antall elementer
+|===
+
+[source,kotlin]
+----
+showIf(barn.isNotEmpty()) {
+    text(bokmal { +"Du har registrerte barn." })
+
+    list {
+        forEach(barn) { enkeltBarn ->
+            item { text(bokmal { +enkeltBarn.navn }) }
+        }
+    }
+}
+
+showIf(perioder.size().greaterThan(1.expr())) {
+    text(bokmal { +"Du har flere perioder." })
+}
+----
+
+== Navngi betingelser
+
+For lesbarhet kan du navngi komplekse betingelser:
+
+[source,kotlin]
+----
+// ✅ Tydelig hva betingelsen sjekker
+val harRettTilBarnetillegg = harBarn and borINorge and not(harSaerkullavtale)
+val skalRedusereYtelse = harInntekt and inntekt.greaterThan(fribeloep)
+
+showIf(harRettTilBarnetillegg) {
+    includePhrase(BarnetilleggInfo)
+}
+
+showIf(skalRedusereYtelse) {
+    includePhrase(InntektsavkortingInfo)
+}
+----
+
+== Se også
+
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull]
+* xref:dsl/kontroll-struktur/oversikt.adoc[Kontrollstrukturer]
+

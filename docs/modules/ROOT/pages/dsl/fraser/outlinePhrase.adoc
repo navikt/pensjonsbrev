@@ -1,0 +1,82 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= OutlinePhrase
+
+I `OutlinePhrase` kan man inkludere innhold som defineres av OutlineScope. Den kan brukes i `OutlineScope`.
+
+== Definere en OutlinePhrase
+
+=== Enkel frase uten parametere
+
+[source,kotlin]
+----
+object RettTilAKlage : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        title1 {
+            text(
+                bokmal { +"Du har rett til å klage" },
+                nynorsk { +"Du har rett til å klage" }
+            )
+        }
+        paragraph {
+            text(
+                bokmal { +"Du kan klage innen 6 uker." },
+                nynorsk { +"Du kan klage innan 6 veker." }
+            )
+        }
+    }
+}
+----
+
+=== Frase med parametere
+
+[source,kotlin]
+----
+data class BeregningsDetaljer(
+    val uforegrad: Expression<Int>,
+    val beloep: Expression<Kroner>
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        paragraph {
+            text(
+                bokmal { +"Din uføregrad er " + uforegrad.format() + " prosent." },
+                nynorsk { +"Uføregraden din er " + uforegrad.format() + " prosent." }
+            )
+        }
+        paragraph {
+            text(
+                bokmal { +"Beløp: " + beloep.format() + " kroner" },
+                nynorsk { +"Beløp: " + beloep.format() + " kroner" }
+            )
+        }
+    }
+}
+----
+
+== Bruke OutlinePhrase
+
+=== Enkel inkludering
+
+[source,kotlin]
+----
+outline {
+    includePhrase(RettTilAKlage)
+}
+----
+
+=== Med parametere
+
+[source,kotlin]
+----
+outline {
+    includePhrase(BeregningsDetaljer(uforegrad, beregnetBeloep))
+}
+----
+
+== Se også
+
+* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
+* xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase]
+* xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
+

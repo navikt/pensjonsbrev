@@ -1,0 +1,150 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Hvordan utvikle en ny brevmal steg for steg
+
+== Steg 1: Opprette en ny brevmal
+
+=== 1.1 Opprett Dto(data-klasse) for brevet i API-modellen
+
+Først må du definere dataklassen som beskriver informasjonsbehovet til malen.
+
+I api-model prosjektet, opprett en ny data-klasse, og fyll den ut etterhvert som du skriver brevet:
+
+Når man legger til nye verdier underveis er det nødvendig å publisere api-modellen lokalt og bygge mal-modulen på nytt.
+
+[source,kotlin]
+----
+// I f.eks pensjon/brevbaker/api/model/maler/
+data class MittBrevDto(
+    val uforegrad: Int,
+    val virkningFom: LocalDate,
+    val maanedligBeloep: Kroner,
+    val harBarnetillegg: Boolean,
+    val barnetilleggBarn: List<Barn> = emptyList()
+) {
+    data class Barn(
+        val navn: String,
+        val fodselsdato: LocalDate
+    )
+}
+----
+
+TIP: Når du legger til nye felter, se om det er mulig å data-minimere.
+Kompleks forretnings-logikk hører ikke hjemme i brevmaler.
+Ofte kan man uttrykke kompleks logikk som ett boolsk uttrykk som beskriver situasjonen vi ønsker å agere på mer nøyaktig.
+
+
+=== 1.2 Legg til brevkode
+
+I api-model, legg til brevkoden i relevant enum-klasse (for de fleste er dette `Pesysbrevkoder.kt`):
+
+Brevkoden er ment som en ID for brevet, og bør aldri endres etter brevet er prodsatt.
+Det kan føre til rot i arkivet og maler under redigering.
+[source,kotlin]
+----
+object Pesysbrevkoder {
+    enum class AutoBrev : Automatisk {
+        //...
+        MIN_BREVKODE,
+        //...
+    }
+
+    // ELLER
+    enum class Redigerbar : Redigerbart {
+        MIN_REDIGERBARE_BREVKODE,
+    }
+}
+----
+TIP: Prøv å følge eksisterende mønstre, og skriv en brevkode som skiller seg godt nokk ut fra andre maler.
+
+=== 1.3 Publiser API-modellen midlertidig
+
+For å kunne bruke den nye Dto'en og brevkoden i brevmalen din må du ha den tilgjengelig i relevant mal-modul.
+
+Bump `apiModelVersion` i `gradle.properties` og `build.gradle` i relevant modul (uføre, alder eller pensjon).
+og publiser artifakt lokalt for å ha det tilgjengelig for mal-utvikling i neste steg.
+
+[source,bash]
+----
+./gradlew publishToMavenLocal
+----
+
+== 2.1 Lag en ny brevmal
+
+Lag en ny kotlin fil under relevant modul og passende domenemessig-plassering.
+
+=== 2.1.A Autobrev
+
+[source,kotlin]
+----
+// f.eks pensjon/brev/maler/MittBrev.kt
+@TemplateModelHelpers
+object MittBrev : AutobrevTemplate<MittBrevDto> {
+    // Brevkode som identifiserer dette brevet. Defineres i API-model (enum)
+    override val kode = Aldersbrevkoder.AutoBrev.EKSEMPEL_BREV
+
+    override val template = createTemplate(
+        // Metadata
+
+        // Støttede språk som type-parameter. Disse brukes for å sjekke at du har inkludert innhold for alle språk-lag ved compile-time
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+
+            //Tittel som settes i arkivet. Det er denne tittelen som vises for saksbehandler.
+            displayTitle = "Nav har beregnet for høyt gjenlevendetillegg",
+
+            // Distribusjonstype. Avgjør hvordan varslingen ved distribusjon blir. [VEDTAK,VIKTIG,ANNET]
+            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
+
+            // VEDTAKSBREV,INFORMASJONSBREV fører til endringer i signatur/slutt-tekst og første-side
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+    ) {
+        title {
+            // tittel kommer her. Kan også inneholde logikk.
+            text(
+                bokmal { +"Vedtak om uføretrygd" },
+                nynorsk { +"Vedtak om uføretrygd" },
+                english { +"Decision on disability benefit" },
+            )
+        }
+
+        outline {
+            // Innhold kommer her
+        }
+
+        // Vedlegg kommer her
+    }
+}
+----
+
+=== 2.1.B Redigerbart brev
+
+Redigerbare brev er ganske like autobrev-maler, bare at den krever flere felter som brukes for visning og filtrering i Skribenten.
+
+[source,kotlin]
+----
+// f.eks pensjon/brev/maler/MittBrev.kt
+@TemplateModelHelpers
+object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
+    //...
+    // Kategori. Legges inn i valgt "mappe" under visning i skribenten.
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    // Om brevet kun skal vises dersom saksbehandler er inne i konteksten av ett vedtak, en sak, eller begge deler
+    // [ALLE, SAK, VEDTAK]
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    // Hvilke sakstype(r) brevmalen skal synes i
+    override val sakstyper = Sakstype.pensjon
+    //...
+}
+
+----
+
+Fortsett og fyll ut resten av innholdet, logikken, vedleggene, inndata osv.
+
+For mer detaljer om funksjonalitet som kan brukes til å definere innhold, les videre i dokumentasjonen:
+xref:dsl/oversikt_funksjonalitet.adoc[]
+
+== 2.2
+Legg inn malen i ProductionTemplates.kt under relevant modul.

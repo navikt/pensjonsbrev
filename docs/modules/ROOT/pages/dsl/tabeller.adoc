@@ -1,0 +1,235 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Tabeller
+
+Tabeller brukes for å vise strukturert informasjon på en oversiktlig måte,
+som beregninger, perioder eller sammenstillinger.
+
+== Grunnleggende struktur
+
+En tabell består av en header med kolonner og rader med celler:
+
+[source,kotlin]
+----
+paragraph {
+    table(
+        header = {
+            column {
+                text(bokmal { +"Beskrivelse" }, FontType.BOLD)
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Beløp" }, FontType.BOLD)
+            }
+        }
+    ) {
+        row {
+            cell { text(bokmal { +"Uføretrygd" }) }
+            cell { eval(uforetrygdBeloep.format()) }
+        }
+        row {
+            cell { text(bokmal { +"Barnetillegg" }) }
+            cell { eval(barnetilleggBeloep.format()) }
+        }
+    }
+}
+----
+
+== Kolonneegenskaper
+
+=== Justering
+
+Bruk `alignment` for å justere innhold:
+
+[source,kotlin]
+----
+column(alignment = ColumnAlignment.LEFT) {   // Venstrejustert (standard)
+    text(bokmal { +"Tekst" })
+}
+
+column(alignment = ColumnAlignment.RIGHT) {  // Høyrejustert
+    text(bokmal { +"Tall" })
+}
+----
+
+TIP: Bruk høyrejustering for tallkolonner for bedre lesbarhet.
+
+=== Kolonnebredde
+
+Bruk `columnSpan` for å angi relativ bredde:
+
+[source,kotlin]
+----
+// Første kolonne dobbelt så bred som andre
+column(columnSpan = 2) {
+    text(bokmal { +"Beskrivelse" })
+}
+column(columnSpan = 1) {
+    text(bokmal { +"Beløp" })
+}
+----
+
+== Dynamiske rader med forEach
+
+[source,kotlin]
+----
+table(
+    header = {
+        column { text(bokmal { +"Måned" }, FontType.BOLD) }
+        column(alignment = ColumnAlignment.RIGHT) {
+            text(bokmal { +"Beløp" }, FontType.BOLD)
+        }
+    }
+) {
+    forEach(utbetalingsperioder) { periode ->
+        row {
+            cell { eval(periode.maaned.format()) }
+            cell { eval(periode.beloep.format()) }
+        }
+    }
+}
+----
+
+== Betinget innhold
+
+=== Betingede rader
+
+[source,kotlin]
+----
+table(header = { ... }) {
+    row {
+        cell { text(bokmal { +"Grunnbeløp" }) }
+        cell { eval(grunnbeloep.format()) }
+    }
+
+    showIf(harBarnetillegg) {
+        row {
+            cell { text(bokmal { +"Barnetillegg" }) }
+            cell { eval(barnetilleggBeloep.format()) }
+        }
+    }
+
+    row {
+        cell { text(bokmal { +"Totalt" }, FontType.BOLD) }
+        cell { eval(totalBeloep.format()) }
+    }
+}
+----
+
+=== Betingede celler
+
+[source,kotlin]
+----
+table(header = { ... }) {
+    row {
+        cell { text(bokmal { +"Januar" }) }
+        cell { eval(januarBeloep.format()) }
+
+        showIf(visSkattekolonne) {
+            cell { eval(januarSkatt.format()) }
+        }
+    }
+}
+----
+
+IMPORTANT: Antall celler i hver rad må matche antall kolonner i headeren.
+
+== Eksempel: Beregningstabell
+
+[source,kotlin]
+----
+paragraph {
+    table(
+        header = {
+            column(columnSpan = 3) {
+                text(bokmal { +"Beregning" }, FontType.BOLD)
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Per måned" }, FontType.BOLD)
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Per år" }, FontType.BOLD)
+            }
+        }
+    ) {
+        row {
+            cell { text(bokmal { +"Grunnbeløp" }) }
+            cell { eval(grunnbeloepMaaned.format()) }
+            cell { eval(grunnbeloepAar.format()) }
+        }
+
+        showIf(harBarnetillegg) {
+            row {
+                cell { text(bokmal { +"Barnetillegg" }) }
+                cell { eval(btMaaned.format()) }
+                cell { eval(btAar.format()) }
+            }
+        }
+
+        row {
+            cell { text(bokmal { +"Sum" }, FontType.BOLD) }
+            cell { eval(sumMaaned.format()) }
+            cell { eval(sumAar.format()) }
+        }
+    }
+}
+----
+
+== Beste praksis
+
+=== Bruk uthevet skrift for overskrifter
+
+[source,kotlin]
+----
+column {
+    text(bokmal { +"Kolonne" }, FontType.BOLD)
+}
+----
+
+=== Høyrejuster tall
+
+[source,kotlin]
+----
+column(alignment = ColumnAlignment.RIGHT) {
+    text(bokmal { +"Beløp" }, FontType.BOLD)
+}
+----
+
+=== Hold tabeller enkle
+
+[source,kotlin]
+----
+// ✅ Enkel og oversiktlig
+table(header = {
+    column { text(bokmal { +"Type" }) }
+    column { text(bokmal { +"Beløp" }) }
+}) { ... }
+
+// ❌ For mange kolonner blir uoversiktlig
+table(header = {
+    column { ... }
+    column { ... }
+    column { ... }
+    column { ... }
+    column { ... }
+    column { ... }
+}) { ... }
+----
+
+== Begrensninger
+
+Tabellceller kan *ikke* inneholde:
+
+* Lister
+* Nøstede tabeller
+* Avsnitt (paragraph)
+
+Hold celleinnholdet enkelt med tekst og verdier.
+
+== Se også
+
+* xref:dsl/lister.adoc[Lister]
+* xref:dsl/kontroll-struktur/forEach.adoc[forEach]
+* xref:dsl/formattering/oversikt.adoc[Formattering]
+* xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+

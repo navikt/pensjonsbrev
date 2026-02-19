@@ -1,0 +1,53 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= PlainTextOnlyPhrase
+
+`PlainTextOnlyPhrase` brukes for ren tekst uten formattering.
+Den brukes primært i overskrifter og andre steder hvor kun enkel tekst er tillatt.
+
+== Definere en PlainTextOnlyPhrase
+
+[source,kotlin]
+----
+object VedtakTittel : PlainTextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        text(
+            bokmal { +"Vedtak om uføretrygd" },
+            nynorsk { +"Vedtak om uføretrygd" }
+        )
+    }
+}
+----
+
+== Bruke PlainTextOnlyPhrase
+
+[source,kotlin]
+----
+title {
+    includePhrase(VedtakTittel)
+}
+outline {
+    title1 {
+        includePhrase(VedtakTittel)
+    }
+}
+----
+
+== Når bruke PlainTextOnlyPhrase?
+
+Bruk `PlainTextOnlyPhrase` for:
+
+* Standardiserte overskrifter
+* Brevtitler
+* Andre steder som krever ren tekst som kolonne-heading i tabeller
+* Kan også brukes i ParagraphScope og TextOnlyScope (generelt steder hvor du kan bruke text funksjonen).
+
+For tekst med variabler, bruk xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase].
+
+== Se også
+
+* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
+* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+* xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
+

@@ -1,0 +1,179 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Lister
+
+Lister brukes for å vise punkter med informasjon på en oversiktlig måte.
+De defineres med `list` inne i et avsnitt (`paragraph`).
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Du må melde fra om:" })
+
+    list {
+        item {
+            text(
+                bokmal { +"Endringer i inntekt" },
+                nynorsk { +"Endringar i inntekt" }
+            )
+        }
+        item {
+            text(
+                bokmal { +"Endringer i sivilstand" },
+                nynorsk { +"Endringar i sivilstand" }
+            )
+        }
+        item {
+            text(
+                bokmal { +"Flytting til utlandet" },
+                nynorsk { +"Flytting til utlandet" }
+            )
+        }
+    }
+}
+----
+
+== Betinget visning av punkter
+
+Bruk `showIf` for å vise punkter betinget:
+
+[source,kotlin]
+----
+list {
+    item {
+        text(bokmal { +"Dette vises alltid" })
+    }
+
+    showIf(harBarnetillegg) {
+        item {
+            text(bokmal { +"Dette vises kun med barnetillegg" })
+        }
+    }
+
+    showIf(borIUtlandet) {
+        item {
+            text(bokmal { +"Dette vises kun for bosatt i utlandet" })
+        }
+    }
+}
+----
+
+== Dynamiske lister med forEach
+
+Bruk `forEach` for å generere punkter fra en liste:
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Barnetillegget gjelder for:" })
+
+    list {
+        forEach(barn) { enkeltBarn ->
+            item {
+                text(
+                    bokmal {
+                        +enkeltBarn.navn
+                        +", født "
+                        +enkeltBarn.fodselsdato.format()
+                    }
+                )
+            }
+        }
+    }
+}
+----
+
+== Kombinere fast og dynamisk innhold
+
+[source,kotlin]
+----
+list {
+    // Fast punkt
+    item {
+        text(bokmal { +"Uføretrygd" })
+    }
+
+    // Betinget punkt
+    showIf(harBarnetillegg) {
+        item {
+            text(bokmal { +"Barnetillegg" })
+        }
+    }
+
+    // Dynamiske punkter
+    forEach(tilleggsytelser) { ytelse ->
+        item {
+            text(bokmal { +ytelse.navn })
+        }
+    }
+}
+----
+
+== Håndtere tomme lister
+
+[source,kotlin]
+----
+showIf(barn.isNotEmpty()) {
+    paragraph {
+        text(bokmal { +"Dine barn:" })
+
+        list {
+            forEach(barn) { enkeltBarn ->
+                item {
+                    text(bokmal { +enkeltBarn.navn })
+                }
+            }
+        }
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Du har ingen registrerte barn." })
+    }
+}
+----
+
+== Beste praksis
+
+=== Plasser introduksjonstekst før listen
+
+[source,kotlin]
+----
+// ✅ Bra
+paragraph {
+    text(bokmal { +"For å beholde ytelsen må du:" })
+
+    list {
+        item { text(bokmal { +"Melde fra om inntekt" }) }
+        item { text(bokmal { +"Oppholde deg i Norge" }) }
+    }
+}
+----
+
+=== Hold punktene korte
+
+[source,kotlin]
+----
+// ✅ Korte, konsise punkter
+list {
+    item { text(bokmal { +"Inntektsendringer" }) }
+    item { text(bokmal { +"Sivilstandsendringer" }) }
+}
+
+// ❌ For lange punkter
+list {
+    item {
+        text(bokmal { +"Du må melde fra til NAV dersom du får endringer i inntekten din" })
+    }
+}
+----
+
+== Se også
+
+* xref:dsl/kontroll-struktur/forEach.adoc[forEach]
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf]
+* xref:dsl/tabeller.adoc[Tabeller]
+* xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+

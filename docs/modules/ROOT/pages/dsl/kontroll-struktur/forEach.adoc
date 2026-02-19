@@ -1,0 +1,172 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= forEach - løkker
+
+`forEach` brukes for å gjenta innhold for hvert element i en liste.
+Dette er nyttig når du skal vise informasjon om flere elementer som perioder eller ytelser.
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+forEach(liste) { element ->
+    // Innhold som gjentas for hvert element
+}
+----
+
+=== Eksempel
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Pensjonen din består av følgende ytelser:" })
+
+    list {
+        forEach(ytelser) { ytelse ->
+            item {
+                text( bokmal { +ytelse.navn + ": " + ytelse.beloep.format() + " per måned" } )
+            }
+        }
+    }
+}
+----
+
+== Bruk i ulike scopes
+
+=== I outline - for å gjenta avsnitt
+
+[source,kotlin]
+----
+outline {
+    forEach(perioder) { periode ->
+        title2 {
+            text(bokmal { +"Periode fra " + periode.fom.format() })
+        }
+
+        paragraph {
+            text(
+                bokmal { +"I denne perioden får du " + periode.beloep.format() + "." }
+            )
+        }
+    }
+}
+----
+
+=== I lister - mest vanlig bruk
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Du må melde fra om endringer i:" })
+
+    list {
+        forEach(inntektskilder) { inntekt ->
+            item {
+                text(bokmal { +inntekt.beskrivelse })
+            }
+        }
+    }
+}
+----
+
+=== I tabeller - for dynamiske rader
+
+[source,kotlin]
+----
+table(
+    header = {
+        column { text(bokmal { +"Måned" }, FontType.BOLD) }
+        column(alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }, FontType.BOLD) }
+    }
+) {
+    forEach(utbetalinger) { utbetaling ->
+        row {
+            cell { eval(utbetaling.maaned.format()) }
+            cell { eval(utbetaling.beloep.format()) }
+        }
+    }
+}
+----
+
+== Kombinere med betingelser
+
+=== showIf inne i forEach
+
+[source,kotlin]
+----
+list {
+    forEach(vedtak) { enkeltVedtak ->
+        item {
+            text(bokmal { +enkeltVedtak.beskrivelse })
+
+            showIf(enkeltVedtak.erKlageUnderBehandling) {
+                text(bokmal { +" (klage under behandling)" })
+            }
+        }
+    }
+}
+----
+
+TIP: Om du bruker showIf for å filtrere verdier, vurder om du kan flytte denne forretnings-logikken ut av brevet.
+
+== Nøstede løkker
+
+Du kan nøste forEach for hierarkiske data:
+
+[source,kotlin]
+----
+forEach(beregninger) { beregning ->
+    title2 {
+        text(bokmal { +"Beregning: " + beregning.navn })
+    }
+
+    paragraph {
+        text(bokmal { +"Poster:" })
+
+        list {
+            forEach(beregning.poster) { post ->
+                item {
+                    text(bokmal { +post.beskrivelse + ": " + post.beloep.format() + " kroner" })
+                }
+            }
+        }
+    }
+}
+----
+
+== Tomme lister
+
+Hvis listen er tom, produseres ingen innhold.
+Bruk `showIf` med `isEmpty()` eller `isNotEmpty()` for å håndtere tomme lister:
+
+[source,kotlin]
+----
+showIf(inntekter.isNotEmpty()) {
+    paragraph {
+        text(bokmal { +"Vi har registrert følgende inntekter:" })
+
+        list {
+            forEach(inntekter) { inntekt ->
+                item {
+                    text(bokmal { +inntekt.kilde + ": " + inntekt.beloep.format() + " kroner" })
+                }
+            }
+        }
+    }
+}.orShow {
+    paragraph {
+        text(bokmal { +"Du har ingen registrerte inntekter." })
+    }
+}
+----
+
+TIP: Husk å ta stilling til hva som skal skje om listen listen er tom, slik at innholdet rundt fortsatt gir mening dersom listen er tom.
+
+== Se også
+
+* xref:dsl/kontroll-struktur/showIf.adoc[showIf - betinget visning]
+* xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull - håndtering av null]
+* xref:dsl/lister.adoc[Lister i brevmaler]
+* xref:dsl/tabeller.adoc[Tabeller i brevmaler]
+

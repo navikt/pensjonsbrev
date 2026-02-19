@@ -1,0 +1,87 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= ParagraphPhrase
+
+`ParagraphPhrase` kan brukes for innhold som skal gjenbrukes inne i avsnitt.
+Den kan inneholde tekst, lister og tabeller, men ikke overskrifter.
+
+== Definere en ParagraphPhrase
+
+=== Enkel frase
+
+[source,kotlin]
+----
+object MeldepliktInfo : ParagraphPhrase<LangBokmalNynorsk>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        text(
+            bokmal { +"Du har plikt til å melde fra om endringer." },
+            nynorsk { +"Du har plikt til å melde frå om endringar." }
+        )
+    }
+}
+----
+
+=== Frase med liste
+
+[source,kotlin]
+----
+data class MeldepliktListe(
+    val inkluderInntekt: Expression<Boolean>,
+    val inkluderSivilstand: Expression<Boolean>
+) : ParagraphPhrase<LangBokmalNynorsk>() {
+    override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        list {
+            showIf(inkluderInntekt) {
+                item {
+                    text(
+                        bokmal { +"Endringer i inntekt" },
+                        nynorsk { +"Endringar i inntekt" }
+                    )
+                }
+            }
+
+            showIf(inkluderSivilstand) {
+                item {
+                    text(
+                        bokmal { +"Endringer i sivilstand" },
+                        nynorsk { +"Endringar i sivilstand" }
+                    )
+                }
+            }
+        }
+    }
+}
+----
+
+== Bruke ParagraphPhrase
+
+[source,kotlin]
+----
+outline {
+    paragraph {
+        includePhrase(MeldepliktInfo)
+    }
+
+    paragraph {
+        text(
+            bokmal { +"Siden du mottar en ytelse har du plikt til å melde fra om:" },
+            nynorsk { +"Sidan du mottar ei yting har du plikt til å melde frå om:" }
+        )
+        includePhrase(
+            MeldepliktListe(
+                inkluderInntekt = true.expr(),
+                inkluderSivilstand = harEktefelle
+            )
+        )
+    }
+}
+----
+
+== Se også
+
+* xref:dsl/fraser/oversikt.adoc[Oversikt over fraser]
+* xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase]
+* xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase]
+* xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+

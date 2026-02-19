@@ -1,0 +1,62 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= TextOnlyPhrase
+
+`TextOnlyPhrase` brukes for gjenbrukbare tekstfragmenter som kan inneholde variabler og formattering.
+Den er nyttig for standardiserte tekstbiter som skal brukes på flere steder. F.eks i tabeller eller liste-elementer.
+
+== Definere en TextOnlyPhrase
+
+[source,kotlin]
+----
+data class GarantipensjonSatsTypeText(
+    val satsType: Expression<GarantipensjonSatsType>,
+) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
+    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        val hoysats = satsType.equalTo(GarantipensjonSatsType.HOY)
+        val ordinaer = satsType.equalTo(GarantipensjonSatsType.ORDINAER)
+        showIf(hoysats) {
+            text(
+                bokmal { + "høy sats" },
+                nynorsk { + "høg sats" },
+                english { + "high rate" },
+                FontType.BOLD
+            )
+        }.orShowIf(ordinaer) {
+            text(
+                bokmal { + "ordinær sats" },
+                nynorsk { + "ordinær sats" },
+                english { + "ordinary rate" },
+            )
+        }
+    }
+}
+
+----
+
+== Bruke TextOnlyPhrase
+
+[source,kotlin]
+----
+paragraph {
+    text(
+        bokmal { + "Du får utbetalt garantipensjon etter " },
+        nynorsk { + "Du får utbetalt garantipensjon etter " },
+        english { + "You will receive guaranteed pension at the " },
+    )
+    includePhrase(satsType)
+    text(
+        bokmal { + "." },
+        nynorsk { + "." },
+        english { + "." },
+    )
+}
+----
+
+== Se også
+
+* xref:dsl/fraser/oversikt.adoc[]
+* xref:dsl/fraser/plainTextPhrase.adoc[]
+* xref:dsl/scopes.adoc#TextScope[TextScope]
+
