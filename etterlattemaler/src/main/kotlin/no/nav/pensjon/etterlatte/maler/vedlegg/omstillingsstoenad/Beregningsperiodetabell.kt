@@ -11,13 +11,12 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.institusjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjonType
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.utbetaltBeloep
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.ytelseFoerAvkorting
-import no.nav.pensjon.etterlatte.maler.SanksjonType
 import no.nav.pensjon.etterlatte.maler.fraser.common.KronerText
 import no.nav.pensjon.etterlatte.maler.fraser.common.PeriodeITabell
 
@@ -67,11 +66,11 @@ data class Beregningsperiodetabell(
                             includePhrase(KronerText(periode.utbetaltBeloep))
                             showIf(periode.sanksjon) {
                                 text(
-                                    bokmal { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                    bokmal { +" - " + ifElse(periode.erFakeSanksjon,
                                         "stans", "sanksjon")},
-                                    nynorsk { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                    nynorsk { +" - " + ifElse(periode.erFakeSanksjon,
                                         "stans", "sanksjon") },
-                                    english { +" - " + ifElse(periode.sanksjonType.equalTo(SanksjonType.IKKE_INNVILGET_PERIODE),
+                                    english { +" - " + ifElse(periode.erFakeSanksjon,
                                         "stopped", "sanction") },
                                 )
                             }
