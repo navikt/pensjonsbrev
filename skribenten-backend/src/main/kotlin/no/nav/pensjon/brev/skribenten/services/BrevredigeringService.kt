@@ -101,19 +101,6 @@ class BrevredigeringService(
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
-    suspend fun fornyReservasjon(brevId: BrevId): Api.ReservasjonResponse? =
-        hentBrevMedReservasjon(brevId = brevId) {
-            val principal = PrincipalInContext.require()
-
-            Api.ReservasjonResponse(
-                vellykket = true,
-                reservertAv = Api.NavAnsatt(id = principal.navIdent, navn = principal.fullName),
-                timestamp = brevDto.info.sistReservert ?: Instant.now(),
-                expiresIn = RESERVASJON_TIMEOUT,
-                redigertBrevHash = brevDto.redigertBrevHash,
-            )
-        }
-
     suspend fun attester(
         saksId: SaksId,
         brevId: BrevId,

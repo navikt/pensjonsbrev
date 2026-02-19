@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.ReserverBrevHandler
 
 fun Route.brev(
     brevredigeringService: BrevredigeringService,
@@ -60,9 +61,8 @@ fun Route.brev(
 
         get("/reservasjon") {
             val brevId = call.parameters.brevId()
-            brevredigeringService.fornyReservasjon(brevId)
-                ?.also { call.respond(it) }
-                ?: call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
+            val reservasjon = brevredigeringFacade.reserverBrev(ReserverBrevHandler.Request(brevId = brevId))
+            apiRespond(dto2ApiService, reservasjon)
         }
 
         post("/tilbakestill") {

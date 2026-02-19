@@ -592,19 +592,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `brev reservasjon kan fornyes`(): Unit = runBlocking {
-        val brev = opprettBrev(reserverForRedigering = true)
-
-        val forrigeReservasjon = Instant.now().minusSeconds(60).truncatedTo(ChronoUnit.MILLIS)
-        transaction { BrevredigeringEntity[brev.info.id].sistReservert = forrigeReservasjon }
-
-        withPrincipal(saksbehandler1Principal) { brevredigeringService.fornyReservasjon(brev.info.id) }
-        assertThat(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
-            .isAfter(forrigeReservasjon)
-            .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
-    }
-
-    @Test
     fun `brev distribueres til annen mottaker`(): Unit = runBlocking {
         val mottaker = Dto.Mottaker.samhandler("987")
         val brev = opprettBrev(mottaker = mottaker)
