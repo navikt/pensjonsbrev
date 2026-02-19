@@ -386,9 +386,9 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     showIf(sisteBeregningsperiode.sanksjon) {
         title2 {
             text(
-                bokmal { +"Sanksjon - stans i utbetalingen av omstillingsstønaden" },
-                nynorsk { +"Sanksjon – stans i utbetaling av omstillingsstønad" },
-                english { +"Sanction – stoppage of payment of adjustment allowance" },
+                bokmal { +"Stans i utbetalingen av omstillingsstønaden" },
+                nynorsk { +"Stans i utbetaling av omstillingsstønad" },
+                english { +"Stoppage of payment of adjustment allowance" },
             )
         }
 

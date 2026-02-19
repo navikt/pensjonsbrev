@@ -75,6 +75,7 @@ fun lagOmstillingsstoenadBeregning(): OmstillingsstoenadBeregning = Omstillingss
         restanse = Kroner(1000),
         trygdetid = 40,
         sanksjon = false,
+        erFakeSanksjon = false,
         institusjon = false,
     ),
     sisteBeregningsperiodeNesteAar = null,

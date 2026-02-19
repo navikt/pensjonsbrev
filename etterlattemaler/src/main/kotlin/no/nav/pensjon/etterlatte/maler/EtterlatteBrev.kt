@@ -69,6 +69,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
     val sanksjon: Boolean,
+    val erFakeSanksjon: Boolean,
     val institusjon: Boolean = false,
 )
 
