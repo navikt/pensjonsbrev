@@ -1,13 +1,13 @@
 import { getToken } from "@navikt/oasis";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import type { Express } from "express";
+import { Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
 import config from "./config.js";
 
 export const internalRoutes = (server: Express) => {
-  server.get("/bff/api/logout", (_request, response) => {
+  server.get("/bff/api/logout", (request, response) => {
     response.redirect("/oauth2/logout");
   });
 
@@ -74,7 +74,7 @@ export const internalRoutes = (server: Express) => {
         level: findLogLevel(body.status),
         statusCode: body.status,
         timestamp: body.jsonContent.timestamp,
-        message: `Feil fra frontend: ${body.message}: ${body.jsonContent.url}`,
+        message: "Feil fra frontend: " + body.message + ": " + body.jsonContent.url,
         stack_trace: body.stack,
         x_correlationId: body.requestId,
       }),
