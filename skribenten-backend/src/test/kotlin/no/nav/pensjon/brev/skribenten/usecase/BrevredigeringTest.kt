@@ -21,6 +21,8 @@ import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
@@ -28,7 +30,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll

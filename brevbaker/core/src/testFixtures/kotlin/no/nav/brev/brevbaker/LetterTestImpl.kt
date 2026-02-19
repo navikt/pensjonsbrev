@@ -3,7 +3,7 @@ package no.nav.brev.brevbaker
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 
 data class LetterTestImpl<ParameterType : Any>(
     override val template: LetterTemplate<*, ParameterType>,

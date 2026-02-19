@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 private val objectMapper = brevbakerJacksonObjectMapper()

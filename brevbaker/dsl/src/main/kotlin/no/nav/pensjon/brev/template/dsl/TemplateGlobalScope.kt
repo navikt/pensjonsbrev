@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.template.dsl
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 
 interface TemplateGlobalScope<LetterData : Any> {
     val argument: Expression<LetterData>

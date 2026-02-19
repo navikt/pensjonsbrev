@@ -1,10 +1,10 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 

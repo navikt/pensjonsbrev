@@ -71,7 +71,7 @@ public final class no/nav/brev/brevbaker/template/render/LetterWithAttachmentsMa
 
 public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getArgument ()Ljava/lang/Object;
-	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevFelles$Felles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
 }
@@ -82,26 +82,12 @@ public final class no/nav/pensjon/brev/template/render/HTMLDocument : no/nav/pen
 	public final fun getIndexHTML ()Lno/nav/pensjon/brev/template/render/DocumentFile;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/BrevFellesSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevFellesSelectors;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$FoedselsnummerSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$FoedselsnummerSelectors;
-	public static final field valueSelector Lno/nav/pensjon/brev/template/SimpleSelector;
-	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$TelefonnummerSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$TelefonnummerSelectors;
-	public static final field valueSelector Lno/nav/pensjon/brev/template/SimpleSelector;
-	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrukerSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$BrukerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$BrukerSelectors;
 	public static final field etternavnSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field foedselsnummerSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field fornavnSelector Lno/nav/pensjon/brev/template/SimpleSelector;
@@ -116,8 +102,8 @@ public final class no/nav/pensjon/brevbaker/api/model/BrukerSelectors {
 	public final fun getMellomnavn (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/FellesSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$FellesSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$FellesSelectors;
 	public static final field annenMottakerNavnSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field avsenderEnhetSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field brukerSelector Lno/nav/pensjon/brev/template/SimpleSelector;
@@ -138,8 +124,8 @@ public final class no/nav/pensjon/brevbaker/api/model/FellesSelectors {
 	public final fun getSignerendeSaksbehandlere (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/NavEnhetSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/NavEnhetSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$NavEnhetSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$NavEnhetSelectors;
 	public static final field navnSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field nettsideSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field telefonnummerSelector Lno/nav/pensjon/brev/template/SimpleSelector;
@@ -151,13 +137,31 @@ public final class no/nav/pensjon/brevbaker/api/model/NavEnhetSelectors {
 	public final fun getTelefonnummer (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereSelectors {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/SignerendeSaksbehandlereSelectors;
+public final class no/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$SignerendeSaksbehandlereSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevFellesSelectors$SignerendeSaksbehandlereSelectors;
 	public static final field attesterendeSaksbehandlerSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public static final field saksbehandlerSelector Lno/nav/pensjon/brev/template/SimpleSelector;
 	public final fun getAttesterendeSaksbehandler (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getAttesterendeSaksbehandler (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getSaksbehandler (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getSaksbehandler (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$FoedselsnummerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$FoedselsnummerSelectors;
+	public static final field valueSelector Lno/nav/pensjon/brev/template/SimpleSelector;
+	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$TelefonnummerSelectors {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappersSelectors$TelefonnummerSelectors;
+	public static final field valueSelector Lno/nav/pensjon/brev/template/SimpleSelector;
+	public final fun getValue (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getValue (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;)Lno/nav/pensjon/brev/template/Expression;
 }
 

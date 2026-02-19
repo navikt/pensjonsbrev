@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
 
 class BrevdataService(private val penService: PenService, private val samhandlerService: SamhandlerService) {
 

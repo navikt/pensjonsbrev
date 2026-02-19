@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate

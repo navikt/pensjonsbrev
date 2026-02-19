@@ -19,7 +19,7 @@ import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
-import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
 
 object Felles {
     /**

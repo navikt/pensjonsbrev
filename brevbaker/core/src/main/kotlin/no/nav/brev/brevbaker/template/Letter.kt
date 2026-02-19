@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
 // TODO: There is a bug where if you have a template with say EmptyBrevData as upper bound for ParameterType,

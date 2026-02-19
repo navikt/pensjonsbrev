@@ -84,7 +84,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
-        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
+        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
         }

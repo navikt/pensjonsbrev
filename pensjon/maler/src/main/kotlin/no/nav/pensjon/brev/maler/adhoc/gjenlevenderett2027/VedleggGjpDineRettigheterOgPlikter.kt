@@ -10,8 +10,8 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.NavEnhetSelectors.telefonnummer
 
 
 @TemplateModelHelpers

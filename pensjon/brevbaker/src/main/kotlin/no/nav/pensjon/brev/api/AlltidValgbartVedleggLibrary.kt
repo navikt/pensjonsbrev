@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api
 import io.ktor.server.plugins.NotFoundException
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 
 class AlltidValgbartVedleggLibrary(vedlegg: Set<AlltidValgbartVedlegg<*>>) {
     private val vedlegg: Map<String, AlltidValgbartVedlegg<*>> = vedlegg.associateBy { it.kode.kode }

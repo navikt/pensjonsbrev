@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.nettside
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.NavEnhetSelectors.nettside
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.NavEnhetSelectors.telefonnummer
 
 // V00001 i metaforce
 @TemplateModelHelpers

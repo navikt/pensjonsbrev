@@ -25,9 +25,9 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.dokumentDato
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.text

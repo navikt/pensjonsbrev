@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 

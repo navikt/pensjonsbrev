@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.template.render
 
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 

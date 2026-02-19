@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerRespon
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
 
 class NotYetStubbedException(message: String) : Exception(message)
