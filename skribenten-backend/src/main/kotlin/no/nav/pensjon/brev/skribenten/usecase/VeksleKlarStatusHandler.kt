@@ -37,6 +37,8 @@ class VeksleKlarStatusHandler(
         }
     }
 
+    override fun requiresReservasjon(request: Request) = true
+
     private fun settBrevTilKlar(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.Brevredigering, BrevredigeringError> {
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
         klarTilSendingPolicy.kanSettesTilKlar(brev).onError { return failure(it) }

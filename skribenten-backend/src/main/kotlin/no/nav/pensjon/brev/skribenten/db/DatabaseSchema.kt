@@ -46,8 +46,6 @@ import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
 import org.jetbrains.exposed.v1.javatime.date
 import org.jetbrains.exposed.v1.javatime.timestamp
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -172,11 +170,6 @@ object ValgteVedleggTable : IdTable<BrevId>() {
     val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
-}
-
-class ValgteVedlegg(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
-    var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
-    companion object : EntityClass<BrevId, ValgteVedlegg>(ValgteVedleggTable)
 }
 
 

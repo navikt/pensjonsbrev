@@ -75,6 +75,10 @@ object BrevredigeringFacadeFactory {
                 p1Service = p1Service,
             ),
             brevreservasjonPolicy = brevreservasjonPolicy,
+            endreValgteVedlegg = EndreValgteVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
         )
     }
 }

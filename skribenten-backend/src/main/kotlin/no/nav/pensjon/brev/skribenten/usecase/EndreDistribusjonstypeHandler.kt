@@ -33,4 +33,6 @@ class EndreDistribusjonstypeHandler(
 
         return success(brev.toDto(brevreservasjonPolicy, null))
     }
+
+    override fun requiresReservasjon(request: Request) = true
 }

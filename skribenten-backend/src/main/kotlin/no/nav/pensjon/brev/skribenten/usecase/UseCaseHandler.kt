@@ -8,7 +8,7 @@ interface UseCaseHandler<Request, Success, Failure> {
 }
 
 interface BrevredigeringHandler<Request : BrevredigeringRequest, Response> : UseCaseHandler<Request, Response, BrevredigeringError> {
-    fun requiresReservasjon(request: Request): Boolean = true
+    fun requiresReservasjon(request: Request): Boolean
 }
 
 interface BrevredigeringRequest {

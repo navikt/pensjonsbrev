@@ -81,6 +81,8 @@ class BrevredigeringFacadeTest {
                     }
                     return failure(RedigerBrevPolicy.KanIkkeRedigere.LaastBrev)
                 }
+
+                override fun requiresReservasjon(request: HentBrevHandler.Request) = true
             },
             reserverBrev = ReserverBrevStub(),
         )
@@ -101,6 +103,8 @@ class BrevredigeringFacadeTest {
                     }
                     return success(brevredigering)
                 }
+
+                override fun requiresReservasjon(request: HentBrevHandler.Request) = true
             },
             reserverBrev = ReserverBrevStub(),
         )
@@ -218,6 +222,7 @@ private fun createFacade(
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
     hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
+    endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
@@ -231,10 +236,12 @@ private fun createFacade(
         reserverBrev = reserverBrev,
         brevreservasjonPolicy = brevreservasjonPolicy,
         hentEllerOpprettPdf = hentEllerOpprettPdf,
+        endreValgteVedlegg = endreValgteVedlegg,
     )
 }
 
 private fun <T : BrevredigeringRequest, Response> handlerStub() = object : BrevredigeringHandler<T, Response> {
     override suspend fun handle(request: T) = notYetStubbed()
+    override fun requiresReservasjon(request: T) = true
 }
 

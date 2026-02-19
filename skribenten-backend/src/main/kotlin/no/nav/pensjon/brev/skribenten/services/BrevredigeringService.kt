@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.domain.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.*
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
@@ -59,25 +60,6 @@ class BrevredigeringService(
 
     private val brevreservasjonPolicy = BrevreservasjonPolicy()
 
-    suspend fun delvisOppdaterBrev(
-        saksId: SaksId,
-        brevId: BrevId,
-        alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>? = null,
-    ): Dto.Brevredigering? =
-        hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            transaction {
-                if (alltidValgbareVedlegg != null) {
-                    if (brevDb.valgteVedlegg?.valgteVedlegg != alltidValgbareVedlegg) {
-                        brevDb.document = null
-                    }
-                    brevDb.valgteVedlegg?.oppdater(alltidValgbareVedlegg) ?: (ValgteVedlegg.new(brevId) { oppdater(alltidValgbareVedlegg) })
-                }
-
-                brevDb.redigeresAv = null
-
-                BrevredigeringEntity.reload(brevDb, true)?.toDto(brevreservasjonPolicy, null)
-            }
-        }
 
     /**
      * Slett brev med id.
@@ -282,17 +264,6 @@ class BrevredigeringService(
                 )
             ).medAnnenMottakerNavn(annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn)
         )
-    }
-
-    private fun ValgteVedlegg?.oppdater(valgte: List<AlltidValgbartVedleggKode>?) {
-        if (this == null) {
-            return
-        }
-        if (valgte.isNullOrEmpty()) {
-            delete()
-        } else {
-            valgteVedlegg = valgte
-        }
     }
 
     private suspend fun principalSignatur(): String =
