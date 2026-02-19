@@ -163,7 +163,9 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // innvilgetGjRettAPIngenEndr2_001
-            showIf(not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+            showIf(not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)
+                    and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+                    and (not(brukerFoedtEtter1944) or not(virkDatoFomEtter2023))) {
                 paragraph {
                     text(
                         bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
