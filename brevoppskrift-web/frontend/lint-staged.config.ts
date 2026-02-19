@@ -1,4 +1,4 @@
-// @ts-expect-error lint-staged needs extension to find config
+// @ts-expect-error:allowImportingTsExtensions: lint-staged requires .ts
 import baseConfig from "../../lint-staged.config.ts";
 
 export default {
