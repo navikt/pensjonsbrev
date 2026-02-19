@@ -486,15 +486,15 @@ data class InfoSivilstandAP(
             paragraph {
                 text(
                     bokmal {
-                        +"Hvis du har en ektefelle, partner eller samboer som har inntekt under " + kronebelop2G.format() + " (2 ganger folketrygdens grunnbeløp), " +
+                        +"Hvis du har en ektefelle, partner eller samboer som har inntekt under 2 ganger folketrygdens grunnbeløp, per i dag " + kronebelop2G.format() + " , " +
                                 "er det viktig at du gir oss beskjed. Da kan du ha rett til høyere alderspensjon."
                     },
                     nynorsk {
-                        +"Om du har ein ektefelle, partnar eller sambuar som har inntekt under " + kronebelop2G.format() + " (2 gonger grunnbeløpet i folketrygda), " +
+                        +"Om du har ein ektefelle, partnar eller sambuar som har inntekt under 2 gonger grunnbeløpet i folketrygda, per i dag " + kronebelop2G.format() + ", " +
                                 "er det viktig at du gir oss beskjed. Då kan du ha rett til høgare alderspensjon."
                     },
                     english {
-                        +"If you have a spouse, partner, or cohabitant with an income below " + kronebelop2G.format() + " (twice the National Insurance basic amount), " +
+                        +"If you have a spouse, partner, or cohabitant with an income below twice the National Insurance basic amount, currently " + kronebelop2G.format() + ", " +
                                 "it is important that you inform us. You may then be entitled to a higher retirement pension."
                     },
                 )
