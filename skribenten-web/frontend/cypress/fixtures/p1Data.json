@@ -14,7 +14,7 @@
     "avsenderEnhet": null,
     "spraak": "NB",
     "journalpostId": null,
-    "vedtaksId": null,
+    "datoForVedtak": null,
     "saksId": "22981081"
   },
   "annetBrev": {
@@ -32,7 +32,7 @@
     "avsenderEnhet": null,
     "spraak": "NB",
     "journalpostId": null,
-    "vedtaksId": null,
+    "datoForVedtak": null,
     "saksId": "22981081"
   },
   "p1BrevData": {
@@ -63,7 +63,7 @@
           "institusjonsnavn": "BUL99AFL",
           "pin": "99999999",
           "saksnummer": "88888888",
-          "vedtaksdato": "2022-09-23",
+          "datoForVedtak": "2022-09-23",
           "land": "BG"
         },
         "pensjonstype": "Alder",
@@ -79,7 +79,7 @@
           "institusjonsnavn": "BUL99AFL",
           "pin": "99999999",
           "saksnummer": "99999999",
-          "vedtaksdato": "2022-08-26",
+          "datoForVedtak": "2022-08-26",
           "land": "BG"
         },
         "pensjonstype": "Ufoere",
@@ -97,7 +97,7 @@
           "institusjonsnavn": "BUL99AFL",
           "pin": "99999999",
           "saksnummer": "88888888",
-          "vedtaksdato": "2022-08-26",
+          "datoForVedtak": "2022-08-26",
           "land": "BG"
         },
         "pensjonstype": "Ufoere",
@@ -147,7 +147,7 @@
           "institusjonsnavn": "",
           "pin": "123456",
           "saksnummer": "",
-          "vedtaksdato": null,
+          "datoForVedtak": null,
           "land": null
         },
         "pensjonstype": null,
