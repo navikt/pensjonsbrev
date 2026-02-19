@@ -7,23 +7,21 @@ public final class no/nav/brev/BrevExceptionDto {
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
+public final class no/nav/brev/BrevLandmodell {
+	public static final field INSTANCE Lno/nav/brev/BrevLandmodell;
 }
 
-public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
-}
-
-public final class no/nav/brev/Land {
+public final class no/nav/brev/BrevLandmodell$Land {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
-	public final fun getKode-Tm84e0M ()Ljava/lang/String;
+	public final fun getKode-qaJIpyY ()Ljava/lang/String;
 	public final fun getNavn ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
 
-public final class no/nav/brev/Landkode {
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/Landkode;
+public final class no/nav/brev/BrevLandmodell$Landkode {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/brev/BrevLandmodell$Landkode;
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
@@ -36,9 +34,15 @@ public final class no/nav/brev/Landkode {
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
 }
 
-public final class no/nav/brev/Landkoder {
-	public static final field INSTANCE Lno/nav/brev/Landkoder;
+public final class no/nav/brev/BrevLandmodell$Landkoder {
+	public static final field INSTANCE Lno/nav/brev/BrevLandmodell$Landkoder;
 	public final fun getLandkoderMedNavn ()Ljava/util/List;
+}
+
+public abstract interface annotation class no/nav/brev/InternKonstruktoer : java/lang/annotation/Annotation {
+}
+
+public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
 }
 
 public final class no/nav/brev/brevbaker/PDFCompilationOutput {
