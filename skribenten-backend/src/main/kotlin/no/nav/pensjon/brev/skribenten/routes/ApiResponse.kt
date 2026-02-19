@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
@@ -19,7 +20,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome
 suspend fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.Brevredigering, BrevredigeringError>?,
-    successStatus: HttpStatusCode = HttpStatusCode.OK
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
 ) {
     respondOutcome(dto2ApiService, outcome) { brevredigering ->
         respond(status = successStatus, dto2ApiService.toApi(brevredigering))
@@ -30,7 +31,7 @@ suspend fun RoutingContext.apiRespond(
 suspend fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.BrevInfo, BrevredigeringError>?,
-    successStatus: HttpStatusCode = HttpStatusCode.OK
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
 ) {
     respondOutcome(dto2ApiService, outcome) { brevInfo ->
         respond(status = successStatus, dto2ApiService.toApi(brevInfo))
@@ -41,10 +42,21 @@ suspend fun RoutingContext.apiRespond(
 suspend fun RoutingContext.apiRespond(
     dto2ApiService: Dto2ApiService,
     outcome: Outcome<Dto.HentDocumentResult, BrevredigeringError>?,
-    successStatus: HttpStatusCode = HttpStatusCode.OK
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
 ) {
-    respondOutcome(dto2ApiService, outcome) { brevInfo ->
-        respond(status = successStatus, dto2ApiService.toApi(brevInfo))
+    respondOutcome(dto2ApiService, outcome) {
+        respond(status = successStatus, dto2ApiService.toApi(it))
+    }
+}
+
+@JvmName("apiRespondReservasjon")
+suspend fun RoutingContext.apiRespond(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Reservasjon, BrevredigeringError>?,
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
+) {
+    respondOutcome(dto2ApiService, outcome) {
+        respond(status = successStatus, dto2ApiService.toApi(it))
     }
 }
 
