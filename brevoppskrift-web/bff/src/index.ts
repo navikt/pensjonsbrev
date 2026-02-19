@@ -5,5 +5,5 @@ const hostName = config.app.host;
 const port = config.app.port;
 
 server.listen(port, hostName, () => {
-  console.log(`Starting brevoppskrift-bff at ${hostName}:${port}`);
+  console.info(`Starting brevoppskrift-bff at ${hostName}:${port}`);
 });
