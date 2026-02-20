@@ -200,5 +200,5 @@ TIP: Vurder om logikken kan flyttes ut av malen, eller om antall felter kan mini
 
 * xref:dsl/kontroll-struktur/showIf.adoc[]
 * xref:dsl/kontroll-struktur/ifNotNull.adoc[]
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
 

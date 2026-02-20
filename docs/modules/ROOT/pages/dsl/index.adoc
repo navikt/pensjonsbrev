@@ -96,7 +96,7 @@ Videre lesing:
 * xref:dsl/stegvis_guide_nytt_brev.adoc[]
 * xref:dsl/oversikt_funksjonalitet.adoc[]
 * xref:dsl/scopes.adoc[]
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
+* xref:dsl/text/formattering.adoc[]
 * xref:dsl/fraser/oversikt.adoc[]
-* xref:dsl/formattering/oversikt.adoc[]
 

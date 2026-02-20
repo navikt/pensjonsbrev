@@ -107,5 +107,5 @@ TIP: Hvis flere felter alltid hører sammen, grupper dem i datamodellen istedenf
 
 * xref:dsl/kontroll-struktur/showIf.adoc[]
 * xref:dsl/kontroll-struktur/forEach.adoc[]
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
 

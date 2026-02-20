@@ -6,7 +6,7 @@
 En brevmal inneholder en nøstet struktur av elementer som brukes til å representere innhold.
 Strukturen består av ulike DSL-scopes som gir deg tilgang til relevante funksjoner på hvert nivå.
 
-TIP: Se xref:dsl/quickstart.adoc[] for en rask introduksjon til mal-utvikling.
+TIP: Se xref:dsl/index.adoc[] for en rask introduksjon til mal-utvikling.
 
 == Scopes og funksjoner
 
@@ -17,13 +17,13 @@ noe som gjør det enklere å utforske muligheter og unngå feil.
 For detaljert dokumentasjon av hvert scope, se xref:dsl/scopes.adoc[].
 
 === Kontrollstrukturer
-I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[]
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/index.adoc[]
 for å styre visning av innhold:
 
 * xref:dsl/kontroll-struktur/showIf.adoc[] - betinget visning
 * xref:dsl/kontroll-struktur/ifNotNull.adoc[] - null-sikker visning
 * xref:dsl/kontroll-struktur/forEach.adoc[] - løkker over lister
-* xref:dsl/content/ifElse.adoc[] - velg mellom verdier
+* xref:dsl/text/ifElse.adoc[] - velg mellom verdier
 
 === Scope-hierarki
 
@@ -122,12 +122,12 @@ Fraser er gjenbrukbare innholdsblokker. Se xref:dsl/fraser/oversikt.adoc[] for f
 
 == Uttrykk og predikater
 
-For å sammenligne verdier og lage betingelser, se xref:dsl/predikat/predikat.adoc[].
+For å sammenligne verdier og lage betingelser, se xref:dsl/kontroll-struktur/predikat.adoc[].
 
 == Videre lesing
 
 * xref:dsl/stegvis_guide_nytt_brev.adoc[]
 * xref:dsl/scopes.adoc[]
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
 * xref:dsl/fraser/oversikt.adoc[]
-* xref:dsl/content/formattering.adoc[]
+* xref:dsl/text/formattering.adoc[]

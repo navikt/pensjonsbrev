@@ -235,7 +235,7 @@ paragraph {
 }
 ----
 
-TIP: Se xref:dsl/lister.adoc[] og xref:dsl/tabeller.adoc[] for mer detaljer.
+TIP: Se xref:dsl/paragraph/lister.adoc[] og xref:dsl/paragraph/tabeller.adoc[] for mer detaljer.
 
 [[TextScope]]
 == TextScope
@@ -291,7 +291,7 @@ paragraph {
 }
 ----
 
-TIP: Se xref:dsl/content/formattering.adoc[] for mer om hvordan du formaterer ulike datatyper.
+TIP: Se xref:dsl/text/formattering.adoc[] for mer om hvordan du formaterer ulike datatyper.
 
 [[PlainTextScope]]
 == PlainTextScope
@@ -330,7 +330,7 @@ title1 {
 
 == Kontrollstrukturer i alle scopes
 
-I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/oversikt.adoc[]
+I nesten alle scopes kan du bruke xref:dsl/kontroll-struktur/index.adoc[]
 for å styre hvilke elementer som vises basert på data:
 
 [source,kotlin]
@@ -362,7 +362,7 @@ outline {
 
 == Se også
 
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
 * xref:dsl/fraser/oversikt.adoc[]
-* xref:dsl/content/formattering.adoc[]
+* xref:dsl/text/formattering.adoc[]
 

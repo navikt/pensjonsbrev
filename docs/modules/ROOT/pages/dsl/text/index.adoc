@@ -13,15 +13,15 @@ Funksjoner for å bygge og tilpasse tekstinnhold dynamisk i brevmaler.
 
 |`ifElse`
 |Velg mellom to verdier basert på en betingelse. Nyttig for små tekstforskjeller som entall/flertall.
-|xref:dsl/content/ifElse.adoc[]
+|xref:dsl/text/ifElse.adoc[]
 
 |Formattering
 |Funksjoner for formattering av f.eks tekst, tall og datoer.
-|xref:dsl/content/formattering.adoc[]
+|xref:dsl/text/formattering.adoc[]
 |===
 
 == Se også
 
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
-* xref:dsl/content/formattering.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
+* xref:dsl/text/formattering.adoc[]
 

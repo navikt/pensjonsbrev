@@ -167,6 +167,6 @@ TIP: Husk å ta stilling til hva som skal skje om listen listen er tom, slik at 
 
 * xref:dsl/kontroll-struktur/showIf.adoc[]
 * xref:dsl/kontroll-struktur/ifNotNull.adoc[]
-* xref:dsl/lister.adoc[]
-* xref:dsl/tabeller.adoc[]
+* xref:dsl/paragraph/lister.adoc[]
+* xref:dsl/paragraph/tabeller.adoc[]
 

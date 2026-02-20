@@ -14,7 +14,7 @@ showIf(betingelse) {
     // Innhold som vises når betingelsen er sann
 }
 ----
-Se: xref:dsl/predikat/predikat.adoc[]
+Se: xref:dsl/kontroll-struktur/predikat.adoc[]
 
 
 === Eksempel
@@ -79,6 +79,6 @@ TIP: Navngi komplekse betingelser i variabler for lesbarhet, og evt flytt de inn
 == Se også
 
 * xref:dsl/kontroll-struktur/ifNotNull.adoc[]
-* xref:dsl/predikat/predikat.adoc[]
-* xref:dsl/kontroll-struktur/oversikt.adoc[]
+* xref:dsl/kontroll-struktur/predikat.adoc[]
+* xref:dsl/kontroll-struktur/index.adoc[]
 
