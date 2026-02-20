@@ -35,14 +35,14 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_DELVIS_EKSPORT_AV_UFORETRYGD
-    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.VEDTAK_EKSPORT
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse av uføretrygd",
+            displayTitle = "Vedtak - delvis eksport av uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
