@@ -24,13 +24,13 @@ export function DataClasses({ templateModelSpecification }: { templateModelSpeci
       gap="space-16"
     >
       {Object.entries(templateModelSpecification.types).map(([name, value]) => (
-        <DataView key={name} name={name} objectTypeSpecification={value} />
+        <DataPresentation key={name} name={name} objectTypeSpecification={value} />
       ))}
     </VStack>
   );
 }
 
-function DataView({
+function DataPresentation({
   name,
   objectTypeSpecification,
 }: {
