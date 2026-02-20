@@ -71,6 +71,8 @@ interface Brevredigering {
     fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
     fun markerSomKladd()
+    // TODO: Vil denne metoden nå overskrive evt. redigert signatur?
+    fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
@@ -236,6 +238,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         laastForRedigering = false
         attestertAvNavIdent = null
         redigertBrev = redigertBrev.withSignatur(attestant = null)
+    }
+
+    override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
+        attestertAvNavIdent = avNavIdent
+        redigertBrev = redigertBrev.withSignatur(attestant = attesterendeSignatur)
     }
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {

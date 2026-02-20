@@ -34,7 +34,6 @@ import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
 
 /**
- * TODO: Usikker på om denne foreldreklassen skal være med i det endelige resultatet.
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
  * Felles fixtures tror jeg kommer til å være nyttig uansett, så det er spesielt service-mocks jeg ikke er sikker på.
  * Jeg er også usikker på om sluttresultatet tester helt ned mot database eller ei.
@@ -266,12 +265,11 @@ abstract class BrevredigeringTest {
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
     ) = withPrincipal(attestant) {
-        brevredigeringService.attester(
-            saksId = brev.info.saksId,
-            brevId = brev.info.id,
-            frigiReservasjon = frigiReservasjon,
-            nyeSaksbehandlerValg = null,
-            nyttRedigertbrev = null,
+        brevredigeringFacade.attesterBrev(
+            AttesterBrevHandler.Request(
+                brevId = brev.info.id,
+                frigiReservasjon = frigiReservasjon,
+            )
         )
     }
 

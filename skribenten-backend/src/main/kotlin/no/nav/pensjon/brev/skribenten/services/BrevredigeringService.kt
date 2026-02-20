@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
@@ -100,7 +101,7 @@ class BrevredigeringService(
 
             // TODO: burde vi sjekke om brevet er et vedtaksbrev før vi gjennomfører attestering?
 
-            val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principalSignatur()
+            val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principal.hentSignatur(navansattService)
 
             val rendretBrev = rendreBrev(
                 brev = brevDto,
@@ -262,18 +263,12 @@ class BrevredigeringService(
             felles = pesysData.felles.medSignerendeSaksbehandlere(
                 SignerendeSaksbehandlere(
                     saksbehandler = signaturSignerende ?: brev.redigertBrev.signatur.saksbehandlerNavn
-                    ?: principalSignatur(),
+                        ?: PrincipalInContext.require().hentSignatur(navansattService),
                     attesterendeSaksbehandler = signaturAttestant ?: brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
                 )
             ).medAnnenMottakerNavn(annenMottakerNavn = annenMottaker ?: brev.redigertBrev.sakspart.annenMottakerNavn)
         )
     }
-
-    private suspend fun principalSignatur(): String =
-        PrincipalInContext.require().let { principal ->
-            navansattService.hentNavansatt(principal.navIdent.id)?.let { "${it.fornavn} ${it.etternavn}" }
-                ?: principal.fullName
-        }
 
     private inner class ReservertBrevScope(val brevDb: BrevredigeringEntity) {
         val brevDto = brevDb.toDto(brevreservasjonPolicy, null)
