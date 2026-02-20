@@ -28,6 +28,7 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelect
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregnetTrygdetidAar
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeAnvendt
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.beregningsMetodeFraGrunnlag
+import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.harFremtidigTrygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.mindreEnnFireFemtedelerAvOpptjeningstiden
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.prorataBroek
 import no.nav.pensjon.etterlatte.maler.TrygdetidSelectors.trygdetidsperioder
@@ -62,6 +63,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, OmstillingsstoenadBeregni
     val sisteOppgittInntekt = sisteBeregningsperiode.oppgittInntekt
     val sisteFratrekkInnAar = sisteBeregningsperiode.fratrekkInnAar
     val sisteInnvilgaMaaneder = sisteBeregningsperiode.innvilgaMaaneder
+
 
     paragraph {
         text(
@@ -451,6 +453,16 @@ private fun OutlineOnlyScope<LanguageSupport.Triple<Bokmal, Nynorsk, English>, O
                         "trygdetid fram til og med det året vedkomande ville ha fylt 66 år. " },
                     english { +"For deceased persons under 67 years of age at the time of death, the general rule " +
                         "is to calculate future contribution time up to and including the year the deceased would have turned 66." },
+                )
+            }
+        }
+
+        showIf(trygdetid.harFremtidigTrygdetid.not()) {
+            paragraph {
+                text(
+                    bokmal { +"Omstillingsstønaden din er beregnet etter unntaksbestemmelser siden avdøde ikke var medlem i folketrygden de siste fem årene før dødsfallet. Unntaksvilkåret er at avdøde kunne fått beregnet alderspensjon på grunn av tidligere opptjening. Det gis ikke framtidig trygdetid når stønaden innvilges etter unntaksvilkår." },
+                    nynorsk { +"Omstillingsstønaden din er utrekna etter unntaksføresegner sidan avdøde ikkje var medlem i folketrygda dei siste fem åra før dødsfallet. Unntaksvilkåret er at avdøde kunne fått utrekna alderspensjon på grunn av tidlegare opptening. Det blir ikkje gitt framtidig trygdetid når stønaden blir innvilga etter unntaksføresegnene."},
+                    english { +"Your adjustment allowance has been calculated under exceptional provisions because the deceased was not a member of the National Insurance Scheme during the last five years prior to the death. The exception criterion is that the deceased could have been granted an retirement pension based on previous pension accrual. No future insurance periods are granted when the allowance is awarded under exceptional provisions."},
                 )
             }
         }
