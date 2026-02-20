@@ -1,3 +1,5 @@
+strictDepBuilds: true
+
 allowBuilds:
   cypress: true
   esbuild: true
