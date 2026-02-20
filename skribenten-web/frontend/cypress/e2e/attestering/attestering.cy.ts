@@ -141,7 +141,10 @@ describe("attestering", () => {
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
     cy.wait("@attester");
-    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/forhandsvisning")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
 
     //------Forhåndsvisning------
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
@@ -158,7 +161,10 @@ describe("attestering", () => {
     cy.contains("Ja, send brev").click();
 
     //------Kvittering------
-    cy.url().should("contain", "/saksnummer/123456/attester/1/kvittering");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/kvittering")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
     cy.contains("Sendt til mottaker").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").click();
@@ -206,7 +212,10 @@ describe("attestering", () => {
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
     cy.wait("@attester");
-    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/forhandsvisning")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
 
     //------Forhåndsvisning------
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
@@ -244,6 +253,9 @@ describe("attestering", () => {
     cy.wait("@slettBrev2").its("response.statusCode").should("eq", 204);
 
     cy.contains("Gå til brevbehandler").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?enhetsId=0001");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
   });
 });
