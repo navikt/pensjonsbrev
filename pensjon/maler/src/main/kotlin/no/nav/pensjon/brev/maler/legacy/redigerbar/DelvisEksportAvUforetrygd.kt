@@ -42,7 +42,7 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - innvilgelse av uføretrygd",
+            displayTitle = "Vedtak - delvis eksport av uføretrygd",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
