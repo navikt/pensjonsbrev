@@ -1,5 +1,9 @@
+packages:
+  - '.'
+
 allowBuilds:
-- cypress: true
-- esbuild: true
+  cypress: true
+  esbuild: true
+
 publicHoistPattern:
-- pdfjs-dist
+  - pdfjs-dist
