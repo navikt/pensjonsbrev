@@ -246,7 +246,7 @@ private fun hoyereLavere(hoyereCondition: Expression<Boolean>): Expression<Strin
     return ifElse(
         hoyere,
         ifElse(erBokmal, "høyere".expr(), ifElse(erNynorsk, "høgare".expr(), ifElse(erEngelsk, "higher".expr(), "".expr()))),
-        ifElse(erEngelsk, "lavere".expr(), ifElse(erBokmal, "lågare".expr(), ifElse(erNynorsk, "lower".expr(), "".expr())))
+        ifElse(erBokmal, "lavere".expr(), ifElse(erNynorsk, "lågare".expr(), ifElse(erEngelsk, "lower".expr(), "".expr())))
     )
 }
 
