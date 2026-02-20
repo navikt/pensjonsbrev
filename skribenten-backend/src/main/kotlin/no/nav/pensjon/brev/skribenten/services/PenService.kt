@@ -90,11 +90,10 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         client.get("brev/skribenten/sak/${saksId.id}").bodyOrThrow<SakResponseDto>()?.let {
             Pen.SakSelection(
                 saksId = it.saksId,
-                foedselsnr = it.foedselsnr,
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
-                pid = it.pid ?: Pid(it.foedselsnr.value), // TODO fjern fallback når pen sender med pid
+                pid = it.pid
             )
         }
 
@@ -182,12 +181,11 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
     private data class SakResponseDto(
         val saksId: SaksId,
-        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
         val enhetId: String?,
-        val pid: Pid? = null,
+        val pid: Pid,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

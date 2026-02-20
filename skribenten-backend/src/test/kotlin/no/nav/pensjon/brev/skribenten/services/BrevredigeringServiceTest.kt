@@ -156,7 +156,6 @@ class BrevredigeringServiceTest {
 
     private val sak1 = Pen.SakSelection(
         saksId = SaksId(1234L),
-        foedselsnr = Foedselsnummer("12345678910"),
         foedselsdato = LocalDate.now().minusYears(42),
         navn = Pen.SakSelection.Navn("a", "b", "c"),
         sakType = Sakstype("ALDER"),
