@@ -4,15 +4,12 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.alleFritekstFelterErRedigert
 import no.nav.pensjon.brev.skribenten.letter.toEdit
-import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
@@ -42,11 +39,7 @@ sealed class BrevredigeringException(override val message: String) : Exception()
 
     class BrevIkkeKlartTilSendingException(message: String) : BrevredigeringException(message)
     class NyereVersjonFinsException(message: String) : BrevredigeringException(message)
-    class HarIkkeAttestantrolleException(message: String) : BrevredigeringException(message)
-    class KanIkkeAttestereEgetBrevException(message: String) : BrevredigeringException(message)
-    class AlleredeAttestertException(message: String) : BrevredigeringException(message)
     class BrevmalFinnesIkke(message: String) : BrevredigeringException(message)
-    class IkkeTilgangTilEnhetException(message: String) : BrevredigeringException(message)
 }
 
 interface HentBrevService {
@@ -87,42 +80,7 @@ class BrevredigeringService(
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
-    suspend fun attester(
-        saksId: SaksId,
-        brevId: BrevId,
-        nyeSaksbehandlerValg: SaksbehandlerValg?,
-        nyttRedigertbrev: Edit.Letter?,
-        frigiReservasjon: Boolean = false,
-    ): Dto.Brevredigering? =
-        hentBrevMedReservasjon(brevId = brevId, saksId = saksId) {
-            val principal = PrincipalInContext.require()
-            brevDto.validerErFerdigRedigert()
-            brevDto.validerKanAttestere(principal)
-
-            // TODO: burde vi sjekke om brevet er et vedtaksbrev før vi gjennomfører attestering?
-
-            val signaturAttestant = brevDto.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?: principal.hentSignatur(navansattService)
-
-            val rendretBrev = rendreBrev(
-                brev = brevDto,
-                saksbehandlerValg = nyeSaksbehandlerValg,
-                signaturAttestant = signaturAttestant,
-            )
-            transaction {
-                brevDb.apply {
-                    redigertBrev = (nyttRedigertbrev ?: brevDto.redigertBrev).updateEditedLetter(rendretBrev.markup)
-                    sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-                    saksbehandlerValg = nyeSaksbehandlerValg ?: brevDto.saksbehandlerValg
-                    sistRedigertAv = principal.navIdent
-                    this.attestertAvNavIdent = principal.navIdent
-                    if (frigiReservasjon) {
-                        redigeresAv = null
-                    }
-                }.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage)
-            }
-        }
-
-    suspend fun sendBrev(saksId: SaksId, brevId: BrevId): Pen.BestillBrevResponse? {
+     suspend fun sendBrev(saksId: SaksId, brevId: BrevId): Pen.BestillBrevResponse? {
         val (brev, document) = transaction {
             BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
                 .let { it?.toDto(brevreservasjonPolicy, null) to it?.document }
@@ -278,22 +236,6 @@ class BrevredigeringService(
 private fun Dto.Brevredigering.validerErFerdigRedigert(): Boolean =
     redigertBrev.alleFritekstFelterErRedigert() || throw BrevIkkeKlartTilSendingException("Brevet inneholder fritekst-felter som ikke er endret")
 
-private fun Dto.Brevredigering.validerKanAttestere(userPrincipal: UserPrincipal) {
-    if (!userPrincipal.isAttestant()) {
-        throw HarIkkeAttestantrolleException(
-            "Bruker ${userPrincipal.navIdent} har ikke attestantrolle, brev ${info.id}",
-        )
-    }
-    if (userPrincipal.navIdent == info.opprettetAv) {
-        throw KanIkkeAttestereEgetBrevException(
-            "Bruker ${userPrincipal.navIdent} prøver å attestere sitt eget brev, brev ${info.id}",
-        )
-    }
-    if (info.attestertAv != null && info.attestertAv != userPrincipal.navIdent) {
-        throw AlleredeAttestertException("Brev ${info.id} er allerede attestert av ${info.attestertAv}")
-    }
-}
-
 private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification): SaksbehandlerValg {
     val saksbehandlerValgSpec = modelSpec.types[modelSpec.letterModelTypeName]?.get("saksbehandlerValg")
         ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
@@ -313,7 +255,6 @@ private fun SaksbehandlerValg.tilbakestill(modelSpec: TemplateModelSpecification
         }
     } else this
 }
-
 
 private fun BrevredigeringEntity.erReservasjonUtloept(): Boolean =
     sistReservert?.plus(RESERVASJON_TIMEOUT)?.isBefore(Instant.now()) == true

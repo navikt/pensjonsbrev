@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
@@ -15,7 +16,9 @@ class AttesterBrevHandlerTest : BrevredigeringTest() {
     @Test
     suspend fun `kan attestere vedtaksbrev som er klar`() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234)).resultOrFail()
-        veksleKlarStatus(brev, klar = true).resultOrFail()
+        assertThat(veksleKlarStatus(brev, klar = true)).isSuccess {
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
+        }
 
         val resultat = attester(brev, attestant = attestant1Principal, frigiReservasjon = true)
 
@@ -23,6 +26,7 @@ class AttesterBrevHandlerTest : BrevredigeringTest() {
             assertThat(attestert.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
             assertThat(attestert.info.redigeresAv).isNull()
             assertThat(attestert.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+            assertThat(attestert.info.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
     }
 
@@ -92,12 +96,29 @@ class AttesterBrevHandlerTest : BrevredigeringTest() {
     }
 
     @Test
-    suspend fun `handler returnerer null hvis brev ikke finnes`() {
+    suspend fun `returnerer null hvis brev ikke finnes`() {
         val resultat = withPrincipal(attestant1Principal) {
             brevredigeringFacade.attesterBrev(AttesterBrevHandler.Request(brevId = BrevId(-9999L)))
         }
 
         assertThat(resultat).isNull()
+    }
+
+    @Test
+    suspend fun `kan redigerere attestant signatur`() {
+        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234), reserverForRedigering = true).resultOrFail()
+        veksleKlarStatus(brev, klar = true).resultOrFail()
+
+        val redigertAttestantSignatur = brev.redigertBrev.withSignatur(attestant = "Ny attestant signatur")
+        val attestert = attester(
+            brev,
+            nyttRedigertbrev = redigertAttestantSignatur,
+            attestant = attestant1Principal,
+            frigiReservasjon = true
+        )
+        assertThat(attestert).isSuccess {
+            assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo("Ny attestant signatur")
+        }
     }
 }
 

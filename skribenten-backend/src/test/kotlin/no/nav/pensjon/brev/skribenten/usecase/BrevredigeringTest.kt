@@ -264,11 +264,15 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
+        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyttRedigertbrev: Edit.Letter? = null,
     ) = withPrincipal(attestant) {
         brevredigeringFacade.attesterBrev(
             AttesterBrevHandler.Request(
                 brevId = brev.info.id,
                 frigiReservasjon = frigiReservasjon,
+                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
+                nyttRedigertbrev = nyttRedigertbrev,
             )
         )
     }

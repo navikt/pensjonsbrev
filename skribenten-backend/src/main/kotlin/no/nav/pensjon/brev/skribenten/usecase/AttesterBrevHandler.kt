@@ -2,11 +2,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
-import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -16,9 +12,6 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
-import java.time.Instant
-import java.time.temporal.ChronoUnit
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
@@ -43,17 +36,6 @@ class AttesterBrevHandler(
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        val signaturAttestant = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
-            ?: principal.hentSignatur(navansattService)
-
-        val pesysdata = brevdataService.hentBrevdata(
-            brev = brev,
-            signatur = SignerendeSaksbehandlere(
-                saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
-                attesterendeSaksbehandler = signaturAttestant
-            )
-        )
-
         if (request.nyeSaksbehandlerValg != null) {
             brev.saksbehandlerValg = request.nyeSaksbehandlerValg
         }
@@ -61,12 +43,13 @@ class AttesterBrevHandler(
             brev.oppdaterRedigertBev(request.nyttRedigertbrev, principal.navIdent)
         }
 
+        val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = renderService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 
-        brev.attester(principal.navIdent, signaturAttestant)
-        brev.sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
-        brev.sistRedigertAv = principal.navIdent
+        val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
+            ?: principal.hentSignatur(navansattService)
+        brev.attester(principal.navIdent, attestantSignatur)
 
         if (request.frigiReservasjon) {
             brev.redigeresAv = null

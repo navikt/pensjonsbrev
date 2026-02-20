@@ -34,7 +34,6 @@ import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.Instant
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
@@ -280,22 +279,6 @@ class BrevredigeringServiceTest {
     }
 
     @Test
-    fun `status er KLAR om vedtaksbrev er laast og det er attestert`(): Unit = runBlocking {
-        val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1))
-
-        assertThat(
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true))
-            }
-        ).isSuccess()
-
-        val brevEtterAttestering = withPrincipal(attestantPrincipal) {
-            brevredigeringService.attester(saksId = brev.info.saksId, brevId = brev.info.id, null, null)
-        }
-        assertThat(brevEtterAttestering?.info?.status).isEqualTo(Dto.BrevStatus.KLAR)
-    }
-
-    @Test
     fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
         val brev = opprettBrev()
         transaction { BrevredigeringEntity[brev.info.id].journalpostId = JournalpostId(123L) }
@@ -320,45 +303,6 @@ class BrevredigeringServiceTest {
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
         assertThat(hentBrev(brevId = BrevId(1337))).isNull()
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
-    }
-
-    @Test
-    fun `attesterer hvis avsender har attestantrolle`(): Unit = runBlocking {
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = VedtaksId(1),
-        )
-
-        val attesteringsResultat = withPrincipal(attestantPrincipal) {
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
-        }
-        assertThat(attesteringsResultat?.info?.attestertAv).isEqualTo(attestantPrincipal.navIdent)
-
-        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
-    }
-
-    @Test
-    fun `attesterer ikke hvis avsender ikke har attestantrolle`(): Unit = runBlocking {
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = VedtaksId(1),
-        )
-
-        withPrincipal(MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf())) {
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            assertThrows<HarIkkeAttestantrolleException> {
-                brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
-            }
-        }
-
-        penService.verifyHentPesysBrevdata(sak1.saksId, VedtaksId(1), Testbrevkoder.VEDTAKSBREV, principalNavEnhetId)
     }
 
     @Test
@@ -394,11 +338,11 @@ class BrevredigeringServiceTest {
         }
 
         withPrincipal(attestantPrincipal) {
-            brevredigeringService.attester(sak1.saksId, brev.info.id, null, null, true)
+            assertThat(brevredigeringFacade.attesterBrev(AttesterBrevHandler.Request(brev.info.id, frigiReservasjon = true))).isSuccess()
             assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
             assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
         }
-        assertEquals(brevbakerService.renderPdfKall.first().signatur.attesterendeSaksbehandlerNavn, attestantPrincipal.fullName)
+        assertEquals(attestantPrincipal.fullName, brevbakerService.renderPdfKall.first().signatur.attesterendeSaksbehandlerNavn)
     }
 
     @Test

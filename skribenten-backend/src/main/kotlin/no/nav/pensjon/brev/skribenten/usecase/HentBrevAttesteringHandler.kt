@@ -10,7 +10,6 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 
 class HentBrevAttesteringHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
@@ -37,17 +36,11 @@ class HentBrevAttesteringHandler(
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        val signaturAttestant = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn
-            ?: principal.hentSignatur(navansattService)
+        if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {
+            brev.redigertBrev = brev.redigertBrev.withSignatur(attestant = principal.hentSignatur(navansattService))
+        }
 
-        val pesysdata = brevdataService.hentBrevdata(
-            brev = brev,
-            signatur = SignerendeSaksbehandlere(
-                saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
-                attesterendeSaksbehandler = signaturAttestant
-            )
-        )
-
+        val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = renderService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 

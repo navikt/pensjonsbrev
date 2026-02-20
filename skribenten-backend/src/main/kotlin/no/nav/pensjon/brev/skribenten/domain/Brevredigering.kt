@@ -243,6 +243,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
         attestertAvNavIdent = avNavIdent
         redigertBrev = redigertBrev.withSignatur(attestant = attesterendeSignatur)
+        // TODO: Vurder om vi skal oppdatere sistRedigert/sistRedigertAv her?
     }
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
