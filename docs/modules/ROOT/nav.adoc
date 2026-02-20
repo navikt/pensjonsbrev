@@ -5,23 +5,20 @@
 * xref:brevbaker-pdfbygger-beskrivelse.adoc[Teknisk beskrivelse]
 * xref:dsl/index.adoc[DSL]
 ** xref:dsl/index.adoc[Quickstart]
-** xref:dsl/stegvis_guide_nytt_brev.adoc[]
-** xref:dsl/oversikt_funksjonalitet.adoc[]
+** xref:dsl/stegvis guide nytt brev.adoc[]
 ** xref:dsl/scopes.adoc[]
 ** xref:dsl/brevmal.adoc[]
 ** xref:dsl/vedlegg.adoc[]
+
 ** Paragraph
 *** xref:dsl/paragraph/lister.adoc[]
 *** xref:dsl/paragraph/tabeller.adoc[]
 
-** xref:dsl/kontroll-struktur/oversikt.adoc[]
+** xref:dsl/kontroll-struktur/index.adoc[]
 *** xref:dsl/kontroll-struktur/showIf.adoc[]
 *** xref:dsl/kontroll-struktur/ifNotNull.adoc[]
 *** xref:dsl/kontroll-struktur/forEach.adoc[]
-*** xref:dsl/kontroll-struktur/predikat.adoc[Predikat]
-
-** xref:dsl/text/index.adoc[]
-*** xref:dsl/text/ifElse.adoc[]
+*** xref:dsl/kontroll-struktur/predikat.adoc[]
 
 ** xref:dsl/fraser/oversikt.adoc[]
 *** xref:dsl/fraser/outlinePhrase.adoc[]
@@ -29,9 +26,9 @@
 *** xref:dsl/fraser/plainTextPhrase.adoc[]
 *** xref:dsl/fraser/textOnlyPhrase.adoc[]
 
-** Text
+** xref:dsl/text/index.adoc[Text]
 *** xref:dsl/text/formattering.adoc[]
-
+*** xref:dsl/text/ifElse.adoc[]
 
 .Skribenten
 * xref:skribenten-101.adoc[Veiledning (101)]

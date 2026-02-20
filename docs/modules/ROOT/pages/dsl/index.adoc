@@ -93,8 +93,7 @@ Malen over er bare en liten del av den fullstendige funksjonaliteten brevmal-dsl
 
 Videre lesing:
 
-* xref:dsl/stegvis_guide_nytt_brev.adoc[]
-* xref:dsl/oversikt_funksjonalitet.adoc[]
+* xref:dsl/stegvis guide nytt brev.adoc[]
 * xref:dsl/scopes.adoc[]
 * xref:dsl/kontroll-struktur/index.adoc[]
 * xref:dsl/text/formattering.adoc[]

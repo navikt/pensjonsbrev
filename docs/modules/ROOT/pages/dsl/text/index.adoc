@@ -1,7 +1,7 @@
 :docinfo: shared
 :source-highlighter: highlight.js
 
-= Innhold
+= Text
 
 Funksjoner for å bygge og tilpasse tekstinnhold dynamisk i brevmaler.
 

@@ -144,7 +144,7 @@ object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAld
 Fortsett og fyll ut resten av innholdet, logikken, vedleggene, inndata osv.
 
 For mer detaljer om funksjonalitet som kan brukes til å definere innhold, les videre i dokumentasjonen:
-xref:dsl/oversikt_funksjonalitet.adoc[]
+xref:dsl/scopes.adoc[]
 
 == 2.2
 Legg inn malen i ProductionTemplates.kt under relevant modul.
