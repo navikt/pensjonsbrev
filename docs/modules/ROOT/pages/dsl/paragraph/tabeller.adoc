@@ -16,10 +16,10 @@ paragraph {
     table(
         header = {
             column {
-                text(bokmal { +"Beskrivelse" }, FontType.BOLD)
+                text(bokmal { +"Beskrivelse" })
             }
             column(alignment = ColumnAlignment.RIGHT) {
-                text(bokmal { +"Beløp" }, FontType.BOLD)
+                text(bokmal { +"Beløp" })
             }
         }
     ) {
@@ -75,9 +75,9 @@ column(columnSpan = 1) {
 ----
 table(
     header = {
-        column { text(bokmal { +"Måned" }, FontType.BOLD) }
+        column { text(bokmal { +"Måned" }) }
         column(alignment = ColumnAlignment.RIGHT) {
-            text(bokmal { +"Beløp" }, FontType.BOLD)
+            text(bokmal { +"Beløp" })
         }
     }
 ) {
@@ -96,7 +96,7 @@ table(
 
 [source,kotlin]
 ----
-table(header = { ... }) {
+table(header = { /*...*/ }) {
     row {
         cell { text(bokmal { +"Grunnbeløp" }) }
         cell { eval(grunnbeloep.format()) }
@@ -110,29 +110,13 @@ table(header = { ... }) {
     }
 
     row {
-        cell { text(bokmal { +"Totalt" }, FontType.BOLD) }
+        cell { text(bokmal { +"Totalt" }, fontType = FontType.BOLD) }
         cell { eval(totalBeloep.format()) }
     }
 }
 ----
 
-=== Betingede celler
-
-[source,kotlin]
-----
-table(header = { ... }) {
-    row {
-        cell { text(bokmal { +"Januar" }) }
-        cell { eval(januarBeloep.format()) }
-
-        showIf(visSkattekolonne) {
-            cell { eval(januarSkatt.format()) }
-        }
-    }
-}
-----
-
-IMPORTANT: Antall celler i hver rad må matche antall kolonner i headeren.
+IMPORTANT: Antall celler i hver rad må matche antall kolonner i headeren. Derfor støtter vi ikke betingede celler.
 
 == Eksempel: Beregningstabell
 
@@ -142,13 +126,13 @@ paragraph {
     table(
         header = {
             column(columnSpan = 3) {
-                text(bokmal { +"Beregning" }, FontType.BOLD)
+                text(bokmal { +"Beregning" })
             }
             column(alignment = ColumnAlignment.RIGHT) {
-                text(bokmal { +"Per måned" }, FontType.BOLD)
+                text(bokmal { +"Per måned" })
             }
             column(alignment = ColumnAlignment.RIGHT) {
-                text(bokmal { +"Per år" }, FontType.BOLD)
+                text(bokmal { +"Per år" })
             }
         }
     ) {
@@ -167,7 +151,7 @@ paragraph {
         }
 
         row {
-            cell { text(bokmal { +"Sum" }, FontType.BOLD) }
+            cell { text(bokmal { +"Sum" }, fontType = FontType.BOLD) }
             cell { eval(sumMaaned.format()) }
             cell { eval(sumAar.format()) }
         }
@@ -177,59 +161,13 @@ paragraph {
 
 == Beste praksis
 
-=== Bruk uthevet skrift for overskrifter
+TIP: *Høyrejuster tall* - Bruk `alignment = ColumnAlignment.RIGHT` for tallkolonner for bedre lesbarhet.
 
-[source,kotlin]
-----
-column {
-    text(bokmal { +"Kolonne" }, FontType.BOLD)
-}
-----
-
-=== Høyrejuster tall
-
-[source,kotlin]
-----
-column(alignment = ColumnAlignment.RIGHT) {
-    text(bokmal { +"Beløp" }, FontType.BOLD)
-}
-----
-
-=== Hold tabeller enkle
-
-[source,kotlin]
-----
-// ✅ Enkel og oversiktlig
-table(header = {
-    column { text(bokmal { +"Type" }) }
-    column { text(bokmal { +"Beløp" }) }
-}) { ... }
-
-// ❌ For mange kolonner blir uoversiktlig
-table(header = {
-    column { ... }
-    column { ... }
-    column { ... }
-    column { ... }
-    column { ... }
-    column { ... }
-}) { ... }
-----
-
-== Begrensninger
-
-Tabellceller kan *ikke* inneholde:
-
-* Lister
-* Nøstede tabeller
-* Avsnitt (paragraph)
-
-Hold celleinnholdet enkelt med tekst og verdier.
+TIP: *Hold tabeller enkle* - Begrens antall kolonner om mulig. For mange kolonner blir fort uoversiktlig.
 
 == Se også
 
 * xref:dsl/paragraph/lister.adoc[]
 * xref:dsl/kontroll-struktur/forEach.adoc[]
-* xref:dsl/text/formattering.adoc[]
 * xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 

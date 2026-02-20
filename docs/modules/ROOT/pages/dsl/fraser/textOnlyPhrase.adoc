@@ -13,7 +13,8 @@ Den er nyttig for standardiserte tekstbiter som skal brukes på flere steder. F.
 data class GarantipensjonSatsTypeText(
     val satsType: Expression<GarantipensjonSatsType>,
 ) : TextOnlyPhrase<LangBokmalNynorskEnglish>() {
-    override fun PlainTextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+    // TextOnlyScope gir tilgang til text() med FontType-parameter
+    override fun TextOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         val hoysats = satsType.equalTo(GarantipensjonSatsType.HOY)
         val ordinaer = satsType.equalTo(GarantipensjonSatsType.ORDINAER)
         showIf(hoysats) {
@@ -34,6 +35,7 @@ data class GarantipensjonSatsTypeText(
 }
 
 ----
+Se: xref:dsl/scopes.adoc#TextScope[TextScope]
 
 == Bruke TextOnlyPhrase
 

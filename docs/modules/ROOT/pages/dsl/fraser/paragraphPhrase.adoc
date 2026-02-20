@@ -21,6 +21,7 @@ object MeldepliktInfo : ParagraphPhrase<LangBokmalNynorsk>() {
     }
 }
 ----
+Se: xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 
 === Frase med liste
 

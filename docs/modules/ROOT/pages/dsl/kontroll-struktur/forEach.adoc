@@ -76,8 +76,8 @@ paragraph {
 ----
 table(
     header = {
-        column { text(bokmal { +"Måned" }, FontType.BOLD) }
-        column(alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }, FontType.BOLD) }
+        column { text(bokmal { +"Måned" }) }
+        column(alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }) }
     }
 ) {
     forEach(utbetalinger) { utbetaling ->

@@ -14,19 +14,19 @@ De sikrer konsistent innhold på tvers av brev og gjør vedlikehold enklere.
 
 |xref:dsl/fraser/outlinePhrase.adoc[]
 |Avsnitt, overskrifter (title1/2/3)
-|`OutlineScope`
+|xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
 
 |xref:dsl/fraser/paragraphPhrase.adoc[]
 |Tekst, lister, tabeller, skjemafelt
-|`ParagraphScope`
+|xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 
 |xref:dsl/fraser/textOnlyPhrase.adoc[]
 |Tekst med variabler, formattering, linjeskift
-|`TextScope`, `ParagraphScope`
+|xref:dsl/scopes.adoc#TextScope[TextScope], xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 
 |xref:dsl/fraser/plainTextPhrase.adoc[]
 |Tekst med variabler
-|`PlainTextScope`, `TextScope`, `ParagraphScope`
+|xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope], xref:dsl/scopes.adoc#TextScope[TextScope], xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 |===
 
 == Hvorfor bruke fraser?

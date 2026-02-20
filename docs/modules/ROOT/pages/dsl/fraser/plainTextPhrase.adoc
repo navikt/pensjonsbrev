@@ -19,6 +19,7 @@ object VedtakTittel : PlainTextOnlyPhrase<LangBokmalNynorsk>() {
     }
 }
 ----
+Se: xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
 
 == Bruke PlainTextOnlyPhrase
 
