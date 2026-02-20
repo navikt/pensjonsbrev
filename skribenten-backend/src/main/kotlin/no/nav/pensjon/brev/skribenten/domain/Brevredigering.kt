@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
@@ -52,10 +53,10 @@ interface Brevredigering {
     val sistredigert: Instant
     val sistReservert: Instant?
     val journalpostId: JournalpostId?
-    val document: Iterable<Document>
+    var document: Dto.Document?
     val mottaker: Mottaker?
     val p1Data: P1Data?
-    val valgteVedlegg: ValgteVedlegg?
+    val valgteVedlegg: List<AlltidValgbartVedleggKode>
     val attestertAvNavIdent: NavIdent?
     val brevtype: LetterMetadata.Brevtype
     val isVedtaksbrev: Boolean
@@ -103,10 +104,55 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistredigert by BrevredigeringTable.sistredigert
     override var sistReservert by BrevredigeringTable.sistReservert
     override var journalpostId by BrevredigeringTable.journalpostId
-    override val document by Document referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+
+    private val _documentEntityList by DocumentEntity referrersOn DocumentTable.brevredigering orderBy (DocumentTable.id to SortOrder.DESC)
+    override var document: Dto.Document?
+        get() = _documentEntityList.firstOrNull()?.toDto()
+        set(documentDto) {
+            if (documentDto == null) {
+                _documentEntityList.forEach { it.delete() }
+                return
+            }
+
+            val existingDocument = _documentEntityList.firstOrNull()
+
+            if (existingDocument != null) {
+                existingDocument.apply {
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+            } else {
+                DocumentEntity.new {
+                    this.brevredigering = this@BrevredigeringEntity
+                    this.pdf = documentDto.pdf
+                    this.dokumentDato = documentDto.dokumentDato
+                    this.redigertBrevHash = documentDto.redigertBrevHash
+                    this.brevdataHash = documentDto.brevdataHash
+                }
+                refresh(flush = true) // pga. referrersOn, må vi oppdatere referansen til document-tabellen
+            }
+        }
+
     override val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
     override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
-    override val valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
+
+    private val _valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
+    override var valgteVedlegg: List<AlltidValgbartVedleggKode>
+        get() = _valgteVedlegg?.valgteVedlegg ?: emptyList()
+        set(nyeValgteVedlegg) {
+            val valgteVedlegEntity = _valgteVedlegg
+            if (valgteVedlegEntity != null) {
+                valgteVedlegEntity.valgteVedlegg = nyeValgteVedlegg
+            } else {
+                ValgteVedlegg.new(id.value) {
+                    this.valgteVedlegg = nyeValgteVedlegg
+                }
+                refresh(flush = true) // pga. optionalBackReferencedOn, må vi oppdatere referansen til valgteVedlegg-tabellen
+            }
+        }
+
     override var attestertAvNavIdent by BrevredigeringTable.attestertAvNavIdent
     override var brevtype by BrevredigeringTable.brevtype
         private set
@@ -218,7 +264,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             redigertBrevHash = redigertBrevHash,
             saksbehandlerValg = saksbehandlerValg,
             propertyUsage = coverage,
-            valgteVedlegg = valgteVedlegg?.valgteVedlegg
+            valgteVedlegg = valgteVedlegg
         )
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =

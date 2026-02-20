@@ -8,8 +8,6 @@ import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import org.jetbrains.exposed.v1.core.eq
@@ -22,10 +20,12 @@ class BrevredigeringFacade(
     private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>,
-    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering>,
-    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering>,
-    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering>,
+    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>,
+    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>,
+    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
+    private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
@@ -52,19 +52,25 @@ class BrevredigeringFacade(
     suspend fun hentBrevAttestering(request: HentBrevAttesteringHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         hentBrevAttestering.runHandler(request)
 
-    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         veksleKlarStatus.runHandler(request)
 
-    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         endreDistribusjonstype.runHandler(request)
 
-    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         endreMottaker.runHandler(request)
+
+    suspend fun endreValgteVedlegg(request: EndreValgteVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        endreValgteVedlegg.runHandler(request)
 
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
             reserverBrev.handle(request)?.onError { rollback() }
         }
+
+    suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        hentEllerOpprettPdf.runHandler(request)
 
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {

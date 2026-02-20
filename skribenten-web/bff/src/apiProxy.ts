@@ -1,5 +1,5 @@
 import { getToken, requestOboToken } from "@navikt/oasis";
-import { Express, NextFunction, Request, Response, Router } from "express";
+import type { Express, NextFunction, Request, Response, Router } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 import config from "./config.js";
@@ -31,7 +31,7 @@ export function addProxyHandler(router: Router, { ingoingUrl, outgoingUrl, scope
         request.headers["obo-token"] = onBehalfOfTokenResponse.token;
         next();
       } else {
-        console.log("OBO-exchange failed", onBehalfOfTokenResponse.error);
+        console.error("OBO-exchange failed", onBehalfOfTokenResponse.error);
         response.status(403).send();
       }
     },
@@ -48,7 +48,7 @@ export function addProxyHandler(router: Router, { ingoingUrl, outgoingUrl, scope
             proxyRequest.removeHeader("cookie");
             proxyRequest.setHeader("Authorization", `Bearer ${onBehalfOfToken}`);
           } else {
-            console.log(`Access token var not present in session for scope ${scope}`);
+            console.error(`Access token not present in session for scope ${scope}`);
           }
         },
       },

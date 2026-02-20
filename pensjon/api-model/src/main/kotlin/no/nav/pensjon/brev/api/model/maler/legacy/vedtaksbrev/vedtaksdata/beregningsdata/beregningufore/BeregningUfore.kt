@@ -14,6 +14,7 @@ data class BeregningUfore(
     val belopsendring: Belopsendring?,
     val uforetrygdberegning: Uforetrygdberegning?,
     val beregningsivilstandanvendt: String?,
+    val beregningbenyttetsivilstand: String?,
     val belopokt: Boolean?,
     val beregningvirkningdatofom: LocalDate?,
     val beregningbrukersivilstand: String?,

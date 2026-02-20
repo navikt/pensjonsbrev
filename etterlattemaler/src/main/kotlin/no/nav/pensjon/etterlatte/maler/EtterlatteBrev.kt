@@ -69,6 +69,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
     val sanksjon: Boolean,
+    val erFakeSanksjon: Boolean,
     val institusjon: Boolean = false,
 )
 
@@ -80,7 +81,9 @@ data class Trygdetid(
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,
     val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean,
-)
+) {
+    val harFremtidigTrygdetid = trygdetidsperioder.any { it.type == TrygdetidType.FREMTIDIG }
+}
 
 enum class BeregningsMetode {
     NASJONAL,

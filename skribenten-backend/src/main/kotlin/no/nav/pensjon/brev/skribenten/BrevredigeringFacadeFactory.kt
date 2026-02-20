@@ -13,6 +13,7 @@ object BrevredigeringFacadeFactory {
         penService: PenService,
         samhandlerService: SamhandlerService,
         navansattService: NavansattService,
+        p1Service: P1Service,
     ): BrevredigeringFacade {
         val renderService = RenderService(brevbakerService)
         val brevdataService = BrevdataService(penService, samhandlerService)
@@ -68,7 +69,16 @@ object BrevredigeringFacadeFactory {
             reserverBrev = ReserverBrevHandler(
                 brevreservasjonPolicy = brevreservasjonPolicy
             ),
+            hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
+                brevdataService = brevdataService,
+                renderService = renderService,
+                p1Service = p1Service,
+            ),
             brevreservasjonPolicy = brevreservasjonPolicy,
+            endreValgteVedlegg = EndreValgteVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
         )
     }
 }
