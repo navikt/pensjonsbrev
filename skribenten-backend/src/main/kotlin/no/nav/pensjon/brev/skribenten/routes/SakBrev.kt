@@ -9,20 +9,8 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
-import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.services.P1ServiceImpl
-import no.nav.pensjon.brev.skribenten.services.SpraakKode
-import no.nav.pensjon.brev.skribenten.usecase.EndreDistribusjonstypeHandler
-import no.nav.pensjon.brev.skribenten.usecase.EndreMottakerHandler
-import no.nav.pensjon.brev.skribenten.usecase.HentBrevAttesteringHandler
-import no.nav.pensjon.brev.skribenten.usecase.HentBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.HentEllerOpprettPdfHandler
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
-import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.VeksleKlarStatusHandler
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(
@@ -102,26 +90,44 @@ fun Route.sakBrev(
                 apiRespond(dto2ApiService, result)
             }
 
+            // TODO: fjern når frontend er oppdatert til å bruke endreValgteVedlegg-endepunktet
             patch<Api.DelvisOppdaterBrevRequest> { request ->
                 val brevId = call.parameters.brevId()
-                val sak: Pen.SakSelection = call.attributes[SakKey]
 
-                val brev = brevredigeringService.delvisOppdaterBrev(
-                    saksId = sak.saksId,
-                    brevId = brevId,
-                    alltidValgbareVedlegg = request.alltidValgbareVedlegg,
-                )
-
-                respond(brev)
+                if (request.alltidValgbareVedlegg != null) {
+                    val brev = brevredigeringFacade.endreValgteVedlegg(
+                        EndreValgteVedleggHandler.Request(
+                            brevId = brevId,
+                            alltidValgbareVedlegg = request.alltidValgbareVedlegg,
+                        )
+                    )
+                    apiRespond(dto2ApiService, brev)
+                } else {
+                    val brev = brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = false))
+                    apiRespond(dto2ApiService, brev)
+                }
             }
 
             put<Api.DistribusjonstypeRequest>("/distribusjon") { request ->
                 val brevId = call.parameters.brevId()
 
-                val brev = brevredigeringFacade.endreDistribusjonstype(
+                val brevInfo = brevredigeringFacade.endreDistribusjonstype(
                     EndreDistribusjonstypeHandler.Request(
                         brevId = brevId,
                         type = request.distribusjon,
+                    )
+                )
+
+                apiRespond(dto2ApiService, brevInfo)
+            }
+
+            put<Api.ValgteVedleggRequest>("/valgteVedlegg") { request ->
+                val brevId = call.parameters.brevId()
+
+                val brev = brevredigeringFacade.endreValgteVedlegg(
+                    EndreValgteVedleggHandler.Request(
+                        brevId = brevId,
+                        alltidValgbareVedlegg = request.valgteVedlegg,
                     )
                 )
 
@@ -131,14 +137,14 @@ fun Route.sakBrev(
             put<Api.OppdaterKlarStatusRequest>("/status") { request ->
                 val brevId = call.parameters.brevId()
 
-                val resultat = brevredigeringFacade.veksleKlarStatus(
+                val brevInfo = brevredigeringFacade.veksleKlarStatus(
                     VeksleKlarStatusHandler.Request(
                         brevId = brevId,
                         klar = request.klar,
                     )
                 )
 
-                apiRespond(dto2ApiService, resultat?.then { it.info })
+                apiRespond(dto2ApiService, brevInfo)
             }
 
             delete {
@@ -155,20 +161,20 @@ fun Route.sakBrev(
             route("/mottaker") {
                 put<Api.OppdaterMottakerRequest> { request ->
                     val brevId = call.parameters.brevId()
-                    val resultat = brevredigeringFacade.endreMottaker(
+                    val brevInfo = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = request.mottaker.toDto())
                     )
 
-                    apiRespond(dto2ApiService, resultat?.then { it.info })
+                    apiRespond(dto2ApiService, brevInfo)
                 }
 
                 delete {
                     val brevId = call.parameters.brevId()
-                    val resultat = brevredigeringFacade.endreMottaker(
+                    val brevInfo = brevredigeringFacade.endreMottaker(
                         EndreMottakerHandler.Request(brevId = brevId, mottaker = null)
                     )
 
-                    apiRespond(dto2ApiService, resultat?.then { it.info })
+                    apiRespond(dto2ApiService, brevInfo)
                 }
             }
 

@@ -279,7 +279,7 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
