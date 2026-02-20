@@ -10,7 +10,7 @@ Strukturen består av ulike DSL-scopes som gir deg tilgang til relevante funksjo
 
 [listing,subs="+macros"]
 ....
-createTemplate(/*...*/) { xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
+createTemplate(...) { xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
     title { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
         text(...)
     }
@@ -19,7 +19,7 @@ createTemplate(/*...*/) { xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootSco
         paragraph { xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
             text(...)
             list { item { xref:dsl/scopes.adoc#TextScope[TextScope] } }
-WIP        }
+        }
         includePhrase(xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase])
     }
     includeAttachment(xref:dsl/vedlegg.adoc[attachment], data)
@@ -79,7 +79,7 @@ Tekst med variabler og formattering:
 TextScope {
     includePhrase(xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase])
     includePhrase(xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase])
-    xref:dsl/text/formattering.adoc[text(...)]
+    text(...)
     newLine()
 }
 ....

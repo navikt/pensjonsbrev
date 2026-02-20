@@ -3,7 +3,7 @@
 .xref:brevbaker-arkitektur.adoc[Brevbaker]
 * xref:brevbaker-arkitektur.adoc[Arkitektur]
 * xref:brevbaker-pdfbygger-beskrivelse.adoc[Teknisk beskrivelse]
-* xref:dsl/index.adoc[DSL]
+* xref:dsl/index.adoc[DSL (WIP)]
 ** xref:dsl/index.adoc[Quickstart]
 ** xref:dsl/stegvis guide nytt brev.adoc[]
 ** xref:dsl/scopes.adoc[]

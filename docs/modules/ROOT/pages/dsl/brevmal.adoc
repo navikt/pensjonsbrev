@@ -1,5 +1,5 @@
-
-= Autobrev mal
+= Brevmaler (WIP)
+== Autobrev mal
 
 * kort om hva det er
 * dokumentasjon av ulike innstillinger/metadata
@@ -9,3 +9,4 @@
 == Redigerbar mal
 
 * ulike felter som er unike i tillegg til autobrevmaler
+* toggles
