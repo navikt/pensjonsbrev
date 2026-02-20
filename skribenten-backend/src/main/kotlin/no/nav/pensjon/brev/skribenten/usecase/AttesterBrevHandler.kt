@@ -36,6 +36,7 @@ class AttesterBrevHandler(
         attesterBrevPolicy.kanAttestere(brev, principal).onError { return failure(it) }
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
+        // TODO: Følgende 10 linjer er helt lik som i OppdaterBrevHandler, vurder å trekke ut til noe felles
         if (request.nyeSaksbehandlerValg != null) {
             brev.saksbehandlerValg = request.nyeSaksbehandlerValg
         }
