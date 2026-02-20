@@ -1,0 +1,27 @@
+{
+  "name": "brevoppskrift-web-bff",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "check-types": "tsc --noemit",
+    "format": "biome format --write .",
+    "lint": "biome check .",
+    "lint:write": "biome check --write ."
+  },
+  "author": "Nav",
+  "license": "MIT",
+  "dependencies": {
+    "@navikt/vite-mode": "0.13.7",
+    "express": "5.2.1",
+    "http-proxy-middleware": "3.0.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.2",
+    "@types/express": "5.0.6",
+    "lint-staged": "16.2.7",
+    "typescript": "5.9.3"
+  }
+}
