@@ -1,6 +1,6 @@
 strictDepBuilds: true
 allowBuilds:
-- cypress
-- esbuild
+- cypress: true
+- esbuild: true
 publicHoistPattern:
 - pdfjs-dist
