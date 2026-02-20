@@ -13,31 +13,18 @@ Vedlegg defineres med `createAttachment`:
 ----
 @TemplateModelHelpers
 val beregningsDetaljer = createAttachment<LangBokmalNynorsk, BeregningDto>(
-    title = newText(
-        bokmal { +"Beregning av uføretrygd" },
-        nynorsk { +"Utrekning av uføretrygd" }
-    ),
+    title = {
+        text(
+            bokmal { +"Beregning av uføretrygd" },
+            nynorsk { +"Utrekning av uføretrygd" }
+        )
+    },
     includeSakspart = false
 ) {
-    paragraph {
-        text(
-            bokmal { +"Her finner du detaljert beregning av uføretrygden din." },
-            nynorsk { +"Her finn du detaljert utrekning av uføretrygda di." }
-        )
-    }
-
-    // Innholdet bruker OutlineScope
-    title1 {
-        text(bokmal { +"Grunnlag" })
-    }
-
-    paragraph {
-        table(header = { /*...*/ }) {
-            /*...*/
-        }
-    }
+    // OutlineScope - innholdet i vedlegget
 }
 ----
+Se: xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
 
 === Parametere
 
@@ -89,39 +76,26 @@ Hvis data kan være null:
 includeAttachmentIfNotNull(ekstraDetaljer, nullableData)
 ----
 
-== Vedlegg med samme data som brevet
-
-Hvis vedlegget bruker samme data som hovedbrevet:
-
-[source,kotlin]
-----
-@TemplateModelHelpers
-val rettigheterVedlegg = createAttachment<LangBokmalNynorsk, MittBrevDto>(
-    title = newText(bokmal { +"Dine rettigheter" }),
-    includeSakspart = false
-) {
-    // Har tilgang til alle felt fra MittBrevDto
-    paragraph {
-        text(bokmal { +"Du har " + uforegrad.format() + " prosent uføregrad." })
-    }
-}
-
-// I malen
-includeAttachment(rettigheterVedlegg, letterData)
-----
-
 == Vedlegg uten data
 
 For vedlegg som ikke trenger data fra brevet:
 
 [source,kotlin]
 ----
-val generellInfoVedlegg = createAttachment<LangBokmalNynorsk, Unit>(
-    title = newText(bokmal { +"Generell informasjon" }),
+val generellInfoVedlegg = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
+    title = {
+        text(
+            bokmal { +"Generell informasjon" },
+            nynorsk { +"Generell informasjon" }
+        )
+    },
     includeSakspart = false
 ) {
     paragraph {
-        text(bokmal { +"Her er generell informasjon om NAV." })
+        text(
+            bokmal { +"Her er generell informasjon om NAV." },
+            nynorsk { +"Her er generell informasjon om NAV." }
+        )
     }
 }
 
@@ -135,10 +109,12 @@ includeAttachment(generellInfoVedlegg, Unit)
 ----
 @TemplateModelHelpers
 val detaljertBeregning = createAttachment<LangBokmalNynorsk, BeregningDto>(
-    title = newText(
-        bokmal { +"Detaljert beregning" },
-        nynorsk { +"Detaljert utrekning" }
-    ),
+    title = {
+        text(
+            bokmal { +"Detaljert beregning" },
+            nynorsk { +"Detaljert utrekning" }
+        )
+    },
     includeSakspart = false
 ) {
     title1 {
@@ -151,9 +127,9 @@ val detaljertBeregning = createAttachment<LangBokmalNynorsk, BeregningDto>(
     paragraph {
         table(
             header = {
-                column { text(bokmal { +"Grunnlag" }, FontType.BOLD) }
+                column { text(bokmal { +"Grunnlag" }) }
                 column(alignment = ColumnAlignment.RIGHT) {
-                    text(bokmal { +"Beløp" }, FontType.BOLD)
+                    text(bokmal { +"Beløp" })
                 }
             }
         ) {
@@ -190,6 +166,6 @@ val detaljertBeregning = createAttachment<LangBokmalNynorsk, BeregningDto>(
 
 == Se også
 
-* xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
+* xref:dsl/scopes.adoc#OutlineOnlyScope[OutlineOnlyScope]
 * xref:dsl/kontroll-struktur/showIf.adoc[]
 
