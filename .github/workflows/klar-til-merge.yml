@@ -6,6 +6,7 @@ name: "Klar til merge"
 on:
   pull_request:
     paths:
+      - ".githooks/pre-commit"
       - ".github/dependabot.yml"
       - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
