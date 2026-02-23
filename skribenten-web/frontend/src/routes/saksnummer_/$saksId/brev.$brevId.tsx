@@ -263,6 +263,7 @@ function RedigerBrev({
         onSuccess: () => {
           const varighetSekunder = Math.round((Date.now() - editorStartTime.current) / 1000);
           trackEvent("tid brukt i editor", {
+            brevId: brev.info.id,
             brevkode: brev.info.brevkode,
             varighetSekunder,
             varighetMinutter: Math.round(varighetSekunder / 60),

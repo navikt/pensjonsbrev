@@ -2,12 +2,13 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HGrid, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import { trackEvent } from "~/utils/umami";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
@@ -30,6 +31,17 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
+  const startTime = useRef(Date.now());
+
+  useEffect(() => {
+    return () => {
+      const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
+      trackEvent("tid brukt i brevbehandler", {
+        varighetSekunder,
+        varighetMinutter: Math.round(varighetSekunder / 60),
+      });
+    };
+  }, []);
   const { brevId, enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);

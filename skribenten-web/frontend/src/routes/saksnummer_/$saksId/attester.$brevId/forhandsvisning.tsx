@@ -128,7 +128,6 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     onSuccess: (response) => {
       trackEvent("brev sendt", {
         brevId: props.brevId,
-        saksId: props.saksId,
         type: "attestering",
       });
       setBrevResult(props.brevId, {

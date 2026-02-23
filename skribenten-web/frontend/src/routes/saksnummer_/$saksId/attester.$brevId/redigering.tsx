@@ -3,7 +3,7 @@ import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@n
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
@@ -114,6 +114,7 @@ const VedtakWrapper = () => {
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
   const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const attesteringStartTime = useRef(Date.now());
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
@@ -195,9 +196,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     <form
       onSubmit={form.handleSubmit((v) => {
         onSubmit(v, () => {
+          const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
+          trackEvent("tid brukt i attestering", {
+            brevId: props.brev.info.id,
+            varighetSekunder,
+            varighetMinutter: Math.round(varighetSekunder / 60),
+          });
           trackEvent("brev attestert", {
-            brevId: props.brev.info.id.toString(),
-            saksId: props.saksId,
+            brevId: props.brev.info.id,
           });
           navigate({
             to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",

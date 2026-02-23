@@ -16,7 +16,10 @@ export type UmamiEventName =
   | "pesys redirect"
   | "pesys feil"
   | "attestering blokkert"
-  | "tid brukt i editor";
+  | "tid brukt i editor"
+  | "tid brukt i brevvelger"
+  | "tid brukt i brevbehandler"
+  | "tid brukt i attestering";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;
@@ -45,7 +48,9 @@ export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData
       : undefined;
 
     globalThis.umami?.track(eventName, cleanedData);
-  } catch {
-    // Analytics should not break the app
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn("[Umami] tracking failed:", error);
+    }
   }
 };

@@ -18,7 +18,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
 import { getBrevmetadata } from "~/api/brev-queries";
@@ -32,6 +32,7 @@ import type { BrevInfo } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
+import { trackEvent } from "~/utils/umami";
 
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
@@ -61,6 +62,17 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
+  const startTime = useRef(Date.now());
+
+  useEffect(() => {
+    return () => {
+      const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
+      trackEvent("tid brukt i brevvelger", {
+        varighetSekunder,
+        varighetMinutter: Math.round(varighetSekunder / 60),
+      });
+    };
+  }, []);
   const { brevmalKoder } = Route.useLoaderData();
   const brevmetadata = useQuery({ ...getBrevmetadata, select: metadataMapFromList }).data ?? {};
 
@@ -136,7 +148,10 @@ const BrevvelgerMainContent = (props: {
               brevmalKoder={brevmalKoder}
               brevmetadata={brevmetadata}
               handleOpenAccordionChange={(categoryKey) =>
-                setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
+                setOpenAccordions((prev) => ({
+                  ...prev,
+                  [categoryKey]: !prev[categoryKey],
+                }))
               }
               openAccordions={openAccordions}
             />
@@ -261,7 +276,13 @@ function Brevmaler({
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
-                  <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
+                  <Accordion.Content
+                    css={{
+                      ".aksel-accordion__content-inner": {
+                        overflowX: "hidden",
+                      },
+                    }}
+                  >
                     <VStack>
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
@@ -269,7 +290,9 @@ function Brevmaler({
                             template.id === templateId
                               ? css`
                                   color: var(--ax-text-accent-contrast);
-                                  background-color: var(--ax-bg-accent-strong-hover);
+                                  background-color: var(
+                                    --ax-bg-accent-strong-hover
+                                  );
                                 `
                               : undefined
                           }
