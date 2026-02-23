@@ -11,9 +11,9 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.TilbakestillBrevHandler
 
 fun Route.brev(
-    brevredigeringService: BrevredigeringService,
     pdlService: PdlService,
     penService: PenService,
     brevredigeringFacade: BrevredigeringFacade,
@@ -67,7 +67,8 @@ fun Route.brev(
 
         post("/tilbakestill") {
             val brevId = call.parameters.brevId()
-            respond(brevredigeringService.tilbakestill(brevId))
+            val resultat = brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
+            apiRespond(dto2ApiService, resultat)
         }
     }
 }

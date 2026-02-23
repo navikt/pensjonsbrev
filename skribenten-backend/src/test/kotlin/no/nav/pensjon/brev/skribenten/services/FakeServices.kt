@@ -111,7 +111,7 @@ open class FakeBrevbakerService(
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
     override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
-    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
+    override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? = notYetStubbed()
     override suspend fun renderMarkup(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,

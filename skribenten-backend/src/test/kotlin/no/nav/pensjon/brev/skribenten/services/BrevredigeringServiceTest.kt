@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.letter
-import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
@@ -26,8 +26,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.*
@@ -36,9 +34,6 @@ import java.time.Instant
 import java.time.LocalDate
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.toJavaDuration
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 @OptIn(InternKonstruktoer::class)
 class BrevredigeringServiceTest {
@@ -120,7 +115,7 @@ class BrevredigeringServiceTest {
     class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
         lateinit var renderMarkupResultat: suspend ((f: Felles) -> LetterMarkup)
         lateinit var renderPdfResultat: LetterResponse
-        lateinit var modelSpecificationResultat: TemplateModelSpecification
+        var modelSpecificationResultat: TemplateModelSpecification? = null
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
         val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
         val renderPdfKall = mutableListOf<LetterMarkup>()
@@ -246,7 +241,6 @@ class BrevredigeringServiceTest {
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
-        navansattService = navAnsattService,
         penService = penService
     )
 
@@ -441,7 +435,8 @@ class BrevredigeringServiceTest {
         assertThat(hentBrev(brev.info.id)).isNotNull()
 
         withPrincipal(saksbehandler1Principal) {
-            assertThrows<ArkivertBrevException> { brevredigeringService.tilbakestill(brev.info.id) }
+            assertThat(brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brev.info.id)))
+                .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
         }
     }
 
@@ -564,58 +559,6 @@ class BrevredigeringServiceTest {
                 )
             ), true
         )
-    }
-
-    @Test
-    fun `kan tilbakestille brev`(): Unit = runBlocking {
-        val brev = opprettBrev(saksbehandlerValg = Api.GeneriskBrevdata().apply {
-            put("ytelse", "uføre")
-            put("inkluderAfpTekst", false)
-        })
-
-        withPrincipal(saksbehandler1Principal) {
-            brevredigeringFacade.oppdaterBrev(
-                OppdaterBrevHandler.Request(
-                    brevId = brev.info.id,
-                    nyeSaksbehandlerValg = Api.GeneriskBrevdata().apply {
-                        put("ytelse", "uføre")
-                        put("inkluderAfpTekst", true)
-                        put("land", "Spania")
-                    },
-                    nyttRedigertbrev = brev.redigertBrev.copy(
-                        blocks = brev.redigertBrev.blocks + E_Paragraph(
-                            null,
-                            true,
-                            listOf(E_Literal(null, "", E_FontType.PLAIN, "and blue pill"))
-                        )
-                    ),
-                )
-            )
-        }
-
-        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(
-            types = mapOf(
-                "BrevData1" to mapOf(
-                    "saksbehandlerValg" to FieldType.Object(false, "SaksbehandlerValg1"),
-                ),
-                "SaksbehandlerValg1" to mapOf(
-                    "ytelse" to FieldType.Scalar(false, FieldType.Scalar.Kind.STRING),
-                    "land" to FieldType.Scalar(true, FieldType.Scalar.Kind.STRING),
-                    "inkluderAfpTekst" to FieldType.Scalar(false, FieldType.Scalar.Kind.BOOLEAN),
-                ),
-            ),
-            letterModelTypeName = "BrevData1",
-        )
-
-        val tilbakestilt = withPrincipal(saksbehandler1Principal) {
-            brevredigeringService.tilbakestill(brev.info.id)
-        }
-        assertThat(tilbakestilt?.redigertBrev).isEqualTo(letter.toEdit())
-        assertThat(tilbakestilt?.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata().apply {
-            put("ytelse", "uføre")
-            put("inkluderAfpTekst", false)
-            put("land", null)
-        })
     }
 
     @Test
