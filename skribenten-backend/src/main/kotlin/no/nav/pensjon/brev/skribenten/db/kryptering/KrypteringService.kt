@@ -81,4 +81,6 @@ object KrypteringService {
 }
 
 @JvmInline
-value class EncryptedByteArray(val bytes: ByteArray)
+value class EncryptedByteArray(val bytes: ByteArray) {
+    override fun toString() = bytes.toString()
+}

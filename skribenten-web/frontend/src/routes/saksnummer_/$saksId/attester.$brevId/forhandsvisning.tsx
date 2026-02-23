@@ -69,7 +69,7 @@ const VedtaksForhåndsvisning = (props: { saksId: string; brev: BrevResponse }) 
                   },
                   search: {
                     vedtaksId: props.brev.info.vedtaksId?.toString() ?? undefined,
-                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
+                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
                   },
                 })
               }
@@ -152,7 +152,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
         params: { saksId: props.saksId, brevId: props.brevId },
         search: {
           vedtaksId: cachedBrevData!.info.vedtaksId?.toString() ?? undefined,
-          enhetsId: cachedBrevData!.info.avsenderEnhet?.enhetNr.toString() ?? undefined,
+          enhetsId: cachedBrevData!.info.avsenderEnhet.enhetNr.toString(),
         },
       });
     },

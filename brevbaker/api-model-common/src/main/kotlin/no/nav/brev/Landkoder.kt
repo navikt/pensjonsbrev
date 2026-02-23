@@ -10,6 +10,7 @@ value class Landkode(val landkode: String) {
             "Ugyldig landkode '$landkode': må være 2 bokstaver i henhold til ISO3166-1 alfa-2"
         }
     }
+    override fun toString() = landkode
 }
 
 class Land(

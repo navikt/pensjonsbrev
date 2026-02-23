@@ -5,6 +5,7 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
@@ -18,7 +19,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.Test
 
-const val TEST_VEDTAKS_ID = "1234"
+val TEST_VEDTAKS_ID = VedtaksId(1234)
 
 @OptIn(InternKonstruktoer::class)
 class BrevmalServiceTest {
@@ -174,10 +175,10 @@ class BrevmalServiceTest {
         )
 
         val penService = object : PenServiceStub() {
-            override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String) =
+            override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId) =
                 if (vedtaksId == TEST_VEDTAKS_ID) isKravPaaGammeltRegelverk else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
 
-            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String) =
+            override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId) =
                 if (vedtaksId == TEST_VEDTAKS_ID) KravStoettetAvDatabyggerResult(emptyMap()) else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
         }
 

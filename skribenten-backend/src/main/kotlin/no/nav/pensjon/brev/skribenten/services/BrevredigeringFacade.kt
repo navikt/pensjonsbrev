@@ -1,108 +1,91 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.domain.*
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
-import java.time.Instant
 
 class BrevredigeringFacade(
-    brevbakerService: BrevbakerService,
-    private val brevdataService: BrevdataService,
-    private val navansattService: NavansattService,
-    private val renderService: RenderService,
-    private val redigerBrevPolicy: RedigerBrevPolicy = RedigerBrevPolicy(),
-    private val brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
-    private val opprettBrevPolicy: OpprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService),
-    private val klarTilSendingPolicy: KlarTilSendingPolicy = KlarTilSendingPolicy(),
-    private val attesterBrevPolicy: AttesterBrevPolicy = AttesterBrevPolicy(),
+    private val opprettBrev: OpprettBrevHandler,
+    private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>,
+    private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering>,
+    private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>,
+    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>,
+    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>,
+    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
+    private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
+    private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
+    private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
+    private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
-    suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        OppdaterBrevHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            renderService = renderService,
-            brevdataService = brevdataService
-        ).runHandler(request)
-
-    suspend fun opprettBrev(request: OpprettBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
+    suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         suspendTransaction {
-            OpprettBrevHandler(
-                opprettBrevPolicy = opprettBrevPolicy,
-                brevreservasjonPolicy = brevreservasjonPolicy,
-                renderService = renderService,
-                brevdataService = brevdataService,
-                navansattService = navansattService,
-            ).handle(request)
+            opprettBrev.handle(request)
         }
 
-    fun hentBrevInfo(brevId: Long): Dto.BrevInfo? =
-        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo() }
+    suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        oppdaterBrev.runHandler(request)
 
-    fun hentBrevForSak(saksId: Long): List<Dto.BrevInfo> =
+    fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
+        transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
+
+    fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
-                .map { it.toBrevInfo() }
+                .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
     suspend fun hentBrev(request: HentBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        HentBrevHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            renderService = renderService,
-            brevdataService = brevdataService,
-        ).runHandler(request)
+        hentBrev.runHandler(request)
 
     suspend fun hentBrevAttestering(request: HentBrevAttesteringHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        HentBrevAttesteringHandler(
-            attesterBrevPolicy = attesterBrevPolicy,
-            redigerBrevPolicy = redigerBrevPolicy,
-            renderService = renderService,
-            brevdataService = brevdataService,
-            navansattService = navansattService,
-        ).runHandler(request)
+        hentBrevAttestering.runHandler(request)
 
-    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        VeksleKlarStatusHandler(
-            klarTilSendingPolicy = klarTilSendingPolicy,
-            redigerBrevPolicy = redigerBrevPolicy
-        ).runHandler(request)
+    suspend fun attesterBrev(request: AttesterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        attesterBrev.runHandler(request)
 
-    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        EndreDistribusjonstypeHandler(
-            redigerBrevPolicy = redigerBrevPolicy
-        ).runHandler(request)
+    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        veksleKlarStatus.runHandler(request)
 
-    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
-        EndreMottakerHandler(
-            redigerBrevPolicy = redigerBrevPolicy,
-            brevdataService = brevdataService
-        ).runHandler(request)
+    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        endreDistribusjonstype.runHandler(request)
 
-    private suspend fun <Request : BrevredigeringRequest> BrevredigeringHandler<Request>.runHandler(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
+        endreMottaker.runHandler(request)
+
+    suspend fun endreValgteVedlegg(request: EndreValgteVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        endreValgteVedlegg.runHandler(request)
+
+    suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
+        suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
+            reserverBrev.handle(request)?.onError { rollback() }
+        }
+
+    suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        hentEllerOpprettPdf.runHandler(request)
+
+    private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {
-            val principal = PrincipalInContext.require()
-
-            val reservasjon = transaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
-                BrevredigeringEntity.findById(request.brevId)
-                    ?.reserver(Instant.now(), principal.navIdent, brevreservasjonPolicy)
-            }
-            if (reservasjon == null) {
-                return null
-            } else if (reservasjon is Outcome.Failure) {
-                return failure(reservasjon.error)
-            }
+            // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
+            reserverBrev(ReserverBrevHandler.Request(request.brevId))
+                ?.onError { return failure(it) }
+                ?: return null
         }
 
         return suspendTransaction {
-            handle(request)
+            handle(request)?.onError { rollback() }
         }
     }
 }

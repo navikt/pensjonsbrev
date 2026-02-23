@@ -18,7 +18,7 @@ export type P1InstitusjonForm = {
   institusjonsnavn: string;
   pin: string;
   saksnummer: string;
-  vedtaksdato: string;
+  datoForVedtak: string;
   land: string;
 };
 

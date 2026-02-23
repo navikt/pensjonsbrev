@@ -84,14 +84,26 @@ export const nyRedigertBrev = ({
         parentId: null,
         editable: true,
         content: [
-          newLiteral({ id: 1_507_865_607, parentId: 272_720_182, text: "We received your application for " }),
-          newVariable({ id: -726_051_414, parentId: 272_720_182, text: "alderspensjon" }),
+          newLiteral({
+            id: 1_507_865_607,
+            parentId: 272_720_182,
+            text: "We received your application for ",
+          }),
+          newVariable({
+            id: -726_051_414,
+            parentId: 272_720_182,
+            text: "alderspensjon",
+          }),
           newLiteral({
             id: -711_242_333,
             parentId: 272_720_182,
             text: " from the Norwegian National Insurance Scheme on ",
           }),
-          newVariable({ id: -694_080_035, parentId: 272_720_182, text: "24 July 2024" }),
+          newVariable({
+            id: -694_080_035,
+            parentId: 272_720_182,
+            text: "24 July 2024",
+          }),
           newLiteral({ id: -1_114_690_237, parentId: 272_720_182, text: "." }),
         ],
         deletedContent: [],
@@ -108,7 +120,11 @@ export const nyRedigertBrev = ({
             text: "Our processing time for this type of application is usually ",
           }),
           newVariable({ id: 1_834_595_758, parentId: 822_540_105, text: "10" }),
-          newLiteral({ id: 1_838_606_639, parentId: 822_540_105, text: " weeks." }),
+          newLiteral({
+            id: 1_838_606_639,
+            parentId: 822_540_105,
+            text: " weeks.",
+          }),
         ],
         deletedContent: [],
         type: "PARAGRAPH",
@@ -131,7 +147,7 @@ export const nyBrevInfo = (args: {
   status?: BrevStatus;
   distribusjonstype?: Distribusjonstype;
   mottaker?: Nullable<Mottaker>;
-  avsenderEnhet?: Nullable<NAVEnhet>;
+  avsenderEnhet?: NAVEnhet;
   spraak?: SpraakKode;
   journalpostId?: Nullable<number>;
   vedtaksId?: Nullable<number>;
@@ -141,7 +157,10 @@ export const nyBrevInfo = (args: {
     id: args.id ?? 1,
     opprettetAv: args.opprettetAv ?? { id: "Z990297", navn: "Opp R. av" },
     opprettet: args.opprettet ?? "2024-09-25T06:21:46.033Z",
-    sistredigertAv: args.sistredigertAv ?? { id: "Z990297", navn: "Sist R. av" },
+    sistredigertAv: args.sistredigertAv ?? {
+      id: "Z990297",
+      navn: "Sist R. av",
+    },
     sistredigert: args.sistredigert ?? "2024-09-25T08:54:51.520Z",
     brevkode: args.brevkode ?? "INFORMASJON_OM_SAKSBEHANDLINGSTID",
     brevtittel: args.brevtittel ?? "Informasjon om saksbehandlingstid",
@@ -151,7 +170,10 @@ export const nyBrevInfo = (args: {
     },
     distribusjonstype: args.distribusjonstype ?? Distribusjonstype.SENTRALPRINT,
     mottaker: args.mottaker ?? null,
-    avsenderEnhet: args.avsenderEnhet ?? null,
+    avsenderEnhet: args.avsenderEnhet ?? {
+      enhetNr: "0001",
+      navn: "NAV Familie- og pensjonsytelser",
+    },
     spraak: args.spraak ?? SpraakKode.Engelsk,
     journalpostId: args.journalpostId ?? null,
     vedtaksId: args.vedtaksId ?? null,

@@ -15,11 +15,15 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
@@ -34,10 +38,10 @@ fun notYetStubbed(description: String? = null): Nothing =
     throw NotYetStubbedException(description ?: "This method has not yet been stubbed in the test setup.")
 
 open class FakeNavansattService(
-    val harTilgangTilEnhet: Map<Pair<String, String>, Boolean> = emptyMap(),
+    val harTilgangTilEnhet: Map<Pair<String, EnhetId>, Boolean> = emptyMap(),
     val navansatte: Map<String, String> = emptyMap(),
 ) : NavansattService {
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String) =
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId) =
         harTilgangTilEnhet.getOrDefault(Pair(ansattId, enhetsId), false)
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = navansatte[ansattId]?.let {
@@ -53,7 +57,7 @@ open class FakeNavansattService(
 }
 
 open class FakeNorg2Service(val enheter: Map<String, NavEnhet> = mapOf()) : Norg2Service {
-    override suspend fun getEnhet(enhetId: String) = enheter[enhetId]
+    override suspend fun getEnhet(enhetId: EnhetId) = enheter[enhetId.value] ?: throw IllegalStateException("Enhet $enhetId ikke funnet i FakeNorg2Service")
 }
 
 open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : SamhandlerService {
@@ -66,20 +70,20 @@ open class FakeSamhandlerService(val navn: Map<String, String> = mapOf()) : Samh
 open class FakeP1Service: P1Service {
     override suspend fun lagreP1Data(
         p1DataInput: Api.GeneriskBrevdata,
-        brevId: Long,
-        saksId: Long
+        brevId: BrevId,
+        saksId: SaksId,
     ): P1Data? = notYetStubbed()
 
     override suspend fun hentP1Data(
-        brevId: Long,
-        saksId: Long
+        brevId: BrevId,
+        saksId: SaksId,
     ): Api.GeneriskBrevdata? = notYetStubbed()
 
     override suspend fun patchMedP1DataOmP1(
         brevdataResponse: BrevdataResponse.Data,
         brevkode: Brevkode.Redigerbart,
-        brevId: Long?,
-        saksId: Long
+        brevId: BrevId?,
+        saksId: SaksId,
     ): BrevdataResponse.Data = brevdataResponse
 }
 
@@ -105,7 +109,7 @@ open class FakeBrevbakerService(
     override suspend fun getTemplates() = maler
 
     override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
-    override suspend fun getAlltidValgbareVedlegg(brevId: Long) = notYetStubbed()
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
 
     override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification = notYetStubbed()
     override suspend fun renderMarkup(
@@ -146,25 +150,25 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
 }
 
 open class PenServiceStub : PenService {
-    override suspend fun hentSak(saksId: String): Pen.SakSelection? = notYetStubbed()
+    override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
-    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse = notYetStubbed()
+    override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> = notYetStubbed()
-    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: String): Boolean? = notYetStubbed()
-    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: String): KravStoettetAvDatabyggerResult = notYetStubbed()
-    override suspend fun hentPesysBrevdata(saksId: Long, vedtaksId: Long?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: String?): BrevdataResponse.Data = notYetStubbed()
+    override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean? = notYetStubbed()
+    override suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult = notYetStubbed()
+    override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data = notYetStubbed()
     override suspend fun sendbrev(sendRedigerbartBrevRequest: SendRedigerbartBrevRequest, distribuer: Boolean): Pen.BestillBrevResponse = notYetStubbed()
-    override suspend fun hentP1VedleggData(saksId: Long, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
+    override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode): Api.GeneriskBrevdata = notYetStubbed()
 }
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering> = notYetStubbed()
-    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
+    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering> = notYetStubbed()
+    override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {
-    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String): JournalpostLoadingResult = notYetStubbed()
-    override suspend fun getFirstDocumentInJournal(journalpostId: String): HentDokumenterResponse = notYetStubbed()
-    override suspend fun hentPdfForJournalpostId(journalpostId: String): ByteArray = notYetStubbed()
+    override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult = notYetStubbed()
+    override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse = notYetStubbed()
+    override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray = notYetStubbed()
 }

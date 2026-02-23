@@ -32,7 +32,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
     institusjonErrors?.institusjonsnavn ||
     institusjonErrors?.pin ||
     institusjonErrors?.saksnummer ||
-    institusjonErrors?.vedtaksdato
+    institusjonErrors?.datoForVedtak
   );
 
   return (
@@ -71,10 +71,10 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
         />
         <Controller
           control={control}
-          name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
+          name={`innvilgedePensjoner.${index}.institusjon.datoForVedtak` as const}
           render={({ field: dateField, fieldState }) => (
             <ManagedDatePicker
-              data-cy={`innvilget-${index}-vedtaksdato`}
+              data-cy={`innvilget-${index}-datoForVedtak`}
               dateField={dateField}
               fieldState={fieldState}
               label="Vedtaksdato"

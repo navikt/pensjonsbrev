@@ -3,7 +3,6 @@ import sak from "../../fixtures/sak.json";
 describe("Brevvelger spec", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
   });
 
   it("Søk med saksnummer", () => {

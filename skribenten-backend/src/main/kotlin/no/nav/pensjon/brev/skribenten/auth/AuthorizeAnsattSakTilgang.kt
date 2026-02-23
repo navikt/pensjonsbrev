@@ -7,6 +7,8 @@ import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.routes.brevId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -30,7 +32,7 @@ val AuthorizeAnsattSakTilgang =
         on(PrincipalInContext.Hook) { call ->
             if (call.isHandled) return@on
 
-            val saksId = call.parameters.getOrFail(SAKSID_PARAM)
+            val saksId = SaksId(call.parameters.getOrFail<Long>(SAKSID_PARAM))
             validerTilgangTilSak(call, saksId)
         }
     }
@@ -42,18 +44,18 @@ class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangC
 val AuthorizeAnsattSakTilgangForBrev =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
         on(PrincipalInContext.Hook) { call ->
-            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brevId = call.parameters.brevId()
             val brev = pluginConfig.brevredigeringFacade.hentBrevInfo(brevId)
 
             if (brev != null) {
-                validerTilgangTilSak(call, brev.saksId.toString())
+                validerTilgangTilSak(call, brev.saksId)
             }
         }
     }
 
 private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(
     call: ApplicationCall,
-    saksId: String
+    saksId: SaksId
 ) {
     val pdlService = pluginConfig.pdlService
     val penService = pluginConfig.penService
@@ -62,7 +64,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 
     if (sak != null) {
         call.attributes.put(SakKey, sak)
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

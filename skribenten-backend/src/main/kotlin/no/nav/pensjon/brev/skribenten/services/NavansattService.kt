@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 
 interface NavansattService {
-    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): Boolean
+    suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId): Boolean
     suspend fun hentNavansatt(ansattId: String): Navansatt?
     suspend fun hentNavAnsattEnhetListe(ansattId: String): List<NAVAnsattEnhet>
 }
@@ -59,7 +59,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
         }
     }
 
-    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: String): Boolean =
+    override suspend fun harTilgangTilEnhet(ansattId: String, enhetsId: EnhetId): Boolean =
         hentNavAnsattEnhetListe(ansattId).any { enhet -> enhet.id == enhetsId }
 
     override suspend fun hentNavansatt(ansattId: String): Navansatt? = try {
@@ -84,7 +84,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class NAVAnsattEnhet(
-    val id: String,
+    val id: EnhetId,
     val navn: String,
 )
 

@@ -207,7 +207,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             },
             search: {
               vedtaksId: props.brev.info?.vedtaksId?.toString(),
-              enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+              enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
             },
           });
         });
@@ -270,7 +270,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   params: { saksId: props.saksId },
                   search: {
                     vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
                   },
                 })
               }
