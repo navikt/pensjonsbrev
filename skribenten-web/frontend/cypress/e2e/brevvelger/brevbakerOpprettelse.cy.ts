@@ -67,6 +67,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Svartid uker").click().type("4");
     cy.contains("Åpne brev").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter brev som har non-nullable boolean felt", () => {
@@ -97,6 +98,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Åpne brev").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("kan opprette brev som har tom saksbehandlerValg", () => {
@@ -124,6 +126,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.contains("Åpne brev").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter brev som har tomme nullable enum felt", () => {
@@ -153,6 +156,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
 
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("oppretter ikke brev som har tomme non-nullable enum felt", () => {
@@ -193,5 +197,6 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.contains("Åpne brev").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
+    cy.location("search").should("include", "enhetsId");
   });
 });
