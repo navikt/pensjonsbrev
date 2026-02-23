@@ -97,7 +97,8 @@ jobs:
           install: false
           browser: chrome
           component: false
-          start: npm run dev
+          build: npm run build
+          start: 'npm run preview -- --port 5173'
 
       - name: Upload failed Cypress screenshots
         uses: actions/upload-artifact@v6

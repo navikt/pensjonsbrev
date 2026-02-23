@@ -8,7 +8,7 @@
     "check-types": "tsc --noemit",
     "cypress": "cypress open",
     "cypress:component": "cypress run --component -b chrome",
-    "cypress:e2e": "cypress run -b chrome",
+    "cypress:e2e": "start-server-and-test 'vite preview --port 5173' localhost:5173 'cypress run -b chrome'",
     "dev": "vite --host",
     "format": "biome format --write .",
     "lint": "biome check .",
@@ -19,7 +19,7 @@
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
     "test": "vitest --config ./vite.config.ts",
     "tsc:watch": "tsc --watch",
-    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run cypress:e2e"
+    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run build && ${npm_execpath} run cypress:e2e"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -59,6 +59,7 @@
     "jsdom": "28.0.0",
     "lint-staged": "16.2.7",
     "postcss-styled-syntax": "0.7.1",
+    "start-server-and-test": "2.1.3",
     "stylelint": "17.1.1",
     "stylelint-config-standard": "40.0.0",
     "typescript": "5.9.3",

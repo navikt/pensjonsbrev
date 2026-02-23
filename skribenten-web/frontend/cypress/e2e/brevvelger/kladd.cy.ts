@@ -115,7 +115,7 @@ describe("Kladd", () => {
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
     cy.contains("Lag nytt brev").should("be.visible");
     cy.contains("Ja, bruk eksisterende kladd").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/2").location("search").should("eq", "");
   });
 
   it("lager nytt brev selv om saken har eksisterende kladd", () => {
@@ -155,7 +155,7 @@ describe("Kladd", () => {
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
     cy.contains("Lag nytt brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/2").location("search").should("eq", "");
   });
 
   it("arkiverte brev i brevvelger skal ikke kunne gjøre endringer på brev, og kun navigere videre til brevbehandler", () => {
@@ -177,6 +177,9 @@ describe("Kladd", () => {
     cy.contains("Endre mottaker").should("not.exist");
     cy.contains("Slett brev").should("not.exist");
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?brevId=1");
   });
 });
