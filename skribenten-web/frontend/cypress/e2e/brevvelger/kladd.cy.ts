@@ -189,6 +189,9 @@ describe("Kladd", () => {
     cy.contains("Endre mottaker").should("not.exist");
     cy.contains("Slett brev").should("not.exist");
     cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?brevId=1");
   });
 });

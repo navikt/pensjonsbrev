@@ -187,4 +187,19 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
             assertThat(it.redigertBrevHash).isEqualTo(Hash.read(nyttRedigertBrev))
         }
     }
+
+    @Test
+    suspend fun `kan redigere signatur`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        val redigertSignatur = brev.redigertBrev.withSignatur(saksbehandler = "Ny signatur")
+
+        val result = oppdaterBrev(
+            brevId = brev.info.id,
+            nyttRedigertbrev = redigertSignatur,
+        )
+        assertThat(result).isSuccess {
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
+        }
+    }
 }

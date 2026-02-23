@@ -36,6 +36,17 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
     }
 
     @Test
+    suspend fun `initialiserer signatur for brev`() {
+        val brev = opprettBrev(reserverForRedigering = true)
+
+        assertThat(brev).isSuccess {
+            assertThat(it.redigertBrev.signatur).isNotNull
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
+            assertThat(it.info.opprettetAv).isEqualTo(saksbehandler1Principal.navIdent)
+        }
+    }
+
+    @Test
     suspend fun `kan opprette brev i vedtakskontekst`() {
         val vedtaksId = VedtaksId(5678)
 

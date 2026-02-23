@@ -21,14 +21,6 @@ fun Route.sakBrev(
     dto2ApiService: Dto2ApiService,
 ) =
     route("/brev") {
-        suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
-            if (brevResponse != null) {
-                call.respond(dto2ApiService.toApi(brevResponse))
-            } else {
-                call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
-            }
-        }
-
         get {
             val sak: Pen.SakSelection = call.attributes[SakKey]
 
@@ -217,18 +209,18 @@ fun Route.sakBrev(
 
                 put<Api.OppdaterAttesteringRequest> { request ->
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
                     val frigiReservasjon = call.request.queryParameters["frigiReservasjon"].toBoolean()
 
-                    respond(
-                        brevredigeringService.attester(
-                            saksId = sak.saksId,
+                    val resultat = brevredigeringFacade.attesterBrev(
+                        AttesterBrevHandler.Request(
                             brevId = brevId,
                             nyeSaksbehandlerValg = request.saksbehandlerValg,
                             nyttRedigertbrev = request.redigertBrev,
                             frigiReservasjon = frigiReservasjon,
                         )
                     )
+
+                    apiRespond(dto2ApiService, resultat)
                 }
             }
 

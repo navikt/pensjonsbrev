@@ -50,16 +50,6 @@ class BrevdataService(private val penService: PenService, private val samhandler
             ),
         )
 
-    suspend fun hentBrevdata(brev: Brevredigering, signatur: SignerendeSaksbehandlere): BrevdataResponse.Data =
-        hentBrevdata(
-            saksId = brev.saksId,
-            vedtaksId = brev.vedtaksId,
-            brevkode = brev.brevkode,
-            avsenderEnhetsId = brev.avsenderEnhetId,
-            mottaker = brev.mottaker?.toDto(),
-            signatur = signatur,
-        )
-
     suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =
         mottaker.annenMottakerNavn()
 
