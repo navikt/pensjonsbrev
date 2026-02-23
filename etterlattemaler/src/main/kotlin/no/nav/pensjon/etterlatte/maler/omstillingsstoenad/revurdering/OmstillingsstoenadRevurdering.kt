@@ -12,6 +12,7 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
@@ -75,14 +76,15 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                         )
                     }
                 }.orShow {
-                    showIf(beregning.sisteBeregningsperiode.sanksjon) {
+                    showIf(beregning.sisteBeregningsperiode.sanksjon and
+                            beregning.sisteBeregningsperiode.erFakeSanksjon.not()) {
                         text(
                             bokmal { +"stanset" },
                             nynorsk { +"stansa" },
                             english { +"stopped" },
                         )
                     } orShow {
-                        showIf(erEndret) {
+                        showIf(erEndret or beregning.sisteBeregningsperiode.erFakeSanksjon) {
                             text(
                                 bokmal { +"endret" },
                                 nynorsk { +"endra" },
