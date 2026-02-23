@@ -77,7 +77,7 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                     }
                 }.orShow {
                     showIf(beregning.sisteBeregningsperiode.sanksjon and
-                            beregning.sisteBeregningsperiode.erFakeSanksjon.not()) {
+                            not(beregning.sisteBeregningsperiode.erFakeSanksjon)) {
                         text(
                             bokmal { +"stanset" },
                             nynorsk { +"stansa" },
