@@ -216,7 +216,7 @@ jobs:
 
   deleteGitHubImageTag:
     name: "Delete GitHub image tag"
-    needs: [pushPdfByggerToGithubRegistry, deployPdfByggerToDev, deployPdfByggerToProd]
+    needs: [pushPdfByggerToGithubRegistry]
     runs-on: ubuntu-latest
     permissions:
       packages: "write"
