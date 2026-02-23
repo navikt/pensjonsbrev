@@ -19,7 +19,7 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
         brevId: BrevId,
         nyDistribusjonstype: Distribusjonstype,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.endreDistribusjonstype(
             EndreDistribusjonstypeHandler.Request(
                 brevId = brevId,
@@ -34,7 +34,7 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
 
         assertThat(endreDistribusjonstype(brev.info.id, Distribusjonstype.LOKALPRINT))
             .isSuccess {
-                assertThat(it.info.distribusjonstype).isEqualTo(Distribusjonstype.LOKALPRINT)
+                assertThat(it.distribusjonstype).isEqualTo(Distribusjonstype.LOKALPRINT)
             }
     }
 
@@ -58,7 +58,7 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
 
         assertThat(endreDistribusjonstype(brev.info.id, Distribusjonstype.LOKALPRINT))
             .isSuccess {
-                assertThat(it.info.distribusjonstype).isEqualTo(Distribusjonstype.LOKALPRINT)
+                assertThat(it.distribusjonstype).isEqualTo(Distribusjonstype.LOKALPRINT)
             }
     }
 
@@ -77,7 +77,7 @@ class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
 
         assertThat(endreDistribusjonstype(brev.info.id, Distribusjonstype.LOKALPRINT))
             .isSuccess {
-                assertThat(it.info.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
+                assertThat(it.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
             }
     }
 }

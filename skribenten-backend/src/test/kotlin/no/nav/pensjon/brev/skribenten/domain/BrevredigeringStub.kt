@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.Document
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.db.P1Data
-import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -17,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
@@ -43,10 +42,10 @@ open class BrevredigeringStub : Brevredigering {
     override val sistredigert: Instant get() = notYetStubbed()
     override val sistReservert: Instant get() = notYetStubbed()
     override val journalpostId: JournalpostId get() = notYetStubbed()
-    override val document: Iterable<Document> get() = notYetStubbed()
+    override var document: Dto.Document? = null
     override val mottaker: Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
-    override val valgteVedlegg: ValgteVedlegg get() = notYetStubbed()
+    override val valgteVedlegg: List<AlltidValgbartVedleggKode> get() = notYetStubbed()
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()

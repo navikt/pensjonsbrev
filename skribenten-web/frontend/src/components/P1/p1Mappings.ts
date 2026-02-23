@@ -53,13 +53,13 @@ const mapInstitusjonDtoToForm = (i: P1Institusjon | null): P1InstitusjonForm => 
   institusjonsnavn: emptyIfNull(i?.institusjonsnavn),
   pin: emptyIfNull(i?.pin),
   saksnummer: emptyIfNull(i?.saksnummer),
-  vedtaksdato: emptyIfNull(i?.vedtaksdato),
+  datoForVedtak: emptyIfNull(i?.datoForVedtak),
   land: emptyIfNull(i?.land),
 });
 
 const mapInstitusjonFormToDto = (i: P1InstitusjonForm): P1Institusjon | null => {
   const hasAny =
-    i.institusjonsnavn.trim() || i.pin.trim() || i.saksnummer.trim() || i.vedtaksdato.trim() || i.land.trim();
+    i.institusjonsnavn.trim() || i.pin.trim() || i.saksnummer.trim() || i.datoForVedtak.trim() || i.land.trim();
 
   if (!hasAny) return null;
 
@@ -67,7 +67,7 @@ const mapInstitusjonFormToDto = (i: P1InstitusjonForm): P1Institusjon | null => 
     institusjonsnavn: nullIfEmpty(i.institusjonsnavn),
     pin: nullIfEmpty(i.pin),
     saksnummer: nullIfEmpty(i.saksnummer),
-    vedtaksdato: nullIfEmpty(i.vedtaksdato),
+    datoForVedtak: nullIfEmpty(i.datoForVedtak),
     land: nullIfEmpty(i.land),
   };
 };
@@ -146,7 +146,7 @@ const isInnvilgetRowFilled = (p: P1InnvilgetPensjonForm): boolean => {
     i.institusjonsnavn.trim() ||
     i.pin.trim() ||
     i.saksnummer.trim() ||
-    i.vedtaksdato.trim() ||
+    i.datoForVedtak.trim() ||
     i.land.trim() ||
     p.pensjonstype ||
     p.datoFoersteUtbetaling.trim() ||
@@ -164,7 +164,7 @@ const isAvslaattRowFilled = (p: P1AvslaattPensjonForm): boolean => {
     i.institusjonsnavn.trim() ||
     i.pin.trim() ||
     i.saksnummer.trim() ||
-    i.vedtaksdato.trim() ||
+    i.datoForVedtak.trim() ||
     i.land.trim() ||
     p.pensjonstype ||
     p.avslagsbegrunnelse ||

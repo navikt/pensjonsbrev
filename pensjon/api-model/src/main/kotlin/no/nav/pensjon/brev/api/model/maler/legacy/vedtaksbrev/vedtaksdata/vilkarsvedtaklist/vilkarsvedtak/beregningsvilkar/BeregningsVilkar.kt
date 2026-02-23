@@ -16,7 +16,9 @@ data class BeregningsVilkar(
     val virkningstidpunkt: LocalDate?,
     val yrkesskadegrad: Int?,
     val virkningbegrunnelse: String? = null,
-    val uforetidspunktbegrunnelse: String? = null
+    val uforetidspunktbegrunnelse: String? = null,
+    val ivsbegrunnelse: String? = null,
+    val ivsinntekt: Kroner? = null,
 ) {
     val virkningstidspunktmaned: Month? = virkningstidpunkt?.month
 }

@@ -15,6 +15,7 @@ import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Pdl
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -30,8 +31,8 @@ private val hentBrukerContextQuery = PdlServiceHttp::class.java.getResource(HENT
 private val logger = LoggerFactory.getLogger(PdlService::class.java)
 
 interface PdlService {
-    suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>?
-    suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext?
+    suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>?
+    suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext?
 }
 
 class PdlServiceException(message: String, status: HttpStatusCode = HttpStatusCode.InternalServerError) : ServiceException(message, status = status)
@@ -56,7 +57,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         val variables: T
     )
 
-    private data class FnrVariables(
+    private data class IdentVariables(
         val ident: String,
         val historikk: Boolean = false
     )
@@ -101,18 +102,18 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
         )
     }
 
-    override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>? =
+    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>? =
         postQuery<DataWrapperPersonMedAdressebeskyttelse>(
-            query = PDLQuery<FnrVariables>(hentAdressebeskyttelseQuery, FnrVariables(fnr)),
+            query = PDLQuery<IdentVariables>(hentAdressebeskyttelseQuery, IdentVariables(ident.value)),
             behandlingsnummer = behandlingsnummer,
         ).handleGraphQLErrors()
             ?.let {
                 it.hentPerson?.adressebeskyttelse?.map { b -> b.gradering }
             }
 
-    override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext? =
+    override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext? =
         postQuery<DataWrapperPersonSakKontekst>(
-            query = PDLQuery(query = hentBrukerContextQuery, variables = FnrVariables(fnr)),
+            query = PDLQuery(query = hentBrukerContextQuery, variables = IdentVariables(ident.value)),
             behandlingsnummer = behandlingsnummer,
         ).handleGraphQLErrors()
             ?.let { response ->

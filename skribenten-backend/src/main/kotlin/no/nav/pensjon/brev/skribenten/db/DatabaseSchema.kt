@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -47,8 +46,6 @@ import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
 import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
-import org.jetbrains.exposed.v1.dao.LongEntity
-import org.jetbrains.exposed.v1.dao.LongEntityClass
 import org.jetbrains.exposed.v1.javatime.date
 import org.jetbrains.exposed.v1.javatime.timestamp
 import org.jetbrains.exposed.v1.jdbc.Database
@@ -130,16 +127,6 @@ object DocumentTable : LongIdTable() {
     val brevdataHash: Column<Hash<BrevdataResponse.Data>> = hashColumn("brevdataHash")
 }
 
-class Document(id: EntityID<Long>) : LongEntity(id) {
-    var brevredigering by BrevredigeringEntity referencedOn DocumentTable.brevredigering
-    var dokumentDato by DocumentTable.dokumentDato
-    var pdf by DocumentTable.pdfKryptert
-    var redigertBrevHash by DocumentTable.redigertBrevHash
-    var brevdataHash by DocumentTable.brevdataHash
-
-    companion object : LongEntityClass<Document>(DocumentTable)
-}
-
 object MottakerTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = reference("brevredigeringId", BrevredigeringTable.id, onDelete = ReferenceOption.CASCADE).uniqueIndex()
     val type: Column<MottakerType> = varchar("type", 50).transform(MottakerType::valueOf, MottakerType::name)
@@ -183,11 +170,6 @@ object ValgteVedleggTable : IdTable<BrevId>() {
     val valgteVedlegg = json<List<AlltidValgbartVedleggKode>>("valgtevedlegg", databaseObjectMapper::writeValueAsString, ::readJsonString)
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
-}
-
-class ValgteVedlegg(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
-    var valgteVedlegg by ValgteVedleggTable.valgteVedlegg
-    companion object : EntityClass<BrevId, ValgteVedlegg>(ValgteVedleggTable)
 }
 
 

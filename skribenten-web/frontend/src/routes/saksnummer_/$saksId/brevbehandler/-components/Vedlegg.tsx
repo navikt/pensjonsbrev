@@ -59,7 +59,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
   const leggTilVedleggMutation = useMutation({
     mutationFn: (vedlegg: AlltidValgbartVedlegg[]) =>
-      oppdaterVedlegg(props.saksId, props.brev.id, { alltidValgbareVedlegg: vedlegg }),
+      oppdaterVedlegg(props.saksId, props.brev.id, { valgteVedlegg: vedlegg }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
@@ -70,7 +70,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const fjernVedleggMutation = useMutation({
     mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
       oppdaterVedlegg(props.saksId, props.brev.id, {
-        alltidValgbareVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
+        valgteVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
       }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);

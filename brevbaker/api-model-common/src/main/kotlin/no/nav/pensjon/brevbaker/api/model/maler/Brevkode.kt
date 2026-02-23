@@ -15,6 +15,7 @@ value class RedigerbarBrevkode(private val kode: String) : Brevkode.Redigerbart 
         require(kode.length <= 50)
     }
     override fun kode(): String = kode
+    override fun toString() = kode
 }
 
 @JvmInline
@@ -23,4 +24,5 @@ value class AutomatiskBrevkode(private val kode: String): Brevkode.Automatisk {
         require(kode.length <= 50)
     }
     override fun kode(): String = kode
+    override fun toString() = kode
 }

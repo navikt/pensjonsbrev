@@ -60,11 +60,11 @@ describe("P1 med forsidebrev", () => {
     // verifiser at dato vises som dd.MM.yyyy, mens formatet yyyy-MM-dd brukes fra/til backend
     cy.contains("Bulgaria").should("be.visible");
     cy.get(`[data-cy="land-0"]`).type("{selectall}{backspace}Frankrike{enter}");
-    getInnvilgetFelt(0, "vedtaksdato").should("have.value", "23.09.2022");
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+    getInnvilgetFelt(0, "datoForVedtak").should("have.value", "23.09.2022");
+    getInnvilgetFelt(0, "datoForVedtak").type("{selectall}{backspace}01.01.2025");
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
       expect(request.body.innvilgedePensjoner[0].institusjon.land).to.eq("FR");
-      expect(request.body.innvilgedePensjoner[0].institusjon.vedtaksdato).to.eq("2025-01-01");
+      expect(request.body.innvilgedePensjoner[0].institusjon.datoForVedtak).to.eq("2025-01-01");
       request.reply("200");
     });
     cy.contains("Lagre").click();
@@ -77,7 +77,7 @@ describe("P1 med forsidebrev", () => {
     openP1Modal();
     cy.contains("3. Innvilget pensjon").should("be.visible");
     // Gjør skjemaet dirty ved å endre et felt
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+    getInnvilgetFelt(0, "datoForVedtak").type("{selectall}{backspace}01.01.2025");
     // Forsøk å lagre uten å fylle ut påkrevde felt
     cy.contains("Lagre").click();
 
@@ -90,7 +90,7 @@ describe("P1 med forsidebrev", () => {
     openP1Modal();
     cy.contains("3. Innvilget pensjon").should("be.visible");
     // Skriv inn ugyldig dato
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}32.13.2022");
+    getInnvilgetFelt(0, "datoForVedtak").type("{selectall}{backspace}32.13.2022");
     cy.contains("Lagre").click();
     cy.contains("Skjemaet har feil som må rettes").should("exist");
     cy.contains("Ugyldig dato").should("be.visible");
@@ -117,7 +117,7 @@ describe("P1 med forsidebrev", () => {
     });
     openP1Modal();
     cy.contains("3. Innvilget pensjon").should("be.visible");
-    getInnvilgetFelt(0, "vedtaksdato").type("01.01.2025");
+    getInnvilgetFelt(0, "datoForVedtak").type("01.01.2025");
     cy.contains("4. Avslag på pensjon").click();
     cy.contains("Institusjon som har avslått").should("be.visible");
     // Forsøk å lagre med feil i fane 3 (Innvilget)
@@ -133,7 +133,7 @@ describe("P1 med forsidebrev", () => {
     });
     openP1Modal();
     cy.contains("3. Innvilget pensjon").should("be.visible");
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+    getInnvilgetFelt(0, "datoForVedtak").type("{selectall}{backspace}01.01.2025");
     cy.contains("Lagre").should("not.be.disabled").click();
     cy.contains("Endringene ble lagret").should("exist");
   });
@@ -150,7 +150,7 @@ describe("P1 med forsidebrev", () => {
     cy.contains("3. Innvilget pensjon").should("be.visible");
 
     // Modify field to enable save
-    getInnvilgetFelt(0, "vedtaksdato").type("{selectall}{backspace}01.01.2025");
+    getInnvilgetFelt(0, "datoForVedtak").type("{selectall}{backspace}01.01.2025");
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/brev/1/p1", (request) => {
       expect(request.body.sakstype).to.eq("UFOREP");

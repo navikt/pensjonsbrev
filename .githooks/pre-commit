@@ -1,18 +1,26 @@
 #!/bin/sh
 
-# Check if skribenten-web/frontend exists, if not, skip linting
-if [ ! -d "skribenten-web/frontend" ]; then
-  echo "⚠️ Skipping pre-commit checks (skribenten-web/frontend is missing)"
-  exit 0
-fi
+# Exit with error if any operation fails
+set -e
 
-cd skribenten-web/frontend
+# Directories that should be formatted, linted and typechecked
+DIRS=(
+  brevoppskrift-web/bff
+  brevoppskrift-web/frontend
+  skribenten-web/bff
+  skribenten-web/frontend
+)
 
-# Check if node_modules exists, if not, skip linting with a warning
-if [ ! -d "node_modules" ]; then
-  echo "⚠️ Skipping pre-commit checks in skribenten-web/frontend (node_modules missing)"
-  echo "💡To enable pre-commit checks, run 'npm install' in skribenten-web/frontend"
-  exit 0
-fi
+for dir in ${DIRS[@]}; do
+  # Check if the necessary dependency has been installed in respective $dir
+  if [ -d "$dir/node_modules/lint-staged" ]; then
+    echo 📂 $dir
+    # Run the installed 'lint-staged' package in $dir
+    # Root config for lint-staged in [root]/lint-staged.config.ts
+    # lint-staged only processes commit-ready/staged files in $dir
+    npx --prefix $dir lint-staged -v --cwd $dir
+  else
+    echo "💡 run 'npm --prefix $dir ci' to prepare pre-commit checks"
+  fi
+done
 
-npx lint-staged

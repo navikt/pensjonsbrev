@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
@@ -95,7 +96,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerExstreamBrev(
-                    gjelderPid = "9999",
+                    gjelderPid = Pid("9999"),
                     request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
@@ -116,7 +117,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerExstreamBrev(
-                    gjelderPid = "9999", request = Api.BestillExstreamBrevRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
                         vedtaksId = null,
@@ -138,7 +139,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
-                    gjelderPid = "9999", request = Api.BestillEblankettRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
@@ -157,7 +158,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
-                    gjelderPid = "9999", request = Api.BestillEblankettRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
                         enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",

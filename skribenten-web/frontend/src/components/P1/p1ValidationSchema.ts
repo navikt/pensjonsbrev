@@ -55,7 +55,7 @@ const p1InstitusjonFormSchema = z.object({
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
-  vedtaksdato: isoDateStringField(),
+  datoForVedtak: isoDateStringField(),
 });
 
 /* Helper to check if a row has any filled data */
