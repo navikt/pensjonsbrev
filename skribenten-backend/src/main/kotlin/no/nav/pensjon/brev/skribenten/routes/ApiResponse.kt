@@ -100,6 +100,12 @@ suspend fun <T> RoutingContext.respondOutcome(
             is AttesterBrevPolicy.KanIkkeAttestere.HarIkkeAttestantrolle ->
                 call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} har ikke attestantrolle")
 
+            is AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereInformasjonsbrev ->
+                call.respond(HttpStatusCode.BadRequest, "Kan ikke attestere informasjonsbrev ${outcome.error.brevId}")
+
+            is AttesterBrevPolicy.KanIkkeAttestere.IkkeKlarTilAttestering ->
+                call.respond(HttpStatusCode.BadRequest, "Brev ${outcome.error.brevId} er ikke klar til attestering")
+
             is AttesterBrevPolicy.KanIkkeAttestere.KanIkkeAttestereEgetBrev ->
                 call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} kan ikke attestere sitt eget brev ${outcome.error.brevId}")
 

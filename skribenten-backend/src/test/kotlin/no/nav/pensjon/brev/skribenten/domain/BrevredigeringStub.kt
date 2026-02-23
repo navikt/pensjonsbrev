@@ -55,6 +55,7 @@ open class BrevredigeringStub : Brevredigering {
     override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
+    override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()

@@ -66,11 +66,11 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
-        val attestert = attester(brev, attestant = attestant1Principal, frigiReservasjon = true)
+        val attestert = attester(brev, attestant = attestant1Principal, frigiReservasjon = true).resultOrFail()
 
-        assertThat(attestert?.info?.status).isEqualTo(Dto.BrevStatus.KLAR)
-        assertThat(attestert?.info?.attestertAv).isEqualTo(attestant1Principal.navIdent)
-        assertThat(attestert?.redigertBrev?.signatur?.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        assertThat(attestert.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+        assertThat(attestert.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
+        assertThat(attestert.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
 
         assertThat(veksleKlarStatus(brev, false)).isSuccess {
             assertThat(it.status).isEqualTo(Dto.BrevStatus.KLADD)

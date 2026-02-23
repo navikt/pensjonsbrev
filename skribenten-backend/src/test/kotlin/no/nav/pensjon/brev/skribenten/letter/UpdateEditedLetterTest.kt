@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title2Impl
@@ -35,8 +34,9 @@ class UpdateRenderedLetterTest {
 
     @Test
     fun `updates fields of editedLetter from renderedLetter`() {
-        val rendered = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
-        val next = rendered.copy(
+        val firstRender = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
+        val originalEditedLetter = firstRender.toEdit().withSignatur(attestant = "original attestant")
+        val nextRender = firstRender.copy(
             title = listOf(LiteralImpl(1, "ny tittel11")),
             sakspart = SakspartImpl(
                 gjelderNavn = "ny gjelder",
@@ -53,7 +53,17 @@ class UpdateRenderedLetterTest {
             ),
         )
 
-        assertEquals(next.toEdit(), rendered.toEdit().copy(deletedBlocks = setOf(-1)).updateEditedLetter(next))
+        // Signature names are preserved from edited letter, but template fields (hilsenTekst, navAvsenderEnhet) are synced from rendered
+        val expected = nextRender.toEdit().copy(
+            signatur = SignaturImpl(
+                hilsenTekst = nextRender.signatur.hilsenTekst,
+                saksbehandlerNavn = originalEditedLetter.signatur.saksbehandlerNavn,
+                attesterendeSaksbehandlerNavn = originalEditedLetter.signatur.attesterendeSaksbehandlerNavn,
+                navAvsenderEnhet = nextRender.signatur.navAvsenderEnhet,
+            )
+        )
+
+        assertEquals(expected, originalEditedLetter.updateEditedLetter(nextRender))
     }
 
     @Test

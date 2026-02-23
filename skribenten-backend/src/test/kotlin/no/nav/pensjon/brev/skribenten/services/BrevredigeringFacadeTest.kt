@@ -221,6 +221,7 @@ private fun createFacade(
     endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
     hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
+    attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
@@ -235,6 +236,7 @@ private fun createFacade(
         reserverBrev = reserverBrev,
         brevreservasjonPolicy = brevreservasjonPolicy,
         hentEllerOpprettPdf = hentEllerOpprettPdf,
+        attesterBrev = attesterBrev,
         endreValgteVedlegg = endreValgteVedlegg,
     )
 }
