@@ -266,7 +266,7 @@ function Brevmaler({
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
                   <Accordion.Content
                     css={{
-                      ".aksel-accordion__content-inner": {
+                      "> div:first-child": {
                         overflowX: "hidden",
                       },
                     }}
@@ -277,11 +277,11 @@ function Brevmaler({
                           extraStyles={
                             template.id === templateId
                               ? css`
-                                  color: var(--ax-text-accent-contrast);
-                                  background-color: var(
-                                    --ax-bg-accent-strong-hover
-                                  );
-                                `
+                            color: var(--ax-text-accent-contrast);
+                            background-color: var(
+                            --ax-bg-accent-strong-hover
+                            );
+                          `
                               : undefined
                           }
                           key={template.id}
