@@ -24,7 +24,6 @@ const waitAfterAutosave = () => {
 describe("Tabell innsetting og redigering via kontekstmeny", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 900);
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", { fixture: "brevResponse.json" }).as(
       "brev",
@@ -46,12 +45,11 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.wait(["@brev", "@reservasjon", "@modelSpec"]);
     cy.clock();
+    insertTable(3, 2);
+    waitAfterAutosave();
   });
 
   it("oppretter en 3x2-tabell", () => {
-    insertTable(3, 2);
-    waitAfterAutosave();
-
     cy.get("[data-cy=letter-table]")
       .should("have.length", 1)
       .within(() => {
@@ -61,11 +59,6 @@ describe("Tabell innsetting og redigering via kontekstmeny", () => {
   });
 
   context("med en eksisterende 3x2-tabell", () => {
-    beforeEach(() => {
-      insertTable(3, 2);
-      waitAfterAutosave();
-    });
-
     it("legger til kolonne til høyre via kontekstmenyen", () => {
       rightClickCell(0, 1);
       cy.contains("[role=menuitem]", "Sett inn kolonne til høyre").click();

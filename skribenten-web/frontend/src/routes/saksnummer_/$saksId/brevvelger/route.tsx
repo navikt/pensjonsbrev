@@ -427,5 +427,5 @@ const BrevmalButton = (props: {
 };
 
 function metadataMapFromList(letterMetadataList: LetterMetadata[]): Record<string, LetterMetadata> {
-  return letterMetadataList.reduce((acc, b) => ({ ...acc, [b.id]: b }), {} as Record<string, LetterMetadata>);
+  return letterMetadataList.reduce((acc, b) => Object.assign(acc, { [b.id]: b }), {} as Record<string, LetterMetadata>);
 }

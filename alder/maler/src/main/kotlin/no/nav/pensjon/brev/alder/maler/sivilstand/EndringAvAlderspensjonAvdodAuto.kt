@@ -53,7 +53,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjonAvdodAutoDto> {
 
-    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_ENDRING_AV_ALDERSPENSJON_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AP_OMREGNING_TIL_ENSLIG_PENSJONIST_AUTO
 
     override val template = createTemplate(
         letterDataType = EndringAvAlderspensjonAvdodAutoDto::class,
@@ -313,6 +313,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget.not()
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
+                            or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {
@@ -345,6 +346,7 @@ object EndringAvAlderspensjonAvdodAuto : AutobrevTemplate<EndringAvAlderspensjon
                         and alderspensjonVedVirk.minstenivaIndividuellInnvilget
                         and (
                         beregnetPensjonPerManed.garantiPensjon.equalTo(0)
+                                or beregnetPensjonPerManed.garantiPensjon.isNull()
                         )
             ) {
                 paragraph {

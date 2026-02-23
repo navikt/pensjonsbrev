@@ -486,10 +486,12 @@ describe("Actions.deleteSelection", () => {
       const header1 = table.header.colSpec[0].headerContent;
       expect(header1.text).toHaveLength(1);
       expect(header1.text[0]).toMatchObject({ editedText: "kol" });
-      table.header.colSpec.slice(1).forEach((col) => expectEmptyCell(col.headerContent));
-
-      table.rows.slice(0, 2).forEach((row) => row.cells.forEach(expectEmptyCell));
-      expectEmptyCell(table.rows[2].cells[0]);
+      for (const col of table.header.colSpec.slice(1)) {
+        expectEmptyCell(col.headerContent);
+      }
+      for (const row of table.rows.slice(0, 2)) {
+        row.cells.forEach(expectEmptyCell);
+      }
 
       const cell21 = table.rows[2].cells[1];
       expect(cell21.text).toHaveLength(1);

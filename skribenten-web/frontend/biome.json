@@ -1,0 +1,31 @@
+{
+  "extends": "//",
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "files": { "includes": ["**", "!src/routeTree.gen.ts", "!!**/dist"] },
+  "linter": {
+    "rules": {
+      "correctness": {
+        "useExhaustiveDependencies": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off",
+        "noEmptyBlockStatements": "off"
+      }
+    }
+  },
+  "javascript": {
+    "globals": ["context", "Cypress", "cy"]
+  },
+  "overrides": [
+    {
+      "includes": ["cypress/support/**/*.ts"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noNamespace": "off"
+          }
+        }
+      }
+    }
+  ]
+}

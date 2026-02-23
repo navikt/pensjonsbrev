@@ -24,7 +24,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
 import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import { type AttestForbiddenReason } from "~/utils/parseAttest403";
+import type { AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redigering")({
@@ -76,7 +76,9 @@ const VedtakWrapper = () => {
       }
 
       if (err.response?.status === 403) {
-        const axiosError = err as AxiosError & { forbidReason?: AttestForbiddenReason };
+        const axiosError = err as AxiosError & {
+          forbidReason?: AttestForbiddenReason;
+        };
         const reason = axiosError.forbidReason;
         if (reason) {
           return (
@@ -117,7 +119,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const showDebug = useSearch({
     strict: false,
-    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
+    select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
   const reservasjonQuery = useQuery({
@@ -141,7 +143,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
       oppdaterBrev({
-        saksId: Number.parseInt(props.saksId),
+        saksId: Number.parseInt(props.saksId, 10),
         brevId: props.brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,
@@ -153,7 +155,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (requestData) =>
-      attesterBrev({ saksId: props.saksId, brevId: props.brev.info.id, request: requestData }),
+      attesterBrev({
+        saksId: props.saksId,
+        brevId: props.brev.info.id,
+        request: requestData,
+      }),
 
     onSuccess: onSaveSuccess,
     onError: (err) => {
@@ -190,10 +196,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         onSubmit(v, () => {
           navigate({
             to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",
-            params: { saksId: props.saksId, brevId: props.brev.info.id.toString() },
+            params: {
+              saksId: props.saksId,
+              brevId: props.brev.info.id.toString(),
+            },
             search: {
               vedtaksId: props.brev.info?.vedtaksId?.toString(),
-              enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+              enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
             },
           });
         });
@@ -256,7 +265,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                   params: { saksId: props.saksId },
                   search: {
                     vedtaksId: props.brev.info?.vedtaksId?.toString(),
-                    enhetsId: props.brev.info.avsenderEnhet?.enhetNr?.toString(),
+                    enhetsId: props.brev.info.avsenderEnhet.enhetNr.toString(),
                   },
                 })
               }

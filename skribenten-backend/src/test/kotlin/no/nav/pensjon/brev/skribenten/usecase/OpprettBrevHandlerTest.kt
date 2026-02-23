@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil.ANNEN
 import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -34,8 +36,19 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
     }
 
     @Test
+    suspend fun `initialiserer signatur for brev`() {
+        val brev = opprettBrev(reserverForRedigering = true)
+
+        assertThat(brev).isSuccess {
+            assertThat(it.redigertBrev.signatur).isNotNull
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
+            assertThat(it.info.opprettetAv).isEqualTo(saksbehandler1Principal.navIdent)
+        }
+    }
+
+    @Test
     suspend fun `kan opprette brev i vedtakskontekst`() {
-        val vedtaksId: Long = 5678
+        val vedtaksId = VedtaksId(5678)
 
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = vedtaksId)
         assertThat(brev).isSuccess {
@@ -73,7 +86,7 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
             opprettBrev(
                 sak = sak1,
                 brevkode = Testbrevkoder.INFORMASJONSBREV,
-                avsenderEnhetsId = "The Matrix",
+                avsenderEnhetsId = EnhetId("9998"),
             )
         }
         assertThat(brev).isFailure<IkkeTilgangTilEnhet, _, _>()

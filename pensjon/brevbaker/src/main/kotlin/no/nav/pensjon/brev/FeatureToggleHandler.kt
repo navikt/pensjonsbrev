@@ -37,6 +37,7 @@ object FeatureToggleHandler : FeatureToggleService {
             DefaultUnleash(
                 UnleashConfig.builder()
                     .appName(appName!!)
+                    // TODO: Slett environment her når vi oppgraderer til neste unleash-sdk
                     .environment(environment!!)
                     .unleashAPI("${host!!}/api")
                     .apiKey(apiToken!!).build()

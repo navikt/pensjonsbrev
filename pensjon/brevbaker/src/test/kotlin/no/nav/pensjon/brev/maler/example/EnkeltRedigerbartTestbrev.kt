@@ -22,7 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object EnkeltRedigerbartTestbrev : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode: Brevkode.Redigerbart = EnkeltRedigerbartTestbrevBrevkode.ENKELT_REDIGERBART_TESTBREV
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = Sakstype.all
 

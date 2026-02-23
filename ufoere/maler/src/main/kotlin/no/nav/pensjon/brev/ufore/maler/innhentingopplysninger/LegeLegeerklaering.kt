@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_LEGE_LEGEERKLAERING
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 
 @TemplateModelHelpers
 object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
@@ -21,7 +22,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val featureToggle = FeatureToggles.innhentingOpplysninger.toggle
 
     override val kode = UT_INNH_OPPL_LEGE_LEGEERKLAERING
-    override val kategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
@@ -43,7 +44,7 @@ object LegeLegeerklaering : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
                 text(bokmal { + fritekst("Søkers navn og fødselsnummer") + " har søkt om uføretrygd. " })
             }
             paragraph {
-                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet NAV 08-07.08. " })
+                text(bokmal { +"Vi ber derfor om at du sender oss legeerklæring ved arbeidsuførhet Nav 08-07.08. " })
             }
             paragraph {
                 text(bokmal { +"Vi ber om at du sender oss erklæringen snarest mulig og senest innen fire uker. Erklæringen sendes elektronisk. " })

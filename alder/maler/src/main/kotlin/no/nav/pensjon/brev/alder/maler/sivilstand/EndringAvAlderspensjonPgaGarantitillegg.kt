@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
@@ -48,7 +49,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object EndringAvAlderspensjonPgaGarantitillegg :
     RedigerbarTemplate<EndringAvAlderspensjonGarantitilleggDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
 

@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PdlServiceException
@@ -29,6 +30,8 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -36,34 +39,38 @@ import java.time.Month
 
 private val navIdent = NavIdent("månedens ansatt")
 private val testSak = Pen.SakSelection(
-    saksId = 1337,
-    foedselsnr = "12345",
+    saksId = SaksId(1337),
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1990, 1, 1),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
+    pid = Pid("12345")
 )
 private val sakVikafossen = Pen.SakSelection(
-    saksId = 7007,
-    foedselsnr = "007",
+    saksId = SaksId(7007),
+    foedselsnr = Foedselsnummer("007"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("Sakstype123"),
+    pid = Pid("007"),
 )
 
 private val generellSak0001 = Pen.SakSelection(
-    saksId = 7008,
-    foedselsnr = "12345",
+    saksId = SaksId(7008),
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
+    pid = Pid("12345"),
 )
 
 private val generellSak0002 = Pen.SakSelection(
-    saksId = 7009,
-    foedselsnr = "12345",
+    saksId = SaksId(7009),
+    foedselsnr = Foedselsnummer("12345"),
     foedselsdato = LocalDate.of(1920, Month.NOVEMBER, 11),
     navn = Pen.SakSelection.Navn("a", "b", "c"),
     sakType = Sakstype("GENRL"),
+    pid = Pid("12345"),
 )
 
 
@@ -74,21 +81,21 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<String, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
-        override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
-            adressebeskyttelser[Pair(fnr, behandlingsnummer)]
-                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $fnr og behandlingsnummer $behandlingsnummer")
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<Pid, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
+        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            adressebeskyttelser[Pair(ident, behandlingsnummer)]
+                ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $ident og behandlingsnummer $behandlingsnummer")
 
-        override suspend fun hentBrukerContext(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
+        override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
 
-    private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to emptyList()))
+    private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.pid, behandlingsnummer()) to emptyList()))
 
     private val defaultPenService = object : PenServiceStub() {
-        private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId.toString() }
-        override suspend fun hentSak(saksId: String): Pen.SakSelection? = saker[saksId]
+        private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId }
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
     }
 
     private fun basicAuthTestApplication(
@@ -123,7 +130,7 @@ class AuthorizeAnsattSakTilgangTest {
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
                     get("/sakFromPlugin/{saksId}") {
                         val sak = call.attributes[SakKey]
-                        call.respond(successResponse(sak.foedselsnr))
+                        call.respond(successResponse(sak.foedselsnr.value))
                     }
                     get("/{saksId}") {
                         val saksId = call.parameters.getOrFail("saksId")
@@ -147,11 +154,11 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `bruker faar tilgang til sak naar krav er oppfylt`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to emptyList()))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to emptyList()))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+        assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
     }
 
     @Test
@@ -162,25 +169,25 @@ class AuthorizeAnsattSakTilgangTest {
 
     @Test
     fun `krever at ansatt har gruppe for FortroligAdresse`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.FORTROLIG)))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.FORTROLIG)))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
     @Test
     fun `krever at ansatt har gruppe for StrengtFortroligAdresse`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
     @Test
     fun `krever at ansatt har gruppe for StrengtFortrolig for utland`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
@@ -188,40 +195,40 @@ class AuthorizeAnsattSakTilgangTest {
     fun `ansatt med gruppe for FortroligAdresse faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.fortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.FORTROLIG)))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.FORTROLIG)))
         ) { client ->
-            val response = client.get("/sak/${testSak.saksId}")
+            val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligAdresse faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
         ) { client ->
-            val response = client.get("/sak/${testSak.saksId}")
+            val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
     fun `ansatt med gruppe for StrengtFortroligUtland faar svar`() =
         basicAuthTestApplication(
             principal = MockPrincipal(navIdent, "Hemmelig ansatt", setOf(ADGroups.strengtFortroligAdresse)),
-            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
+            pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG_UTLAND)))
         ) { client ->
-            val response = client.get("/sak/${testSak.saksId}")
+            val response = client.get("/sak/${testSak.saksId.id}")
             assertEquals(HttpStatusCode.OK, response.status)
-            assertEquals(successResponse(testSak.saksId.toString()), response.bodyAsText())
+            assertEquals(successResponse(testSak.saksId.id.toString()), response.bodyAsText())
         }
 
     @Test
     fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
-        override suspend fun hentSak(saksId: String) = null
+        override suspend fun hentSak(saksId: SaksId) = null
     }) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
         assertEquals("Sak ikke funnet", response.bodyAsText())
     }
@@ -229,28 +236,28 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
         pdlService = object : PdlServiceStub() {
-            override suspend fun hentAdressebeskyttelse(fnr: String, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
                 throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
         }
     ) { client ->
-        val response = client.get("/sak/${testSak.saksId}")
+        val response = client.get("/sak/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.InternalServerError, response.status)
     }
 
     @Test
     fun `plugin lagrer sak som attribute tilgjengelig i route scope`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.foedselsnr, behandlingsnummer()) to emptyList()))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(testSak.pid, behandlingsnummer()) to emptyList()))
     ) { client ->
-        val response = client.get("/sak/sakFromPlugin/${testSak.saksId}")
+        val response = client.get("/sak/sakFromPlugin/${testSak.saksId.id}")
         assertEquals(HttpStatusCode.OK, response.status)
-        assertEquals(successResponse(testSak.foedselsnr), response.bodyAsText())
+        assertEquals(successResponse(testSak.foedselsnr.value), response.bodyAsText())
     }
 
     @Test
     fun `svarer med not found for graderte brukere selv om saksbehandler mangler enhet vikafossen`() = basicAuthTestApplication(
-        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.foedselsnr, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
+        pdlService = lagPdlService(adressebeskyttelser = mapOf(Pair(sakVikafossen.pid, behandlingsnummer()) to listOf(Pdl.Gradering.STRENGT_FORTROLIG)))
     ) { client ->
-        val response = client.get("/sak/${sakVikafossen.saksId}")
+        val response = client.get("/sak/${sakVikafossen.saksId.id}")
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 

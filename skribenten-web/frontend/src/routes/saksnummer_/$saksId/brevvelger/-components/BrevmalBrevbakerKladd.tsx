@@ -10,7 +10,7 @@ import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMott
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
-import { type LetterMetadata } from "~/types/apiTypes";
+import type { LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
@@ -134,12 +134,7 @@ const Brevmal = (props: {
             withOppsummeringTitle
           />
         )}
-        <Oppsummeringspar
-          boldedTitle
-          size="small"
-          tittel="Avsenderenhet"
-          verdi={props.brev.avsenderEnhet?.navn ?? "Enhet er ikke registrert i brevet"}
-        />
+        <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />
         <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
       </VStack>
     </VStack>

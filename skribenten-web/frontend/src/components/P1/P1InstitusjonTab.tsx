@@ -4,14 +4,12 @@ import { useFormContext } from "react-hook-form";
 
 import type { P1RedigerbarForm } from "~/types/p1FormTypes";
 
-import { DateField } from "./P1DateField";
-
 type P1InstitusjonTabProps = {
   disabled?: boolean;
 };
 
 export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
-  const { getValues, register } = useFormContext<P1RedigerbarForm>();
+  const { register } = useFormContext<P1RedigerbarForm>();
 
   const tabContent = (
     <>
@@ -147,15 +145,9 @@ export const P1InstitusjonTab = ({ disabled }: P1InstitusjonTabProps) => {
               />
             </Table.DataCell>
           </Table.Row>
-          <Table.Row>
-            <Table.DataCell>5.10 Dato</Table.DataCell>
-            <Table.DataCell>
-              <DateField date={getValues("utfyllendeInstitusjon.dato")} hideLabel label="Dato" />
-            </Table.DataCell>
-          </Table.Row>
         </Table.Body>
       </Table>
     </>
   );
-  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : <>{tabContent}</>;
+  return disabled ? <div className="p1-tab-disabled">{tabContent}</div> : tabContent;
 };

@@ -3,8 +3,8 @@
     "baseUrl": "./",
     "esModuleInterop": true,
     "paths": {
-      "~/*": ["../src/*"],
+      "~/*": ["../src/*"]
     },
-    "resolveJsonModule": true,
-  },
+    "resolveJsonModule": true
+  }
 }

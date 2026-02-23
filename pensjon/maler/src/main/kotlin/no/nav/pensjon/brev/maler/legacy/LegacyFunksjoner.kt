@@ -229,6 +229,12 @@ fun Expression<PE>.ut_ikke(): Expression<String> {
 fun Expression<PE>.ut_sumutbt_hoyere_lavere(): Expression<String> =
     hoyereLavere(vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt().greaterThan(vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()))
 
+fun Expression<PE>.ut_btsb_inntekt_hoyere_lavere(): Expression<String> =
+    hoyereLavere(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()))
+
+fun Expression<PE>.ut_btfb_inntekt_hoyere_lavere(): Expression<String> =
+    hoyereLavere(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning().greaterThan(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()))
+
 fun Expression<PE>.ut_inntekt_hoyere_lavere(): Expression<String> =
     hoyereLavere(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().greaterThan(this.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop()))
 
@@ -240,7 +246,7 @@ private fun hoyereLavere(hoyereCondition: Expression<Boolean>): Expression<Strin
     return ifElse(
         hoyere,
         ifElse(erBokmal, "høyere".expr(), ifElse(erNynorsk, "høgare".expr(), ifElse(erEngelsk, "higher".expr(), "".expr()))),
-        ifElse(erEngelsk, "lavere".expr(), ifElse(erBokmal, "lågare".expr(), ifElse(erNynorsk, "lower".expr(), "".expr())))
+        ifElse(erBokmal, "lavere".expr(), ifElse(erNynorsk, "lågare".expr(), ifElse(erEngelsk, "lower".expr(), "".expr())))
     )
 }
 

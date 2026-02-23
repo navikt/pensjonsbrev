@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import org.slf4j.LoggerFactory
@@ -30,7 +31,7 @@ class BrevmalService(
             .map { it.toApi() }
             .toList()
 
-    suspend fun hentBrevmalerForVedtak(sakstype: ISakstype, includeEblanketter: Boolean, vedtaksId: String): List<Api.Brevmal> {
+    suspend fun hentBrevmalerForVedtak(sakstype: ISakstype, includeEblanketter: Boolean, vedtaksId: VedtaksId): List<Api.Brevmal> {
         // Finner hvilke brev som skal filtreres vekk basert på om vi har en brevdatabygger i PEN som sier at den ikke støttes.
         // Denne logikken skal på sikt reverteres slik at PEN gir en liste med brevmaler som støttes for et et gitt vedtak.
         val ikkeStoettedeBrevkoder = brevdataByggerStoettedeVedtak(vedtaksId).kravStoettet.filterValues { !it }.keys
@@ -44,10 +45,10 @@ class BrevmalService(
     }
 
     // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
-    private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: String): KravStoettetAvDatabyggerResult =
+    private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult =
         penService.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
-    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: String): Sequence<LetterMetadata> {
+    private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {
             penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 ?: false.also { logger.warn("Feltet \"erKravPaaGammeltRegelverk\" fra vedtak er null, antar false") }

@@ -29,7 +29,9 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
       setModalÅpen(false);
     },
   });
@@ -42,7 +44,9 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           brevInfo.id === props.brev.id ? { ...props.brev, mottaker: null } : brevInfo,
         ),
       );
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
     },
   });
 
@@ -64,19 +68,17 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
-            <>
-              {props.endreAsIcon && (
-                <Box asChild borderRadius="4">
-                  <Button
-                    icon={<PencilIcon />}
-                    onClick={() => setModalÅpen(true)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  />
-                </Box>
-              )}
-            </>,
+            props.endreAsIcon && (
+              <Box asChild borderRadius="4">
+                <Button
+                  icon={<PencilIcon />}
+                  onClick={() => setModalÅpen(true)}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                />
+              </Box>
+            ),
           )
         ) : (
           <OppsummeringAvMottaker

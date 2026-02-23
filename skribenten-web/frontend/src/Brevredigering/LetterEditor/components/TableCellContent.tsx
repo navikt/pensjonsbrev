@@ -1,5 +1,3 @@
-import React from "react";
-
 import { EditableText } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import type { LiteralValue, TextContent } from "~/types/brevbakerTypes";

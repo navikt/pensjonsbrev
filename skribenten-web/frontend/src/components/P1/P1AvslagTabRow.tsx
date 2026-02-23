@@ -5,10 +5,9 @@ import { Controller, useFormState } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
-
-import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
+import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";
 
 interface P1AvslagTabRowProps {
   index: number;
@@ -33,12 +32,12 @@ export const P1AvslagTabRow = memo(({ index, landListe, control, register }: P1A
     institusjonErrors?.institusjonsnavn ||
     institusjonErrors?.pin ||
     institusjonErrors?.saksnummer ||
-    institusjonErrors?.vedtaksdato
+    institusjonErrors?.datoForVedtak
   );
 
   return (
     <Table.Row>
-      {/* 4.1 Institusjon + PIN/saksnr + vedtaksdato */}
+      {/* 4.1 Institusjon + PIN/saksnr + datoForVedtak */}
       <Table.DataCell className={hasInstitusjonError ? "p1-cell-error" : ""}>
         <P1CountryField
           control={control}
@@ -69,7 +68,7 @@ export const P1AvslagTabRow = memo(({ index, landListe, control, register }: P1A
         />
         <Controller
           control={control}
-          name={`avslaattePensjoner.${index}.institusjon.vedtaksdato` as const}
+          name={`avslaattePensjoner.${index}.institusjon.datoForVedtak` as const}
           render={({ field: dateField, fieldState }) => (
             <ManagedDatePicker dateField={dateField} fieldState={fieldState} label={`Vedtaks${SOFT_HYPHEN}dato`} />
           )}

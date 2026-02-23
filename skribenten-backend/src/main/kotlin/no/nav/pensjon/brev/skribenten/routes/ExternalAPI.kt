@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.ExternalAPIService
 
 fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIService) =
@@ -21,6 +22,7 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
                 val saksIder = call.queryParameters.getAll("saksId")
                     ?.flatMap { it.split(",") }
                     ?.mapNotNull { it.toLongOrNull() }
+                    ?.map { SaksId(it) }
                     ?: emptyList()
 
                 call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))

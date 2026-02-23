@@ -19,7 +19,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
-import { type UserInfo } from "~/api/bff-endpoints";
+import type { UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
 import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
@@ -99,35 +99,33 @@ const BrevItem = (properties: {
   const gjeldendeBruker = useUserInfo();
 
   return (
-    <>
-      <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-        <Accordion.Header>
-          <VStack gap="space-8">
-            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
-            <Label size="small">{properties.brev.brevtittel}</Label>
-          </VStack>
-        </Accordion.Header>
-        <Accordion.Content>
-          <VStack gap="space-16">
-            {erBrevArkivert(properties.brev) ? (
-              <ArkivertBrev brev={properties.brev} />
-            ) : (
-              <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
-            )}
-            <div>
-              <Detail textColor="subtle">
-                Sist endret:{" "}
-                {isDateToday(properties.brev.sistredigert)
-                  ? formatStringDateWithTime(properties.brev.sistredigert)
-                  : formatStringDate(properties.brev.sistredigert)}{" "}
-                av {forkortetSaksbehandlernavn(properties.brev.sistredigertAv, gjeldendeBruker)}
-              </Detail>
-              <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
-            </div>
-          </VStack>
-        </Accordion.Content>
-      </Accordion.Item>
-    </>
+    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
+      <Accordion.Header>
+        <VStack gap="space-8">
+          <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+          <Label size="small">{properties.brev.brevtittel}</Label>
+        </VStack>
+      </Accordion.Header>
+      <Accordion.Content>
+        <VStack gap="space-16">
+          {erBrevArkivert(properties.brev) ? (
+            <ArkivertBrev brev={properties.brev} />
+          ) : (
+            <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
+          )}
+          <div>
+            <Detail textColor="subtle">
+              Sist endret:{" "}
+              {isDateToday(properties.brev.sistredigert)
+                ? formatStringDateWithTime(properties.brev.sistredigert)
+                : formatStringDate(properties.brev.sistredigert)}{" "}
+              av {forkortetSaksbehandlernavn(properties.brev.sistredigertAv, gjeldendeBruker)}
+            </Detail>
+            <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
+          </div>
+        </VStack>
+      </Accordion.Content>
+    </Accordion.Item>
   );
 };
 

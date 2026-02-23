@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.BESKJED_TIL_NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ETTERSENDELSE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -32,7 +33,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
 
     // MF_000156
     override val kode = Pesysbrevkoder.Redigerbar.PE_VARSEL_REVURDERING_AV_PENSJON
-    override val kategori = TemplateDescription.Brevkategori.VARSEL
+    override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = Sakstype.pensjon
 

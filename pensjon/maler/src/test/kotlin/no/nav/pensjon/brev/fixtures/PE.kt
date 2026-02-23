@@ -430,6 +430,7 @@ fun createBeregningUfore() =
         beregningvirkningdatofom = LocalDate.of(2020, 1, 1),
         beregningbrukersivilstand = "gift",
         oifuvirkningstidspunkt = Kroner(50000),
+        beregningbenyttetsivilstand = null,
     )
 
 fun createUforetrygdberegning() =
@@ -490,11 +491,12 @@ fun createBeregningYtelsesKomp() =
     )
 
 fun createEktefelletillegg() =
-    Ektefelletillegg(true)
+    Ektefelletillegg(true, Kroner(0))
 
 fun createGjenlevendetillegg() =
     Gjenlevendetillegg(
         gtinnvilget = true,
+        gtnetto = Kroner(0),
         nyttgjenlevendetillegg = false,
         gjenlevendetillegginformasjon = GjenlevendetilleggInformasjon(
             uforetidspunkt = LocalDate.of(2020, 1, 1),

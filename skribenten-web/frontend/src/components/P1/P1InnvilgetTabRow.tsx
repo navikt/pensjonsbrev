@@ -5,10 +5,9 @@ import { Controller, useFormState } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
 import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
-
-import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
+import { GRUNNLAG_INNVILGET_OPTIONS, PENSJONSTYPE_OPTIONS, REDUKSJONSGRUNNLAG_OPTIONS } from "./p1Constants";
 
 interface P1InnvilgetTabRowProps {
   index: number;
@@ -33,7 +32,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
     institusjonErrors?.institusjonsnavn ||
     institusjonErrors?.pin ||
     institusjonErrors?.saksnummer ||
-    institusjonErrors?.vedtaksdato
+    institusjonErrors?.datoForVedtak
   );
 
   return (
@@ -72,10 +71,10 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
         />
         <Controller
           control={control}
-          name={`innvilgedePensjoner.${index}.institusjon.vedtaksdato` as const}
+          name={`innvilgedePensjoner.${index}.institusjon.datoForVedtak` as const}
           render={({ field: dateField, fieldState }) => (
             <ManagedDatePicker
-              data-cy={`innvilget-${index}-vedtaksdato`}
+              data-cy={`innvilget-${index}-datoForVedtak`}
               dateField={dateField}
               fieldState={fieldState}
               label="Vedtaksdato"

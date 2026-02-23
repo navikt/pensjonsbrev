@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.domain.Mottaker
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -90,11 +91,11 @@ class MottakerTest {
 
     private fun createBrevredigering() = transaction {
         BrevredigeringEntity.opprettBrev(
-            saksId = 123L,
+            saksId = SaksId(123L),
             opprettetAv = principal,
             brevkode = Testbrevkoder.TESTBREV,
             spraak = LanguageCode.BOKMAL,
-            avsenderEnhetId = "1111",
+            avsenderEnhetId = EnhetId("1111"),
             saksbehandlerValg = Api.GeneriskBrevdata(),
             distribusjonstype = Distribusjonstype.SENTRALPRINT,
             redigertBrev = Edit.Letter(

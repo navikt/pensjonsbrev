@@ -12,6 +12,6 @@ export const useSakGjelderNavnFormatert = ({ saksId }: { saksId: string }) => {
 };
 
 function formatName(sak: SakDto): string {
-  const navn = `${sak.navn.fornavn}${sak.navn.mellomnavn ? " " + sak.navn.mellomnavn : ""} ${sak.navn.etternavn}`;
+  const navn = `${sak.navn.fornavn}${sak.navn.mellomnavn ? ` ${sak.navn.mellomnavn}` : ""} ${sak.navn.etternavn}`;
   return humanizeName(navn);
 }

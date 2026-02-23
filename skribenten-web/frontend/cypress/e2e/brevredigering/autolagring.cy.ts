@@ -10,8 +10,6 @@ describe("autolagring", () => {
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
     }).as("modelSpecification");
-
-    cy.viewport(1200, 1400);
   });
 
   it("lagrer endring av dato-felt automatisk", () => {

@@ -193,13 +193,13 @@ function RedigerBrev({
 
   const showDebug = useSearch({
     strict: false,
-    select: (search: Record<string, unknown>) => search?.["debug"] === "true" || search?.["debug"] === true,
+    select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) =>
       oppdaterBrev({
-        saksId: Number.parseInt(saksId),
+        saksId: Number.parseInt(saksId, 10),
         brevId: brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,

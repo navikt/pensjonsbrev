@@ -832,7 +832,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public fun fritekst (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
-	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkategori;
+	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
 	public abstract fun getSakstyper ()Ljava/util/Set;
 	public fun redigerbarData (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 }

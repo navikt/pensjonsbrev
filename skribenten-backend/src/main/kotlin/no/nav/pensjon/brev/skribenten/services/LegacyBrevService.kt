@@ -6,9 +6,13 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
@@ -20,7 +24,7 @@ class LegacyBrevService(
 ) {
     private val logger = LoggerFactory.getLogger(LegacyBrevService::class.java)
 
-    suspend fun bestillOgRedigerExstreamBrev(gjelderPid: String, request: Api.BestillExstreamBrevRequest, saksId: Long): Api.BestillOgRedigerBrevResponse {
+    suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse {
         val brevMetadata = brevmetadataService.getMal(request.brevkode)
         val brevtittel = if (brevMetadata.isRedigerbarBrevtittel()) request.brevtittel else brevMetadata.dekode
         val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
@@ -50,9 +54,9 @@ class LegacyBrevService(
     }
 
     suspend fun bestillOgRedigerEblankett(
-        gjelderPid: String,
+        gjelderPid: Pid,
         request: Api.BestillEblankettRequest,
-        saksId: Long,
+        saksId: SaksId,
     ): Api.BestillOgRedigerBrevResponse = coroutineScope {
         val brevMetadataDeffered = async { brevmetadataService.getMal(request.brevkode) }
         val navansatt = navansattService.hentNavansatt(PrincipalInContext.require().navIdent.id)
@@ -82,14 +86,14 @@ class LegacyBrevService(
 
     private suspend fun bestillExstreamBrevPen(
         brevkode: String,
-        enhetsId: String,
-        gjelderPid: String,
+        enhetsId: EnhetId,
+        gjelderPid: Pid,
         idTSSEkstern: String? = null,
         metadata: BrevdataDto,
-        saksId: Long,
+        saksId: SaksId,
         spraak: SpraakKode,
         brevtittel: String,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         landkode: String? = null,
         mottakerText: String? = null,
         saksbehandler: Navansatt,
@@ -121,21 +125,21 @@ class LegacyBrevService(
                         fagomradeKode = "PEN", // Fagområde pensjon uansett hva det faktisk er. Finnes det UFO?
                         innhold = brevtittel, // Visningsnavn
                         kategori = if (isEblankett) SED.toString() else metadata.dokumentkategori.toString(),
-                        saksid = saksId.toString(),
+                        saksid = saksId,
                         saksbehandlernavn = saksbehandler.fornavn + " " + saksbehandler.etternavn,
                         saksbehandlerid = PrincipalInContext.require().navIdent.id,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                         land = landkode.takeIf { isEblankett },
-                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid,
+                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid.value,
                         sensitivt = false
                     ),
-                    vedtaksInformasjon = vedtaksId?.toString()
+                    vedtaksInformasjon = vedtaksId?.id?.toString()
                 )
             ).let { Api.BestillOgRedigerBrevResponse(journalpostId = it.journalpostId) }
         }
     }
 
-    private suspend fun redigerExstreamBrev(journalpostId: String): Api.BestillOgRedigerBrevResponse =
+    private suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Api.BestillOgRedigerBrevResponse =
         when (safService.waitForJournalpostStatusUnderArbeid(journalpostId)) {
             ERROR -> Api.BestillOgRedigerBrevResponse(failureType = SAF_ERROR)
             NOT_READY -> Api.BestillOgRedigerBrevResponse(failureType = FERDIGSTILLING_TIMEOUT)
@@ -145,7 +149,7 @@ class LegacyBrevService(
             }
         }
 
-    private suspend fun harTilgangTilEnhet(enhetsId: String): Boolean =
+    private suspend fun harTilgangTilEnhet(enhetsId: EnhetId): Boolean =
         navansattService.harTilgangTilEnhet(PrincipalInContext.require().navIdent.id, enhetsId)
 
 }

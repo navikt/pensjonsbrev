@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.s
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDtoSelectors.pesysData
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -29,7 +30,7 @@ object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbeta
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
     override val kode = UT_VEDTAK_FEILUTBETALING_ETTERGITT_FORELDET
-    override val kategori = TemplateDescription.Brevkategori.FEILUTBETALING
+    override val kategori = Brevkategori.FEILUTBETALING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

@@ -110,9 +110,9 @@ val vedleggInformasjonOmMedlemskapOgHelserettigheterUtenforEOES =
         }
         paragraph {
             text(
-                bokmal { +"Kontaktinformasjon NAV Medlemskap og avgift // Postadresse: Postboks 6600 Etterstad. // N-0607 Oslo" },
-                nynorsk { +"Kontaktinformasjon NAV Medlemskap og avgift // Postadresse: Postboks 6600 Etterstad. // N-0607 Oslo" },
-                english { +"Contact information NAV Membership and contribution // Postal address: P.O. Box 6600 Etterstad. // N-0607 Oslo" }
+                bokmal { +"Kontaktinformasjon Nav Medlemskap og avgift // Postadresse: Postboks 6600 Etterstad. // N-0607 Oslo" },
+                nynorsk { +"Kontaktinformasjon Nav Medlemskap og avgift // Postadresse: Postboks 6600 Etterstad. // N-0607 Oslo" },
+                english { +"Contact information Nav Membership and contribution // Postal address: P.O. Box 6600 Etterstad. // N-0607 Oslo" }
             )
         }
         paragraph {

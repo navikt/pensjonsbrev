@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlin
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.SaksbehandlerValgSelectors.forlengetSaksbehandlingstid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InformasjonOmSaksbehandlingstidUtDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -20,7 +21,7 @@ object InformasjonOmSaksbehandlingstidUT : RedigerbarTemplate<InformasjonOmSaksb
 
     // MF 000130 (AP_INFO_STID_MAN)
     override val kode = Pesysbrevkoder.Redigerbar.UT_INFORMASJON_OM_SAKSBEHANDLINGSTID
-    override val kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

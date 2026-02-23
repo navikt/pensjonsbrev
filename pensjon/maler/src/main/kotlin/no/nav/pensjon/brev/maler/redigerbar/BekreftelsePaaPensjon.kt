@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSe
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -29,7 +30,7 @@ object BekreftelsePaaPensjon : RedigerbarTemplate<BekreftelsePaaPensjonDto> {
     override val featureToggle = FeatureToggles.bekreftelsePaaPensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.PE_BEKREFTELSE_PAA_PENSJON
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = pensjon
 

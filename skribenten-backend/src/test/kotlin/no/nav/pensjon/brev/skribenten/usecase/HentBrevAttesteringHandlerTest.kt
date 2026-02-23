@@ -11,7 +11,9 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
@@ -21,7 +23,7 @@ import org.junit.jupiter.api.Test
 class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
 
     private suspend fun hentBrevAttestering(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: MockPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? =
@@ -39,7 +41,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             reserverForRedigering = false,
             saksbehandlerValg = saksbehandlerValg
         ).resultOrFail()
@@ -61,7 +63,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             reserverForRedigering = false,
             saksbehandlerValg = saksbehandlerValg,
             principal = saksbehandler1Principal
@@ -91,7 +93,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
     suspend fun `kan ikke hente eget brev for attestering`() {
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             reserverForRedigering = false,
             principal = attestant1Principal
         ).resultOrFail()
@@ -113,7 +115,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
     suspend fun `kan ikke hente brev for attestering hvis bruker ikke har attestantrolle`() {
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             reserverForRedigering = false,
             principal = saksbehandler1Principal
         ).resultOrFail()
@@ -135,7 +137,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
     suspend fun `annen attestant kan ikke hente allerede attestert brev for attestering`() {
         val opprettet = opprettBrev(
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             reserverForRedigering = false,
             principal = saksbehandler1Principal
         ).resultOrFail()
@@ -157,7 +159,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
     @Test
     suspend fun `hent brev for attestering med reservasjon merger inn rendret brev`() {
         val opprettet = opprettBrev(
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
             brevkode = Testbrevkoder.VEDTAKSBREV,
             reserverForRedigering = false
         ).resultOrFail()
@@ -175,13 +177,15 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         )
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender))
+            // Attestant signatur blir forhåndsutfylt fra principal og deretter merget med fersk render
+            val withPrefilled = opprettet.redigertBrev.withSignatur(attestant = attestant1Principal.fullName)
+            assertThat(it.redigertBrev).isEqualTo(withPrefilled.updateEditedLetter(freshRender))
         }
     }
 
     @Test
     suspend fun `returnerer null når brev ikke finnes`() {
-        val hentet = hentBrevAttestering(brevId = 9999, reserverForRedigering = false)
+        val hentet = hentBrevAttestering(brevId = BrevId(9999), reserverForRedigering = false)
 
         assertThat(hentet).isNull()
     }
@@ -191,7 +195,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         val brev = opprettBrev(
             reserverForRedigering = true,
             brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = 1234,
+            vedtaksId = VedtaksId(1234),
         ).resultOrFail()
 
         val hentet = hentBrevAttestering(

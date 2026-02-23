@@ -1,0 +1,8 @@
+{
+  "biome.lsp.bin": "./skribenten-web/frontend/node_modules/.bin/biome",
+  "editor.codeActionsOnSave": {
+    "source.action.useSortedKeys.biome": "explicit",
+    "source.fixAll.biome": "explicit"
+  },
+  "git.allowNoVerifyCommit": true
+}
