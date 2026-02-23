@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
+import { FileIcon, ParagraphIcon, PersonIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -96,33 +95,34 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
     >
       <HStack
         align="center"
-        css={css`
-          p {
-            display: flex;
-            align-items: center;
-          }
-
-          p::after {
-            content: "/";
-            margin: 0 var(--ax-space-12);
-          }
-
-          p:last-child::after {
-            content: none;
-          }
-        `}
+        css={{
+          p: {
+            display: "flex",
+            alignItems: "center",
+          },
+          "p::after": {
+            content: '"/"',
+            marginLeft: "var(--ax-space-8)",
+          },
+          "p:last-child::after": {
+            content: "none",
+          },
+        }}
         justify="space-between"
         paddingBlock="space-8"
-        paddingInline="space-32"
+        paddingInline="space-20 space-48"
       >
-        <HStack>
+        <HStack align="center" gap="space-8">
+          <PersonIcon fontSize="24px" />
           <BodyShort size="small">
-            {datoDel} {personnummerDel} <CopyButton copyText={sak.pid} size="small" variant="action" />
+            {datoDel} {personnummerDel}
+            <Box asChild marginInline="space-8">
+              <CopyButton copyText={sak.pid} data-color="accent" size="small" />
+            </Box>
           </BodyShort>
           <BodyShort size="small">
             {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
           </BodyShort>
-          {/* Vil ikke vises for ugyldig dato, f.eks. dummy pnr med ugyldig månedsledd */}
           {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
           {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
           {brukerStatus?.erSkjermet && (
@@ -165,10 +165,13 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
             </BodyShort>
           )}
         </HStack>
-        <HStack>
+        <HStack gap="space-8">
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
           <BodyShort size="small">
-            {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" variant="action" />
+            {sak.saksId}{" "}
+            <Box asChild marginInline="space-8 space-0">
+              <CopyButton copyText={sak.saksId.toString()} data-color="accent" size="small" />
+            </Box>
           </BodyShort>
         </HStack>
       </HStack>
