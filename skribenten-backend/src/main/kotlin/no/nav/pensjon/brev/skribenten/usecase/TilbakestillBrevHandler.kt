@@ -35,7 +35,7 @@ class TilbakestillBrevHandler(
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = renderService.renderMarkup(brev, pesysdata)
-        brev.oppdaterRedigertBev(rendretBrev.markup.toEdit(), principal.navIdent)
+        brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }

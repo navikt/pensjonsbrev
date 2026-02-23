@@ -70,7 +70,7 @@ interface Brevredigering {
         policy: BrevreservasjonPolicy
     ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen>
 
-    fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
+    fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
     fun markerSomKladd()
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
@@ -197,7 +197,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             return@then gjeldendeReservasjon(policy)!!
         }
 
-    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
         redigertBrev = nyttRedigertbrev
         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
         sistRedigertAv = av

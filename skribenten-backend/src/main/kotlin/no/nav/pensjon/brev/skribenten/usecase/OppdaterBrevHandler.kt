@@ -38,7 +38,7 @@ class OppdaterBrevHandler(
             brev.saksbehandlerValg = request.nyeSaksbehandlerValg
         }
         if (request.nyttRedigertbrev != null) {
-            brev.oppdaterRedigertBev(request.nyttRedigertbrev, principal.navIdent)
+            brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
