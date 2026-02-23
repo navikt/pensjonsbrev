@@ -12,8 +12,8 @@
     "lint:write": "biome check --write .",
     "lint-and-check-types": "${npm_execpath} run format && ${npm_execpath} run lint && ${npm_execpath} run stylelint && ${npm_execpath} run check-types",
     "preview": "vite preview",
-    "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
-    "stylelint": "stylelint '**/*.{tsx,css}'"
+    "stylelint": "stylelint '**/*.{tsx,css}'",
+    "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

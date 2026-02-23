@@ -177,11 +177,12 @@ jobs:
           command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
-      - run: npm install --save-dev @percy/cli
+          node-version-file: ".tool-versions"
+      - uses: ./.github/actions/setup-pnpm
+      - run: pnpm add -D @percy/cli
       - name: Publish visual-tests to percy
         run: |
-          npx percy upload brevbaker/pdf-bygger/build/test_visual/ > percy.log
+          pnpm exec percy upload brevbaker/pdf-bygger/build/test_visual/ > percy.log
           cat percy.log
           URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
           if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi

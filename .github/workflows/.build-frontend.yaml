@@ -25,17 +25,18 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+      - uses: ./.github/actions/setup-pnpm
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build frontend
         working-directory: ${{ inputs.workingDir }}/frontend
-        run: npm run build
+        run: pnpm run build
 
       - name: Copy frontend dist into public directory of bff
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -43,13 +44,13 @@ jobs:
 
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm ci
+        run: pnpm install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff
-        run: npm run build
+        run: pnpm run build
 
       - name: Build and push Docker container
         uses: nais/docker-build-push@v0

@@ -34,15 +34,17 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
+
+      - uses: ./.github/actions/setup-pnpm
 
       - name: Install Dependencies
         working-directory: docs
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Antora Site
         working-directory: docs
-        run: npm run build
+        run: pnpm run build
 
       - name: Upload Artifacts
         uses: actions/upload-pages-artifact@v4
