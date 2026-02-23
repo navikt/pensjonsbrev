@@ -9,6 +9,7 @@ on:
       - "brevbaker/pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - ".github/workflows/cleanup.yml"
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
@@ -22,6 +23,7 @@ on:
       - "brevbaker/pdf-bygger/**"
       - ".github/workflows/.build-backend.yaml"
       - ".github/workflows/pdfbygger.yml"
+      - ".github/workflows/cleanup.yml"
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
@@ -213,24 +215,6 @@ jobs:
       resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "brevbaker/pdf-bygger/.nais/prod.yaml"
-
-  deleteGitHubImageTag:
-    name: "Delete GitHub image tag"
-    needs: [pushPdfByggerToGithubRegistry, deployPdfByggerToDev, deployPdfByggerToProd]
-    runs-on: ubuntu-latest
-    permissions:
-      packages: "write"
-      id-token: "write"
-    steps:
-      - name: Docker login
-        uses: docker/login-action@v3
-        with:
-          registry: "https://ghcr.io"
-          username: ${{ github.repository }}
-          password: ${{ github.token }}
-      - name: "Remove image tag"
-        run: |
-          docker rmi ${IMAGE_PDF_BYGGER}
 
   "klarTilMerge":
     name: "Klar til merge"
