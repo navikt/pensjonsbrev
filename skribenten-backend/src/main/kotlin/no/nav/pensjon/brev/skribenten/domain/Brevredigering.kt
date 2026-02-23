@@ -210,12 +210,12 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun markerSomKladd() {
         laastForRedigering = false
         attestertAvNavIdent = null
-        redigertBrev = redigertBrev.withSignatur(attestant = null)
+        redigertBrev = redigertBrev.withSignaturAttestant(null)
     }
 
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
         attestertAvNavIdent = avNavIdent
-        redigertBrev = redigertBrev.withSignatur(attestant = attesterendeSignatur)
+        redigertBrev = redigertBrev.withSignaturAttestant(attesterendeSignatur)
         // TODO: Vurder om vi skal oppdatere sistRedigert/sistRedigertAv her?
     }
 

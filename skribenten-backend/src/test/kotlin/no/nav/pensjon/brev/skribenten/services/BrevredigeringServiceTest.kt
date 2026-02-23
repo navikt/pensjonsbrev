@@ -457,7 +457,7 @@ class BrevredigeringServiceTest {
             brevredigeringFacade.oppdaterBrev(
                 OppdaterBrevHandler.Request(
                     brevId = brev.info.id,
-                    nyttRedigertbrev = brev.redigertBrev.withSignatur(saksbehandler = "en ny signatur")
+                    nyttRedigertbrev = brev.redigertBrev.withSignaturSaksbehandler("en ny signatur")
                 )
             )
             assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))

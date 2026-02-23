@@ -35,7 +35,7 @@ class UpdateRenderedLetterTest {
     @Test
     fun `updates fields of editedLetter from renderedLetter`() {
         val firstRender = letter(Title1Impl(1, true, listOf(LiteralImpl(1, "Noe tekst"))))
-        val originalEditedLetter = firstRender.toEdit().withSignatur(attestant = "original attestant")
+        val originalEditedLetter = firstRender.toEdit().withSignaturAttestant("original attestant")
         val nextRender = firstRender.copy(
             title = listOf(LiteralImpl(1, "ny tittel11")),
             sakspart = SakspartImpl(

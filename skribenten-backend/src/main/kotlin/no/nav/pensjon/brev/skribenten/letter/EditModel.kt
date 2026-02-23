@@ -41,15 +41,21 @@ object Edit {
             )
         )
 
-        fun withSignatur(
-            saksbehandler: String = signatur.saksbehandlerNavn!!,
-            attestant: String? = signatur.attesterendeSaksbehandlerNavn,
-        ) = copy(
+        fun withSignaturAttestant(signatur: String?): Letter = copy(
             signatur = LetterMarkupImpl.SignaturImpl(
-                hilsenTekst = signatur.hilsenTekst,
-                saksbehandlerNavn = saksbehandler,
-                attesterendeSaksbehandlerNavn = attestant,
-                navAvsenderEnhet = signatur.navAvsenderEnhet,
+                hilsenTekst = this.signatur.hilsenTekst,
+                saksbehandlerNavn = this.signatur.saksbehandlerNavn,
+                attesterendeSaksbehandlerNavn = signatur,
+                navAvsenderEnhet = this.signatur.navAvsenderEnhet,
+            )
+        )
+
+        fun withSignaturSaksbehandler(signatur: String): Letter = copy(
+            signatur = LetterMarkupImpl.SignaturImpl(
+                hilsenTekst = this.signatur.hilsenTekst,
+                saksbehandlerNavn = signatur,
+                attesterendeSaksbehandlerNavn = this.signatur.attesterendeSaksbehandlerNavn,
+                navAvsenderEnhet = this.signatur.navAvsenderEnhet,
             )
         )
     }
