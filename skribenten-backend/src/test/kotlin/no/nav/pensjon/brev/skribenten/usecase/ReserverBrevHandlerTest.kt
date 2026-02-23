@@ -47,6 +47,25 @@ class ReserverBrevHandlerTest : BrevredigeringTest() {
     }
 
     @Test
+    suspend fun `brev reservasjon utloeper`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+        assertThat(brev.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
+
+        // Sett sistReservert til en tid som er før nå minus timeout, slik at reservasjonen skal være utløpt
+        val brevreservasjonPolicy = BrevreservasjonPolicy()
+        transaction { BrevredigeringEntity[brev.info.id].sistReservert = Instant.now().minus(brevreservasjonPolicy.timeout).minusSeconds(1) }
+
+        val reservasjon = reserverBrev(brev, principal = saksbehandler2Principal)
+        assertThat(reservasjon).isSuccess {
+            assertThat(it.reservertAv).isEqualTo(saksbehandler2Principal.navIdent)
+            assertThat(it.vellykket).isTrue()
+            assertThat(it.timestamp)
+                .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
+                .isEqualTo(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
+        }
+    }
+
+    @Test
     suspend fun `allerede reservert brev kan ikke resereveres for redigering`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 

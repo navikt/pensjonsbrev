@@ -9,13 +9,9 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.letter.alleFritekstFelterErRedigert
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
-import java.time.Instant
-import kotlin.time.Duration.Companion.minutes
-import kotlin.time.toJavaDuration
 
 data class GeneriskRedigerbarBrevdata(
     override val pesysData: FagsystemBrevdata,
@@ -42,10 +38,6 @@ class BrevredigeringService(
     private val brevbakerService: BrevbakerService,
     private val penService: PenService,
 ) : HentBrevService {
-    companion object {
-        val RESERVASJON_TIMEOUT = 10.minutes.toJavaDuration()
-    }
-
     private val brevreservasjonPolicy = BrevreservasjonPolicy()
 
 

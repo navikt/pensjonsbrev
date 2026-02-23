@@ -19,7 +19,6 @@ import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService.Companion.RESERVASJON_TIMEOUT
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -30,10 +29,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import java.time.Instant
 import java.time.LocalDate
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.toJavaDuration
 
 @OptIn(InternKonstruktoer::class)
 class BrevredigeringServiceTest {
@@ -507,27 +503,6 @@ class BrevredigeringServiceTest {
         brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
 
         assertThat(transaction { BrevredigeringEntity.findById(brev.info.id) }).isNull()
-    }
-
-    @Test
-    fun `brev reservasjon utloeper`(): Unit = runBlocking {
-        val brev = opprettBrev(reserverForRedigering = true)
-
-        transaction {
-            BrevredigeringEntity[brev.info.id].sistReservert =
-                Instant.now() - RESERVASJON_TIMEOUT - 1.seconds.toJavaDuration()
-        }
-
-        val hentetBrev = hentBrev(brev.info.id)
-
-        assertThat(hentetBrev?.info?.redigeresAv).isNull()
-
-        val hentetBrevMedReservasjon = hentBrev(
-            brevId = brev.info.id,
-            reserverForRedigering = true,
-            principal = saksbehandler2Principal,
-        )
-        assertThat(hentetBrevMedReservasjon?.info?.redigeresAv).isEqualTo(saksbehandler2Principal.navIdent)
     }
 
     @Test
