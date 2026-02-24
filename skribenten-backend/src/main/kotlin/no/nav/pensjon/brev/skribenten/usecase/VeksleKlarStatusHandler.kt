@@ -44,7 +44,7 @@ class VeksleKlarStatusHandler(
         klarTilSendingPolicy.kanSettesTilKlar(brev).onError { return failure(it) }
 
         brev.markerSomKlar()
-        brev.redigeresAv = null
+        brev.frigiReservasjon()
         return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
 
@@ -52,7 +52,7 @@ class VeksleKlarStatusHandler(
         redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
 
         brev.markerSomKladd()
-        brev.redigeresAv = null
+        brev.frigiReservasjon()
         return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
 

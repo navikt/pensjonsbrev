@@ -53,7 +53,7 @@ class AttesterBrevHandler(
         brev.attester(principal.navIdent, attestantSignatur)
 
         if (request.frigiReservasjon) {
-            brev.redigeresAv = null
+            brev.frigiReservasjon()
         }
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))

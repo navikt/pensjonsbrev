@@ -37,7 +37,7 @@ class HentBrevAttesteringHandler(
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
         if (brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn == null) {
-            brev.redigertBrev = brev.redigertBrev.withSignaturAttestant(principal.hentSignatur(navansattService))
+            brev.oppdaterRedigertBrev(brev.redigertBrev.withSignaturAttestant(principal.hentSignatur(navansattService)), principal.navIdent)
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)

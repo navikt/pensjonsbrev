@@ -28,7 +28,7 @@ class EndreDistribusjonstypeHandler(
             redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
 
             brev.distribusjonstype = request.type
-            brev.redigeresAv = null
+            brev.frigiReservasjon()
         }
 
         return success(brev.toBrevInfo(brevreservasjonPolicy))

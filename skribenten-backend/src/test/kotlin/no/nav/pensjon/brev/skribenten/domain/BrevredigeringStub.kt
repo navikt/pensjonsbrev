@@ -53,6 +53,7 @@ open class BrevredigeringStub : Brevredigering {
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
+    override fun frigiReservasjon() = notYetStubbed()
     override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()

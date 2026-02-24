@@ -69,6 +69,7 @@ interface Brevredigering {
         saksbehandler: NavIdent,
         policy: BrevreservasjonPolicy
     ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen>
+    fun frigiReservasjon()
 
     fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
@@ -95,13 +96,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-        // TODO: private set
+        private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     override var laastForRedigering by BrevredigeringTable.laastForRedigering
         private set
     override var distribusjonstype by BrevredigeringTable.distribusjonstype
     override var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
-        // TODO: private set
+        private set
     override var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
         private set
     override var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
@@ -111,7 +112,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistredigert by BrevredigeringTable.sistredigert
         private set
     override var sistReservert by BrevredigeringTable.sistReservert
-        // TODO: private set
+        private set
     override var journalpostId by BrevredigeringTable.journalpostId
         // TODO: private set?
 
@@ -196,6 +197,10 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             sistReservert = fra.truncatedTo(ChronoUnit.MILLIS)
             return@then gjeldendeReservasjon(policy)!!
         }
+
+    override fun frigiReservasjon() {
+        redigeresAv = null
+    }
 
     override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
         redigertBrev = nyttRedigertbrev

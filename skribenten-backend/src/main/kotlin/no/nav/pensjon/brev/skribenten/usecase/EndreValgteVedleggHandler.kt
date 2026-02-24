@@ -33,7 +33,7 @@ class EndreValgteVedleggHandler(
         }
 
         brev.valgteVedlegg = request.alltidValgbareVedlegg
-        brev.redigeresAv = null
+        brev.frigiReservasjon()
 
         return success(brev.toDto(brevreservasjonPolicy, null))
     }

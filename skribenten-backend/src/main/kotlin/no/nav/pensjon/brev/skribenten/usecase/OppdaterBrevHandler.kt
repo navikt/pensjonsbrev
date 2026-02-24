@@ -46,7 +46,7 @@ class OppdaterBrevHandler(
         brev.mergeRendretBrev(rendretBrev.markup)
 
         if (request.frigiReservasjon) {
-            brev.redigeresAv = null
+            brev.frigiReservasjon()
         }
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
