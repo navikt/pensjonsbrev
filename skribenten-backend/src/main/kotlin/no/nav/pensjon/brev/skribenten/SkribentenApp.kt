@@ -123,11 +123,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         exception<BrevredigeringException> { call, cause ->
             logger.info(cause.message, cause)
             when (cause) {
-                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
                 is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
                     BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
                 is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
-                is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
             }
         }
