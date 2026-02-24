@@ -86,6 +86,7 @@ import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDtoUfoeretrygdPerMaaned
+import no.nav.pensjon.brev.fixtures.createOmregningUfoerepensjonTilUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createOmsorgEgenAutoDto
 import no.nav.pensjon.brev.fixtures.createOpphoerBarnetilleggAutoDto
 import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDto
@@ -132,6 +133,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringVedFlyttingMel
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -218,6 +220,7 @@ object Fixtures : LetterDataFactory {
             InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
+            OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
