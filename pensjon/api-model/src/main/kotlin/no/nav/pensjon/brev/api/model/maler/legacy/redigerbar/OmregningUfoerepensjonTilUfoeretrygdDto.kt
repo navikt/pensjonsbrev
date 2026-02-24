@@ -6,6 +6,8 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgMulighetTilAaKlageDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTDto
+import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 
 data class OmregningUfoerepensjonTilUfoeretrygdDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
@@ -13,8 +15,6 @@ data class OmregningUfoerepensjonTilUfoeretrygdDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, OmregningUfoerepensjonTilUfoeretrygdDto.PesysData> {
     data class PesysData(
         val pe: PE,
-        val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
-        val dineRettigheterOgMulighetTilAKlageDto: DineRettigheterOgMulighetTilAaKlageDto,
-        //OpplysningerOmBeregning
+        val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?
     ) : FagsystemBrevdata
 }

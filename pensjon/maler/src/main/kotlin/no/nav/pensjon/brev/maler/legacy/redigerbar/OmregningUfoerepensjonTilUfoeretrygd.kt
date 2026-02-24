@@ -3,9 +3,14 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDtoSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
@@ -93,6 +98,7 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_reaktiviseringsforskriften
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_virkningfom
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -118,7 +124,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object OmregningUfoerepensjonTilUfoeretrygd : RedigerbarTemplate<OmregningUfoerepensjonTilUfoeretrygdDto> {
 
-    //override val featureToggle = FeatureToggles.brevmalUtOmregningUfoerepensjonTilUfoeretrygd.toggle
+    override val featureToggle = FeatureToggles.brevmalUtOmregningUfoerepensjonTilUfoeretrygd.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_OMREGNING_UFOEREPENSJON_TIL_UFOERETRYGD
     override val kategori = Brevkategori.UFOEREPENSJON
@@ -936,7 +942,9 @@ object OmregningUfoerepensjonTilUfoeretrygd : RedigerbarTemplate<OmregningUfoere
                 }
             }
         }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
 
