@@ -64,7 +64,7 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
                     bokmal { + "Du har fått utbetalt for mye uføretrygd fra " + dato + " til " + dato +
                             ". Det feilutbetalte beløpet er " + sumTilInnkrevingTotalBeloep + " kroner uten skatt. " },
                     nynorsk { + "Du har fått utbetalt for mykje uføretrygd frå " + dato + " til " + dato +
-                            ". Det feilutbetalte " + sumTilInnkrevingTotalBeloep + " er beløp kroner utan skatt. "})
+                            ". Det feilutbetalte beløpet er " + sumTilInnkrevingTotalBeloep + " kroner utan skatt. "})
             }
             paragraph {
                 showIf(resultatAvVurderingenForTotalBeloep equalTo TilbakekrevingResultat.FULL_TILBAKEKREV) {
