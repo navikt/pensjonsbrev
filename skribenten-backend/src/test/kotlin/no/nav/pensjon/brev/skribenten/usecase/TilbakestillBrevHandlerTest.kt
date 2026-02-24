@@ -104,11 +104,3 @@ class TilbakestillBrevHandlerTest : BrevredigeringTest() {
         brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
     }
 }
-
-
-
-
-
-
-
-
