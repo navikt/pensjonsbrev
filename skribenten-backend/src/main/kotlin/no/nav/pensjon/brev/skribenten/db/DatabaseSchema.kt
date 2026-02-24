@@ -35,7 +35,6 @@ import org.jetbrains.exposed.v1.json.json
 import java.time.Instant
 import java.time.LocalDate
 
-@Suppress("unused")
 object Favourites : Table() {
     val id: Column<Int> = integer("id").autoIncrement()
     val userId: Column<String> = varchar("User Id", length = 50)
