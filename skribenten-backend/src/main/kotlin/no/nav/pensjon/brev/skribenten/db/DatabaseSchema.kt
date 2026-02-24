@@ -106,11 +106,6 @@ object P1DataTable : IdTable<BrevId>() {
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
 
-class P1Data(brevredigeringId: EntityID<BrevId>) : Entity<BrevId>(brevredigeringId) {
-    var p1data by P1DataTable.p1data
-    companion object : EntityClass<BrevId, P1Data>(P1DataTable)
-}
-
 object OneShotJobTable : IdTable<String>() {
     override val id: Column<EntityID<String>> = varchar("name", 255).entityId()
     val completedAt: Column<Instant> = timestamp("completedAt")
