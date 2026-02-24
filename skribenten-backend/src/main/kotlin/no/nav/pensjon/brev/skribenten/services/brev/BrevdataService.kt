@@ -4,7 +4,10 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
@@ -12,10 +15,10 @@ import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 class BrevdataService(private val penService: PenService, private val samhandlerService: SamhandlerService) {
 
     suspend fun hentBrevdata(
-        saksId: Long,
-        vedtaksId: Long?,
+        saksId: SaksId,
+        vedtaksId: VedtaksId?,
         brevkode: Brevkode.Redigerbart,
-        avsenderEnhetsId: String?,
+        avsenderEnhetsId: EnhetId,
         mottaker: Dto.Mottaker?,
         signatur: SignerendeSaksbehandlere
     ): BrevdataResponse.Data {
@@ -45,16 +48,6 @@ class BrevdataService(private val penService: PenService, private val samhandler
                 saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
                 attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
             ),
-        )
-
-    suspend fun hentBrevdata(brev: Brevredigering, signatur: SignerendeSaksbehandlere): BrevdataResponse.Data =
-        hentBrevdata(
-            saksId = brev.saksId,
-            vedtaksId = brev.vedtaksId,
-            brevkode = brev.brevkode,
-            avsenderEnhetsId = brev.avsenderEnhetId,
-            mottaker = brev.mottaker?.toDto(),
-            signatur = signatur,
         )
 
     suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =

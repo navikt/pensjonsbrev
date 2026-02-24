@@ -32,7 +32,7 @@ export const SlettBrev = (properties: {
           åpen={vilSletteBrev}
         />
       )}
-      <Button onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="danger">
+      <Button data-color="danger" onClick={() => setVilSletteBrev(true)} size="small" type="button" variant="primary">
         <HStack align="center" gap="space-4">
           <TrashIcon fontSize="1.5rem" title="slett-ikon" /> {properties.buttonText}
         </HStack>
@@ -89,7 +89,13 @@ const SlettBrevModal = (properties: {
             {slett.isSuccess ? "Avbryt" : (properties.texts?.buttonNo ?? "Nei, behold brevet")}
           </Button>
           {!slett.isSuccess ? (
-            <Button loading={slett.isPending} onClick={() => slett.mutate()} type="button" variant="danger">
+            <Button
+              data-color="danger"
+              loading={slett.isPending}
+              onClick={() => slett.mutate()}
+              type="button"
+              variant="primary"
+            >
               {properties.texts?.buttonYes ?? "Ja, slett brevet"}
             </Button>
           ) : (

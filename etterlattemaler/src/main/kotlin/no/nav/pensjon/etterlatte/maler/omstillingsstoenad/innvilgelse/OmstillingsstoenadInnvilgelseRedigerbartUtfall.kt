@@ -18,16 +18,21 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadInnvilgelseFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.erSluttbehandling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.datoVedtakOmgjoering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.OmstillingsstoenadInnvilgelseRedigerbartUtfallDataSelectors.tidligereFamiliepleier
 import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
+    val data: OmstillingsstoenadInnvilgelseRedigerbartUtfallData
+) : RedigerbartUtfallBrevDTO
+
+data class OmstillingsstoenadInnvilgelseRedigerbartUtfallData(
     val virkningsdato: LocalDate,
     val utbetalingsbeloep: Kroner,
     val avdoed: Avdoed?,
@@ -37,7 +42,7 @@ data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
     val erSluttbehandling: Boolean = false,
     val tidligereFamiliepleier: Boolean = false,
     val datoVedtakOmgjoering: LocalDate? = null,
-) : RedigerbartUtfallBrevDTO
+)
 
 @TemplateModelHelpers
 object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO>,
@@ -60,14 +65,14 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
             )
         }
         outline {
-            showIf(datoVedtakOmgjoering.isNull()) {
+            showIf(data.datoVedtakOmgjoering.isNull()) {
                 includePhrase(
                     OmstillingsstoenadInnvilgelseFraser.Vedtak(
-                        avdoed,
-                        beregning,
-                        harUtbetaling,
-                        tidligereFamiliepleier,
-                        erSluttbehandling
+                        data.avdoed,
+                        data.beregning,
+                        data.harUtbetaling,
+                        data.tidligereFamiliepleier,
+                        data.erSluttbehandling
                     )
                 )
             }.orShow {
@@ -84,7 +89,7 @@ object OmstillingsstoenadInnvilgelseRedigerbartUtfall : EtterlatteTemplate<Omsti
 
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
-                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(etterbetaling, tidligereFamiliepleier),
+                OmstillingsstoenadInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(data.etterbetaling, data.tidligereFamiliepleier),
             )
         }
     }

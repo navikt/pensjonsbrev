@@ -9,7 +9,7 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
     return (
       <Alert
         css={css`
-          margin-top: var(--a-spacing-4);
+          margin-top: var(--ax-space-16);
           width: fit-content;
           align-self: center;
         `}
@@ -22,14 +22,12 @@ export function ApiError({ error, text }: { error: unknown; text: string }) {
         <div>{text}</div>
         <div>
           {correlationId && (
-            <>
-              <HStack align="center" gap="0">
-                <span>
-                  Hvis problemet vedvarer rapporter feil og oppgi følgende id: <b>{correlationId}</b>
-                </span>
-                <CopyButton copyText={correlationId} />
-              </HStack>
-            </>
+            <HStack align="center" gap="space-0">
+              <span>
+                Hvis problemet vedvarer rapporter feil og oppgi følgende id: <b>{correlationId}</b>
+              </span>
+              <CopyButton copyText={correlationId} />
+            </HStack>
           )}
         </div>
       </Alert>

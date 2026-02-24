@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -20,7 +21,7 @@ object OversettelseAvDokumenter : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     // PE_IY_03_168
     override val kode = Pesysbrevkoder.Redigerbar.PE_OVERSETTELSE_AV_DOKUMENTER
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.all
 

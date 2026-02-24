@@ -36,11 +36,12 @@ export default function FavoriteButton(props: {
 
   return (
     <Button
+      data-color="neutral"
       data-cy="add-favorite-button"
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
       size="small"
-      variant="secondary-neutral"
+      variant="secondary"
     >
       Legg til som favoritt
     </Button>

@@ -3,8 +3,10 @@ package no.nav.pensjon.brev.skribenten.usecase
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
@@ -16,10 +18,11 @@ class OppdaterBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
-) : BrevredigeringHandler<OppdaterBrevHandler.Request> {
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
-        override val brevId: Long,
+        override val brevId: BrevId,
         val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         val nyttRedigertbrev: Edit.Letter? = null,
         val frigiReservasjon: Boolean = false,
@@ -46,6 +49,8 @@ class OppdaterBrevHandler(
             brev.redigeresAv = null
         }
 
-        return success(brev.toDto(rendretBrev.letterDataUsage))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
+
+    override fun requiresReservasjon(request: Request) = true
 }

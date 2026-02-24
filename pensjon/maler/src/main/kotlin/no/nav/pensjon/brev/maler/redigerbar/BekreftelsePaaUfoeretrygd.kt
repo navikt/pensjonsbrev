@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.PesysDataSelectors.navn
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -28,7 +29,7 @@ object BekreftelsePaaUfoeretrygd : RedigerbarTemplate<BekreftelsePaaUfoeretrygdD
     override val featureToggle = FeatureToggles.bekreftelsePaaUfoeretrygd.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_BEKREFTELSE_PAA_UFOERETRYGD
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INFORMASJONSBREV
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
 

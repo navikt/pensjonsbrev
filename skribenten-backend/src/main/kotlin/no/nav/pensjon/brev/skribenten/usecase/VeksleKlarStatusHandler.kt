@@ -4,9 +4,11 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -14,16 +16,17 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class VeksleKlarStatusHandler(
     private val klarTilSendingPolicy: KlarTilSendingPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
-) : BrevredigeringHandler<VeksleKlarStatusHandler.Request> {
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo> {
 
-    data class Request(override val brevId: Long, val klar: Boolean) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val klar: Boolean) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         // Om ingen endring, returner vellykket uten å gjøre noe
         if (brev.laastForRedigering == request.klar) {
-            return success(brev.toDto(null))
+            return success(brev.toBrevInfo(brevreservasjonPolicy))
         }
 
         val principal = PrincipalInContext.require()
@@ -34,21 +37,23 @@ class VeksleKlarStatusHandler(
         }
     }
 
-    private fun settBrevTilKlar(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    override fun requiresReservasjon(request: Request) = true
+
+    private fun settBrevTilKlar(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.BrevInfo, BrevredigeringError> {
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
         klarTilSendingPolicy.kanSettesTilKlar(brev).onError { return failure(it) }
 
         brev.markerSomKlar()
         brev.redigeresAv = null
-        return success(brev.toDto(null))
+        return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
 
-    private fun settBrevTilKladd(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.Brevredigering, BrevredigeringError> {
+    private fun settBrevTilKladd(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.BrevInfo, BrevredigeringError> {
         redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
 
         brev.markerSomKladd()
         brev.redigeresAv = null
-        return success(brev.toDto(null))
+        return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
 
 }

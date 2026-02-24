@@ -42,7 +42,7 @@ export function SamhandlerSearchResults({
         <Table onSortChange={(sortKey) => handleSort(sortKey)} size="small" sort={sort}>
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader colSpan={2} sortKey="navn" sortable>
+              <Table.ColumnHeader colSpan={2} sortable sortKey="navn">
                 Navn
               </Table.ColumnHeader>
             </Table.Row>
@@ -60,11 +60,12 @@ export function SamhandlerSearchResults({
                 </Table.DataCell>
                 <Table.DataCell align="right">
                   <Button
+                    data-color="neutral"
                     data-cy="velg-samhandler"
                     onClick={() => onSelect(samhandler.idTSSEkstern)}
                     size="xsmall"
                     type="button"
-                    variant="secondary-neutral"
+                    variant="secondary"
                   >
                     Velg
                   </Button>

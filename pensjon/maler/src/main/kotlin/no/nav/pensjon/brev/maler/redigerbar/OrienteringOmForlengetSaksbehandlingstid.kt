@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
@@ -23,7 +24,7 @@ object OrienteringOmForlengetSaksbehandlingstid : RedigerbarTemplate<EmptyRedige
 
     // PE_IY_05_041
     override val kode = Pesysbrevkoder.Redigerbar.PE_ORIENTERING_OM_FORLENGET_SAKSBEHANDLINGSTID
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.VARSEL
+    override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = Sakstype.pensjon
 

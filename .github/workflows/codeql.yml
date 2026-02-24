@@ -10,10 +10,11 @@ on:
       - "main"
     paths:
       - .github/workflows/codeql.yml
+      - gradle/libs.versions.toml
 
 env:
   JavaDistribution: "temurin"
-  JavaVersion: 21
+  JavaVersion: 25
 
 jobs:
   analyze-java:

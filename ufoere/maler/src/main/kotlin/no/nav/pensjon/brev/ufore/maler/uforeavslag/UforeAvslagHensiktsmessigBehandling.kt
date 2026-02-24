@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -19,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoS
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -27,7 +27,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
     override val kode = UT_AVSLAG_HENSIKTSMESSIG_BEHANDLING
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

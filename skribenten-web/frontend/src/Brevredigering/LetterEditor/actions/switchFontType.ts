@@ -24,7 +24,7 @@ export const getCurrentActiveFontTypeAtCursor = (editorState: LetterEditorState)
   const focus = editorState.focus;
   const blockContent = block?.content[editorState.focus.contentIndex];
 
-  let textContent: TextContent | undefined = undefined;
+  let textContent: TextContent | undefined;
 
   if (isTable(blockContent) && isTableCellIndex(focus)) {
     const cell =

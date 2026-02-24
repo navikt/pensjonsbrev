@@ -54,7 +54,7 @@ class Dto2ApiService(
             },
             distribusjonstype = info.distribusjonstype,
             mottaker = info.mottaker?.toApi(),
-            avsenderEnhet = info.avsenderEnhetId?.let { norg2Service.getEnhet(it) },
+            avsenderEnhet = norg2Service.getEnhet(info.avsenderEnhetId),
             spraak = info.spraak.toApi(),
             journalpostId = info.journalpostId,
             vedtaksId = info.vedtaksId,
@@ -70,6 +70,11 @@ class Dto2ApiService(
             redigertBrevHash = redigertBrevHash,
         )
     }
+
+    fun toApi(hentDocumentResult: Dto.HentDocumentResult) = Api.PdfResponse(
+        pdf = hentDocumentResult.document.pdf,
+        rendretBrevErEndret = hentDocumentResult.rendretBrevErEndret,
+    )
 
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(

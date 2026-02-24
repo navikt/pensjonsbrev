@@ -1,5 +1,5 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { BoxNew, Button, HStack, VStack } from "@navikt/ds-react";
+import { Box, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
@@ -29,7 +29,9 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), response);
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
       setModalÅpen(false);
     },
   });
@@ -42,7 +44,9 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           brevInfo.id === props.brev.id ? { ...props.brev, mottaker: null } : brevInfo,
         ),
       );
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
     },
   });
 
@@ -64,19 +68,17 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
       <HStack align="center" gap="space-8">
         {props.overrideOppsummering ? (
           props.overrideOppsummering(
-            <>
-              {props.endreAsIcon && (
-                <BoxNew asChild borderRadius="4">
-                  <Button
-                    icon={<PencilIcon />}
-                    onClick={() => setModalÅpen(true)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  />
-                </BoxNew>
-              )}
-            </>,
+            props.endreAsIcon && (
+              <Box asChild borderRadius="4">
+                <Button
+                  icon={<PencilIcon />}
+                  onClick={() => setModalÅpen(true)}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                />
+              </Box>
+            ),
           )
         ) : (
           <OppsummeringAvMottaker

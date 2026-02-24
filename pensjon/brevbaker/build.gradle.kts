@@ -102,13 +102,10 @@ dependencies {
 
     implementation(libs.bundles.metrics)
 
-    // JUnit 5
     testImplementation(libs.bundles.junit)
     testImplementation(libs.ktor.server.test.host) {
         exclude("org.jetbrains.kotlin", "kotlin-test")
     }
-
-    testImplementation(libs.pdfbox)
 
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(testFixtures(project(":brevbaker:dsl")))

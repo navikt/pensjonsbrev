@@ -11,8 +11,7 @@ import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlterna
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type { SpraakKode } from "~/types/apiTypes";
+import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
@@ -115,7 +114,7 @@ const BrevmalBrevbaker = (props: {
         avsenderEnhetsId: values.enhetsId,
         saksbehandlerValg: values.saksbehandlerValg,
         mottaker: values.mottaker,
-        vedtaksId: vedtaksId ? Number.parseInt(vedtaksId) : null,
+        vedtaksId: vedtaksId ? Number.parseInt(vedtaksId, 10) : null,
       }),
 
     onSuccess: async (response) => {
@@ -123,7 +122,7 @@ const BrevmalBrevbaker = (props: {
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
-        search: { enhetsId, vedtaksId },
+        search: { enhetsId: response.info.avsenderEnhet.enhetNr, vedtaksId },
       });
     },
   });
@@ -144,6 +143,22 @@ const BrevmalBrevbaker = (props: {
       form.setValue("enhetsId", enhetsId);
     }
   }, [enhetsId, form]);
+
+  const userSelectedEnhetsId = useWatch({
+    control: form.control,
+    name: "enhetsId",
+  });
+
+  // Update URL when user changes the selected enhet in the form.
+  // Skip update if form value already matches URL to prevent redundant navigation.
+  useEffect(() => {
+    if (userSelectedEnhetsId && userSelectedEnhetsId !== enhetsId) {
+      navigate({
+        search: (previous) => ({ ...previous, enhetsId: userSelectedEnhetsId }),
+        replace: true,
+      });
+    }
+  }, [userSelectedEnhetsId, enhetsId, navigate]);
 
   const handleFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();

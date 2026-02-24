@@ -6,9 +6,6 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.FORSOERGINGSTILLEGG_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
-import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
-import no.nav.pensjon.brev.alder.model.BorMedSivilstand
 import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
@@ -470,9 +467,7 @@ data class InfoOenskeSokeAP(
 // infoAPSivilstand_001
 data class InfoSivilstandAP(
     val ytelseForAldersovergangKode: Expression<YtelseForAldersovergangKode>,
-    val borMedSivilstand: Expression<BorMedSivilstand?>,
-    val over2G: Expression<Boolean?>,
-    val kronebelop2G: Expression<Kroner?>,
+    val kronebelop2G: Expression<Kroner>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         showIf(
@@ -490,77 +485,19 @@ data class InfoSivilstandAP(
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du har ektefelle, samboer eller partner, skal pensjonen din kontrolleres mot den andre partens inntekt." },
-                    nynorsk { +"Om du har ektefelle, sambuar eller partnar, blir pensjonen din kontrollert mot inntekta til den andre parten." },
-                    english { +"If you have a spouse or partner, your pension will be checked against their income." },
+                    bokmal {
+                        +"Hvis du har en ektefelle, partner eller samboer som har inntekt under 2 ganger folketrygdens grunnbeløp, per i dag " + kronebelop2G.format() + " , " +
+                                "er det viktig at du gir oss beskjed. Da kan du ha rett til høyere alderspensjon."
+                    },
+                    nynorsk {
+                        +"Om du har ein ektefelle, partnar eller sambuar som har inntekt under 2 gonger grunnbeløpet i folketrygda, per i dag " + kronebelop2G.format() + ", " +
+                                "er det viktig at du gir oss beskjed. Då kan du ha rett til høgare alderspensjon."
+                    },
+                    english {
+                        +"If you have a spouse, partner, or cohabitant with an income below twice the National Insurance basic amount, currently " + kronebelop2G.format() + ", " +
+                                "it is important that you inform us. You may then be entitled to a higher retirement pension."
+                    },
                 )
-            }
-
-            ifNotNull(borMedSivilstand) { borMedSivilstand ->
-                paragraph {
-                    showIf(borMedSivilstand.isOneOf(BorMedSivilstand.GIFT_LEVER_ADSKILT, BorMedSivilstand.EKTEFELLE)) {
-                        text(
-                            bokmal { +"Du er registrert som gift." },
-                            nynorsk { +"Du er registrert som gift." },
-                            english { +" You are registered as married." }
-                        )
-                    }.orShow {
-                        text(
-                            bokmal { +"Du er registrert som " + borMedSivilstand.ubestemtForm() + "." },
-                            nynorsk { +"Du er registrert som " + borMedSivilstand.ubestemtForm() + "." },
-                            english { +" You are registered as " + borMedSivilstand.ubestemtForm() + "." }
-                        )
-                    }
-                }
-                showIf(borMedSivilstand.isNotAnyOf(BorMedSivilstand.GIFT_LEVER_ADSKILT)) {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
-                            nynorsk { +"Vi har registrert at " + borMedSivilstand.bestemtForm() + " " },
-                            english { +"We have registered that your " + borMedSivilstand.bestemtForm() + " " }
-                        )
-                        ifNotNull(over2G) { over2G ->
-                            ifNotNull(kronebelop2G) { kronebelop2G ->
-                                showIf(over2G) {
-                                    text(
-                                        bokmal { +"har inntekt over " + kronebelop2G.format() + " eller egen pensjon, uføretrygd eller omstillingsstønad." },
-                                        nynorsk { +"har inntekt over " + kronebelop2G.format() + " eller eigen pensjon, uføretrygd eller omstillingsstønad." },
-                                        english { +"has an income of over " + kronebelop2G.format() + " or their own pension, disability benefit or adjustment allowance." })
-
-                                }.orShow {
-                                    text(
-                                        bokmal { +"ikke har egen pensjon, uføretrygd eller omstillingsstønad og heller ikke inntekt over  " + kronebelop2G.format() + "." },
-                                        nynorsk { +"ikkje har eigen pensjon, uføretrygd eller omstillingsstønad og heller ikkje inntekt over " + kronebelop2G.format() + "." },
-                                        english { +"does not have their own pension, disability benefit or adjustment allowance nor an income of over " + kronebelop2G.format() + "." })
-
-                                }
-                            }
-                        }
-                    }
-                }.orShow {
-                    paragraph {
-                        text(
-                            bokmal { +"Vi har registrert at du og ektefellen din er registrert med forskjellig bosted, eller en av dere bor på institusjon." },
-                            nynorsk { +"Vi har registrert at du og ektefellen din er registrerte med forskjellig bustad, eller ein av dykk bur på institusjon." },
-                            english { +"We have registered that you and your spouse are registered at different residences, or that one of you is living in an institution." }
-                        )
-                    }
-                }
-            }.orShow {
-                paragraph {
-                    text(
-                        bokmal { +"Du er registrert som enslig." },
-                        nynorsk { +"Du er registrert som einsleg." },
-                        english { +"You are registered as single." }
-                    )
-                }
-            }
-
-            paragraph {
-                text(
-                    bokmal { +"Hvis dette ikke er riktig, må du kontakte oss." },
-                    nynorsk { +"Om dette ikkje er rett, må du kontakte oss." },
-                    english { +"If this is incorrect, please contact us. " })
             }
         }
     }
@@ -859,23 +796,17 @@ data class InfoSkattAP(
                 bokmal {
                     +
                     "Du bør endre skattekortet når du begynner å ta ut alderspensjon. Ellers trekkes det " +
-                            "30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
-                            "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
+                            "30 prosent skatt av alderspensjonen."
                 },
                 nynorsk {
                     +
                     "Du bør endre skattekortet når du byrjar å ta ut alderspensjon. Elles blir det " +
-                            "trekt 30 prosent skatt av alderspensjonen. Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
+                            "trekt 30 prosent skatt av alderspensjonen."
                 },
                 english {
                     +
                     "When you start drawing retirement pension, you should change your tax deduction card. " +
-                            "Otherwise, 30 percent of the pension will be deducted from your pension. You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
+                            "Otherwise, 30 percent of the pension will be deducted from your pension."
                 },
             )
         }
@@ -892,45 +823,17 @@ data class InfoSkattAP(
         paragraph {
             text(
                 bokmal {
-                    +
-                    "Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
+                    +"Du endrer skattekortet på $SKATTEETATEN_PENSJONIST_URL. " +
                             "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
                 },
                 nynorsk {
-                    +
-                    "Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
+                    +"Du endrar skattekortet på  $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
                 },
                 english {
-                    +
-                    "You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
-                },
-            )
-        }
-        paragraph {
-            text(
-                bokmal {
-                    +
-                    "Du kan endre skattekortet og få mer informasjon " +
-                            "på $SKATTEETATEN_PENSJONIST_URL. Der får du også mer informasjon om skattekort for pensjonister. " +
-                            "Nav får skattekortet elektronisk. Du skal derfor ikke sende det til oss."
-                },
-                nynorsk {
-                    +
-                    "Du kan endre skattekortet og få meir informasjon " +
-                            "på  $SKATTEETATEN_PENSJONIST_URL. Der får du også meir informasjon om skattekort for " +
-                            "pensjonistar. Nav får skattekortet elektronisk. Du skal derfor ikkje sende det til oss."
-                },
-                english {
-                    +
-                    "You can change " +
-                            "your tax card by logging on to $SKATTEETATEN_PENSJONIST_URL. " +
-                            "Nav will receive the tax card directly from the Norwegian Tax Administration, meaning you do not need to send it to us."
-                },
+                    +"You can change your tax card at $SKATTEETATEN_PENSJONIST_URL. " +
+                            "Nav receives your tax card electronically. Therefore, you should not send it to us."
+                }
             )
         }
 

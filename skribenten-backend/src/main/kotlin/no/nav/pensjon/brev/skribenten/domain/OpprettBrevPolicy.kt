@@ -4,9 +4,11 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet
+import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.BrevbakerService
+import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -18,10 +20,10 @@ class OpprettBrevPolicy(
 ) {
 
     suspend fun kanOppretteBrev(
-        request: OpprettBrevHandler.Request,
+        request: OpprettBrevHandlerImpl.Request,
         principal: UserPrincipal
     ): Outcome<Parametre, BrevredigeringError> {
-        if (request.avsenderEnhetsId != null && !navansattService.harTilgangTilEnhet(principal.navIdent.id, request.avsenderEnhetsId)) {
+        if (!navansattService.harTilgangTilEnhet(principal.navIdent.id, request.avsenderEnhetsId)) {
             return failure(IkkeTilgangTilEnhet(enhetsId = request.avsenderEnhetsId))
         }
 
@@ -41,12 +43,12 @@ class OpprettBrevPolicy(
     }
 
     data class Parametre(
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
         val brevtype: LetterMetadata.Brevtype,
     )
 
     sealed interface KanIkkeOppretteBrev : BrevredigeringError {
-        data class IkkeTilgangTilEnhet(val enhetsId: String) : KanIkkeOppretteBrev
+        data class IkkeTilgangTilEnhet(val enhetsId: EnhetId) : KanIkkeOppretteBrev
         data class BrevmalFinnesIkke(val brevkode: Brevkode.Redigerbart) : KanIkkeOppretteBrev
         data class BrevmalKreverVedtaksId(val brevkode: Brevkode.Redigerbart) : KanIkkeOppretteBrev
     }

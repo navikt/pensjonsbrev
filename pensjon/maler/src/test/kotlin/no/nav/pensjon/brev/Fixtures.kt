@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
@@ -110,6 +112,8 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAl
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createBrukerTestBrevDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createEndringUfoeretrygdDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createEndringUfoeretrygdFlyttingUtlandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInformasjonOmGjenlevenderettigheterDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonDto
@@ -212,6 +216,8 @@ object Fixtures : LetterDataFactory {
             VedtakOmFjerningAvOmsorgsopptjeningDto::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
             VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
+            EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
+            EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

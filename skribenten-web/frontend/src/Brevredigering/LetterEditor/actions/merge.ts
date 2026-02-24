@@ -37,7 +37,6 @@ export function mergeRecipe(draft: Draft<LetterEditorState>, literalIndex: Liter
     return;
   }
   if (!isValidIndex(draft.redigertBrev, literalIndex)) {
-    // eslint-disable-next-line no-console
     console.warn("Invalid index for merge", literalIndex);
     return;
   }
@@ -241,7 +240,6 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
       }
     }
   } else {
-    // eslint-disable-next-line no-console
     console.warn("Got itemIndex, but block.content is not an itemList");
   }
 }

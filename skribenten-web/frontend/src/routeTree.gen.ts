@@ -87,7 +87,7 @@ const SaksnummerSaksIdAttesterBrevIdForhandsvisningRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/saksnummer/$saksId': typeof SaksnummerSaksIdRouteRouteWithChildren
-  '/saksnummer': typeof SaksnummerIndexRoute
+  '/saksnummer/': typeof SaksnummerIndexRoute
   '/aapne/brev/$brevId': typeof AapneBrevBrevIdRouteRoute
   '/saksnummer/$saksId/brevbehandler': typeof SaksnummerSaksIdBrevbehandlerRouteRoute
   '/saksnummer/$saksId/brevvelger': typeof SaksnummerSaksIdBrevvelgerRouteRoute
@@ -129,7 +129,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/saksnummer/$saksId'
-    | '/saksnummer'
+    | '/saksnummer/'
     | '/aapne/brev/$brevId'
     | '/saksnummer/$saksId/brevbehandler'
     | '/saksnummer/$saksId/brevvelger'
@@ -185,7 +185,7 @@ declare module '@tanstack/react-router' {
     '/saksnummer/': {
       id: '/saksnummer/'
       path: '/saksnummer'
-      fullPath: '/saksnummer'
+      fullPath: '/saksnummer/'
       preLoaderRoute: typeof SaksnummerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }

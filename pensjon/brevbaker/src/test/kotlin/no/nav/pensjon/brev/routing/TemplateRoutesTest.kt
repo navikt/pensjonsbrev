@@ -69,7 +69,7 @@ class TemplateRoutesTest {
             val response = client.get("/templates/redigerbar?includeMetadata=true")
             assertEquals(HttpStatusCode.OK, response.status)
             assertEquals(
-                alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
+            alleRedigerbareMaler.map { it.description() }, response.body<List<TemplateDescription.Redigerbar>>()
             )
         }
 

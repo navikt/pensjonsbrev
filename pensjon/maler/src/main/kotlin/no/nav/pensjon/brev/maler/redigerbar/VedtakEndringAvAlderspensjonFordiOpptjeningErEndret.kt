@@ -45,6 +45,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligPensjonFoerSkattAp2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -71,7 +72,7 @@ import java.time.Month
 @TemplateModelHelpers
 object VedtakEndringAvAlderspensjonFordiOpptjeningErEndret : RedigerbarTemplate<VedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto> {
 
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_PGA_OPPTJENING

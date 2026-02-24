@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.skribenten.Cache
 import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
@@ -53,7 +54,7 @@ interface BrevbakerService {
     ): LetterResponse
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>?
     suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar?
-    suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode>
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode>
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
@@ -188,7 +189,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             }
         }
 
-    override suspend fun getAlltidValgbareVedlegg(brevId: Long): Set<AlltidValgbartVedleggKode> =
+    override suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
         cache.cached(Cacheomraade.ALLTID_VALGBARE_VEDLEGG, brevId) {
             val response = client.get("/letter/redigerbar/alltidValgbareVedlegg")
 

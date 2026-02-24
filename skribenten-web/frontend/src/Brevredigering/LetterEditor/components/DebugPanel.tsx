@@ -1,7 +1,8 @@
-import { css, Global } from "@emotion/react";
-import { Accordion, BodyShort, BoxNew, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
+import { Global } from "@emotion/react";
+import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
+import type { AkselColor } from "@navikt/ds-react/esm/types";
+import type React from "react";
 import type { Dispatch } from "react";
-import React from "react";
 import { useEffect, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
@@ -9,7 +10,7 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import type { Focus, LetterEditorState, SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { AnyBlock, Block, Content, Item } from "~/types/brevbakerTypes";
+import type { AnyBlock, Content, Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
   const { freeze, editorState } = useEditor();
@@ -44,43 +45,51 @@ export function DebugPanel() {
       document.removeEventListener("keyup", keyboardEventListener);
       document.removeEventListener("selectionchange", selectionChangeListener);
     };
-  }, []);
+  }, [keyboardEventListener, mouseMoveEventListener, selectionChangeListener]);
 
   return (
     <>
       <Global
-        styles={css`
-          .editor {
-            [contenteditable] {
-              &:focus-within {
-                outline: 1px solid var(--ax-border-brand-magenta-subtle);
-              }
-              outline: 1px solid var(--ax-border-brand-magenta-subtle);
-            }
-          }
-        `}
+        styles={{
+          ".editor": {
+            "[contenteditable]": {
+              "&:focus-within": {
+                outline: "1px solid var(--ax-border-brand-magenta-subtle)",
+              },
+              outline: "1px solid var(--ax-border-brand-magenta-subtle)",
+              outlineOffset: "-1px",
+            },
+          },
+        }}
       />
-      <BoxNew background="neutral-soft" marginBlock="space-16 0">
-        <VStack padding="space-16">
+      <Box
+        asChild
+        background="neutral-soft"
+        borderColor="neutral-subtle"
+        borderWidth={"1 0 0 0"}
+        flexShrink="0"
+        height="40vh"
+        overflowY="auto"
+        padding="space-16"
+      >
+        <VStack>
           <HStack gap="space-16">
             {mappedSelection ? (
-              <>
-                <VStack>
-                  <HStack gap="space-16">
-                    SELECTION &lt;:
-                    <Focus focus={mappedSelection.start} />
-                  </HStack>
-                  <HStack gap="space-16">
-                    SELECTION &gt;:
-                    <Focus focus={mappedSelection.end} />
-                  </HStack>
-                </VStack>
-              </>
+              <VStack>
+                <HStack gap="space-16">
+                  SELECTION &lt;:
+                  <FocusInfo focus={mappedSelection.start} />
+                </HStack>
+                <HStack gap="space-16">
+                  SELECTION &gt;:
+                  <FocusInfo focus={mappedSelection.end} />
+                </HStack>
+              </VStack>
             ) : null}
           </HStack>
           <HStack gap="space-16">
             FOCUS:
-            <Focus focus={editorState.focus} />
+            <FocusInfo focus={editorState.focus} />
           </HStack>
           <HStack gap="space-16">
             FREEZE:{" "}
@@ -102,12 +111,12 @@ export function DebugPanel() {
           </HStack>
           <LetterTree state={editorState} />
         </VStack>
-      </BoxNew>
+      </Box>
     </>
   );
 }
 
-const Focus = ({ focus }: { focus: Focus }) => {
+const FocusInfo = ({ focus }: { focus: Focus }) => {
   return (
     <>
       {Object.entries(focus).map(([key, value]) => (
@@ -125,8 +134,8 @@ const Focus = ({ focus }: { focus: Focus }) => {
 const LetterTree = ({ state: { focus, redigertBrev } }: { state: LetterEditorState }) => {
   return (
     <>
-      {redigertBrev.blocks.map((b, index) => (
-        <Block block={b} focus={focus} index={index} key={index} />
+      {redigertBrev.blocks.map((block, index) => (
+        <BlockInfo block={block} focus={focus} index={index} key={index} />
       ))}
     </>
   );
@@ -145,10 +154,10 @@ const useToggleWithFocusUpdate = (
   return [isOpen, setIsOpen];
 };
 
-const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: number }) => {
+const BlockInfo = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: number }) => {
   const blockText = block.content
-    .map((c) => (isTextContent(c) ? textOf(c) : null))
-    .filter((c) => c !== null)
+    .map((content) => (isTextContent(content) ? textOf(content) : null))
+    .filter((content) => content !== null)
     .join("");
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus.blockIndex, index);
@@ -171,20 +180,20 @@ const Block = ({ block, focus, index }: { block: AnyBlock; focus: Focus; index: 
         </ExpansionCard.Title>
         <ExpansionCard.Description>{textExtract(blockText)}</ExpansionCard.Description>
       </ExpansionCard.Header>
-      <BoxNew asChild background="default">
+      <Box asChild background="default">
         <ExpansionCard.Content>
           <Accordion size="small">
-            {block.content.map((c, index) => (
-              <Content content={c} focus={focus} index={index} key={index} />
+            {block.content.map((content, index) => (
+              <ContentInfo content={content} focus={focus} index={index} key={index} />
             ))}
           </Accordion>
         </ExpansionCard.Content>
-      </BoxNew>
+      </Box>
     </ExpansionCard>
   );
 };
 
-const Content = ({ content, focus, index }: { content: Content; focus?: Focus; index: number }) => {
+const ContentInfo = ({ content, focus, index }: { content: Content; focus?: Focus; index: number }) => {
   const extract = isTextContent(content) ? textExtract(textOf(content)) : "";
 
   const [isOpen, setIsOpen] = useToggleWithFocusUpdate(focus?.contentIndex, index);
@@ -220,8 +229,8 @@ const ContentBody = ({ content, focus }: { content: Content; focus?: Focus }) =>
     case "ITEM_LIST":
       return (
         <Accordion size="small">
-          {content.items.map((i, index) => (
-            <ItemBody focus={focus} index={index} item={i} key={index} />
+          {content.items.map((item, index) => (
+            <ItemBody focus={focus} index={index} item={item} key={index} />
           ))}
         </Accordion>
       );
@@ -261,8 +270,8 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
       </Accordion.Header>
       <Accordion.Content>
         <Accordion size="small">
-          {item.content.map((c, index) => (
-            <Content content={c} focus={itemContentFocus} index={index} key={index} />
+          {item.content.map((content, index) => (
+            <ContentInfo content={content} focus={itemContentFocus} index={index} key={index} />
           ))}
         </Accordion>
       </Accordion.Content>
@@ -270,7 +279,7 @@ const ItemBody = ({ focus, index, item }: { focus?: Focus; index: number; item: 
   );
 };
 
-function getHighlightColor(isNew: boolean, isEdited: boolean): string {
+function getHighlightColor(isNew: boolean, isEdited: boolean): AkselColor {
   return isNew ? "success" : isEdited ? "accent" : "neutral";
 }
 
@@ -305,5 +314,5 @@ function isEditedItem(item: Item): boolean {
 }
 
 function textExtract(str: string, maxLength: number = 65): string {
-  return str.length > maxLength ? str.slice(0, 62) + "..." : str;
+  return str.length > maxLength ? `${str.slice(0, 62)}...` : str;
 }

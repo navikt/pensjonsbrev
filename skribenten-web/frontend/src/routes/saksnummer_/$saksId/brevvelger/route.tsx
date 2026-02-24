@@ -5,7 +5,7 @@ import {
   Alert,
   Bleed,
   BodyShort,
-  BoxNew,
+  Box,
   Button,
   Heading,
   HStack,
@@ -72,8 +72,8 @@ export function BrevvelgerPage() {
   });
 
   return (
-    <BoxNew asChild background="default">
-      <VStack marginInline={{ sm: "0", lg: "auto" }} width="fit-content">
+    <Box asChild background="default">
+      <VStack marginInline={{ sm: "space-0", lg: "auto" }} width="fit-content">
         <BrevvelgerMainContent
           alleSaksbrevQuery={alleSaksbrevQuery}
           brevmalKoder={brevmalKoder}
@@ -88,7 +88,7 @@ export function BrevvelgerPage() {
           saksId={saksId}
         />
       </VStack>
-    </BoxNew>
+    </Box>
   );
 }
 
@@ -116,15 +116,15 @@ const BrevvelgerMainContent = (props: {
   );
 
   return (
-    <BoxNew asChild height="calc(var(--main-page-content-height)">
+    <Box asChild height="calc(var(--main-page-content-height)">
       <HStack wrap={false}>
         {/* Brevmal-liste */}
-        <BoxNew
+        <Box
           asChild
           borderColor="neutral-subtle"
           borderWidth="0 1 0 0"
           minWidth="640px"
-          paddingBlock="space-20 0"
+          paddingBlock="space-20 space-0"
           paddingInline="space-24"
         >
           <VStack gap="space-24" height="100%">
@@ -136,12 +136,15 @@ const BrevvelgerMainContent = (props: {
               brevmalKoder={brevmalKoder}
               brevmetadata={brevmetadata}
               handleOpenAccordionChange={(categoryKey) =>
-                setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
+                setOpenAccordions((prev) => ({
+                  ...prev,
+                  [categoryKey]: !prev[categoryKey],
+                }))
               }
               openAccordions={openAccordions}
             />
           </VStack>
-        </BoxNew>
+        </Box>
         <BrevmalPanel
           brevId={brevId}
           brevmetadata={brevmetadata}
@@ -152,7 +155,7 @@ const BrevvelgerMainContent = (props: {
           templateId={templateId}
         />
       </HStack>
-    </BoxNew>
+    </Box>
   );
 };
 
@@ -224,7 +227,7 @@ function Brevmaler({
         variant="simple"
       />
       <Bleed asChild marginInline="space-24">
-        <BoxNew asChild overflowY="auto" paddingInline="space-24">
+        <Box asChild overflowY="auto" paddingInline="space-24">
           <Accordion
             css={css`
               .aksel-accordion__content {
@@ -261,16 +264,24 @@ function Brevmaler({
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
-                  <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
+                  <Accordion.Content
+                    css={{
+                      "> div:first-child": {
+                        overflowX: "hidden",
+                      },
+                    }}
+                  >
                     <VStack>
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
                           extraStyles={
                             template.id === templateId
                               ? css`
-                                  color: var(--ax-text-accent-contrast);
-                                  background-color: var(--ax-bg-accent-strong-hover);
-                                `
+                            color: var(--ax-text-accent-contrast);
+                            background-color: var(
+                            --ax-bg-accent-strong-hover
+                            );
+                          `
                               : undefined
                           }
                           key={template.id}
@@ -281,17 +292,18 @@ function Brevmaler({
                                 ...s,
                                 templateId: template.id,
                                 brevId: undefined,
+                                enhetsId: undefined,
                               }),
                             })
                           }
                           title={
                             <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
                               <BrevSystemIcon brevsystem={template.brevsystem} />
-                              <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                              <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
                                 <BodyShort size="small" truncate>
                                   {template.name}
                                 </BodyShort>
-                              </BoxNew>
+                              </Box>
                             </HStack>
                           }
                         />
@@ -302,7 +314,7 @@ function Brevmaler({
               );
             })}
           </Accordion>
-        </BoxNew>
+        </Box>
       </Bleed>
     </VStack>
   );
@@ -348,17 +360,18 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                       ...s,
                       brevId: brev.id,
                       templateId: undefined,
+                      enhetsId: brev.avsenderEnhet.enhetNr,
                     }),
                   })
                 }
                 title={
                   <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
                     <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
-                    <BoxNew asChild maxWidth="calc(100% - var(--ax-space-24)">
+                    <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
                       <BodyShort size="small" truncate>
                         {brev.brevtittel}
                       </BodyShort>
-                    </BoxNew>
+                    </Box>
                   </HStack>
                 }
               />
@@ -427,5 +440,5 @@ const BrevmalButton = (props: {
 };
 
 function metadataMapFromList(letterMetadataList: LetterMetadata[]): Record<string, LetterMetadata> {
-  return letterMetadataList.reduce((acc, b) => ({ ...acc, [b.id]: b }), {} as Record<string, LetterMetadata>);
+  return letterMetadataList.reduce((acc, b) => Object.assign(acc, { [b.id]: b }), {} as Record<string, LetterMetadata>);
 }

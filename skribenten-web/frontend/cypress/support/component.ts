@@ -14,7 +14,7 @@
 // ***********************************************************
 
 import "./commands";
-import "@navikt/ds-css/darkside";
+import "@navikt/ds-css";
 import "../../src/appStyles.css";
 
 import { Theme } from "@navikt/ds-react";
@@ -29,7 +29,6 @@ enablePatches();
 // Alternatively, can be defined in cypress/support/component.d.ts
 // with a <reference path="./component" /> at the top of your spec.
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace -- auto-added by Cypress, keep as is for now
   namespace Cypress {
     interface Chainable {
       mount: typeof mount;

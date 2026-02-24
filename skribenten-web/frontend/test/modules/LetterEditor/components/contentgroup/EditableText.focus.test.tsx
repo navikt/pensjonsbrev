@@ -1,5 +1,4 @@
 import { fireEvent, render } from "@testing-library/react";
-import React from "react";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { EditableText } from "~/Brevredigering/LetterEditor/components/ContentGroup";

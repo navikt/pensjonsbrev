@@ -88,10 +88,8 @@ updates:
     groups:
       dev:
         patterns:
-          - "*eslint*"
-          - "prettier"
+          - "*biome*"
           - "typescript"
-          - "@typescript-eslint*"
           - "stylelint*"
       frontend:
         patterns:

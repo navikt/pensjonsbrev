@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSuppleren
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.UforeAvslagPendataSelectors.vurdering
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -30,7 +31,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
     override val featureToggle = FeatureToggles.avslagMedlemskap.toggle
 
     override val kode = UT_AVSLAG_MEDLEMSKAP
-    override val kategori = TemplateDescription.Brevkategori.FOERSTEGANGSBEHANDLING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

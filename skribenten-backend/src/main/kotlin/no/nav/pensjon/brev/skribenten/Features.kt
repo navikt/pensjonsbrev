@@ -27,6 +27,7 @@ object Features {
         unleash = DefaultUnleash(
             UnleashConfig.builder()
                 .appName(config.getString("appName"))
+                // TODO: Slett environment her når vi oppgraderer til neste unleash-sdk
                 .environment(config.getString("environment"))
                 .unleashAPI(config.getString("host") + "/api")
                 .apiKey(config.getString("apiToken")).build()

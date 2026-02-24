@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -17,7 +18,7 @@ class RedigerBrevPolicy {
 
     sealed interface KanIkkeRedigere : BrevredigeringError {
         data object LaastBrev : KanIkkeRedigere
-        data class ArkivertBrev(val journalpostId: Long) : KanIkkeRedigere
+        data class ArkivertBrev(val journalpostId: JournalpostId) : KanIkkeRedigere
         data object IkkeReservert : KanIkkeRedigere
     }
 }

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.SaksbehandlerValgSelectors.opplystOmBotid
 import no.nav.pensjon.brev.api.model.maler.redigerbar.ForespoerselOmDokumentasjonAvBotidINorgeDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -21,7 +22,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte : RedigerbarTemplate<F
 
     // PE_IY_03_167 - dette er delen for barnep eller gjenlev
     override val kode = Pesysbrevkoder.Redigerbar.PE_FORESPOERSEL_DOKUM_BOTIDINORGE_ETTERLATTE
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.BARNEP, Sakstype.GJENLEV)
 

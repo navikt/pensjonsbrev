@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 import { UNSAFE_Combobox } from "@navikt/ds-react";
-import { type FieldError } from "react-hook-form";
+import type { FieldError } from "react-hook-form";
 
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 

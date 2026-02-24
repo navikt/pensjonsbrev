@@ -1,5 +1,5 @@
 import { FilesIcon } from "@navikt/aksel-icons";
-import { Alert, BodyShort, BoxNew, CopyButton, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
+import { Alert, BodyShort, Box, CopyButton, Heading, HGrid, HStack, VStack } from "@navikt/ds-react";
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
@@ -25,10 +25,8 @@ function isFunctionalError(error: AxiosError<unknown>): error is AxiosError<Func
 export function ApiError({ error, title }: { error: unknown; title: string }) {
   useEffect(() => {
     if (error) {
-      // eslint-disable-next-line no-console
-      console.log(error);
+      console.error(error);
       const originalStatus = error instanceof AxiosError ? error.status : undefined;
-      // eslint-disable-next-line no-console
       logError(error, originalStatus).catch(() => console.error("Unable to log error message"));
     }
   }, [error]);
@@ -48,7 +46,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             <Heading level="2" size="small">
               {tittel ?? title}
             </Heading>
-            {melding && <BoxNew marginBlock="space-4 0">{melding}</BoxNew>}
+            {melding && <Box marginBlock="space-4 space-0">{melding}</Box>}
           </Alert>
         </HStack>
       );
@@ -70,10 +68,10 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                     Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
                   </span>
                 </div>
-                <BoxNew asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
-                  <HGrid align="center" columns="auto max-content" paddingInline="space-8 0">
+                <Box asChild background="default" borderColor="neutral" borderRadius="4" borderWidth="1">
+                  <HGrid align="center" columns="auto max-content" paddingInline="space-8 space-0">
                     <BodyShort truncate>{correlationId}</BodyShort>
-                    <BoxNew asChild borderRadius="4">
+                    <Box asChild borderRadius="4">
                       <CopyButton
                         copyText={correlationId}
                         data-color="accent"
@@ -81,9 +79,9 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
                         size="small"
                         text="Kopier ID"
                       />
-                    </BoxNew>
+                    </Box>
                   </HGrid>
-                </BoxNew>
+                </Box>
               </VStack>
             )}
           </Alert>
@@ -113,7 +111,6 @@ function isOfFailureType(error: string): error is FailureType {
 }
 
 function mapFailureTypes(failureType: FailureType) {
-  // eslint-disable-next-line @typescript-eslint/switch-exhaustiveness-check
   switch (failureType) {
     case "EXSTREAM_BESTILLING_ADRESSE_MANGLER": {
       return "Fant ikke adresse på brukeren.";
