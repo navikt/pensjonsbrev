@@ -16,8 +16,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.feilutbetaltTotalBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.oversiktOverFeilutbetalingPEDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.resultatAvVurderingenForTotalBelop
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.sluttPeriodeForTilbakekreving
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.startPeriodeForTilbakekreving
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysDataSelectors.sumTilInnkrevingTotalBelop
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
@@ -51,8 +49,6 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
     ) {
         val feilutbetaltTotalBeloep = pesysData.feilutbetaltTotalBelop.format(CurrencyFormat)
         val resultatAvVurderingenForTotalBeloep = pesysData.resultatAvVurderingenForTotalBelop
-        val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
-        val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
         val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBelop.format(CurrencyFormat)
         val dato = fritekst("dato")
 
@@ -201,20 +197,12 @@ object VedtakFeilutbetaling : RedigerbarTemplate<VedtakFeilutbetalingUforeDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Feilutbetalt beløp kreves tilbake i sin helhet, jf. folketrygdloven § 22-15 fjerde ledd. " },
+                        bokmal { + "Feilutbetalt beløp kreves delvis tilbake, jf. folketrygdloven § 22-15 fjerde ledd. " },
                         nynorsk { + "Feilutbetalt beløp krevjast delvis tilbake, jf. folketrygdlova § 22-15 fjerde ledd." }
                     )
                 }
 
             }
-
-            paragraph {
-                text (
-                    bokmal { + "Vedtaket er gjort etter folketrygdloven § 22-15. " },
-                    nynorsk { + "Vedtaket er gjort etter folketrygdlova § 22-15. " }
-                )
-            }
-
             title1 {
                 text (
                     bokmal { + "Beregning " },
