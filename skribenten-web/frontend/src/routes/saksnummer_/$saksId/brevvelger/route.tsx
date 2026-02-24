@@ -136,10 +136,7 @@ const BrevvelgerMainContent = (props: {
               brevmalKoder={brevmalKoder}
               brevmetadata={brevmetadata}
               handleOpenAccordionChange={(categoryKey) =>
-                setOpenAccordions((prev) => ({
-                  ...prev,
-                  [categoryKey]: !prev[categoryKey],
-                }))
+                setOpenAccordions((prev) => ({ ...prev, [categoryKey]: !prev[categoryKey] }))
               }
               openAccordions={openAccordions}
             />
@@ -264,24 +261,16 @@ function Brevmaler({
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
-                  <Accordion.Content
-                    css={{
-                      "> div:first-child": {
-                        overflowX: "hidden",
-                      },
-                    }}
-                  >
+                  <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
                     <VStack>
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
                           extraStyles={
                             template.id === templateId
                               ? css`
-                            color: var(--ax-text-accent-contrast);
-                            background-color: var(
-                            --ax-bg-accent-strong-hover
-                            );
-                          `
+                                  color: var(--ax-text-accent-contrast);
+                                  background-color: var(--ax-bg-accent-strong-hover);
+                                `
                               : undefined
                           }
                           key={template.id}
@@ -292,8 +281,6 @@ function Brevmaler({
                                 ...s,
                                 templateId: template.id,
                                 brevId: undefined,
-                                vedtaksId: undefined,
-                                enhetsId: undefined,
                               }),
                             })
                           }
@@ -361,7 +348,6 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                       ...s,
                       brevId: brev.id,
                       templateId: undefined,
-                      enhetsId: brev.avsenderEnhet.enhetNr,
                     }),
                   })
                 }

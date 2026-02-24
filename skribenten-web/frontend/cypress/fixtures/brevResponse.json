@@ -10,11 +10,7 @@
       "type": "UnderRedigering",
       "redigeresAv": "Z993104"
     },
-    "mottaker": null,
-    "avsenderEnhet": {
-      "enhetNr": "4405",
-      "navn": "Nav Arbeid og ytelser Innlandet"
-    }
+    "mottaker": null
   },
   "redigertBrev": {
     "title": {
