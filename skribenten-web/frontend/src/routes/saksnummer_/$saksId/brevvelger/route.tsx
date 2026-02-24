@@ -277,11 +277,11 @@ function Brevmaler({
                           extraStyles={
                             template.id === templateId
                               ? css`
-                            color: var(--ax-text-accent-contrast);
-                            background-color: var(
-                            --ax-bg-accent-strong-hover
-                            );
-                          `
+                                  color: var(--ax-text-accent-contrast);
+                                  background-color: var(
+                                    --ax-bg-accent-strong-hover
+                                  );
+                                `
                               : undefined
                           }
                           key={template.id}
@@ -292,7 +292,6 @@ function Brevmaler({
                                 ...s,
                                 templateId: template.id,
                                 brevId: undefined,
-                                enhetsId: undefined,
                               }),
                             })
                           }
@@ -360,7 +359,6 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                       ...s,
                       brevId: brev.id,
                       templateId: undefined,
-                      enhetsId: brev.avsenderEnhet.enhetNr,
                     }),
                   })
                 }
