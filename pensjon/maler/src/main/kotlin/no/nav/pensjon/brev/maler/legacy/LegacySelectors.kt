@@ -15,13 +15,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_grunnlag_persongrunnlagsliste_uforehistorikkgarantigrad
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_saksdata_sakapogup
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_antallbarnserkullogfelles
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_bruttoetterreduksjonbt_høyere_lavere
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_bruttoetterreduksjonbt_hoeyere_lavere
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btfbinntektbruktiavkortningminusbtfbfribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_btsbinntektbruktiavkortningminusbtsbfribelop
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_etteroppgjorfratrekklistebrukeretterbetaling
@@ -29,9 +30,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsS
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfattbilateral_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fattnorgeplusfatteos_avdod
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_forstegangstjenesteikkenull
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fradrag_høyere_lavere
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_fradrag_hoeyere_lavere
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_grunnikkereduksjon_lik_erstatning_innttap_ertstoppgj_finnes
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_høyere_lavere
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_hoeyere_lavere
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektsgrense_faktisk_minus_60000
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_inntektslandtruehvorbruktlikfalse_avdod
@@ -115,6 +116,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.Vedtak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.forrigeetteroppgjor
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.harLopendealderspensjon
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.kravhode
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.reaktiviseringsforskriften
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.trygdetidavdod
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vedtakfattetdatominus1mnd
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist
@@ -209,7 +211,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggInformasjonSelectors.uforetidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggInformasjonSelectors.yrkesskadegrad
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.gjenlevendetillegginformasjon
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.gtbrutto
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.gtinnvilget
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.gtnetto
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.GjenlevendetilleggSelectors.nyttgjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUT
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.ar
@@ -222,6 +226,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.minsteytelse
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.netto
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.nettoakk
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.nettoperar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.nettorestar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.ytelsesgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.YtelsesgrunnlagSelectors.beregningsgrunnlagordinar
@@ -645,7 +650,11 @@ fun Expression<PE>.ut_forsorgeransvar_ingen_er_false(): Expression<Boolean> = ve
 fun Expression<PE>.ut_forsorgeransvar_ingen_er_true(): Expression<Boolean> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ instopphreduksjonsperiodeliste }.safe{ forsorgeransvaringen }.ifNull(true)
 fun Expression<PE>.ut_forsorgeransvar_siste_er_true(): Expression<Boolean> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ instopphreduksjonsperiodeliste }.safe{ forsorgeransvarsiste }.ifNull(false)
 fun Expression<PE>.ut_tbu4071_btfbinnvilget(): Expression<Boolean> = functions.pe_ut_tbu4071_btfbinnvilget
-fun Expression<PE>.ut_inntekt_høyere_lavere(): Expression<String> = functions.pe_ut_inntekt_høyere_lavere.ifNull("")
-fun Expression<PE>.ut_fradrag_høyere_lavere(): Expression<String> = functions.pe_ut_fradrag_høyere_lavere.ifNull("")
-fun Expression<PE>.ut_bruttoetterreduksjonbt_høyere_lavere(): Expression<String> = functions.pe_ut_bruttoetterreduksjonbt_høyere_lavere.ifNull("")
-fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto(): Expression<Kroner> =  vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { gjenlevendetillegg }.safe{gtnetto}
+fun Expression<PE>.ut_inntekt_hoeyere_lavere(): Expression<String> = functions.pe_ut_inntekt_hoeyere_lavere.ifNull("")
+fun Expression<PE>.ut_fradrag_hoeyere_lavere(): Expression<String> = functions.pe_ut_fradrag_hoeyere_lavere.ifNull("")
+fun Expression<PE>.ut_bruttoetterreduksjonbt_hoeyere_lavere(): Expression<String> = functions.pe_ut_bruttoetterreduksjonbt_hoeyere_lavere.ifNull("")
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { gjenlevendetillegg }.safe{gtbrutto}.ifNull(Kroner(0))
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { gjenlevendetillegg }.safe{gtnetto}.ifNull(Kroner(0))
+fun Expression<PE>.vedtaksdata_reaktiviseringsforskriften(): Expression<Boolean> = vedtaksbrev.safe { vedtaksdata }.safe{ reaktiviseringsforskriften }.ifNull(false)
+fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoperar(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { uforetrygdordiner }.safe{ nettoperar }.ifNull(Kroner(0))
+fun Expression<PE>.saksdata_sakapogup(): Expression<Boolean> = functions.pe_saksdata_sakapogup.ifNull(false)
