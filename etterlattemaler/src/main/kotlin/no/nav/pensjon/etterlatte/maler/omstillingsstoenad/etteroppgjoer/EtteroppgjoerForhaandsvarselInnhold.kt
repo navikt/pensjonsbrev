@@ -70,7 +70,7 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
                 paragraph {
                     text(
                         bokmal { +"Hvert år sjekker Nav inntekten din for å se om du har fått utbetalt riktig beløp i omstillingsstønad året før. Omstillingsstønaden din er beregnet etter opplysninger om inntekt fra Skatteetaten og a-ordningen." },
-                        nynorsk { +"Kvar haust sjekkar Nav inntekta di for å sjå om du fekk utbetalt rett beløp i omstillingsstønad året før. Omstillingsstønaden din er rekna ut etter opplysningar om inntekt frå Skatteetaten og a-ordninga." },
+                        nynorsk { +"Kvart år sjekkar Nav inntekta di for å sjå om du fekk utbetalt rett beløp i omstillingsstønad året før. Omstillingsstønaden din er rekna ut etter opplysningar om inntekt frå Skatteetaten og a-ordninga." },
                         english { +"Each year, Nav checks your income to see if you have been paid the correct amount of adjustment allowance in the previous year. Your adjustment allowance is calculated based on information about your income obtained from the Tax Administration and A-scheme." },
                     )
                 }
@@ -113,8 +113,8 @@ object EtteroppgjoerForhaandsvarselInnhold : EtterlatteTemplate<EtteroppgjoerFor
             // dersom feilutbetalt beløp (tilbakekreving)
             showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)){
                 paragraph {
-                    text(bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() +" for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr, som betyr at du må betale tilbake det feilutbetalte beløpet." },
-                        nynorsk { +"Utrekninga vår viser at du har fått " + data.avviksBeloep.absoluteValue().format() +" for mykje i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet." },
+                    text(bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() +" for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Fordi beløpet er høyere enn ett rettsgebyr, må du betale tilbake hele det beløpet som er utbetalt for mye." },
+                        nynorsk { +"Utrekninga vår viser at du har fått " + data.avviksBeloep.absoluteValue().format() +" for mykje i omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake heile det feilutbetalte beløpet." },
                         english { +"Our calculations show that you have been overpaid " + data.avviksBeloep.absoluteValue().format() +" in adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you." },
                     )
                 }
