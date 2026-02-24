@@ -1,21 +1,10 @@
 package no.nav.pensjon.brev.skribenten.db
 
-import com.fasterxml.jackson.core.JacksonException
-import com.fasterxml.jackson.databind.DeserializationFeature
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.typesafe.config.Config
-import com.zaxxer.hikari.HikariConfig
-import com.zaxxer.hikari.HikariDataSource
 import no.nav.brev.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.db.kryptering.EncryptedByteArray
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -27,20 +16,14 @@ import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
-import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
-import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.flywaydb.core.Flyway
 import org.jetbrains.exposed.v1.core.Column
 import org.jetbrains.exposed.v1.core.ReferenceOption
 import org.jetbrains.exposed.v1.core.Table
-import org.jetbrains.exposed.v1.core.columnTransformer
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import org.jetbrains.exposed.v1.core.dao.id.IdTable
 import org.jetbrains.exposed.v1.core.dao.id.LongIdTable
@@ -48,11 +31,9 @@ import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
 import org.jetbrains.exposed.v1.javatime.date
 import org.jetbrains.exposed.v1.javatime.timestamp
-import org.jetbrains.exposed.v1.jdbc.Database
 import org.jetbrains.exposed.v1.json.json
 import java.time.Instant
 import java.time.LocalDate
-import javax.sql.DataSource
 
 @Suppress("unused")
 object Favourites : Table() {
@@ -61,35 +42,6 @@ object Favourites : Table() {
     val letterCode: Column<String> = varchar("Letter Code", length = 50)
     override val primaryKey = PrimaryKey(id, name = "PK_Favourite_ID")
 }
-
-internal val databaseObjectMapper: ObjectMapper = jacksonObjectMapper().apply {
-    registerModule(JavaTimeModule())
-    registerModule(EditLetterJacksonModule)
-    registerModule(LetterMarkupJacksonModule)
-    registerModule(SakstypeModule)
-    registerModule(BrevkodeJacksonModule)
-    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-    disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-}
-
-class DatabaseJsonDeserializeException(cause: JacksonException): Exception("Failed to deserialize json-column from database", cause)
-
-private inline fun <reified T> readJsonString(json: String): T =
-    try {
-        databaseObjectMapper.readValue<T>(json)
-    } catch (e: JacksonException) {
-        throw DatabaseJsonDeserializeException(e)
-    }
-
-fun Table.encryptedBinary(name: String): Column<EncryptedByteArray> =
-    binary(name).transform(columnTransformer(unwrap = EncryptedByteArray::bytes, wrap = ::EncryptedByteArray))
-
-private inline fun <reified T> readJsonBinary(json: ByteArray): T =
-    try {
-        databaseObjectMapper.readValue<T>(json)
-    } catch (e: JacksonException) {
-        throw DatabaseJsonDeserializeException(e)
-    }
 
 object BrevredigeringTable : IdTable<BrevId>() {
     override val id: Column<EntityID<BrevId>> = long("id").transform(::BrevId, BrevId::id).autoIncrement().entityId()
@@ -171,38 +123,3 @@ object ValgteVedleggTable : IdTable<BrevId>() {
 
     override val primaryKey: PrimaryKey = PrimaryKey(id)
 }
-
-
-fun initDatabase(config: Config) =
-    config.getConfig("database").let {
-        initDatabase(createJdbcUrl(it), it.getString("username"), it.getString("password"))
-    }
-
-fun initDatabase(jdbcUrl: String, username: String, password: String, maxPoolSize: Int = 2) =
-    HikariDataSource(HikariConfig().apply {
-        this.jdbcUrl = jdbcUrl
-        this.username = username
-        this.password = password
-        this.initializationFailTimeout = 6000
-        maximumPoolSize = maxPoolSize
-        validate()
-    })
-        .also { konfigurerFlyway(it) }
-        .also { Database.connect(it) }
-
-private fun konfigurerFlyway(dataSource: DataSource) = Flyway
-    .configure()
-    .dataSource(dataSource)
-    .baselineOnMigrate(true)
-    .validateMigrationNaming(true)
-    .load()
-    .migrate()
-
-
-private fun createJdbcUrl(config: Config): String =
-    with(config) {
-        val url = getString("host")
-        val port = getString("port")
-        val dbName = getString("name")
-        return "jdbc:postgresql://$url:$port/$dbName"
-    }
