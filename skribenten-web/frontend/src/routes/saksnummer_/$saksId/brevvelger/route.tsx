@@ -292,7 +292,6 @@ function Brevmaler({
                                 ...s,
                                 templateId: template.id,
                                 brevId: undefined,
-                                vedtaksId: undefined,
                                 enhetsId: undefined,
                               }),
                             })
