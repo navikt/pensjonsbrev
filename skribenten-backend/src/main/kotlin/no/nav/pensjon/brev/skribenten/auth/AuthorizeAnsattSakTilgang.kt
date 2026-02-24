@@ -8,6 +8,7 @@ import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.routes.brevId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PenService
@@ -43,7 +44,7 @@ class AuthorizeAnsattSakTilgangForBrevConfiguration : AuthorizeAnsattSakTilgangC
 val AuthorizeAnsattSakTilgangForBrev =
     createRouteScopedPlugin("AuthorizeAnsattSakTilgangForBrev", ::AuthorizeAnsattSakTilgangForBrevConfiguration) {
         on(PrincipalInContext.Hook) { call ->
-            val brevId = call.parameters.getOrFail<Long>("brevId")
+            val brevId = call.parameters.brevId()
             val brev = pluginConfig.brevredigeringFacade.hentBrevInfo(brevId)
 
             if (brev != null) {
@@ -63,7 +64,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
 
     if (sak != null) {
         call.attributes.put(SakKey, sak)
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

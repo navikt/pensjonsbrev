@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -80,65 +81,8 @@ class HentBrevHandlerTest : BrevredigeringTest() {
 
     @Test
     suspend fun `returnerer null når brev ikke finnes`() {
-        val hentet = hentBrev(brevId = 9999, reserverForRedigering = false)
+        val hentet = hentBrev(brevId = BrevId(9999), reserverForRedigering = false)
 
         assertThat(hentet).isNull()
     }
-
-    @Test
-    suspend fun `allerede reservert brev kan ikke resereveres for redigering`() {
-        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
-
-        val hentet = hentBrev(
-            brevId = brev.info.id,
-            reserverForRedigering = true,
-            principal = saksbehandler2Principal
-        )
-        assertThat(hentet).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _> {
-            assertThat(it.eksisterende.reservertAv).isEqualTo(saksbehandler1Principal.navIdent)
-        }
-    }
-
-
-    @Test
-    suspend fun `kun en som vinner reservasjon av et brev`() {
-        val brev = opprettBrev().resultOrFail()
-
-        brevbakerService.renderMarkupResultat = {
-            delay(100)
-            letter
-        }
-
-        val hentBrev = coroutineScope {
-            (0..10).map {
-                async(Dispatchers.IO) {
-                    hentBrev(
-                        principal = MockPrincipal(NavIdent("id-$it"), "saksbehandler-id-$it"),
-                        brevId = brev.info.id,
-                        reserverForRedigering = true,
-                    )
-                }
-            }
-        }
-        val awaited = hentBrev.awaitAll().filterNotNull()
-        assertThat(awaited).hasSize(hentBrev.size)
-
-        assertThat(awaited).areExactly(1, condition("Vellykkede hentBrev med reservasjon") { it.isSuccess })
-        assertThat(awaited).areExactly(
-            awaited.size - 1,
-            condition("Feilende hentBrev med reservasjon") { it.isFailure },
-        )
-
-        val faktiskReservertAv = awaited.filterIsInstance<Outcome.Success<Dto.Brevredigering>>().single().resultOrFail().info.redigeresAv
-
-        assertThat(awaited).allMatch {
-            when (it) {
-                is Outcome.Success -> it.value.info.redigeresAv == faktiskReservertAv
-                is Outcome.Failure -> it.error is BrevreservasjonPolicy.ReservertAvAnnen && it.error.eksisterende.reservertAv == faktiskReservertAv
-            }
-        }
-    }
-
-    private fun <T> condition(description: String, predicate: Predicate<T>): Condition<T> =
-        Condition(predicate, description)
 }

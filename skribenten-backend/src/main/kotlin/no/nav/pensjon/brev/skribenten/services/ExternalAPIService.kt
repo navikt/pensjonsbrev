@@ -26,7 +26,7 @@ class ExternalAPIService(
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }
     }
 
-    private fun Dto.BrevInfo.aapneBrevUrl() = "$skribentenWebUrl/aapne/brev/$id"
+    private fun Dto.BrevInfo.aapneBrevUrl() = "$skribentenWebUrl/aapne/brev/${id.id}"
 
     private fun Dto.BrevInfo.toExternal(template: TemplateDescription.Redigerbar?) =
         if (template != null) {

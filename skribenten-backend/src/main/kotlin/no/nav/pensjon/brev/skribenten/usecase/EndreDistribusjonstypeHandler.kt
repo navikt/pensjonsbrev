@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
@@ -14,11 +15,11 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class EndreDistribusjonstypeHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> {
+) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> {
 
-    data class Request(override val brevId: Long, val type: Distribusjonstype) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId, val type: Distribusjonstype) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 
@@ -30,6 +31,8 @@ class EndreDistribusjonstypeHandler(
             brev.redigeresAv = null
         }
 
-        return success(brev.toDto(brevreservasjonPolicy, null))
+        return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
+
+    override fun requiresReservasjon(request: Request) = true
 }

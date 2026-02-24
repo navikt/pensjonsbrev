@@ -122,7 +122,7 @@ const BrevmalBrevbaker = (props: {
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
         params: { brevId: response.info.id },
-        search: { enhetsId, vedtaksId },
+        search: { enhetsId: response.info.avsenderEnhet.enhetNr, vedtaksId },
       });
     },
   });

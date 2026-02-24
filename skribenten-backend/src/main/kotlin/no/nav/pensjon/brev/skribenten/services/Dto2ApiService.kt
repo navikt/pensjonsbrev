@@ -71,6 +71,11 @@ class Dto2ApiService(
         )
     }
 
+    fun toApi(hentDocumentResult: Dto.HentDocumentResult) = Api.PdfResponse(
+        pdf = hentDocumentResult.document.pdf,
+        rendretBrevErEndret = hentDocumentResult.rendretBrevErEndret,
+    )
+
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
             tssId = tssId!!,

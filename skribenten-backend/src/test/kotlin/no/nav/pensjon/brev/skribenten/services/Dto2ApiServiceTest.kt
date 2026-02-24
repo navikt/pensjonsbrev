@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
@@ -102,7 +103,7 @@ class Dto2ApiServiceTest {
         mottaker: Dto.Mottaker? = null,
         attestertAv: NavIdent? = null,
     ) = Dto.BrevInfo(
-        id = 1,
+        id = BrevId(1),
         saksId = SaksId(11),
         vedtaksId = null,
         opprettetAv = opprettetAv,

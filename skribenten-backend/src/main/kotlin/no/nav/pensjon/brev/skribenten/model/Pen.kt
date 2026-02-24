@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -27,10 +29,11 @@ object Pen {
 
     data class SakSelection(
         val saksId: SaksId,
-        val foedselsnr: String,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
+        val pid: Pid = Pid(foedselsnr.value), // TODO fjern defaultverdi når pen har starta å sende med
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
@@ -38,7 +41,7 @@ object Pen {
     data class Avtaleland(val navn: String, val kode: String)
 
     data class BestillExstreamBrevResponse(
-        val journalpostId: String,
+        val journalpostId: JournalpostId,
     ) {
         data class Error(
             val type: String,
@@ -62,7 +65,7 @@ object Pen {
             val fagomradeKode: String? = null,
             val fagspesifikkgradering: String? = null,
             val fagsystem: String? = null,
-            val gjelder: String? = null,
+            val gjelder: Pid? = null,
             val innhold: String? = null,
             val journalenhet: EnhetId? = null,
             val kategori: String? = null,
@@ -132,7 +135,7 @@ object Pen {
     }
 
     data class BestillBrevResponse(
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
@@ -153,7 +156,7 @@ object Pen {
         "FEILUTBETALING" to "Feilutbetaling",
         "FOERSTEGANGSBEHANDLING" to "Førstegangsbehandling",
         "FRITEKSTBREV" to "Fritekstbrev",
-        "LetterMetadata" to "Informasjonsbrev",
+        "INFORMASJONSBREV" to "Informasjonsbrev",
         "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
         "KLAGE_OG_ANKE" to "Klage og anke",
         "LEVEATTEST" to "Leveattest",
@@ -161,7 +164,7 @@ object Pen {
         "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
         "SLUTTBEHANDLING" to "Sluttbehandling",
         "UFOEREPENSJON" to "Uførepensjon",
-        "BrevdataDto" to "Varsel",
+        "VARSEL" to "Varsel",
         "VEDTAK_EKSPORT" to "Vedtak - eksport",
         "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
         "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"

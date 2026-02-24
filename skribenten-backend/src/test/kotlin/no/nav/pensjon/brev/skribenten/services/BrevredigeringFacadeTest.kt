@@ -8,12 +8,7 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.Dto.BrevInfo
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
@@ -44,7 +39,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer brev for handler som krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = 42L)
+        val request = HentBrevHandler.Request(brevId = BrevId(42L))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -60,7 +55,7 @@ class BrevredigeringFacadeTest {
     @Test
     suspend fun `reserverer ikke brev for handler som ikke krever det`() {
         val reserverBrev = ReserverBrevStub()
-        val request = HentBrevHandler.Request(brevId = 42L)
+        val request = HentBrevHandler.Request(brevId = BrevId(42L))
 
         createFacade(
             hentBrev = object : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -85,11 +80,13 @@ class BrevredigeringFacadeTest {
                     }
                     return failure(RedigerBrevPolicy.KanIkkeRedigere.LaastBrev)
                 }
+
+                override fun requiresReservasjon(request: HentBrevHandler.Request) = true
             },
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -105,11 +102,13 @@ class BrevredigeringFacadeTest {
                     }
                     return success(brevredigering)
                 }
+
+                override fun requiresReservasjon(request: HentBrevHandler.Request) = true
             },
             reserverBrev = ReserverBrevStub(),
         )
 
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isFalse()
     }
 
@@ -127,7 +126,7 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isTrue()
     }
 
@@ -149,13 +148,13 @@ class BrevredigeringFacadeTest {
                 }
             },
         )
-        facade.hentBrev(HentBrevHandler.Request(123L))
+        facade.hentBrev(HentBrevHandler.Request(BrevId(123L)))
         assertThat(interceptor.didRollback).isFalse()
     }
 
     private val brevredigering = Dto.Brevredigering(
-        info = BrevInfo(
-            id = 1,
+        info = Dto.BrevInfo(
+            id = BrevId(1),
             saksId = SaksId(1),
             vedtaksId = null,
             opprettetAv = NavIdent("11"),
@@ -200,7 +199,7 @@ private class DidRollbackInterceptor : StatementInterceptor {
 }
 
 private class ReserverBrevStub : UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> {
-    var reservertBrevId: Long? = null
+    var reservertBrevId: BrevId? = null
         private set
 
     override suspend fun handle(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError> {
@@ -217,10 +216,13 @@ private fun createFacade(
     oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering> = handlerStub(),
-    veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering> = handlerStub(),
-    endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> = handlerStub(),
-    endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering> = handlerStub(),
+    veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo> = handlerStub(),
+    endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> = handlerStub(),
+    endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo> = handlerStub(),
     reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> = handlerStub(),
+    hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> = handlerStub(),
+    attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
+    endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
@@ -233,10 +235,14 @@ private fun createFacade(
         endreMottaker = endreMottaker,
         reserverBrev = reserverBrev,
         brevreservasjonPolicy = brevreservasjonPolicy,
+        hentEllerOpprettPdf = hentEllerOpprettPdf,
+        attesterBrev = attesterBrev,
+        endreValgteVedlegg = endreValgteVedlegg,
     )
 }
 
 private fun <T : BrevredigeringRequest, Response> handlerStub() = object : BrevredigeringHandler<T, Response> {
     override suspend fun handle(request: T) = notYetStubbed()
+    override fun requiresReservasjon(request: T) = true
 }
 

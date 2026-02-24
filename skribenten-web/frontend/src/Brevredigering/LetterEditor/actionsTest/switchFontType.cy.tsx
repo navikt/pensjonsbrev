@@ -33,10 +33,16 @@ function EditorWithState({ initial }: { initial: EditedLetter }) {
       sistredigert: "2024-01-01",
       sistredigertAv: { id: "Z123", navn: "Z entotre" },
       opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+      status: {
+        type: "UnderRedigering",
+        redigeresAv: { id: "Z123", navn: "Z entotre" },
+      },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
       mottaker: null,
-      avsenderEnhet: null,
+      avsenderEnhet: {
+        enhetNr: "0001",
+        navn: "NAV Familie- og pensjonsytelser",
+      },
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
@@ -364,7 +370,9 @@ describe("Switch font type ", () => {
                     nyParagraphBlock({
                       content: [
                         nyLiteral({ text: "Jeg er en literal," }),
-                        nyLiteral({ text: " som blir fulgt opp av en annen literal," }),
+                        nyLiteral({
+                          text: " som blir fulgt opp av en annen literal,",
+                        }),
                         nyLiteral({ text: " og til slutt, en siste literal" }),
                       ],
                     }),

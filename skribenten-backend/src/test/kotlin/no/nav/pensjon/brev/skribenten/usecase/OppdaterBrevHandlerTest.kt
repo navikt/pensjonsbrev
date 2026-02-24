@@ -12,6 +12,8 @@ import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -50,7 +52,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
     suspend fun `kan ikke oppdatere brevredigering som ikke eksisterer`() {
         val saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg1", true) }
         val oppdatert = oppdaterBrev(
-            brevId = 1099,
+            brevId = BrevId(1099),
             nyeSaksbehandlerValg = saksbehandlerValg,
             nyttRedigertbrev = nyttRedigertBrev,
         )
@@ -114,11 +116,11 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
     suspend fun `brev kan ikke endres om det er arkivert`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
-        veksleKlarStatus(brev, klar = true).resultOrFail()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
+        assertThat(veksleKlarStatus(brev, klar = true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
 
@@ -183,6 +185,21 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
         assertThat(result).isSuccess {
             assertThat(it.redigertBrevHash).isNotEqualTo(brev.redigertBrevHash)
             assertThat(it.redigertBrevHash).isEqualTo(Hash.read(nyttRedigertBrev))
+        }
+    }
+
+    @Test
+    suspend fun `kan redigere signatur`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        val redigertSignatur = brev.redigertBrev.withSignatur(saksbehandler = "Ny signatur")
+
+        val result = oppdaterBrev(
+            brevId = brev.info.id,
+            nyttRedigertbrev = redigertSignatur,
+        )
+        assertThat(result).isSuccess {
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
         }
     }
 }

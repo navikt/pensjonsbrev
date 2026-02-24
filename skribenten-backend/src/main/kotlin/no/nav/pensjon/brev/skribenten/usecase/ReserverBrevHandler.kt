@@ -5,13 +5,14 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.model.BrevId
 import java.time.Instant
 
 class ReserverBrevHandler(
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError> {
 
-    data class Request(override val brevId: Long) : BrevredigeringRequest
+    data class Request(override val brevId: BrevId) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Reservasjon, BrevredigeringError>? {
         val principal = PrincipalInContext.require()

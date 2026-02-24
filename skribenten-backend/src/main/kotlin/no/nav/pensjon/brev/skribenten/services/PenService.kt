@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -31,7 +32,9 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java
@@ -41,7 +44,7 @@ private val logger = LoggerFactory.getLogger(PenServiceHttp::class.java)
 interface PenService {
     suspend fun hentSak(saksId: SaksId): Pen.SakSelection?
     suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse
-    suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse?
+    suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse?
     suspend fun hentAvtaleland(): List<Pen.Avtaleland>
     suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId): Boolean?
     suspend fun hentIsKravStoettetAvDatabygger(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult?
@@ -91,6 +94,7 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
                 foedselsdato = it.foedselsdato,
                 navn = with(it.navn) { Pen.SakSelection.Navn(fornavn, mellomnavn, etternavn) },
                 sakType = it.sakType,
+                pid = it.pid ?: Pid(it.foedselsnr.value), // TODO fjern fallback når pen sender med pid
             )
         }
 
@@ -117,8 +121,8 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
         }
     }
 
-    override suspend fun redigerExstreamBrev(journalpostId: String): Pen.RedigerDokumentResponse? =
-        client.get("brev/dokument/exstream/$journalpostId")
+    override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse? =
+        client.get("brev/dokument/exstream/${journalpostId.id}")
             .bodyOrThrow()
 
     override suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
@@ -178,11 +182,12 @@ class PenServiceHttp(config: Config, authService: AuthService) : PenService, Ser
 
     private data class SakResponseDto(
         val saksId: SaksId,
-        val foedselsnr: String,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
         val enhetId: String?,
+        val pid: Pid? = null,
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

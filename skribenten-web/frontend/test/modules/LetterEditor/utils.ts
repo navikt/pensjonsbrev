@@ -43,7 +43,10 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
       },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
       mottaker: null,
-      avsenderEnhet: null,
+      avsenderEnhet: {
+        enhetNr: "0001",
+        navn: "NAV Familie- og pensjonsytelser",
+      },
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
@@ -55,7 +58,12 @@ export function letter(...blocks: AnyBlock[]): LetterEditorState {
         text: [literal({ text: "tittel" })],
         deletedContent: [],
       },
-      sakspart: { gjelderNavn: "navn", gjelderFoedselsnummer: "123", saksnummer: "456", dokumentDato: "2022-01-01" },
+      sakspart: {
+        gjelderNavn: "navn",
+        gjelderFoedselsnummer: "123",
+        saksnummer: "456",
+        dokumentDato: "2022-01-01",
+      },
       blocks: blocks,
       signatur: {
         hilsenTekst: "Mvh",
@@ -199,7 +207,12 @@ export function itemList(args: {
 
 export function item(...content: TextContent[]): Item {
   const id = randomId();
-  return { id: id, parentId: null, content: withParent(content, id), deletedContent: [] };
+  return {
+    id: id,
+    parentId: null,
+    content: withParent(content, id),
+    deletedContent: [],
+  };
 }
 
 export function table(headerCells: Cell[], rows: Row[]): Table {
@@ -253,7 +266,10 @@ export function withParent<T extends Identifiable>(
   parentId: number | null,
   replaceExisting: boolean = false,
 ): T[] {
-  return content.map((c) => ({ ...c, parentId: replaceExisting ? parentId : (c.parentId ?? parentId) }));
+  return content.map((c) => ({
+    ...c,
+    parentId: replaceExisting ? parentId : (c.parentId ?? parentId),
+  }));
 }
 
 export function asNew<T extends Identifiable>(c: T, keepParent: boolean = false): T {

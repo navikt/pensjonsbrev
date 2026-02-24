@@ -20,6 +20,9 @@ fun <T> Table.hashColumn(name: String): Column<Hash<T>> =
 value class Hash<T>(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
+
+    override fun toString() = hex
+
     companion object {
         fun <T> read(obj: T): Hash<T> = fromBytes(WithHash.hash(obj))
         fun <T> fromBytes(bytes: ByteArray): Hash<T> = Hash(Hex.encodeHexString(bytes))

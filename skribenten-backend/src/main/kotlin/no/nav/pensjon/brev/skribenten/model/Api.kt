@@ -50,9 +50,10 @@ object Api {
     data class OppdaterKlarStatusRequest(val klar: Boolean)
     data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
 
     data class BrevInfo(
-        val id: Long,
+        val id: BrevId,
         val saksId: SaksId,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
@@ -66,7 +67,7 @@ object Api {
         val mottaker: OverstyrtMottaker?,
         val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val vedtaksId: VedtaksId?,
     )
 
@@ -198,7 +199,7 @@ object Api {
 
     data class BestillOgRedigerBrevResponse(
         val url: String? = null,
-        val journalpostId: String? = null,
+        val journalpostId: JournalpostId? = null,
         val failureType: FailureType? = null,
     ) {
         enum class FailureType {

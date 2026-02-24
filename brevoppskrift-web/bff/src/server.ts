@@ -1,4 +1,4 @@
-import express, { Express } from "express";
+import express, { type Express } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 import { setupActuators } from "./actuators.js";
