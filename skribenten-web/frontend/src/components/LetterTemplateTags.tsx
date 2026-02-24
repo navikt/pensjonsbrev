@@ -9,22 +9,15 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
         switch (letterTemplate.brevsystem) {
           case BrevSystem.Brevbaker: {
             return (
-              <Tag size="small" variant="alt2">
+              <Tag data-color="meta-lime" size="small" variant="outline">
                 Skribenten
               </Tag>
             );
           }
           case BrevSystem.Exstream: {
             return (
-              <Tag size="small" variant="alt1">
+              <Tag data-color="meta-purple" size="small" variant="outline">
                 Exstream
-              </Tag>
-            );
-          }
-          case BrevSystem.DokSys: {
-            return (
-              <Tag size="small" variant="alt3">
-                Doksys
               </Tag>
             );
           }

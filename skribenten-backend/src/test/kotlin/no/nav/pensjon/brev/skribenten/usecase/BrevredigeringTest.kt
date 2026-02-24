@@ -7,27 +7,18 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.MockPrincipal
-import no.nav.pensjon.brev.skribenten.SharedPostgres
-import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.initADGroups
-import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -103,17 +94,8 @@ abstract class BrevredigeringTest {
         brevbakerService = brevbakerService,
         navansattService = navAnsattService,
         penService = penService,
-        p1Service = FakeP1Service()
     )
-    protected val brevredigeringFacade = BrevredigeringFacade(
-        brevbakerService = brevbakerService,
-        brevdataService = BrevdataService(penService, samhandlerService),
-        navansattService = navAnsattService,
-        renderService = RenderService(brevbakerService),
-        redigerBrevPolicy = RedigerBrevPolicy(),
-        brevreservasjonPolicy = BrevreservasjonPolicy(),
-        opprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navAnsattService),
-    )
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
 
     protected companion object Fixtures {
         init {
@@ -121,18 +103,19 @@ abstract class BrevredigeringTest {
             initADGroups()
         }
 
-        const val PRINCIPAL_NAVENHET_ID = "Nebuchadnezzar"
+        val PRINCIPAL_NAVENHET_ID = EnhetId("1234")
         val saksbehandler1Principal = MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
         val saksbehandler2Principal = MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
         val attestant1Principal = MockPrincipal(NavIdent("Key Maker"), "Randall Kim", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
         val attestant2Principal = MockPrincipal(NavIdent("The Oracle"), "Gloria Foster", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
 
         val sak1 = Pen.SakSelection(
-            saksId = 1234L,
-            foedselsnr = "12345678910",
+            saksId = SaksId(1234L),
+            foedselsnr = Foedselsnummer("12345678910"),
             foedselsdato = LocalDate.now().minusYears(42),
             navn = Pen.SakSelection.Navn("a", "b", "c"),
             sakType = Sakstype("ALDER"),
+            pid = Pid("12345678910")
         )
 
         val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
@@ -147,7 +130,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = TemplateDescription.Brevkategori.INFORMASJONSBREV,
+            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
             sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
@@ -161,7 +144,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
-            kategori = TemplateDescription.Brevkategori.UFOEREPENSJON,
+            kategori = TemplateDescription.Redigerbar.Brevkategori("UFOEREPENSJON"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
             sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2"))
         )
@@ -175,7 +158,7 @@ abstract class BrevredigeringTest {
                 distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
                 brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
             ),
-            kategori = TemplateDescription.Brevkategori.VARSEL,
+            kategori = TemplateDescription.Redigerbar.Brevkategori("VARSEL"),
             brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
             sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
         )
@@ -206,7 +189,7 @@ abstract class BrevredigeringTest {
             brevdata = Api.GeneriskBrevdata()
         )
 
-        val bestillBrevresponse = Pen.BestillBrevResponse(123, null)
+        val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)
 
         fun LetterMarkupImpl.medSignatur(saksbehandler: String?, attestant: String?) =
             copy(
@@ -223,12 +206,12 @@ abstract class BrevredigeringTest {
         mottaker: Dto.Mottaker? = null,
         saksbehandlerValg: SaksbehandlerValg = SaksbehandlerValg().apply { put("valg", true) },
         brevkode: Brevkode.Redigerbart = Testbrevkoder.INFORMASJONSBREV,
-        vedtaksId: Long? = null,
+        vedtaksId: VedtaksId? = null,
         sak: Pen.SakSelection = sak1,
-        avsenderEnhetsId: String = PRINCIPAL_NAVENHET_ID,
+        avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
         brevredigeringFacade.opprettBrev(
-            OpprettBrevHandler.Request(
+            OpprettBrevHandlerImpl.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
                 brevkode = brevkode,
@@ -242,7 +225,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun oppdaterBrev(
-        brevId: Long,
+        brevId: BrevId,
         nyeSaksbehandlerValg: SaksbehandlerValg? = null,
         nyttRedigertbrev: Edit.Letter? = null,
         frigiReservasjon: Boolean = false,
@@ -259,7 +242,7 @@ abstract class BrevredigeringTest {
     }
 
     protected suspend fun hentBrev(
-        brevId: Long,
+        brevId: BrevId,
         reserverForRedigering: Boolean = false,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
@@ -269,6 +252,13 @@ abstract class BrevredigeringTest {
                 reserverForRedigering = reserverForRedigering,
             )
         )
+    }
+
+    protected suspend fun slettBrev(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Boolean, BrevredigeringError>? = withPrincipal(principal) {
+        success(brevredigeringService.slettBrev(saksId = brev.info.saksId, brevId = brev.info.id))
     }
 
     protected suspend fun attester(
@@ -289,7 +279,7 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
@@ -302,22 +292,21 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
     ): Outcome<Unit, BrevredigeringError> = withPrincipal(principal) {
-        assertThat(hentEllerOpprettPdf(brev)).isNotNull()
+        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            991,
+            JournalpostId(991),
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
         assertThat(sendBrev(brev)).isNotNull()
         success(Unit)
     }
 
-    /**
-     * TODO: Potensielt midlertidig frem til refaktorering er ferdig
-     */
-    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal) =
-        withPrincipal(principal) { brevredigeringService.hentEllerOpprettPdf(saksId = brev.info.saksId, brevId = brev.info.id) }
+    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+        }
 
     /**
      * TODO: Potensielt midlertidig frem til refaktorering er ferdig

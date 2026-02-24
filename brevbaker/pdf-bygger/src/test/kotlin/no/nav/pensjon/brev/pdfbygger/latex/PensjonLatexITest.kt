@@ -62,6 +62,24 @@ class PensjonLatexITest {
         runBlocking { laTeXCompilerService.ping() }
     }
 
+    @Test
+    fun `title with latex code synthax should not fail compilation`(){
+        val template = createTemplate(
+            letterDataType = EmptyAutobrevdata::class,
+            languages = languages(Bokmal),
+            letterMetadata = LetterMetadata(
+                displayTitle = "En fin display tittel",
+                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
+                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+            )
+        ) {
+            title { text(bokmal { +"En fin tittel med masse LaTeX kommando tegn \$%&\\^_{}~" }) }
+            outline {}
+        }
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_escape_xmp_title", pdfByggerService = laTeXCompilerService)
+
+    }
+
     // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
     // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
     @ParameterizedTest

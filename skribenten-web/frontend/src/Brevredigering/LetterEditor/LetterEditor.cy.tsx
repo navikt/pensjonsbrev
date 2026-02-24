@@ -24,10 +24,16 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
       sistredigert: "2024-01-01",
       sistredigertAv: { id: "Z123", navn: "Z entotre" },
       opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+      status: {
+        type: "UnderRedigering",
+        redigeresAv: { id: "Z123", navn: "Z entotre" },
+      },
       distribusjonstype: Distribusjonstype.SENTRALPRINT,
       mottaker: null,
-      avsenderEnhet: null,
+      avsenderEnhet: {
+        enhetNr: "0001",
+        navn: "NAV Familie- og pensjonsytelser",
+      },
       spraak: SpraakKode.Bokmaal,
       journalpostId: null,
       vedtaksId: null,
@@ -59,6 +65,10 @@ function EditorWithState({ initial, focus }: { initial: EditedLetter; focus?: Fo
 describe("<LetterEditor />", () => {
   beforeEach(() => {
     cy.viewport(800, 1400);
+    // Wait for fonts to load before running tests
+    cy.document().then((doc) => {
+      return doc.fonts.ready;
+    });
   });
 
   describe("Navigation", () => {
@@ -68,14 +78,14 @@ describe("<LetterEditor />", () => {
       move("{end}", 1);
       move("{leftArrow}", 10);
       move("{upArrow}", 1);
-      assertCaret("[CP1-2]", 31);
+      assertCaret("[CP1-2]", 30);
     });
     it("ArrowDown works within sibling contenteditables", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP1-1").click();
       move("{rightArrow}", 10);
       move("{downArrow}", 1);
-      assertCaret("[CP1-2]", 109);
+      assertCaret("[CP1-2]", 105);
     });
     it("ArrowUp moves to the right of a variable if that is closest", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -102,7 +112,7 @@ describe("<LetterEditor />", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
       cy.contains("CP2-1").click();
       move("{downArrow}", 1);
-      assertCaret("[CP2-3]", 7);
+      assertCaret("[CP2-3]", 8);
     });
     it("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -127,9 +137,9 @@ describe("<LetterEditor />", () => {
       move("{upArrow}", 1);
       assertCaret("[CP3-2]", 28);
       move("{upArrow}", 1);
-      assertCaret("[CP3-1]", 103);
+      assertCaret("[CP3-1]", 111);
       move("{upArrow}", 1);
-      assertCaret("[CP3-1]", 29);
+      assertCaret("[CP3-1]", 31);
       move("{upArrow}", 1);
       assertCaret("Tittel over punktliste", 22);
     });
@@ -144,7 +154,7 @@ describe("<LetterEditor />", () => {
       move("{downArrow}", 1);
       assertCaret("[CP3-3]", 0);
       move("{downArrow}", 1);
-      assertCaret("Tittel under punktliste", 5);
+      assertCaret("Tittel under punktliste", 6);
     });
     it("ArrowUp at first node moves caret to the beginning", () => {
       cy.mount(<EditorWithState initial={exampleLetter1} />);
@@ -179,7 +189,11 @@ describe("<LetterEditor />", () => {
   describe("Focus", () => {
     it("invalid focus is ignored", () => {
       const invalidCursorPosition = (exampleLetter1.blocks[0].content[2] as LiteralValue).text.length + 10;
-      const invalidFocus = { blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition };
+      const invalidFocus = {
+        blockIndex: 0,
+        contentIndex: 2,
+        cursorPosition: invalidCursorPosition,
+      };
       cy.mount(<EditorWithState focus={invalidFocus} initial={exampleLetter1} />);
 
       cy.contains("Informasjon om saksbehandlingstiden vår");

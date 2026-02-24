@@ -23,8 +23,6 @@ describe("Brevredigering", () => {
     cy.intercept("GET", "/bff/skribenten-backend/brev/1/reservasjon", {
       fixture: "brevreservasjon.json",
     }).as("reservasjon");
-
-    cy.viewport(1200, 1400);
   });
 
   it("Åpne brevredigering", () => {

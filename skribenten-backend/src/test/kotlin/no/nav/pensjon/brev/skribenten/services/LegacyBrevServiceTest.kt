@@ -4,23 +4,26 @@ import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.*
+import no.nav.pensjon.brevbaker.api.model.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 private const val EXPECTED_EXSTREAM_URL = "http://beste-exstream-brev"
-private const val EXPECTED_DOKSYS_URL = "http://beste-doksys-brev"
 
-private const val forventaJournalpostId = "1234"
+private val forventaJournalpostId = JournalpostId(1234)
+
 private const val forventaDokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
     private val principalIdent = NavIdent("kulIdent1234")
     private val principal = MockPrincipal(principalIdent, "Kul saksbehandler")
-    private val principalSinNAVEnhet = NAVAnsattEnhet("1111", "Nav Ozzzlo")
+    private val principalSinNAVEnhet = NAVAnsattEnhet(EnhetId("1111"), "Nav Ozzzlo")
 
 
     private val exstreamBrevMetadata = BrevdataDto(
@@ -42,32 +45,13 @@ class LegacyBrevServiceTest {
         brevgruppe = "brevgruppe",
     )
 
-    private val doksysBrevmetadata = BrevdataDto(
-        redigerbart = true,
-        dekode = "doksys",
-        brevkategori = BrevkategoriCode.INFORMASJON,
-        dokType = DokumentType.U,
-        sprak = listOf(SpraakKode.NB),
-        visIPselv = true,
-        utland = "utland",
-        brevregeltype = BrevregeltypeCode.OVRIGE,
-        brevkravtype = "brevkravtype",
-        brevkontekst = BrevkontekstCode.ALLTID,
-        dokumentkategori = DokumentkategoriCode.IB,
-        synligForVeileder = true,
-        prioritet = 1234,
-        brevkodeIBrevsystem = "doksys",
-        brevsystem = BrevSystem.DOKSYS,
-        brevgruppe = null,
-    )
-
     private val brevmetadataService = FakeBrevmetadataService(
-        maler = mapOf("exstream" to exstreamBrevMetadata, "doksys" to doksysBrevmetadata),
+        maler = mapOf("exstream" to exstreamBrevMetadata),
     )
 
     private val safService = object : SafServiceStub() {
-        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: String) = JournalpostLoadingResult.READY
-        override suspend fun getFirstDocumentInJournal(journalpostId: String): SafService.HentDokumenterResponse =
+        override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId) = JournalpostLoadingResult.READY
+        override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): SafService.HentDokumenterResponse =
             SafService.HentDokumenterResponse(
                 data = SafService.HentDokumenterResponse.Journalposter(
                     SafService.HentDokumenterResponse.Journalpost(
@@ -81,23 +65,10 @@ class LegacyBrevServiceTest {
     }
 
     private val penService = object : PenServiceStub() {
-        override suspend fun bestillDoksysBrev(
-            request: Api.BestillDoksysBrevRequest,
-            enhetsId: String,
-            saksId: Long,
-        ): Pen.BestillDoksysBrevResponse = Pen.BestillDoksysBrevResponse(forventaJournalpostId)
-
         override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) =
             Pen.BestillExstreamBrevResponse(forventaJournalpostId)
 
-        override suspend fun redigerDoksysBrev(journalpostId: String, dokumentId: String) =
-            if(journalpostId == forventaJournalpostId && dokumentId == forventaDokumentId) {
-                Pen.RedigerDokumentResponse(EXPECTED_DOKSYS_URL)
-            } else {
-                notYetStubbed("Mangler stub for redigerDoksysBrev med journalpostId: $journalpostId og dokumentId: $dokumentId")
-            }
-
-        override suspend fun redigerExstreamBrev(journalpostId: String) =
+        override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) =
             if (journalpostId == forventaJournalpostId) {
                 Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)
             } else {
@@ -125,16 +96,16 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerExstreamBrev(
-                    gjelderPid = "9999",
+                    gjelderPid = Pid("9999"),
                     request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
                         vedtaksId = null,
                         idTSSEkstern = null,
                         brevtittel = null,
-                        enhetsId = "9999"
+                        enhetsId = EnhetId("9999")
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
@@ -146,7 +117,7 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerExstreamBrev(
-                    gjelderPid = "9999", request = Api.BestillExstreamBrevRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillExstreamBrevRequest(
                         brevkode = "exstream",
                         spraak = SpraakKode.NB,
                         vedtaksId = null,
@@ -154,7 +125,7 @@ class LegacyBrevServiceTest {
                         brevtittel = null,
                         enhetsId = principalSinNAVEnhet.id
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
@@ -168,13 +139,13 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
-                    gjelderPid = "9999", request = Api.BestillEblankettRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
                         enhetsId = principalSinNAVEnhet.id,
                         mottakerText = "en tekst",
                         landkode = "NO",
                     ),
-                    saksId = 3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isNull()
@@ -187,50 +158,13 @@ class LegacyBrevServiceTest {
         runBlocking {
             val bestillBrevResult = withPrincipal(principal) {
                 legacyBrevService.bestillOgRedigerEblankett(
-                    gjelderPid = "9999", request = Api.BestillEblankettRequest(
+                    gjelderPid = Pid("9999"), request = Api.BestillEblankettRequest(
                         brevkode = "exstream",
-                        enhetsId = "9999",
+                        enhetsId = EnhetId("9999"),
                         mottakerText = "en tekst",
                         landkode = "NO",
                     ),
-                    saksId = 3333L
-                )
-            }
-            assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)
-        }
-    }
-
-    @Test
-    fun `kan bestille doksys brev med riktig tilgang`() {
-        runBlocking {
-            val bestillBrevResult = withPrincipal(principal) {
-                legacyBrevService.bestillOgRedigerDoksysBrev(
-                    Api.BestillDoksysBrevRequest(
-                        brevkode = "doksys",
-                        spraak = SpraakKode.NB,
-                        vedtaksId = null,
-                        enhetsId = principalSinNAVEnhet.id
-                    ),
-                    3333L
-                )
-            }
-            assertThat(bestillBrevResult.failureType).isNull()
-            assertThat(bestillBrevResult.url).isEqualTo(EXPECTED_DOKSYS_URL)
-        }
-    }
-
-    @Test
-    fun `bestill doksys brev feiler med manglende tilgang`() {
-        runBlocking {
-            val bestillBrevResult = withPrincipal(principal) {
-                legacyBrevService.bestillOgRedigerDoksysBrev(
-                    Api.BestillDoksysBrevRequest(
-                        brevkode = "doksys",
-                        spraak = SpraakKode.NB,
-                        vedtaksId = null,
-                        enhetsId = "9999"
-                    ),
-                    3333L
+                    saksId = SaksId(3333L)
                 )
             }
             assertThat(bestillBrevResult.failureType).isEqualTo(Api.BestillOgRedigerBrevResponse.FailureType.ENHET_UNAUTHORIZED)

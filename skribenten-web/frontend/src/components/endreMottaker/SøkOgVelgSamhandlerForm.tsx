@@ -8,7 +8,7 @@ import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
 import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
 import type { CombinedFormData } from "./EndreMottakerUtils";
-import { Identtype, identtypeToText, InnOgUtland, Søketype } from "./EndreMottakerUtils";
+import { Identtype, InnOgUtland, identtypeToText, Søketype } from "./EndreMottakerUtils";
 import { SamhandlerSearchResults } from "./SamhandlerSearchResults";
 
 const SøkOgVelgSamhandlerForm = (properties: {

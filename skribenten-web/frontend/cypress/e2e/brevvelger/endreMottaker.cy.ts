@@ -1,7 +1,6 @@
 describe("Endrer på mottaker", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
 
     cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
       expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
@@ -218,9 +217,7 @@ describe("Endrer på mottaker", () => {
     cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
       fixture: "modelSpecification.json",
     });
-    cy.intercept("GET", "/bff/skribenten-backend/land", (request) => {
-      request.reply({ fixture: "land.json" });
-    }).as("Land fra backend");
+    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
 
     cy.visit("/saksnummer/123456/brevvelger", {
       onBeforeLoad(window) {
@@ -230,7 +227,7 @@ describe("Endrer på mottaker", () => {
 
     //søker opp og velger brevet vi vil ha
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
-    cy.get('p:contains("Informasjon om saksbehandlingstid")').eq(1).click();
+    cy.contains("Informasjon om saksbehandlingstid").click();
     cy.contains("Endre mottaker").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");
@@ -279,7 +276,7 @@ describe("Endrer på mottaker", () => {
     cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
 
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
-    cy.getDataCy("brevmal-button").eq(1).click();
+    cy.contains("Informasjon om saksbehandlingstid").click();
     cy.contains("Endre mottaker").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");

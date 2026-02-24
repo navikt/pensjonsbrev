@@ -101,7 +101,6 @@ fun createP1VedleggDto() = P1RedigerbarDto(
         faksnummer = "12134412",
         telefonnummer = Telefonnummer("+123 45678901"),
         epost = Epost("lars.holm@tøys.nfp.no"),
-        dato = vilkaarligDato,
     )
 )
 
@@ -110,7 +109,7 @@ private val nay =
         institusjonsnavn = "NAY",
         pin = "1234",
         saksnummer = "1234",
-        vedtaksdato = "1.Januar 2020",
+        datoForVedtak = LocalDate.of(2020, Month.JANUARY, 1),
         land = "Norge"
     )
 

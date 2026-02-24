@@ -16,7 +16,12 @@ version = "0.0.1-SNAPSHOT"
 repositories {
     mavenCentral()
     mavenLocal()
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven") }
+    maven {
+        url = uri("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
+        content {
+            includeGroup("org.jetbrains.kotlinx")
+        }
+    }
 }
 
 dependencies {

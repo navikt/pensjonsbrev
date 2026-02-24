@@ -86,7 +86,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
     ) {
        title {
             text(
-                bokmal { + "NAV har beregnet uføretrygden din på nytt" },
+                bokmal { + "Nav har beregnet uføretrygden din på nytt" },
             )
         }
 
@@ -177,7 +177,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
                 ifNotNull(pe.vedtaksdata_virkningfom()){virkFom ->
                     paragraph {
                         text (
-                            bokmal { + "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra " + virkFom.format() + ". Du vil derfor motta en etterbetaling fra NAV." },
+                            bokmal { + "Du har fått en endring i opptjeningen din før du ble ufør. Dette gir deg en økt uføretrygd fra " + virkFom.format() + ". Du vil derfor motta en etterbetaling fra Nav." },
                         )
                     }
                 }

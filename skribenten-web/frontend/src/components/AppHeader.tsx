@@ -28,17 +28,15 @@ function UserDropdown() {
   const userInfo = useUserInfo();
 
   return (
-    <>
-      <Dropdown>
-        <InternalHeader.UserButton as={Dropdown.Toggle} name={userInfo?.name ?? ""} />
-        <Dropdown.Menu>
-          <Dropdown.Menu.List>
-            <Dropdown.Menu.List.Item as="a" href="/bff/logout">
-              Logg ut
-            </Dropdown.Menu.List.Item>
-          </Dropdown.Menu.List>
-        </Dropdown.Menu>
-      </Dropdown>
-    </>
+    <Dropdown>
+      <InternalHeader.UserButton as={Dropdown.Toggle} name={userInfo?.name ?? ""} />
+      <Dropdown.Menu>
+        <Dropdown.Menu.List>
+          <Dropdown.Menu.List.Item as="a" href="/bff/logout">
+            Logg ut
+          </Dropdown.Menu.List.Item>
+        </Dropdown.Menu.List>
+      </Dropdown.Menu>
+    </Dropdown>
   );
 }

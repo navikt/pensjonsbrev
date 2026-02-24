@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.vedlegg.createAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode.*
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -95,7 +94,7 @@ object P1pdfV2Dto {
                     "Post_code[0]" to utfyllendeInstitusjon.postnummer.value
                     "Country_code[0]" to utfyllendeInstitusjon.landkode.landkode
                     "Office_phone_N[0]" to utfyllendeInstitusjon.telefonnummer?.value
-                    "Date[0]" to formaterDato(utfyllendeInstitusjon.dato)
+                    "Date[0]" to formaterDato(LocalDate.now())
                     "Signature[0]" to felles.signerendeSaksbehandlere?.saksbehandler
                 }
             }
@@ -121,8 +120,6 @@ object P1pdfV2Dto {
     fun LocalDate.formater(language: LanguageCode): String? =
         dateFormatter(language).format(this)
 
-    val logger = LoggerFactory.getLogger(P1pdfV2Dto::class.java)
-
     val dateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT)
 
     fun dateFormatter(languageCode: LanguageCode): DateTimeFormatter =
@@ -132,16 +129,6 @@ object P1pdfV2Dto {
         value.filterNotNull()
             .filter { it.isNotBlank() }
             .joinToString(separator)
-
-    val vurderingsperiodeSeksUker = mapOf(
-        BOKMAL to "6 uker fra samlet melding om pensjons-vedtak er mottatt.",
-        ENGLISH to "6 weeks from Summary of Pension Decisions is received.",
-    )
-
-    val seTidligereVedtakFraLand: Map<LanguageCode, String> = mapOf(
-        BOKMAL to "Se tidligere vedtak fra gjeldende land",
-        ENGLISH to "See previous decisions from the relevant country",
-    )
 
     fun innvilgetPensjon(radnummer: Int, innvilgelse: P1RedigerbarDto.InnvilgetPensjon): Map<String, Any?> {
         return mapOf(
@@ -155,13 +142,6 @@ object P1pdfV2Dto {
             "Where_to_adress_the_request[$radnummer]" to innvilgelse.adresseNyVurdering,
         )
     }
-
-    fun vurderingsperiode(
-        erNorskRad: Boolean,
-        vurderingsperiode: String?
-    ): Any? = if (erNorskRad) {
-        vurderingsperiodeSeksUker
-    } else vurderingsperiode ?: seTidligereVedtakFraLand
 
     fun formatInstitusjon(
         institusjon: P1RedigerbarDto.Institusjon,
@@ -186,15 +166,9 @@ object P1pdfV2Dto {
             institusjon.pin?.let { "PIN: $it" },
             institusjon.saksnummer?.let { if (bokmaal) "Saksnummer: $it" else "Case number: $it" },
 
-            institusjon.vedtaksdato?.let { dato ->
-                try {
-                    val formattertDato =
-                        LocalDate.parse(dato).format(dateFormatter.withLocale(languageCode.locale()))
-                    datoForVedtaketTekst(languageCode, formattertDato)
-                } catch (e: Exception) {
-                    logger.warn("Could not parse vedtaksdato: $dato", e)
-                    datoForVedtaketTekst(languageCode, dato)
-                }
+            institusjon.datoForVedtak?.let { dato ->
+                val formattertDato = dato.format(dateFormatter.withLocale(languageCode.locale()))
+                datoForVedtaketTekst(languageCode, formattertDato)
             },
         )
     }

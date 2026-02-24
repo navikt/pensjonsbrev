@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
+import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.FeilutbetalingAP
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
@@ -87,7 +88,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspensjonSivilstandDto> {
     override val kode = Aldersbrevkoder.Redigerbar.PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = Sakstype.pensjon
 

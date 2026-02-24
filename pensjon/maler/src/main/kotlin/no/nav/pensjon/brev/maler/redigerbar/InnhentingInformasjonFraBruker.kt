@@ -22,6 +22,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -33,7 +34,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjonFraBrukerDto> {
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.INNHENTE_OPPLYSNINGER
+    override val kategori = Brevkategori.INNHENTE_OPPLYSNINGER
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_INNHENTING_INFORMASJON_FRA_BRUKER //MF_000133

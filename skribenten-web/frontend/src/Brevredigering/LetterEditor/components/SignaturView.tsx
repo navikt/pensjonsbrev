@@ -1,15 +1,13 @@
-import { BoxNew, HGrid, VStack } from "@navikt/ds-react";
+import { Box, HGrid, VStack } from "@navikt/ds-react";
 
 import type { Signatur } from "~/types/brevbakerTypes";
 
 const Saksbehandler = ({ navn }: { navn?: string }) =>
   navn ? (
-    <BoxNew as="span" data-cy="brev-editor-saksbehandler">
+    <Box as="span" data-cy="brev-editor-saksbehandler">
       {navn}
-    </BoxNew>
-  ) : (
-    <></>
-  );
+    </Box>
+  ) : null;
 
 export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
   <VStack
@@ -20,10 +18,10 @@ export const SignaturView = ({ signatur }: { signatur: Signatur }) => (
       marginBottom: "48px",
     }}
   >
-    <BoxNew as="span" marginBlock="0 space-24">
+    <Box as="span" marginBlock="space-0 space-24">
       {signatur.hilsenTekst}
-    </BoxNew>
-    <HGrid columns="1fr 1fr" gap="space-8 space-32" marginBlock="0 space-24">
+    </Box>
+    <HGrid columns="1fr 1fr" gap="space-8 space-32" marginBlock="space-0 space-24">
       <Saksbehandler navn={signatur.attesterendeSaksbehandlerNavn} />
       <Saksbehandler navn={signatur.saksbehandlerNavn} />
     </HGrid>

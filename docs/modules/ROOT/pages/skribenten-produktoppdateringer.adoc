@@ -1,5 +1,39 @@
 = Produktoppdateringer
 
+== Januar 2025
+Nytt år, nye muligheter! Vi har fått på plass noen artige greier i løpet av årets første måned! Også har vi naturligvis fikset litt smårusk i samme slengen :-)
+
+=== Nye ting vi har laget
+* Redigering av P1. Vi fikk redigering av brevet P1 med forside ut i produksjon, og det betyr at vi også sa adjø til det siste redigerbare doksysbrevet i Pesys! Veldig gøy!
+* Vise og legge til vedlegg til brev. Det er nå mulig å legge til vedlegg som er tilgjengelig som valgfrie vedlegg. Disse vedleggene kan legges til på alle brev ved behov
+
+=== Ting vi har forbedret
+* Redigering av signaturen til venstre i brev påvirker ikke lenger bredden til signaturen til høyre i brevet
+* Vi har rettet en liten utfordring med - i lenker. URL som inneholder - vil nå fungere hvis den kopieres fra PDF til nettleser
+* Minimering av listen med land som kan velges i ved redigering av P1 slik at kun EØS-land dukker opp
+* Felt 3.5 i P1 manglet muligheten til å velge "ikke oppgitt" i tilfeller der vi ikke vet hva som burde legges inn her
+
+=== Ting vi har fikset
+* Henting av PDF i Skribenten kræsjet hvis det ble lagt inn spesialtegn i tittelen. For eksempen % eller $
+* Feltet 3.8 i P1 var satt som standard til Nav familie- og pensjonsytelser. Den hentes nå dynamisk slik at det legges inn korrekt informasjon basert på sakstype
+* Vi hentet ikke ny PDF når mottaker ble endret i brevbehandler. Det gjør vi nå. Dette var kun et problem i forhåndsvisningen. Brev som ble sendt hadde med endringen av mottaker, men nå kan man altså se dette i forhåndsvisningen i tillegg
+* Vi fjernet tomme rader i P1 redigeringen som kun var estetiske
+* Autolagring kunne stjele fokus fra feltet der underskrift kan redigeres
+* Lagring av redigeringer gjort på P1 i uføresaker fungerte ikke
+* Feltet for vedtaksdato i P1 fikk noen ganger et annet format som vi ikke støttet. Det gjør vi nå
+
+=== Ting vi jobber med
+* Støtte for redigering av enkelt felt vi henter fra Pesys inn i brev i Skribenten. Dette gir malutvikler muligheten til å åpne opp for redigering på enkelte felt i brevmaler der det er relevant. Behovet stammer fra bruk av vilkårsvurderingen i brevene våre på uføretrygd
+* Vi pynter en del på det visuelle uttrykket i Skribenten i disse dager. Noe vil være synlig, andre ting er kanskje litt mer skjult :-)
+* Vi kvitter oss med koblinger til Doksys i Skribenten
+* Vi jobber med å få opp støtte for datadrevet innsikt. I første omgang ved bruk av https://startumami.ansatt.nav.no/[Umami]
+
+=== Kjente problemer og behov vi tenker på
+* Signaturen til første saksbehandler som åpner et brev satt til "Klar for attestering" blir lagt inn, til tross for at dette ikke er den som skal attestere saken og brevet.
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+* Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
+* Datoen i seksjon 5. i P1 oppdateres ikke til dagens dato hvis en endring er lagt inn å lagret tidligere
+
 == Desember 2025
 Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desember. Nye ting er enklere å slippe ut når ferien er overstått og alle er tilbake i 2026 :-)
 

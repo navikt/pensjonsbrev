@@ -77,6 +77,7 @@ import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAld
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerBruktIBeregningenAlderAP2025
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOpplysningerOmAvdoedBruktIBeregning
 import no.nav.pensjon.brev.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
+import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -102,7 +103,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 //000117 i Doksys
 object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedFlyttingMellomLandDto> {
 
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
+    override val kategori = Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.ALDER)
     override val kode = Pesysbrevkoder.Redigerbar.PE_AP_ENDRING_FLYTTING_MELLOM_LAND

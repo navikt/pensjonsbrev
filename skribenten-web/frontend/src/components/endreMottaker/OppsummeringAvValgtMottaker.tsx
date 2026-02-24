@@ -1,5 +1,4 @@
-import { ArrowLeftIcon } from "@navikt/aksel-icons";
-import { PencilIcon } from "@navikt/aksel-icons";
+import { ArrowLeftIcon, PencilIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Table, VStack } from "@navikt/ds-react";
 import type { AxiosError } from "axios";
 
@@ -85,7 +84,7 @@ const OppsummeringAvAdresse = (properties: { type: Nullable<string>; adresse: Ad
 
 function InversedTableRow({ label, value }: { label: string; value: Nullable<string> }) {
   if (!value) {
-    return <></>;
+    return null;
   }
 
   return (

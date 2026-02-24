@@ -19,10 +19,6 @@ repositories {
     mavenCentral()
 }
 
-dependencies {
-    compileOnly(kotlin("stdlib"))
-}
-
 publishing {
     repositories {
         maven {

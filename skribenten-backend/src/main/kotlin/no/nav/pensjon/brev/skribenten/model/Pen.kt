@@ -10,6 +10,9 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
+import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -25,30 +28,20 @@ object Pen {
     fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode]
 
     data class SakSelection(
-        val saksId: Long,
-        val foedselsnr: String,
+        val saksId: SaksId,
+        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
+        val pid: Pid = Pid(foedselsnr.value), // TODO fjern defaultverdi når pen har starta å sende med
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
 
     data class Avtaleland(val navn: String, val kode: String)
 
-    data class BestillDoksysBrevResponse(val journalpostId: String?, val failure: FailureType? = null) {
-        enum class FailureType {
-            ADDRESS_NOT_FOUND,
-            UNAUTHORIZED,
-            PERSON_NOT_FOUND,
-            UNEXPECTED_DOKSYS_ERROR,
-            INTERNAL_SERVICE_CALL_FAILIURE,
-            TPS_CALL_FAILIURE,
-        }
-    }
-
     data class BestillExstreamBrevResponse(
-        val journalpostId: String,
+        val journalpostId: JournalpostId,
     ) {
         data class Error(
             val type: String,
@@ -72,9 +65,9 @@ object Pen {
             val fagomradeKode: String? = null,
             val fagspesifikkgradering: String? = null,
             val fagsystem: String? = null,
-            val gjelder: String? = null,
+            val gjelder: Pid? = null,
             val innhold: String? = null,
-            val journalenhet: String? = null,
+            val journalenhet: EnhetId? = null,
             val kategori: String? = null,
             val kravtype: String? = null,
             val land: String? = null,
@@ -84,7 +77,7 @@ object Pen {
             val saksbehandlernavn: String? = null,
             val saksbehandlerid: String? = null,
             val sensitivt: Boolean? = null,
-            val saksid: String? = null,
+            val saksid: SaksId? = null,
             val tillattelektroniskvarsling: Boolean? = null,
             val tilleggsbeskrivelse: String? = null,
         )
@@ -97,9 +90,9 @@ object Pen {
     data class SendRedigerbartBrevRequest(
         val templateDescription: TemplateDescription.Redigerbar,
         val dokumentDato: LocalDate,
-        val saksId: Long,
+        val saksId: SaksId,
         val brevkode: Brevkode.Redigerbart,
-        val enhetId: String?,
+        val enhetId: EnhetId,
         val pdf: ByteArray,
         val eksternReferanseId: String,
         val mottaker: Mottaker?
@@ -142,7 +135,7 @@ object Pen {
     }
 
     data class BestillBrevResponse(
-        val journalpostId: Long?,
+        val journalpostId: JournalpostId?,
         val error: Error?,
     ) {
         data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
@@ -156,4 +149,26 @@ object Pen {
     }
 
     val sakstypeForLegacybrev = Sakstype("GENRL")
+
+    // TODO: Dette bør flyttes over en annen plass, feks i brevbaker-appen, og serveres derifra
+    private val brevkategoriTilVisningstekst = mapOf(
+        "ETTEROPPGJOER" to "Etteroppgjør",
+        "FEILUTBETALING" to "Feilutbetaling",
+        "FOERSTEGANGSBEHANDLING" to "Førstegangsbehandling",
+        "FRITEKSTBREV" to "Fritekstbrev",
+        "INFORMASJONSBREV" to "Informasjonsbrev",
+        "INNHENTE_OPPLYSNINGER" to "Innhente opplysninger",
+        "KLAGE_OG_ANKE" to "Klage og anke",
+        "LEVEATTEST" to "Leveattest",
+        "OMSORGSOPPTJENING" to "Omsorgsopptjening",
+        "POSTERINGSGRUNNLAG" to "Posteringsgrunnlag",
+        "SLUTTBEHANDLING" to "Sluttbehandling",
+        "UFOEREPENSJON" to "Uførepensjon",
+        "VARSEL" to "Varsel",
+        "VEDTAK_EKSPORT" to "Vedtak - eksport",
+        "VEDTAK_ENDRING_OG_REVURDERING" to "Vedtak - endring og revurdering",
+        "VEDTAK_FLYTTE_MELLOM_LAND" to "Vedtak - flytte mellom land"
+    )
+
+    fun finnVisningstekst(brevkategori: TemplateDescription.IBrevkategori) = brevkategoriTilVisningstekst[brevkategori.kode]
 }

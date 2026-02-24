@@ -42,7 +42,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
 interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
-    val kategori: TemplateDescription.Brevkategori
+    val kategori: TemplateDescription.IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
 
@@ -52,7 +52,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             letterDataClass = template.letterDataType.java.name,
             languages = template.language.all().map { it.toCode() },
             metadata = template.letterMetadata,
-            kategori = kategori,
+            kategori = TemplateDescription.Redigerbar.Brevkategori(kategori.kode),
             brevkontekst = brevkontekst,
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
@@ -61,6 +61,9 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
         beskrivelse.takeIf { it.trim().isNotEmpty() }
             ?.let { Literal(it, setOf(ElementTags.FRITEKST)) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
+
+    fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
+        ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {

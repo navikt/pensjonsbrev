@@ -51,11 +51,11 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
         }
 }
 
-sealed class Expression<out Out> : StableHash {
+sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
+    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -124,7 +124,8 @@ sealed class Expression<out Out> : StableHash {
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
-    ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
+        tags: Set<ElementTags> = value.tags
+    ) : Expression<Out>(tags), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
@@ -136,9 +137,11 @@ sealed class Expression<out Out> : StableHash {
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
-            return value == other.value && operation == other.operation
+            return value == other.value && operation == other.operation && tags == other.tags
         }
-        override fun hashCode() = Objects.hash(value, operation)
+        override fun hashCode() = Objects.hash(value, operation, tags)
+
+        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
@@ -172,7 +175,7 @@ sealed class Expression<out Out> : StableHash {
         val first: Expression<In1>,
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
-    ) : Expression<Out>(), StableHash by StableHash.of(first, second, operation) {
+    ) : Expression<Out>(tags = first.tags + second.tags), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
 
         override fun equals(other: Any?): Boolean {

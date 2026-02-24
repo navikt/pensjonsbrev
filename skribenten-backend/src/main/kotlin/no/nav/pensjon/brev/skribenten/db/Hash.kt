@@ -3,10 +3,10 @@ package no.nav.pensjon.brev.skribenten.db
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import org.apache.commons.codec.binary.Hex
 import org.apache.commons.codec.digest.DigestUtils
-import org.jetbrains.exposed.dao.Entity
-import org.jetbrains.exposed.sql.Column
-import org.jetbrains.exposed.sql.Table
-import org.jetbrains.exposed.sql.columnTransformer
+import org.jetbrains.exposed.v1.core.Column
+import org.jetbrains.exposed.v1.core.Table
+import org.jetbrains.exposed.v1.core.columnTransformer
+import org.jetbrains.exposed.v1.dao.Entity
 import kotlin.reflect.KProperty
 
 fun Column<Edit.Letter>.writeHashTo(hash: Column<Hash<Edit.Letter>>) =
@@ -20,6 +20,9 @@ fun <T> Table.hashColumn(name: String): Column<Hash<T>> =
 value class Hash<T>(private val hex: String) {
     val hexBytes: ByteArray
         get() = Hex.decodeHex(hex)
+
+    override fun toString() = hex
+
     companion object {
         fun <T> read(obj: T): Hash<T> = fromBytes(WithHash.hash(obj))
         fun <T> fromBytes(bytes: ByteArray): Hash<T> = Hash(Hex.encodeHexString(bytes))

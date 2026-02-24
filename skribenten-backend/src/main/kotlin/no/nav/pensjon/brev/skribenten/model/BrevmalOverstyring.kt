@@ -1,11 +1,32 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori
+import no.nav.pensjon.brev.api.model.TemplateDescription
+
 
 object BrevmalOverstyring {
 
-    val kategori: Map<String, Brevkategori> = mapOf(
-        Brevkategori.ETTEROPPGJOER to listOf(
+    // Når BrevmalOverstyring-objektet fjernast, bør vi fjerne denne enum-klassa også
+    private enum class Overstyringskategori(override val kode: String) : TemplateDescription.IBrevkategori {
+        ETTEROPPGJOER("ETTEROPPGJOER"),
+        FOERSTEGANGSBEHANDLING("FOERSTEGANGSBEHANDLING"),
+        VEDTAK_ENDRING_OG_REVURDERING("VEDTAK_ENDRING_OG_REVURDERING"),
+        VEDTAK_FLYTTE_MELLOM_LAND("VEDTAK_FLYTTE_MELLOM_LAND"),
+        SLUTTBEHANDLING("SLUTTBEHANDLING"),
+        INFORMASJONSBREV("INFORMASJONSBREV"),
+        VARSEL("VARSEL"),
+        VEDTAK_EKSPORT("VEDTAK_EKSPORT"),
+        OMSORGSOPPTJENING("OMSORGSOPPTJENING"),
+        UFOEREPENSJON("UFOEREPENSJON"),
+        INNHENTE_OPPLYSNINGER("INNHENTE_OPPLYSNINGER"),
+        LEVEATTEST("LEVEATTEST"),
+        FEILUTBETALING("FEILUTBETALING"),
+        KLAGE_OG_ANKE("KLAGE_OG_ANKE"),
+        POSTERINGSGRUNNLAG("POSTERINGSGRUNNLAG"),
+        FRITEKSTBREV("FRITEKSTBREV")
+    }
+
+    val kategori: Map<String, TemplateDescription.IBrevkategori> = mapOf(
+        Overstyringskategori.ETTEROPPGJOER to listOf(
             "PE_AF_03_101",
             "PE_AF_04_100",
             "PE_AF_04_101",
@@ -20,12 +41,7 @@ object BrevmalOverstyring {
             "PE_UT_04_401",
             "PE_UT_04_402"
         ),
-        Brevkategori.FOERSTEGANGSBEHANDLING to listOf(
-            "AP_AVSL_TIDLUTTAK",
-            "AP_AVSL_UTTAK",
-            "AP_INNV_AVT_MAN",
-            "AP_INNV_MAN",
-            "BP_AVSL_MAN",
+        Overstyringskategori.FOERSTEGANGSBEHANDLING to listOf(
             "PE_AF_04_001",
             "PE_AF_04_010",
             "PE_AF_04_111",
@@ -58,19 +74,7 @@ object BrevmalOverstyring {
             "PE_UT_04_117",
             "PE_UT_04_118"
         ),
-        Brevkategori.VEDTAK_ENDRING_OG_REVURDERING to listOf(
-            "AP_AVSL_ENDR",
-            "AP_AVSL_FT_MAN",
-            "AP_AVSL_GJRETT_MAN",
-            "AP_ENDR_EPS_MAN",
-            "AP_ENDR_FT_MAN",
-            "AP_ENDR_GJRETT_MAN",
-            "AP_ENDR_GRAD_MAN",
-            "AP_ENDR_INST_MAN",
-            "AP_ENDR_OPPTJ_MAN",
-            "AP_ENDR_STANS_MAN",
-            "AP_OPPH_FT_MAN",
-            "BP_OPPH_MAN",
+        Overstyringskategori.VEDTAK_ENDRING_OG_REVURDERING to listOf(
             "PE_AF_04_020",
             "PE_AF_04_114",
             "PE_AP_04_020",
@@ -97,9 +101,7 @@ object BrevmalOverstyring {
             "PE_UT_06_300",
             "PE_UT_07_100"
         ),
-        Brevkategori.VEDTAK_FLYTTE_MELLOM_LAND to listOf(
-            "AP_ENDR_FLYTT_MAN",
-            "AP_STANS_FLYTT_MAN",
+        Overstyringskategori.VEDTAK_FLYTTE_MELLOM_LAND to listOf(
             "PE_AP_04_223",
             "PE_AP_04_224",
             "PE_AP_04_225",
@@ -107,8 +109,7 @@ object BrevmalOverstyring {
             "PE_IY_04_126",
             "PE_IY_04_127"
         ),
-        Brevkategori.SLUTTBEHANDLING to listOf(
-            "INFO_P1",
+        Overstyringskategori.SLUTTBEHANDLING to listOf(
             "PE_AP_04_903",
             "PE_AP_04_904",
             "PE_AP_04_912",
@@ -117,9 +118,7 @@ object BrevmalOverstyring {
             "PE_UT_04_106",
             "PE_UT_04_107"
         ),
-        Brevkategori.INFORMASJONSBREV to listOf(
-            "AP_INFO_STID_MAN",
-            "DOD_INFO_RETT_MAN",
+        Overstyringskategori.INFORMASJONSBREV to listOf(
             "PE_AP_04_922",
             "PE_BP_01_001",
             "PE_BP_01_002",
@@ -135,10 +134,10 @@ object BrevmalOverstyring {
             "PE_UT_04_001",
             "PE_UT_04_004"
         ),
-        Brevkategori.VARSEL to listOf("VARSEL_REVURD", "PE_IY_03_051", "PE_IY_03_179"),
-        Brevkategori.VEDTAK_EKSPORT to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
-        Brevkategori.OMSORGSOPPTJENING to listOf("OMSORG_EGEN_MAN", "PE_IY_04_010", "PE_IY_04_001"),
-        Brevkategori.UFOEREPENSJON to listOf(
+        Overstyringskategori.VARSEL to listOf("PE_IY_03_051", "PE_IY_03_179"),
+        Overstyringskategori.VEDTAK_EKSPORT to listOf("PE_GP_04_022", "PE_UT_04_103", "PE_UT_04_115"),
+        Overstyringskategori.OMSORGSOPPTJENING to listOf("PE_IY_04_010", "PE_IY_04_001"),
+        Overstyringskategori.UFOEREPENSJON to listOf(
             "PE_UP_04_001",
             "PE_UP_04_020",
             "PE_UP_04_010",
@@ -155,7 +154,7 @@ object BrevmalOverstyring {
             "PE_UP_07_010",
             "PE_UT_04_300"
         ),
-        Brevkategori.INNHENTE_OPPLYSNINGER to listOf(
+        Overstyringskategori.INNHENTE_OPPLYSNINGER to listOf(
             "PE_UP_07_100",
             "PE_UT_04_003",
             "HENT_INFO_MAN",
@@ -171,16 +170,13 @@ object BrevmalOverstyring {
             "PE_IY_03_049",
             "PE_GP_01_010"
         ),
-        Brevkategori.LEVEATTEST to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
-        Brevkategori.FEILUTBETALING to listOf(
-            "VARSEL_TILBAKEBET",
-            "VEDTAK_TILBAKEKREV",
-            "VEDTAK_TILBAKEKREV_MIDL",
+        Overstyringskategori.LEVEATTEST to listOf("PE_IY_03_176", "PE_IY_03_177", "PE_IY_05_411", "PE_IY_05_510", "PE_IY_05_410", "PE_IY_05_511"),
+        Overstyringskategori.FEILUTBETALING to listOf(
             "PE_IY_04_060",
             "PE_IY_04_061",
             "PE_IY_05_027"
         ),
-        Brevkategori.KLAGE_OG_ANKE to listOf(
+        Overstyringskategori.KLAGE_OG_ANKE to listOf(
             "PE_IY_03_151",
             "PE_IY_03_152",
             "PE_IY_03_158",
@@ -195,7 +191,7 @@ object BrevmalOverstyring {
             "PE_IY_03_161",
             "PE_IY_03_162"
         ),
-        Brevkategori.POSTERINGSGRUNNLAG to listOf("PE_OK_06_100", "PE_OK_06_101", "PE_OK_06_102"),
-        Brevkategori.FRITEKSTBREV to listOf("PE_IY_03_156", "PE_IY_05_300"),
+        Overstyringskategori.POSTERINGSGRUNNLAG to listOf("PE_OK_06_100", "PE_OK_06_101", "PE_OK_06_102"),
+        Overstyringskategori.FRITEKSTBREV to listOf("PE_IY_03_156", "PE_IY_05_300"),
     ).flatMap { kategori -> kategori.value.map { it to kategori.key } }.toMap()
 }

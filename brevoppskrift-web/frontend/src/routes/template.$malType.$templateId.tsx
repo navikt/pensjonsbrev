@@ -1,7 +1,6 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 
 import type { MalType } from "~/api/brevbaker-api-endpoints";
 import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
@@ -76,7 +75,7 @@ function TemplateExplorer() {
   return (
     <>
       <DataClasses templateModelSpecification={documentation.templateModelSpecification} />
-      <VStack align="center" gap="4">
+      <VStack align="center" gap="space-16">
         <Heading size="medium" spacing>
           Oppskrift for {templateId}
         </Heading>
@@ -99,7 +98,7 @@ function SelectLanguage() {
     <Select
       css={css`
         width: 200px;
-        margin-bottom: var(--a-spacing-8);
+        margin-bottom: var(--ax-space-32);
       `}
       data-cy="select-language"
       label="Språk"
@@ -153,11 +152,9 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
       <div className="expression">
         <code>For hver X i:</code> <ExpressionToText expression={content.items} />
       </div>
-      <>
-        {content.body.map((b, index) => (
-          <ContentOrControlStructureComponent cocs={b} key={index} />
-        ))}
-      </>
+      {content.body.map((b, index) => (
+        <ContentOrControlStructureComponent cocs={b} key={index} />
+      ))}
     </>
   );
 }
@@ -228,7 +225,7 @@ function ContentComponent({ content }: { content: Element }) {
             /* Indent cells that are conditional to an expression */
 
             .expression + .cell {
-              padding-left: var(--a-spacing-4);
+              padding-left: var(--ax-space-16);
             }
 
             .conditional,
@@ -329,18 +326,16 @@ function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E
 
 function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   if (cocs.length === 0) {
-    return <></>;
+    return null;
   }
   return (
     <div className="show-else">
       <div className="expression">
         <code>Else</code>
       </div>
-      <>
-        {cocs.map((a, index) => (
-          <ContentOrControlStructureComponent cocs={a} key={index} />
-        ))}
-      </>
+      {cocs.map((a, index) => (
+        <ContentOrControlStructureComponent cocs={a} key={index} />
+      ))}
     </div>
   );
 }

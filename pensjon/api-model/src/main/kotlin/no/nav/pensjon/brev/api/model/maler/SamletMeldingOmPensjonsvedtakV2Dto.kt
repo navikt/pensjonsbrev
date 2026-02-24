@@ -88,7 +88,8 @@ data class P1RedigerbarDto(
         val institusjonsnavn: String?,
         val pin: String?,
         val saksnummer: String?,
-        val vedtaksdato: String?,
+        val vedtaksdato: String? = null,
+        val datoForVedtak: LocalDate?,
         val land: String?,
     )
 
@@ -102,7 +103,7 @@ data class P1RedigerbarDto(
         val faksnummer: String?,
         val telefonnummer: Telefonnummer?,
         val epost: Epost?,
-        val dato: LocalDate,
+        val dato: LocalDate? = null, // skal slettes
     )
 
     @JvmInline

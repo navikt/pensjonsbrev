@@ -31,7 +31,7 @@ const isoDateStringField = () =>
       const isoDateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!isoDateRegex.test(val)) return false;
       // Check if it's a valid date
-      const date = new Date(val + "T00:00:00");
+      const date = new Date(`${val}T00:00:00`);
       return !Number.isNaN(date.getTime());
     },
     { message: "Ugyldig dato" },
@@ -55,7 +55,7 @@ const p1InstitusjonFormSchema = z.object({
   institusjonsnavn: z.string().max(200, "Institusjonsnavn kan ikke være lengre enn 200 tegn"),
   pin: z.string().max(50, "PIN kan ikke være lengre enn 50 tegn"),
   saksnummer: z.string().max(50, "Saksnummer kan ikke være lengre enn 50 tegn"),
-  vedtaksdato: isoDateStringField(),
+  datoForVedtak: isoDateStringField(),
 });
 
 /* Helper to check if a row has any filled data */
@@ -95,13 +95,6 @@ const p1InnvilgetPensjonFormSchema = z
           code: "custom",
           message: "Pensjonstype må velges",
           path: ["pensjonstype"],
-        });
-      }
-      if (!data.grunnlagInnvilget) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Grunnlag må velges",
-          path: ["grunnlagInnvilget"],
         });
       }
     }

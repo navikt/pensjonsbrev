@@ -3,7 +3,6 @@ import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils"
 describe("Kladd", () => {
   beforeEach(() => {
     cy.setupSakStubs();
-    cy.viewport(1200, 1400);
 
     cy.visit("/saksnummer/123456/brevvelger");
   });
@@ -22,7 +21,10 @@ describe("Kladd", () => {
           status: { type: "Kladd" },
           distribusjonstype: "SENTRALPRINT",
           mottaker: null,
-          avsenderEnhet: null,
+          avsenderEnhet: {
+            enhetNr: "0001",
+            navn: "NAV Familie- og pensjonsytelser",
+          },
           spraak: "EN",
         },
       ]);
@@ -55,7 +57,10 @@ describe("Kladd", () => {
             status: { type: "Kladd" },
             distribusjonstype: "SENTRALPRINT",
             mottaker: null,
-            avsenderEnhet: null,
+            avsenderEnhet: {
+              enhetNr: "0001",
+              navn: "NAV Familie- og pensjonsytelser",
+            },
             spraak: "EN",
           },
         ]);
@@ -97,7 +102,7 @@ describe("Kladd", () => {
 
     cy.wait("@getAlleBrevForSak");
     cy.contains("Informasjonsbrev").click();
-    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(3).click();
+    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(2).click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
@@ -138,7 +143,7 @@ describe("Kladd", () => {
 
     cy.wait("@getAlleBrevForSak");
     cy.contains("Informasjonsbrev").click();
-    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(2).click();
+    cy.get("p:contains('Informasjon om saksbehandlingstid')").eq(1).click();
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 

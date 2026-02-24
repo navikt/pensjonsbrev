@@ -112,7 +112,7 @@ describe("updateContent", () => {
     await user.keyboard("{End} person");
     expect(setEditorState).toHaveBeenCalled();
 
-    const newText = content[0].text + " person";
+    const newText = `${content[0].text} person`;
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
@@ -124,7 +124,7 @@ describe("updateContent", () => {
 
     // The expectation is that the Enter key does not insert a line break
     // in the final text, so we expect only "asd" to be appended.
-    const newText = content[0].text + "asd";
+    const newText = `${content[0].text}asd`;
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );
@@ -134,7 +134,7 @@ describe("updateContent", () => {
     await user.click(screen.getByText(content[0].text));
     await user.keyboard("{End}  asd");
 
-    const newText = content[0].text + "  asd";
+    const newText = `${content[0].text}  asd`;
     expect(setEditorState.mock.lastCall?.[0](editorState)).toEqual(
       Actions.updateContentText(editorState, { blockIndex: 0, contentIndex: 0 }, newText, newText.length),
     );

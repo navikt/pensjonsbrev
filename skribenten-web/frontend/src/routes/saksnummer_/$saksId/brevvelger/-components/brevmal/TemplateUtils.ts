@@ -1,26 +1,8 @@
 import { z } from "zod";
 
-import type { OrderDoksysLetterRequest, OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
+import type { OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
 import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
-
-export const byggDoksysOnSubmitRequest = (argz: {
-  template: LetterMetadata;
-  vedtaksId: Nullable<string>;
-  formValues: {
-    enhetsId: string;
-    spraak: Nullable<SpraakKode>;
-    brevtittel: Nullable<string>;
-  };
-}): OrderDoksysLetterRequest => {
-  return {
-    brevkode: argz.template.id,
-    enhetsId: argz.formValues.enhetsId,
-    //finnes per nå bare 2 brev i doksys, som begge skal ha språk satt
-    spraak: argz.formValues.spraak!,
-    vedtaksId: argz.vedtaksId ?? null,
-  };
-};
 
 export const byggExstreamOnSubmitRequest = (argz: {
   template: LetterMetadata;
@@ -100,11 +82,6 @@ export const createValidationSchema = (template: LetterMetadata) => {
       }
     });
 };
-
-export const brevmalBrevbakerFormSchema = z.object({
-  spraak: z.enum(SpraakKode),
-  enhetsId: z.string(),
-});
 
 //regel er at hvis brukerens foretrukne språk er tilgjengelig, og malen støtter det, skal den være valgt, ellers skal den første språkkoden i malen være valgt
 export const hentDefaultValueForSpråk = (preferredLanguage: Nullable<SpraakKode>, tilgjengeligeSpråk: SpraakKode[]) => {

@@ -26,11 +26,11 @@ object Api {
     data class OpprettBrevRequest(
         val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
-        val avsenderEnhetsId: String?,
+        val avsenderEnhetsId: EnhetId,
         val saksbehandlerValg: SaksbehandlerValg,
         val reserverForRedigering: Boolean?,
         val mottaker: OverstyrtMottaker?,
-        val vedtaksId: Long?,
+        val vedtaksId: VedtaksId?,
     )
 
     data class OppdaterBrevRequest(
@@ -50,10 +50,11 @@ object Api {
     data class OppdaterKlarStatusRequest(val klar: Boolean)
     data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
 
     data class BrevInfo(
-        val id: Long,
-        val saksId: Long,
+        val id: BrevId,
+        val saksId: SaksId,
         val opprettetAv: NavAnsatt,
         val opprettet: Instant,
         val sistredigertAv: NavAnsatt,
@@ -64,10 +65,10 @@ object Api {
         val status: BrevStatus,
         val distribusjonstype: Distribusjonstype,
         val mottaker: OverstyrtMottaker?,
-        val avsenderEnhet: NavEnhet?,
+        val avsenderEnhet: NavEnhet,
         val spraak: SpraakKode,
-        val journalpostId: Long?,
-        val vedtaksId: Long?,
+        val journalpostId: JournalpostId?,
+        val vedtaksId: VedtaksId?,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
@@ -180,41 +181,28 @@ object Api {
         val redigerbarBrevtittel: Boolean,
     )
 
-    data class BestillDoksysBrevRequest(
-        val brevkode: String,
-        val spraak: SpraakKode,
-        val vedtaksId: Long? = null,
-        val enhetsId: String,
-    )
-
     data class BestillExstreamBrevRequest(
         val brevkode: String,
         val spraak: SpraakKode,
-        val vedtaksId: Long? = null,
+        val vedtaksId: VedtaksId? = null,
         val idTSSEkstern: String? = null,
         val brevtittel: String? = null,
-        val enhetsId: String,
+        val enhetsId: EnhetId,
     )
 
     data class BestillEblankettRequest(
         val brevkode: String,
         val landkode: String,
         val mottakerText: String,
-        val enhetsId: String,
+        val enhetsId: EnhetId,
     )
 
     data class BestillOgRedigerBrevResponse(
         val url: String? = null,
-        val journalpostId: String? = null,
+        val journalpostId: JournalpostId? = null,
         val failureType: FailureType? = null,
     ) {
         enum class FailureType {
-            DOKSYS_BESTILLING_ADDRESS_NOT_FOUND,
-            DOKSYS_BESTILLING_INTERNAL_SERVICE_CALL_FAILIURE,
-            DOKSYS_BESTILLING_PERSON_NOT_FOUND,
-            DOKSYS_BESTILLING_TPS_CALL_FAILIURE,
-            DOKSYS_BESTILLING_UNAUTHORIZED,
-            DOKSYS_BESTILLING_UNEXPECTED_DOKSYS_ERROR,
             EXSTREAM_BESTILLING_MANGLER_OBLIGATORISK_INPUT,
             EXSTREAM_REDIGERING_GENERELL,
             FERDIGSTILLING_TIMEOUT,

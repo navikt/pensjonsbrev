@@ -1,8 +1,5 @@
 {
   "adresseString": "Mauråsveien 29, 4844 ARENDAL",
-  "adresselinjer": [
-    "Mauråsveien 29",
-    "4844 ARENDAL"
-  ],
+  "adresselinjer": ["Mauråsveien 29", "4844 ARENDAL"],
   "type": "REGOPPSLAG_ADRESSE"
 }

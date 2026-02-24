@@ -1,14 +1,14 @@
 [
-    {
-        "kode": "NO",
-        "navn": "Norge"
-    },
-    {
-        "kode": "SE",
-        "navn": "Sverige"
-    },
-    {
-        "kode": "DK",
-        "navn": "Danmark"
-    }
+  {
+    "kode": "NO",
+    "navn": "Norge"
+  },
+  {
+    "kode": "SE",
+    "navn": "Sverige"
+  },
+  {
+    "kode": "DK",
+    "navn": "Danmark"
+  }
 ]

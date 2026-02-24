@@ -17,11 +17,11 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       if (host.dataset.unified === "1") return;
       host.dataset.unified = "1";
       host.classList.add("is-drag-selecting");
-      host.querySelectorAll<HTMLElement>("[contenteditable]").forEach((el) => {
+      for (const el of host.querySelectorAll<HTMLElement>("[contenteditable]")) {
         const orig = el.getAttribute("contenteditable") ?? "true";
         el.setAttribute("data-ce-orig", orig);
         el.removeAttribute("contenteditable");
-      });
+      }
     };
 
     // Restore contentEditable attributes to original values
@@ -30,11 +30,11 @@ export function useDragSelectUnifier<T extends HTMLElement>(host: T | null, enab
       if (host.dataset.unified !== "1") return;
       host.classList.remove("is-drag-selecting");
       delete host.dataset.unified;
-      host.querySelectorAll<HTMLElement>("[data-ce-orig]").forEach((el) => {
+      for (const el of host.querySelectorAll<HTMLElement>("[data-ce-orig]")) {
         const orig = el.getAttribute("data-ce-orig");
         if (orig != null) el.setAttribute("contenteditable", orig);
         el.removeAttribute("data-ce-orig");
-      });
+      }
     };
 
     let pointerDownInside = false;

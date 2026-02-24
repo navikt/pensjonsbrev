@@ -16,18 +16,15 @@ repositories {
 }
 
 dependencies {
-    compileOnly(kotlin("stdlib"))
     implementation(project(":brevbaker:core"))
     ksp(project(":brevbaker:template-model-generator"))
-
-
-    implementation(libs.jackson.datatype.jsr310) {
-        because("we require deserialization/serialization of java.time.LocalDate")
+    implementation(libs.jackson.annotations) {
+        because("Konverteringa mellom vår modell og slate-modellen i Slatemodell.kt")
     }
 
-    // JUnit 5
     testImplementation(libs.bundles.junit)
 
+    testImplementation(libs.ktor.serialization.jackson)
     testImplementation(testFixtures(project(":brevbaker:core")))
     testImplementation(libs.ktor.server.callId)
 }

@@ -100,16 +100,6 @@
     "redigerbarBrevtittel": false
   },
   {
-    "name": "Informasjon om saksbehandlingstid",
-    "id": "AP_INFO_STID_MAN",
-    "brevsystem": "DOKSYS",
-    "spraak": ["NB", "NN", "EN"],
-    "brevkategori": "Informasjonsbrev",
-    "dokumentkategoriCode": "B",
-    "redigerbart": true,
-    "redigerbarBrevtittel": false
-  },
-  {
     "name": "Orientering om saksbehandlingstid  (bosatt avtaleland)",
     "id": "PE_IY_03_163",
     "brevsystem": "EXSTREAM",
@@ -276,16 +266,6 @@
     "spraak": ["EN", "NB"],
     "brevkategori": "Innhente opplysninger",
     "dokumentkategoriCode": "B",
-    "redigerbart": true,
-    "redigerbarBrevtittel": false
-  },
-  {
-    "name": "Informasjon om gjenlevenderettigheter",
-    "id": "DOD_INFO_RETT_MAN",
-    "brevsystem": "DOKSYS",
-    "spraak": ["NB", "NN", "EN"],
-    "brevkategori": "Informasjonsbrev",
-    "dokumentkategoriCode": "IB",
     "redigerbart": true,
     "redigerbarBrevtittel": false
   },

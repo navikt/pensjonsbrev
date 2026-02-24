@@ -17,6 +17,7 @@ const EditorTableTools = () => {
     <>
       <HStack gap="space-8">
         <Button
+          data-color="neutral"
           data-cy="toolbar-table-btn"
           disabled={freeze || editorState.focus.blockIndex < 0}
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
@@ -26,10 +27,9 @@ const EditorTableTools = () => {
           }}
           size="small"
           type="button"
-          variant="tertiary-neutral"
+          variant="tertiary"
         />
       </HStack>
-
       <InsertTableDialog
         onCancel={() => setIsInsertTableDialogOpen(false)}
         onInsert={(columnCount, rowCount) => {

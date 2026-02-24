@@ -41,10 +41,11 @@ const TilbakestillMalModal = (props: {
           </Button>
 
           <Button
+            data-color="danger"
             loading={tilbakestillMutation.isPending}
             onClick={() => tilbakestillMutation.mutate()}
             type="button"
-            variant="danger"
+            variant="primary"
           >
             Ja, tilbakestill malen
           </Button>

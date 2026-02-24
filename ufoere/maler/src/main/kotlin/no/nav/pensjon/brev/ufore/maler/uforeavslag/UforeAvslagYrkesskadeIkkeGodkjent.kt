@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDto
+import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -20,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTA
 object UforeAvslagYrkesskadeIkkeGodkjent : RedigerbarTemplate<UforeAvslagUtenVurderingDto> {
 
     override val kode = UT_AVSLAG_YRKESSKADE_IKKE_GODKJENT
-    override val kategori = TemplateDescription.Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 

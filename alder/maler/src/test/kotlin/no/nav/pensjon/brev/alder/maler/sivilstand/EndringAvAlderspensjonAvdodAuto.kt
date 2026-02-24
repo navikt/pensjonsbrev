@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
-import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgPlikterDto
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.BorMedSivilstand
@@ -18,7 +16,8 @@ fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto
         totalPensjon = Kroner(6000000),
         regelverkType = AlderspensjonRegelverkType.AP1967,
         uttaksgrad = 50,
-        minstenivaIndividuellInnvilget = true
+        minstenivaIndividuellInnvilget = true,
+        innvilgetFor67 = true
     ),
     beregnetPensjonPerManed = EndringAvAlderspensjonAvdodAutoDto.BeregnetPensjonPerManed(
         antallBeregningsperioderPensjon = 2,
@@ -29,7 +28,8 @@ fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto
         sivilstandAvdoed = SivilstandAvdoed.SAMBOER3_2,
         ektefelletilleggOpphort = true,
         gjenlevendesAlder = 68,
-        avdodNavn = "Test Testio"
+        avdodNavn = "Test Testio",
+        avdodHarYtelse = true
     ),
     institusjonsoppholdVedVirk = Institusjon.FENGSEL,
     institusjonsoppholdGjeldende = Institusjon.FENGSEL,
@@ -40,7 +40,5 @@ fun createEndringAvAlderspensjonAvdodAuto() = EndringAvAlderspensjonAvdodAutoDto
     orienteringOmRettigheterOgPlikterDto = createOrienteringOmRettigheterOgPlikterDto(),
     maanedligPensjonFoerSkattDto = createMaanedligPensjonFoerSkatt(),
     maanedligPensjonFoerSkattAP2025Dto = createMaanedligPensjonFoerSkattAP2025Dto(),
-    opplysningerBruktIBeregningenAlderDto = createOpplysningerBruktIBeregningAlderDto(),
-    opplysningerOmAvdoedBruktIBeregningDto = createOpplysningerOmAvdoedBruktIBeregningDto(),
-    informasjonOmMedlemskap = null,
+    borINorge = true,
 )

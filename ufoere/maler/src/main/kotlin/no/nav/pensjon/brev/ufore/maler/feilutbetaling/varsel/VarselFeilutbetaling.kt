@@ -2,8 +2,11 @@ package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LocalizedFormatter
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkategori.FEILUTBETALING
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
+import no.nav.pensjon.brev.ufore.maler.fraser.Constants
+import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -15,19 +18,16 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetaling
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.SaksbehandlervalgSelectors.rentetillegg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.pesysData
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysDataSelectors.feilutbetaltBrutto
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
-import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
     override val featureToggle = FeatureToggles.feilutbetaling.toggle
 
-    override val kode = Ufoerebrevkoder.Redigerbar.UT_VARSEL_FEILUTBETALING
-    override val kategori: TemplateDescription.Brevkategori = TemplateDescription.Brevkategori.FEILUTBETALING
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
+    override val kode = UT_VARSEL_FEILUTBETALING
+    override val kategori = FEILUTBETALING
+    override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
+    override val sakstyper: Set<Sakstype> = setOf(UFOREP)
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
