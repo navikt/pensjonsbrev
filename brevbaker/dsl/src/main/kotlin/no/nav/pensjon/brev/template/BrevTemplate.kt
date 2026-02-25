@@ -12,6 +12,9 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -57,13 +60,25 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
 
-    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Expression<String> =
+    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Fritekst =
         beskrivelse.takeIf { it.trim().isNotEmpty() }
-            ?.let { Literal(it, setOf(ElementTags.FRITEKST)) }
+            ?.let { Fritekst(it) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
     fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
         ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
+
+    fun TemplateGlobalScope<LetterData>.brevdataEllerFritekst(tekst: Expression<String?>, fritekst: String): BrevdataEllerFritekst = BrevdataEllerFritekst(tekst, fritekst(fritekst))
+}
+
+@JvmInline
+value class Fritekst(val str: String) {
+    fun expr() = Literal(str, tags = setOf(ElementTags.FRITEKST))
+    override fun toString(): String = throw PreventToStringForExpressionException()
+}
+
+class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Fritekst) {
+    fun expr() = if (tekst.notNull() == true.expr()) tekst.ifNull("") else fritekst.expr()
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {
