@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 import no.nav.pensjon.brevbaker.api.model.ElementTags
@@ -73,12 +73,12 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
 
 @JvmInline
 value class Fritekst(val str: String) {
-    fun expr() = Literal(str, tags = setOf(ElementTags.FRITEKST))
+    fun somExpression() = Literal(str, tags = setOf(ElementTags.FRITEKST))
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Fritekst) {
-    fun expr() = if (tekst.notNull() == true.expr()) tekst.ifNull("") else fritekst.expr()
+    fun somExpression(): Expression<String> = ifElse(tekst.notNull(), tekst, fritekst.somExpression())
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {

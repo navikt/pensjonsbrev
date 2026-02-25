@@ -254,9 +254,9 @@ public final class no/nav/pensjon/brev/template/BrevTemplateKt {
 
 public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst {
 	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun expr ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getFritekst-3xGB-Uc ()Ljava/lang/String;
 	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract class no/nav/pensjon/brev/template/ContentOrControlStructure : no/nav/pensjon/brev/template/StableHash {
@@ -598,10 +598,10 @@ public final class no/nav/pensjon/brev/template/Fritekst {
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public static final fun expr-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$Literal;
 	public final fun getStr ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
+	public static final fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$Literal;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
