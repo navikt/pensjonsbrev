@@ -1,7 +1,7 @@
 {
   "sak": {
     "saksId": 123456,
-    "foedselsnr": "09417320595",
+    "pid": "09417320595",
     "foedselsdato": [1973, 1, 9],
     "navn": { "fornavn": "Tydelig", "etternavn": "Bakke" },
     "sakType": "UFOREP",
