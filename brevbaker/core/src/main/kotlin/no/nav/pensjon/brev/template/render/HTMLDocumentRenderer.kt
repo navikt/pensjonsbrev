@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
@@ -174,11 +175,13 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun Tag.renderTextContentWithoutStyle(element: ParagraphContent.Text) {
         when (element) {
-            is ParagraphContent.Text.Variable -> text(element.text)
-            is ParagraphContent.Text.Literal -> text(element.text)
+            is ParagraphContent.Text.Variable -> text(formaterTekst(element.text, element.tags))
+            is ParagraphContent.Text.Literal -> text(formaterTekst(element.text, element.tags))
             is ParagraphContent.Text.NewLine -> br
         }
     }
+
+    private fun formaterTekst(tekst: String, tags: Set<ElementTags>) = if (tags.contains(ElementTags.FRITEKST)) "[$tekst]" else tekst
 
     private fun FlowContent.renderForm(element: ParagraphContent.Form) {
         when (element) {
