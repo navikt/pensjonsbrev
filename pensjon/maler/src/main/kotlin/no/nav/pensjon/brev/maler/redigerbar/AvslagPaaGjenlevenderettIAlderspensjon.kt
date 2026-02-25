@@ -163,7 +163,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                             "angi antall dager/måneder"
                         ) + "." }
                     )
-                    eval(fritekst(" eller "))
+                    text(
+                        bokmal { + fritekst(" eller ") },
+                        nynorsk { + fritekst(" eller ") },
+                        english { + fritekst(" eller ") }
+                    )
                     text(
                         bokmal { + " I følge opplysningene våre har " + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. " },
                         nynorsk { + " Ifølgje opplysningane våre har " + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. " },

@@ -134,11 +134,19 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                         english { + "We have received information from foreign national insurance authorities regarding your accumulated rights in " }
                     )
                     showIf(landNavn.isNull()) {
-                        eval(fritekst("LANDNAVN"))
+                        text(
+                            bokmal { + fritekst("LANDNAVN") },
+                            nynorsk { + fritekst("LANDNAVN") },
+                            english { + fritekst("LANDNAVN") }
+                        )
                     }
                     ifNotNull(landNavn) { land ->
                         showIf(land.isEmpty()) {
-                            eval(fritekst("LANDNAVN"))
+                            text(
+                                bokmal { + fritekst("LANDNAVN") },
+                                nynorsk { + fritekst("LANDNAVN") },
+                                english { + fritekst("LANDNAVN") }
+                            )
                         }.orShow {
                             eval(land.format())
                         }

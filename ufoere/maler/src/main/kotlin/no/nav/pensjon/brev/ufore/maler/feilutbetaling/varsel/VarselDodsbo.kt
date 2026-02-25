@@ -42,32 +42,29 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             brevtype = INFORMASJONSBREV
         )
     ) {
-        val dato = fritekst ("dato")
-        val navn = fritekst ("navn")
-        val kilde = fritekst ("kilde")
         val bruttoFeilutbetalt = pesysData.feilutbetaltBrutto.format(CurrencyFormat)
 
 
         title {
             text(
-                bokmal { +"Vi vurderer om dødsbo etter " + navn + " må betale tilbake uføretrygd " },
+                bokmal { +"Vi vurderer om dødsbo etter " + fritekst("navn") + " må betale tilbake uføretrygd " },
                 nynorsk { + "Vi vurderer om dødsbu etter NAVN må betale tilbake uføretrygd "}
             )
         }
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mye i uføretrygd fra og med " +
-                        dato + " til og med " + dato + ". Grunnen til det, er at vi har fått opplysninger om at " + navn + " døde " + dato + ". " },
-                    nynorsk { + "Vi vurderer at " + navn + " kan ha fått utbetalt for mykje i uføretrygd frå og med " +
-                            dato + " til og med " + dato + ". Grunnen til det er at vi har fått opplysningar om at " + navn + " døydde " + dato + ". "}
+                    bokmal { + "Vi vurderer at " + fritekst("navn") + " kan ha fått utbetalt for mye i uføretrygd fra og med " +
+                        fritekst("dato") + " til og med " + fritekst("dato") + ". Grunnen til det, er at vi har fått opplysninger om at " + fritekst("navn") + " døde " + fritekst("dato") + ". " },
+                    nynorsk { + "Vi vurderer at " + fritekst("navn") + " kan ha fått utbetalt for mykje i uføretrygd frå og med " +
+                            fritekst("dato") + " til og med " + fritekst("dato") + ". Grunnen til det er at vi har fått opplysningar om at " + fritekst("navn") + " døydde " + fritekst("dato") + ". "}
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "I vedtaket av " + dato + ", informerte vi om at dødsfallet kan ha ført til at " + navn +
+                    bokmal { + "I vedtaket av " + fritekst("dato") + ", informerte vi om at dødsfallet kan ha ført til at " + fritekst("navn") +
                         " kan ha fått utbetalt for mye uføretrygd tilbake i tid. " },
-                    nynorsk { + "I vedtaket av " + dato + " informerte vi om at dødsfallet kan ha ført til at " + navn +
+                    nynorsk { + "I vedtaket av " + fritekst("dato") + " informerte vi om at dødsfallet kan ha ført til at " + fritekst("navn") +
                             " kan ha fått utbetalt for mykje uføretrygd tilbake i tid. "}
                     )
             }
@@ -94,21 +91,21 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             paragraph {
                 text(
                     bokmal { + "Dette er bare et varsel om at vi vurderer å kreve tilbake det feilutbetalte beløpet. " +
-                        "Dødsboet får et vedtak på vegne av " + navn + " når saken er ferdig behandlet. " },
+                        "Dødsboet får et vedtak på vegne av " + fritekst("navn") + " når saken er ferdig behandlet. " },
                     nynorsk { + "Dette er berre eit varsel om at vi vurderer å krevje tilbake det feilutbetalte beløpet. " +
-                            "Dødsbuet får eit vedtak på vegner av " + navn + " når saka er ferdig behandla. "}
+                            "Dødsbuet får eit vedtak på vegner av " + fritekst("navn") + " når saka er ferdig behandla. "}
                 )
             }
             title1 {
                 text(
-                    bokmal { + "Derfor mener vi " + navn + " har fått utbetalt for mye " },
-                    nynorsk { + "Derfor meiner vi " + navn + " har fått utbetalt for mykje "}
+                    bokmal { + "Derfor mener vi " + fritekst("navn") + " har fått utbetalt for mye " },
+                    nynorsk { + "Derfor meiner vi " + fritekst("navn") + " har fått utbetalt for mykje "}
                     )
             }
             paragraph {
                 text(
-                    bokmal { + "Vi har den " + dato + " fått opplysninger fra " + kilde + " om at " + navn + " døde " + dato + ". " },
-                    nynorsk { + "Vi har den " + dato + " fått opplysningar frå " + kilde + " om at " + navn + " døydde " + dato + ". "}
+                    bokmal { + "Vi har den " + fritekst("dato") + " fått opplysninger fra " + fritekst("kilde") + " om at " + fritekst("navn") + " døde " + fritekst("dato") + ". " },
+                    nynorsk { + "Vi har den " + fritekst("dato") + " fått opplysningar frå " + fritekst("kilde") + " om at " + fritekst("navn") + " døydde " + fritekst("dato") + ". "}
                     )
             }
             paragraph {
@@ -119,9 +116,9 @@ object VarselDodsbo: RedigerbarTemplate<FeilutbetalingVarselDodsboDto> {
             }
             paragraph {
                 text(
-                    bokmal { + navn + " fikk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
+                    bokmal { + fritekst("navn") + " fikk utbetalt uføretrygd i perioden " + fritekst("dato") + " til " + fritekst("dato") + " etter at dødsfallet hadde skjedd. " +
                         "Utbetalingen skulle vært stanset i denne perioden, og derfor har det skjedd en feilutbetaling på " + bruttoFeilutbetalt + " kroner.  " },
-                    nynorsk { + navn + " fekk utbetalt uføretrygd i perioden " + dato + " til " + dato + " etter at dødsfallet hadde skjedd. " +
+                    nynorsk { + fritekst("navn") + " fekk utbetalt uføretrygd i perioden " + fritekst("dato") + " til " + fritekst("dato") + " etter at dødsfallet hadde skjedd. " +
                             "Utbetalinga skulle vore stansa i denne perioden, og derfor har det skjedd ei feilutbetaling på " + bruttoFeilutbetalt + " kroner. "}
                     )
             }
