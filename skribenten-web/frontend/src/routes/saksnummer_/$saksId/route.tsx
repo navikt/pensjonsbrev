@@ -67,7 +67,7 @@ function SakLayout() {
 
 function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const sak = sakContext.sak;
-  const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
+  const { datoDel, personnummerDel } = splitPid(sak.pid);
   const { data: brukerStatus } = useQuery(getBrukerStatus(sak.saksId.toString()));
 
   const dateOfBirth = useMemo(() => {
@@ -117,7 +117,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       >
         <HStack>
           <BodyShort size="small">
-            {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
+            {datoDel} {personnummerDel} <CopyButton copyText={sak.pid} size="small" variant="action" />
           </BodyShort>
           <BodyShort size="small">
             {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
@@ -176,9 +176,9 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   );
 }
 
-const splitFødselsnummer = (fødselsnummer: string) => {
-  const fødselsdato = fødselsnummer.slice(0, 6);
-  const personnummer = fødselsnummer.slice(6);
+const splitPid = (pid: string) => {
+  const datoDel = pid.slice(0, 6);
+  const personnummerDel = pid.slice(6);
 
-  return { fødselsdato, personnummer };
+  return { datoDel, personnummerDel };
 };
