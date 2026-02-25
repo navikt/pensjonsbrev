@@ -59,6 +59,7 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel2
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
@@ -134,7 +135,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         )
     ) {
         val afpPrivatResultatFellesKontoret = pesysData.afpPrivatResultatFellesKontoret.ifNull(then = false)
-        val avdodNavn = pesysData.avdodNavn.ifNull(fritekst("Avdødes navn"))
+        val avdodNavn = brevdataEllerFritekst(pesysData.avdodNavn, "Avdødes navn")
         val avtalelandNavn = pesysData.avtalelandNavn
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
@@ -146,7 +147,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
         val erEOSLand = pesysData.erEOSLand
         val erEksportberegnet = pesysData.alderspensjonVedVirk.erEksportberegnet
         val erForstegangsbehandlingNorgeUtland = pesysData.erForstegangsbehandletNorgeUtland
-        val faktiskBostedsland = pesysData.faktiskBostedsland.ifNull(fritekst("Bostedsland"))
+        val faktiskBostedsland = brevdataEllerFritekst(pesysData.faktiskBostedsland, "Bostedsland")
         val fullTrygdetid = pesysData.fullTrygdtid
         val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
         val garantitilleggInnvilget = pesysData.alderspensjonVedVirk.garantitilleggInnvilget
@@ -406,8 +407,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel(
-                    avtalelandNavn.ifNull(fritekst("avtaleland")),
+                BilateralAvtaleHjemmel2(
+                    brevdataEllerFritekst(avtalelandNavn, "avtaleland"),
                     eksportTrygdeavtaleAvtaleland,
                     erEOSLand,
                     harOppfyltVedSammenlegging

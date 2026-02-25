@@ -87,9 +87,9 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                     english { + "We have received notice that you have moved to " }
                 )
                 text(
-                    bokmal { + pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")) },
-                    nynorsk { + pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")) },
-                    english { + pesysData.brukersBostedsland.ifNull(fritekst("BOSTEDSLAND")) }
+                    bokmal { + brevdataEllerFritekst(pesysData.brukersBostedsland, "BOSTEDSLAND") },
+                    nynorsk { + brevdataEllerFritekst(pesysData.brukersBostedsland, "BOSTEDSLAND") },
+                    english { + brevdataEllerFritekst(pesysData.brukersBostedsland, "BOSTEDSLAND") }
                 )
                 text(
                     bokmal { + "." },

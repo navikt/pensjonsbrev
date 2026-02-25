@@ -70,7 +70,6 @@ import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
@@ -230,7 +229,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         nynorsk { + "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i " },
                         english { + "To be eligible for your retirement pension with survivor`s rights when you live in " }
                     )
-                    eval(pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND")))
+                    text (
+                        bokmal { + brevdataEllerFritekst(pesysData.bruker.faktiskBostedsland, "BOSTEDSLAND") },
+                        nynorsk { + brevdataEllerFritekst(pesysData.bruker.faktiskBostedsland, "BOSTEDSLAND") },
+                        english { + brevdataEllerFritekst(pesysData.bruker.faktiskBostedsland, "BOSTEDSLAND") }
+                    )
                     text(
                         bokmal { + ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon." },
                         nynorsk { + ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon." },

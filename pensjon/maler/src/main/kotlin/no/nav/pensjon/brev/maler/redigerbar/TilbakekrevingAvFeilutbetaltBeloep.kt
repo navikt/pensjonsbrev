@@ -53,7 +53,7 @@ object TilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<TilbakekrevingAvF
         val sluttPeriodeForTilbakekreving = pesysData.sluttPeriodeForTilbakekreving
         val startPeriodeForTilbakekreving = pesysData.startPeriodeForTilbakekreving
         val sumTilInnkrevingTotalBeloep = pesysData.sumTilInnkrevingTotalBeloep
-        val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
+        val sakstype = brevdataEllerFritekst(pesysData.sakstype.format(), "ytelse")
 
         title {
             text(

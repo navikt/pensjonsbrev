@@ -49,7 +49,7 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
             )
         }
         outline {
-            val sakstype = pesysData.sakstype.format().ifNull(fritekst("sakstype"))
+            val sakstype = brevdataEllerFritekst(pesysData.sakstype.format(), "sakstype")
 
             title1 {
                 text(
@@ -62,7 +62,10 @@ object SamletMeldingOmPensjonsvedtakV2 : RedigerbarTemplate<SamletMeldingOmPensj
                     bokmal { +"I forbindelse med din søknad om " },
                     english { +"Your application for " }
                 )
-                eval(sakstype)
+                text(
+                    bokmal { + sakstype },
+                    english { + sakstype }
+                )
                 text(
                     bokmal { +" fra EUs og EØS medlemsland legger vi ved" },
                     english { +" from EU/EEA member countries, we enclose:" }

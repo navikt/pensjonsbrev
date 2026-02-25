@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -39,7 +38,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
             brevtype = INFORMASJONSBREV
         )
     ) {
-        val sakstype = pesysData.sakstype.format().ifNull(fritekst("ytelse"))
+        val sakstype = brevdataEllerFritekst(pesysData.sakstype.format(), "ytelse")
         title {
             text(
                 bokmal { +"Vi vurderer om du må betale tilbake " + sakstype },

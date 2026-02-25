@@ -82,7 +82,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
     ) {
         val afpPrivatResultatFellesKontoret = pesysData.safe { afpPrivatResultatFellesKontoret }.ifNull(false)
         val antallLandVilkarsprovd = pesysData.safe { vedtaksresultatUtland }.safe { antallLandVilkarsprovd }.ifNull(then = (0))
-        val avtalelandNavn = pesysData.safe { avtalelandNavn }.ifNull(then = fritekst("AVTALELAND"))
+        val avtalelandNavn = brevdataEllerFritekst(pesysData.safe { avtalelandNavn }, "AVTALELAND")
         val borIAvtaleland = pesysData.borIAvtaleland
         val borINorge = pesysData.borINorge
         val eksportTrygdeavtaleAvtaleland =
@@ -252,7 +252,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel(
+                BilateralAvtaleHjemmel2(
                     avtalelandNavn = avtalelandNavn,
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,

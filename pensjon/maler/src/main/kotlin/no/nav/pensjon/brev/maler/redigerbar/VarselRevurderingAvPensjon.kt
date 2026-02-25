@@ -46,7 +46,7 @@ object VarselRevurderingAvPensjon : RedigerbarTemplate<VarselRevurderingAvPensjo
         )
     ) {
         val sakstype = pesysData.sakstype
-        val sakstypeText = sakstype.format().ifNull(fritekst("ytelse"))
+        val sakstypeText = brevdataEllerFritekst(sakstype.format(), "ytelse")
         title {
             showIf(saksbehandlerValg.tittelValg.isOneOf(VarselRevurderingAvPensjonDto.SaksbehandlerValg.TittelValg.RevurderingAvRett)) {
                 text(

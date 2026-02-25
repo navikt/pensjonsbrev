@@ -121,7 +121,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
         }
 
         outline {
-            val bostedsland = pesysData.safe { bruker.faktiskBostedsland }.ifNull(fritekst("bostedsland"))
+            val bostedsland = brevdataEllerFritekst(pesysData.safe { bruker.faktiskBostedsland }, "bostedsland")
             val garantipensjonInnvilget = pesysData.alderspensjonVedVirk.garantipensjonInnvilget
             val pensjonstilleggInnvilget = pesysData.alderspensjonVedVirk.pensjonstilleggInnvilget
             val minstenivaaIndividuellInnvilget = pesysData.alderspensjonVedVirk.minstenivaaIndividuellInnvilget
