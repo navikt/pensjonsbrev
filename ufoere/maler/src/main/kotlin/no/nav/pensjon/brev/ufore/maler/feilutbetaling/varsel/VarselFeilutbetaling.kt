@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel
 
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.ALLE
+import no.nav.pensjon.brev.api.model.TemplateDescription.Brevkontekst.VEDTAK
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -28,7 +28,7 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_VARSEL_FEILUTBETALING
     override val kategori = Brevkategori.FEILUTBETALING
-    override val brevkontekst: TemplateDescription.Brevkontekst = ALLE
+    override val brevkontekst: TemplateDescription.Brevkontekst = VEDTAK
     override val sakstyper: Set<Sakstype> = setOf(Sakstype.UFOREP)
 
     override val template = createTemplate(
