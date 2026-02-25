@@ -91,7 +91,6 @@ abstract class BrevredigeringTest {
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
-        navansattService = navAnsattService,
         penService = penService,
     )
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
