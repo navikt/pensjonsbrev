@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.PE
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 data class EndringUfoeretrygdDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
@@ -13,6 +14,8 @@ data class EndringUfoeretrygdDto(
     ) : RedigerbarBrevdata<EmptySaksbehandlerValg, EndringUfoeretrygdDto.PesysData> {
     data class PesysData(
         val pe: PE,
+
+        val oifuVedVirkningstidspunkt: Kroner?,
 
         val opphortEktefelletillegg: Boolean,
         val opphortBarnetillegg: Boolean,
