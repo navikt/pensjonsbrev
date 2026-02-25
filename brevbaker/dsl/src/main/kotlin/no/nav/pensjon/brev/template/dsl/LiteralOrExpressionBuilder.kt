@@ -34,9 +34,9 @@ class LiteralOrExpressionBuilder internal constructor(private val quotation: Quo
 
     operator fun String.unaryPlus() = previous?.let { it + this } ?: LiteralWrapper(this).also { previous = it }
 
-    operator fun Fritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.expr())
+    operator fun Fritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
 
-    operator fun BrevdataEllerFritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.expr())
+    operator fun BrevdataEllerFritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
 
     operator fun LiteralOrExpression.plus(other: StringExpression) = when(this) {
         is ExpressionWrapper -> ExpressionWrapper(expr + other)
@@ -49,13 +49,13 @@ class LiteralOrExpressionBuilder internal constructor(private val quotation: Quo
     }.also { previous = it }
 
     operator fun LiteralOrExpression.plus(other: Fritekst) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other.expr())
-        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.expr())
+        is ExpressionWrapper -> ExpressionWrapper(expr + other.somExpression())
+        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.somExpression())
     }.also { previous = it }
 
     operator fun LiteralOrExpression.plus(other: BrevdataEllerFritekst) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other.expr())
-        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.expr())
+        is ExpressionWrapper -> ExpressionWrapper(expr + other.somExpression())
+        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.somExpression())
     }.also { previous = it }
 
     @JvmName("quotedStr")
