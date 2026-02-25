@@ -14,7 +14,10 @@
     },
     "distribusjonstype": "SENTRALPRINT",
     "mottaker": null,
-    "avsenderEnhet": null,
+    "avsenderEnhet": {
+      "enhetNr": "4405",
+      "navn": "Nav Arbeid og ytelser Innlandet"
+    },
     "spraak": "NB",
     "journalpostId": null,
     "vedtaksId": null
@@ -254,5 +257,8 @@
     "deletedBlocks": []
   },
   "redigertBrevHash": "e854311f35d93b9f0b69183c8a301354b44f989fc2adb648531067c4a19a0ace",
-  "saksbehandlerValg": { "kaffemaskinensTilgjengelighet": false, "kontorplantenTorlill": false }
+  "saksbehandlerValg": {
+    "kaffemaskinensTilgjengelighet": false,
+    "kontorplantenTorlill": false
+  }
 }

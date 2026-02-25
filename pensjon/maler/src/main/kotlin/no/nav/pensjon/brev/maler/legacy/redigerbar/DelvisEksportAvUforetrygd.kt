@@ -9,10 +9,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdF
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -26,7 +25,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -854,76 +852,22 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
                     )
                 }
             }
+            includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
+            includePhrase(Felles.RettTilAAKlage)
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
+            includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             title1 {
-                text (
-                    bokmal { + "Du må melde fra om endringer" },
-                    nynorsk { + "Du må melde frå om endringar" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Skjer det endringer, må du melde fra til oss med en gang. I vedlegget «Orientering om rettigheter og plikter» ser du hvilke endringer du må si fra om." },
-                    nynorsk { + "Skjer det endringar, må du melde frå til oss med ein gong. I vedlegget «Orientering om rettar og plikter» ser du kva endringar du må seie frå om." },
-                )
-            }
-            title1 {
-                text (
-                    bokmal { + "Du har rett til å klage" },
-                    nynorsk { + "Du har rett til å klage" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen du fikk vedtaket. " +
-                            "I vedlegget " },
-                    nynorsk { + "Dersom du meiner at vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen du fekk vedtaket. " +
-                            "I vedlegget " },
-                )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
-                text(
-                    bokmal { + " får du vite mer om hvordan du går fram. Du finner skjema og informasjon på $KLAGE_URL. " },
-                    nynorsk { + " kan du lese meir om korleis du går fram. Du finn skjema og informasjon på $KLAGE_URL. " },
-                )
-            }
-            title1 {
-                text (
-                    bokmal { + "Du har rett til innsyn" },
-                    nynorsk { + "Du har rett til innsyn" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Orientering om rettigheter og plikter» for informasjon om hvordan du går fram." },
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Orientering om rettar og plikter» for informasjon om korleis du går fram." },
-                )
-            }
-            title1 {
-                text(
-                    bokmal { +"Sjekk utbetalingene dine" },
-                    nynorsk { +"Sjekk utbetalingane dine" },
-                )
-            }
-            paragraph {
-                text (
-                    bokmal { + "Du får uføretrygd utbetalt den 20. hver måned, eller senest siste virkedag før denne datoen. Se alle utbetalinger du har mottatt: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
-                    nynorsk { + "Du får uføretrygd betalt ut den 20. kvar månad eller seinast siste vyrkedag før denne datoen. Sjå alle utbetalingar du har fått: $UFOERETRYGD_URL. Her kan du også endre kontonummer." },
-                )
-            }
-            paragraph {
                 text (
                     bokmal { + "Du må som hovedregel betale skatt til Norge" },
                     nynorsk { + "Du må som hovudregel betale skatt til Noreg" },
                 )
             }
-            //[TBU2120NN, TBU2120]
-
             paragraph {
                 text (
                     bokmal { + "Når du flytter fra Norge kan dette få betydning for skatten din. Du må selv ta kontakt med Skatteetaten." },
                     nynorsk { + "Når du flyttar frå Noreg, kan dette få betydning for skatten din. Du må sjølv ta kontakt med Skatteetaten." },
                 )
             }
-
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }

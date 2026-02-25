@@ -9,8 +9,7 @@ import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
-class BrevreservasjonPolicy {
-    val timeout: Duration = 10.minutes.toJavaDuration()
+class BrevreservasjonPolicy(val timeout: Duration = 10.minutes.toJavaDuration()) {
 
     fun erGyldig(reservasjon: Reservasjon, fra: Instant): Boolean =
         reservasjon.timestamp.plus(timeout).isAfter(fra)

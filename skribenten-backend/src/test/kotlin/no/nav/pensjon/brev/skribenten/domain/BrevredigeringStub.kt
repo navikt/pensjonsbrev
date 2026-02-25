@@ -20,6 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import java.time.Instant
 
@@ -52,12 +53,14 @@ open class BrevredigeringStub : Brevredigering {
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
-    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
+    override fun frigiReservasjon() = notYetStubbed()
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? = notYetStubbed()
+    override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
 }

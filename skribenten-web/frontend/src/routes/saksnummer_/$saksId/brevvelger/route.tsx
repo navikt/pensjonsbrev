@@ -278,7 +278,7 @@ function Brevmaler({
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
                   <Accordion.Content
                     css={{
-                      ".aksel-accordion__content-inner": {
+                      "> div:first-child": {
                         overflowX: "hidden",
                       },
                     }}

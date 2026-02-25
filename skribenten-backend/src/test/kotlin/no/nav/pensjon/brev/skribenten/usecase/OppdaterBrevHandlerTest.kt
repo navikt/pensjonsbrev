@@ -192,7 +192,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
     suspend fun `kan redigere signatur`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val redigertSignatur = brev.redigertBrev.withSignatur(saksbehandler = "Ny signatur")
+        val redigertSignatur = brev.redigertBrev.withSignaturSaksbehandler("Ny signatur")
 
         val result = oppdaterBrev(
             brevId = brev.info.id,

@@ -1,5 +1,4 @@
 {
-  "biome.configurationPath": "./skribenten-web/frontend/biome.json",
   "biome.lsp.bin": "./skribenten-web/frontend/node_modules/.bin/biome",
   "editor.codeActionsOnSave": {
     "source.action.useSortedKeys.biome": "explicit",

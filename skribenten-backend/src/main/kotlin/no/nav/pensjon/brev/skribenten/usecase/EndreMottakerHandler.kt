@@ -26,7 +26,7 @@ class EndreMottakerHandler(
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
         brev.settMottaker(request.mottaker, request.mottaker?.hentAnnenMottakerNavn())
-        brev.redigeresAv = null
+        brev.frigiReservasjon()
 
         return success(brev.toBrevInfo(brevreservasjonPolicy))
     }

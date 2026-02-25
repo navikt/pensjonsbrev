@@ -19,6 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.core.SortOrder
 import org.jetbrains.exposed.v1.core.and
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
@@ -27,6 +28,7 @@ import org.jetbrains.exposed.v1.dao.Entity
 import org.jetbrains.exposed.v1.dao.EntityClass
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import kotlin.collections.get
 
 interface Brevredigering {
     val id: EntityID<BrevId>
@@ -67,13 +69,15 @@ interface Brevredigering {
         saksbehandler: NavIdent,
         policy: BrevreservasjonPolicy
     ): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen>
+    fun frigiReservasjon()
 
-    fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
+    fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent)
     fun markerSomKlar()
     fun markerSomKladd()
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
+    fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
@@ -92,13 +96,13 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         private set
     override var saksbehandlerValg by BrevredigeringTable.saksbehandlerValg
     override var redigertBrev by BrevredigeringTable.redigertBrevKryptert.writeHashTo(BrevredigeringTable.redigertBrevKryptertHash)
-        // TODO: private set
+        private set
     override val redigertBrevHash by BrevredigeringTable.redigertBrevKryptertHash
     override var laastForRedigering by BrevredigeringTable.laastForRedigering
         private set
     override var distribusjonstype by BrevredigeringTable.distribusjonstype
     override var redigeresAv by BrevredigeringTable.redigeresAvNavIdent
-        // TODO: private set
+        private set
     override var sistRedigertAv by BrevredigeringTable.sistRedigertAvNavIdent
         private set
     override var opprettetAv by BrevredigeringTable.opprettetAvNavIdent
@@ -108,7 +112,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override var sistredigert by BrevredigeringTable.sistredigert
         private set
     override var sistReservert by BrevredigeringTable.sistReservert
-        // TODO: private set
+        private set
     override var journalpostId by BrevredigeringTable.journalpostId
         // TODO: private set?
 
@@ -194,7 +198,11 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             return@then gjeldendeReservasjon(policy)!!
         }
 
-    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
+    override fun frigiReservasjon() {
+        redigeresAv = null
+    }
+
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent) {
         redigertBrev = nyttRedigertbrev
         sistredigert = Instant.now().truncatedTo(ChronoUnit.MILLIS)
         sistRedigertAv = av
@@ -207,17 +215,39 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     override fun markerSomKladd() {
         laastForRedigering = false
         attestertAvNavIdent = null
-        redigertBrev = redigertBrev.withSignatur(attestant = null)
+        redigertBrev = redigertBrev.withSignaturAttestant(null)
     }
 
     override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String) {
         attestertAvNavIdent = avNavIdent
-        redigertBrev = redigertBrev.withSignatur(attestant = attesterendeSignatur)
+        redigertBrev = redigertBrev.withSignaturAttestant(attesterendeSignatur)
         // TODO: Vurder om vi skal oppdatere sistRedigert/sistRedigertAv her?
     }
 
     override fun mergeRendretBrev(rendretBrev: LetterMarkup) {
         redigertBrev = redigertBrev.updateEditedLetter(rendretBrev)
+    }
+
+    override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
+        val saksbehandlerValgSpec = modelSpec.types[modelSpec.letterModelTypeName]?.get("saksbehandlerValg")
+            ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
+            ?.let { modelSpec.types[it] }
+
+        if (saksbehandlerValgSpec != null) {
+            saksbehandlerValg = SaksbehandlerValg().apply {
+                putAll(saksbehandlerValg)
+                saksbehandlerValgSpec.entries.forEach {
+                    val fieldType = it.value
+                    if (fieldType.nullable) {
+                        put(it.key, null)
+                    } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
+                        put(it.key, false)
+                    }
+                }
+            }
+        } else {
+            throw IllegalStateException("Model specification for brevkode $brevkode mangler saksbehandlerValg eller saksbehandlerValg er ikke et objekt")
+        }
     }
 
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? {

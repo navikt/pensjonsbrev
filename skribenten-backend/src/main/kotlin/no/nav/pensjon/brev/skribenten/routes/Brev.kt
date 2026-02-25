@@ -7,27 +7,17 @@ import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.usecase.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.usecase.TilbakestillBrevHandler
 
 fun Route.brev(
-    brevredigeringService: BrevredigeringService,
     pdlService: PdlService,
     penService: PenService,
     brevredigeringFacade: BrevredigeringFacade,
     dto2ApiService: Dto2ApiService,
 ) {
-
-    suspend fun RoutingContext.respond(brevResponse: Dto.Brevredigering?) {
-        if (brevResponse != null) {
-            call.respond(dto2ApiService.toApi(brevResponse))
-        } else {
-            call.respond(HttpStatusCode.NotFound, "Fant ikke brev")
-        }
-    }
-
     route("/brev/{brevId}") {
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
@@ -67,7 +57,8 @@ fun Route.brev(
 
         post("/tilbakestill") {
             val brevId = call.parameters.brevId()
-            respond(brevredigeringService.tilbakestill(brevId))
+            val resultat = brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
+            apiRespond(dto2ApiService, resultat)
         }
     }
 }
