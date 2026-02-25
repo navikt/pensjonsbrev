@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.skribenten.services
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.db.P1Data
 import no.nav.pensjon.brev.skribenten.db.P1DataTable
+import no.nav.pensjon.brev.skribenten.domain.P1Data
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId
