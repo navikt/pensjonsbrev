@@ -42,7 +42,7 @@ class BrevdataService(private val penService: PenService, private val samhandler
             vedtaksId = brev.vedtaksId,
             brevkode = brev.brevkode,
             avsenderEnhetsId = brev.avsenderEnhetId,
-            mottaker = brev.mottaker?.toDto(),
+            mottaker = brev.mottaker,
             signatur = SignerendeSaksbehandlere(
                 // Redigerbare brev skal alltid ha saksbehandlers signatur, derfor non-null assertion her.
                 saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,

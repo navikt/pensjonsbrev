@@ -158,6 +158,13 @@ object Api {
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
 
+    data class BestillBrevResponse(
+        val journalpostId: JournalpostId?,
+        val error: Error?,
+    ) {
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
+
     data class SakContext(
         val sak: Pen.SakSelection,
         val brevmalKoder: List<String>,

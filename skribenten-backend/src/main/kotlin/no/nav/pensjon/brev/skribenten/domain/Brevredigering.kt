@@ -56,7 +56,7 @@ interface Brevredigering {
     val sistReservert: Instant?
     val journalpostId: JournalpostId?
     var document: Dto.Document?
-    val mottaker: Mottaker?
+    val mottaker: Dto.Mottaker?
     val p1Data: P1Data?
     val valgteVedlegg: List<AlltidValgbartVedleggKode>
     val attestertAvNavIdent: NavIdent?
@@ -76,7 +76,7 @@ interface Brevredigering {
     fun markerSomKladd()
     fun attester(avNavIdent: NavIdent, attesterendeSignatur: String)
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
-    fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker?
+    fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
     fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
@@ -121,7 +121,8 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         get() = _documentEntityList.firstOrNull()?.toDto()
         set(documentDto) = settDocument(documentDto)
 
-    override val mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
+    private val _mottaker by Mottaker optionalBackReferencedOn MottakerTable.id
+    override val mottaker:Dto.Mottaker? get() = _mottaker?.toDto()
     override val p1Data by P1Data optionalBackReferencedOn P1DataTable.id
 
     private val _valgteVedlegg by ValgteVedlegg optionalBackReferencedOn ValgteVedleggTable.id
@@ -250,18 +251,17 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? {
-        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottakerNavn)
+    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) {
+        redigertBrev = redigertBrev.withSakspart(annenMottakerNavn = annenMottakerNavn.takeIf { mottakerDto != null })
 
-        return if (mottakerDto == null) {
-            mottaker?.delete()
-            null
-        } else if (mottaker == null) {
+        if (mottakerDto == null) {
+            _mottaker?.delete()
+        } else if (_mottaker == null) {
             Mottaker.opprettMottaker(this, mottakerDto)
                 // pga. optional backreference, så må vi oppdatere referansen til mottaker-tabellen
                 .also { refresh(flush = true) }
         } else {
-            mottaker?.oppdater(mottakerDto)
+            _mottaker?.oppdater(mottakerDto)
         }
     }
 
@@ -327,7 +327,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             brevkode = brevkode,
             laastForRedigering = laastForRedigering,
             distribusjonstype = distribusjonstype,
-            mottaker = mottaker?.toDto(),
+            mottaker = mottaker,
             avsenderEnhetId = avsenderEnhetId,
             spraak = spraak,
             sistReservert = sistReservert,

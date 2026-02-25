@@ -224,6 +224,7 @@ private fun createFacade(
     attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering> = handlerStub(),
     tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
+    sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
@@ -240,6 +241,7 @@ private fun createFacade(
         attesterBrev = attesterBrev,
         tilbakestillBrev = tilbakestillBrev,
         endreValgteVedlegg = endreValgteVedlegg,
+        sendBrev = sendBrev,
     )
 }
 

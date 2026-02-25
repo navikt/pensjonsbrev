@@ -9,10 +9,11 @@ import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
+import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
@@ -62,6 +63,17 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
+@JvmName("apiRespondSendBrevResult")
+suspend fun RoutingContext.apiRespond(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Dto.SendBrevResult, BrevredigeringError>?,
+    successStatus: HttpStatusCode = HttpStatusCode.OK,
+) {
+    respondOutcome(dto2ApiService, outcome) {
+        respond(status = successStatus, dto2ApiService.toApi(it))
+    }
+}
+
 private val logger = LoggerFactory.getLogger("ApiResponse")
 
 suspend fun <T> RoutingContext.respondOutcome(
@@ -98,7 +110,7 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet ->
                     call.respond(HttpStatusCode.BadRequest, "Ikke tilgang til enhet: ${outcome.error.enhetsId}")
 
-                is KlarTilSendingPolicy.IkkeKlarTilSending.FritekstFelterUredigert ->
+                is FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert ->
                     call.respond(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret")
@@ -118,6 +130,24 @@ suspend fun <T> RoutingContext.respondOutcome(
 
                 is AttesterBrevPolicy.KanIkkeAttestere.AlleredeAttestertAvAnnen ->
                     call.respond(HttpStatusCode.Conflict, "Brev ${outcome.error.brevId} er allerede attestert av ${outcome.error.attestertAv}")
+
+                is SendBrevPolicy.KanIkkeSende.IkkeLaastForRedigering ->
+                    call.respond(
+                        status = HttpStatusCode.UnprocessableEntity,
+                        message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Brev ${outcome.error.brevId} må være markert som klar til sending")
+                    )
+
+                is SendBrevPolicy.KanIkkeSende.DocumentIkkeForGjeldendeRedigertBrev ->
+                    call.respond(
+                        status = HttpStatusCode.Conflict,
+                        message = BrevExceptionDto(tittel = "Nyere versjon finnes", melding = "Det finnes en nyere versjon av brevet enn den som er generert til PDF")
+                    )
+
+                is SendBrevPolicy.KanIkkeSende.VedtaksbrevIkkeAttestert ->
+                    call.respond(
+                        status = HttpStatusCode.UnprocessableEntity,
+                        message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Vedtaksbrev ${outcome.error.brevId} er ikke attestert")
+                    )
             }
         }
 

@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class AttesterBrevPolicy {
 
-    fun kanAttestere(brev: Brevredigering, principal: UserPrincipal): Outcome<Boolean, KanIkkeAttestere> {
+    fun kanAttestere(brev: Brevredigering, principal: UserPrincipal): Outcome<Unit, KanIkkeAttestere> {
         return when {
             !principal.isAttestant() -> failure(KanIkkeAttestere.HarIkkeAttestantrolle(principal.navIdent))
             !brev.isVedtaksbrev -> failure(KanIkkeAttestere.KanIkkeAttestereInformasjonsbrev(brev.id.value))
@@ -18,7 +18,7 @@ class AttesterBrevPolicy {
             brev.attestertAvNavIdent != null && brev.attestertAvNavIdent != principal.navIdent -> failure(
                 KanIkkeAttestere.AlleredeAttestertAvAnnen(brev.id.value, brev.attestertAvNavIdent!!)
             )
-            else -> success(true)
+            else -> success(Unit)
         }
     }
 
