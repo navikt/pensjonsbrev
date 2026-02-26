@@ -86,18 +86,17 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
                 )
             }
             paragraph {
+                val beskrivelse = "beskriv hva som har skjedd i saken/ årsaken til feilutbetalingen. " +
+                        "Gjør kort rede for årsaken til feilutbetalingen. " +
+                        "Er årsaken den samme for hele perioden? " +
+                        "Er det vi som har gjort en feil eller er det mottakeren? " +
+                        "Har mottakeren gitt feilaktige/mangelfulle opplysninger? " +
+                        "Har mottakeren latt være å melde fra om endringer av betydning? " +
+                        "Har Nav fulgt opp melding fra mottakeren uten unødig opphold? " +
+                        "Har Nav hatt tilgang til opplysningene fra andre kilder enn mottakeren?"
                 text(
-                    bokmal { + fritekst(
-                            "beskriv hva som har skjedd i saken/ årsaken til feilutbetalingen. " +
-                                    "Gjør kort rede for årsaken til feilutbetalingen. " +
-                                    "Er årsaken den samme for hele perioden? " +
-                                    "Er det vi som har gjort en feil eller er det mottakeren? " +
-                                    "Har mottakeren gitt feilaktige/mangelfulle opplysninger? " +
-                                    "Har mottakeren latt være å melde fra om endringer av betydning? " +
-                                    "Har Nav fulgt opp melding fra mottakeren uten unødig opphold? " +
-                                    "Har Nav hatt tilgang til opplysningene fra andre kilder enn mottakeren?"
-                        )
-                    }
+                    bokmal { + fritekst(beskrivelse) },
+                    nynorsk { + fritekst(beskrivelse) }
                 )
             }
 
