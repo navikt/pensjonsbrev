@@ -217,11 +217,11 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
             }
             is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
-                val evaluert = (operation as BinaryOperation.BrevdataEllerFritekst).eval(first, second, scope)
-                if (evaluert.erFritekst) {
-                    lagLiteral(scope, fontType, evaluert.text, setOf(ElementTags.FRITEKST))
+                val (erFritekst, text) = (operation as BinaryOperation.BrevdataEllerFritekst).getResultat(first, second, scope)
+                if (erFritekst) {
+                    lagLiteral(scope, fontType, text, setOf(ElementTags.FRITEKST))
                 } else {
-                    lagVariabel(scope, fontType, evaluert.text, tags - ElementTags.FRITEKST)
+                    lagVariabel(scope, fontType, text, tags - ElementTags.FRITEKST)
                 }
             }
             else -> lagVariabel(scope, fontType)

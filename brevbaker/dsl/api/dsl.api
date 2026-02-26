@@ -105,7 +105,7 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFri
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public final fun eval (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/BinaryOperation$Evaluering;
+	public final fun getResultat (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst$Resultat;
 	public fun stableHashCode ()I
 }
 
