@@ -28,7 +28,7 @@ import java.time.LocalDate
  *     ): StableHash by StableHash.of(StableHash.of(anEnum), StableHash.of(list))
  *
  */
-sealed interface StableHash {
+interface StableHash {
     /**
      * Calculate a deterministic hashCode that does not depend on volatile factors
      * like memory location.
