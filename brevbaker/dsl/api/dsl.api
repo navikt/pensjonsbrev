@@ -260,11 +260,12 @@ public final class no/nav/pensjon/brev/template/BrevTemplateKt {
 	public static final fun toCode (Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brevbaker/api/model/LanguageCode;
 }
 
-public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst {
+public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
 	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun getFritekst ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun somExpression ()Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
+	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract class no/nav/pensjon/brev/template/ContentOrControlStructure : no/nav/pensjon/brev/template/StableHash {
@@ -597,7 +598,7 @@ public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {
 	public static fun assign (Lno/nav/pensjon/brev/template/ExpressionScope;Ljava/lang/Object;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
-public final class no/nav/pensjon/brev/template/Fritekst {
+public final class no/nav/pensjon/brev/template/Fritekst : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Fritekst;
 	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
@@ -606,7 +607,9 @@ public final class no/nav/pensjon/brev/template/Fritekst {
 	public final fun getStr ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
-	public static final fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$Literal;
+	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$Literal;
+	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
+	public static fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$Literal;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
@@ -854,7 +857,7 @@ public final class no/nav/pensjon/brev/template/PreventToStringForExpressionExce
 	public fun <init> ()V
 }
 
-public final class no/nav/pensjon/brev/template/RedigerbarData {
+public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
 	public static final synthetic fun box-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/RedigerbarData;
 	public static fun constructor-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun equals (Ljava/lang/Object;)Z
@@ -863,7 +866,9 @@ public final class no/nav/pensjon/brev/template/RedigerbarData {
 	public final fun getVariabel ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Lno/nav/pensjon/brev/template/Expression;)I
-	public static final fun somExpression-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
+	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
+	public static fun somExpression-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Lno/nav/pensjon/brev/template/Expression;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Lno/nav/pensjon/brev/template/Expression;
@@ -903,6 +908,10 @@ public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
+	public abstract fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/StableHash {
@@ -1089,19 +1098,15 @@ public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/b
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder {
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;
-	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
-	public final fun plus-AXLlCyo (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
-	public final fun plus-okHpgYs (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
+	public final fun plus (Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;Lno/nav/pensjon/brev/template/SpesialkonstruksjonIMal;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun quoted (Ljava/lang/String;)Ljava/lang/String;
 	public final fun quoted (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun quotedExpr (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun quotedStr (Ljava/lang/String;)Ljava/lang/String;
 	public final fun unaryPlus (Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression;
-	public final fun unaryPlus (Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 	public final fun unaryPlus (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
-	public final fun unaryPlus-GHZ4zv4 (Ljava/lang/String;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
-	public final fun unaryPlus-UG70JC0 (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
+	public final fun unaryPlus (Lno/nav/pensjon/brev/template/SpesialkonstruksjonIMal;)Lno/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper;
 }
 
 public final class no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$ExpressionWrapper : no/nav/pensjon/brev/template/dsl/LiteralOrExpressionBuilder$LiteralOrExpression {

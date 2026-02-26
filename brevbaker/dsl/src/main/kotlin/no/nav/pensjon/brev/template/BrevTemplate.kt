@@ -67,20 +67,24 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
     }
 }
 
+sealed interface SpesialkonstruksjonIMal {
+    fun somExpression(): StringExpression
+}
+
 @JvmInline
-value class Fritekst(val str: String) {
-    fun somExpression() = Literal(str, tags = setOf(ElementTags.FRITEKST))
+value class Fritekst(val str: String) : SpesialkonstruksjonIMal {
+    override fun somExpression() = Literal(str, tags = setOf(ElementTags.FRITEKST))
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 @JvmInline
-value class RedigerbarData(val variabel: StringExpression) {
-    fun somExpression(): StringExpression = Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)
+value class RedigerbarData(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+    override fun somExpression() = Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
-class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) {
-    fun somExpression() = Expression.BinaryInvoke(tekst, fritekst, BinaryOperation.BrevdataEllerFritekst)
+class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+    override fun somExpression() = Expression.BinaryInvoke(tekst, fritekst, BinaryOperation.BrevdataEllerFritekst)
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {

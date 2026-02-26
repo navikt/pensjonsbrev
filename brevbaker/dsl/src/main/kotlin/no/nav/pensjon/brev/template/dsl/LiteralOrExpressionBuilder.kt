@@ -1,9 +1,7 @@
 package no.nav.pensjon.brev.template.dsl
 
-import no.nav.pensjon.brev.template.BrevdataEllerFritekst
-import no.nav.pensjon.brev.template.Fritekst
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.RedigerbarData
+import no.nav.pensjon.brev.template.SpesialkonstruksjonIMal
 import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.expression.expr
@@ -35,11 +33,7 @@ class LiteralOrExpressionBuilder internal constructor(private val quotation: Quo
 
     operator fun String.unaryPlus() = previous?.let { it + this } ?: LiteralWrapper(this).also { previous = it }
 
-    operator fun Fritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
-
-    operator fun BrevdataEllerFritekst.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
-
-    operator fun RedigerbarData.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
+    operator fun SpesialkonstruksjonIMal.unaryPlus() = previous?.let { it + this } ?: ExpressionWrapper(this.somExpression())
 
     operator fun LiteralOrExpression.plus(other: StringExpression) = when(this) {
         is ExpressionWrapper -> ExpressionWrapper(expr + other)
@@ -51,17 +45,7 @@ class LiteralOrExpressionBuilder internal constructor(private val quotation: Quo
         is LiteralWrapper -> LiteralWrapper(str + other)
     }.also { previous = it }
 
-    operator fun LiteralOrExpression.plus(other: Fritekst) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other.somExpression())
-        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.somExpression())
-    }.also { previous = it }
-
-    operator fun LiteralOrExpression.plus(other: BrevdataEllerFritekst) = when(this) {
-        is ExpressionWrapper -> ExpressionWrapper(expr + other.somExpression())
-        is LiteralWrapper -> ExpressionWrapper(str.expr() + other.somExpression())
-    }.also { previous = it }
-
-    operator fun LiteralOrExpression.plus(other: RedigerbarData) = when(this) {
+    operator fun LiteralOrExpression.plus(other: SpesialkonstruksjonIMal) = when(this) {
         is ExpressionWrapper -> ExpressionWrapper(expr + other.somExpression())
         is LiteralWrapper -> ExpressionWrapper(str.expr() + other.somExpression())
     }.also { previous = it }
