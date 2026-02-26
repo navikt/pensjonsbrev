@@ -1,5 +1,4 @@
-import type { SerializedStyles } from "@emotion/react";
-import { css } from "@emotion/react";
+import type { CSSObject } from "@emotion/react";
 import {
   Accordion,
   Alert,
@@ -73,7 +72,11 @@ export function BrevvelgerPage() {
 
   return (
     <Box asChild background="default">
-      <VStack marginInline={{ sm: "space-0", lg: "auto" }} width="fit-content">
+      <VStack
+        height="calc(var(--main-page-content-height) + 48px)"
+        marginInline={{ sm: "space-0", lg: "auto" }}
+        width="fit-content"
+      >
         <BrevvelgerMainContent
           alleSaksbrevQuery={alleSaksbrevQuery}
           brevmalKoder={brevmalKoder}
@@ -116,7 +119,7 @@ const BrevvelgerMainContent = (props: {
   );
 
   return (
-    <Box asChild height="calc(var(--main-page-content-height)">
+    <Box asChild flexGrow="1" overflowY="hidden">
       <HStack wrap={false}>
         {/* Brevmal-liste */}
         <Box
@@ -127,7 +130,7 @@ const BrevvelgerMainContent = (props: {
           paddingBlock="space-20 space-0"
           paddingInline="space-24"
         >
-          <VStack gap="space-24" height="100%">
+          <VStack gap="space-24">
             <Heading level="1" size="small">
               Brevvelger
             </Heading>
@@ -229,11 +232,11 @@ function Brevmaler({
       <Bleed asChild marginInline="space-24">
         <Box asChild overflowY="auto" paddingInline="space-24">
           <Accordion
-            css={css`
-              .aksel-accordion__content {
-                margin: 0;
-              }
-            `}
+            css={{
+              "> div > div": {
+                margin: 0,
+              },
+            }}
             indent={false}
             size="small"
           >
@@ -255,18 +258,18 @@ function Brevmaler({
                   open={searchTerm.length > 0 ? true : openAccordions[type]}
                 >
                   <Accordion.Header
-                    css={css`
-                      flex-direction: row-reverse;
-                      justify-content: space-between;
-                      color: var(--ax-text-neutral);
-                    `}
+                    css={{
+                      flexDirection: "row-reverse",
+                      justifyContent: "space-between",
+                      color: "var(--ax-text-neutral)",
+                    }}
                   >
                     <Label size="small">{type}</Label>
                   </Accordion.Header>
                   {/* overflowX: hidden bidrar til ellipse på overflow i indre BodyShort med truncate */}
                   <Accordion.Content
                     css={{
-                      "> div:first-child": {
+                      "> div:first-of-type": {
                         overflowX: "hidden",
                       },
                     }}
@@ -276,12 +279,10 @@ function Brevmaler({
                         <BrevmalButton
                           extraStyles={
                             template.id === templateId
-                              ? css`
-                                  color: var(--ax-text-accent-contrast);
-                                  background-color: var(
-                                    --ax-bg-accent-strong-hover
-                                  );
-                                `
+                              ? {
+                                  color: "var(--ax-text-accent-contrast)",
+                                  backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                                }
                               : undefined
                           }
                           key={template.id}
@@ -328,27 +329,27 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
     return (
       <Accordion.Item defaultOpen>
         <Accordion.Header
-          css={css`
-            flex-direction: row-reverse;
-            justify-content: space-between;
-            color: var(--ax-text-neutral);
-          `}
+          css={{
+            flexDirection: "row-reverse",
+            justifyContent: "space-between",
+            color: "var(--ax-text-neutral)",
+          }}
         >
           <HStack gap="space-8">
             <Label size="small">Kladder</Label>
           </HStack>
         </Accordion.Header>
-        <Accordion.Content css={{ ".aksel-accordion__content-inner": { overflowX: "hidden" } }}>
+        <Accordion.Content css={{ "> div:first-of-type": { overflowX: "hidden" } }}>
           <VStack>
             {kladder.map((brev) => (
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
                   brev.id === brevId
-                    ? css`
-                        color: var(--ax-text-accent-contrast);
-                        background-color: var(--ax-bg-accent-strong-hover);
-                      `
+                    ? {
+                        color: "var(--ax-text-accent-contrast)",
+                        backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                      }
                     : undefined
                 }
                 key={brev.id}
@@ -400,31 +401,27 @@ const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
 const BrevmalButton = (props: {
   onClick: () => void;
   title: React.ReactNode;
-  extraStyles?: SerializedStyles;
+  extraStyles?: CSSObject | undefined;
   description?: string;
 }) => {
   return (
     <Button
-      css={css(
-        css`
-          color: var(--ax-text-neutral);
-          justify-content: flex-start;
-          padding: var(--ax-space-8) var(--ax-space-12);
-          border-radius: 0;
-
-          span {
-            font-weight: var(--ax-font-weight-regular);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          > :first-of-type {
-            width: 100%;
-          }
-        `,
-        props.extraStyles,
-      )}
+      css={{
+        color: "var(--ax-text-neutral)",
+        justifyContent: "flex-start",
+        padding: "var(--ax-space-8) var(--ax-space-12)",
+        borderRadius: 0,
+        span: {
+          fontWeight: "var(--ax-font-weight-regular)",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        },
+        "> :first-of-type": {
+          width: "100%",
+        },
+        ...props.extraStyles,
+      }}
       data-cy="brevmal-button"
       onClick={props.onClick}
       variant="tertiary"

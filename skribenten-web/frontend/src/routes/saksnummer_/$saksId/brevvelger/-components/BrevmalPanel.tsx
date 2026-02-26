@@ -19,7 +19,7 @@ const BrevmalPanel = (props: {
   return (
     <>
       {visPanel && (
-        <VStack height="100%" overflowY="auto" padding="space-24" width="385px">
+        <VStack overflowY="auto" padding="space-24" width="385px">
           {props.templateId ? (
             <TemplateLoader
               enhetsId={props.enhetsId}

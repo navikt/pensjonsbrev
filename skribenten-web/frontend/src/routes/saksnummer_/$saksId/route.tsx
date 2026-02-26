@@ -91,6 +91,7 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       borderColor="neutral-subtle"
       borderWidth="0 0 1 0"
       css={{ zIndex: 10 }}
+      height="48px"
       top="space-48"
     >
       <HStack

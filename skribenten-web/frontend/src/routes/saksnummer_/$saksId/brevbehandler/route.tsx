@@ -43,20 +43,13 @@ function Brevbehandler() {
 
   return (
     <Box asChild background="default">
-      <VStack height="calc(var(--main-page-content-height) + 48px)" marginInline="auto">
+      <VStack marginInline="auto">
         {modalÅpen && (
           <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />
         )}
-        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="calc(100% - 48px)">
+        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="var(--main-page-content-height)">
           {/* Meny */}
-          <Box
-            asChild
-            borderColor="neutral-subtle"
-            borderWidth="0 1 0 0"
-            height="100%"
-            overflowY="auto"
-            padding="space-24"
-          >
+          <Box asChild borderColor="neutral-subtle" borderWidth="0 1 0 0" overflowY="auto" padding="space-24">
             <VStack gap="space-12">
               <Heading level="1" size="small">
                 Brevbehandler
@@ -79,7 +72,14 @@ function Brevbehandler() {
         </HGrid>
 
         {/* Footer */}
-        <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0" paddingBlock="space-8" paddingInline="space-12">
+        <Box
+          asChild
+          borderColor="neutral-subtle"
+          borderWidth="1 0 0 0"
+          height="48px"
+          paddingBlock="space-8"
+          paddingInline="space-12"
+        >
           <HStack gridColumn="footer" justify="space-between">
             <Button
               onClick={() =>

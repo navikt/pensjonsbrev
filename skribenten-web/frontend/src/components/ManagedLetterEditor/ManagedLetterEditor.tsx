@@ -56,7 +56,6 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
 
   return (
     <LetterEditor
-      editorHeight="var(--main-page-content-height)"
       editorState={editorState}
       error={props.error || isError}
       freeze={props.freeze}
