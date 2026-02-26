@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -61,6 +62,7 @@ object Fixtures : LetterDataFactory {
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
             EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
+            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
