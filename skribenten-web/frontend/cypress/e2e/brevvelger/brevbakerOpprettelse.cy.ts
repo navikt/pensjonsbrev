@@ -31,7 +31,7 @@ describe("Oppretter brevbakerbrev", () => {
     }).as("getBrevmal");
     cy.visit("/saksnummer/123456/brevvelger?templateId=INFORMASJON_OM_SAKSBEHANDLINGSTID");
     cy.wait("@getBrevmal");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.get(".aksel-error-message").should("have.length", 4);
   });
 
@@ -65,7 +65,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
     cy.location("search").should("include", "enhetsId");
   });
@@ -96,7 +96,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=spraak]").should("have.value", "NB");
 
     cy.contains("Mottatt søknad").click().type("09.10.2024");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
     cy.location("search").should("include", "enhetsId");
   });
@@ -124,7 +124,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.visit("saksnummer/123456/brevvelger?templateId=PE_BEKREFTELSE_PAA_FLYKTNINGSTATUS");
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
     cy.location("search").should("include", "enhetsId");
   });
@@ -151,7 +151,7 @@ describe("Oppretter brevbakerbrev", () => {
 
     cy.contains("Mot trær og natur").should("not.exist");
 
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
 
@@ -186,7 +186,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.get("select[name=enhetsId]").select("Nav Arbeid og ytelser Innlandet");
     cy.get("select[name=spraak]").should("have.value", "NB");
 
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.location("pathname").should("not.eq", "/saksnummer/123456/brev/1");
     cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
@@ -195,7 +195,7 @@ describe("Oppretter brevbakerbrev", () => {
     cy.contains("Ostekake").click();
     cy.contains("@errorMessage").should("not.exist");
 
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/1");
     cy.location("search").should("include", "enhetsId");
   });

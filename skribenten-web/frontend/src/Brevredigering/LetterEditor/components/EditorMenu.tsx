@@ -75,6 +75,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
           <LagringStatus />
           <Button
             data-color="danger"
+            data-cy="tilbakestill-mal-button"
             icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
             onClick={() => setVilTilbakestilleMal(true)}
             size="small"
