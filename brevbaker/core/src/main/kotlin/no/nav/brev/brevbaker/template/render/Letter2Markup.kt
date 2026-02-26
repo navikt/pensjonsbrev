@@ -209,16 +209,18 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
-        if (this is Expression.Literal) {
-            lagLiteral(scope, fontType)
-        } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
-            // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
-            @Suppress("UNCHECKED_CAST")
-            (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
-        } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.BrevdataEllerFritekst) {
-            first.eval(scope)?.let { lagVariabel(scope, fontType, it as String, tags - ElementTags.FRITEKST)} ?: lagLiteral(scope, fontType, setOf(ElementTags.FRITEKST))
-        } else {
-            lagVariabel(scope, fontType)
+        when (this) {
+            is Expression.Literal -> lagLiteral(scope, fontType)
+            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.Concat -> {
+                // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
+                @Suppress("UNCHECKED_CAST")
+                (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
+            }
+            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
+                first.eval(scope)?.let { lagVariabel(scope, fontType, it as String, tags - ElementTags.FRITEKST) }
+                    ?: lagLiteral(scope, fontType, setOf(ElementTags.FRITEKST))
+            }
+            else -> lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
 
     private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, tags: Set<ElementTags> = this.tags) =
