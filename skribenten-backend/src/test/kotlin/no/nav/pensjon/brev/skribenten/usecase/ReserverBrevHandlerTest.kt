@@ -33,7 +33,7 @@ class ReserverBrevHandlerTest : BrevredigeringTest() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
         val forrigeReservasjon = Instant.now().minusSeconds(60).truncatedTo(ChronoUnit.MILLIS)
-        transaction { BrevredigeringEntity[brev.info.id].sistReservert = forrigeReservasjon }
+        transaction { BrevredigeringEntity[brev.info.id].reserver(forrigeReservasjon, saksbehandler1Principal.navIdent, BrevreservasjonPolicy()) }
 
         val reservasjon = reserverBrev(brev)
         assertThat(reservasjon).isSuccess {
@@ -43,6 +43,30 @@ class ReserverBrevHandlerTest : BrevredigeringTest() {
                 .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
                 .isEqualTo(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
 
+        }
+    }
+
+    @Test
+    suspend fun `brev reservasjon utloeper`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+        assertThat(brev.info.redigeresAv).isEqualTo(saksbehandler1Principal.navIdent)
+
+        // Sett sistReservert til en tid som er før nå minus timeout, slik at reservasjonen skal være utløpt
+        val vanligPolicy = BrevreservasjonPolicy()
+        val forrigeReservasjon = Instant.now().minus(vanligPolicy.timeout).minusSeconds(1)
+        transaction {
+            // Vi trenger en policy som har en lengre timeout enn den vanlige, slik at vi kan sette sistReservert slik at reservasjon er utløpt.
+            val lengrePolicy = BrevreservasjonPolicy(timeout = vanligPolicy.timeout.plusSeconds(10))
+            BrevredigeringEntity[brev.info.id].reserver(forrigeReservasjon, saksbehandler1Principal.navIdent, lengrePolicy)
+        }
+
+        val reservasjon = reserverBrev(brev, principal = saksbehandler2Principal)
+        assertThat(reservasjon).isSuccess {
+            assertThat(it.reservertAv).isEqualTo(saksbehandler2Principal.navIdent)
+            assertThat(it.vellykket).isTrue()
+            assertThat(it.timestamp)
+                .isBetween(Instant.now().minusSeconds(1), Instant.now().plusSeconds(1))
+                .isEqualTo(transaction { BrevredigeringEntity[brev.info.id].sistReservert })
         }
     }
 

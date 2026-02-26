@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.VedtakOmInnvilgelseAvOmsor
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPE
+import no.nav.pensjon.brevbaker.api.model.Kroner
 
 fun createEndringUfoeretrygdDto() =
     EndringUfoeretrygdDto(
@@ -28,6 +29,8 @@ fun createEndringUfoeretrygdDto() =
                 barn_opph_ikke_avt_land = true,
             ),
             antallBarnOpphor = 1,
+
+            oifuVedVirkningstidspunkt = Kroner(10000),
 
             maanedligUfoeretrygdFoerSkatt = null,
             orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()

@@ -109,7 +109,7 @@ class AttesterBrevHandlerTest : BrevredigeringTest() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1234), reserverForRedigering = true).resultOrFail()
         veksleKlarStatus(brev, klar = true).resultOrFail()
 
-        val redigertAttestantSignatur = brev.redigertBrev.withSignatur(attestant = "Ny attestant signatur")
+        val redigertAttestantSignatur = brev.redigertBrev.withSignaturAttestant("Ny attestant signatur")
         val attestert = attester(
             brev,
             nyttRedigertbrev = redigertAttestantSignatur,

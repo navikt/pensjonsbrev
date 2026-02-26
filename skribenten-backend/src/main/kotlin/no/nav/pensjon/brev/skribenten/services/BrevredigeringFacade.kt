@@ -26,6 +26,7 @@ class BrevredigeringFacade(
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
     private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
+    private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
     private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
@@ -55,6 +56,9 @@ class BrevredigeringFacade(
 
     suspend fun attesterBrev(request: AttesterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         attesterBrev.runHandler(request)
+
+    suspend fun tilbakestillBrev(request: TilbakestillBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        tilbakestillBrev.runHandler(request)
 
     suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         veksleKlarStatus.runHandler(request)

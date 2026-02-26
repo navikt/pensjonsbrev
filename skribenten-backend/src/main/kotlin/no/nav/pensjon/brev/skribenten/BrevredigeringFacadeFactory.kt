@@ -82,11 +82,18 @@ object BrevredigeringFacadeFactory {
                 navansattService = navansattService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
-            brevreservasjonPolicy = brevreservasjonPolicy,
+            tilbakestillBrev = TilbakestillBrevHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevbakerService = brevbakerService,
+                renderService = renderService,
+                brevdataService = brevdataService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
             endreValgteVedlegg = EndreValgteVedleggHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
+            brevreservasjonPolicy = brevreservasjonPolicy,
         )
     }
 }

@@ -6,6 +6,7 @@ import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.RoutingContext
 import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
+import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
@@ -73,6 +74,7 @@ suspend fun <T> RoutingContext.respondOutcome(
 
         is Outcome.Failure -> {
             logger.info("Outcome failure: $outcome")
+
             when (outcome.error) {
                 is BrevreservasjonPolicy.ReservertAvAnnen ->
                     call.respond(HttpStatusCode.Locked, dto2ApiService.toApi(outcome.error.eksisterende))
@@ -87,7 +89,7 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
 
-                is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalFinnesIkke ->
+                is BrevmalFinnesIkke ->
                     call.respond(HttpStatusCode.BadRequest, "Brevmal finnes ikke: ${outcome.error.brevkode}")
 
                 is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId ->

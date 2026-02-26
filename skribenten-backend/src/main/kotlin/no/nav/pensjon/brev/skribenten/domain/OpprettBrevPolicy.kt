@@ -29,7 +29,7 @@ class OpprettBrevPolicy(
 
         val template = brevbakerService.getRedigerbarTemplate(request.brevkode)
         if (template == null) {
-            return failure(KanIkkeOppretteBrev.BrevmalFinnesIkke(request.brevkode))
+            return failure(BrevmalFinnesIkke(request.brevkode))
         } else if (template.isVedtakKontekst && request.vedtaksId == null) {
             return failure(KanIkkeOppretteBrev.BrevmalKreverVedtaksId(request.brevkode))
         }
@@ -49,7 +49,6 @@ class OpprettBrevPolicy(
 
     sealed interface KanIkkeOppretteBrev : BrevredigeringError {
         data class IkkeTilgangTilEnhet(val enhetsId: EnhetId) : KanIkkeOppretteBrev
-        data class BrevmalFinnesIkke(val brevkode: Brevkode.Redigerbart) : KanIkkeOppretteBrev
         data class BrevmalKreverVedtaksId(val brevkode: Brevkode.Redigerbart) : KanIkkeOppretteBrev
     }
 }

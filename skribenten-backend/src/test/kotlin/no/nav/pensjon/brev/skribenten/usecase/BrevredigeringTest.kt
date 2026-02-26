@@ -91,7 +91,6 @@ abstract class BrevredigeringTest {
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService(
         brevbakerService = brevbakerService,
-        navansattService = navAnsattService,
         penService = penService,
     )
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
@@ -110,7 +109,6 @@ abstract class BrevredigeringTest {
 
         val sak1 = Pen.SakSelection(
             saksId = SaksId(1234L),
-            foedselsnr = Foedselsnummer("12345678910"),
             foedselsdato = LocalDate.now().minusYears(42),
             navn = Pen.SakSelection.Navn("a", "b", "c"),
             sakType = Sakstype("ALDER"),

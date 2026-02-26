@@ -1,31 +1,26 @@
 package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.letter.Edit
+import no.nav.pensjon.brev.skribenten.domain.*
+import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
+import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
-class OppdaterBrevHandler(
+class TilbakestillBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevbakerService: BrevbakerService,
     private val renderService: RenderService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering> {
+) : BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> {
 
     data class Request(
         override val brevId: BrevId,
-        val nyeSaksbehandlerValg: SaksbehandlerValg? = null,
-        val nyttRedigertbrev: Edit.Letter? = null,
-        val frigiReservasjon: Boolean = false,
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
@@ -34,23 +29,18 @@ class OppdaterBrevHandler(
 
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        if (request.nyeSaksbehandlerValg != null) {
-            brev.saksbehandlerValg = request.nyeSaksbehandlerValg
-        }
-        if (request.nyttRedigertbrev != null) {
-            brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
-        }
+        val modelSpec = brevbakerService.getModelSpecification(brev.brevkode)
+            ?: return failure(BrevmalFinnesIkke(brev.brevkode))
+        brev.tilbakestillSaksbehandlerValg(modelSpec)
 
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = renderService.renderMarkup(brev, pesysdata)
-        brev.mergeRendretBrev(rendretBrev.markup)
-
-        if (request.frigiReservasjon) {
-            brev.frigiReservasjon()
-        }
+        brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 
     override fun requiresReservasjon(request: Request) = true
 }
+
+
