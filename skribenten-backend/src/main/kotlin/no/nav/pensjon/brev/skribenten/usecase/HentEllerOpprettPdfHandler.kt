@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.P1Service
 import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
-import no.nav.pensjon.brev.skribenten.services.brev.RenderService
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class HentEllerOpprettPdfHandler(

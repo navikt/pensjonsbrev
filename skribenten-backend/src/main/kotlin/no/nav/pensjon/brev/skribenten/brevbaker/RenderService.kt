@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.services.brev
+package no.nav.pensjon.brev.skribenten.brevbaker
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
@@ -36,6 +36,7 @@ class RenderService(private val brevbakerService: BrevbakerService) {
             pesysData = pesysData,
         )
 
+    // TODO: For å kunne støtte forskjellige fagsystem, som selv skal ha eierskap til maler, så må renderPdf ta inn LetterMarkup for brev og vedlegg.
     suspend fun renderPdf(brev: Brevredigering, pesysData: BrevdataResponse.Data): ByteArray =
         brevbakerService.renderPdf(
             brevkode = brev.brevkode,
