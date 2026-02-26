@@ -49,7 +49,6 @@ private class BrevTemplateTest {
 
     }
 
-    @Disabled("TODO: Finn ut korleis denne skal bli etterpå")
     @Test
     fun `kan bruke fritekst som ifNull`() {
         with(EksempelBrev.template) {
@@ -57,6 +56,7 @@ private class BrevTemplateTest {
                 val text = "fritekst"
                 assertThat(
                     null.expr<String?>().ifNull(fritekst(text))
+                        .somExpression()
                         .eval(testExpressionScope)).isEqualTo(text)
             }
         }
@@ -88,6 +88,7 @@ private class BrevTemplateTest {
                 val text = "ikkeFriTekst"
                 assertThat(
                     text.expr<String?>().ifNull(fritekst("bla"))
+                        .somExpression()
                         .eval(testExpressionScope)).isEqualTo(text)
             }
         }
