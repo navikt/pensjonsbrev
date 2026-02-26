@@ -499,14 +499,16 @@ fun createBeregningYtelsesKomp() =
     )
 
 fun createEktefelletillegg() =
-    Ektefelletillegg(true)
+    Ektefelletillegg(
+        etinnvilget = true,
+        etnetto = Kroner(0),
+    )
 
 fun createGjenlevendetillegg() =
     Gjenlevendetillegg(
         gtinnvilget = false,
         gtnetto = Kroner(0),
         nyttgjenlevendetillegg = false,
-        gtnetto = Kroner(1000),
         gtbrutto = Kroner(3000),
         gjenlevendetillegginformasjon = GjenlevendetilleggInformasjon(
             uforetidspunkt = LocalDate.of(2020, 1, 1),

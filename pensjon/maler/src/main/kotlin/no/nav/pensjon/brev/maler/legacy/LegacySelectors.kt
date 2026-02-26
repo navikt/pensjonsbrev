@@ -224,6 +224,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregn
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.OpptjeningUTSelectors.omsorgsaar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.avkortingsbelopperar
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.avkortningsinformasjon
+import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.brutto
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.fradrag
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.minsteytelse
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.UforetrygdOrdinerSelectors.netto
@@ -662,7 +663,6 @@ fun Expression<PE>.ut_inntekt_hoeyere_lavere(): Expression<String> = functions.p
 fun Expression<PE>.ut_fradrag_hoeyere_lavere(): Expression<String> = functions.pe_ut_fradrag_hoeyere_lavere.ifNull("")
 fun Expression<PE>.ut_bruttoetterreduksjonbt_hoeyere_lavere(): Expression<String> = functions.pe_ut_bruttoetterreduksjonbt_hoeyere_lavere.ifNull("")
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtbrutto(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { gjenlevendetillegg }.safe{gtbrutto}.ifNull(Kroner(0))
-fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtnetto(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { gjenlevendetillegg }.safe{gtnetto}.ifNull(Kroner(0))
 fun Expression<PE>.vedtaksdata_reaktiviseringsforskriften(): Expression<Boolean> = vedtaksbrev.safe { vedtaksdata }.safe{ reaktiviseringsforskriften }.ifNull(false)
 fun Expression<PE>.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_nettoperar(): Expression<Kroner> = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { beregningytelseskomp }.safe { uforetrygdordiner }.safe{ nettoperar }.ifNull(Kroner(0))
 fun Expression<PE>.saksdata_sakapogup(): Expression<Boolean> = functions.pe_saksdata_sakapogup.ifNull(false)
