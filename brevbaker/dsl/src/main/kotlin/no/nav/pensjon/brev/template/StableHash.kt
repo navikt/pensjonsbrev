@@ -50,33 +50,38 @@ interface StableHash {
         fun of(localDate: LocalDate): StableHash = HashCodeStableHash(localDate)
         fun of(string: String): StableHash = HashCodeStableHash(string)
     }
-
 }
 
 private class HashCodeStableHash(val value: Any) : StableHash {
     override fun stableHashCode() = value.hashCode()
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private class ClassFieldsStableHash(val firstField: StableHash?, vararg val fields: StableHash?) : StableHash {
     override fun stableHashCode() = fields.toList().stableHashCode(firstField?.stableHashCode() ?: 0)
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private class EnumStableHash(val enum: Enum<*>) : StableHash {
     override fun stableHashCode() = enum.name.hashCode()
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private class ListStableHash<T : StableHash?>(val list: List<T>) : StableHash {
     override fun stableHashCode() = list.stableHashCode(1)
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private class MapStableHash<K : StableHash?, V : StableHash?>(val map: Map<K, V>) : StableHash {
     override fun stableHashCode() = map.entries.fold(0) { hash, e -> hash + stableHashCode(e) }
     private fun stableHashCode(entry: Map.Entry<K, V>): Int = (entry.key?.stableHashCode() ?: 0) xor (entry.value?.stableHashCode() ?: 0)
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private class StringMapStableHash<K : StableHash?>(val map: Map<K, String>) : StableHash {
     override fun stableHashCode() = map.entries.fold(0) { hash, e -> hash + stableHashCode(e) }
     private fun stableHashCode(entry: Map.Entry<K, String>): Int = (entry.key?.stableHashCode() ?: 0) xor entry.value.hashCode()
+    override fun hashCode(): Int = stableHashCode()
 }
 
 private fun Iterable<StableHash?>.stableHashCode(initial: Int): Int =
