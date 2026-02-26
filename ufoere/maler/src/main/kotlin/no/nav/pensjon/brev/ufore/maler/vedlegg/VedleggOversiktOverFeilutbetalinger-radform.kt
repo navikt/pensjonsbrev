@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmal
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LanguageSupport
@@ -32,9 +33,11 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbe
 import no.nav.pensjon.brev.ufore.maler.fraser.ResultatAvVurderingenTextMappingStorBokstav
 
 @TemplateModelHelpers
-val oversiktOverFeilutbetalingerPaRadform: AttachmentTemplate<LangBokmal, OversiktOverFeilutbetalingPEDto> =
+val oversiktOverFeilutbetalingerPaRadform: AttachmentTemplate<LangBokmalNynorsk, OversiktOverFeilutbetalingPEDto> =
     createAttachment(
-        title = { text(bokmal { +"Oversikt over feilutbetalinger" }) },
+        title = {
+            text(bokmal { +"Oversikt over feilutbetalinger" },
+                nynorsk { +"Oversikt over feilutbetalingar" }) },
         includeSakspart = true,
     ) {
         includePhrase(
@@ -49,64 +52,70 @@ val oversiktOverFeilutbetalingerPaRadform: AttachmentTemplate<LangBokmal, Oversi
         title1 {
             text(
                 bokmal { +"Detaljert oversikt over perioder med feilutbetalinger" },
+                nynorsk { +"Detaljert oversikt over perioder med feilutbetalingar" },
             )
         }
         ifNotNull(feilutbetalingPerArListe) { feilutbetalingPerArListe ->
 
             paragraph {
-                text(bokmal { +"Alle beløp er i norske kroner. Eventuelle renter kommer i tillegg. Se " })
-                text(bokmal { +"rentetillegg " }, FontType.ITALIC)
-                text(bokmal { +"I tabellen over" })
+                text(
+                    bokmal { +"Alle beløp er i norske kroner. Eventuelle renter kommer i tillegg. Se " },
+                    nynorsk { +"Alle beløp er i norske kroner. Eventuelle renter kjem i tillegg. Sjå " })
+                text(bokmal { +"rentetillegg " }, nynorsk { +"rentetillegg " }, fontType = FontType.ITALIC)
+                text(bokmal { +"I tabellen over" }, nynorsk { +"I tabellen over" })
             }
             forEach(feilutbetalingPerArListe) { feilutbetalingPerAr ->
                 title2 {
-                    text(bokmal { +"Detaljert oversikt over feilutbetalinger i " + feilutbetalingPerAr.ar.format() })
+                    text(
+                        bokmal { +"Detaljert oversikt over feilutbetalinger i " + feilutbetalingPerAr.ar.format() },
+                        nynorsk { +"Detaljert oversikt over feilutbetalingar i " + feilutbetalingPerAr.ar.format() }
+                    )
                 }
                 paragraph {
                     table(
                         header = {
                             column {
-                                text(bokmal { + "Måned" })
+                                text(bokmal { + "Måned" }, nynorsk { + "Månad" })
                             }
                             column {
-                                text(bokmal { + "Resultat" })
+                                text(bokmal { + "Resultat" }, nynorsk { + "Resultat" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { + "Utbetaling før skatt" })
+                                text(bokmal { + "Utbetaling før skatt" }, nynorsk { + "Utbetaling før skatt" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { + "Feilutbetalt beløp" })
+                                text(bokmal { + "Feilutbetalt beløp" }, nynorsk { + "Feilutbetalt beløp" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { + "Sum vi krever tilbake fra skatteetaten" })
+                                text(bokmal { + "Sum vi krever tilbake fra skatteetaten" }, nynorsk { + "Sum vi krev tilbake frå skatteetaten" })
                             }
                             column(alignment = RIGHT) {
-                                text(bokmal { + "Sum vi krever tilbake fra deg" })
+                                text(bokmal { + "Sum vi krever tilbake fra deg" }, nynorsk { + "Sum vi krev tilbake frå deg" })
                             }
                         }
                     ) {
                         forEach(feilutbetalingPerAr.feilutbetalingManed) { feilutbetalingManed ->
                             row {
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.maned.format() })
+                                    text(bokmal { + feilutbetalingManed.maned.format() }, nynorsk { + feilutbetalingManed.maned.format() })
                                 }
                                 cell {
                                     ifNotNull(feilutbetalingManed.resultat) {resultat ->
                                         includePhrase(ResultatAvVurderingenTextMappingStorBokstav(resultat))
-                                    }.orShow { text(bokmal { + "-" }) }
+                                    }.orShow { text(bokmal { + "-" }, nynorsk { + "-" }) }
 
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.opprinneligBrutto.format(CurrencyFormat)})
+                                    text(bokmal { + feilutbetalingManed.opprinneligBrutto.format(CurrencyFormat) }, nynorsk { + feilutbetalingManed.opprinneligBrutto.format(CurrencyFormat) })
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.feilutbetaltBelop.format(CurrencyFormat) })
+                                    text(bokmal { + feilutbetalingManed.feilutbetaltBelop.format(CurrencyFormat) }, nynorsk { + feilutbetalingManed.feilutbetaltBelop.format(CurrencyFormat) })
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.skatt.format(CurrencyFormat) + " kr" })
+                                    text(bokmal { + feilutbetalingManed.skatt.format(CurrencyFormat) + " kr" }, nynorsk { + feilutbetalingManed.skatt.format(CurrencyFormat) + " kr" })
                                 }
                                 cell {
-                                    text(bokmal { + feilutbetalingManed.nettobelop.format(CurrencyFormat) + " kr" }, FontType.BOLD)
+                                    text(bokmal { + feilutbetalingManed.nettobelop.format(CurrencyFormat) + " kr" }, nynorsk { + feilutbetalingManed.nettobelop.format(CurrencyFormat) + " kr" }, fontType = FontType.BOLD)
                                 }
                             }
                         }
@@ -122,33 +131,36 @@ private class TotalbeloepTabell(
     val nettoTilbakekrevdTotalbelop: Expression<Int>,
     val rentetilleggSomInnkrevesBelop: Expression<Int>,
     val skattefradragSomInnkrevesTotalbelop: Expression<Int>
-) : OutlinePhrase<LangBokmal>() {
-    override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
+) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(
                 header = {
                     column(columnSpan = 3) {
-                        text(bokmal { + "Beløp som skal kreves tilbake i hele feilutbetalingsperioden" })
+                        text(
+                            bokmal { + "Beløp som skal kreves tilbake i hele feilutbetalingsperioden" },
+                            nynorsk { + "Beløp som skal krevast tilbake i heile feilutbetalingsperioden" }
+                        )
                     }
                     column(columnSpan = 1, alignment = RIGHT) {}
                 }
             ) {
                 row {
                     cell {
-                        text(bokmal { + "Brutto tilbakekreving" })
+                        text(bokmal { + "Brutto tilbakekreving" }, nynorsk { + "Brutto tilbakekreving" })
                     }
                     cell {
-                        text(bokmal { +bruttoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " })
+                        text(bokmal { +bruttoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " }, nynorsk { +bruttoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " })
                     }
                 }
                 row {
                     cell {
                         text(
-                            bokmal { + "- Fradrag skatt" },
+                            bokmal { + "- Fradrag skatt" }, nynorsk { + "- Fradrag skatt" },
                         )
                     }
                     cell {
-                        text(bokmal { +skattefradragSomInnkrevesTotalbelop.format(CurrencyFormat) + " kr " })
+                        text(bokmal { +skattefradragSomInnkrevesTotalbelop.format(CurrencyFormat) + " kr " }, nynorsk { +skattefradragSomInnkrevesTotalbelop.format(CurrencyFormat) + " kr " })
                     }
                 }
 
@@ -156,21 +168,22 @@ private class TotalbeloepTabell(
                     cell {
                         text(
                             bokmal { + "Netto tilbakekreving" },
+                            nynorsk { + "Netto tilbakekreving" },
                             fontType = FontType.BOLD,
                         )
                     }
                     cell {
-                        text(bokmal { +nettoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " })
+                        text(bokmal { +nettoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " }, nynorsk { +nettoTilbakekrevdTotalbelop.format(CurrencyFormat) + " kr " })
                     }
                 }
                 row {
                     cell {
                         text(
-                            bokmal { + "+ Rentetillegg" },
+                            bokmal { + "+ Rentetillegg" }, nynorsk { + "+ Rentetillegg" },
                         )
                     }
                     cell {
-                        text(bokmal { +rentetilleggSomInnkrevesBelop.format(CurrencyFormat) + " kr " })
+                        text(bokmal { + rentetilleggSomInnkrevesBelop.format(CurrencyFormat) + " kr " }, nynorsk { + rentetilleggSomInnkrevesBelop.format(CurrencyFormat) + " kr " })
                     }
                 }
             }
