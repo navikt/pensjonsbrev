@@ -163,13 +163,17 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
-      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: getBrev.queryKey(props.brev.id),
+      });
     },
   });
 
   const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
+      endreDistribusjonstype(props.saksId, props.brev.id, {
+        distribusjon: distribusjonstype,
+      }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
@@ -237,7 +241,15 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           data-cy="brevbehandler-distribusjonstype"
           description={
             <HStack align="center">
-              Distribusjon
+              <BodyShort
+                css={css`
+                  color: inherit;
+                `}
+                size="small"
+                weight="semibold"
+              >
+                Distribusjon
+              </BodyShort>
               {distribusjonstypeMutation.isPending && <Loader size="small" />}
               {distribusjonstypeMutation.isError && (
                 <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
