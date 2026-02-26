@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten
 
 import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.*
 
