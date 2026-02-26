@@ -217,14 +217,18 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
             }
             is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
-                first.eval(scope)?.let { lagVariabel(scope, fontType, it as String, tags - ElementTags.FRITEKST) }
-                    ?: lagLiteral(scope, fontType, setOf(ElementTags.FRITEKST))
+                val evaluert = (operation as BinaryOperation.BrevdataEllerFritekst).eval(first, second, scope)
+                if (evaluert.erFritekst) {
+                    lagLiteral(scope, fontType, evaluert.text, setOf(ElementTags.FRITEKST))
+                } else {
+                    lagVariabel(scope, fontType, evaluert.text, tags - ElementTags.FRITEKST)
+                }
             }
             else -> lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
 
-    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, tags: Set<ElementTags> = this.tags) =
-        listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tags: Set<ElementTags> = this.tags) =
+        listOf(LiteralImpl(stableHashCode(), text, fontType, tags))
 
     private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tags: Set<ElementTags> = this.tags) =
         listOf(VariableImpl(stableHashCode(), text, fontType, tags))

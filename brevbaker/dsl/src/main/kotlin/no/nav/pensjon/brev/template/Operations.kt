@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
@@ -154,7 +155,13 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object BrevdataEllerFritekst : BinaryOperation<String?, String, String>(), StableHash by StableHash.of("BinaryOperation.BrevdataEllerFritekst") {
         override fun apply(first: String?, second: String): String = first ?: second
+        @OptIn(InterneDataklasser::class)
+        fun eval(first: Expression<*>, second: Expression<*>, scope: ExpressionScope<*>): Evaluering =
+            first.eval(scope)?.let { Evaluering(erFritekst = false, text = it as String) } ?: Evaluering(erFritekst = true, text = second.eval(scope) as String)
     }
+
+    @InterneDataklasser
+    class Evaluering(val erFritekst: Boolean, val text: String)
 
     object IntMinus : BinaryOperation<Int, Int, Int>(Documentation("-", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntMinus") {
         override fun apply(first: Int, second: Int): Int = first - second
