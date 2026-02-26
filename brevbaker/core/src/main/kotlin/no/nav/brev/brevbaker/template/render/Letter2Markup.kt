@@ -21,7 +21,7 @@ import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>){
+class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -210,17 +210,22 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
         if (this is Expression.Literal) {
-            listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+            lagLiteral(scope, fontType)
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.BrevdataEllerFritekst) {
-            first.eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it as String, fontType, tags - ElementTags.FRITEKST)) }
-                ?: listOf(LiteralImpl(stableHashCode(), second.eval(scope) as String, fontType, setOf(ElementTags.FRITEKST)))
+            first.eval(scope)?.let { lagVariabel(scope, fontType, it as String, tags - ElementTags.FRITEKST)} ?: lagLiteral(scope, fontType, setOf(ElementTags.FRITEKST))
         } else {
-            listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
+            lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
+
+    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, tags: Set<ElementTags> = this.tags) =
+        listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
+
+    private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tags: Set<ElementTags> = this.tags) =
+        listOf(VariableImpl(stableHashCode(), text, fontType, tags))
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =
         fold(emptyList()) { acc, current ->
