@@ -224,6 +224,9 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                     lagVariabel(scope, fontType, text, tags - ElementTags.FRITEKST)
                 }
             }
+            is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.RedigerbarData -> {
+                lagLiteral(scope, fontType, eval(scope), tags + ElementTags.REDIGERBAR_DATA)
+            }
             else -> lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
 

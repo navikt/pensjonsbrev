@@ -48,6 +48,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
+    object RedigerbarData : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.RedigerbarData") {
+        override fun apply(input: String): String = input
+    }
+
     class MapValue<In, Out> internal constructor(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
         override fun apply(input: In): Out = mapper.apply(input)
         override fun stableHashCode(): Int = StableHash.of(StableHash.of("UnaryOperation.MapValue"), mapper).stableHashCode()

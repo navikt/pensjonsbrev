@@ -283,6 +283,8 @@ object TemplateDocumentationRenderer {
 
             is UnaryOperation.MapValue<*, *> -> Operation(operation.mapper.name, Documentation.Notation.FUNCTION)
 
+            is UnaryOperation.RedigerbarData -> Operation("redigerbarData", Documentation.Notation.FUNCTION)
+
         }
 
     private fun renderOperation(operation: BinaryOperation<*, *, *>): Operation =

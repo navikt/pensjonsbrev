@@ -62,13 +62,20 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             ?.let { Fritekst(it) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
-    fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
-        ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
+    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData {
+        return RedigerbarData(variabel)
+    }
 }
 
 @JvmInline
 value class Fritekst(val str: String) {
     fun somExpression() = Literal(str, tags = setOf(ElementTags.FRITEKST))
+    override fun toString(): String = throw PreventToStringForExpressionException()
+}
+
+@JvmInline
+value class RedigerbarData(val variabel: StringExpression) {
+    fun somExpression(): StringExpression = Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
