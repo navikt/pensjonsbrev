@@ -68,7 +68,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
     fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
         ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
 
-    fun TemplateGlobalScope<LetterData>.brevdataEllerFritekst(tekst: Expression<String?>, fritekst: String): BrevdataEllerFritekst = BrevdataEllerFritekst(tekst, Expression.Fritekst(fritekst))
+    fun TemplateGlobalScope<LetterData>.brevdataEllerFritekst(tekst: Expression<String?>, fritekst: String): BrevdataEllerFritekst = BrevdataEllerFritekst(tekst, Fritekst(fritekst).somExpression())
 }
 
 @JvmInline
@@ -78,7 +78,7 @@ value class Fritekst(val str: String) {
 }
 
 class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) {
-    fun somExpression() = Expression.BinaryInvoke<String?, String, String>(tekst, fritekst, BinaryOperation.BrevdataEllerFritekst) // tekst.ifNull(fritekst.somExpression()) //ifElse(tekst.notNull(), tekst, fritekst.somExpression())
+    fun somExpression() = Expression.BinaryInvoke(tekst, fritekst, BinaryOperation.BrevdataEllerFritekst)
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {
