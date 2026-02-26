@@ -858,7 +858,6 @@ public final class no/nav/pensjon/brev/template/PreventToStringForExpressionExce
 }
 
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate {
-	public fun brevdataEllerFritekst (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;
 	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
@@ -869,7 +868,6 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 }
 
 public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls {
-	public static fun brevdataEllerFritekst (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;
 	public static fun createTemplate (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lkotlin/reflect/KClass;Lno/nav/pensjon/brev/template/LanguageSupport;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/LetterTemplate;
 	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
@@ -1409,6 +1407,7 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun ifElse (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun ifNull (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun ifNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun ifNull-okHpgYs (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;
 	public static final fun isNotAnyOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
