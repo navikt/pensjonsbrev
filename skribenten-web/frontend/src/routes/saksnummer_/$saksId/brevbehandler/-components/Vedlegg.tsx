@@ -62,7 +62,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
       oppdaterVedlegg(props.saksId, props.brev.id, { valgteVedlegg: vedlegg }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
       handleCloseModal();
     },
   });
@@ -74,7 +76,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
       }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
-      queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: hentPdfForBrev.queryKey(props.brev.id),
+      });
     },
   });
 
@@ -124,6 +128,16 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           {getErrorMessage(error)}
         </Alert>
       </div>
+    );
+  }
+
+  if (props.erLaast && !hasVedleggToShow) {
+    return (
+      <VStack gap="space-8">
+        <BodyShort size="small" weight="semibold">
+          Ingen vedlegg
+        </BodyShort>
+      </VStack>
     );
   }
 
