@@ -140,8 +140,6 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
             return value == other.value && operation == other.operation && tags == other.tags
         }
         override fun hashCode() = Objects.hash(value, operation, tags)
-
-        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
