@@ -216,8 +216,8 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
         } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.BrevdataEllerFritekst) {
-            first.eval(scope)?.let { VariableImpl(stableHashCode(), it as String, fontType, tags - ElementTags.FRITEKST) }?.let { listOf(it) }
-                ?: listOf(LiteralImpl(stableHashCode(), second.eval(scope) as String, fontType, tags + ElementTags.FRITEKST))
+            first.eval(scope)?.let { listOf(VariableImpl(stableHashCode(), it as String, fontType, tags - ElementTags.FRITEKST)) }
+                ?: listOf(LiteralImpl(stableHashCode(), second.eval(scope) as String, fontType, setOf(ElementTags.FRITEKST)))
         } else {
             listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
         }.mergeLiterals(fontType)

@@ -101,6 +101,13 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$And : no/nav/pen
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst;
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/BinaryOperation$Concat : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Concat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -253,10 +260,10 @@ public final class no/nav/pensjon/brev/template/BrevTemplateKt {
 }
 
 public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst {
-	public synthetic fun <init> (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
-	public final fun getFritekst-3xGB-Uc ()Ljava/lang/String;
+	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
+	public final fun getFritekst ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
-	public final fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
+	public final fun somExpression ()Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
 }
 
 public abstract class no/nav/pensjon/brev/template/ContentOrControlStructure : no/nav/pensjon/brev/template/StableHash {
