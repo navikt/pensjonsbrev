@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -29,7 +29,7 @@ interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dt
 class OpprettBrevHandlerImpl(
     private val opprettBrevPolicy: OpprettBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-    private val renderService: RenderService,
+    private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
 ) : OpprettBrevHandler {
@@ -58,7 +58,7 @@ class OpprettBrevHandlerImpl(
             signatur = SignerendeSaksbehandlere(saksbehandler = principal.hentSignatur(navansattService)),
         )
 
-        val rendretBrev = renderService.renderMarkup(
+        val rendretBrev = brevmalService.renderMarkup(
             brevkode = request.brevkode,
             spraak = request.spraak,
             saksbehandlerValg = request.saksbehandlerValg,

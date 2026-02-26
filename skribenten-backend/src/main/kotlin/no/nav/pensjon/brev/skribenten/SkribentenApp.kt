@@ -25,7 +25,6 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
@@ -36,7 +35,7 @@ import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.services.P1Exception
-import no.nav.pensjon.brev.skribenten.services.PenDataException
+import no.nav.pensjon.brev.skribenten.fagsystem.PenDataException
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes

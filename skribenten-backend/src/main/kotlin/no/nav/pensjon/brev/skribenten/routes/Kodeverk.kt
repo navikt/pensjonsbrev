@@ -5,7 +5,7 @@ import io.ktor.http.content.*
 import io.ktor.server.plugins.cachingheaders.*
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 
 fun Route.kodeverkRoute(penService: PenService) {
     route("/kodeverk") {

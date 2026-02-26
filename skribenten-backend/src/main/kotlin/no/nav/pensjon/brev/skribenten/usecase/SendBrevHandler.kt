@@ -4,13 +4,13 @@ import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toPen
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import java.sql.Connection
@@ -18,7 +18,7 @@ import java.sql.Connection
 class SendBrevHandler(
     private val sendBrevPolicy: SendBrevPolicy,
     private val penService: PenService,
-    private val brevbakerService: BrevbakerService,
+    private val brevmalService: BrevmalService,
 ) : BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> {
 
     data class Request(
@@ -30,7 +30,7 @@ class SendBrevHandler(
         val document = brev.document ?: return null
 
         sendBrevPolicy.kanSende(brev, document).onError { return failure(it) }
-        val template = brevbakerService.getRedigerbarTemplate(brev.brevkode)
+        val template = brevmalService.getRedigerbarTemplate(brev.brevkode)
             ?: return failure(BrevmalFinnesIkke(brev.brevkode))
 
         val response = penService.sendbrev(

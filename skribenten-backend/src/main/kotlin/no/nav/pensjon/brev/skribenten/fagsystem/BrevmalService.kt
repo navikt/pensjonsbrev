@@ -1,26 +1,69 @@
-package no.nav.pensjon.brev.skribenten.services
+package no.nav.pensjon.brev.skribenten.fagsystem
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.LetterMetadata
-import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.VedtaksId
+import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
+import no.nav.pensjon.brev.skribenten.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.services.BrevdataDto
+import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
 
 class BrevmalService(
+    private val brevbakerService: BrevbakerService,
     private val penService: PenService,
     private val brevmetadataService: BrevmetadataService,
-    private val brevbakerService: BrevbakerService,
 ) {
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
+
+    suspend fun renderMarkup(
+        brevkode: Brevkode.Redigerbart,
+        spraak: LanguageCode,
+        saksbehandlerValg: SaksbehandlerValg,
+        pesysData: BrevdataResponse.Data
+    ): LetterMarkupWithDataUsage =
+        brevbakerService.renderMarkup(
+            brevkode = brevkode,
+            spraak = spraak,
+            brevdata = GeneriskRedigerbarBrevdata(
+                pesysData = pesysData.brevdata,
+                saksbehandlerValg = saksbehandlerValg,
+            ),
+            felles = pesysData.felles
+        )
+
+    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
+        renderMarkup(
+            brevkode = brev.brevkode,
+            spraak = brev.spraak,
+            saksbehandlerValg = brev.saksbehandlerValg,
+            pesysData = pesysData,
+        )
+
+    suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart): TemplateDescription.Redigerbar? =
+        brevbakerService.getRedigerbarTemplate(brevkode)
+
+    suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
+        brevbakerService.getModelSpecification(brevkode)
+
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
+        brevbakerService.getAlltidValgbareVedlegg(brevId)
+
+    suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
+        brevbakerService.getTemplates()
 
     suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
         hentAlleMaler(includeEblanketter).toList()
@@ -87,6 +130,6 @@ class BrevmalService(
             .map { it.toApi() }
 
     private suspend fun hentBrevbakerMaler(): List<TemplateDescription.Redigerbar> =
-        brevbakerService.getTemplates() ?: emptyList()
+        getTemplates() ?: emptyList()
 
 }

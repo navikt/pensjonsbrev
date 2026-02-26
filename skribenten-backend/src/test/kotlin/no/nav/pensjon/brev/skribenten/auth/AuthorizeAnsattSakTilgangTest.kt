@@ -27,7 +27,7 @@ import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PdlServiceException
 import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
-import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brevbaker.api.model.Pid

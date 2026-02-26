@@ -11,14 +11,16 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.BrevdataResponse.Data
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -90,7 +92,14 @@ abstract class BrevredigeringTest {
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
     private val brevredigeringService: BrevredigeringService = BrevredigeringService()
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(
+        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
+        penService = penService,
+        samhandlerService = samhandlerService,
+        navansattService = navAnsattService,
+        p1Service = FakeP1Service(),
+        renderService = RenderService(brevbakerService)
+    )
 
     protected companion object Fixtures {
         init {

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.fagsystem.services
+package no.nav.pensjon.brev.skribenten.fagsystem
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
@@ -6,9 +6,7 @@ import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
-import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 

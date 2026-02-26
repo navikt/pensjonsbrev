@@ -9,6 +9,8 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -17,7 +19,6 @@ import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
-    brevbakerService: BrevbakerService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
@@ -134,6 +135,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevbakerService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
+        sakBrev(brevmalService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
     }
 }

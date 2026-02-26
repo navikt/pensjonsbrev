@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.ExternalAPI
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -11,7 +12,7 @@ import org.slf4j.LoggerFactory
 class ExternalAPIService(
     config: Config,
     private val hentBrevService: HentBrevService,
-    private val brevbakerService: BrevbakerService
+    private val brevmalService: BrevmalService
 ) {
     private val skribentenWebUrl = config.getString("skribentenWebUrl")
 
@@ -21,7 +22,7 @@ class ExternalAPIService(
 
     suspend fun hentAlleBrevForSaker(saksIder: Set<SaksId>): List<ExternalAPI.BrevInfo> {
         val alleBrev = hentBrevService.hentBrevForAlleSaker(saksIder)
-        val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevbakerService.getRedigerbarTemplate(it) }
+        val maler = alleBrev.map { it.brevkode }.toSet().associateWith { brevmalService.getRedigerbarTemplate(it) }
 
         return alleBrev.mapNotNull { it.toExternal(maler[it.brevkode]) }
     }

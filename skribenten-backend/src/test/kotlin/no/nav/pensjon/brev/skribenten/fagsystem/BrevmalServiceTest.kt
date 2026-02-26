@@ -1,20 +1,23 @@
-package no.nav.pensjon.brev.skribenten.services
+package no.nav.pensjon.brev.skribenten.fagsystem
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
+import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
 import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
-import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ListAssert
 import org.junit.jupiter.api.Test
@@ -28,10 +31,10 @@ class BrevmalServiceTest {
             name = "brevbaker mal",
             letterDataClass = EmptyRedigerbarBrevdata::class.java.name,
             languages = listOf(LanguageCode.BOKMAL),
-            metadata = no.nav.pensjon.brevbaker.api.model.LetterMetadata(
+            metadata = LetterMetadata(
                 "brevbaker brev",
-                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG,
-                no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+                LetterMetadata.Distribusjonstype.VIKTIG,
+                LetterMetadata.Brevtype.INFORMASJONSBREV
             ),
             kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
             brevkontekst = TemplateDescription.Brevkontekst.ALLE,
@@ -42,9 +45,10 @@ class BrevmalServiceTest {
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
     private fun lagBrevmalService(
-        service: PenService = PenServiceStub(),
+        penService: PenService = PenServiceStub(),
         brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
-    ): BrevmalService = BrevmalService(service, brevmetadataService, brevbakerService)
+    ): BrevmalService = BrevmalService(brevbakerService, penService, brevmetadataService)
+
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
         dekode = "dekode",
@@ -192,9 +196,11 @@ class BrevmalServiceTest {
         assertThatBrevmalerInSakskontekst(listOf(brevdataDto))
 
     private fun assertThatBrevmalerInSakskontekst(brevdataDto: List<BrevdataDto>) = runBlocking {
-        val brevmaler = lagBrevmalService(brevmetadataService = FakeBrevmetadataService(
-            brevmaler = brevdataDto,
-        )).hentBrevmalerForSak(Sakstype("UFOREP"), false)
+        val brevmaler = lagBrevmalService(
+            brevmetadataService = FakeBrevmetadataService(
+                brevmaler = brevdataDto,
+            )
+        ).hentBrevmalerForSak(Sakstype("UFOREP"), false)
         return@runBlocking assertThat(brevmaler)
     }
 }

@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.routes.brevId
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
-import no.nav.pensjon.brev.skribenten.services.PenService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 import org.slf4j.LoggerFactory
 
 const val SAKSID_PARAM = "saksId"

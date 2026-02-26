@@ -5,6 +5,7 @@ import kotlinx.coroutines.runBlocking
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
@@ -59,7 +60,11 @@ class ExternalAPIServiceTest {
         hentBrevService = object : HentBrevService {
             override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevDto)
         },
-        brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal))
+        brevmalService = BrevmalService(
+            brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
+            penService = PenServiceStub(),
+            brevmetadataService = FakeBrevmetadataService(),
+        )
     )
 
 

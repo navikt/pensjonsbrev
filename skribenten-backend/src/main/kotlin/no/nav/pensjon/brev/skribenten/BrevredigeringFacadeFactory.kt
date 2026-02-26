@@ -1,25 +1,30 @@
 package no.nav.pensjon.brev.skribenten
 
-import no.nav.pensjon.brev.skribenten.domain.*
-import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.domain.*
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.P1Service
+import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brev.skribenten.usecase.*
 
 object BrevredigeringFacadeFactory {
 
     fun create(
-        brevbakerService: BrevbakerService,
+        brevmalService: BrevmalService,
         penService: PenService,
         samhandlerService: SamhandlerService,
         navansattService: NavansattService,
         p1Service: P1Service,
+        renderService: RenderService,
     ): BrevredigeringFacade {
-        val renderService = RenderService(brevbakerService)
         val brevdataService = BrevdataService(penService, samhandlerService)
 
         val redigerBrevPolicy = RedigerBrevPolicy()
-        val opprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService)
+        val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService)
         val brevreservasjonPolicy = BrevreservasjonPolicy()
         val attesterBrevPolicy = AttesterBrevPolicy()
         val ferdigRedigertPolicy = FerdigRedigertPolicy()
@@ -29,26 +34,26 @@ object BrevredigeringFacadeFactory {
             opprettBrev = OpprettBrevHandlerImpl(
                 opprettBrevPolicy = opprettBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 navansattService = navansattService,
             ),
             oppdaterBrev = OppdaterBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             hentBrev = HentBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             hentBrevAttestering = HentBrevAttesteringHandler(
                 attesterBrevPolicy = attesterBrevPolicy,
                 redigerBrevPolicy = redigerBrevPolicy,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 navansattService = navansattService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
@@ -73,20 +78,20 @@ object BrevredigeringFacadeFactory {
             hentEllerOpprettPdf = HentEllerOpprettPdfHandler(
                 brevdataService = brevdataService,
                 renderService = renderService,
+                brevmalService = brevmalService,
                 p1Service = p1Service,
             ),
             attesterBrev = AttesterBrevHandler(
                 attesterBrevPolicy = attesterBrevPolicy,
                 redigerBrevPolicy = redigerBrevPolicy,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 navansattService = navansattService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             tilbakestillBrev = TilbakestillBrevHandler(
                 redigerBrevPolicy = redigerBrevPolicy,
-                brevbakerService = brevbakerService,
-                renderService = renderService,
+                brevmalService = brevmalService,
                 brevdataService = brevdataService,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
@@ -97,7 +102,7 @@ object BrevredigeringFacadeFactory {
             sendBrev = SendBrevHandler(
                 sendBrevPolicy = sendBrevPolicy,
                 penService = penService,
-                brevbakerService = brevbakerService,
+                brevmalService = brevmalService,
             ),
             brevreservasjonPolicy = brevreservasjonPolicy,
         )

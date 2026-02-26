@@ -4,8 +4,8 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.NavansattService
 import no.nav.pensjon.brev.skribenten.usecase.OpprettBrevHandlerImpl
@@ -15,7 +15,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 class OpprettBrevPolicy(
-    private val brevbakerService: BrevbakerService,
+    private val brevmalService: BrevmalService,
     private val navansattService: NavansattService,
 ) {
 
@@ -27,7 +27,7 @@ class OpprettBrevPolicy(
             return failure(IkkeTilgangTilEnhet(enhetsId = request.avsenderEnhetsId))
         }
 
-        val template = brevbakerService.getRedigerbarTemplate(request.brevkode)
+        val template = brevmalService.getRedigerbarTemplate(request.brevkode)
         if (template == null) {
             return failure(BrevmalFinnesIkke(request.brevkode))
         } else if (template.isVedtakKontekst && request.vedtaksId == null) {

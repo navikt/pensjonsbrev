@@ -7,15 +7,17 @@ import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.P1Service
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class HentEllerOpprettPdfHandler(
     private val brevdataService: BrevdataService,
     private val renderService: RenderService,
+    private val brevmalService: BrevmalService,
     private val p1Service: P1Service,
 ) : BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult> {
 
@@ -36,7 +38,7 @@ class HentEllerOpprettPdfHandler(
         } else {
             // Sjekk om innholdet i brevet har endret seg. Kan skje om pesysdata har endret seg.
             // Grunnen til at vi kun sjekker blocks er at det er kun om det er endringer i selve innholdet at saksbehandler trenger å ta stilling til det.
-            val rendretBrevErEndret = renderService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
+            val rendretBrevErEndret = brevmalService.renderMarkup(brev, pesysBrevdata).let { rendretBrev ->
                 brev.redigertBrev.updateEditedLetter(rendretBrev.markup).blocks != brev.redigertBrev.blocks
             }
 

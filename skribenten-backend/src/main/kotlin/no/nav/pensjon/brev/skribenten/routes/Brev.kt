@@ -5,6 +5,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
+import no.nav.pensjon.brev.skribenten.fagsystem.PenService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.services.*

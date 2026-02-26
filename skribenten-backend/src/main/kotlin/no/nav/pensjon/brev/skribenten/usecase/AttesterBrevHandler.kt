@@ -8,15 +8,15 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
-    private val renderService: RenderService,
+    private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val navansattService: NavansattService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
@@ -45,7 +45,7 @@ class AttesterBrevHandler(
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = renderService.renderMarkup(brev, pesysdata)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 
         val attestantSignatur = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn

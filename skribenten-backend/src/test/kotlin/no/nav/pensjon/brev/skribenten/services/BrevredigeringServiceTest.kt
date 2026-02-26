@@ -12,13 +12,13 @@ import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
@@ -26,7 +26,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.LocalDate
@@ -232,11 +231,12 @@ class BrevredigeringServiceTest {
     private val brevredigeringService: BrevredigeringService = BrevredigeringService()
 
     private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
-        brevbakerService = brevbakerService,
+        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
         penService = penService,
         samhandlerService = FakeSamhandlerService(),
         navansattService = navAnsattService,
-        p1Service = FakeP1Service()
+        p1Service = FakeP1Service(),
+        renderService = RenderService(brevbakerService)
     )
 
     private val bestillBrevresponse = Pen.BestillBrevResponse(JournalpostId(123), null)

@@ -5,16 +5,14 @@ import no.nav.pensjon.brev.skribenten.domain.*
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class TilbakestillBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
-    private val brevbakerService: BrevbakerService,
-    private val renderService: RenderService,
+    private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> {
@@ -29,12 +27,12 @@ class TilbakestillBrevHandler(
 
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
-        val modelSpec = brevbakerService.getModelSpecification(brev.brevkode)
+        val modelSpec = brevmalService.getModelSpecification(brev.brevkode)
             ?: return failure(BrevmalFinnesIkke(brev.brevkode))
         brev.tilbakestillSaksbehandlerValg(modelSpec)
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = renderService.renderMarkup(brev, pesysdata)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))

@@ -10,7 +10,11 @@ import no.nav.pensjon.brev.skribenten.auth.AzureADService
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
+import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.PenServiceHttp
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -35,13 +39,16 @@ fun Application.configureRouting(
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
     val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
-    val brevmalService = BrevmalService(penService, brevmetadataService, brevbakerService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penService)
     val brevredigeringService = BrevredigeringService()
-    val dto2ApiService = Dto2ApiService(brevbakerService, navansattService, norg2Service, samhandlerService)
-    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevbakerService)
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navansattService, p1Service)
+
+    val brevmalService = BrevmalService(brevbakerService, penService, brevmetadataService)
+    val renderService = RenderService(brevbakerService)
+
+    val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevmalService)
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevmalService, penService, samhandlerService, navansattService, p1Service, renderService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -68,10 +75,9 @@ fun Application.configureRouting(
             )
 
             landRoute()
-            brevmal(brevbakerService, brevmalService)
+            brevmal(brevmalService)
             kodeverkRoute(penService)
             sakRoute(
-                brevbakerService,
                 brevmalService,
                 brevredigeringService,
                 krrService,

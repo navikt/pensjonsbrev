@@ -1,40 +1,11 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
-import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.domain.Brevredigering
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
-import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 
 class RenderService(private val brevbakerService: BrevbakerService) {
-
-    suspend fun renderMarkup(
-        brevkode: Brevkode.Redigerbart,
-        spraak: LanguageCode,
-        saksbehandlerValg: SaksbehandlerValg,
-        pesysData: BrevdataResponse.Data
-    ): LetterMarkupWithDataUsage =
-        brevbakerService.renderMarkup(
-            brevkode = brevkode,
-            spraak = spraak,
-            brevdata = GeneriskRedigerbarBrevdata(
-                pesysData = pesysData.brevdata,
-                saksbehandlerValg = saksbehandlerValg,
-            ),
-            felles = pesysData.felles
-        )
-
-    suspend fun renderMarkup(brev: Brevredigering, pesysData: BrevdataResponse.Data): LetterMarkupWithDataUsage =
-        renderMarkup(
-            brevkode = brev.brevkode,
-            spraak = brev.spraak,
-            saksbehandlerValg = brev.saksbehandlerValg,
-            pesysData = pesysData,
-        )
 
     // TODO: For å kunne støtte forskjellige fagsystem, som selv skal ha eierskap til maler, så må renderPdf ta inn LetterMarkup for brev og vedlegg.
     suspend fun renderPdf(brev: Brevredigering, pesysData: BrevdataResponse.Data): ByteArray =

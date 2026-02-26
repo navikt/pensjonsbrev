@@ -7,14 +7,14 @@ import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.fagsystem.services.BrevdataService
-import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class HentBrevHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
-    private val renderService: RenderService,
+    private val brevmalService: BrevmalService,
     private val brevdataService: BrevdataService,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering> {
@@ -35,7 +35,7 @@ class HentBrevHandler(
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = renderService.renderMarkup(brev, pesysdata)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
