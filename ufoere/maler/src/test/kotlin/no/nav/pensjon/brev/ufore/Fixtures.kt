@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -31,7 +32,6 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.Feilu
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfobrevLovendringer2026Dto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
 import java.time.LocalDate
 import java.time.Month
@@ -62,7 +62,7 @@ object Fixtures : LetterDataFactory {
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
             EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
-            InfobrevLovendringer2026Dto::class -> lagInfobrevLovendringer2026Dto() as T
+            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
@@ -71,8 +71,6 @@ object Fixtures : LetterDataFactory {
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
-
-    private fun lagInfobrevLovendringer2026Dto() = InfobrevLovendringer2026Dto(1)
 
     private fun lagEmptyRedigerbarBrevdata() = EmptyRedigerbarBrevdata
 
