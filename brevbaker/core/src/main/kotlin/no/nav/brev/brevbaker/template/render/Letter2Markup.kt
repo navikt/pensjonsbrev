@@ -219,22 +219,22 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
                 val (erFritekst, text) = (operation as BinaryOperation.BrevdataEllerFritekst).getResultat(first, second, scope)
                 if (erFritekst) {
-                    lagLiteral(scope, fontType, text, setOf(ElementTags.FRITEKST))
+                    lagLiteral(scope, fontType, text, ElementTags.FRITEKST)
                 } else {
-                    lagVariabel(scope, fontType, text, tags - ElementTags.FRITEKST)
+                    lagVariabel(scope, fontType, text)
                 }
             }
             is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.RedigerbarData -> {
-                lagLiteral(scope, fontType, eval(scope), tags + ElementTags.REDIGERBAR_DATA)
+                lagLiteral(scope, fontType, eval(scope), ElementTags.REDIGERBAR_DATA)
             }
             else -> lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
 
-    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tags: Set<ElementTags> = this.tags) =
-        listOf(LiteralImpl(stableHashCode(), text, fontType, tags))
+    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), vararg tags: ElementTags) =
+        listOf(LiteralImpl(stableHashCode(), text, fontType, tags.toSet()))
 
-    private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tags: Set<ElementTags> = this.tags) =
-        listOf(VariableImpl(stableHashCode(), text, fontType, tags))
+    private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope)) =
+        listOf(VariableImpl(stableHashCode(), text, fontType))
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =
         fold(emptyList()) { acc, current ->
