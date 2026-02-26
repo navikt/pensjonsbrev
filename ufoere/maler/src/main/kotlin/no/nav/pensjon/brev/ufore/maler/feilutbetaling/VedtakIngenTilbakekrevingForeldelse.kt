@@ -32,7 +32,7 @@ object VedtakIngenTilbakekrevingForeldelse : RedigerbarTemplate<VedtakFeilutbeta
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak- ingen tilbakekreving av feilutbetalt beløp",
+            displayTitle = "Vedtak- ingen tilbakekreving - foreldelse",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
