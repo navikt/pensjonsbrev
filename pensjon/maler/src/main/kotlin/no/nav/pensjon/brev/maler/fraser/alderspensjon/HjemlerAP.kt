@@ -271,23 +271,3 @@ data class BilateralAvtaleHjemmel(
         }
     }
 }
-
-// TODO: slå saman med den over på eit eller anna vis
-data class BilateralAvtaleHjemmel2(
-    val avtalelandNavn: BrevdataEllerFritekst,
-    val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
-    val erEOSLand: Expression<Boolean>,
-    val harOppfyltVedSammenlegging: Expression<Boolean>,
-) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
-        showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
-            paragraph {
-                text(
-                    bokmal { + "Vedtaket er også gjort etter reglene i trygdeavtalen med " + avtalelandNavn + "." },
-                    nynorsk { + "Vedtaket er også gjort etter reglane i trygdeavtalen med " + avtalelandNavn + "." },
-                    english { + "This decision was also made pursuant the provisions of the Social Security Agreement with " + avtalelandNavn + "." }
-                )
-            }
-        }
-    }
-}

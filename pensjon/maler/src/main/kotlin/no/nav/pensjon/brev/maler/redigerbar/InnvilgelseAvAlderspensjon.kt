@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel2
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
@@ -406,8 +406,8 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel2(
-                    avtalelandNavn.ifNull(fritekst("avtaleland")),
+                BilateralAvtaleHjemmel(
+                    avtalelandNavn.ifNull(fritekst("avtaleland")).somExpression(),
                     eksportTrygdeavtaleAvtaleland,
                     erEOSLand,
                     harOppfyltVedSammenlegging
