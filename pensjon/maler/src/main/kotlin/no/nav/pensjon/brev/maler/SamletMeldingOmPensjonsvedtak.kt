@@ -49,7 +49,7 @@ object SamletMeldingOmPensjonsvedtak : RedigerbarTemplate<SamletMeldingOmPensjon
             )
         }
         outline {
-            val sakstype = brevdataEllerFritekst(pesysData.sakstype.format(), "sakstype")
+            val sakstype = pesysData.sakstype.format().ifNull(fritekst("sakstype"))
 
             title1 {
                 text(

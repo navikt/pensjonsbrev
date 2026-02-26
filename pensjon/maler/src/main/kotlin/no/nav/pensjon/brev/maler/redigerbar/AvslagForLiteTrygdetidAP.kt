@@ -55,8 +55,8 @@ object AvslagForLiteTrygdetidAP : RedigerbarTemplate<AvslagForLiteTrygdetidAPDto
         )
     ) {
         val avslagsBegrunnelse = pesysData.vedtaksBegrunnelse
-        val avtaleland = brevdataEllerFritekst(pesysData.avtaleland, "angi avtaleland")
-        val bostedsland = brevdataEllerFritekst(pesysData.bostedsland, "angi bostedsland")
+        val avtaleland = pesysData.avtaleland.ifNull(fritekst("angi avtaleland"))
+        val bostedsland = pesysData.bostedsland.ifNull(fritekst("angi bostedsland"))
         val erAvtaleland = pesysData.avtaleland.notNull()
         val erEOSland = pesysData.erEOSland
         val trygdeperioderAvtaleland = pesysData.trygdeperioderAvtaleland
