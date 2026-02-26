@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
@@ -214,6 +215,9 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
             @Suppress("UNCHECKED_CAST")
             (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
+        } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.BrevdataEllerFritekst) {
+            first.eval(scope)?.let { VariableImpl(stableHashCode(), it as String, fontType, tags - ElementTags.FRITEKST) }?.let { listOf(it) }
+                ?: listOf(LiteralImpl(stableHashCode(), second.eval(scope) as String, fontType, tags + ElementTags.FRITEKST))
         } else {
             listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
         }.mergeLiterals(fontType)

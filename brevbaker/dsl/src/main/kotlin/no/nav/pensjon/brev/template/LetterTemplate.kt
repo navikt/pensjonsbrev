@@ -55,6 +55,12 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
+    class Fritekst @InternKonstruktoer constructor(val str: String) : Expression<String>(tags = setOf(ElementTags.FRITEKST)) {
+        override fun eval(scope: ExpressionScope<*>): String = str
+
+        override fun stableHashCode() = StableHash.of(str).stableHashCode()
+    }
+
     class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()

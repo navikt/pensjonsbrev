@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
-import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.Kroner
 import java.util.Objects
@@ -151,6 +150,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object Concat : BinaryOperation<String, String, String>(), StableHash by StableHash.of("BinaryOperation.Concat") {
         override fun apply(first: String, second: String): String = first + second
+    }
+
+    object BrevdataEllerFritekst : BinaryOperation<String?, String, String>(), StableHash by StableHash.of("BinaryOperation.BrevdataEllerFritekst") {
+        override fun apply(first: String?, second: String): String = first ?: second
     }
 
     object IntMinus : BinaryOperation<Int, Int, Int>(Documentation("-", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntMinus") {
