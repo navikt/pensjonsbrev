@@ -39,6 +39,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndring
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OkningUforegrad
+import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
@@ -153,6 +154,7 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         InnvilgelseAvAlderspensjon,
         InnvilgelseAvAlderspensjonTrygdeavtale,
+        OmregningUfoerepensjonTilUfoeretrygd,
         OmsorgEgenManuell,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
