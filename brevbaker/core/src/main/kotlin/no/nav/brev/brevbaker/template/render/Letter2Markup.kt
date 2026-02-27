@@ -230,7 +230,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }.mergeLiterals(fontType)
 
     private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tag: ElementTags? = null) =
-        listOf(LiteralImpl(stableHashCode(), text, fontType, tag?.let { setOf(it) } ?: setOf()))
+        listOf(LiteralImpl(stableHashCode(), text, fontType, tag?.let { setOf(it) } ?: emptySet()))
 
     private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope)) =
         listOf(VariableImpl(stableHashCode(), text, fontType))
