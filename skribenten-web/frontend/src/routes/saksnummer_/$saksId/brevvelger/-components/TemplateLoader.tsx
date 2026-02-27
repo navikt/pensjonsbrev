@@ -3,8 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 
 import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
-import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import { BrevSystem } from "~/types/apiTypes";
+import { BrevSystem, type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import type { SubmitTemplateOptions } from "../route";
