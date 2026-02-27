@@ -86,7 +86,7 @@ const SlettBrevModal = (properties: {
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="space-16">
-          <Button disabled={slett.isPending} onClick={properties.onClose} type="button" variant="tertiary">
+          <Button disabled={slett.isPending} onClick={properties.onClose} type="button" variant="secondary">
             {slett.isSuccess ? "Avbryt" : (properties.texts?.buttonNo ?? "Nei, behold brevet")}
           </Button>
           {!slett.isSuccess ? (
