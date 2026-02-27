@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.skribenten.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.Hash
-import no.nav.pensjon.brev.skribenten.db.P1Data
-import no.nav.pensjon.brev.skribenten.db.ValgteVedlegg
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
@@ -16,10 +14,12 @@ import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.jetbrains.exposed.v1.core.dao.id.EntityID
 import java.time.Instant
 
@@ -43,20 +43,23 @@ open class BrevredigeringStub : Brevredigering {
     override val sistReservert: Instant get() = notYetStubbed()
     override val journalpostId: JournalpostId get() = notYetStubbed()
     override var document: Dto.Document? = null
-    override val mottaker: Mottaker get() = notYetStubbed()
+    override val mottaker: Dto.Mottaker get() = notYetStubbed()
     override val p1Data: P1Data get() = notYetStubbed()
-    override val valgteVedlegg: ValgteVedlegg get() = notYetStubbed()
+    override val valgteVedlegg: List<AlltidValgbartVedleggKode> get() = notYetStubbed()
     override val attestertAvNavIdent: NavIdent get() = notYetStubbed()
     override val brevtype: LetterMetadata.Brevtype get() = notYetStubbed()
     override val isVedtaksbrev: Boolean get() = notYetStubbed()
 
     override fun gjeldendeReservasjon(policy: BrevreservasjonPolicy): Reservasjon? = notYetStubbed()
     override fun reserver(fra: Instant, saksbehandler: NavIdent, policy: BrevreservasjonPolicy): Outcome<Reservasjon, BrevreservasjonPolicy.ReservertAvAnnen> = notYetStubbed()
-    override fun oppdaterRedigertBev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
+    override fun frigiReservasjon() = notYetStubbed()
+    override fun oppdaterRedigertBrev(nyttRedigertbrev: Edit.Letter, av: NavIdent): Unit = notYetStubbed()
     override fun markerSomKlar(): Unit = notYetStubbed()
     override fun markerSomKladd(): Unit = notYetStubbed()
+    override fun attester(avNavIdent: NavIdent, attesterendeSignatur: String): Unit = notYetStubbed()
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
-    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?): Mottaker? = notYetStubbed()
+    override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
+    override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
     override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
 }

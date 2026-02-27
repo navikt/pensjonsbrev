@@ -22,7 +22,8 @@ object BrevredigeringFacadeFactory {
         val opprettBrevPolicy = OpprettBrevPolicy(brevbakerService, navansattService)
         val brevreservasjonPolicy = BrevreservasjonPolicy()
         val attesterBrevPolicy = AttesterBrevPolicy()
-        val klarTilSendingPolicy = KlarTilSendingPolicy()
+        val ferdigRedigertPolicy = FerdigRedigertPolicy()
+        val sendBrevPolicy = SendBrevPolicy(ferdigRedigertPolicy)
 
         return BrevredigeringFacade(
             opprettBrev = OpprettBrevHandlerImpl(
@@ -53,7 +54,7 @@ object BrevredigeringFacadeFactory {
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
             veksleKlarStatus = VeksleKlarStatusHandler(
-                klarTilSendingPolicy = klarTilSendingPolicy,
+                ferdigRedigertPolicy = ferdigRedigertPolicy,
                 redigerBrevPolicy = redigerBrevPolicy,
                 brevreservasjonPolicy = brevreservasjonPolicy,
             ),
@@ -73,6 +74,30 @@ object BrevredigeringFacadeFactory {
                 brevdataService = brevdataService,
                 renderService = renderService,
                 p1Service = p1Service,
+            ),
+            attesterBrev = AttesterBrevHandler(
+                attesterBrevPolicy = attesterBrevPolicy,
+                redigerBrevPolicy = redigerBrevPolicy,
+                renderService = renderService,
+                brevdataService = brevdataService,
+                navansattService = navansattService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
+            tilbakestillBrev = TilbakestillBrevHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevbakerService = brevbakerService,
+                renderService = renderService,
+                brevdataService = brevdataService,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
+            endreValgteVedlegg = EndreValgteVedleggHandler(
+                redigerBrevPolicy = redigerBrevPolicy,
+                brevreservasjonPolicy = brevreservasjonPolicy,
+            ),
+            sendBrev = SendBrevHandler(
+                sendBrevPolicy = sendBrevPolicy,
+                penService = penService,
+                brevbakerService = brevbakerService,
             ),
             brevreservasjonPolicy = brevreservasjonPolicy,
         )

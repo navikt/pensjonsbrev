@@ -3,35 +3,18 @@ package no.nav.pensjon.brev.ufore
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.brev.brevbaker.vilkaarligDato
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.DineRettigheterOgMulighetTilAKlageDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingManed
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.FeilutbetalingPerAr
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerNaeringsinntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.KonteringType
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.OversiktOverFeilutbetalingPEDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.PesysData
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.TilbakekrevingResultat
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagSupplerendeStonadEnkelDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26Dto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtenVurderingDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VarselFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeIngenTilbakekrevingDto
+import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingDodsboSaksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass
@@ -61,6 +44,7 @@ object Fixtures : LetterDataFactory {
             InnhentingOpplysningerNaeringsinntektDto::class -> lagInnhentingOpplysningerNaeringsinntekt() as T
             InnhentingOpplysningerSamboerDto::class -> lagInnhentingOpplysningerSamboer() as T
             EmptyRedigerbarBrevdata::class -> lagEmptyRedigerbarBrevdata() as T
+            EmptyAutobrevdata::class -> EmptyAutobrevdata as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
@@ -185,7 +169,9 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun lagVarselFeilutbetalingUforeDto() = VarselFeilutbetalingUforeDto(
-        pesysData = EmptyFagsystemdata,
+        pesysData = VarselFeilutbetalingPesysData(
+            feilutbetaltBrutto = 100
+        ),
         saksbehandlerValg = VarselFeilutbetalingUforeDto.Saksbehandlervalg(
             rentetillegg = true
         ),
@@ -200,11 +186,7 @@ object Fixtures : LetterDataFactory {
             sumTilInnkrevingTotalBelop = 2,
             dineRettigheterOgMulighetTilAKlageDto = createDineRettigheterOgMulighetTilAaKlageDto(),
             oversiktOverFeilutbetalingPEDto = createOversiktOverFeilutbetalingPEDto(),
-        ),
-        saksbehandlerValg = VedtakFeilutbetalingUforeDto.Saksbehandlervalg(
-            sivilstandEndret = true,
-            reduksjonForeldelse = true
-        )
+        ), EmptySaksbehandlerValg
     )
 
     private fun lagFeilutbetalingPerAr(): List<FeilutbetalingPerAr> {

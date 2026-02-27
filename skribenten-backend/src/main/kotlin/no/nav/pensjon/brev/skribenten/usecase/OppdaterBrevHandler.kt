@@ -38,7 +38,7 @@ class OppdaterBrevHandler(
             brev.saksbehandlerValg = request.nyeSaksbehandlerValg
         }
         if (request.nyttRedigertbrev != null) {
-            brev.oppdaterRedigertBev(request.nyttRedigertbrev, principal.navIdent)
+            brev.oppdaterRedigertBrev(request.nyttRedigertbrev, principal.navIdent)
         }
 
         val pesysdata = brevdataService.hentBrevdata(brev)
@@ -46,9 +46,11 @@ class OppdaterBrevHandler(
         brev.mergeRendretBrev(rendretBrev.markup)
 
         if (request.frigiReservasjon) {
-            brev.redigeresAv = null
+            brev.frigiReservasjon()
         }
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
+
+    override fun requiresReservasjon(request: Request) = true
 }

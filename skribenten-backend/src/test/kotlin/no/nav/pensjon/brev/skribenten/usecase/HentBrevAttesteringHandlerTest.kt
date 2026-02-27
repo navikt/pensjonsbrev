@@ -84,7 +84,7 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         assertThat(hentet).isSuccess {
             assertThat(it.info.id).isEqualTo(opprettet.info.id)
             assertThat(it.saksbehandlerValg).isEqualTo(saksbehandlerValg)
-            assertThat(it.redigertBrev).isEqualTo(letter.toEdit().withSignatur(attestant = attestant1Principal.fullName))
+            assertThat(it.redigertBrev).isEqualTo(letter.toEdit().withSignaturAttestant(attestant1Principal.fullName))
             assertThat(it.info.redigeresAv).isEqualTo(attestant1Principal.navIdent)
         }
     }
@@ -177,7 +177,9 @@ class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
         )
 
         assertThat(hentet).isSuccess {
-            assertThat(it.redigertBrev).isEqualTo(opprettet.redigertBrev.updateEditedLetter(freshRender))
+            // Attestant signatur blir forhåndsutfylt fra principal og deretter merget med fersk render
+            val withPrefilled = opprettet.redigertBrev.withSignaturAttestant(attestant1Principal.fullName)
+            assertThat(it.redigertBrev).isEqualTo(withPrefilled.updateEditedLetter(freshRender))
         }
     }
 

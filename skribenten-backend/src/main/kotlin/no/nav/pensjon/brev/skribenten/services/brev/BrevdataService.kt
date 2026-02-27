@@ -42,22 +42,12 @@ class BrevdataService(private val penService: PenService, private val samhandler
             vedtaksId = brev.vedtaksId,
             brevkode = brev.brevkode,
             avsenderEnhetsId = brev.avsenderEnhetId,
-            mottaker = brev.mottaker?.toDto(),
+            mottaker = brev.mottaker,
             signatur = SignerendeSaksbehandlere(
                 // Redigerbare brev skal alltid ha saksbehandlers signatur, derfor non-null assertion her.
                 saksbehandler = brev.redigertBrev.signatur.saksbehandlerNavn!!,
                 attesterendeSaksbehandler = brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
             ),
-        )
-
-    suspend fun hentBrevdata(brev: Brevredigering, signatur: SignerendeSaksbehandlere): BrevdataResponse.Data =
-        hentBrevdata(
-            saksId = brev.saksId,
-            vedtaksId = brev.vedtaksId,
-            brevkode = brev.brevkode,
-            avsenderEnhetsId = brev.avsenderEnhetId,
-            mottaker = brev.mottaker?.toDto(),
-            signatur = signatur,
         )
 
     suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =

@@ -50,6 +50,7 @@ object Api {
     data class OppdaterKlarStatusRequest(val klar: Boolean)
     data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
 
     data class BrevInfo(
         val id: BrevId,
@@ -156,6 +157,13 @@ object Api {
     }
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
+
+    data class BestillBrevResponse(
+        val journalpostId: JournalpostId?,
+        val error: Error?,
+    ) {
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
 
     data class SakContext(
         val sak: Pen.SakSelection,

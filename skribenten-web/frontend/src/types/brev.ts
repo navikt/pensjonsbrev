@@ -37,8 +37,8 @@ export interface OppdaterMottakerRequest {
   mottaker: Mottaker;
 }
 
-export interface OppdaterVedleggRequest {
-  alltidValgbareVedlegg: AlltidValgbartVedlegg[];
+export interface ValgteVedleggRequest {
+  valgteVedlegg: AlltidValgbartVedlegg[];
 }
 
 export interface BestillBrevResponse {

@@ -29,11 +29,10 @@ object Pen {
 
     data class SakSelection(
         val saksId: SaksId,
-        val foedselsnr: Foedselsnummer,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
-        val pid: Pid = Pid(foedselsnr.value), // TODO fjern defaultverdi når pen har starta å sende med
+        val pid: Pid
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }

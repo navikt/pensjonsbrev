@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
-import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
@@ -51,11 +50,11 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
         }
 }
 
-sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : StableHash {
+sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
+    class Literal<out Out> @InternKonstruktoer constructor(val value: Out) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -78,9 +77,9 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
         override fun equals(other: Any?): Boolean {
             if (other !is Literal<*>) return false
-            return value == other.value && tags == other.tags
+            return value == other.value
         }
-        override fun hashCode() = Objects.hash(value, tags)
+        override fun hashCode() = Objects.hash(value)
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
@@ -124,8 +123,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
-        tags: Set<ElementTags> = value.tags
-    ) : Expression<Out>(tags), StableHash by StableHash.of(value, operation) {
+    ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
@@ -137,11 +135,9 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
-            return value == other.value && operation == other.operation && tags == other.tags
+            return value == other.value && operation == other.operation
         }
-        override fun hashCode() = Objects.hash(value, operation, tags)
-
-        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
+        override fun hashCode() = Objects.hash(value, operation)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
@@ -175,7 +171,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         val first: Expression<In1>,
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
-    ) : Expression<Out>(tags = first.tags + second.tags), StableHash by StableHash.of(first, second, operation) {
+    ) : Expression<Out>(), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
 
         override fun equals(other: Any?): Boolean {

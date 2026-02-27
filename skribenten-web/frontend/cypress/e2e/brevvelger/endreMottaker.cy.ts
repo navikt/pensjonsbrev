@@ -81,10 +81,11 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     //asserter at vi har byttet til samhandler
-    cy.url().should(
-      "eq",
-      "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
-    );
+
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevvelger")
+      .location("search")
+      .should("eq", "?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22");
 
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
@@ -138,10 +139,10 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     //asserter at vi har byttet til samhandler
-    cy.url().should(
-      "eq",
-      "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
-    );
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevvelger")
+      .location("search")
+      .should("eq", "?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22");
 
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");
@@ -195,10 +196,10 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("bekreft-ny-mottaker").click();
 
     //asserter at vi har byttet til samhandler
-    cy.url().should(
-      "eq",
-      "http://localhost:5173/saksnummer/123456/brevvelger?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22",
-    );
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevvelger")
+      .location("search")
+      .should("eq", "?templateId=PE_IY_05_300&idTSSEkstern=%2280000781720%22");
 
     cy.getDataCy("avsenderenhet-select").select("Nav Arbeid og ytelser Innlandet");
     cy.getDataCy("brev-title-textfield").click().type("Vedtak om bla bla");

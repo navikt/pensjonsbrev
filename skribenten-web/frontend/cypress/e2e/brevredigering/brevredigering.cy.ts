@@ -63,7 +63,10 @@ describe("Brevredigering", () => {
     cy.wait("@lagreBrev", { timeout: 20000 }).should((req) => {
       expect(req.response?.statusCode).to.equal(200);
     });
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?brevId=1");
 
     cy.get("@lagreBrev.all").should("have.length", 1);
   });
@@ -143,7 +146,7 @@ describe("Brevredigering", () => {
     cy.visit("/saksnummer/123456/brev/1");
     cy.contains("Brevet er arkivert, og kan derfor ikke redigeres.").should("exist");
     cy.contains("Gå til brevbehandler").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brevbehandler").location("search").should("eq", "");
   });
 
   it("kan toggle punktliste", () => {
@@ -189,7 +192,12 @@ describe("Brevredigering", () => {
       .as("radioGroup2Option1")
       .should("not.be.checked");
 
-    cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Fortsett")
+      .click()
+      .location("pathname")
+      .should("eq", "/saksnummer/123456/brev/1")
+      .location("search")
+      .should("eq", "");
     cy.contains("Obligatorisk: du må velge et alternativ").should("exist");
 
     cy.get("@radioGroup2Option1").click().should("be.checked");
@@ -225,7 +233,12 @@ describe("Brevredigering", () => {
       .find('[type="radio"]')
       .each((elm) => expect(elm).not.to.be.checked);
 
-    cy.contains("Fortsett").click().url().should("eq", "http://localhost:5173/saksnummer/123456/brev/1");
+    cy.contains("Fortsett")
+      .click()
+      .location("pathname")
+      .should("eq", "/saksnummer/123456/brev/1")
+      .location("search")
+      .should("eq", "");
     cy.contains("Obligatorisk: du må velge et alternativ").should("not.exist");
   });
 });

@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy.KanIkkeOppretteBrev.*
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -32,6 +33,17 @@ class OpprettBrevHandlerTest : BrevredigeringTest() {
         assertThat(brev).isSuccess {
             assertThat(it.info.brevkode.kode()).isEqualTo(Testbrevkoder.INFORMASJONSBREV.kode())
             assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+        }
+    }
+
+    @Test
+    suspend fun `initialiserer signatur for brev`() {
+        val brev = opprettBrev(reserverForRedigering = true)
+
+        assertThat(brev).isSuccess {
+            assertThat(it.redigertBrev.signatur).isNotNull
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo(saksbehandler1Principal.fullName)
+            assertThat(it.info.opprettetAv).isEqualTo(saksbehandler1Principal.navIdent)
         }
     }
 

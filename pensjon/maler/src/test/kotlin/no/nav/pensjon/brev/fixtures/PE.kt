@@ -143,7 +143,7 @@ fun createTrygdeavtaler() =
     Trygdeavtaler(
         avtaleland = "usa",
         avtaletype = "bilateral",
-        "bosted"
+        bostedslandbeskrivelse = "bosted"
     )
 
 fun createPersongrunnlagAvdod() =

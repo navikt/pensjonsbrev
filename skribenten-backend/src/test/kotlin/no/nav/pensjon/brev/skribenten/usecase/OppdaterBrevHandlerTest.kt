@@ -118,13 +118,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
 
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(veksleKlarStatus(brev, klar = true)).isSuccess()
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
-            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-        )
-
-        sendBrev(brev)
+        assertThat(arkiverBrev(brev)).isSuccess()
 
         assertThat(oppdaterBrev(brevId = brev.info.id, nyttRedigertbrev = nyttRedigertBrev))
             .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
@@ -185,6 +179,21 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
         assertThat(result).isSuccess {
             assertThat(it.redigertBrevHash).isNotEqualTo(brev.redigertBrevHash)
             assertThat(it.redigertBrevHash).isEqualTo(Hash.read(nyttRedigertBrev))
+        }
+    }
+
+    @Test
+    suspend fun `kan redigere signatur`() {
+        val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
+
+        val redigertSignatur = brev.redigertBrev.withSignaturSaksbehandler("Ny signatur")
+
+        val result = oppdaterBrev(
+            brevId = brev.info.id,
+            nyttRedigertbrev = redigertSignatur,
+        )
+        assertThat(result).isSuccess {
+            assertThat(it.redigertBrev.signatur.saksbehandlerNavn).isEqualTo("Ny signatur")
         }
     }
 }

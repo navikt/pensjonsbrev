@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.auth.hentSignatur
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
@@ -47,10 +47,7 @@ class OpprettBrevHandlerImpl(
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
-        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {
-            is Outcome.Failure -> return failure(res.error)
-            is Outcome.Success -> res.value
-        }
+        val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return failure(it) }
 
         val pesysData = brevdataService.hentBrevdata(
             saksId = request.saksId,
@@ -58,7 +55,7 @@ class OpprettBrevHandlerImpl(
             brevkode = request.brevkode,
             avsenderEnhetsId = request.avsenderEnhetsId,
             mottaker = request.mottaker,
-            signatur = SignerendeSaksbehandlere(saksbehandler = principalSignatur(principal)),
+            signatur = SignerendeSaksbehandlere(saksbehandler = principal.hentSignatur(navansattService)),
         )
 
         val rendretBrev = renderService.renderMarkup(
@@ -89,7 +86,4 @@ class OpprettBrevHandlerImpl(
 
         return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
-
-    private suspend fun principalSignatur(principal: UserPrincipal): String =
-        navansattService.hentNavansatt(principal.navIdent.id)?.fulltNavn ?: principal.fullName
 }

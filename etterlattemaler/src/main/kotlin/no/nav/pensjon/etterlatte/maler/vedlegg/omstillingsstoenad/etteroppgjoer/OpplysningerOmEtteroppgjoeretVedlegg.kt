@@ -98,22 +98,22 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, BeregningsVedleggData>.op
             paragraph {
                 text(
                     bokmal { +"I beregningen har vi brukt opplysninger om din faktiske inntekt for " + etteroppgjoersAar.format() + " fra Skatteetaten og a-ordningen. " +
-                            ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”.")},
+                            ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Hvordan vi har beregnet etteroppgjøret”.")},
                     nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di for " + etteroppgjoersAar.format() + " frå Skatteetaten og a-ordninga. " +
-                            ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”.")},
+                            ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Korleis vi har rekna ut etteroppgjeret”.")},
                     english { +"In the calculation, we have used information about your actual income for " + etteroppgjoersAar.format() + " from the Norwegian Tax Administration and the A-scheme. " +
-                            ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”.")},
+                            ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “How we calculated the final settlement”.")},
                 )
             }
         }.orShow {
             paragraph {
                 text(
                     bokmal { +"I beregningen har vi brukt opplysninger om din inntekt som foreligger i saken din." +
-                            ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Beløp trukket fra din pensjonsgivende inntekt”.")},
+                            ifElse(harOpphoer, "", "Hvis du har svart på varselet du mottok tidligere, har vi vurdert det du skrev. Eventuelle kommentarer til dette finner du i avsnittet “Hvordan vi har beregnet etteroppgjøret”.")},
                     nynorsk { +"I utrekninga har vi brukt opplysningar om den faktiske inntekta di som vi har i saka di." +
-                            ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Beløp trekt frå di pensjonsgivande inntekt”.")},
+                            ifElse(harOpphoer, "", "Dersom du har svart på varselet du fekk tidlegare, har vi vurdert det du skreiv. Eventuelle merknader til dette finn du i avsnittet “Korleis vi har rekna ut etteroppgjeret”.")},
                     english { +"The calculaiton is based on the income information we have in your case." +
-                            ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “Amount deducted from your pensionable income”.")},
+                            ifElse(harOpphoer, "", "If you responded to the notice you received earlier, we have considered what you wrote. Any comments related to this can be found in the section “How we calculated the final settlement”.")},
                 )
             }
         }

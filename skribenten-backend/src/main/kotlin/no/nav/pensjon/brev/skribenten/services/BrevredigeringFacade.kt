@@ -20,11 +20,15 @@ class BrevredigeringFacade(
     private val oppdaterBrev: BrevredigeringHandler<OppdaterBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrev: BrevredigeringHandler<HentBrevHandler.Request, Dto.Brevredigering>,
     private val hentBrevAttestering: BrevredigeringHandler<HentBrevAttesteringHandler.Request, Dto.Brevredigering>,
-    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.Brevredigering>,
-    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering>,
-    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.Brevredigering>,
+    private val veksleKlarStatus: BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo>,
+    private val endreDistribusjonstype: BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo>,
+    private val endreMottaker: BrevredigeringHandler<EndreMottakerHandler.Request, Dto.BrevInfo>,
     private val reserverBrev: UseCaseHandler<ReserverBrevHandler.Request, Reservasjon, BrevredigeringError>,
     private val hentEllerOpprettPdf: BrevredigeringHandler<HentEllerOpprettPdfHandler.Request, Dto.HentDocumentResult>,
+    private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
+    private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
+    private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
+    private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
@@ -51,14 +55,23 @@ class BrevredigeringFacade(
     suspend fun hentBrevAttestering(request: HentBrevAttesteringHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         hentBrevAttestering.runHandler(request)
 
-    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun attesterBrev(request: AttesterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        attesterBrev.runHandler(request)
+
+    suspend fun tilbakestillBrev(request: TilbakestillBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        tilbakestillBrev.runHandler(request)
+
+    suspend fun veksleKlarStatus(request: VeksleKlarStatusHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         veksleKlarStatus.runHandler(request)
 
-    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun endreDistribusjonstype(request: EndreDistribusjonstypeHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         endreDistribusjonstype.runHandler(request)
 
-    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+    suspend fun endreMottaker(request: EndreMottakerHandler.Request): Outcome<Dto.BrevInfo, BrevredigeringError>? =
         endreMottaker.runHandler(request)
+
+    suspend fun endreValgteVedlegg(request: EndreValgteVedleggHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
+        endreValgteVedlegg.runHandler(request)
 
     suspend fun reserverBrev(request: ReserverBrevHandler.Request): Outcome<Reservasjon, BrevredigeringError>? =
         suspendTransaction(transactionIsolation = Connection.TRANSACTION_REPEATABLE_READ) {
@@ -68,6 +81,9 @@ class BrevredigeringFacade(
     suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         hentEllerOpprettPdf.runHandler(request)
 
+    suspend fun sendBrev(request: SendBrevHandler.Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        sendBrev.runHandler(request)
+
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {
             // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
@@ -76,8 +92,15 @@ class BrevredigeringFacade(
                 ?: return null
         }
 
-        return suspendTransaction {
-            handle(request)?.onError { rollback() }
+        val isolation = transactionIsolation()
+        return if (isolation != null) {
+            suspendTransaction(transactionIsolation = isolation) {
+                handle(request)?.onError { rollback() }
+            }
+        } else {
+            suspendTransaction {
+                handle(request)?.onError { rollback() }
+            }
         }
     }
 }

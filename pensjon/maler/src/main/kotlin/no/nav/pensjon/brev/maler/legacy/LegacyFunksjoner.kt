@@ -240,13 +240,13 @@ fun Expression<PE>.ut_inntekt_hoyere_lavere(): Expression<String> =
 
 private fun hoyereLavere(hoyereCondition: Expression<Boolean>): Expression<String> {
     val erEngelsk = Expression.FromScope.Language.equalTo(English.expr())
-    val erBokmal = Expression.FromScope.Language.equalTo(Nynorsk.expr())
-    val erNynorsk = Expression.FromScope.Language.equalTo(Bokmal.expr())
+    val erBokmal = Expression.FromScope.Language.equalTo(Bokmal.expr())
+    val erNynorsk = Expression.FromScope.Language.equalTo(Nynorsk.expr())
     val hoyere = hoyereCondition
     return ifElse(
         hoyere,
         ifElse(erBokmal, "høyere".expr(), ifElse(erNynorsk, "høgare".expr(), ifElse(erEngelsk, "higher".expr(), "".expr()))),
-        ifElse(erEngelsk, "lavere".expr(), ifElse(erBokmal, "lågare".expr(), ifElse(erNynorsk, "lower".expr(), "".expr())))
+        ifElse(erBokmal, "lavere".expr(), ifElse(erNynorsk, "lågare".expr(), ifElse(erEngelsk, "lower".expr(), "".expr())))
     )
 }
 

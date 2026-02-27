@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
-import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.expression.ExpressionMapper
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
 import java.util.Objects
@@ -46,6 +46,16 @@ sealed class UnaryOperation<In, out Out> : Operation() {
 
     object IsEmpty : UnaryOperation<Collection<*>, Boolean>(), StableHash by StableHash.of("UnaryOperation.IsEmpty") {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
+    }
+
+    @InterneDataklasser
+    object Fritekst : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.Fritekst") {
+        override fun apply(input: String): String = input
+    }
+
+    @InterneDataklasser
+    object RedigerbarData : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.RedigerbarData") {
+        override fun apply(input: String): String = input
     }
 
     class MapValue<In, Out> internal constructor(val mapper: ExpressionMapper<In, Out>) : UnaryOperation<In, Out>(), StableHash {
@@ -151,6 +161,17 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
 
     object Concat : BinaryOperation<String, String, String>(), StableHash by StableHash.of("BinaryOperation.Concat") {
         override fun apply(first: String, second: String): String = first + second
+    }
+
+    @InterneDataklasser
+    object BrevdataEllerFritekst : BinaryOperation<String?, String, String>(), StableHash by StableHash.of("BinaryOperation.BrevdataEllerFritekst") {
+        override fun apply(first: String?, second: String): String = first ?: second
+        @OptIn(InterneDataklasser::class)
+        fun getResultat(first: Expression<*>, second: Expression<*>, scope: ExpressionScope<*>): Resultat =
+            first.eval(scope)?.let { Resultat(erFritekst = false, text = it as String) } ?: Resultat(erFritekst = true, text = second.eval(scope) as String)
+
+        @InterneDataklasser
+        data class Resultat(val erFritekst: Boolean, val text: String)
     }
 
     object IntMinus : BinaryOperation<Int, Int, Int>(Documentation("-", Documentation.Notation.INFIX)), StableHash by StableHash.of("BinaryOperation.IntMinus") {

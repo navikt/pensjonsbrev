@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
+import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -37,7 +37,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         assertThat(brev.info.status).isEqualTo(Dto.BrevStatus.KLADD)
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess {
-            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
 
     }
@@ -47,7 +47,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VARSELBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess {
-            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
     }
 
@@ -56,7 +56,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         val brev = opprettBrev(brevkode = Testbrevkoder.VEDTAKSBREV, vedtaksId = VedtaksId(1)).resultOrFail()
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess {
-            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.ATTESTERING)
         }
     }
 
@@ -66,15 +66,17 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
 
         assertThat(veksleKlarStatus(brev, true)).isSuccess()
 
-        val attestert = attester(brev, attestant = attestant1Principal, frigiReservasjon = true)
+        val attestert = attester(brev, attestant = attestant1Principal, frigiReservasjon = true).resultOrFail()
 
-        assertThat(attestert?.info?.status).isEqualTo(Dto.BrevStatus.KLAR)
-        assertThat(attestert?.info?.attestertAv).isEqualTo(attestant1Principal.navIdent)
-        assertThat(attestert?.redigertBrev?.signatur?.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
+        assertThat(attestert.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+        assertThat(attestert.info.attestertAv).isEqualTo(attestant1Principal.navIdent)
+        assertThat(attestert.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isEqualTo(attestant1Principal.fullName)
 
         assertThat(veksleKlarStatus(brev, false)).isSuccess {
-            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLADD)
-            assertThat(it.info.attestertAv).isNull()
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLADD)
+            assertThat(it.attestertAv).isNull()
+        }
+        assertThat(hentBrev(brev.info.id)).isSuccess {
             assertThat(it.redigertBrev.signatur.attesterendeSaksbehandlerNavn).isNull()
         }
     }
@@ -84,7 +86,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         brevbakerService.renderMarkupResultat = { markupMedFritekst }
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(veksleKlarStatus(brev, true)).isFailure<KlarTilSendingPolicy.IkkeKlarTilSending.FritekstFelterUredigert, _, _>()
+        assertThat(veksleKlarStatus(brev, true)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
     }
 
     @Test
@@ -112,7 +114,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         ).isSuccess()
 
         assertThat(veksleKlarStatus(brev = brev, klar = true)).isSuccess {
-            assertThat(it.info.status).isEqualTo(Dto.BrevStatus.KLAR)
+            assertThat(it.status).isEqualTo(Dto.BrevStatus.KLAR)
         }
     }
 
@@ -137,9 +139,8 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
     suspend fun `beholder ikke reservasjon`() {
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(veksleKlarStatus(brev, klar = true))
-            .isSuccess {
-                assertThat(it.info.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
-            }
+        assertThat(veksleKlarStatus(brev, klar = true)).isSuccess {
+            assertThat(it.redigeresAv).isNotEqualTo(saksbehandler1Principal.navIdent)
+        }
     }
 }

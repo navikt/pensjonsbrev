@@ -13,7 +13,16 @@ import org.junit.jupiter.api.Test
 @Tag(TestTags.MANUAL_TEST)
 class VedtakFeilutbetalingTest {
     @Test
-    fun testHtml() {
+    fun testHtmlBokmal() {
+        LetterTestImpl(
+            VedtakFeilutbetaling.template,
+            Fixtures.create<VedtakFeilutbetalingUforeDto>(),
+            Language.Bokmal,
+            Fixtures.felles
+        ).renderTestHtml(VedtakFeilutbetaling.kode.name)
+    }
+    @Test
+    fun testHtmlNynorsk() {
         LetterTestImpl(
             VedtakFeilutbetaling.template,
             Fixtures.create<VedtakFeilutbetalingUforeDto>(),

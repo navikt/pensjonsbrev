@@ -40,7 +40,6 @@ import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
 
 /**
- * TODO: Usikker på om denne foreldreklassen skal være med i det endelige resultatet.
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
  * Felles fixtures tror jeg kommer til å være nyttig uansett, så det er spesielt service-mocks jeg ikke er sikker på.
  * Jeg er også usikker på om sluttresultatet tester helt ned mot database eller ei.
@@ -96,11 +95,7 @@ abstract class BrevredigeringTest {
     protected val penService = BrevredigeringServiceTest.FakePenService()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
-    private val brevredigeringService: BrevredigeringService = BrevredigeringService(
-        brevbakerService = brevbakerService,
-        navansattService = navAnsattService,
-        penService = penService,
-    )
+    private val brevredigeringService: BrevredigeringService = BrevredigeringService()
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
 
     protected companion object Fixtures {
@@ -117,7 +112,6 @@ abstract class BrevredigeringTest {
 
         val sak1 = Pen.SakSelection(
             saksId = SaksId(1234L),
-            foedselsnr = Foedselsnummer("12345678910"),
             foedselsdato = LocalDate.now().minusYears(42),
             navn = Pen.SakSelection.Navn("a", "b", "c"),
             sakType = Sakstype("ALDER"),
@@ -271,13 +265,16 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         attestant: UserPrincipal = attestant1Principal,
         frigiReservasjon: Boolean = false,
+        nyeSaksbehandlerValg: SaksbehandlerValg? = null,
+        nyttRedigertbrev: Edit.Letter? = null,
     ) = withPrincipal(attestant) {
-        brevredigeringService.attester(
-            saksId = brev.info.saksId,
-            brevId = brev.info.id,
-            frigiReservasjon = frigiReservasjon,
-            nyeSaksbehandlerValg = null,
-            nyttRedigertbrev = null,
+        brevredigeringFacade.attesterBrev(
+            AttesterBrevHandler.Request(
+                brevId = brev.info.id,
+                frigiReservasjon = frigiReservasjon,
+                nyeSaksbehandlerValg = nyeSaksbehandlerValg,
+                nyttRedigertbrev = nyttRedigertbrev,
+            )
         )
     }
 
@@ -285,7 +282,7 @@ abstract class BrevredigeringTest {
         brev: Dto.Brevredigering,
         klar: Boolean,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.Brevredigering, BrevredigeringError>? = withPrincipal(principal) {
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
         brevredigeringFacade.veksleKlarStatus(
             VeksleKlarStatusHandler.Request(
                 brevId = brev.info.id,
@@ -297,16 +294,18 @@ abstract class BrevredigeringTest {
     protected suspend fun arkiverBrev(
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Unit, BrevredigeringError> = withPrincipal(principal) {
-        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+    ): Outcome<Dto.SendBrevResult, BrevredigeringError>? = withPrincipal(principal) {
+        assertThat(hentEllerOpprettPdf(brev, principal = principal)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true, principal = principal)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
+            bestillBrevresponse.journalpostId,
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
-        assertThat(sendBrev(brev)).isNotNull()
-        success(Unit)
+        val result = sendBrev(brev, saksbehandler1Principal)
+        penService.sendBrevResponse = bestillBrevresponse
+
+        result
     }
 
     protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
@@ -314,11 +313,23 @@ abstract class BrevredigeringTest {
             brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
         }
 
-    /**
-     * TODO: Potensielt midlertidig frem til refaktorering er ferdig
-     */
-    protected suspend fun sendBrev(brev: Dto.Brevredigering) =
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+    protected suspend fun endreDistribusjonstype(
+        brevId: BrevId,
+        nyDistribusjonstype: Distribusjonstype,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.endreDistribusjonstype(
+            EndreDistribusjonstypeHandler.Request(
+                brevId = brevId,
+                type = nyDistribusjonstype,
+            )
+        )
+    }
+
+    protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+        }
 
     protected fun stagePdf(pdf: ByteArray) {
         brevbakerService.renderPdfResultat = LetterResponse(

@@ -15,11 +15,11 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 class EndreDistribusjonstypeHandler(
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.Brevredigering> {
+) : BrevredigeringHandler<EndreDistribusjonstypeHandler.Request, Dto.BrevInfo> {
 
     data class Request(override val brevId: BrevId, val type: Distribusjonstype) : BrevredigeringRequest
 
-    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+    override suspend fun handle(request: Request): Outcome<Dto.BrevInfo, BrevredigeringError>? {
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
         val principal = PrincipalInContext.require()
 
@@ -28,9 +28,11 @@ class EndreDistribusjonstypeHandler(
             redigerBrevPolicy.kanRedigere(brev, principal).onError(ignore = { it is LaastBrev }) { return failure(it) }
 
             brev.distribusjonstype = request.type
-            brev.redigeresAv = null
+            brev.frigiReservasjon()
         }
 
-        return success(brev.toDto(brevreservasjonPolicy, null))
+        return success(brev.toBrevInfo(brevreservasjonPolicy))
     }
+
+    override fun requiresReservasjon(request: Request) = true
 }

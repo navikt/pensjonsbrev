@@ -9,19 +9,23 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class AttesterBrevPolicy {
 
-    fun kanAttestere(brev: Brevredigering, principal: UserPrincipal): Outcome<Boolean, KanIkkeAttestere> {
+    fun kanAttestere(brev: Brevredigering, principal: UserPrincipal): Outcome<Unit, KanIkkeAttestere> {
         return when {
             !principal.isAttestant() -> failure(KanIkkeAttestere.HarIkkeAttestantrolle(principal.navIdent))
+            !brev.isVedtaksbrev -> failure(KanIkkeAttestere.KanIkkeAttestereInformasjonsbrev(brev.id.value))
+            !brev.laastForRedigering -> failure(KanIkkeAttestere.IkkeKlarTilAttestering(brev.id.value))
             brev.opprettetAv == principal.navIdent -> failure(KanIkkeAttestere.KanIkkeAttestereEgetBrev(principal.navIdent, brev.id.value))
             brev.attestertAvNavIdent != null && brev.attestertAvNavIdent != principal.navIdent -> failure(
                 KanIkkeAttestere.AlleredeAttestertAvAnnen(brev.id.value, brev.attestertAvNavIdent!!)
             )
-            else -> success(true)
+            else -> success(Unit)
         }
     }
 
     sealed interface KanIkkeAttestere : BrevredigeringError {
         data class HarIkkeAttestantrolle(val navIdent: NavIdent) : KanIkkeAttestere
+        data class KanIkkeAttestereInformasjonsbrev(val brevId: BrevId) : KanIkkeAttestere
+        data class IkkeKlarTilAttestering(val brevId: BrevId) : KanIkkeAttestere
         data class KanIkkeAttestereEgetBrev(val navIdent: NavIdent, val brevId: BrevId) : KanIkkeAttestere
         data class AlleredeAttestertAvAnnen(val brevId: BrevId, val attestertAv: NavIdent) : KanIkkeAttestere
     }
