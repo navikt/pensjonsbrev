@@ -68,6 +68,7 @@ const SlettBrevModal = (properties: {
   return (
     <Modal
       header={{
+        closeButton: false,
         heading: !slett.isSuccess ? (properties.texts?.heading ?? "Vil du slette brevet?") : "Brevet er slettet",
       }}
       onClose={properties.onClose}
