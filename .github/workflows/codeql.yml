@@ -50,10 +50,10 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
 
-      - name: "publish common to Maven local"
+      - name: "publish model modules to Maven local"
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal :pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal
 
       - name: Assemble (PR)
         if: ${{ github.event_name == 'pull_request' }}
