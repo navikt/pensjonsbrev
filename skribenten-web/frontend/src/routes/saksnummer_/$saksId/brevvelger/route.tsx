@@ -7,6 +7,7 @@ import {
   BodyShort,
   Box,
   Button,
+  Chips,
   Heading,
   HStack,
   Label,
@@ -119,15 +120,8 @@ const BrevvelgerMainContent = (props: {
     <Box asChild height="calc(var(--main-page-content-height)">
       <HStack wrap={false}>
         {/* Brevmal-liste */}
-        <Box
-          asChild
-          borderColor="neutral-subtle"
-          borderWidth="0 1 0 0"
-          minWidth="640px"
-          paddingBlock="space-20 space-0"
-          paddingInline="space-24"
-        >
-          <VStack gap="space-24" height="100%">
+        <Box asChild borderColor="neutral-subtle" borderWidth="0 1 0 0" minWidth="640px" padding="space-16">
+          <VStack gap="space-16" height="100%">
             <Heading level="1" size="small">
               Brevvelger
             </Heading>
@@ -175,6 +169,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
 
   const alleBrevmaler: LetterMetadata[] = useMemo(
@@ -182,17 +177,29 @@ function Brevmaler({
     [brevmalKoder, brevmetadata],
   );
 
+  const filteredBrevmaler = useMemo(() => {
+    let result = alleBrevmaler;
+    if (selectedFilters.includes("Skribenten")) {
+      result = result.filter((b) => b.brevsystem === BrevSystem.Brevbaker);
+    }
+    if (selectedFilters.includes("Vedtaksbrev")) {
+      result = result.filter((b) => b.dokumentkategoriCode === "VB");
+    }
+    return result;
+  }, [alleBrevmaler, selectedFilters]);
+
   const fuse = useMemo(() => {
     const fuseOptions = {
       keys: ["name", "brevsystem", "brevkategori"],
       threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
     };
-    return new Fuse(alleBrevmaler, fuseOptions);
-  }, [alleBrevmaler]);
+    return new Fuse(filteredBrevmaler, fuseOptions);
+  }, [filteredBrevmaler]);
+  alleBrevmaler[0].brevkategori;
 
   const brevmalerMatchingSearchTerm =
     searchTerm.trim().length === 0
-      ? sortBy(alleBrevmaler, (template) => template.name)
+      ? sortBy(filteredBrevmaler, (template) => template.name)
       : fuse.search(searchTerm).map((result) => result.item);
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
@@ -215,19 +222,40 @@ function Brevmaler({
     eblanketter.length > 0 ? ["E-blanketter"] : [],
   ].flat();
 
+  const filters = ["Skribenten", "Vedtaksbrev"];
   return (
-    <VStack gap="space-24" height="calc(100% - 51px)">
+    <VStack gap="space-16" height="calc(100% - 27px)">
       <Search
+        autoFocus={true}
         data-cy="brevmal-search"
         hideLabel={false}
         label="Søk etter brevmal"
         onChange={(value) => setSearchTerm(value)}
+        placeholder="Søk"
         size="small"
         value={searchTerm}
         variant="simple"
       />
-      <Bleed asChild marginInline="space-24">
-        <Box asChild overflowY="auto" paddingInline="space-24">
+      <Chips>
+        {filters.map((filter) => (
+          <Chips.Toggle
+            data-color="accent"
+            key={filter}
+            onClick={() =>
+              setSelectedFilters(
+                selectedFilters.includes(filter)
+                  ? selectedFilters.filter((x) => x !== filter)
+                  : [...selectedFilters, filter],
+              )
+            }
+            selected={selectedFilters.includes(filter)}
+          >
+            {filter}
+          </Chips.Toggle>
+        ))}
+      </Chips>
+      <Bleed asChild marginInline="space-16">
+        <Box asChild overflowY="auto" paddingBlock="space-4 space-0" paddingInline="space-16">
           <Accordion
             css={css`
               .aksel-accordion__content {
