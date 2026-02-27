@@ -153,15 +153,15 @@ data class TBU052V_TBU073V_SlikHarViFastsattKompensasjonsgradenDin(
 
             paragraph {
                 text (
-                    bokmal { + "Vi beregner kompensasjonsgraden din slik:(" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                    bokmal { + "Vi beregner kompensasjonsgraden din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                         .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
-                    nynorsk { + "Vi bereknar kompensasjonsgraden din slik:(" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                    nynorsk { + "Vi bereknar kompensasjonsgraden din slik: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                         .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " prosent." },
-                    english { + "We have calculated your degree of compensation as follows:(" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
+                    english { + "We have calculated your degree of compensation as follows: (" + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_ugradertbruttoperar()
                         .format(false) + " / " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oifu()
                         .format(false) + ") * 100 = " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad()
                         .format() + " percent." },
