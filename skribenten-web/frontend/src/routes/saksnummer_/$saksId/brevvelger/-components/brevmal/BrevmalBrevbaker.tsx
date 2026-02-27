@@ -1,4 +1,4 @@
-import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, HStack, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -219,6 +219,7 @@ const BrevmalBrevbaker = (props: {
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
             <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
           </VStack>
+          <Spacer />
           {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
       </FormProvider>
