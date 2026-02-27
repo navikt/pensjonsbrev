@@ -36,7 +36,7 @@ describe("Kladd", () => {
     cy.contains("Avsenderenhet").should("be.visible");
     cy.contains("Språk").should("be.visible");
     cy.contains("Gå til brevbehandler").should("be.visible");
-    cy.contains("Åpne brev").should("be.visible");
+    cy.contains("Fortsett").should("be.visible");
   });
 
   it("Kan slette kladd", () => {
@@ -109,7 +109,7 @@ describe("Kladd", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
@@ -160,7 +160,7 @@ describe("Kladd", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
@@ -187,7 +187,7 @@ describe("Kladd", () => {
     cy.wait(1000);
     cy.contains("Endre mottaker").should("not.exist");
     cy.contains("Slett brev").should("not.exist");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")

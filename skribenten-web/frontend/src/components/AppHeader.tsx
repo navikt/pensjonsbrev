@@ -1,4 +1,5 @@
-import { Dropdown, InternalHeader } from "@navikt/ds-react";
+import { LeaveIcon } from "@navikt/aksel-icons";
+import { ActionMenu, InternalHeader, Spacer } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 import { useUserInfo } from "~/hooks/useUserInfo";
@@ -16,10 +17,8 @@ export function AppHeader() {
           Skribenten
         </RouterLink>
       </InternalHeader.Title>
-
-      <nav css={{ marginLeft: "auto", display: "flex" }}>
-        <UserDropdown />
-      </nav>
+      <Spacer />
+      <UserDropdown />
     </InternalHeader>
   );
 }
@@ -28,15 +27,21 @@ function UserDropdown() {
   const userInfo = useUserInfo();
 
   return (
-    <Dropdown>
-      <InternalHeader.UserButton as={Dropdown.Toggle} name={userInfo?.name ?? ""} />
-      <Dropdown.Menu>
-        <Dropdown.Menu.List>
-          <Dropdown.Menu.List.Item as="a" href="/bff/logout">
-            Logg ut
-          </Dropdown.Menu.List.Item>
-        </Dropdown.Menu.List>
-      </Dropdown.Menu>
-    </Dropdown>
+    <ActionMenu>
+      <ActionMenu.Trigger>
+        <InternalHeader.UserButton
+          css={{ svg: { width: "24px", height: "24px" } }}
+          description={userInfo?.navident ? `id: ${userInfo.navident}` : ""}
+          name={userInfo?.name ?? ""}
+        />
+      </ActionMenu.Trigger>
+      <ActionMenu.Content align="end">
+        <ActionMenu.Group aria-label="Handlinger">
+          <ActionMenu.Item as="a" href="/bff/logout">
+            Logg ut <Spacer /> <LeaveIcon aria-hidden fontSize="1.5rem" />
+          </ActionMenu.Item>
+        </ActionMenu.Group>
+      </ActionMenu.Content>
+    </ActionMenu>
   );
 }
