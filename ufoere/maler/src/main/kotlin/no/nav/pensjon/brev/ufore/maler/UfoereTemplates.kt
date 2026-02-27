@@ -17,11 +17,13 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHo
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
+import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
-        InfoEndretUforetrygdPgaInntekt
+        InfoEndretUforetrygdPgaInntekt,
+        InfobrevLovendringer2026
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
