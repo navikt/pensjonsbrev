@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -12,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
@@ -67,6 +67,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
 
 sealed interface SpesialkonstruksjonIMal
 
+@OptIn(InterneDataklasser::class)
 internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
     is Fritekst -> Expression.UnaryInvoke(Literal(str), UnaryOperation.Fritekst)
     is RedigerbarData -> Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)

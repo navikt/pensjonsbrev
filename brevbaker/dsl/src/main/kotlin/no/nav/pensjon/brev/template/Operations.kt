@@ -48,10 +48,12 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
+    @InterneDataklasser
     object Fritekst : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.Fritekst") {
         override fun apply(input: String): String = input
     }
 
+    @InterneDataklasser
     object RedigerbarData : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.RedigerbarData") {
         override fun apply(input: String): String = input
     }
@@ -161,6 +163,7 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: String, second: String): String = first + second
     }
 
+    @InterneDataklasser
     object BrevdataEllerFritekst : BinaryOperation<String?, String, String>(), StableHash by StableHash.of("BinaryOperation.BrevdataEllerFritekst") {
         override fun apply(first: String?, second: String): String = first ?: second
         @OptIn(InterneDataklasser::class)

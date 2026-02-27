@@ -101,14 +101,6 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$And : no/nav/pen
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst;
-	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;
-	public final fun getResultat (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brev/template/BinaryOperation$BrevdataEllerFritekst$Resultat;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/BinaryOperation$Concat : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/BinaryOperation$Concat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -971,13 +963,6 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$BrukerFulltNavn :
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/UnaryOperation$Fritekst : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$Fritekst;
-	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/lang/String;)Ljava/lang/String;
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/UnaryOperation$FunksjonsbryterEnabled : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$FunksjonsbryterEnabled;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
@@ -1015,13 +1000,6 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$Not : no/nav/pens
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$Not;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Z)Ljava/lang/Boolean;
-	public fun stableHashCode ()I
-}
-
-public final class no/nav/pensjon/brev/template/UnaryOperation$RedigerbarData : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$RedigerbarData;
-	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Ljava/lang/String;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
