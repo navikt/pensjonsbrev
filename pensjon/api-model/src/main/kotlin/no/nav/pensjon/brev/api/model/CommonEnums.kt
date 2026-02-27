@@ -2,6 +2,7 @@
 
 package no.nav.pensjon.brev.api.model
 
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 // Brukerens egen sivilstand tolket ut fra om beregningsresultat fra PREG

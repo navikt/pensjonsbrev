@@ -42,13 +42,13 @@ interface BrevbakerService {
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage
     suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
     ): LetterResponse
@@ -105,7 +105,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage {
         val response = client.post("/letter/redigerbar/markup-usage") {
             contentType(ContentType.Application.Json)
@@ -133,7 +133,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): LetterResponse {

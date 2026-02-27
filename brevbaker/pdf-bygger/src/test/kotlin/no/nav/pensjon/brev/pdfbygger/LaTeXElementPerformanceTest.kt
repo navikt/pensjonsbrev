@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -135,7 +135,7 @@ class LaTeXElementPerformanceTest {
     private fun render(
         overrideName: String? = null,
         title: String? = null,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {

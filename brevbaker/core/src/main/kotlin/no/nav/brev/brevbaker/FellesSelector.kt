@@ -1,7 +1,7 @@
 package no.nav.brev.brevbaker
 
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
-@TemplateModelHelpers([Felles::class])
+@TemplateModelHelpers([BrevbakerFelles::class])
 internal interface FellesSelector

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 
@@ -17,8 +17,8 @@ class ExpressionEvalTest {
     private val Expression<SomeDto>.kortNavn
         get() = UnaryOperation.Select(kortNavnSelector).invoke(this)
 
-    private val saksnummerSelector = SimpleSelector(Felles::saksnummer)
-    private val Expression<Felles>.saksnummer
+    private val saksnummerSelector = SimpleSelector(BrevbakerFelles::saksnummer)
+    private val Expression<BrevbakerFelles>.saksnummer
         get() = UnaryOperation.Select(saksnummerSelector).invoke(this)
 
     private val scope = ExpressionScope(SomeDto("Ole", null), FellesFactory.felles, Language.Bokmal)

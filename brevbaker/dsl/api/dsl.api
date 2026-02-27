@@ -528,7 +528,7 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Assigned : 
 public final class no/nav/pensjon/brev/template/Expression$FromScope$Felles : no/nav/pensjon/brev/template/Expression$FromScope {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/Expression$FromScope$Felles;
 	public synthetic fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
-	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public fun stableHashCode ()I
 }
 
@@ -573,14 +573,14 @@ public abstract interface class no/nav/pensjon/brev/template/ExpressionScope {
 	public static final field Companion Lno/nav/pensjon/brev/template/ExpressionScope$Companion;
 	public fun assign (Ljava/lang/Object;Lno/nav/pensjon/brev/template/Expression$FromScope$Assigned;)Lno/nav/pensjon/brev/template/ExpressionScope;
 	public abstract fun getArgument ()Ljava/lang/Object;
-	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/Felles;
+	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
 	public abstract fun markUsage (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$Companion {
-	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
-	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/Felles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {
@@ -727,7 +727,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$CurrencyForma
 	public fun <init> (Z)V
 	public synthetic fun <init> (ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-ALD0akc (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-B2ZJs14 (ILno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public final fun getDenominator ()Z
 	public fun stableHashCode ()I
 }
@@ -749,7 +749,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$DoubleFormat 
 public final class no/nav/pensjon/brev/template/LocalizedFormatter$FoedselsnummerFormat : no/nav/pensjon/brev/template/LocalizedFormatter {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$FoedselsnummerFormat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-yNUeFbo (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-BlVNw_I (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -791,7 +791,7 @@ public final class no/nav/pensjon/brev/template/LocalizedFormatter$ShortDateForm
 public final class no/nav/pensjon/brev/template/LocalizedFormatter$TelefonnummerFormat : no/nav/pensjon/brev/template/LocalizedFormatter {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/LocalizedFormatter$TelefonnummerFormat;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-OO461GQ (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
+	public fun apply-Bs16qNk (Ljava/lang/String;Lno/nav/pensjon/brev/template/Language;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -952,14 +952,14 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$AbsoluteValue : n
 public final class no/nav/pensjon/brev/template/UnaryOperation$AbsoluteValueKroner : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$AbsoluteValueKroner;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply-GMmqa-Q (I)I
+	public fun apply-4SkS13A (I)I
 	public fun stableHashCode ()I
 }
 
 public final class no/nav/pensjon/brev/template/UnaryOperation$BrukerFulltNavn : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$BrukerFulltNavn;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
-	public fun apply (Lno/nav/pensjon/brevbaker/api/model/Bruker;)Ljava/lang/String;
+	public fun apply (Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 
@@ -1463,12 +1463,12 @@ public final class no/nav/pensjon/brev/template/dsl/expression/EqualsKt {
 	public static final fun equalToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToIntValue (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Kroner;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToKroner (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Kroner;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToLanguage (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Percent;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToPercent (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Percent;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/Year;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun equalToYear (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Year;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualTo (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Language;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Comparable;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notEqualToComparable (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
@@ -1596,7 +1596,7 @@ public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {
 }
 
 public final class no/nav/pensjon/brev/template/render/UtilsKt {
-	public static final fun fulltNavn (Lno/nav/pensjon/brevbaker/api/model/Bruker;)Ljava/lang/String;
+	public static final fun fulltNavn (Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker;)Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/Felt {
@@ -1626,7 +1626,7 @@ public final class no/nav/pensjon/brev/template/vedlegg/IncludeAttachmentPDF {
 public abstract interface class no/nav/pensjon/brev/template/vedlegg/PDFTemplate {
 	public fun createVedlegg (Lno/nav/pensjon/brev/template/ExpressionScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 	public abstract fun getTitle ()Ljava/util/List;
-	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;Lno/nav/pensjon/brevbaker/api/model/Felles;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
+	public abstract fun template (Lno/nav/pensjon/brevbaker/api/model/PDFVedleggData;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;)Lno/nav/pensjon/brev/template/vedlegg/PDFVedlegg;
 }
 
 public final class no/nav/pensjon/brev/template/vedlegg/PDFTemplate$DefaultImpls {
