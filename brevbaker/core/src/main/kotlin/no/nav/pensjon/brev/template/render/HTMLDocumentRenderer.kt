@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskInformasjonsbrev
 import no.nav.pensjon.brev.template.render.LanguageSetting.Closing.automatiskVedtaksbrev
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -40,7 +40,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         letter: LetterMarkup,
         attachments: List<Attachment>,
         language: Language,
-        felles: Felles,
+        felles: BrevbakerFelles,
         brevtype: LetterMetadata.Brevtype
     ): HTMLDocument =
         HTMLDocument {
@@ -80,12 +80,12 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             }
         }
 
-    private fun FlowContent.brevdato(language: Language, felles: Felles): Unit =
+    private fun FlowContent.brevdato(language: Language, felles: BrevbakerFelles): Unit =
         div(classes("brevdato")) {
             text(felles.dokumentDato.format(dateFormatter(language, FormatStyle.SHORT)))
         }
 
-    private fun FlowContent.renderClosing(language: Language, felles: Felles, brevtype: LetterMetadata.Brevtype) {
+    private fun FlowContent.renderClosing(language: Language, felles: BrevbakerFelles, brevtype: LetterMetadata.Brevtype) {
         div("closing") {
             // Med vennlig hilsen
             div(classes("closing-greeting")) {
@@ -117,7 +117,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
         }
     }
 
-    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: Felles): Unit =
+    private fun FlowContent.renderAttachment(attachment: Attachment, language: Language, felles: BrevbakerFelles): Unit =
         div(classes("vedlegg")) {
             img(classes = classes("logo"), src = navLogoImg, alt = languageSettings.getSetting(language, LanguageSetting.HTML.altTextLogo))
             h1(classes("tittel")) { renderText(attachment.title) }
@@ -281,7 +281,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             ParagraphContent.Table.ColumnAlignment.RIGHT -> "text-right"
         }
 
-    private fun FlowContent.renderSakspart(language: Language, felles: Felles) =
+    private fun FlowContent.renderSakspart(language: Language, felles: BrevbakerFelles) =
         div(classes("sakspart")) {
             with(felles.bruker) {
                 val annenMottakerNavn = felles.annenMottakerNavn

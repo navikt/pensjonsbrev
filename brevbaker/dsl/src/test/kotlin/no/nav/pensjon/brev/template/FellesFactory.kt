@@ -1,15 +1,15 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 
 object FellesFactory {
-    val felles: Felles = Felles(
+    val felles: BrevbakerFelles = BrevbakerFelles(
         dokumentDato = LocalDate.of(2020, 1, 1),
         saksnummer = "1337123",
         avsenderEnhet =

@@ -9,14 +9,13 @@ import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSe
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDtoSelectors.institusjon_gjeldende
 import no.nav.pensjon.brev.maler.fraser.vedlegg.*
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevFellesSelectors.NavEnhetSelectors.telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.telefonnummer
 
 val vedleggDineRettigheterOgPlikterUfoere =
     createAttachment<LangBokmalNynorskEnglish, OrienteringOmRettigheterUfoereDto>(

@@ -5,51 +5,49 @@ import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 import java.util.Objects
 
-object BrevFelles {
-
-    class Felles(
-        val dokumentDato: LocalDate,
-        val saksnummer: String,
-        val avsenderEnhet: NavEnhet,
-        val bruker: Bruker,
-        val annenMottakerNavn: String?,
-        val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
-    ) {
-        override fun equals(other: Any?): Boolean {
-            if (other !is Felles) return false
-            return dokumentDato == other.dokumentDato
-                    && saksnummer == other.saksnummer
-                    && avsenderEnhet == other.avsenderEnhet
-                    && bruker == other.bruker
-                    && annenMottakerNavn == other.annenMottakerNavn
-                    && signerendeSaksbehandlere == other.signerendeSaksbehandlere
-        }
-
-        override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, annenMottakerNavn, signerendeSaksbehandlere)
-
-        override fun toString() =
-            "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, annenMottakerNavn=$annenMottakerNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
-
-        fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): Felles =
-            Felles(
-                dokumentDato = this.dokumentDato,
-                saksnummer = this.saksnummer,
-                avsenderEnhet = this.avsenderEnhet,
-                bruker = this.bruker,
-                annenMottakerNavn = this.annenMottakerNavn,
-                signerendeSaksbehandlere = signerendeSaksbehandlere,
-            )
-
-        fun medAnnenMottakerNavn(annenMottakerNavn: String?): Felles =
-            Felles(
-                dokumentDato = this.dokumentDato,
-                saksnummer = this.saksnummer,
-                avsenderEnhet = this.avsenderEnhet,
-                bruker = this.bruker,
-                annenMottakerNavn = annenMottakerNavn,
-                signerendeSaksbehandlere = this.signerendeSaksbehandlere,
-            )
+class BrevbakerFelles(
+    val dokumentDato: LocalDate,
+    val saksnummer: String,
+    val avsenderEnhet: NavEnhet,
+    val bruker: Bruker,
+    val annenMottakerNavn: String?,
+    val signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
+) {
+    override fun equals(other: Any?): Boolean {
+        if (other !is BrevbakerFelles) return false
+        return dokumentDato == other.dokumentDato
+                && saksnummer == other.saksnummer
+                && avsenderEnhet == other.avsenderEnhet
+                && bruker == other.bruker
+                && annenMottakerNavn == other.annenMottakerNavn
+                && signerendeSaksbehandlere == other.signerendeSaksbehandlere
     }
+
+    override fun hashCode() = Objects.hash(dokumentDato, saksnummer, avsenderEnhet, bruker, annenMottakerNavn, signerendeSaksbehandlere)
+
+    override fun toString() =
+        "Felles(dokumentDato=$dokumentDato, saksnummer='$saksnummer', avsenderEnhet=$avsenderEnhet, bruker=$bruker, annenMottakerNavn=$annenMottakerNavn, signerendeSaksbehandlere=$signerendeSaksbehandlere)"
+
+    fun medSignerendeSaksbehandlere(signerendeSaksbehandlere: SignerendeSaksbehandlere?): BrevbakerFelles =
+        BrevbakerFelles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            annenMottakerNavn = this.annenMottakerNavn,
+            signerendeSaksbehandlere = signerendeSaksbehandlere,
+        )
+
+    fun medAnnenMottakerNavn(annenMottakerNavn: String?): BrevbakerFelles =
+        BrevbakerFelles(
+            dokumentDato = this.dokumentDato,
+            saksnummer = this.saksnummer,
+            avsenderEnhet = this.avsenderEnhet,
+            bruker = this.bruker,
+            annenMottakerNavn = annenMottakerNavn,
+            signerendeSaksbehandlere = this.signerendeSaksbehandlere,
+        )
+
 
     class SignerendeSaksbehandlere(
         val saksbehandler: String,
@@ -84,8 +82,6 @@ object BrevFelles {
 
         override fun toString() =
             "Bruker(foedselsnummer=$foedselsnummer, fornavn='$fornavn', mellomnavn=$mellomnavn, etternavn='$etternavn')"
-
-
     }
 
     class NavEnhet(
@@ -103,7 +99,5 @@ object BrevFelles {
         override fun hashCode() = Objects.hash(nettside, navn, telefonnummer)
 
         override fun toString() = "NavEnhet(nettside='$nettside', navn='$navn', telefonnummer=$telefonnummer)"
-
-
     }
 }

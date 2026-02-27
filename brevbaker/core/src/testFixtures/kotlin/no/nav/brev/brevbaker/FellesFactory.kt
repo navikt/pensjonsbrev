@@ -1,10 +1,10 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
 import java.time.LocalDate
 
@@ -13,7 +13,7 @@ object FellesFactory {
         dokumentDato: LocalDate = LocalDate.of(2020, 1, 1),
         saksnummer: String = "1337123",
         signerendeSaksbehandlere: SignerendeSaksbehandlere? = null
-    ): Felles = Felles(
+    ): BrevbakerFelles = BrevbakerFelles(
         dokumentDato = dokumentDato,
         saksnummer = saksnummer,
         avsenderEnhet =
@@ -42,14 +42,14 @@ object FellesFactory {
     val fellesAuto = lagFelles(signerendeSaksbehandlere = null)
 }
 
-fun Felles.copy(
+fun BrevbakerFelles.copy(
     dokumentDato: LocalDate = this.dokumentDato,
     saksnummer: String = this.saksnummer,
     avsenderEnhet: NavEnhet = this.avsenderEnhet,
     bruker: Bruker = this.bruker,
     annenMottaker: String? = this.annenMottakerNavn,
     signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
-): Felles = Felles(
+): BrevbakerFelles = BrevbakerFelles(
     dokumentDato = dokumentDato,
     saksnummer = saksnummer,
     avsenderEnhet = avsenderEnhet,

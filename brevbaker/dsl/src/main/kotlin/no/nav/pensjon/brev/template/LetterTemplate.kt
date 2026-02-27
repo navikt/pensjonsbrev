@@ -83,7 +83,7 @@ sealed class Expression<out Out> : StableHash {
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
-        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles>() {
+        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.BrevbakerFelles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
         }

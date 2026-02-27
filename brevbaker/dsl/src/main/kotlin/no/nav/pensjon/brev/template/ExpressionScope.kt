@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.expression.SelectorUsage
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
 sealed interface ExpressionScope<Argument : Any> {
     val argument: Argument
-    val felles: Felles
+    val felles: BrevbakerFelles
     val language: Language
 
     fun <Var> assign(value: Var, to: Expression.FromScope.Assigned<Var>): ExpressionScope<Argument> =
@@ -14,14 +14,14 @@ sealed interface ExpressionScope<Argument : Any> {
     fun markUsage(selector: TemplateModelSelector<*, *>)
 
     companion object {
-        operator fun <Argument : Any> invoke(argument: Argument, felles: Felles, language: Language, selectorUsage: SelectorUsage? = null): ExpressionScope<Argument > =
+        operator fun <Argument : Any> invoke(argument: Argument, felles: BrevbakerFelles, language: Language, selectorUsage: SelectorUsage? = null): ExpressionScope<Argument > =
             RootExpressionScope(argument, felles, language, selectorUsage)
     }
 }
 
 internal class RootExpressionScope<Argument : Any>(
     override val argument: Argument,
-    override val felles: Felles,
+    override val felles: BrevbakerFelles,
     override val language: Language,
     val selectorUsage: SelectorUsage? = null
 ) : ExpressionScope<Argument> {
@@ -40,7 +40,7 @@ internal class AssignmentExpressionScope<Argument: Any, Var>(
 ): ExpressionScope<Argument> {
 
     override val argument: Argument get() = parent.argument
-    override val felles: Felles get() = parent.felles
+    override val felles: BrevbakerFelles get() = parent.felles
     override val language: Language get() = parent.language
 
     fun lookup(expr: Expression.FromScope.Assigned<Var>): Var =

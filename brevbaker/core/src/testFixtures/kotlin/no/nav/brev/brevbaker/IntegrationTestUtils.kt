@@ -36,7 +36,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -169,7 +169,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
+fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: BrevbakerFelles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
     LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 val bokmalTittel = newText(Bokmal to "test brev")
@@ -186,7 +186,7 @@ object VedleggPDFTestUtils {
         title: String? = null,
         includeSakspart: Boolean,
         outputFolder: String,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         pdfByggerService: PDFByggerService,
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
@@ -202,7 +202,7 @@ object VedleggPDFTestUtils {
     fun renderTestPdfOutline(
         outputFolder: String,
         testName: String,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
         title: String? = null,

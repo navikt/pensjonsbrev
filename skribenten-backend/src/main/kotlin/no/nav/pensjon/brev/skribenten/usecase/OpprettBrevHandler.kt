@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import java.time.Instant
 

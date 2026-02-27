@@ -15,10 +15,10 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Bruker
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -59,14 +59,14 @@ data class EksempelRedigerbartDto(
     ) : FagsystemBrevdata
 }
 
-fun Felles.copy(
+fun BrevbakerFelles.copy(
     dokumentDato: LocalDate = this.dokumentDato,
     saksnummer: String = this.saksnummer,
     avsenderEnhet: NavEnhet = this.avsenderEnhet,
     bruker: Bruker = this.bruker,
     annenMottakerNavn: String? = this.annenMottakerNavn,
     signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
-) = Felles(
+) = BrevbakerFelles(
     dokumentDato = dokumentDato,
     saksnummer = saksnummer,
     avsenderEnhet = avsenderEnhet,

@@ -31,10 +31,9 @@ import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import kotlin.jvm.java
@@ -196,5 +195,5 @@ data class BrevdataResponseWrapper<T : Any>(val data: T)
 
 typealias P1VedleggDataResponse = Api.GeneriskBrevdata
 object BrevdataResponse {
-    data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
+    data class Data(val felles: BrevbakerFelles, val brevdata: Api.GeneriskBrevdata)
 }

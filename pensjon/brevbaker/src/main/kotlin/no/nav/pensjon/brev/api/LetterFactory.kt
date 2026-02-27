@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 private val objectMapper = brevbakerJacksonObjectMapper()
@@ -34,7 +34,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         brevkode: Kode,
         brevdata: BrevbakerBrevdata,
         spraak: LanguageCode,
-        felles: Felles,
+        felles: BrevbakerFelles,
         valgteVedlegg: List<AlltidValgbartVedleggKode>
     ): Letter<BrevbakerBrevdata> {
         val template =

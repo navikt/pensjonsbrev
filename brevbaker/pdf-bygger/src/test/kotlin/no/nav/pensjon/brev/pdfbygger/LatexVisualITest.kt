@@ -12,9 +12,9 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Tabl
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.BrevFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -35,7 +35,7 @@ class LatexVisualITest {
     private fun render(
         overrideName: String? = null,
         title: String? = null,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
@@ -55,7 +55,7 @@ class LatexVisualITest {
     private fun renderTestVedlegg(
         includeSakspart: Boolean,
         testName: String? = null,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         vedleggOutlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
         renderTestVedleggPdf(
