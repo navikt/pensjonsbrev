@@ -10,12 +10,13 @@ import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjo
 
 data class Persongrunnlag(
     val brukerflyktning: Boolean?,
+    val instopphfasteutgifterperiodeliste: InstOpphFasteUtgifterPeriodeListe? = null,
+    val instopphreduksjonsperiodeliste: InstOpphReduksjonsPeriodeListe? = null,
     val personbostedsland: String?,
     val trygdeavtaler: Trygdeavtaler?,
     val trygdetidsgrunnlaglistebilateral: TrygdetidsgrunnlagListeBilateral?,
     val trygdetidsgrunnlaglisteeos: TrygdetidsgrunnlagListeEOS?,
     val trygdetidsgrunnlaglistenor: TrygdetidsgrunnlagListeNor?,
+    val uforehistorikkgarantigrad: Int?,
     val uforetrygdetteroppgjor: UforetrygdEtteroppgjor?,
-    val instopphfasteutgifterperiodeliste: InstOpphFasteUtgifterPeriodeListe? = null,
-    val instopphreduksjonsperiodeliste: InstOpphReduksjonsPeriodeListe? = null
 )

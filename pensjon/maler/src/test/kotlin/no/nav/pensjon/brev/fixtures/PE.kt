@@ -93,7 +93,13 @@ fun createPE() =
             pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv = 1,
             harOpptjeningUTMedOmsorg = false,
             harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste = false,
-            foedselsdatoTilBarnTilleggErInnvilgetFor = listOf(LocalDate.of(2010,1,1))
+            foedselsdatoTilBarnTilleggErInnvilgetFor = listOf(LocalDate.of(2010,1,1)),
+            pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall = "samboer",
+            pe_ut_tbu4071_btfbinnvilget = false,
+            pe_ut_fradrag_hoeyere_lavere = "høyere",
+            pe_ut_inntekt_hoeyere_lavere = "lavere",
+            pe_ut_bruttoetterreduksjonbt_hoeyere_lavere = "høyere",
+            pe_saksdata_sakapogup = false
         ),
         pebrevkode = "PE_UT_06_300",
         personsak = PersonSak(PSfnr("01019878910"), LocalDate.of(1998, 1, 1))
@@ -121,7 +127,8 @@ fun createPersongrunnlag() =
         uforetrygdetteroppgjor = createUforetrygdEtteroppgjor(),
         trygdeavtaler = createTrygdeavtaler(),
         instopphfasteutgifterperiodeliste = createInstopphfasteutgifterperiodeliste(),
-        instopphreduksjonsperiodeliste = createInstopphreduksjonsperiodeliste()
+        instopphreduksjonsperiodeliste = createInstopphreduksjonsperiodeliste(),
+        uforehistorikkgarantigrad = 50
     )
 
 fun createInstopphfasteutgifterperiodeliste() =
@@ -272,6 +279,7 @@ fun createVedtaksdata() = Vedtaksdata(
     trygdetidavdod = createTrygdetidAvdod(),
     harLopendealderspensjon = true,
     vedtakfattetdatominus1mnd = LocalDate.now().minusMonths(1),
+    reaktiviseringsforskriften = false,
 )
 
 fun createTrygdetidAvdod() =
@@ -445,7 +453,7 @@ fun createUforetrygdberegning() =
         uforetidspunkt = LocalDate.of(2020, 1, 1),
         proratabrokteller = 10,
         proratabroknevner = 11,
-        instopphanvendt = true
+        instopphanvendt = false
     )
 
 fun createReduksjonsgrunnlag() =
@@ -491,13 +499,17 @@ fun createBeregningYtelsesKomp() =
     )
 
 fun createEktefelletillegg() =
-    Ektefelletillegg(true, Kroner(0))
+    Ektefelletillegg(
+        etinnvilget = true,
+        etnetto = Kroner(0),
+    )
 
 fun createGjenlevendetillegg() =
     Gjenlevendetillegg(
-        gtinnvilget = true,
+        gtinnvilget = false,
         gtnetto = Kroner(0),
         nyttgjenlevendetillegg = false,
+        gtbrutto = Kroner(3000),
         gjenlevendetillegginformasjon = GjenlevendetilleggInformasjon(
             uforetidspunkt = LocalDate.of(2020, 1, 1),
             anvendttrygdetid = 40,
@@ -526,7 +538,7 @@ private fun createOpptjeningUt(): OpptjeningUT = OpptjeningUT(
 fun createBarnetilleggSerkull() =
     BarnetilleggSerkull(
         avkortningsinformasjon = createAvkortningsInformasjonBT(),
-        btsbinnvilget = true,
+        btsbinnvilget = false,
         btsbnetto = Kroner(8450),
         btsbinntektbruktiavkortning = Kroner(8451),
         btsbfribelop = Kroner(8452),
@@ -540,7 +552,7 @@ fun createBarnetilleggSerkull() =
 fun createBarnetilleggFelles() =
     BarnetilleggFelles(
         avkortningsinformasjon = createAvkortningsInformasjonBT(),
-        btfbinnvilget = true,
+        btfbinnvilget = false,
         btfbnetto = Kroner(1200),
         btfbbrukersinntekttilavkortning = Kroner(1201),
         btfbinntektbruktiavkortning = Kroner(1202),
@@ -573,7 +585,8 @@ fun createUforetrygdOrdiner() =
         avkortingsbelopperar = Kroner(5819),
         brutto = Kroner(9832),
         nettorestar = Kroner(5934),
-        ytelsesgrunnlag = createYtelsesgrunnlag()
+        ytelsesgrunnlag = createYtelsesgrunnlag(),
+        nettoperar = Kroner(1500),
     )
 
 fun createYtelsesgrunnlag() =
@@ -602,7 +615,7 @@ fun createAvkortningsInformasjon(): AvkortningsInformasjon =
         ugradertbruttoperar = Kroner(1915),
         kompensasjonsgrad = 5.0,
         utbetalingsgrad = 100,
-        forventetinntekt = Kroner(1918),
+        forventetinntekt = Kroner(1913),
         inntektsgrensenestear = Kroner(1919),
     )
 
