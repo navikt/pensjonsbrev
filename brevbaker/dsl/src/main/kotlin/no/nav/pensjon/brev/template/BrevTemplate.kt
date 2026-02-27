@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -12,7 +13,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import kotlin.reflect.KClass
@@ -57,13 +57,35 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
 
-    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Expression<String> =
+    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Fritekst =
         beskrivelse.takeIf { it.trim().isNotEmpty() }
-            ?.let { Literal(it, setOf(ElementTags.FRITEKST)) }
+            ?.let { Fritekst(it) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
-    fun <T> TemplateGlobalScope<LetterData>.redigerbarData(variabel: Expression<T>) = variabel.let { it as? Expression.UnaryInvoke<*, T> }?.medTags(setOf(ElementTags.REDIGERBAR_DATA))
-        ?: throw IllegalArgumentException("Redigerbar data støttes nå kun for UnaryInvoke")
+    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
+}
+
+sealed interface SpesialkonstruksjonIMal
+
+@OptIn(InterneDataklasser::class)
+internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
+    is Fritekst -> Expression.UnaryInvoke(Literal(str), UnaryOperation.Fritekst)
+    is RedigerbarData -> Expression.UnaryInvoke(variabel, UnaryOperation.RedigerbarData)
+    is BrevdataEllerFritekst -> Expression.BinaryInvoke(tekst, fritekst, BinaryOperation.BrevdataEllerFritekst)
+}
+
+@JvmInline
+value class Fritekst(val str: String) : SpesialkonstruksjonIMal {
+    override fun toString(): String = throw PreventToStringForExpressionException()
+}
+
+@JvmInline
+value class RedigerbarData(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+    override fun toString(): String = throw PreventToStringForExpressionException()
+}
+
+class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+    override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 interface AutobrevTemplate<out LetterData : AutobrevData> : BrevTemplate<LetterData, Brevkode.Automatisk> {

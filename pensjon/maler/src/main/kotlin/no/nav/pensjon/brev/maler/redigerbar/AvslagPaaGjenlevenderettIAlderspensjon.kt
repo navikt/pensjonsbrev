@@ -163,7 +163,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                             "angi antall dager/måneder"
                         ) + "." }
                     )
-                    eval(fritekst(" eller "))
+                    text(
+                        bokmal { + fritekst(" eller ") },
+                        nynorsk { + fritekst(" eller ") },
+                        english { + fritekst(" eller ") }
+                    )
                     text(
                         bokmal { + " I følge opplysningene våre har " + saksbehandlerValg.avdoedNavn + " aldri bodd eller arbeidet i Norge. " },
                         nynorsk { + " Ifølgje opplysningane våre har " + saksbehandlerValg.avdoedNavn + " aldri budd eller arbeidd i Noreg. " },
@@ -226,7 +230,12 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         nynorsk { + "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i " },
                         english { + "To be eligible for your retirement pension with survivor`s rights when you live in " }
                     )
-                    eval(pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND")))
+                    val bostedsland = pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND"))
+                    text (
+                        bokmal { + bostedsland },
+                        nynorsk { + bostedsland },
+                        english { + bostedsland }
+                    )
                     text(
                         bokmal { + ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon." },
                         nynorsk { + ", må avdøde ha hatt 20 års butid i Noreg eller ha rett til tilleggspensjon." },

@@ -71,7 +71,12 @@ object BekreftelseAvUtsendtKravTilUtlandet : RedigerbarTemplate<EmptyRedigerbarB
             }
 
             paragraph {
-                eval(fritekst("navn og adresse til utenlandsk trygdemyndighet"))
+                val beskrivelse = "navn og adresse til utenlandsk trygdemyndighet"
+                text (
+                    bokmal { + fritekst(beskrivelse) },
+                    nynorsk { + fritekst(beskrivelse) },
+                    english { + fritekst(beskrivelse) }
+                )
             }
         }
     }

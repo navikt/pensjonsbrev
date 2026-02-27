@@ -54,7 +54,7 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
         outline {
             val pe = pesysData.pe
 
-            val bostedsland = ifElse(pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse().equalTo(""),fritekst("land"),pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse())
+            val bostedsland = pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse_nullable().ifNull(fritekst("land"))
             val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
             val barnetilleggSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             val barnetilleggFellesInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
