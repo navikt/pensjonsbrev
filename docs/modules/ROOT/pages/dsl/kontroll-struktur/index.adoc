@@ -1,0 +1,39 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Kontrollstrukturer
+
+Kontrollstrukturer lar deg styre hvilke deler av brevet som vises basert på data.
+Dette gjør det mulig å lage dynamiske brev som tilpasser seg mottakerens situasjon.
+
+== Oversikt
+
+[cols="2,3,2"]
+|===
+|Funksjon |Bruksområde |Dokumentasjon
+
+|`showIf`
+|Vis eller skjul innhold basert på en betingelse. Kan kombineres med `orShow` og `orShowIf` for alternativer.
+|xref:dsl/kontroll-struktur/showIf.adoc[]
+
+|`ifNotNull`
+|Vis innhold kun når en nullable verdi finnes. Gir tilgang til non-null verdien i blokken.
+|xref:dsl/kontroll-struktur/ifNotNull.adoc[]
+
+|`forEach`
+|Gjenta innhold for hvert element i en liste. Brukes ofte i lister og tabeller.
+|xref:dsl/kontroll-struktur/forEach.adoc[]
+
+|Predikater
+|Bygg betingelser med `and`, `or`, `not`, sammenligninger og mer.
+|xref:dsl/kontroll-struktur/predikat.adoc[]
+|===
+
+TIP: For dynamisk tekstinnhold som entall/flertall, se xref:dsl/text/ifElse.adoc[]
+
+IMPORTANT: Bruk alltid DSL-funksjonene (`showIf`, `ifElse`, etc.) for betinget innhold – vanlig Kotlin `if`/`else` fungerer ikke som forventet. Betingelser må være `Expression<Boolean>`, se xref:dsl/kontroll-struktur/predikat.adoc[].
+
+== Se også
+
+* xref:dsl/scopes.adoc[]
+

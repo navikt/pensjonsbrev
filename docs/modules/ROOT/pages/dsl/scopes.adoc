@@ -1,0 +1,97 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Brevmal struktur og Scopes
+
+En brevmal inneholder en nøstet struktur av elementer som brukes til å representere innhold.
+Strukturen består av ulike DSL-scopes som gir deg tilgang til relevante funksjoner på hvert nivå.
+
+== Scope-hierarki
+
+[listing,subs="+macros"]
+....
+createTemplate(...) { xref:dsl/scopes.adoc#TemplateRootScope[TemplateRootScope]
+    title { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope]
+        text(...)
+    }
+    outline { xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
+        title1 { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope] }
+        paragraph { xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+            text(...)
+            list { item { xref:dsl/scopes.adoc#TextScope[TextScope] } }
+        }
+        includePhrase(xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase])
+    }
+    includeAttachment(xref:dsl/vedlegg.adoc[attachment], data)
+}
+....
+
+[[TemplateRootScope]]
+=== TemplateRootScope
+Ytterste scope - definerer brevets struktur:
+[listing,subs="+macros"]
+....
+TemplateRootScope {
+    title { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope] }
+    outline { xref:dsl/scopes.adoc#OutlineScope[OutlineScope] }
+    includeAttachment(xref:dsl/vedlegg.adoc[attachment], data)
+    includeAttachmentIfNotNull(xref:dsl/vedlegg.adoc[attachment], nullableData)
+}
+....
+
+[[OutlineScope]]
+==== OutlineScope
+Hoveddelen av brevet - overskrifter og avsnitt:
+[listing,subs="+macros"]
+....
+OutlineScope {
+    includePhrase(xref:dsl/fraser/outlinePhrase.adoc[OutlinePhrase])
+    title1 { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope] }
+    title2 { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope] }
+    title3 { xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope] }
+    paragraph { xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope] }
+}
+....
+
+[[ParagraphScope]]
+==== ParagraphScope
+Inne i avsnitt - tekst, lister, tabeller:
+[listing,subs="+macros"]
+....
+ParagraphScope {
+    includePhrase(xref:dsl/fraser/paragraphPhrase.adoc[ParagraphPhrase])
+    includePhrase(xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase])
+    includePhrase(xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase])
+    text(...)
+    xref:dsl/paragraph/lister.adoc[list { ... }]
+    xref:dsl/paragraph/tabeller.adoc[table { ... }]
+    formText()
+    formChoice()
+    newline()
+}
+....
+
+[[TextScope]]
+==== TextScope
+Tekst med variabler og formattering:
+[listing,subs="+macros"]
+....
+TextScope {
+    includePhrase(xref:dsl/fraser/textOnlyPhrase.adoc[TextOnlyPhrase])
+    includePhrase(xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase])
+    text(...)
+    newLine()
+}
+....
+
+[[PlainTextScope]]
+==== PlainTextScope
+Kun ren tekst (brukes i titler):
+[listing,subs="+macros"]
+....
+PlainTextScope {
+    includePhrase(xref:dsl/fraser/plainTextPhrase.adoc[PlainTextPhrase])
+    text(...)
+}
+....
+

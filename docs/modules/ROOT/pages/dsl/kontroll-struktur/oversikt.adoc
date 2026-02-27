@@ -1,0 +1,12 @@
+:docinfo: shared
+
+= Kontrollstrukturer
+
+Kontrollstrukturer lar deg styre flyten i brevmaler basert på betingelser og data.
+
+== Tilgjengelige kontrollstrukturer
+
+xref:dsl/kontroll-struktur/showIf.adoc[showIf]:: Vis innhold betinget på om en betingelse er oppfylt.
+xref:dsl/kontroll-struktur/ifNotNull.adoc[ifNotNull]:: Vis innhold kun når en verdi ikke er null.
+xref:dsl/kontroll-struktur/forEach.adoc[forEach]:: Gjenta innhold for hvert element i en liste.
+

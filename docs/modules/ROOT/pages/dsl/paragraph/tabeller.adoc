@@ -1,0 +1,173 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Tabeller
+
+Tabeller brukes for å vise strukturert informasjon på en oversiktlig måte,
+som beregninger, perioder eller sammenstillinger.
+
+== Grunnleggende struktur
+
+En tabell består av en header med kolonner og rader med celler:
+
+[source,kotlin]
+----
+paragraph {
+    table(
+        header = {
+            column {
+                text(bokmal { +"Beskrivelse" })
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Beløp" })
+            }
+        }
+    ) {
+        row {
+            cell { text(bokmal { +"Uføretrygd" }) }
+            cell { eval(uforetrygdBeloep.format()) }
+        }
+        row {
+            cell { text(bokmal { +"Barnetillegg" }) }
+            cell { eval(barnetilleggBeloep.format()) }
+        }
+    }
+}
+----
+
+== Kolonneegenskaper
+
+=== Justering
+
+Bruk `alignment` for å justere innhold:
+
+[source,kotlin]
+----
+column(alignment = ColumnAlignment.LEFT) {   // Venstrejustert (standard)
+    text(bokmal { +"Tekst" })
+}
+
+column(alignment = ColumnAlignment.RIGHT) {  // Høyrejustert
+    text(bokmal { +"Tall" })
+}
+----
+
+TIP: Bruk høyrejustering for tallkolonner for bedre lesbarhet.
+
+=== Kolonnebredde
+
+Bruk `columnSpan` for å angi relativ bredde:
+
+[source,kotlin]
+----
+// Første kolonne dobbelt så bred som andre
+column(columnSpan = 2) {
+    text(bokmal { +"Beskrivelse" })
+}
+column(columnSpan = 1) {
+    text(bokmal { +"Beløp" })
+}
+----
+
+== Dynamiske rader med forEach
+
+[source,kotlin]
+----
+table(
+    header = {
+        column { text(bokmal { +"Måned" }) }
+        column(alignment = ColumnAlignment.RIGHT) {
+            text(bokmal { +"Beløp" })
+        }
+    }
+) {
+    forEach(utbetalingsperioder) { periode ->
+        row {
+            cell { eval(periode.maaned.format()) }
+            cell { eval(periode.beloep.format()) }
+        }
+    }
+}
+----
+
+== Betinget innhold
+
+=== Betingede rader
+
+[source,kotlin]
+----
+table(header = { /*...*/ }) {
+    row {
+        cell { text(bokmal { +"Grunnbeløp" }) }
+        cell { eval(grunnbeloep.format()) }
+    }
+
+    showIf(harBarnetillegg) {
+        row {
+            cell { text(bokmal { +"Barnetillegg" }) }
+            cell { eval(barnetilleggBeloep.format()) }
+        }
+    }
+
+    row {
+        cell { text(bokmal { +"Totalt" }, fontType = FontType.BOLD) }
+        cell { eval(totalBeloep.format()) }
+    }
+}
+----
+
+IMPORTANT: Antall celler i hver rad må matche antall kolonner i headeren. Derfor støtter vi ikke betingede celler.
+
+== Eksempel: Beregningstabell
+
+[source,kotlin]
+----
+paragraph {
+    table(
+        header = {
+            column(columnSpan = 3) {
+                text(bokmal { +"Beregning" })
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Per måned" })
+            }
+            column(alignment = ColumnAlignment.RIGHT) {
+                text(bokmal { +"Per år" })
+            }
+        }
+    ) {
+        row {
+            cell { text(bokmal { +"Grunnbeløp" }) }
+            cell { eval(grunnbeloepMaaned.format()) }
+            cell { eval(grunnbeloepAar.format()) }
+        }
+
+        showIf(harBarnetillegg) {
+            row {
+                cell { text(bokmal { +"Barnetillegg" }) }
+                cell { eval(btMaaned.format()) }
+                cell { eval(btAar.format()) }
+            }
+        }
+
+        row {
+            cell { text(bokmal { +"Sum" }, fontType = FontType.BOLD) }
+            cell { eval(sumMaaned.format()) }
+            cell { eval(sumAar.format()) }
+        }
+    }
+}
+----
+
+== Beste praksis
+
+TIP: *Høyrejuster tall* - Bruk `alignment = ColumnAlignment.RIGHT` for tallkolonner for bedre lesbarhet.
+
+TIP: *Hold tabeller enkle* - Begrens antall kolonner om mulig. For mange kolonner blir fort uoversiktlig.
+
+== Se også
+
+* xref:dsl/paragraph/lister.adoc[]
+* xref:dsl/kontroll-struktur/forEach.adoc[]
+* xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+
