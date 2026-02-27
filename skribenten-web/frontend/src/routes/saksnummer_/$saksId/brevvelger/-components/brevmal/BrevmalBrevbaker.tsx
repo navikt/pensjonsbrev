@@ -40,7 +40,7 @@ const EksisterendeKladdModal = (props: {
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <Modal
-      header={{ heading: "Vil du bruke eksisterende kladd?" }}
+      header={{ closeButton: false, heading: "Vil du bruke eksisterende kladd?" }}
       onClose={props.onClose}
       open={props.åpen}
       portal
@@ -52,7 +52,7 @@ const EksisterendeKladdModal = (props: {
       <Modal.Footer>
         <HStack gap="space-16">
           <Button onClick={props.onFormSubmit} type="button" variant="secondary">
-            Lag nytt brev
+            Nei, lag nytt brev
           </Button>
           <Button
             onClick={() =>
