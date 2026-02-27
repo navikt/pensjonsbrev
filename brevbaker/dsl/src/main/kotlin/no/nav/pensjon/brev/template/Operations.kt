@@ -48,6 +48,10 @@ sealed class UnaryOperation<In, out Out> : Operation() {
         override fun apply(input: Collection<*>): Boolean = input.isEmpty()
     }
 
+    object Fritekst : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.Fritekst") {
+        override fun apply(input: String): String = input
+    }
+
     object RedigerbarData : UnaryOperation<String, String>(), StableHash by StableHash.of("UnaryOperation.RedigerbarData") {
         override fun apply(input: String): String = input
     }

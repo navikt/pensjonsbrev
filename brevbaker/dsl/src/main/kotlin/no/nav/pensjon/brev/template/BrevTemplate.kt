@@ -62,9 +62,7 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             ?.let { Fritekst(it) }
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
-    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData {
-        return RedigerbarData(variabel)
-    }
+    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
 }
 
 sealed interface SpesialkonstruksjonIMal {
@@ -73,7 +71,7 @@ sealed interface SpesialkonstruksjonIMal {
 
 @JvmInline
 value class Fritekst(val str: String) : SpesialkonstruksjonIMal {
-    override fun somExpression() = Literal(str, tags = setOf(ElementTags.FRITEKST))
+    override fun somExpression() = Expression.UnaryInvoke(Literal(str), UnaryOperation.Fritekst)
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 

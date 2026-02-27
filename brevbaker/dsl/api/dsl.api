@@ -549,11 +549,9 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Language : 
 }
 
 public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pensjon/brev/template/Expression {
-	public fun <init> (Ljava/lang/Object;Ljava/util/Set;)V
-	public synthetic fun <init> (Ljava/lang/Object;Ljava/util/Set;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Ljava/lang/Object;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
-	public final fun getTags ()Ljava/util/Set;
 	public final fun getValue ()Ljava/lang/Object;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
@@ -607,9 +605,9 @@ public final class no/nav/pensjon/brev/template/Fritekst : no/nav/pensjon/brev/t
 	public final fun getStr ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$Literal;
+	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
-	public static fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$Literal;
+	public static fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
@@ -978,6 +976,13 @@ public final class no/nav/pensjon/brev/template/UnaryOperation$BrukerFulltNavn :
 	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$BrukerFulltNavn;
 	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
 	public fun apply (Lno/nav/pensjon/brevbaker/api/model/Bruker;)Ljava/lang/String;
+	public fun stableHashCode ()I
+}
+
+public final class no/nav/pensjon/brev/template/UnaryOperation$Fritekst : no/nav/pensjon/brev/template/UnaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/UnaryOperation$Fritekst;
+	public synthetic fun apply (Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/lang/String;)Ljava/lang/String;
 	public fun stableHashCode ()I
 }
 

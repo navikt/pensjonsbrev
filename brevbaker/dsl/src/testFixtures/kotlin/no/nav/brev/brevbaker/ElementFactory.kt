@@ -30,7 +30,7 @@ fun <Lang : LanguageSupport, AttachmentData : VedleggData> createIncludeAttachme
 ) = IncludeAttachment(data = data, template = template, predicate = predicate)
 
 @OptIn(InternKonstruktoer::class)
-fun <Out> createExpressionLiteral(value: Out, tags: Set<ElementTags> = emptySet()) = Expression.Literal(value, tags)
+fun <Out> createExpressionLiteral(value: Out, tags: Set<ElementTags> = emptySet()) = Expression.Literal(value)
 
 fun <Lang : LanguageSupport, LetterData : Any> createTextOnlyScope() = TextOnlyScope<Lang, LetterData>()
 

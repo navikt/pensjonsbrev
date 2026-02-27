@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
-import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.Telefonnummer
@@ -55,7 +54,7 @@ sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, val tags: Set<ElementTags> = emptySet()) : Expression<Out>() {
+    class Literal<out Out> @InternKonstruktoer constructor(val value: Out) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -78,9 +77,9 @@ sealed class Expression<out Out> : StableHash {
 
         override fun equals(other: Any?): Boolean {
             if (other !is Literal<*>) return false
-            return value == other.value && tags == other.tags
+            return value == other.value
         }
-        override fun hashCode() = Objects.hash(value, tags)
+        override fun hashCode() = Objects.hash(value)
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
