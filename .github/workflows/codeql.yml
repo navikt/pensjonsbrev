@@ -50,6 +50,10 @@ jobs:
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
 
+      - name: "publish common to Maven local"
+        run: |
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+
       - name: Assemble (PR)
         if: ${{ github.event_name == 'pull_request' }}
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g" --no-build-cache
