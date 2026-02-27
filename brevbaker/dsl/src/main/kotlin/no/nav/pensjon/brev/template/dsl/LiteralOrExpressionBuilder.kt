@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.StringExpression
 import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder.LiteralOrExpression
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.somExpression
 
 internal fun bokmal(block: LiteralOrExpressionBuilder.() -> LiteralOrExpression): Pair<Language.Bokmal, LiteralOrExpression> =
     Language.Bokmal to LiteralOrExpressionBuilder(QuotationMarks.BokmalNynorsk).block()

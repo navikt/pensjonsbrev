@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2025
+import no.nav.pensjon.brev.template.BrevdataEllerFritekst
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -254,6 +255,25 @@ data class EOSLandAvtaleHjemmel(
 
 data class BilateralAvtaleHjemmel(
     val avtalelandNavn: Expression<String>,
+    val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
+    val erEOSLand: Expression<Boolean>,
+    val harOppfyltVedSammenlegging: Expression<Boolean>,
+) : OutlinePhrase<LangBokmalNynorskEnglish>() {
+    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+        showIf((harOppfyltVedSammenlegging or eksportTrygdeavtaleAvtaleland) and not(erEOSLand)) {
+            paragraph {
+                text(
+                    bokmal { + "Vedtaket er også gjort etter reglene i trygdeavtalen med " + avtalelandNavn + "." },
+                    nynorsk { + "Vedtaket er også gjort etter reglane i trygdeavtalen med " + avtalelandNavn + "." },
+                    english { + "This decision was also made pursuant the provisions of the Social Security Agreement with " + avtalelandNavn + "." }
+                )
+            }
+        }
+    }
+}
+
+data class BilateralAvtaleHjemmelFritekst(
+    val avtalelandNavn: BrevdataEllerFritekst,
     val eksportTrygdeavtaleAvtaleland: Expression<Boolean>,
     val erEOSLand: Expression<Boolean>,
     val harOppfyltVedSammenlegging: Expression<Boolean>,

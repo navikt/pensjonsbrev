@@ -264,8 +264,7 @@ public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst : no/nav/p
 	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun getFritekst ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
-	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$BinaryInvoke;
-	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
+	public fun toString ()Ljava/lang/String;
 }
 
 public abstract class no/nav/pensjon/brev/template/ContentOrControlStructure : no/nav/pensjon/brev/template/StableHash {
@@ -605,9 +604,6 @@ public final class no/nav/pensjon/brev/template/Fritekst : no/nav/pensjon/brev/t
 	public final fun getStr ()Ljava/lang/String;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
-	public static fun somExpression-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Ljava/lang/String;
@@ -864,9 +860,6 @@ public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/
 	public final fun getVariabel ()Lno/nav/pensjon/brev/template/Expression;
 	public fun hashCode ()I
 	public static fun hashCode-impl (Lno/nav/pensjon/brev/template/Expression;)I
-	public fun somExpression ()Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-	public synthetic fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
-	public static fun somExpression-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public fun toString ()Ljava/lang/String;
 	public static fun toString-impl (Lno/nav/pensjon/brev/template/Expression;)Ljava/lang/String;
 	public final synthetic fun unbox-impl ()Lno/nav/pensjon/brev/template/Expression;
@@ -909,7 +902,6 @@ public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/
 }
 
 public abstract interface class no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
-	public abstract fun somExpression ()Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/StableHash {

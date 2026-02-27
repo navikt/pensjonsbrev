@@ -252,8 +252,8 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel(
-                    avtalelandNavn = avtalelandNavn.somExpression(),
+                BilateralAvtaleHjemmelFritekst(
+                    avtalelandNavn = avtalelandNavn,
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,
                     harOppfyltVedSammenlegging = harOppfyltVedSammenlegging
