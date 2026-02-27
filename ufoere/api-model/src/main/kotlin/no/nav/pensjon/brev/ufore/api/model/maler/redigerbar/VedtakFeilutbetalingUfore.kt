@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import java.time.LocalDate
 import java.time.Month
 
+// TODO: Slå sammen dto'ene og legge data klasser på innsiden. Ikke lengre behov for to ulike etter vi fjernet unødige saksbehandlervalg
 data class VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
     override val pesysData: PesysData,
     override val saksbehandlerValg: EmptySaksbehandlerValg,
