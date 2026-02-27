@@ -230,10 +230,11 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                         nynorsk { + "For at du skal ha rett til å få utbetalt alderspensjon med attlevanderett når du bur i " },
                         english { + "To be eligible for your retirement pension with survivor`s rights when you live in " }
                     )
+                    val bostedsland = pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND"))
                     text (
-                        bokmal { + pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND")) },
-                        nynorsk { + pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND")) },
-                        english { + pesysData.bruker.faktiskBostedsland.ifNull(fritekst("BOSTEDSLAND")) }
+                        bokmal { + bostedsland },
+                        nynorsk { + bostedsland },
+                        english { + bostedsland }
                     )
                     text(
                         bokmal { + ", må avdøde ha hatt 20 års botid i Norge eller rett til tilleggspensjon." },
