@@ -284,135 +284,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/AttachmentTit
 	public abstract fun getTitle ()Ljava/util/List;
 }
 
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers {
-	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevWrappers;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Broek {
-	public fun <init> (II)V
-	public fun equals (Ljava/lang/Object;)Z
-	public final fun getNevner ()I
-	public final fun getTeller ()I
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Days : no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Days;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Foedselsnummer {
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Foedselsnummer;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
-}
-
-public abstract interface class no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public abstract fun getValue ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Kroner : no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Kroner;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Months : no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Months;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Percent : no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Percent;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Pid {
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Pid;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Telefonnummer {
-	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Telefonnummer;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
-	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
-	public final fun getValue ()Ljava/lang/String;
-	public fun hashCode ()I
-	public static fun hashCode-impl (Ljava/lang/String;)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()Ljava/lang/String;
-}
-
-public final class no/nav/pensjon/brevbaker/api/model/BrevWrappers$Year : no/nav/pensjon/brevbaker/api/model/BrevWrappers$IntValue {
-	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevWrappers$Year;
-	public static fun constructor-impl (I)I
-	public fun equals (Ljava/lang/Object;)Z
-	public static fun equals-impl (ILjava/lang/Object;)Z
-	public static final fun equals-impl0 (II)Z
-	public fun getValue ()I
-	public fun hashCode ()I
-	public static fun hashCode-impl (I)I
-	public fun toString ()Ljava/lang/String;
-	public static fun toString-impl (I)Ljava/lang/String;
-	public final synthetic fun unbox-impl ()I
-}
-
 public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles {
 	public fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$NavEnhet;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$SignerendeSaksbehandlere;)V
 	public synthetic fun <init> (Ljava/time/LocalDate;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$NavEnhet;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker;Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles$SignerendeSaksbehandlere;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
@@ -433,7 +304,7 @@ public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Bruker {
 	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getEtternavn ()Ljava/lang/String;
-	public final fun getFoedselsnummer-1XzpqKQ ()Ljava/lang/String;
+	public final fun getFoedselsnummer-BtG0LY8 ()Ljava/lang/String;
 	public final fun getFornavn ()Ljava/lang/String;
 	public final fun getMellomnavn ()Ljava/lang/String;
 	public fun hashCode ()I
@@ -445,7 +316,7 @@ public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles$NavEnhet {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getNavn ()Ljava/lang/String;
 	public final fun getNettside ()Ljava/lang/String;
-	public final fun getTelefonnummer-b-AFW3A ()Ljava/lang/String;
+	public final fun getTelefonnummer-So_rIL8 ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
 }
@@ -458,6 +329,135 @@ public final class no/nav/pensjon/brevbaker/api/model/BrevbakerFelles$Signerende
 	public final fun getSaksbehandler ()Ljava/lang/String;
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType {
+	public static final field INSTANCE Lno/nav/pensjon/brevbaker/api/model/BrevbakerType;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Broek {
+	public fun <init> (II)V
+	public fun equals (Ljava/lang/Object;)Z
+	public final fun getNevner ()I
+	public final fun getTeller ()I
+	public fun hashCode ()I
+	public fun toString ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Days : no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Days;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Foedselsnummer {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Foedselsnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public abstract fun getValue ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Kroner : no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Kroner;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Months : no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Months;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Percent : no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Percent;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Pid {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Pid;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Telefonnummer {
+	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Telefonnummer;
+	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
+	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
+	public final fun getValue ()Ljava/lang/String;
+	public fun hashCode ()I
+	public static fun hashCode-impl (Ljava/lang/String;)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (Ljava/lang/String;)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brevbaker/api/model/BrevbakerType$Year : no/nav/pensjon/brevbaker/api/model/BrevbakerType$IntValue {
+	public static final synthetic fun box-impl (I)Lno/nav/pensjon/brevbaker/api/model/BrevbakerType$Year;
+	public static fun constructor-impl (I)I
+	public fun equals (Ljava/lang/Object;)Z
+	public static fun equals-impl (ILjava/lang/Object;)Z
+	public static final fun equals-impl0 (II)Z
+	public fun getValue ()I
+	public fun hashCode ()I
+	public static fun hashCode-impl (I)I
+	public fun toString ()Ljava/lang/String;
+	public static fun toString-impl (I)Ljava/lang/String;
+	public final synthetic fun unbox-impl ()I
 }
 
 public abstract interface annotation class no/nav/pensjon/brevbaker/api/model/DisplayText : java/lang/annotation/Annotation {
@@ -700,7 +700,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$Sakspart {
 	public abstract fun getAnnenMottakerNavn ()Ljava/lang/String;
 	public abstract fun getDokumentDato ()Ljava/time/LocalDate;
-	public abstract fun getGjelderFoedselsnummer-1XzpqKQ ()Ljava/lang/String;
+	public abstract fun getGjelderFoedselsnummer-BtG0LY8 ()Ljava/lang/String;
 	public abstract fun getGjelderNavn ()Ljava/lang/String;
 	public abstract fun getSaksnummer ()Ljava/lang/String;
 }

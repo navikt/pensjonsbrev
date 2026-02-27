@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.nettside
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 object Omsorgsopptjening {
     // omsorgsopptjenHjelpestInnledn_001

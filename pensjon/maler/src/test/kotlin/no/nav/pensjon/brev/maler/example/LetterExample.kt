@@ -28,7 +28,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.BrukerSelectors.fornavn
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate

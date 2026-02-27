@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.api.model.vedlegg
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.Beregningsmetode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Percent
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 data class OpplysningerBruktIBeregningenEndretUttaksgradDto(

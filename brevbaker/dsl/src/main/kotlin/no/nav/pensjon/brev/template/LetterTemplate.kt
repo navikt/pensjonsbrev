@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.IntValue
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass

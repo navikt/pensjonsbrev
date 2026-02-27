@@ -6,8 +6,8 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIA
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.fixtures.createMaanedligPensjonFoerSkattAP2025
 import no.nav.pensjon.brev.maler.vedlegg.createDineRettigheterOgMulighetTilAaKlageDto
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Percent
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 
 fun createAvslagPaaGjenlevenderettIAlderspensjon() = AvslagPaaGjenlevenderettIAlderspensjonDto(
     saksbehandlerValg = AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg(

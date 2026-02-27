@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.Month

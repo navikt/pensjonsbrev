@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.api.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.BorMedSivilstand
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Year
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class OpplysningerOmEtteroppgjoeretDto(
     val periode: Year,

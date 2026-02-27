@@ -5,7 +5,7 @@ package no.nav.pensjon.brevbaker.api.model
 import java.util.Objects
 
 
-object BrevWrappers {
+object BrevbakerType {
 
     interface IntValue {
         val value: Int

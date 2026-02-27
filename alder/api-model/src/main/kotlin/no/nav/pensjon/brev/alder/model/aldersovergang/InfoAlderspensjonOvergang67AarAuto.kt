@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.model.aldersovergang
 
 import no.nav.pensjon.brev.alder.model.YtelseForAldersovergangKode
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brevbaker.api.model.BrevWrappers.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 @Suppress("unused")
 data class InfoAlderspensjonOvergang67AarAutoDto(
