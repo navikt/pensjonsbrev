@@ -8,7 +8,7 @@ describe("Brevvelger spec", () => {
   it("Søk med saksnummer", () => {
     cy.visit("/");
     cy.contains("Brevvelger").should("not.exist");
-    cy.contains("saksnummer").click();
+    cy.contains("Saksnummer").click();
     cy.focused().type("123{enter}");
     cy.contains("Finner ikke saksnummer").should("exist");
     cy.focused().type("456{enter}");
