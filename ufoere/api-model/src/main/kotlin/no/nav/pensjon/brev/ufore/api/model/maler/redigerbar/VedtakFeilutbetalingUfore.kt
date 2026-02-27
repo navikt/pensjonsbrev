@@ -1,15 +1,10 @@
 package no.nav.pensjon.brev.ufore.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.ISakstype
-import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.VedtakFeilutbetalingUforeDto.Saksbehandlervalg
-import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 import java.time.Month
 
@@ -19,17 +14,8 @@ data class VedtakFeilutbetalingUforeIngenTilbakekrevingDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData>
 
 data class VedtakFeilutbetalingUforeDto(
-    override val pesysData: PesysData, override val saksbehandlerValg: Saksbehandlervalg
-) : RedigerbarBrevdata<Saksbehandlervalg, PesysData> {
-
-    data class Saksbehandlervalg(
-        @DisplayText("Endret sivilstand")
-        val sivilstandEndret: Boolean,
-        @DisplayText("Reduksjon foreldelse")
-        val reduksjonForeldelse: Boolean,
-
-        ) : SaksbehandlerValgBrevdata
-}
+    override val pesysData: PesysData, override val saksbehandlerValg: EmptySaksbehandlerValg
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, PesysData>
 
 data class PesysData(
     val feilutbetaltTotalBelop: Int,
