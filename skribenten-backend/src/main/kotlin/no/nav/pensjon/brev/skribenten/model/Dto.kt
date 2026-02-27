@@ -85,6 +85,11 @@ object Dto {
         val rendretBrevErEndret: Boolean,
     )
 
+    data class SendBrevResult(
+        val journalpostId: JournalpostId?,
+        val error: Pen.BestillBrevResponse.Error?,
+    )
+
     @ConsistentCopyVisibility
     data class Mottaker private constructor(
         val type: MottakerType,

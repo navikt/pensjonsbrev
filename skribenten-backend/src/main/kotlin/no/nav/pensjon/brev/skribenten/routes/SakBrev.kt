@@ -180,15 +180,9 @@ fun Route.sakBrev(
 
                 post("/send") {
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
 
-                    val resultat = brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
-
-                    if (resultat != null) {
-                        call.respond(resultat)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
-                    }
+                    val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
+                    apiRespond(dto2ApiService, resultat)
                 }
             }
 

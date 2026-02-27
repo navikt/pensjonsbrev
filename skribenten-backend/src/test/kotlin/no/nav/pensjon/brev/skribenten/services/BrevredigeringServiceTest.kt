@@ -56,8 +56,6 @@ class BrevredigeringServiceTest {
         MockPrincipal(NavIdent("Agent Smith"), "Hugo Weaving", setOf(ADGroups.pensjonSaksbehandler))
     private val saksbehandler2Principal =
         MockPrincipal(NavIdent("Morpheus"), "Laurence Fishburne", setOf(ADGroups.pensjonSaksbehandler))
-    private val attestantPrincipal =
-        MockPrincipal(NavIdent("A12345"), "Peder Ås", mutableSetOf(ADGroups.pensjonSaksbehandler, ADGroups.attestant))
 
     private val letter = letter(ParagraphImpl(1, true, listOf(LiteralImpl(1, "red pill"))))
         .medSignatur(saksbehandler = saksbehandler1Principal.fullName, attestant = null)
@@ -103,9 +101,6 @@ class BrevredigeringServiceTest {
         brevkontekst = TemplateDescription.Brevkontekst.VEDTAK,
         sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("S1"), TemplateDescription.Redigerbar.Sakstype("S2")),
     )
-    private val letterResponse =
-        LetterResponse(file = stagetPDF, contentType = "pdf", letterMetadata = informasjonsbrev.metadata)
-
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
     class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
@@ -234,10 +229,7 @@ class BrevredigeringServiceTest {
         )
     )
 
-    private val brevredigeringService: BrevredigeringService = BrevredigeringService(
-        brevbakerService = brevbakerService,
-        penService = penService
-    )
+    private val brevredigeringService: BrevredigeringService = BrevredigeringService()
 
     private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevbakerService = brevbakerService,
@@ -267,14 +259,6 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = bestillBrevresponse
     }
 
-    @Test
-    fun `status er ARKIVERT om brev har journalpost`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        transaction { BrevredigeringEntity[brev.info.id].journalpostId = JournalpostId(123L) }
-
-        val oppdatertBrev = hentBrev(brev.info.id)
-        assertThat(oppdatertBrev?.info?.status).isEqualTo(Dto.BrevStatus.ARKIVERT)
-    }
 
     @Test
     fun `can delete brevredigering`(): Unit = runBlocking {
@@ -292,247 +276,6 @@ class BrevredigeringServiceTest {
     fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
         assertThat(hentBrev(brevId = BrevId(1337))).isNull()
         assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
-    }
-
-    @Test
-    fun `kan ikke distribuere vedtaksbrev som ikke er attestert`(): Unit = runBlocking {
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = VedtaksId(1),
-        )
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-
-            assertThrows<BrevIkkeKlartTilSendingException> {
-                brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-            }
-        }
-    }
-
-    @Test
-    fun `kan distribuere vedtaksbrev som er attestert`(): Unit = runBlocking {
-        brevbakerService.renderPdfKall.clear()
-
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) },
-            brevkode = Testbrevkoder.VEDTAKSBREV,
-            vedtaksId = VedtaksId(1),
-        )
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-        }
-
-        withPrincipal(attestantPrincipal) {
-            assertThat(brevredigeringFacade.attesterBrev(AttesterBrevHandler.Request(brev.info.id, frigiReservasjon = true))).isSuccess()
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            assertThat(brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)).isEqualTo(bestillBrevresponse)
-        }
-        assertEquals(attestantPrincipal.fullName, brevbakerService.renderPdfKall.first().signatur.attesterendeSaksbehandlerNavn)
-    }
-
-    @Test
-    fun `distribuerer sentralprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
-
-        brevbakerService.renderPdfResultat = letterResponse
-        brevbakerService.renderMarkupResultat = { letter }
-
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
-        )
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
-        }
-
-        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, principalNavEnhetId)
-
-        penService.verifySendBrev(
-            Pen.SendRedigerbartBrevRequest(
-                templateDescription = informasjonsbrev,
-                dokumentDato = LocalDate.now(),
-                saksId = SaksId(1234),
-                brevkode = Testbrevkoder.INFORMASJONSBREV,
-                enhetId = principalNavEnhetId,
-                pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id.id}",
-                mottaker = null,
-            ), true
-        )
-    }
-
-    @Test
-    fun `distribuerer ikke lokalprint brev`(): Unit = runBlocking {
-        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(123), null)
-
-        brevbakerService.renderPdfResultat = letterResponse
-        brevbakerService.renderMarkupResultat = { letter }
-
-        val brev = opprettBrev(
-            saksbehandlerValg = Api.GeneriskBrevdata().apply { put("valg", true) }
-        )
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-            assertThat(
-                brevredigeringFacade.endreDistribusjonstype(
-                    EndreDistribusjonstypeHandler.Request(
-                        brevId = brev.info.id,
-                        type = Distribusjonstype.LOKALPRINT
-                    )
-                )
-            ).isSuccess()
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
-        }
-
-        penService.verifyHentPesysBrevdata(sak1.saksId, null, Testbrevkoder.INFORMASJONSBREV, principalNavEnhetId)
-
-        penService.verifySendBrev(
-            Pen.SendRedigerbartBrevRequest(
-                templateDescription = informasjonsbrev,
-                dokumentDato = LocalDate.now(),
-                saksId = SaksId(1234),
-                brevkode = Testbrevkoder.INFORMASJONSBREV,
-                enhetId = principalNavEnhetId,
-                pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id.id}",
-                mottaker = null,
-            ), false
-        )
-    }
-
-    @Test
-    fun `brev kan ikke endres om det er arkivert`(): Unit = runBlocking {
-        val brev = opprettBrev(reserverForRedigering = true)
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-        }
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
-            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-        )
-
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(hentBrev(brev.info.id)).isNotNull()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brev.info.id)))
-                .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()
-        }
-    }
-
-    @Test
-    fun `kan ikke sende brev som ikke er markert klar til sending`(): Unit = runBlocking {
-        val brev = opprettBrev()
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-        }
-
-        assertThrows<BrevIkkeKlartTilSendingException> {
-            brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        }
-    }
-
-    @Test
-    suspend fun `kan ikke sende brev hvor pdf har annen hash enn siste brevredigering`() {
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            brevredigeringFacade.oppdaterBrev(
-                OppdaterBrevHandler.Request(
-                    brevId = brev.info.id,
-                    nyttRedigertbrev = brev.redigertBrev.withSignaturSaksbehandler("en ny signatur")
-                )
-            )
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-        }
-        // verifiser forskjellig hash
-        transaction {
-            val redigering = BrevredigeringEntity[brev.info.id]
-            assertThat(redigering.redigertBrevHash).isNotEqualTo(redigering.document!!.redigertBrevHash)
-        }
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThrows<NyereVersjonFinsException> {
-                brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-            }
-        }
-    }
-
-    @Test
-    fun `arkivert brev men ikke distribuert kan sendes`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-        }
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
-            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-        )
-
-        assertThat(
-            withPrincipal(saksbehandler1Principal) {
-                brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true))
-            }
-        ).isSuccess()
-
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-        assertThat(hentBrev(brev.info.id)).isNotNull()
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(JournalpostId(991), null)
-
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
-
-        assertThat(transaction { BrevredigeringEntity.findById(brev.info.id) }).isNull()
-    }
-
-    @Test
-    fun `brev distribueres til annen mottaker`(): Unit = runBlocking {
-        val mottaker = Dto.Mottaker.samhandler("987")
-        val brev = opprettBrev(mottaker = mottaker)
-        withPrincipal(saksbehandler1Principal) {
-            assertThat(brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))).isSuccess()
-            assertThat(brevredigeringFacade.veksleKlarStatus(VeksleKlarStatusHandler.Request(brevId = brev.info.id, klar = true)))
-                .isSuccess()
-        }
-
-        brevredigeringService.sendBrev(sak1.saksId, brev.info.id)
-
-        penService.verifySendBrev(
-            Pen.SendRedigerbartBrevRequest(
-                templateDescription = informasjonsbrev,
-                dokumentDato = LocalDate.now(),
-                saksId = sak1.saksId,
-                brevkode = Testbrevkoder.INFORMASJONSBREV,
-                enhetId = principalNavEnhetId,
-                pdf = stagetPDF,
-                eksternReferanseId = "skribenten:${brev.info.id.id}",
-                mottaker = Pen.SendRedigerbartBrevRequest.Mottaker(
-                    Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID,
-                    mottaker.tssId,
-                    null,
-                    null
-                )
-            ), true
-        )
     }
 
     @Test

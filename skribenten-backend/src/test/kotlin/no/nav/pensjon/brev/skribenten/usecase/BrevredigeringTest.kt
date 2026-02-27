@@ -89,10 +89,7 @@ abstract class BrevredigeringTest {
     protected val penService = BrevredigeringServiceTest.FakePenService()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
-    private val brevredigeringService: BrevredigeringService = BrevredigeringService(
-        brevbakerService = brevbakerService,
-        penService = penService,
-    )
+    private val brevredigeringService: BrevredigeringService = BrevredigeringService()
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevbakerService, penService, samhandlerService, navAnsattService, FakeP1Service())
 
     protected companion object Fixtures {
@@ -291,16 +288,18 @@ abstract class BrevredigeringTest {
     protected suspend fun arkiverBrev(
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Unit, BrevredigeringError> = withPrincipal(principal) {
-        assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(veksleKlarStatus(brev, true)).isSuccess()
+    ): Outcome<Dto.SendBrevResult, BrevredigeringError>? = withPrincipal(principal) {
+        assertThat(hentEllerOpprettPdf(brev, principal = principal)).isSuccess()
+        assertThat(veksleKlarStatus(brev, true, principal = principal)).isSuccess()
 
         penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
+            bestillBrevresponse.journalpostId,
             Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
         )
-        assertThat(sendBrev(brev)).isNotNull()
-        success(Unit)
+        val result = sendBrev(brev, saksbehandler1Principal)
+        penService.sendBrevResponse = bestillBrevresponse
+
+        result
     }
 
     protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
@@ -308,11 +307,23 @@ abstract class BrevredigeringTest {
             brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
         }
 
-    /**
-     * TODO: Potensielt midlertidig frem til refaktorering er ferdig
-     */
-    protected suspend fun sendBrev(brev: Dto.Brevredigering) =
-        brevredigeringService.sendBrev(brev.info.saksId, brev.info.id)
+    protected suspend fun endreDistribusjonstype(
+        brevId: BrevId,
+        nyDistribusjonstype: Distribusjonstype,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.endreDistribusjonstype(
+            EndreDistribusjonstypeHandler.Request(
+                brevId = brevId,
+                type = nyDistribusjonstype,
+            )
+        )
+    }
+
+    protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        withPrincipal(principal) {
+            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+        }
 
     protected fun stagePdf(pdf: ByteArray) {
         brevbakerService.renderPdfResultat = LetterResponse(

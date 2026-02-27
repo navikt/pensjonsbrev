@@ -47,10 +47,7 @@ class OpprettBrevHandlerImpl(
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
-        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {
-            is Outcome.Failure -> return failure(res.error)
-            is Outcome.Success -> res.value
-        }
+        val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return failure(it) }
 
         val pesysData = brevdataService.hentBrevdata(
             saksId = request.saksId,

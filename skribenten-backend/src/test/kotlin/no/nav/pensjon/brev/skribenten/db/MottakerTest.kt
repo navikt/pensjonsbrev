@@ -82,7 +82,7 @@ class MottakerTest {
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
-        transaction { BrevredigeringEntity[brevredigeringId].mottaker?.tssId = "abc" }
+        transaction { BrevredigeringEntity[brevredigeringId].settMottaker(Dto.Mottaker.samhandler("abc"), "ABC") }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)

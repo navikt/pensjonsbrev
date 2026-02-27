@@ -76,6 +76,12 @@ class Dto2ApiService(
         rendretBrevErEndret = hentDocumentResult.rendretBrevErEndret,
     )
 
+    fun toApi(result: Dto.SendBrevResult) = Api.BestillBrevResponse(
+        journalpostId = result.journalpostId,
+        error = result.error?.let { Api.BestillBrevResponse.Error(it.brevIkkeStoettet, it.tekniskgrunn, it.beskrivelse) }
+    )
+
+
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
             tssId = tssId!!,
@@ -102,7 +108,7 @@ class Dto2ApiService(
         )
     }
 
-    suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
+    private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
 }
