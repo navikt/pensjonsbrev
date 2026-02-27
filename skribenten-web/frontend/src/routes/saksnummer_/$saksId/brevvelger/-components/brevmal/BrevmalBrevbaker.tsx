@@ -1,4 +1,4 @@
-import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, HStack, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -40,7 +40,7 @@ const EksisterendeKladdModal = (props: {
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <Modal
-      header={{ heading: "Vil du bruke eksisterende kladd?" }}
+      header={{ closeButton: false, heading: "Vil du bruke eksisterende kladd?" }}
       onClose={props.onClose}
       open={props.åpen}
       portal
@@ -52,7 +52,7 @@ const EksisterendeKladdModal = (props: {
       <Modal.Footer>
         <HStack gap="space-16">
           <Button onClick={props.onFormSubmit} type="button" variant="secondary">
-            Lag nytt brev
+            Nei, lag nytt brev
           </Button>
           <Button
             onClick={() =>
@@ -219,6 +219,7 @@ const BrevmalBrevbaker = (props: {
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
             <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
           </VStack>
+          <Spacer />
           {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
       </FormProvider>
