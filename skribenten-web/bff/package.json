@@ -23,7 +23,7 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.4.2",
+    "@biomejs/biome": "2.4.4",
     "@types/cookie-parser": "^1.4.10",
     "@types/express": "5.0.6",
     "@types/lusca": "^1.7.5",
