@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon
 
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -18,7 +19,7 @@ object PlanleggePensjonTemplates : AllTemplates {
 }
 
 enum class Brevkategori : TemplateDescription.IBrevkategori {
-    UTREGNING;
+    ;
 
     override val kode = name
 }
@@ -30,7 +31,11 @@ object PlanleggePensjonBrevkoder {
     }
     enum class Redigerbar : Brevkode.Redigerbart {
         ;
-
         override fun kode() = name
     }
+}
+
+enum class FeatureToggles(key: String) {
+    ;
+    val toggle = FeatureToggle(key)
 }
