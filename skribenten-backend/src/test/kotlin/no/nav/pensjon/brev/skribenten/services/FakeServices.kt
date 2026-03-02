@@ -5,7 +5,7 @@ import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerRespon
 import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -116,13 +117,13 @@ open class FakeBrevbakerService(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): LetterResponse = notYetStubbed()

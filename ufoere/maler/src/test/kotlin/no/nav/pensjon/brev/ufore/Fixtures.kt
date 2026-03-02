@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.Feilu
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingSpesifikkVarselDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.FeilutbetalingVarselDodsboDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.feilutbetaling.VarselFeilutbetalingPesysData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 import java.time.Month
 import kotlin.reflect.KClass

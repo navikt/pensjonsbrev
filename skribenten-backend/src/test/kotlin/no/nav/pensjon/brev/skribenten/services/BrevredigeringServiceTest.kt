@@ -13,20 +13,22 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
 import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
-import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import java.time.LocalDate
@@ -104,7 +106,7 @@ class BrevredigeringServiceTest {
     private val brevbakerService = BrevredigeringFakeBrevbakerService()
 
     class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
-        lateinit var renderMarkupResultat: suspend ((f: Felles) -> LetterMarkup)
+        lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
         lateinit var renderPdfResultat: LetterResponse
         var modelSpecificationResultat: TemplateModelSpecification? = null
         override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
@@ -115,7 +117,7 @@ class BrevredigeringServiceTest {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
-            felles: Felles
+            felles: BrevbakerFelles
         ): LetterMarkupWithDataUsage =
             renderMarkupResultat(felles)
                 .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
@@ -125,7 +127,7 @@ class BrevredigeringServiceTest {
             brevkode: Brevkode.Redigerbart,
             spraak: LanguageCode,
             brevdata: RedigerbarBrevdata<*, *>,
-            felles: Felles,
+            felles: BrevbakerFelles,
             redigertBrev: LetterMarkup,
             alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
         ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
@@ -148,7 +150,7 @@ class BrevredigeringServiceTest {
     )
 
     private val brevdataResponseData = BrevdataResponse.Data(
-        felles = Felles(
+        felles = BrevbakerFelles(
             dokumentDato = LocalDate.now(),
             saksnummer = sak1.saksId.toString(),
             avsenderEnhet =
