@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
@@ -83,7 +84,7 @@ sealed class Expression<out Out> : StableHash {
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
-        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.BrevbakerFelles>() {
+        object Felles : FromScope<BrevbakerFelles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
         }
