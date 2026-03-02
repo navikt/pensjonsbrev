@@ -1,3 +1,90 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
-object InnvilgelseUfoerepensjon
+import no.nav.pensjon.brev.api.model.Sakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.QuotationMarks
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
+import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+
+//PE_UT_04_001 vedtak Innvilgelse nasjonalt
+
+@TemplateModelHelpers
+object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto> {
+
+    //   override val featureToggle = FeatureToggles.brevmalUtInnvilgelseUfoerepensjon.toggle
+
+    override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOEREPENSJON
+    override val kategori = Brevkategori.UFOEREPENSJON
+    override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
+    override val sakstyper = setOf(Sakstype.UFOREP)
+
+    override val template = createTemplate(
+        languages = languages(Bokmal, Nynorsk, English),
+        letterMetadata = LetterMetadata(
+            displayTitle = "Vedtak - innvilgelse av uførepensjon",
+            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
+            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+        )
+    ) {
+        title {
+            text(
+                bokmal { +"Uførepensjon fra folketrygden - melding om vedtak" },
+                nynorsk { +"Uførepensjon frå folketrygda - melding om vedtak" },
+                english { +"Disability pension from the National Insurance Scheme - notice of decision" }
+            )
+        }
+
+        outline {
+            val pe = pesysData.pe
+
+//PE_UT_04_001_TBU1902, 1559, 1560, 1903, 1924
+            paragraph {
+                text(
+                    bokmal { +"Nav har innvilget din søknad om uførepensjon mottatt PE_Vedtaksdata_Kravhode_KravMottattDato. Du får uførepensjon med en uføregrad på PE_VedtaksdataBerengningsData_Beregning_Uforegrad prosent fra PE_VedtaksData_VirkningFOM. Du får utbetalt PE_Vedtaksdata_BeregningsData_Beregning_Netto kroner hver måned før skatt." },
+                    nynorsk { +"Nav har innvilga søknaden din om uførepensjon motteken PE_Vedtaksdata_Kravhode_KravMottattDato. Du får uførepensjon med ein uføregrad på PE_VedtaksdataBerengningsData_Beregning_Uforegrad prosent frå PE_VedtaksData_VirkningFOM. Du får utbetalt PE_Vedtaksdata_BeregningsData_Beregning_Netto kroner kvar månad før skatt." },
+                    english { +"Nav makes reference to your application for a disabililty pension, received on PE_Vedtaksdata_Kravhode_KravMottattDato. You have been granted a disability pension with a disability level of PE_VedtaksdataBerengningsData_Beregning_Uforegrad per cent as of PE_VedtaksData_VirkningFOM. You will receive PE_Vedtaksdata_BeregningsData_Beregning_Netto Norwegian kroner each month, before tax." },
+                )
+            }
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto = 0) THEN INCLUDE
+            paragraph {
+                text(
+                    bokmal { +"Du har fått innvilget ektefelletillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
+                    nynorsk { +"Du har fått innvilga ektefelletillegg, men det vil ikkje komme til utbetaling fordi den samla inntekta di er for høg." },
+                    english { +"You have been granted spouse supplement, however you will not receive any additional payment due to your total income being too high." },
+                )
+            }
+            //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)
+            //OR
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false)
+            //OR
+            //(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0
+            //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)
+            // THEN INCLUDE
+            paragraph {
+                text(
+                    bokmal { +"Du har fått innvilget barnetillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
+                    nynorsk { +"Du har fått innvilga barnetillegg, men det vil ikkje komme til utbetaling fordi den samla inntekta di er for høg." },
+                    english { +"You have been granted child supplement, however you will not receive any additional payment due to your total income being too high." },
+                )
+            }
+        }
+    }
+}
+
