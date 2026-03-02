@@ -158,7 +158,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             }
 
             title2 { text(bokmal { +"Slik påvirkes du av endringen" }) }
-            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har minstesats i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
+            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har IFU i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
             paragraph { text(bokmal { +"De som får beregnet inntekt før uførhet etter regler for enslige eller unge uføre, påvirkes ikke av denne lovendringen." }) }
             paragraph { text(bokmal { +"I noen tilfeller vil økt minste IFU føre til at uføregraden øker. Du vil få varsel- og vedtaksbrev hvis dette gjelder deg. Der vil du få informasjon om hvordan det påvirker uføretrygden din. " }) }
 
