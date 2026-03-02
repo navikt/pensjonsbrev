@@ -5,18 +5,18 @@ import io.ktor.server.response.respond
 import io.ktor.server.routing.RoutingCall
 import io.ktor.server.routing.RoutingContext
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.Reservasjon
-import no.nav.pensjon.brev.skribenten.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import org.slf4j.LoggerFactory
 
 @JvmName("apiRespondBrevredigering")

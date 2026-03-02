@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigFactory
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse

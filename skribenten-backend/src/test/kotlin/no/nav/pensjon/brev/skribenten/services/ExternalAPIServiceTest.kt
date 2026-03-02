@@ -62,7 +62,7 @@ class ExternalAPIServiceTest {
         },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
-            penService = PenServiceStub(),
+            penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
         )
     )

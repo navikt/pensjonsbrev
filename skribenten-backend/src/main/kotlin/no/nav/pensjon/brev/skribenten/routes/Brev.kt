@@ -5,24 +5,25 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.usecase.OppdaterBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.ReserverBrevHandler
-import no.nav.pensjon.brev.skribenten.usecase.TilbakestillBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
 
 fun Route.brev(
     pdlService: PdlService,
-    penService: PenService,
+    fagsakService: FagsakService,
     brevredigeringFacade: BrevredigeringFacade,
     dto2ApiService: Dto2ApiService,
 ) {
     route("/brev/{brevId}") {
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
-            this.penService = penService
+            this.fagsakService = fagsakService
             this.brevredigeringFacade = brevredigeringFacade
         }
 

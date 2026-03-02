@@ -7,12 +7,14 @@ import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto
-import no.nav.pensjon.brev.skribenten.services.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
 import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -24,7 +26,7 @@ private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_0
 
 class BrevmalService(
     private val brevbakerService: BrevbakerService,
-    private val penService: PenService,
+    private val penClient: PenClient,
     private val brevmetadataService: BrevmetadataService,
 ) {
     private val logger = LoggerFactory.getLogger(BrevmalService::class.java)
@@ -89,11 +91,11 @@ class BrevmalService(
 
     // TODO rename vekk fra "krav..." når alle tolkninger er over i spring component data-bygger
     private suspend fun brevdataByggerStoettedeVedtak(vedtaksId: VedtaksId): KravStoettetAvDatabyggerResult =
-        penService.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
+        penClient.hentIsKravStoettetAvDatabygger(vedtaksId) ?: KravStoettetAvDatabyggerResult()
 
     private suspend fun Sequence<LetterMetadata>.filterIsRelevantRegelverk(sakstype: ISakstype, vedtaksId: VedtaksId): Sequence<LetterMetadata> {
         val erKravPaaGammeltRegelverk = if (sakstype == Sakstype("ALDER")) {
-            penService.hentIsKravPaaGammeltRegelverk(vedtaksId)
+            penClient.hentIsKravPaaGammeltRegelverk(vedtaksId)
                 ?: false.also { logger.warn("Feltet \"erKravPaaGammeltRegelverk\" fra vedtak er null, antar false") }
         } else null
 

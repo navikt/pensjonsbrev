@@ -14,10 +14,14 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
-import no.nav.pensjon.brev.skribenten.domain.P1Data
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
@@ -145,7 +149,7 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
     }
 }
 
-open class PenServiceStub : PenService {
+open class PenClientStub : PenClient {
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
@@ -167,4 +171,9 @@ open class SafServiceStub : SafService {
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult = notYetStubbed()
     override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse = notYetStubbed()
     override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray = notYetStubbed()
+}
+
+open class LegacyBrevServiceStub : LegacyBrevService {
+    override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
+    override suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
 }

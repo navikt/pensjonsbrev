@@ -13,10 +13,10 @@ import io.ktor.client.request.get
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.common.cached
 import org.slf4j.LoggerFactory
 import kotlin.jvm.java
 

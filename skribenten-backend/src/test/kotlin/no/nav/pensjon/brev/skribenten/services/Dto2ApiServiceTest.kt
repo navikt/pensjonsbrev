@@ -44,7 +44,7 @@ class Dto2ApiServiceTest {
                         )
                     )
                 ),
-                penService = PenServiceStub(),
+                penClient = PenClientStub(),
                 brevmetadataService = FakeBrevmetadataService(),
             ),
             navansattService = navansattService,

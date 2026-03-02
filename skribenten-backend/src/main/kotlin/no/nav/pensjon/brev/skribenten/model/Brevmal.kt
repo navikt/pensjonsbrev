@@ -2,8 +2,8 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto
-import no.nav.pensjon.brev.skribenten.services.SpraakKode
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 enum class BrevSystem { EXSTREAM, BREVBAKER }

@@ -13,13 +13,18 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.HentBrevHandler
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.usecase.*
 import no.nav.pensjon.brevbaker.api.model.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -171,13 +176,13 @@ class BrevredigeringServiceTest {
         brevdata = Api.GeneriskBrevdata()
     )
 
-    private val penService = FakePenService()
+    private val penService = FakePenClient()
 
-    class FakePenService(
+    class FakePenClient(
         var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
         var pesysBrevdata: BrevdataResponse.Data? = null,
         var sendBrevResponse: Pen.BestillBrevResponse? = null,
-    ) : PenServiceStub() {
+    ) : PenClientStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
 
         data class PesysBrevdatakallRequest(
@@ -231,9 +236,9 @@ class BrevredigeringServiceTest {
     private val brevredigeringService: BrevredigeringService = BrevredigeringService()
 
     private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
+        brevService = BrevService(penService, LegacyBrevServiceStub()),
+        brevdataService = BrevdataService(penService, FakeSamhandlerService()),
         brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
-        penService = penService,
-        samhandlerService = FakeSamhandlerService(),
         navansattService = navAnsattService,
         p1Service = FakeP1Service(),
         renderService = RenderService(brevbakerService)

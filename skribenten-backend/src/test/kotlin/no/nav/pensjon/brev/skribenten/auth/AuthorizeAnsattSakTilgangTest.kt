@@ -18,6 +18,7 @@ import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
 import io.ktor.server.util.getOrFail
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
@@ -27,8 +28,8 @@ import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import no.nav.pensjon.brev.skribenten.services.PdlServiceException
 import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService
-import no.nav.pensjon.brev.skribenten.services.PenServiceStub
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
+import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
 import no.nav.pensjon.brevbaker.api.model.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
@@ -88,14 +89,15 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.pid, behandlingsnummer()) to emptyList()))
 
-    private val defaultPenService = object : PenServiceStub() {
+    // TODO: Endre til å stubbe FagsakService
+    private val defaultPenService = object : PenClientStub() {
         private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId }
         override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
     }
 
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
-        penService: PenService = defaultPenService,
+        penClient: PenClient = defaultPenService,
         pdlService: PdlService = defaultPdlService,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
@@ -119,7 +121,7 @@ class AuthorizeAnsattSakTilgangTest {
                 route("/sak") {
                     install(AuthorizeAnsattSakTilgang) {
                         this.pdlService = pdlService
-                        this.penService = penService
+                        this.fagsakService = FagsakService(penClient)
                     }
 
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
@@ -220,7 +222,7 @@ class AuthorizeAnsattSakTilgangTest {
         }
 
     @Test
-    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
+    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penClient = object : PenClientStub() {
         override suspend fun hentSak(saksId: SaksId) = null
     }) { client ->
         val response = client.get("/sak/${testSak.saksId.id}")

@@ -17,9 +17,9 @@ import io.ktor.http.Parameters
 import io.ktor.http.append
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.Cacheomraade
-import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brev.skribenten.services.installRetry
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes

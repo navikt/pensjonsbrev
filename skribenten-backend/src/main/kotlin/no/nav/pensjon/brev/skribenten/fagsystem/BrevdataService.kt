@@ -1,8 +1,10 @@
 package no.nav.pensjon.brev.skribenten.fagsystem
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -10,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.SamhandlerService
 import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 
-class BrevdataService(private val penService: PenService, private val samhandlerService: SamhandlerService) {
+class BrevdataService(private val penClient: PenClient, private val samhandlerService: SamhandlerService) {
 
     suspend fun hentBrevdata(
         saksId: SaksId,
@@ -20,7 +22,7 @@ class BrevdataService(private val penService: PenService, private val samhandler
         mottaker: Dto.Mottaker?,
         signatur: SignerendeSaksbehandlere
     ): BrevdataResponse.Data {
-        val pesysData = penService.hentPesysBrevdata(
+        val pesysData = penClient.hentPesysBrevdata(
             saksId = saksId,
             vedtaksId = vedtaksId,
             brevkode = brevkode,
@@ -48,6 +50,7 @@ class BrevdataService(private val penService: PenService, private val samhandler
             ),
         )
 
+    // TODO: Jeg føler ikke helt at denne hører til her.
     suspend fun hentAnnenMottakerNavn(mottaker: Dto.Mottaker): String? =
         mottaker.annenMottakerNavn()
 

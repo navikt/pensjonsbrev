@@ -5,17 +5,22 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
-import no.nav.pensjon.brev.skribenten.fagsystem.PenService.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.BrevkontekstCode.*
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto.DokumentType.N
-import no.nav.pensjon.brev.skribenten.services.Brevkoder.FRITEKSTBREV_KODE
-import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_KODE
-import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
-import no.nav.pensjon.brev.skribenten.services.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.BrevkontekstCode.*
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.DokumentType.N
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.FRITEKSTBREV_KODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_KODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_VIRK0101_KODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.Brevkoder.POSTERINGSGRUNNLAG_VIRK0102_KODE
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -45,9 +50,9 @@ class BrevmalServiceTest {
     private val brevbakerService: BrevbakerService = FakeBrevbakerService(maler = brevbakerbrev)
 
     private fun lagBrevmalService(
-        penService: PenService = PenServiceStub(),
+        penClient: PenClient = PenClientStub(),
         brevmetadataService: BrevmetadataService = FakeBrevmetadataService()
-    ): BrevmalService = BrevmalService(brevbakerService, penService, brevmetadataService)
+    ): BrevmalService = BrevmalService(brevbakerService, penClient, brevmetadataService)
 
     private val testOkBrev = BrevdataDto(
         redigerbart = true,
@@ -178,7 +183,7 @@ class BrevmalServiceTest {
             brevmaler = listOf(brevdataDto),
         )
 
-        val penService = object : PenServiceStub() {
+        val penService = object : PenClientStub() {
             override suspend fun hentIsKravPaaGammeltRegelverk(vedtaksId: VedtaksId) =
                 if (vedtaksId == TEST_VEDTAKS_ID) isKravPaaGammeltRegelverk else notYetStubbed("Mangler stub for vedtaksId: $vedtaksId")
 

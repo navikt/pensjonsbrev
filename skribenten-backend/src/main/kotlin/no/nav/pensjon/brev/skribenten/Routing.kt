@@ -12,9 +12,17 @@ import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
+import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.fagsystem.PenServiceHttp
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*
@@ -28,7 +36,7 @@ fun Application.configureRouting(
     val servicesConfig = skribentenConfig.getConfig("services")
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
-    val penService = PenServiceHttp(servicesConfig.getConfig("pen"), authService)
+    val penService = PentHttpClient(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
@@ -38,17 +46,20 @@ fun Application.configureRouting(
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
-    val legacyBrevService = LegacyBrevService(brevmetadataService, safService, penService, navansattService)
+    val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penService, navansattService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penService)
     val brevredigeringService = BrevredigeringService()
 
+    val brevService = BrevService(penService, legacyBrevService)
+    val brevdataService = BrevdataService(penService, samhandlerService)
     val brevmalService = BrevmalService(brevbakerService, penService, brevmetadataService)
+    val fagsakService = FagsakService(penService)
     val renderService = RenderService(brevbakerService)
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
     val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevmalService)
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevmalService, penService, samhandlerService, navansattService, p1Service, renderService)
+    val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -76,14 +87,14 @@ fun Application.configureRouting(
 
             landRoute()
             brevmal(brevmalService)
-            kodeverkRoute(penService)
+            kodeverkRoute(fagsakService)
             sakRoute(
+                brevService,
                 brevmalService,
                 brevredigeringService,
                 krrService,
-                legacyBrevService,
                 pdlService,
-                penService,
+                fagsakService,
                 pensjonPersonDataService,
                 safService,
                 skjermingService,
@@ -92,7 +103,7 @@ fun Application.configureRouting(
                 brevredigeringFacade,
                 dto2ApiService,
             )
-            brev(pdlService, penService, brevredigeringFacade, dto2ApiService)
+            brev(pdlService, fagsakService, brevredigeringFacade, dto2ApiService)
             samhandlerRoute(samhandlerService)
             meRoute(navansattService)
 
