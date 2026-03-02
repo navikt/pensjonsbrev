@@ -123,10 +123,9 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             title2 { text(bokmal { +"Slik påvirkes du av endringen" }) }
             paragraph { text(bokmal { +"Dette påvirker bare deg som har en høyere reduksjonsprosent enn 70 prosent i dag, og i tillegg har inntekt ved siden av uføretrygden. Reduksjonsprosenten er individuell, og kan være lavere enn 70 prosent. Fra 1. juli 2026 kan den ikke lenger være høyere enn 70 prosent. " }) }
             paragraph { text(bokmal { +"Hvis du får en lavere reduksjonsprosent, vil vi trekke mindre av uføretrygden din når du har inntekt over bunnfradraget. Det kan føre til at det blir mer lønnsomt å jobbe ved siden av uføretrygden.  " }) }
-            paragraph { text(bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en høyere utbetaling av uføretrygd, føre til en reduksjon i barnetillegget. " }) }
             paragraph { text(bokmal { +"Eksempel: " }, fontType = ITALIC) }
             paragraph { text(bokmal { +"Kim har uføretrygd og en reduksjonsprosent på 80 prosent. Fram til 1. juli i år, vil vi redusere uføretrygden til Kim med 80 prosent av hver krone Kim tjener over bunnfradraget sitt. Fra 1. juli reduserer vi uføretrygden til Kim med 70 prosent av hver krone Kim tjener over bunnfradraget. I etteroppgjøret for 2026, vil Kim få tilbakebetalt hvis vi har trukket for mye." }, fontType = ITALIC) }
-            paragraph { text ( bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en høyere utbetaling av uføretrygd, føre til en reduksjon i barnetillegget. " }) }
+            paragraph { text(bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en høyere utbetaling av uføretrygd, føre til en reduksjon i barnetillegget. " }) }
 
             title2 { text(bokmal { +"Du trenger ikke å gjøre noe " }) }
             paragraph {
