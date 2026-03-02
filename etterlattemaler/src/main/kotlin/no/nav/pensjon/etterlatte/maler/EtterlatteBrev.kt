@@ -81,9 +81,7 @@ data class Trygdetid(
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,
     val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean,
-) {
-    val harFremtidigTrygdetid = trygdetidsperioder.any { it.type == TrygdetidType.FREMTIDIG }
-}
+)
 
 enum class BeregningsMetode {
     NASJONAL,
