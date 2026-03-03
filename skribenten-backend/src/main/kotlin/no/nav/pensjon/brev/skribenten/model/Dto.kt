@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.brev.Landkode
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.domain.MottakerType
@@ -83,6 +83,11 @@ object Dto {
     data class HentDocumentResult(
         val document: Document,
         val rendretBrevErEndret: Boolean,
+    )
+
+    data class SendBrevResult(
+        val journalpostId: JournalpostId?,
+        val error: Pen.BestillBrevResponse.Error?,
     )
 
     @ConsistentCopyVisibility

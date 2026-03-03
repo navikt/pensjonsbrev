@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -82,7 +82,7 @@ class MottakerTest {
                 manueltAdressertTil = Dto.Mottaker.ManueltAdressertTil.IKKE_RELEVANT
             }
         }
-        transaction { BrevredigeringEntity[brevredigeringId].mottaker?.tssId = "abc" }
+        transaction { BrevredigeringEntity[brevredigeringId].settMottaker(Dto.Mottaker.samhandler("abc"), "ABC") }
         val mottaker = transaction { Mottaker[brevredigeringId] }
 
         assertEquals(MottakerType.SAMHANDLER, mottaker.type)

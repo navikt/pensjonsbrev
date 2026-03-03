@@ -118,13 +118,7 @@ class OppdaterBrevHandlerTest : BrevredigeringTest() {
 
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
         assertThat(veksleKlarStatus(brev, klar = true)).isSuccess()
-
-        penService.sendBrevResponse = Pen.BestillBrevResponse(
-            JournalpostId(991),
-            Pen.BestillBrevResponse.Error(null, "Distribuering feilet", null)
-        )
-
-        sendBrev(brev)
+        assertThat(arkiverBrev(brev)).isSuccess()
 
         assertThat(oppdaterBrev(brevId = brev.info.id, nyttRedigertbrev = nyttRedigertBrev))
             .isFailure<RedigerBrevPolicy.KanIkkeRedigere.ArkivertBrev, _, _>()

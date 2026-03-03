@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
+import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy.KanIkkeRedigere.LaastBrev
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -14,7 +14,7 @@ import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
 
 class VeksleKlarStatusHandler(
-    private val klarTilSendingPolicy: KlarTilSendingPolicy,
+    private val ferdigRedigertPolicy: FerdigRedigertPolicy,
     private val redigerBrevPolicy: RedigerBrevPolicy,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) : BrevredigeringHandler<VeksleKlarStatusHandler.Request, Dto.BrevInfo> {
@@ -41,7 +41,7 @@ class VeksleKlarStatusHandler(
 
     private fun settBrevTilKlar(brev: BrevredigeringEntity, principal: UserPrincipal): Outcome<Dto.BrevInfo, BrevredigeringError> {
         redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
-        klarTilSendingPolicy.kanSettesTilKlar(brev).onError { return failure(it) }
+        ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
 
         brev.markerSomKlar()
         brev.frigiReservasjon()

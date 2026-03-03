@@ -42,3 +42,9 @@ sealed class Outcome<out T, out E> {
         return this
     }
 }
+
+inline fun <T, E> Outcome<T, E>.getOrElse(onFailure: (E) -> T): T =
+    when (this) {
+        is Outcome.Success -> this.value
+        is Outcome.Failure -> onFailure(this.error)
+    }

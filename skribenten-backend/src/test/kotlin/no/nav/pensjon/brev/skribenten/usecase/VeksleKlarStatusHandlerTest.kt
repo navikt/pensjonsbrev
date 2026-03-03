@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.usecase
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.KlarTilSendingPolicy
+import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -86,7 +86,7 @@ class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
         brevbakerService.renderMarkupResultat = { markupMedFritekst }
         val brev = opprettBrev().resultOrFail()
 
-        assertThat(veksleKlarStatus(brev, true)).isFailure<KlarTilSendingPolicy.IkkeKlarTilSending.FritekstFelterUredigert, _, _>()
+        assertThat(veksleKlarStatus(brev, true)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
     }
 
     @Test

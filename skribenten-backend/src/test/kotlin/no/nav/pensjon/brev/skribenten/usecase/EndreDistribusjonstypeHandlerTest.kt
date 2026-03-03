@@ -1,32 +1,14 @@
 package no.nav.pensjon.brev.skribenten.usecase
 
-import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
-import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
-
-    suspend fun endreDistribusjonstype(
-        brevId: BrevId,
-        nyDistribusjonstype: Distribusjonstype,
-        principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Dto.BrevInfo, BrevredigeringError>? = withPrincipal(principal) {
-        brevredigeringFacade.endreDistribusjonstype(
-            EndreDistribusjonstypeHandler.Request(
-                brevId = brevId,
-                type = nyDistribusjonstype,
-            )
-        )
-    }
 
     @Test
     suspend fun `kan endre distribusjonstype`() {

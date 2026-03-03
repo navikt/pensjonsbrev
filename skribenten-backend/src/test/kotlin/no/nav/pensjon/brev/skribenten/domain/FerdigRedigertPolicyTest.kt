@@ -9,19 +9,19 @@ import no.nav.pensjon.brevbaker.api.model.ElementTags
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class KlarTilSendingPolicyTest {
+class FerdigRedigertPolicyTest {
 
     private data class RedigertBrevStub(override val redigertBrev: Edit.Letter) : BrevredigeringStub() {
         override val redigertBrevHash: Hash<Edit.Letter> get() = Hash.read(redigertBrev)
     }
 
     private val fritekst = setOf(ElementTags.FRITEKST)
-    private val policy = KlarTilSendingPolicy()
+    private val policy = FerdigRedigertPolicy()
 
     @Test
     fun `tomt brev er klar til sending`() {
         val brev = RedigertBrevStub(editedLetter())
-        assertThat(policy.kanSettesTilKlar(brev)).isSuccess()
+        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
@@ -29,7 +29,7 @@ class KlarTilSendingPolicyTest {
         val brev = RedigertBrevStub(
             editedLetter(Edit.Block.Paragraph(null, true, listOf(Edit.ParagraphContent.Text.Literal(null, "lit1"))))
         )
-        assertThat(policy.kanSettesTilKlar(brev)).isSuccess()
+        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
@@ -41,7 +41,7 @@ class KlarTilSendingPolicyTest {
                 )
             )
         )
-        assertThat(policy.kanSettesTilKlar(brev)).isSuccess()
+        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
@@ -55,6 +55,6 @@ class KlarTilSendingPolicyTest {
                 )
             )
         )
-        assertThat(policy.kanSettesTilKlar(brev)).isFailure<KlarTilSendingPolicy.IkkeKlarTilSending.FritekstFelterUredigert, _, _>()
+        assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
     }
 }

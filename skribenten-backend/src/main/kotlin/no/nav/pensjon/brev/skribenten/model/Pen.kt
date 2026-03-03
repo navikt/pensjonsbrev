@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.brev.Landkode
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.brev.BrevLandmodell.Landkode
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
@@ -11,8 +11,8 @@ import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
 

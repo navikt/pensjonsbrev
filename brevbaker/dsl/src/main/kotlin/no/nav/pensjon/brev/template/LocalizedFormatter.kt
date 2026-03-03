@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.text.NumberFormat
 import java.time.LocalDate
 import java.time.Month
@@ -32,7 +32,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             return first.format(DateTimeFormatter.ofPattern("MMMM yyyy", second.locale()))
         }
 
-        override fun stableHashCode(): Int = StableHash.of("MaanedAarFormatter").hashCode()
+        override fun stableHashCode(): Int = "MaanedAarFormatter".hashCode()
     }
 
     object MonthFormatter : LocalizedFormatter<Month>() {
@@ -40,7 +40,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             return first.getDisplayName(TextStyle.FULL, second.locale())
         }
 
-        override fun stableHashCode(): Int = StableHash.of("MaanedFormatter").hashCode()
+        override fun stableHashCode(): Int = "MaanedFormatter".hashCode()
     }
 
     object MonthFormatterShort : LocalizedFormatter<Month>() {
@@ -48,7 +48,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             return first.getDisplayName(TextStyle.SHORT, second.locale())
         }
 
-        override fun stableHashCode(): Int = StableHash.of("MaanedFormatterKort").hashCode()
+        override fun stableHashCode(): Int = "MaanedFormatterKort".hashCode()
     }
 
     class DoubleFormat(private val scale: Int) : LocalizedFormatter<Double>() {

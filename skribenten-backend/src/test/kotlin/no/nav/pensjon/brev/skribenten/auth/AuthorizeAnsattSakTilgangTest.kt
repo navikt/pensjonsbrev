@@ -30,7 +30,7 @@ import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenService
 import no.nav.pensjon.brev.skribenten.services.PenServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate

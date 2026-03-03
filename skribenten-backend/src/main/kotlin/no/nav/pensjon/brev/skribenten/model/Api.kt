@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.brev.Landkode
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -157,6 +157,13 @@ object Api {
     }
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
+
+    data class BestillBrevResponse(
+        val journalpostId: JournalpostId?,
+        val error: Error?,
+    ) {
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
 
     data class SakContext(
         val sak: Pen.SakSelection,

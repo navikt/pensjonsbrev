@@ -28,6 +28,7 @@ class BrevredigeringFacade(
     private val attesterBrev: BrevredigeringHandler<AttesterBrevHandler.Request, Dto.Brevredigering>,
     private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
     private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
+    private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
 ) {
 
@@ -80,6 +81,9 @@ class BrevredigeringFacade(
     suspend fun hentPDF(request: HentEllerOpprettPdfHandler.Request): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         hentEllerOpprettPdf.runHandler(request)
 
+    suspend fun sendBrev(request: SendBrevHandler.Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
+        sendBrev.runHandler(request)
+
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {
             // Forsøk å reservere brevet før vi kjører handleren, om reservasjonen feiler returner feilen eller om brevet ikke finnes returner null.
@@ -88,8 +92,15 @@ class BrevredigeringFacade(
                 ?: return null
         }
 
-        return suspendTransaction {
-            handle(request)?.onError { rollback() }
+        val isolation = transactionIsolation()
+        return if (isolation != null) {
+            suspendTransaction(transactionIsolation = isolation) {
+                handle(request)?.onError { rollback() }
+            }
+        } else {
+            suspendTransaction {
+                handle(request)?.onError { rollback() }
+            }
         }
     }
 }

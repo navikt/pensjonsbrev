@@ -18,8 +18,8 @@ import no.nav.pensjon.brev.skribenten.services.brev.BrevdataService
 import no.nav.pensjon.brev.skribenten.services.brev.RenderService
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.usecase.Outcome.Companion.success
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
 import java.time.Instant
 
 interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dto.Brevredigering, BrevredigeringError> {
@@ -47,10 +47,7 @@ class OpprettBrevHandlerImpl(
     override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError> {
         val principal = PrincipalInContext.require()
 
-        val parametre = when (val res = opprettBrevPolicy.kanOppretteBrev(request, principal)) {
-            is Outcome.Failure -> return failure(res.error)
-            is Outcome.Success -> res.value
-        }
+        val parametre = opprettBrevPolicy.kanOppretteBrev(request, principal).getOrElse { return failure(it) }
 
         val pesysData = brevdataService.hentBrevdata(
             saksId = request.saksId,

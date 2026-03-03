@@ -14,11 +14,11 @@ class BrevreservasjonPolicy(val timeout: Duration = 10.minutes.toJavaDuration())
     fun erGyldig(reservasjon: Reservasjon, fra: Instant): Boolean =
         reservasjon.timestamp.plus(timeout).isAfter(fra)
 
-    fun kanReservere(brev: Brevredigering, fra: Instant, saksbehandler: NavIdent): Outcome<Boolean, ReservertAvAnnen> {
+    fun kanReservere(brev: Brevredigering, fra: Instant, saksbehandler: NavIdent): Outcome<Unit, ReservertAvAnnen> {
         val eksisterende = brev.gjeldendeReservasjon(this)
 
         return if (eksisterende == null || eksisterende.reservertAv == saksbehandler || !erGyldig(eksisterende, fra)) {
-            success(true)
+            success(Unit)
         } else {
             failure(ReservertAvAnnen(eksisterende.copy(vellykket = false)))
         }

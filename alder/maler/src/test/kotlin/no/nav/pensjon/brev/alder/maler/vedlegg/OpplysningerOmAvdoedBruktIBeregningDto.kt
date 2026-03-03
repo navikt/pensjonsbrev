@@ -4,8 +4,8 @@ import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.alder.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.alder.model.Beregningsmetode
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmAvdoedBruktIBeregningDto
-import no.nav.pensjon.brevbaker.api.model.Broek
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 
 fun createOpplysningerOmAvdoedBruktIBeregningDto() = OpplysningerOmAvdoedBruktIBeregningDto(
     bruker = OpplysningerOmAvdoedBruktIBeregningDto.Bruker(
