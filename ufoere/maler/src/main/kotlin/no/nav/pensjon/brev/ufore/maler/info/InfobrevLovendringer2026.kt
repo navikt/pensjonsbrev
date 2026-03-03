@@ -67,6 +67,9 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
                 }
             }
 
+            paragraph {
+                text(bokmal { +"\u200B" }) // unicode zero width space, workaround for å tvinge fram linjeskift
+            }
             title3 { text(bokmal { +"Du trenger ikke å gjøre noe" }) }
             paragraph {
                 list {
