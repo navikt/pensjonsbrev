@@ -169,7 +169,7 @@ const BrevmalBrevbaker = (props: {
   }, [setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
-    <VStack gap="space-16" height="100%">
+    <VStack flexGrow="1" gap="space-16">
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
@@ -219,9 +219,10 @@ const BrevmalBrevbaker = (props: {
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
             <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
           </VStack>
-          <Spacer />
-          {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
+
+        <Spacer />
+        {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
       </FormProvider>
     </VStack>
   );
