@@ -20,7 +20,7 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.function.Predicate
 
-class ReserverBrevHandlerTest : BrevredigeringTest() {
+class ReserverBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     suspend fun reserverBrev(
         brev: Dto.Brevredigering,

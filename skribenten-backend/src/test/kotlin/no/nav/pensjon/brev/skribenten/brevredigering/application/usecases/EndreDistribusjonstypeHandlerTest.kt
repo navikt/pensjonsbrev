@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class EndreDistribusjonstypeHandlerTest : BrevredigeringTest() {
+class EndreDistribusjonstypeHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan endre distribusjonstype`() {

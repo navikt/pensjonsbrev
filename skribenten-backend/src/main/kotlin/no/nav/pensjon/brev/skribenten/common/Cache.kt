@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.skribenten.common
 
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.typesafe.config.Config
-import io.ktor.utils.io.CancellationException
+import io.ktor.utils.io.*
 import io.valkey.DefaultJedisClientConfig
 import io.valkey.HostAndPort
 import io.valkey.JedisPool

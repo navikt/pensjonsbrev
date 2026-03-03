@@ -21,10 +21,9 @@ import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 

@@ -22,7 +22,7 @@ import java.time.Instant
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.toJavaDuration
 
-class OpprettBrevHandlerTest : BrevredigeringTest() {
+class OpprettBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan opprette brev`() {

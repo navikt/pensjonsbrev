@@ -2,21 +2,17 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.auth.hentSignatur
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.AttesterBrevPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
 import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksbehandlerValg
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
-import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 
 class AttesterBrevHandler(
     private val attesterBrevPolicy: AttesterBrevPolicy,

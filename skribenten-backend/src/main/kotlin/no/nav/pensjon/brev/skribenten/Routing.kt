@@ -3,13 +3,9 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.Config
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
-import io.ktor.server.plugins.swagger.swaggerUI
+import io.ktor.server.plugins.swagger.*
 import io.ktor.server.routing.*
-import no.nav.pensjon.brev.skribenten.auth.ADGroups
-import no.nav.pensjon.brev.skribenten.auth.AzureADService
-import no.nav.pensjon.brev.skribenten.auth.JwtConfig
-import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
-import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceHttp
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
@@ -21,8 +17,8 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevmetadataServiceHttp
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.LegacyBrevServiceImpl
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PentHttpClient
 import no.nav.pensjon.brev.skribenten.routes.*
 import no.nav.pensjon.brev.skribenten.routes.samhandler.samhandlerRoute
 import no.nav.pensjon.brev.skribenten.services.*

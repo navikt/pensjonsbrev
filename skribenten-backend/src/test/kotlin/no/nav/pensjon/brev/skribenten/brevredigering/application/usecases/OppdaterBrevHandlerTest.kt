@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
-import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
+import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
@@ -20,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class OppdaterBrevHandlerTest : BrevredigeringTest() {
+class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     private val nyttRedigertBrev = editedLetter(Paragraph(1, true, listOf(Literal(1, text = "red pill", editedText = "blue pill"))))
 
     @Test

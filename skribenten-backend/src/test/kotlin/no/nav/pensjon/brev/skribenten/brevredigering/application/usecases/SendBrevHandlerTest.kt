@@ -4,16 +4,12 @@ import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.Pen
-import no.nav.pensjon.brev.skribenten.model.VedtaksId
+import no.nav.pensjon.brev.skribenten.model.*
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class SendBrevHandlerTest : BrevredigeringTest() {
+class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan ikke distribuere vedtaksbrev som ikke er attestert`() {

@@ -4,10 +4,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import no.nav.pensjon.brev.skribenten.copy
-import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
+import no.nav.pensjon.brev.skribenten.copy
+import no.nav.pensjon.brev.skribenten.db.DocumentTable
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
@@ -20,7 +20,7 @@ import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
 
-class HentEllerOpprettPdfHandlerTest : BrevredigeringTest() {
+class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `hentPdf skal opprette et Document med referanse til Brevredigering`() {

@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.skribenten.model.NorskPostnummer
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class EndreMottakerHandlerTest : BrevredigeringTest() {
+class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
 
     private suspend fun endreMottaker(brevId: BrevId, mottaker: Dto.Mottaker?, principal: UserPrincipal = saksbehandler1Principal) =
         withPrincipal(principal) {

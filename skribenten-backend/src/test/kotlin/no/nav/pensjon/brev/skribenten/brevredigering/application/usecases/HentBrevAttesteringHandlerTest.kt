@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class HentBrevAttesteringHandlerTest : BrevredigeringTest() {
+class HentBrevAttesteringHandlerTest : BrevredigeringHandlerTestBase() {
 
     private suspend fun hentBrevAttestering(
         brevId: BrevId,

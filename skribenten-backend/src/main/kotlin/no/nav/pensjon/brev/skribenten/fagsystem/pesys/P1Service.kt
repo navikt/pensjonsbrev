@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
+import no.nav.pensjon.brev.skribenten.db.P1DataTable
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.SaksId

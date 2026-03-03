@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.routes
 import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.plugins.cachingheaders.*
-import io.ktor.server.response.respond
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 

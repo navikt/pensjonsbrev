@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.*
 
-class AttesterBrevHandlerTest : BrevredigeringTest() {
+class AttesterBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan attestere vedtaksbrev som er klar`() {

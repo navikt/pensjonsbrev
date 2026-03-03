@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
-class VeksleKlarStatusHandlerTest : BrevredigeringTest() {
+class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
 
     private val markupMedFritekst = letter(
         ParagraphImpl(

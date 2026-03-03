@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
 
 class SendBrevPolicy(private val ferdigRedigertPolicy: FerdigRedigertPolicy) {
 

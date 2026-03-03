@@ -13,7 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class EndreValgteVedleggHandlerTest : BrevredigeringTest() {
+class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun endreVedlegg(brev: Dto.Brevredigering, vedlegg: List<AlltidValgbartVedleggKode>, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         withPrincipal(principal) {
             brevredigeringFacade.endreValgteVedlegg(EndreValgteVedleggHandler.Request(brev.info.id, vedlegg))

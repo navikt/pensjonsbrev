@@ -17,7 +17,7 @@ import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
-class TilbakestillBrevHandlerTest : BrevredigeringTest() {
+class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
 
     @Test
     suspend fun `kan tilbakestille brev`() {

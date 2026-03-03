@@ -31,14 +31,14 @@ import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
