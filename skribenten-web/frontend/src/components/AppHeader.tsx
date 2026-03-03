@@ -6,7 +6,9 @@ import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
   return (
-    <InternalHeader css={{ position: "sticky", top: 0, zIndex: 1000 }}>
+    <InternalHeader
+      css={{ borderBottom: "1px solid var(--ax-border-neutral-subtleA)", height: "var(--header-height)" }}
+    >
       <InternalHeader.Title as="h1">
         <RouterLink
           css={{ color: "inherit", textDecoration: "inherit" }}
