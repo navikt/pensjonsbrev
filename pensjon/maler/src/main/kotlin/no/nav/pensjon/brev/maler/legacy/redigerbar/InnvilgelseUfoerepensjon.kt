@@ -8,10 +8,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -57,7 +61,7 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
                 )
             }
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto = 0) THEN INCLUDE
-            showIf(pe.vedtaksbrev_beregningsdata_beregningufore_beregningytelseskomp_ektefelletillegg_etinnvilget) {
+            showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto().equalTo(0)) {
                 paragraph {
                     text(
                         bokmal { +"Du har fått innvilget ektefelletillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
@@ -79,6 +83,7 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
             //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0
             //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)
             // THEN INCLUDE
+
             paragraph {
                 text(
                     bokmal { +"Du har fått innvilget barnetillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
