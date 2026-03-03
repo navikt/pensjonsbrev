@@ -57,13 +57,14 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
                 )
             }
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto = 0) THEN INCLUDE
-            showIf(pe.vedtaksbrev_beregningsdata_beregningufore_beregningytelseskomp_ek)
-            paragraph {
-                text(
-                    bokmal { +"Du har fått innvilget ektefelletillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
-                    nynorsk { +"Du har fått innvilga ektefelletillegg, men det vil ikkje komme til utbetaling fordi den samla inntekta di er for høg." },
-                    english { +"You have been granted spouse supplement, however you will not receive any additional payment due to your total income being too high." },
-                )
+            showIf(pe.vedtaksbrev_beregningsdata_beregningufore_beregningytelseskomp_ektefelletillegg_etinnvilget) {
+                paragraph {
+                    text(
+                        bokmal { +"Du har fått innvilget ektefelletillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
+                        nynorsk { +"Du har fått innvilga ektefelletillegg, men det vil ikkje komme til utbetaling fordi den samla inntekta di er for høg." },
+                        english { +"You have been granted spouse supplement, however you will not receive any additional payment due to your total income being too high." },
+                    )
+                }
             }
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
             //AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0
