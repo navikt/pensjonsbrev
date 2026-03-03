@@ -86,7 +86,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             }
 
             title2 { text(bokmal { +"Hvis du har hatt uføretrygd i mindre enn 2 år" }) }
-            paragraph { text(bokmal { +"Du som enda ikke har hatt uføretrygd i 2 år, vil få et brev med hvordan vi vil beregne bunnfradrag ditt, året bunnfradraget øker." }) }
+            paragraph { text(bokmal { +"Du som enda ikke har hatt uføretrygd i 2 år, vil få et varsel- og vedtaksbrev med hvordan vi vil beregne bunnfradraget ditt, året bunnfradraget øker." }) }
             paragraph { text(bokmal { +"Eksempel: " }, fontType = ITALIC) }
             paragraph { text(bokmal { +"Kim fikk innvilget uføretrygd med virkning fra april 2025. Før april 2027, vil Kim få et brev fra oss med informasjon om bunnfradraget i 2027. " }, fontType = ITALIC) }
 
@@ -157,7 +157,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             }
 
             title2 { text(bokmal { +"Slik påvirkes du av endringen" }) }
-            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har IFU i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
+            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har minste IFU i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
             paragraph { text(bokmal { +"De som får beregnet inntekt før uførhet etter regler for enslige eller unge uføre, påvirkes ikke av denne lovendringen." }) }
             paragraph { text(bokmal { +"I noen tilfeller vil økt minste IFU føre til at uføregraden øker. Du vil få varsel- og vedtaksbrev hvis dette gjelder deg. Der vil du få informasjon om hvordan det påvirker uføretrygden din. " }) }
 
@@ -223,7 +223,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             title2 { text(bokmal { +" Nye regler for reduksjonsprosent (kompensasjonsgrad) § 12-14 første ledd andre punktum blir opphevet." }) }
             paragraph { text(bokmal { +"§ 12-14 andre ledd skal lyde:" }) }
             paragraph { text(bokmal { +"\"Uføretrygd skal reduseres med en andel av inntekt som overstiger bunnfradraget. Andelen (reduksjonsprosenten) skal svare til mottakerens uføretrygd ved 100 prosent uføregrad delt på mottakerens inntekt før uførhet (se § 12-9 første og andre ledd). " +
-                    "Reduksjonsprosenten skal likevel ikke overstige 70 prosent. Som inntekt regnes pensjonsgivende inntekt og inntekt av samme artinntekt før uførhet skal ikke settes lavere enn fra utlandet.\"" }) }
+                    "Reduksjonsprosenten skal likevel ikke overstige 70 prosent. Som inntekt regnes pensjonsgivende inntekt og inntekt av samme art fra utlandet.\"" }) }
 
             title2 { text(bokmal { +"Lik minste inntekt før uførhet (IFU) for alle " }) }
             paragraph { text(bokmal { +"§ 12-9 andre ledd skal lyde: " }) }
