@@ -37,6 +37,7 @@ import kotlin.time.Duration.Companion.seconds
 
 class BrevbakerServiceException(msg: String) : ServiceException(msg)
 
+// TODO: Del opp i to interfaces, ett for det som skal håndteres av fagsystem, og ett for brevbaker.
 interface BrevbakerService {
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification?
     suspend fun renderMarkup(

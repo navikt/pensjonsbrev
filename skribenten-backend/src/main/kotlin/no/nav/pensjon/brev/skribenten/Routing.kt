@@ -36,7 +36,7 @@ fun Application.configureRouting(
     val servicesConfig = skribentenConfig.getConfig("services")
     initDatabase(servicesConfig).also { db -> monitor.subscribe(ApplicationStopping) { db.close() } }
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
-    val penService = PentHttpClient(servicesConfig.getConfig("pen"), authService)
+    val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
     val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
@@ -46,15 +46,15 @@ fun Application.configureRouting(
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
-    val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penService, navansattService)
+    val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
-    val p1Service = P1ServiceImpl(penService)
+    val p1Service = P1ServiceImpl(penClient)
     val brevredigeringService = BrevredigeringService()
 
-    val brevService = BrevService(penService, legacyBrevService)
-    val brevdataService = BrevdataService(penService, samhandlerService)
-    val brevmalService = BrevmalService(brevbakerService, penService, brevmetadataService)
-    val fagsakService = FagsakService(penService)
+    val brevService = BrevService(penClient, legacyBrevService)
+    val brevdataService = BrevdataService(penClient, samhandlerService)
+    val brevmalService = BrevmalService(brevbakerService, penClient, brevmetadataService)
+    val fagsakService = FagsakService(penClient)
     val renderService = RenderService(brevbakerService)
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
@@ -75,7 +75,7 @@ fun Application.configureRouting(
 
             setupServiceStatus(
                 safService,
-                penService,
+                penClient,
                 pensjonPersonDataService,
                 pdlService,
                 krrService,
