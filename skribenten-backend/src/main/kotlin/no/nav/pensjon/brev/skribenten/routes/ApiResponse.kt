@@ -1,22 +1,13 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.response.respond
-import io.ktor.server.routing.RoutingCall
-import io.ktor.server.routing.RoutingContext
+import io.ktor.http.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.Reservasjon
-import no.nav.pensjon.brev.skribenten.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import org.slf4j.LoggerFactory
 
 @JvmName("apiRespondBrevredigering")

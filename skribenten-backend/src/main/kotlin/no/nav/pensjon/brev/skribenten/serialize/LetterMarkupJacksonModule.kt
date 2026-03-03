@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.skribenten.services.BrevbakerServiceException
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceException
 import no.nav.pensjon.brev.skribenten.services.addAbstractTypeMapping
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl

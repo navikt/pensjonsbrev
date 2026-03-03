@@ -9,6 +9,11 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -17,13 +22,12 @@ import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
-    brevbakerService: BrevbakerService,
+    brevService: BrevService,
     brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     krrService: KrrService,
-    legacyBrevService: LegacyBrevService,
     pdlService: PdlService,
-    penService: PenService,
+    fagsakService: FagsakService,
     pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
@@ -35,7 +39,7 @@ fun Route.sakRoute(
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
             this.pdlService = pdlService
-            this.penService = penService
+            this.fagsakService = fagsakService
         }
 
         get {
@@ -86,7 +90,7 @@ fun Route.sakRoute(
                     val sak = call.attributes[SakKey]
 
                     call.respond(
-                        legacyBrevService.bestillOgRedigerExstreamBrev(
+                        brevService.bestillOgRedigerExstreamBrev(
                             gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
@@ -98,7 +102,7 @@ fun Route.sakRoute(
                     val sak = call.attributes[SakKey]
 
                     call.respond(
-                        legacyBrevService.bestillOgRedigerEblankett(
+                        brevService.bestillOgRedigerEblankett(
                             gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
@@ -134,6 +138,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevbakerService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
+        sakBrev(brevmalService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
     }
 }

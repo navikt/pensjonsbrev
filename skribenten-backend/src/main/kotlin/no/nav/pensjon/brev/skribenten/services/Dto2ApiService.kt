@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.domain.MottakerType
-import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
@@ -10,7 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 class Dto2ApiService(
-    private val brevbakerService: BrevbakerService,
+    private val brevmalService: BrevmalService,
     private val navansattService: NavansattService,
     private val norg2Service: Norg2Service,
     private val samhandlerService: SamhandlerService,
@@ -27,7 +29,7 @@ class Dto2ApiService(
         )
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
-        val template = brevbakerService.getRedigerbarTemplate(info.brevkode)
+        val template = brevmalService.getRedigerbarTemplate(info.brevkode)
             ?: throw BrevredigeringException.BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
 
         return Api.BrevInfo(

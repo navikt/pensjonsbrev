@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.skribenten.services
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringEntity
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 
