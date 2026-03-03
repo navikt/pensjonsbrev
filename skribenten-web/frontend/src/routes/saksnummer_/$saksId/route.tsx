@@ -100,73 +100,94 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           p: {
             display: "flex",
             alignItems: "center",
-          },
-          "p::after": {
-            content: '"/"',
-            marginLeft: "var(--ax-space-8)",
-          },
-          "p:last-child::after": {
-            content: "none",
+            textWrap: "nowrap",
           },
         }}
+        gap="space-8"
         justify="space-between"
-        paddingBlock="space-8"
-        paddingInline="space-20 space-48"
+        wrap={false}
       >
-        <HStack align="center" gap="space-8">
-          <PersonIcon fontSize="24px" />
+        <HStack
+          align="center"
+          gap="space-8"
+          overflowX="auto"
+          paddingBlock="space-8"
+          paddingInline="space-20 space-0"
+          wrap={false}
+        >
+          <Box height="24px" width="24px">
+            <PersonIcon fontSize="24px" />
+          </Box>
           <BodyShort size="small">
             {datoDel} {personnummerDel}
-            <Box asChild marginInline="space-8">
-              <CopyButton copyText={sak.pid} data-color="accent" size="small" />
-            </Box>
           </BodyShort>
+          <Box asChild marginInline="space-8">
+            <CopyButton copyText={sak.pid} data-color="accent" size="small" />
+          </Box>
+          /
           <BodyShort size="small">
             {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
           </BodyShort>
-          {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
-          {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
+          {dateOfBirth && (
+            <>
+              /<BodyShort size="small">Født: {dateOfBirth}</BodyShort>
+            </>
+          )}
+          {dateOfDeath && (
+            <>
+              /<BodyShort size="small">Død: {dateOfDeath}</BodyShort>
+            </>
+          )}
           {brukerStatus?.erSkjermet && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
-                Egen ansatt
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="neutral"
+                  icon={<FileIcon />}
+                  size="small"
+                  variant="outline"
+                >
+                  Egen ansatt
+                </Tag>
+              </BodyShort>
+            </>
           )}
           {brukerStatus?.vergemaal && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
-                Vergemål
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="neutral"
+                  icon={<FileIcon />}
+                  size="small"
+                  variant="outline"
+                >
+                  Vergemål
+                </Tag>
+              </BodyShort>
+            </>
           )}
           {brukerStatus?.adressebeskyttelse && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="danger"
-                icon={<ParagraphIcon />}
-                size="small"
-                variant="strong"
-              >
-                Diskresjon
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="danger"
+                  icon={<ParagraphIcon />}
+                  size="small"
+                  variant="strong"
+                >
+                  Diskresjon
+                </Tag>
+              </BodyShort>
+            </>
           )}
         </HStack>
-        <HStack gap="space-8">
+        <HStack gap="space-8" paddingInline="space-0 space-48" wrap={false}>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
           <BodyShort size="small">
             {sak.saksId}{" "}

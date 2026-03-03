@@ -11,6 +11,7 @@ import {
   HStack,
   Label,
   Search,
+  Spacer,
   VStack,
 } from "@navikt/ds-react";
 import type { UseQueryResult } from "@tanstack/react-query";
@@ -198,7 +199,6 @@ function Brevmaler({
     };
     return new Fuse(filteredBrevmaler, fuseOptions);
   }, [filteredBrevmaler]);
-  alleBrevmaler[0].brevkategori;
 
   const brevmalerMatchingSearchTerm =
     searchTerm.trim().length === 0
@@ -239,26 +239,28 @@ function Brevmaler({
         value={searchTerm}
         variant="simple"
       />
-      <Chips>
-        {filters.map((filter) => (
-          <Chips.Toggle
-            data-color="accent"
-            key={filter}
-            onClick={() =>
-              setSelectedFilters(
-                selectedFilters.includes(filter)
-                  ? selectedFilters.filter((x) => x !== filter)
-                  : [...selectedFilters, filter],
-              )
-            }
-            selected={selectedFilters.includes(filter)}
-          >
-            {filter}
-          </Chips.Toggle>
-        ))}
-      </Chips>
+      <Box asChild paddingBlock="space-0 space-4">
+        <Chips size="small">
+          {filters.map((filter) => (
+            <Chips.Toggle
+              data-color="accent"
+              key={filter}
+              onClick={() =>
+                setSelectedFilters(
+                  selectedFilters.includes(filter)
+                    ? selectedFilters.filter((x) => x !== filter)
+                    : [...selectedFilters, filter],
+                )
+              }
+              selected={selectedFilters.includes(filter)}
+            >
+              {filter}
+            </Chips.Toggle>
+          ))}
+        </Chips>
+      </Box>
       <Bleed asChild marginInline="space-16">
-        <Box asChild overflowY="auto" paddingBlock="space-4 space-0" paddingInline="space-16">
+        <Box asChild overflowY="auto" paddingInline="space-16">
           <Accordion
             css={{
               "> div > div": {
@@ -302,17 +304,17 @@ function Brevmaler({
                       },
                     }}
                   >
-                    <VStack>
+                    <VStack gap="space-8" paddingBlock="space-8">
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
                           extraStyles={
                             template.id === templateId
                               ? {
-                                  color: "var(--ax-text-accent-contrast)",
-                                  backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                                  backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                                 }
                               : undefined
                           }
+                          icon={<BrevSystemIcon brevsystem={template.brevsystem} />}
                           key={template.id}
                           onClick={() =>
                             navigate({
@@ -324,16 +326,7 @@ function Brevmaler({
                               }),
                             })
                           }
-                          title={
-                            <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
-                              <BrevSystemIcon brevsystem={template.brevsystem} />
-                              <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
-                                <BodyShort size="small" truncate>
-                                  {template.name}
-                                </BodyShort>
-                              </Box>
-                            </HStack>
-                          }
+                          title={template.name}
                         />
                       ))}
                     </VStack>
@@ -363,23 +356,21 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
             color: "var(--ax-text-neutral)",
           }}
         >
-          <HStack gap="space-8">
-            <Label size="small">Kladder</Label>
-          </HStack>
+          <Label size="small">Kladder</Label>
         </Accordion.Header>
         <Accordion.Content css={{ "> div:first-of-type": { overflowX: "hidden" } }}>
-          <VStack>
+          <VStack gap="space-8" paddingBlock="space-8" paddingInline="space-4">
             {kladder.map((brev) => (
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
                   brev.id === brevId
                     ? {
-                        color: "var(--ax-text-accent-contrast)",
-                        backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                        backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                       }
                     : undefined
                 }
+                icon={<BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />}
                 key={brev.id}
                 onClick={() =>
                   navigate({
@@ -391,16 +382,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                     }),
                   })
                 }
-                title={
-                  <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
-                    <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
-                    <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
-                      <BodyShort size="small" truncate>
-                        {brev.brevtittel}
-                      </BodyShort>
-                    </Box>
-                  </HStack>
-                }
+                title={brev.brevtittel}
               />
             ))}
           </VStack>
@@ -428,23 +410,16 @@ const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
 
 const BrevmalButton = (props: {
   onClick: () => void;
-  title: React.ReactNode;
-  extraStyles?: CSSObject | undefined;
   description?: string;
+  extraStyles?: CSSObject | undefined;
+  icon: React.ReactNode;
+  title: React.ReactNode;
 }) => {
   return (
     <Button
       css={{
         color: "var(--ax-text-neutral)",
-        justifyContent: "flex-start",
-        padding: "var(--ax-space-8) var(--ax-space-12)",
-        borderRadius: 0,
-        span: {
-          fontWeight: "var(--ax-font-weight-regular)",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        },
+        padding: "var(--ax-space-4) var(--ax-space-8)",
         "> :first-of-type": {
           width: "100%",
         },
@@ -454,9 +429,19 @@ const BrevmalButton = (props: {
       onClick={props.onClick}
       variant="tertiary"
     >
-      <HStack gap="space-8" justify="space-between" wrap={false}>
-        {props.title}
-        {props.description && <BodyShort size="small">{props.description}</BodyShort>}
+      <HStack align="center" gap="space-8" wrap={false}>
+        <Box height="16px" width="16px">
+          {props.icon}
+        </Box>
+        <BodyShort size="small" truncate>
+          {props.title}
+        </BodyShort>
+        <Spacer />
+        {props.description && (
+          <BodyShort css={{ whiteSpace: "nowrap" }} size="small">
+            {props.description}
+          </BodyShort>
+        )}
       </HStack>
     </Button>
   );
