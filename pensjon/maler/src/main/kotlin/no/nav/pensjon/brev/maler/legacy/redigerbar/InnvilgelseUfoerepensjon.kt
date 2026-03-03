@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.pesysData
@@ -56,6 +57,7 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
                 )
             }
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto = 0) THEN INCLUDE
+            showIf(pe.vedtaksbrev_beregningsdata_beregningufore_beregningytelseskomp_ek)
             paragraph {
                 text(
                     bokmal { +"Du har fått innvilget ektefelletillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
