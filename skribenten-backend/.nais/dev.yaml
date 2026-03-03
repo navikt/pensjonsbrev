@@ -19,10 +19,10 @@ groups:
     id: "bda6bd68-77e6-4c00-96b9-7ecf5df7413c"
   #0000-GA-Fortrolig_Adresse
   - name: "Fortrolig_Adresse"
-    id: "ea930b6b-9397-44d9-b9e6-f4cf527a632a"
+    id: "2e1dc582-f762-4510-a660-88bf68fb7128"
   #0000-GA-Strengt_Fortrolig_Adresse
   - name: "Strengt_Fortrolig_Adresse"
-    id: "5ef775f2-61f8-4283-bf3d-8d03f428aa14"
+    id: "a1b518e2-3947-478d-8929-e5d685c47cac"
   #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "63f46f74-84a8-4d1c-87a8-78532ab3ae60"
