@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeBrevmetadataService
 import no.nav.pensjon.brev.skribenten.services.FakeNavansattService
@@ -18,7 +19,6 @@ import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.services.SafService
 import no.nav.pensjon.brev.skribenten.services.SafServiceStub
 import no.nav.pensjon.brev.skribenten.services.notYetStubbed
-import no.nav.pensjon.brevbaker.api.model.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 

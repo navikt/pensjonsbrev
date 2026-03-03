@@ -39,7 +39,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
                 list {
                     item { text(bokmal { +"Økt bunnfradrag (inntektsgrense) etter 2 år med uføretrygd" }) }
                     item { text(bokmal { +"Nye regler for reduksjonsprosent (kompensasjonsgrad)" }) }
-                    item { text(bokmal { +"Lik minste inntekt før uførhet (IFU) for alle" }) }
+                    item { text(bokmal { +"Lik minste inntekt før uførhet (IFU)" }) }
                     item { text(bokmal { +"Ny minstesats for de som gikk fra uførepensjon til uføretrygd 1. januar 2015" }) }
                 }
             }
@@ -79,6 +79,9 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
                     item {
                         text(bokmal { +"Har du varig tilrettelagt arbeid, påvirkes du ikke av denne regelendringen." })
                     }
+                    item {
+                        text(bokmal { +"Du finner informasjon om når din uføretrygd er innvilget fra i det siste vedtaksbrevet ditt, eller ved å logge inn på Din uføretrygd. " })
+                    }
                 }
             }
 
@@ -112,7 +115,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
                         text(bokmal { +"Hvis reduksjonsprosenten din er 70 prosent, reduseres uføretrygden med 70 kroner for hver 100 kroner du tjener over bunnfradraget. " })
                     }
                     item {
-                        text(bokmal { +"Hvis du tjener 10 000 kroner over bunnfradraget, trekkes 7 000 kroner fra uføretrygden. Du beholder altså inntekten din, i tillegg til 3 000 kroner i uføretrygd. " })
+                        text(bokmal { +"Hvis du tjener 10 000 kroner over bunnfradraget, trekkes 7 000 kroner fra uføretrygden. Du beholder altså hele inntekten din, i tillegg til 3 000 kroner i uføretrygd. " })
                     }
                 }
             }
@@ -120,36 +123,58 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             title2 { text(bokmal { +"Slik påvirkes du av endringen" }) }
             paragraph { text(bokmal { +"Dette påvirker bare deg som har en høyere reduksjonsprosent enn 70 prosent i dag, og i tillegg har inntekt ved siden av uføretrygden. Reduksjonsprosenten er individuell, og kan være lavere enn 70 prosent. Fra 1. juli 2026 kan den ikke lenger være høyere enn 70 prosent. " }) }
             paragraph { text(bokmal { +"Hvis du får en lavere reduksjonsprosent, vil vi trekke mindre av uføretrygden din når du har inntekt over bunnfradraget. Det kan føre til at det blir mer lønnsomt å jobbe ved siden av uføretrygden.  " }) }
-            paragraph { text(bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en høyere utbetaling av uføretrygd, føre til en reduksjon i barnetillegget. " }) }
             paragraph { text(bokmal { +"Eksempel: " }, fontType = ITALIC) }
             paragraph { text(bokmal { +"Kim har uføretrygd og en reduksjonsprosent på 80 prosent. Fram til 1. juli i år, vil vi redusere uføretrygden til Kim med 80 prosent av hver krone Kim tjener over bunnfradraget sitt. Fra 1. juli reduserer vi uføretrygden til Kim med 70 prosent av hver krone Kim tjener over bunnfradraget. I etteroppgjøret for 2026, vil Kim få tilbakebetalt hvis vi har trukket for mye." }, fontType = ITALIC) }
+            paragraph { text(bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en høyere utbetaling av uføretrygd, føre til en reduksjon i barnetillegget. " }) }
 
             title2 { text(bokmal { +"Du trenger ikke å gjøre noe " }) }
-            paragraph { text(bokmal { +"Endringen skjer automatisk. Du får varsel- og vedtaksbrev fra oss hvis du får en lavere reduksjonsprosent.  " }) }
-            paragraph { text(bokmal { +"Du finner din personlige reduksjonsprosent i vedtaket ditt eller ved å logge inn på Din uføretrygd." }) }
+            paragraph {
+                list {
+                    item {
+                        text(bokmal { +"Endringen skjer automatisk." })
+                    }
+                    item {
+                        text(bokmal { +"Du får varsel- og vedtaksbrev fra oss hvis du får en lavere reduksjonsprosent."})
+                    }
+                    item {
+                        text(bokmal { +"Du finner din personlige reduksjonsprosent i vedtaket ditt eller ved å logge inn på Din uføretrygd."})
+                    }
+                }
+            }
 
-            title1 { text(bokmal { +"Lik minste inntekt før uførhet (IFU) for alle" }) }
-            paragraph { text(bokmal { +"Fra 1. juli 2026 skal enslige, samboere og ektefeller ha lik IFU. Din sivilstand vil ikke lenger ha betydning. Etter lovendringen skal IFU aldri fastsettes lavere enn 3,5 ganger grunnbeløpet. " }) }
+            title1 { text(bokmal { +"Lik minste inntekt før uførhet (IFU)" }) }
+            paragraph { text(bokmal { +"Fra 1. juli 2026 skal enslige, samboere og ektefeller ha lik minste IFU. Din sivilstand vil ikke lenger ha betydning. Etter lovendringen skal IFU aldri fastsettes lavere enn 3,5 ganger grunnbeløpet. " }) }
 
-            title2 { text(bokmal { +"Hva er inntekt før uførhet IFU?" }) }
-            paragraph { text(bokmal { +"Inntekt før uførhet (IFU) fastsettes til den inntekten man normalt ville hatt i full stilling før uføretidspunktet." }) }
+            title2 { text(bokmal { +"Hva er inntekt før uførhet (IFU)?" }) }
+            paragraph { text(bokmal { +"Inntekt før uførhet (IFU) fastsettes til den inntekten man normalt ville hatt i full stilling før uføretidspunktet. Minste IFU er en sats vi setter for å sikre et inntektsgrunnlag for deg som har hatt lite inntekt før uførhet." }) }
             paragraph {
                 text(bokmal { +"IFU kan ha betydning for:" })
                 list {
                     item { text(bokmal { +"uføregrad" }) }
                     item { text(bokmal { +"reduksjonsprosent" }) }
-                    item { text(bokmal { +"inntektstak " }) }
+                    item { text(bokmal { +"inntektstak" }) }
                 }
             }
 
             title2 { text(bokmal { +"Slik påvirkes du av endringen" }) }
-            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har minstesats i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
+            paragraph { text(bokmal { +"Hvis du har samboer eller ektefelle og har IFU i dag, skal vi endre din inntekt før uførhet fra 3,3 ganger grunnbeløpet til 3,5 ganger grunnbeløpet. " }) }
             paragraph { text(bokmal { +"De som får beregnet inntekt før uførhet etter regler for enslige eller unge uføre, påvirkes ikke av denne lovendringen." }) }
             paragraph { text(bokmal { +"I noen tilfeller vil økt minste IFU føre til at uføregraden øker. Du vil få varsel- og vedtaksbrev hvis dette gjelder deg. Der vil du få informasjon om hvordan det påvirker uføretrygden din. " }) }
 
             title2 { text(bokmal { +"Du trenger ikke å gjøre noe " }) }
-            paragraph { text(bokmal { +"Endringen skjer automatisk. Du får et vedtaksbrev fra oss hvis denne endringen påvirker uføretrygden din. " }) }
-            paragraph { text(bokmal { +"Du finner din nåværende IFU i det siste vedtaksbrevet ditt. " }) }
+            paragraph {
+                list {
+                    item {
+                        text(bokmal { +"Endringen skjer automatisk." })
+                    }
+                    item {
+                        text(bokmal { +"Du får varsel- og vedtaksbrev fra oss hvis denne endringen påvirker uføretrygden din. "})
+                    }
+                    item {
+                        text(bokmal { +"Du finner din nåværende IFU i det siste vedtaksbrevet ditt. "})
+                    }
+                }
+            }
 
             title1 { text(bokmal { +"Ny minstesats for de som gikk fra uførepensjon til uføretrygd 1. januar 2015 " }) }
             paragraph { text(bokmal { +"Minstesatsen for uføretrygd for gifte/samboende som gikk fra uførepensjon til uføretrygd i 2015 endres fra 1. juli 2026. Den endres fra 2,379 G (309 651 kroner) til 2,329 G (303 143).  Det fører til at minstesatsen for uføretrygd nå blir lik for alle." }) }
@@ -160,11 +185,38 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             paragraph { text(bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en lavere utbetaling av uføretrygd, føre til en høyere utbetaling av barnetillegget. " }) }
 
             title2 { text(bokmal { +"Du trenger ikke å gjøre noe " }) }
-            paragraph { text(bokmal { +"Endringen skjer automatisk. Du får et vedtaksbrev fra oss hvis du får en lavere utbetaling av uføretrygd. Har du spørsmål om hvordan endringen påvirker deg, ta kontakt med oss." }) }
+            paragraph {
+                list {
+                    item {
+                        text(bokmal { +"Endringen skjer automatisk." })
+                    }
+                    item {
+                        text(bokmal { +"Du får varsel- og vedtaksbrev fra oss hvis du får en lavere utbetaling av uføretrygd. "})
+                    }
+                    item {
+                        text(bokmal { +"Du finner informasjon om du mottar minstesats på 2,379 G i det siste vedtaksbrevet ditt.  "})
+                    }
+                }
+            }
+
+            title2 { text(bokmal { +"Du kan ta kontakt" }) }
+            paragraph {
+                list {
+                    item {
+                        text(bokmal { +"Har du spørsmål om hvordan lovendringene påvirker deg, kan du kontakte oss. " })
+                    }
+                    item {
+                        text(bokmal { +"Vi anbefaler at du venter med å ta kontakt til du har fått vedtaksbrev fra oss. "})
+                    }
+                    item {
+                        text(bokmal { +"Du kan ringe oss på 55 55 33 33, eller gå til www.nav.no/kontaktoss "})
+                    }
+                }
+            }
 
             title1 { text( bokmal { +"Dette sier loven " }) }
 
-            title2 { text(bokmal { +"Økt bunnfradrag (inntektsgrense) etter 2 år med uføretrygd  " }) }
+            title2 { text(bokmal { +"Økt bunnfradrag (inntektsgrense) etter 2 år med uføretrygd " }) }
             paragraph { text(bokmal { +"§ 12-14 første ledd første punktum skal lyde:" }) }
             paragraph { text(bokmal { +"\"Når uføregraden fastsettes etter § 12-10, skal det fastsettes et bunnfradrag, som skal svare til inntekt etter uførhet (se § 12-9 tredje ledd) tillagt 40 prosent av grunnbeløpet per kalenderår.\"" }) }
 

@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
 import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull

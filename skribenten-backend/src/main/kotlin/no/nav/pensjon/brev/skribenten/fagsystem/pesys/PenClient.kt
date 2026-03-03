@@ -13,7 +13,7 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.auth.AuthService
 import no.nav.pensjon.brev.skribenten.model.*
@@ -23,7 +23,8 @@ import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brevbaker.api.model.Felles
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import org.slf4j.LoggerFactory
 import java.time.LocalDate
 
@@ -184,5 +185,5 @@ data class BrevdataResponseWrapper<T : Any>(val data: T)
 
 typealias P1VedleggDataResponse = Api.GeneriskBrevdata
 object BrevdataResponse {
-    data class Data(val felles: Felles, val brevdata: Api.GeneriskBrevdata)
+    data class Data(val felles: BrevbakerFelles, val brevdata: Api.GeneriskBrevdata)
 }

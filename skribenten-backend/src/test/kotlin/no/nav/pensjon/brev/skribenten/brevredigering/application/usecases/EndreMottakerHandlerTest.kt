@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 
-import no.nav.brev.Landkode
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy

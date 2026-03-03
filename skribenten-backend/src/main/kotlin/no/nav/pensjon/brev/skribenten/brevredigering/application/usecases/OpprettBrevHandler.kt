@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.common.getOrElse
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
 import java.time.Instant
 
 interface OpprettBrevHandler : UseCaseHandler<OpprettBrevHandlerImpl.Request, Dto.Brevredigering, BrevredigeringError> {

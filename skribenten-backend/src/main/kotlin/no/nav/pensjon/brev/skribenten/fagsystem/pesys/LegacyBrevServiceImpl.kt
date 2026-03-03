@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.Fai
 import no.nav.pensjon.brev.skribenten.services.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import java.time.LocalDateTime
 
