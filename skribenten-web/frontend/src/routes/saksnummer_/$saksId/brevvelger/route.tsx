@@ -75,7 +75,7 @@ export function BrevvelgerPage() {
   return (
     <Box asChild background="default">
       <VStack
-        height="calc(var(--main-page-content-height) + 48px)"
+        height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
         marginInline={{ sm: "space-0", lg: "auto" }}
         width="fit-content"
       >

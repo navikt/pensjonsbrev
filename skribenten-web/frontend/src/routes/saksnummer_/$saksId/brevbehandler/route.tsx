@@ -76,7 +76,7 @@ function Brevbehandler() {
           asChild
           borderColor="neutral-subtle"
           borderWidth="1 0 0 0"
-          height="48px"
+          height="var(--nav-bar-height)"
           paddingBlock="space-8"
           paddingInline="space-12"
         >
