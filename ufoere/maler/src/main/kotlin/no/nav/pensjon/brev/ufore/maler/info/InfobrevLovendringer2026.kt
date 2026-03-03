@@ -217,22 +217,21 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             title1 { text( bokmal { +"Dette sier loven " }) }
 
             title3 { text(bokmal { +"Økt bunnfradrag (inntektsgrense) etter 2 år med uføretrygd " }) }
-            paragraph { text(bokmal { +"§ 12-14 første ledd første punktum skal lyde:" }) }
-            paragraph { text(bokmal { +"\"Når uføregraden fastsettes etter § 12-10, skal det fastsettes et bunnfradrag, som skal svare til inntekt etter uførhet (se § 12-9 tredje ledd) tillagt 40 prosent av grunnbeløpet per kalenderår.\"" }) }
+            paragraph { text(bokmal { +"Loven er fortsatt under arbeid." }) }
 
             title3 { text(bokmal { +" Nye regler for reduksjonsprosent (kompensasjonsgrad) § 12-14 første ledd andre punktum blir opphevet." }) }
-            paragraph { text(bokmal { +"§ 12-14 andre ledd skal lyde:" }) }
+            paragraph { text(bokmal { +"§ 12-14 andre ledd:" }) }
             paragraph { text(bokmal { +"\"Uføretrygd skal reduseres med en andel av inntekt som overstiger bunnfradraget. Andelen (reduksjonsprosenten) skal svare til mottakerens uføretrygd ved 100 prosent uføregrad delt på mottakerens inntekt før uførhet (se § 12-9 første og andre ledd). " +
                     "Reduksjonsprosenten skal likevel ikke overstige 70 prosent. Som inntekt regnes pensjonsgivende inntekt og inntekt av samme art fra utlandet.\"" }) }
 
             title3 { text(bokmal { +"Lik minste inntekt før uførhet (IFU) for alle " }) }
-            paragraph { text(bokmal { +"§ 12-9 andre ledd skal lyde: " }) }
+            paragraph { text(bokmal { +"§ 12-9 andre ledd:" }) }
             paragraph { text(bokmal { +"\"Inntekt før uførhet skal ikke settes lavere enn 3,5 ganger grunnbeløpet. For medlemmer som fyller vilkårene for rett til minsteytelse som ung ufør, skal inntekt før uførhet ikke settes lavere enn 4,5 ganger grunnbeløpet.\"" }) }
 
             title3 { text(bokmal { +"Ny minstesats de som gikk fra uførepensjon til uføretrygd 1. januar 2015" }) }
             paragraph { text(bokmal { +"§ 12-13 andre ledd andre punktum blir oppheva." }) }
             paragraph { text(bokmal { +"Noverande tredje punktum blir andre punktum." }) }
-            paragraph { text(bokmal { +"§ 12-2 tredje ledd bokstav a skal lyde: " }) }
+            paragraph { text(bokmal { +"§ 12-2 tredje ledd bokstav a:" }) }
             paragraph { text(bokmal { +"\"a. beregnet av grunnlaget etter § 12-11 første ledd minst vil svare til halvparten av høy sats etter § 12-13 andre ledd andre punktum, eller\" " }) }
         }
 
