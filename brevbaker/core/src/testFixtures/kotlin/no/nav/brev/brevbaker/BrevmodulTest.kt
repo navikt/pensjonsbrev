@@ -162,7 +162,7 @@ abstract class BrevmodulTest(
         letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
     }
 
-    @ParameterizedTest(name = "{1}, {3}")
+    @ParameterizedTest(name = "{1}, {3}", allowZeroInvocations = true)
     @MethodSource("alleMalene")
     fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
@@ -182,7 +182,7 @@ abstract class BrevmodulTest(
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
-    @ParameterizedTest(name = "{3}, {2}")
+    @ParameterizedTest(name = "{3}, {2}", allowZeroInvocations = true)
     @MethodSource("filtrerVedlegg")
     fun <T : VedleggData> testVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,

@@ -4,7 +4,7 @@ import io.ktor.server.application.Application
 import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.alder.maler.AlderTemplates
 import no.nav.pensjon.brev.maler.ProductionTemplates
-import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
+import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonTemplates
 import no.nav.pensjon.brev.ufore.maler.UfoereTemplates
 import org.slf4j.LoggerFactory
 
@@ -21,11 +21,13 @@ fun Application.brevbakerModulePensjon() = try {
 }
 
 val pensjonOgUfoereProductionTemplates = object : AllTemplates {
-    override fun hentAutobrevmaler() =
-        ProductionTemplates.hentAutobrevmaler() + AlderTemplates.hentAutobrevmaler() + UfoereTemplates.hentAutobrevmaler()
+    private val alleMaler = setOf(
+        ProductionTemplates, AlderTemplates, UfoereTemplates, PlanleggePensjonTemplates
+    )
 
-    override fun hentRedigerbareMaler() =
-        ProductionTemplates.hentRedigerbareMaler() + AlderTemplates.hentRedigerbareMaler() + UfoereTemplates.hentRedigerbareMaler()
+    override fun hentAutobrevmaler() = alleMaler.flatMap { it.hentAutobrevmaler() }.toSet()
 
-    override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = ProductionTemplates.hentAlltidValgbareVedlegg() + AlderTemplates.hentAlltidValgbareVedlegg() + UfoereTemplates.hentAlltidValgbareVedlegg()
+    override fun hentRedigerbareMaler() = alleMaler.flatMap { it.hentRedigerbareMaler() }.toSet()
+
+    override fun hentAlltidValgbareVedlegg() = alleMaler.flatMap { it.hentAlltidValgbareVedlegg() }.toSet()
 }

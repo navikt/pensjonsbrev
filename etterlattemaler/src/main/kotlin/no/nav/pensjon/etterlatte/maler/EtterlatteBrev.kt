@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class OmstillingsstoenadEtterbetaling(
@@ -81,9 +81,7 @@ data class Trygdetid(
     val beregningsMetodeAnvendt: BeregningsMetode,
     val beregningsMetodeFraGrunnlag: BeregningsMetode,
     val mindreEnnFireFemtedelerAvOpptjeningstiden: Boolean,
-) {
-    val harFremtidigTrygdetid = trygdetidsperioder.any { it.type == TrygdetidType.FREMTIDIG }
-}
+)
 
 enum class BeregningsMetode {
     NASJONAL,

@@ -6,13 +6,12 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.LetterMetadata
 import no.nav.pensjon.brev.skribenten.principal
-import no.nav.pensjon.brev.skribenten.services.BrevbakerService
-import no.nav.pensjon.brev.skribenten.services.BrevmalService
 import org.slf4j.LoggerFactory
 
-fun Route.brevmal(brevbakerService: BrevbakerService, brevmalService: BrevmalService) {
+fun Route.brevmal(brevmalService: BrevmalService) {
     val logger = LoggerFactory.getLogger("brevbakerRoute")
 
     route("/brevmal") {
@@ -25,7 +24,7 @@ fun Route.brevmal(brevbakerService: BrevbakerService, brevmalService: BrevmalSer
         route("/{brevkode}") {
             get {
                 val brevkode = call.parameters.getBrevkode()
-                val brevmal = brevbakerService.getRedigerbarTemplate(brevkode)?.let { LetterMetadata.Brevbaker(it) }
+                val brevmal = brevmalService.getRedigerbarTemplate(brevkode)?.let { LetterMetadata.Brevbaker(it) }
                 if (brevmal != null) {
                     call.respond(HttpStatusCode.OK, brevmal)
                 } else {
@@ -35,7 +34,7 @@ fun Route.brevmal(brevbakerService: BrevbakerService, brevmalService: BrevmalSer
 
             get("/modelSpecification") {
                 val brevkode = call.parameters.getBrevkode()
-                val modelSpec = brevbakerService.getModelSpecification(brevkode)
+                val modelSpec = brevmalService.getModelSpecification(brevkode)
 
                 if (modelSpec != null) {
                     call.respond(HttpStatusCode.OK, modelSpec)

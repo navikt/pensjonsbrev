@@ -19,3 +19,5 @@ include("alder:maler")
 include("alder:api-model")
 
 include("etterlattemaler")
+
+include("planlegge-pensjon-maler")

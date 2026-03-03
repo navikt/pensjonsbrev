@@ -9,7 +9,7 @@ import io.ktor.client.request.forms.*
 import io.ktor.http.*
 import io.ktor.utils.io.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.skribenten.InMemoryCache
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertInstanceOf
 import org.junit.jupiter.api.Test
@@ -32,10 +32,10 @@ private val fakeJwtPayload = object : Payload {
         override fun asDouble() = 0.0
         override fun asString() = name
         override fun asDate() = null
-        override fun <T : Any?> asArray(clazz: Class<T?>?) = null
-        override fun <T : Any?> asList(clazz: Class<T?>?) = listOf<T>()
+        override fun <T> asArray(clazz: Class<T?>?) = null
+        override fun <T> asList(clazz: Class<T?>?) = listOf<T>()
         override fun asMap() = mapOf<String, Any>()
-        override fun <T : Any?> `as`(clazz: Class<T?>?) = null
+        override fun <T> `as`(clazz: Class<T?>?) = null
     }
     override fun getClaims() = mapOf<String?, Claim?>()
 }

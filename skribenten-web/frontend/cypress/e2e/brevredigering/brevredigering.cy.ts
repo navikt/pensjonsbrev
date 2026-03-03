@@ -120,7 +120,7 @@ describe("Brevredigering", () => {
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 
-    cy.contains("Tilbakestill malen").click();
+    cy.getDataCy("tilbakestill-mal-button").click();
     cy.contains("Vil du tilbakestille brevmalen?").should("exist");
     cy.contains("Innholdet du har endret eller lagt til i brevet vil bli slettet.").should("exist");
     cy.contains("Du kan ikke angre denne handlingen.").should("exist");
@@ -134,7 +134,7 @@ describe("Brevredigering", () => {
     cy.contains("Dersom vi trenger flere opplysninger").click();
     cy.focused().type(" hello!");
 
-    cy.contains("Tilbakestill malen").click();
+    cy.getDataCy("tilbakestill-mal-button").click();
     cy.contains("Nei, behold brevet").click();
     cy.contains(" hello!").should("exist");
   });

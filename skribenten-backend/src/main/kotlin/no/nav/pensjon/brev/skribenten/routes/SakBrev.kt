@@ -5,16 +5,20 @@ import io.ktor.server.plugins.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.services.*
-import no.nav.pensjon.brev.skribenten.usecase.*
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(
-    brevbakerService: BrevbakerService,
+    brevmalService: BrevmalService,
     brevredigeringService: BrevredigeringService,
     p1Service: P1ServiceImpl,
     brevredigeringFacade: BrevredigeringFacade,
@@ -180,15 +184,9 @@ fun Route.sakBrev(
 
                 post("/send") {
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
 
-                    val resultat = brevredigeringService.sendBrev(saksId = sak.saksId, brevId = brevId)
-
-                    if (resultat != null) {
-                        call.respond(resultat)
-                    } else {
-                        call.respond(HttpStatusCode.NotFound, "Fant ikke PDF")
-                    }
+                    val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
+                    apiRespond(dto2ApiService, resultat)
                 }
             }
 
@@ -246,7 +244,7 @@ fun Route.sakBrev(
 
             get("/alltidValgbareVedlegg") {
                 val brevId = call.parameters.brevId()
-                call.respond(brevbakerService.getAlltidValgbareVedlegg(brevId))
+                call.respond(brevmalService.getAlltidValgbareVedlegg(brevId))
             }
         }
     }

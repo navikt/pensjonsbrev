@@ -1,36 +1,28 @@
 package no.nav.pensjon.brev.skribenten.auth
 
-import io.ktor.client.HttpClient
-import io.ktor.client.plugins.auth.Auth
-import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
-import io.ktor.client.plugins.auth.providers.basic
-import io.ktor.client.request.get
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.auth.Authentication
-import io.ktor.server.auth.authenticate
-import io.ktor.server.auth.basic
-import io.ktor.server.plugins.statuspages.StatusPages
-import io.ktor.server.response.respond
-import io.ktor.server.routing.get
-import io.ktor.server.routing.route
-import io.ktor.server.testing.ApplicationTestBuilder
-import io.ktor.server.testing.testApplication
-import io.ktor.server.util.getOrFail
+import io.ktor.client.*
+import io.ktor.client.plugins.auth.*
+import io.ktor.client.plugins.auth.providers.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.server.auth.*
+import io.ktor.server.plugins.statuspages.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
+import io.ktor.server.testing.*
+import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.PdlService
-import no.nav.pensjon.brev.skribenten.services.PdlServiceException
-import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
-import no.nav.pensjon.brev.skribenten.services.PenService
-import no.nav.pensjon.brev.skribenten.services.PenServiceStub
-import no.nav.pensjon.brev.skribenten.services.notYetStubbed
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import java.time.LocalDate
@@ -88,14 +80,15 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val defaultPdlService = lagPdlService(mapOf(Pair(testSak.pid, behandlingsnummer()) to emptyList()))
 
-    private val defaultPenService = object : PenServiceStub() {
+    // TODO: Endre til å stubbe FagsakService
+    private val defaultPenService = object : PenClientStub() {
         private val saker = listOf(testSak, sakVikafossen, generellSak0001, generellSak0002).associateBy { it.saksId }
         override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
     }
 
     private fun basicAuthTestApplication(
         principal: MockPrincipal = MockPrincipal(navIdent, "Ansatt, Veldig Bra"),
-        penService: PenService = defaultPenService,
+        penClient: PenClient = defaultPenService,
         pdlService: PdlService = defaultPdlService,
         block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit,
     ): Unit = testApplication {
@@ -119,7 +112,7 @@ class AuthorizeAnsattSakTilgangTest {
                 route("/sak") {
                     install(AuthorizeAnsattSakTilgang) {
                         this.pdlService = pdlService
-                        this.penService = penService
+                        this.fagsakService = FagsakService(penClient)
                     }
 
                     get("/noSak/{noSak}") { call.respond("ingen sak") }
@@ -220,7 +213,7 @@ class AuthorizeAnsattSakTilgangTest {
         }
 
     @Test
-    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penService = object : PenServiceStub() {
+    fun `svarer med feil fra hentSak`() = basicAuthTestApplication(penClient = object : PenClientStub() {
         override suspend fun hentSak(saksId: SaksId) = null
     }) { client ->
         val response = client.get("/sak/${testSak.saksId.id}")

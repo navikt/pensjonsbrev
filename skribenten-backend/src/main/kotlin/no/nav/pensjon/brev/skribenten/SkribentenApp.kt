@@ -25,18 +25,20 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
+import no.nav.pensjon.brev.skribenten.common.Valkey
+import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.P1Exception
-import no.nav.pensjon.brev.skribenten.services.PenDataException
+import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -123,9 +125,6 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         exception<BrevredigeringException> { call, cause ->
             logger.info(cause.message, cause)
             when (cause) {
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
-                    BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
-                is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
                 is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
             }
         }

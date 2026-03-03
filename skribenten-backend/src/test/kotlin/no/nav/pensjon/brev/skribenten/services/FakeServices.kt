@@ -5,32 +5,28 @@ import io.ktor.callid.*
 import io.ktor.client.engine.mock.*
 import io.ktor.http.*
 import kotlinx.coroutines.runBlocking
-import no.nav.pensjon.brev.api.model.ISakstype
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
-import no.nav.pensjon.brev.skribenten.domain.P1Data
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.JournalpostId
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pdl
-import no.nav.pensjon.brev.skribenten.model.Pen
+import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Pen.BestillExstreamBrevResponse
 import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest
-import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerRequestDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.FinnSamhandlerResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.routes.samhandler.dto.HentSamhandlerResponseDto
-import no.nav.pensjon.brev.skribenten.services.PenService.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.services.SafService.HentDokumenterResponse
 import no.nav.pensjon.brevbaker.api.model.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 
 class NotYetStubbedException(message: String) : Exception(message)
 
@@ -116,13 +112,13 @@ open class FakeBrevbakerService(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
     ): LetterMarkupWithDataUsage = notYetStubbed()
     override suspend fun renderPdf(
         brevkode: Brevkode.Redigerbart,
         spraak: LanguageCode,
         brevdata: RedigerbarBrevdata<*, *>,
-        felles: Felles,
+        felles: BrevbakerFelles,
         redigertBrev: LetterMarkup,
         alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>,
     ): LetterResponse = notYetStubbed()
@@ -149,7 +145,7 @@ fun <T> httpClientTest(responseBody: T, block: suspend (MockEngine) -> Unit) = r
     }
 }
 
-open class PenServiceStub : PenService {
+open class PenClientStub : PenClient {
     override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = notYetStubbed()
     override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest): BestillExstreamBrevResponse = notYetStubbed()
     override suspend fun redigerExstreamBrev(journalpostId: JournalpostId): Pen.RedigerDokumentResponse = notYetStubbed()
@@ -171,4 +167,9 @@ open class SafServiceStub : SafService {
     override suspend fun waitForJournalpostStatusUnderArbeid(journalpostId: JournalpostId): JournalpostLoadingResult = notYetStubbed()
     override suspend fun getFirstDocumentInJournal(journalpostId: JournalpostId): HentDokumenterResponse = notYetStubbed()
     override suspend fun hentPdfForJournalpostId(journalpostId: JournalpostId): ByteArray = notYetStubbed()
+}
+
+open class LegacyBrevServiceStub : LegacyBrevService {
+    override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
+    override suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
 }
