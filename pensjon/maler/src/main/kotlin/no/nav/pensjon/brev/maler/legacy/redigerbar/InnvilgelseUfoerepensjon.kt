@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.QuotationMarks
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -82,6 +81,27 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
                     bokmal { +"Du har fått innvilget barnetillegg, men det vil ikke komme til utbetaling fordi den samlede inntekten din er for høy." },
                     nynorsk { +"Du har fått innvilga barnetillegg, men det vil ikkje komme til utbetaling fordi den samla inntekta di er for høg." },
                     english { +"You have been granted child supplement, however you will not receive any additional payment due to your total income being too high." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"FRITEKST: Uførepensjon vil første gang bli utbetalt den <fyll inn dato>" },
+                    nynorsk { +"FRITEKST: Uførepensjon vil første gong bli utbetalt den <fyll inn dato>." },
+                    english { +"FRITEKST: Your first disability pension will be paid on <fyll inn dato>." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"FRITEKST: HER KOPIERES BEGRUNNELSEN FRA FORVALTNINGSENHETEN INN" },
+                    nynorsk { +"FRITEKST: HER KOPIERES BEGRUNNELSEN FRA FORVALTNINGSENHETEN INN" },
+                    english { +"FRITEKST: HER KOPIERES BEGRUNNELSEN FRA FORVALTNINGSENHETEN INN" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 12." },
+                    nynorsk { +"Vedtaket er gjort etter føresegnene i folketrygdlova kapittel 12." },
+                    english { +"This decision has been made in accordance with chapter 12 of the National Insurance Act." },
                 )
             }
         }
