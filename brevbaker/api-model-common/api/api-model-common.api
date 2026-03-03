@@ -604,6 +604,15 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$
 	public abstract fun getId ()I
 }
 
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$NumberedList : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
+	public abstract fun getItems ()Ljava/util/List;
+}
+
+public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$NumberedList$Item {
+	public abstract fun getContent ()Ljava/util/List;
+	public abstract fun getId ()I
+}
+
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getHeader ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Table$Header;
 	public abstract fun getRows ()Ljava/util/List;
@@ -690,6 +699,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 	public static final field ITEM_LIST Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public static final field LITERAL Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public static final field NEW_LINE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
+	public static final field NUMBERED_LIST Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public static final field TABLE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public static final field VARIABLE Lno/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$Type;
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;

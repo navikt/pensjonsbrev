@@ -130,7 +130,7 @@ object Edit {
 
     sealed class ParagraphContent(val type: Type) : Identifiable {
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
+            ITEM_LIST, NUMBERED_LIST, LITERAL, VARIABLE, TABLE, NEW_LINE,
         }
 
         data class ItemList(
@@ -139,6 +139,24 @@ object Edit {
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
+            data class Item(
+                override val id: Int?,
+                val content: List<Text>,
+                val deletedContent: Set<Int> = emptySet(),
+                override val parentId: Int? = null,
+            ) : Identifiable {
+                override fun isEdited(): Boolean = isNew() || content.any { it.isEdited() || it.parentId != id } || deletedContent.isNotEmpty()
+            }
+
+            override fun isEdited(): Boolean = isNew() || items.any { it.isEdited() || it.parentId != id } || deletedItems.isNotEmpty()
+        }
+
+        data class NumberedList(
+            override val id: Int?,
+            val items: List<Item>,
+            val deletedItems: Set<Int> = emptySet(),
+            override val parentId: Int? = null,
+        ) : ParagraphContent(Type.NUMBERED_LIST) {
             data class Item(
                 override val id: Int?,
                 val content: List<Text>,
@@ -243,6 +261,7 @@ fun List<ParagraphContent.Text>.toEdit(parentId: Int?): List<Edit.ParagraphConte
 fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
         is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId)
+        is ParagraphContent.NumberedList -> Edit.ParagraphContent.NumberedList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId)
         is ParagraphContent.Text -> toEdit(parentId)
         is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
         is ParagraphContent.Table -> toEdit(parentId)
@@ -264,6 +283,9 @@ fun ParagraphContent.Text.FontType.toEdit(): Edit.ParagraphContent.Text.FontType
 
 fun ParagraphContent.ItemList.Item.toEdit(parentId: Int?): Edit.ParagraphContent.ItemList.Item =
     Edit.ParagraphContent.ItemList.Item(id = id, content = content.toEdit(id), parentId = parentId)
+
+fun ParagraphContent.NumberedList.Item.toEdit(parentId: Int?): Edit.ParagraphContent.NumberedList.Item =
+    Edit.ParagraphContent.NumberedList.Item(id = id, content = content.toEdit(id), parentId = parentId)
 
 fun ParagraphContent.Table.toEdit(parentId: Int?): Edit.ParagraphContent.Table =
     Edit.ParagraphContent.Table(id = id, rows = rows.map { it.toEdit(id) }, header = header.toEdit(id), parentId = parentId)
@@ -303,6 +325,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
         is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.NumberedList -> ParagraphContentImpl.NumberedListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }
@@ -335,6 +358,9 @@ fun Edit.ParagraphContent.Text.FontType.toMarkup(): ParagraphContent.Text.FontTy
 
 fun Edit.ParagraphContent.ItemList.Item.toMarkup(): ParagraphContent.ItemList.Item =
     ParagraphContentImpl.ItemListImpl.ItemImpl(id = id ?: 0, content = content.toMarkup())
+
+fun Edit.ParagraphContent.NumberedList.Item.toMarkup(): ParagraphContent.NumberedList.Item =
+    ParagraphContentImpl.NumberedListImpl.ItemImpl(id = id ?: 0, content = content.toMarkup())
 
 fun Edit.ParagraphContent.Table.Header.toMarkup(): ParagraphContent.Table.Header =
     ParagraphContentImpl.TableImpl.HeaderImpl(id = id ?: 0, colSpec = colSpec.map { it.toMarkup() })

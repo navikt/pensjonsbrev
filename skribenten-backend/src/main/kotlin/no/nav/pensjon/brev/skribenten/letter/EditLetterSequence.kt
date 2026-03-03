@@ -73,6 +73,7 @@ abstract class EditLetterSequence<T> {
     open suspend fun SequenceScope<T>.visit(content: ParagraphContent): Unit =
         when (content) {
             is ItemList -> visit(content)
+            is NumberedList -> visit(content)
             is Table -> visit(content)
             is Text -> visit(content)
         }

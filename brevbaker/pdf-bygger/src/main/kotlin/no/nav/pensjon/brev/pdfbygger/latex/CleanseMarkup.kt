@@ -48,6 +48,7 @@ private fun isEmpty(content: LetterMarkup.ParagraphContent) =
     when (content) {
         is LetterMarkup.ParagraphContent.Form,
         is LetterMarkup.ParagraphContent.ItemList,
+        is LetterMarkup.ParagraphContent.NumberedList,
         is LetterMarkup.ParagraphContent.Table -> false
         is LetterMarkup.ParagraphContent.Text.NewLine -> true
         is LetterMarkup.ParagraphContent.Text.Literal,

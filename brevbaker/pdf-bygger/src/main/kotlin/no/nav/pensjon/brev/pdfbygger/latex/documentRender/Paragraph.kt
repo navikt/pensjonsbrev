@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.pdfbygger.latex.LatexAppendable
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.NumberedList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 
@@ -22,6 +23,7 @@ internal fun LatexAppendable.renderParagraph(
         when (current) {
             is Form -> renderForm(current)
             is ItemList -> renderList(current)
+            is NumberedList -> renderList(current)
             is Table -> renderTable(current, previous.takeIf { index == 0})
             is Text -> continousTextContent.add(current)
         }

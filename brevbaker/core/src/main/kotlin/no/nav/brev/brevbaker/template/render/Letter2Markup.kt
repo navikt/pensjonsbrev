@@ -117,6 +117,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         when (element) {
             is Element.OutlineContent.ParagraphContent.Text -> renderTextContent(scope, element)
             is Element.OutlineContent.ParagraphContent.ItemList -> listOfNotNull(renderItemList(scope, element))
+            is Element.OutlineContent.ParagraphContent.NumberedList<*> -> listOfNotNull(renderNumberedList(scope, element))
             is Element.OutlineContent.ParagraphContent.Table -> listOfNotNull(renderTable(scope, element))
             is Element.OutlineContent.ParagraphContent.Form -> listOf(renderForm(scope, element))
         }
@@ -182,6 +183,15 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
             ParagraphContentImpl.ItemListImpl(itemList.stableHashCode(), items)
+        }
+
+    private fun renderNumberedList(scope: ExpressionScope<*>, itemList: Element.OutlineContent.ParagraphContent.NumberedList<*>): ParagraphContent.NumberedList? =
+        buildList {
+            render(scope, itemList.items) { inner, item ->
+                add(ParagraphContentImpl.NumberedListImpl.ItemImpl(item.stableHashCode(), renderText(inner, item.text)))
+            }
+        }.takeIf { it.isNotEmpty() }?.let { items ->
+            ParagraphContentImpl.NumberedListImpl(itemList.stableHashCode(), items)
         }
 
     private fun renderTextContent(scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {

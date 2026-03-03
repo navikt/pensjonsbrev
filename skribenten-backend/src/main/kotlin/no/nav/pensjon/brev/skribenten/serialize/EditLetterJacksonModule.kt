@@ -39,6 +39,7 @@ object EditLetterJacksonModule : SimpleModule() {
             val node = p.codec.readTree<JsonNode>(p)
             val type = when (Edit.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                 Edit.ParagraphContent.Type.ITEM_LIST -> Edit.ParagraphContent.ItemList::class.java
+                Edit.ParagraphContent.Type.NUMBERED_LIST -> Edit.ParagraphContent.NumberedList::class.java
                 Edit.ParagraphContent.Type.LITERAL -> Edit.ParagraphContent.Text.Literal::class.java
                 Edit.ParagraphContent.Type.NEW_LINE -> Edit.ParagraphContent.Text.NewLine::class.java
                 Edit.ParagraphContent.Type.VARIABLE -> Edit.ParagraphContent.Text.Variable::class.java
@@ -53,6 +54,7 @@ object EditLetterJacksonModule : SimpleModule() {
             val node = p.codec.readTree<JsonNode>(p)
             val type = when (Edit.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                 Edit.ParagraphContent.Type.ITEM_LIST -> throw DeserializationException("ITEM_LIST is not allowed in a text-only block.")
+                Edit.ParagraphContent.Type.NUMBERED_LIST -> throw DeserializationException("NUMBERED_LIST is not allowed in a text-only block.")
                 Edit.ParagraphContent.Type.LITERAL -> Edit.ParagraphContent.Text.Literal::class.java
                 Edit.ParagraphContent.Type.NEW_LINE -> Edit.ParagraphContent.Text.NewLine::class.java
                 Edit.ParagraphContent.Type.VARIABLE -> Edit.ParagraphContent.Text.Variable::class.java

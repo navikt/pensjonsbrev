@@ -25,6 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Title3
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.NumberedList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table.Header
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.Literal
@@ -125,6 +126,7 @@ private fun finnTekstForParagraph(paragraph: Paragraph): List<String> = paragrap
         is MultipleChoice -> finnTekstForMultipleChoice(it)
         is ParagraphContent.Form.Text -> it.prompt.map { t -> t.text }
         is ItemList -> finnTekstForItemList(it)
+        is NumberedList -> finnTekstForNumberedList(it)
         is Table -> finnTekstForTabell(it)
         is Literal -> listOf(it.text)
         is NewLine -> listOf(it.text)
@@ -145,6 +147,8 @@ private fun finnTekstForHeader(header: Header): String =
     header.colSpec.map { it.headerContent }.joinToString(" ") { it.text.tekst() }
 
 private fun finnTekstForItemList(itemList: ItemList): List<String> = itemList.items.map { it.content.tekst() }
+
+private fun finnTekstForNumberedList(itemList: NumberedList): List<String> = itemList.items.map { it.content.tekst() }
 
 private fun List<ParagraphContent.Text>.tekst() = joinToString("") { it.text }
 

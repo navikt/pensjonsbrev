@@ -31,7 +31,7 @@ class TemplateListTest {
                             Element.OutlineContent.ParagraphContent.ItemList(
                                 listOf(
                                     ContentOrControlStructure.Content(
-                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                                        Element.OutlineContent.ParagraphContent.AbstractList.Item(listOf(newText(Language.Bokmal to "Test")))
                                     )
                                 )
                             )
@@ -96,7 +96,7 @@ class TemplateListTest {
                                         true.expr(),
                                         listOf(
                                             ContentOrControlStructure.Content(
-                                                Element.OutlineContent.ParagraphContent.ItemList.Item(
+                                                Element.OutlineContent.ParagraphContent.AbstractList.Item(
                                                     listOf(newText(Language.Bokmal to "Test"))
                                                 )
                                             )
