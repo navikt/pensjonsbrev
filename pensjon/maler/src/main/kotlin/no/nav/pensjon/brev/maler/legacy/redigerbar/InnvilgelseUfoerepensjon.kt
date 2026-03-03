@@ -3,17 +3,21 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoerepensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
+import no.nav.pensjon.brev.maler.legacy.inkluderopplysningerbruktiberegningen
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto
+import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -123,6 +127,9 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
                 )
             }
         }
+        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
+        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
 
