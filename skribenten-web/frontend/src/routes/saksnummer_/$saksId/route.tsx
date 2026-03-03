@@ -111,31 +111,31 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
           align="center"
           gap="space-8"
           overflowX="auto"
-          paddingBlock="space-8"
+          paddingBlock="space-4"
           paddingInline="space-20 space-0"
           wrap={false}
         >
           <Box height="24px" width="24px">
             <PersonIcon fontSize="24px" />
           </Box>
-          <BodyShort size="small">
+          <BodyShort size="medium">
             {datoDel} {personnummerDel}
+            <Box asChild marginInline="space-4 space-8">
+              <CopyButton copyText={sak.pid} data-color="accent" size="small" />
+            </Box>
           </BodyShort>
-          <Box asChild marginInline="space-8">
-            <CopyButton copyText={sak.pid} data-color="accent" size="small" />
-          </Box>
           /
-          <BodyShort size="small">
+          <BodyShort size="medium">
             {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
           </BodyShort>
           {dateOfBirth && (
             <>
-              /<BodyShort size="small">Født: {dateOfBirth}</BodyShort>
+              /<BodyShort size="medium">Født: {dateOfBirth}</BodyShort>
             </>
           )}
           {dateOfDeath && (
             <>
-              /<BodyShort size="small">Død: {dateOfDeath}</BodyShort>
+              /<BodyShort size="medium">Død: {dateOfDeath}</BodyShort>
             </>
           )}
           {brukerStatus?.erSkjermet && (
