@@ -17,13 +17,19 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_ber
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravmottatdato
+import no.nav.pensjon.brev.maler.legacy.vedtaksdata_virkningfom
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -65,9 +71,9 @@ object InnvilgelseUfoerepensjon : RedigerbarTemplate<InnvilgelseUfoerepensjonDto
 //PE_UT_04_001_TBU1902, 1559, 1560, 1903, 1924
             paragraph {
                 text(
-                    bokmal { +"Nav har innvilget din søknad om uførepensjon mottatt PE_Vedtaksdata_Kravhode_KravMottattDato. Du får uførepensjon med en uføregrad på PE_VedtaksdataBerengningsData_Beregning_Uforegrad prosent fra PE_VedtaksData_VirkningFOM. Du får utbetalt PE_Vedtaksdata_BeregningsData_Beregning_Netto kroner hver måned før skatt." },
-                    nynorsk { +"Nav har innvilga søknaden din om uførepensjon motteken PE_Vedtaksdata_Kravhode_KravMottattDato. Du får uførepensjon med ein uføregrad på PE_VedtaksdataBerengningsData_Beregning_Uforegrad prosent frå PE_VedtaksData_VirkningFOM. Du får utbetalt PE_Vedtaksdata_BeregningsData_Beregning_Netto kroner kvar månad før skatt." },
-                    english { +"Nav makes reference to your application for a disabililty pension, received on PE_Vedtaksdata_Kravhode_KravMottattDato. You have been granted a disability pension with a disability level of PE_VedtaksdataBerengningsData_Beregning_Uforegrad per cent as of PE_VedtaksData_VirkningFOM. You will receive PE_Vedtaksdata_BeregningsData_Beregning_Netto Norwegian kroner each month, before tax." },
+                    bokmal { +"Nav har innvilget din søknad om uførepensjon mottatt " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du får uførepensjon med en uføregrad på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent fra " + pe.vedtaksdata_virkningfom().format() + ". Du får utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " kroner hver måned før skatt." },
+                    nynorsk { +"Nav har innvilga søknaden din om uførepensjon motteken " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Du får uførepensjon med ein uføregrad på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent frå " + pe.vedtaksdata_virkningfom().format() + ". Du får utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " kroner kvar månad før skatt." },
+                    english { +"Nav makes reference to your application for a disabililty pension, received on " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". You have been granted a disability pension with a disability level of " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + ". You will receive " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_netto().format() + " Norwegian kroner each month, before tax." },
                 )
             }
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETnetto = 0) THEN INCLUDE
