@@ -87,7 +87,6 @@ fun Application.configureRouting(
             sakRoute(
                 brevService,
                 brevmalService,
-                brevredigeringService,
                 krrService,
                 pdlService,
                 fagsakService,

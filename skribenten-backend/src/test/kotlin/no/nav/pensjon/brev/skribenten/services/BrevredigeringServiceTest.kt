@@ -40,7 +40,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -275,25 +274,6 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = bestillBrevresponse
     }
 
-
-    @Test
-    fun `can delete brevredigering`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        assertEquals(
-            brev.copy(propertyUsage = null),
-            hentBrev(brev.info.id)
-        )
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)).isTrue()
-        assertThat(hentBrev(brev.info.id)).isNull()
-    }
-
-    @Test
-    fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(hentBrev(brevId = BrevId(1337))).isNull()
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
-    }
-
     @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
         val sak2 = sak1.copy(saksId = SaksId(sak1.saksId.id + 1))
@@ -334,21 +314,6 @@ class BrevredigeringServiceTest {
         when (result) {
             is Outcome.Failure -> error("Kunne ikke opprette brev: ${result.error}")
             is Outcome.Success -> result.value
-        }
-    }
-
-    private suspend fun hentBrev(
-        brevId: BrevId,
-        reserverForRedigering: Boolean = false,
-        principal: UserPrincipal = saksbehandler1Principal,
-    ): Dto.Brevredigering? {
-        val result = withPrincipal(principal) {
-            brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = reserverForRedigering))
-        }
-        return when (result) {
-            is Outcome.Failure -> error("Kunne ikke hente brev: ${result.error}")
-            is Outcome.Success -> result.value
-            null -> null
         }
     }
 

@@ -40,7 +40,7 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
         val brev = opprettBrev().resultOrFail()
 
         assertThat(hentEllerOpprettPdf(brev)).isSuccess()
-        assertThat(slettBrev(brev)).isSuccess { assertThat(it).isTrue() }
+        assertThat(slettBrev(brev)).isSuccess()
 
         assertThat(hentBrev(brev.info.id)).isNull()
         transaction {

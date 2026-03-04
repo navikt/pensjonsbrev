@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
-import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
@@ -101,7 +100,6 @@ abstract class BrevredigeringHandlerTestBase {
     protected val penService = BrevredigeringServiceTest.FakePenClient()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
-    private val brevredigeringService: BrevredigeringService = BrevredigeringService()
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevService = BrevService(penService, LegacyBrevServiceStub()),
         brevdataService = BrevdataService(penService, samhandlerService),
@@ -270,8 +268,13 @@ abstract class BrevredigeringHandlerTestBase {
     protected suspend fun slettBrev(
         brev: Dto.Brevredigering,
         principal: UserPrincipal = saksbehandler1Principal,
-    ): Outcome<Boolean, BrevredigeringError>? = withPrincipal(principal) {
-        success(brevredigeringService.slettBrev(saksId = brev.info.saksId, brevId = brev.info.id))
+    ): Outcome<Unit, BrevredigeringError>? = slettBrev(brev.info.id, principal)
+
+    protected suspend fun slettBrev(
+        brevId: BrevId,
+        principal: UserPrincipal = saksbehandler1Principal,
+    ): Outcome<Unit, BrevredigeringError>? = withPrincipal(principal) {
+        brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
     }
 
     protected suspend fun attester(

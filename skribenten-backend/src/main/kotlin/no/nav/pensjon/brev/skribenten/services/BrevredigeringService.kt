@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
 import no.nav.pensjon.brev.skribenten.db.BrevredigeringTable
-import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.core.inList
@@ -27,23 +26,6 @@ interface HentBrevService {
 
 class BrevredigeringService : HentBrevService {
     private val brevreservasjonPolicy = BrevreservasjonPolicy()
-
-
-    /**
-     * Slett brev med id.
-     * @return `true` om brevet ble slettet, false om brevet ikke eksisterer,
-     */
-    fun slettBrev(saksId: SaksId, brevId: BrevId): Boolean {
-        return transaction {
-            val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-            if (brev != null) {
-                brev.delete()
-                true
-            } else {
-                false
-            }
-        }
-    }
 
     override fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo> =
         transaction {

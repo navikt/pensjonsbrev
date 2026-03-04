@@ -65,6 +65,16 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
+@JvmName("apiRespondNoContent")
+suspend fun RoutingContext.apiRespond(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Unit, BrevredigeringError>?
+) {
+    respondOutcome(dto2ApiService, outcome) {
+        respond(HttpStatusCode.NoContent)
+    }
+}
+
 private val logger = LoggerFactory.getLogger("ApiResponse")
 
 suspend fun <T> RoutingContext.respondOutcome(
@@ -88,6 +98,9 @@ suspend fun <T> RoutingContext.respondOutcome(
                 // TODO: Muligens burde dette være internal server error siden det burde indikere at koden ikke forsøkte å reserver eller at feil fra reservasjon ble ignorert
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
+
+                is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
+                    call.respond(HttpStatusCode.Conflict, "Kan ikke slette arkivert brev med journalpostId: ${outcome.error.journalpostId}")
 
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")
