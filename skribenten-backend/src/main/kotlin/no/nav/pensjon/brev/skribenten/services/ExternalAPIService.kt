@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto

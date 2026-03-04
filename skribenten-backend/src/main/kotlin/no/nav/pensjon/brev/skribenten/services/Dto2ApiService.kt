@@ -18,6 +18,9 @@ class Dto2ApiService(
     private val samhandlerService: SamhandlerService,
 ) {
 
+    // TODO: Se på en bedre løsning som bruker BrevredigeringError her i stedet for å kaste exceptions
+    class BrevmalFinnesIkke(override val message: String) : Exception()
+
     suspend fun toApi(brevredigering: Dto.Brevredigering): Api.BrevResponse =
         Api.BrevResponse(
             info = toApi(brevredigering.info),
@@ -30,7 +33,7 @@ class Dto2ApiService(
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
         val template = brevmalService.getRedigerbarTemplate(info.brevkode)
-            ?: throw BrevredigeringException.BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
+            ?: throw BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
 
         return Api.BrevInfo(
             id = info.id,

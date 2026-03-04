@@ -1,6 +1,5 @@
-package no.nav.pensjon.brev.skribenten.brevredigering.application.domain
+package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
