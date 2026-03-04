@@ -42,13 +42,17 @@ const sendBrevError = nyKvittertBrev({
 const sendBrevSuccessLokalprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.LOKALPRINT }),
+  brevFørHandling: nyBrevInfo({
+    distribusjonstype: Distribusjonstype.LOKALPRINT,
+  }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 const sendBrevSuccessSentralprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.SENTRALPRINT }),
+  brevFørHandling: nyBrevInfo({
+    distribusjonstype: Distribusjonstype.SENTRALPRINT,
+  }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 
@@ -102,11 +106,11 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Lokalprint - sendt til joark");
     cy.contains("Mottaker").should("be.visible");
     cy.contains("Tydelig Bakke").should("be.visible");
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("1").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
     cy.contains("Lokalprint - sendt til joark").click();
 
     cy.contains("Klar til attestering").should("be.visible");
