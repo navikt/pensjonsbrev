@@ -6,10 +6,15 @@ import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
+import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.alderAar
+import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.beloep
+import no.nav.pensjon.brev.planleggepensjon.simulering.LagreSimuleringDtoSelectors.alderspensjonListe
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringBrevDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -40,8 +45,19 @@ object SimuleringBrev : RedigerbarTemplate<SimuleringBrevDto> {
             paragraph {
                 text(
                     bokmal { +
-                    "Du har bedt oss om å simulere din alderspensjon." },
+                    "Du har bedt oss om å simulere din alderspensjon. " },
                 )
+            }
+
+            paragraph {
+                list{
+                    forEach(saksbehandlerValg.alderspensjonListe)
+                    {
+                        item {
+                            text(bokmal { + "Alderspensjon ved " + it.alderAar.format() + " år: " + it.beloep.format() })
+                        }
+                    }
+                }
             }
 
         }
