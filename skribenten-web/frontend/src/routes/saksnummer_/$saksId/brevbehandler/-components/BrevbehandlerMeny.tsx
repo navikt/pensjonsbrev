@@ -99,21 +99,83 @@ const BrevItem = (properties: {
   const gjeldendeBruker = useUserInfo();
 
   return (
-    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-      <Accordion.Header>
+    <Accordion.Item
+      css={css`
+        border-radius: var(--ax-radius-12);
+        background: var(--ax-bg-default);
+        margin-top: var(--ax-space-8);
+        ${properties.open ? "border: 1px solid var(--ax-border-neutral);" : ""}
+      `}
+      onOpenChange={() => properties.onOpenChange(!properties.open)}
+      open={properties.open}
+    >
+      <Accordion.Header
+        css={css`
+          ${!properties.open ? "border-radius: var(--ax-radius-12); border: 1px solid var(--ax-border-neutral);" : ""}
+
+          &::before,
+          &::after {
+            content: none;
+            display: none;
+          }
+
+          > span:first-of-type {
+            order: 2;
+            margin-left: auto;
+            background: none;
+            color: var(--ax-text-neutral);
+          }
+
+          > span:last-of-type {
+            order: 1;
+            color: var(--ax-text-neutral);
+          }
+
+          &:hover > span:first-of-type,
+          &:focus-visible > span:first-of-type {
+            color: var(--ax-text-neutral);
+          }
+        `}
+      >
         <VStack gap="space-8">
           <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
-          <Label size="small">{properties.brev.brevtittel}</Label>
+          <Label size="medium">{properties.brev.brevtittel}</Label>
         </VStack>
       </Accordion.Header>
-      <Accordion.Content>
-        <VStack gap="space-16">
+      {properties.open && (
+        <div
+          css={css`
+            border-bottom: 1px solid var(--ax-border-neutral-subtle);
+            margin-left: var(--ax-space-16);
+            margin-right: var(--ax-space-16);
+          `}
+        />
+      )}
+      <Accordion.Content
+        css={css`
+          box-shadow: none;
+          margin: ${properties.open ? "var(--ax-space-12)" : "0"}
+            var(--ax-space-8);
+          padding-block: 0;
+          padding-inline: var(--ax-space-8);
+
+          > div {
+            padding-block: 0;
+            padding-inline: 0;
+          }
+        `}
+      >
+        <VStack>
           {erBrevArkivert(properties.brev) ? (
             <ArkivertBrev brev={properties.brev} />
           ) : (
             <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
           )}
-          <div>
+          <div
+            css={css`
+              margin-top: var(--ax-space-20);
+            `}
+          >
             <Detail textColor="subtle">
               Sist endret:{" "}
               {isDateToday(properties.brev.sistredigert)
@@ -133,7 +195,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
   return (
-    <VStack gap="space-16">
+    <VStack>
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
@@ -184,15 +246,20 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
-    <VStack gap="space-16">
+    <VStack gap="space-20">
       <EndreMottakerMedOppsummeringOgApiHåndtering
         brev={props.brev}
         endreAsIcon
         kanTilbakestilleMottaker={!erLaast}
         overrideOppsummering={(edit) => (
-          <VStack flexGrow="1">
+          <VStack
+            css={css`
+              gap: var(--ax-space-8);
+            `}
+            flexGrow="1"
+          >
             <HStack justify="space-between" wrap={false}>
-              <BodyShort size="small" weight="semibold">
+              <BodyShort size="medium" weight="semibold">
                 Mottaker
               </BodyShort>
               {!erLaast && edit}
@@ -219,7 +286,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </Alert>
       )}
       {!erLaast && (
-        <VStack align="start" gap="space-16">
+        <VStack align="start">
           <Button
             data-color="neutral"
             onClick={() =>
@@ -240,12 +307,12 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         <RadioGroup
           data-cy="brevbehandler-distribusjonstype"
           description={
-            <HStack align="center">
+            <HStack align="center" gap="space-20">
               <BodyShort
                 css={css`
-                  color: inherit;
+                  color: var(--ax-text-neutral);
                 `}
-                size="small"
+                size="medium"
                 weight="semibold"
               >
                 Distribusjon
@@ -277,6 +344,7 @@ const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjelden
     <Tag
       css={css`
         align-self: flex-start;
+        box-shadow: none;
       `}
       size="xsmall"
       variant={variant}
@@ -290,10 +358,7 @@ const LokalPrintInfoAlerts = () => {
   return (
     <VStack gap="space-20">
       <Alert size="small" variant="warning">
-        Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
-      </Alert>
-      <Alert size="small" variant="info">
-        Skribenten-brev som skal til samhandler kan sendes via sentralprint.
+        Husk å åpne PDF og skriv ut brevet.
       </Alert>
     </VStack>
   );
