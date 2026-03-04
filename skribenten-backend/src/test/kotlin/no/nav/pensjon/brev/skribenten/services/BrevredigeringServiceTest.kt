@@ -40,7 +40,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -315,21 +314,6 @@ class BrevredigeringServiceTest {
         when (result) {
             is Outcome.Failure -> error("Kunne ikke opprette brev: ${result.error}")
             is Outcome.Success -> result.value
-        }
-    }
-
-    private suspend fun hentBrev(
-        brevId: BrevId,
-        reserverForRedigering: Boolean = false,
-        principal: UserPrincipal = saksbehandler1Principal,
-    ): Dto.Brevredigering? {
-        val result = withPrincipal(principal) {
-            brevredigeringFacade.hentBrev(HentBrevHandler.Request(brevId = brevId, reserverForRedigering = reserverForRedigering))
-        }
-        return when (result) {
-            is Outcome.Failure -> error("Kunne ikke hente brev: ${result.error}")
-            is Outcome.Success -> result.value
-            null -> null
         }
     }
 

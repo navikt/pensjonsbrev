@@ -13,13 +13,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(
     brevmalService: BrevmalService,
-    brevredigeringService: BrevredigeringService,
     p1Service: P1ServiceImpl,
     brevredigeringFacade: BrevredigeringFacade,
     dto2ApiService: Dto2ApiService,
