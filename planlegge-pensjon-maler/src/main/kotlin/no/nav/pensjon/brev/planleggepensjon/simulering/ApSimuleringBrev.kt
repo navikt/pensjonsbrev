@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
