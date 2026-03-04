@@ -7,6 +7,8 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevkode
 import no.nav.pensjon.brev.skribenten.*
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
@@ -19,12 +21,14 @@ import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse.Data
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
@@ -32,17 +36,22 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsageImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.opentest4j.AssertionFailedError
 import java.time.LocalDate
+import kotlin.collections.get
 
 /**
  * Har valgt å gjøre det på denne måten underveis for å understøtte steg-for-steg refaktorering med blanding mellom ny og gammel stil.
@@ -96,11 +105,11 @@ abstract class BrevredigeringHandlerTestBase {
         )
     )
 
-    protected val brevbakerService = BrevredigeringServiceTest.BrevredigeringFakeBrevbakerService()
-    protected val penService = BrevredigeringServiceTest.FakePenClient()
+    protected val brevbakerService = BrevredigeringFakeBrevbakerService()
+    protected val penService = FakePenClient()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
-    val brevredigeringFacade = BrevredigeringFacadeFactory.create(
+    protected val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevService = BrevService(penService, LegacyBrevServiceStub()),
         brevdataService = BrevdataService(penService, samhandlerService),
         brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
@@ -359,12 +368,89 @@ abstract class BrevredigeringHandlerTestBase {
         )
     }
 
-    class ResultFailure(error: BrevredigeringError) :
+    protected class ResultFailure(error: BrevredigeringError) :
         AssertionFailedError(null, Outcome.Success::class.java, error::class.java)
 
-    fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
+    protected fun <T> Outcome<T, BrevredigeringError>?.resultOrFail(): T = when (this) {
         is Outcome.Success -> value
         is Outcome.Failure -> throw ResultFailure(error)
         null -> throw AssertionError("Resultat var null")
+    }
+
+    protected class BrevredigeringFakeBrevbakerService : FakeBrevbakerService() {
+        lateinit var renderMarkupResultat: suspend ((f: BrevbakerFelles) -> LetterMarkup)
+        lateinit var renderPdfResultat: LetterResponse
+        var modelSpecificationResultat: TemplateModelSpecification? = null
+        override var redigerbareMaler: MutableMap<RedigerbarBrevkode, TemplateDescription.Redigerbar> = mutableMapOf()
+        val renderMarkupKall = mutableListOf<Pair<Brevkode.Redigerbart, LanguageCode>>()
+        val renderPdfKall = mutableListOf<LetterMarkup>()
+
+        override suspend fun renderMarkup(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles
+        ): LetterMarkupWithDataUsage =
+            renderMarkupResultat(felles)
+                .also { renderMarkupKall.add(Pair(brevkode, spraak)) }
+                .let { LetterMarkupWithDataUsageImpl(it, emptySet(), if (brevkode == Testbrevkoder.VEDTAKSBREV) LetterMetadata.Brevtype.VEDTAKSBREV else LetterMetadata.Brevtype.INFORMASJONSBREV) }
+
+        override suspend fun renderPdf(
+            brevkode: Brevkode.Redigerbart,
+            spraak: LanguageCode,
+            brevdata: RedigerbarBrevdata<*, *>,
+            felles: BrevbakerFelles,
+            redigertBrev: LetterMarkup,
+            alltidValgbareVedlegg: List<AlltidValgbartVedleggKode>
+        ) = renderPdfResultat.also { renderPdfKall.add(redigertBrev) }
+
+        override suspend fun getRedigerbarTemplate(brevkode: Brevkode.Redigerbart) = redigerbareMaler[brevkode]
+        override suspend fun getAlltidValgbareVedlegg(brevId: BrevId) = notYetStubbed()
+
+        override suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart) = modelSpecificationResultat
+    }
+
+    protected class FakePenClient(
+        var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
+        var pesysBrevdata: BrevdataResponse.Data? = null,
+        var sendBrevResponse: Pen.BestillBrevResponse? = null,
+    ) : PenClientStub() {
+        val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
+
+        data class PesysBrevdatakallRequest(
+            val saksId: SaksId,
+            val vedtaksId: VedtaksId?,
+            val brevkode: Brevkode.Redigerbart,
+            val avsenderEnhetsId: EnhetId?,
+        )
+
+        val utfoerteSendBrevKall = mutableListOf<Pair<Pen.SendRedigerbartBrevRequest, Boolean>>()
+
+        override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
+
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+            pesysBrevdata.also {
+                utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+            } ?: notYetStubbed("Mangler pesysBrevdata stub")
+
+        override suspend fun sendbrev(sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean) =
+            sendBrevResponse?.also {
+                utfoerteSendBrevKall.add(Pair(sendRedigerbartBrevRequest, distribuer))
+            } ?: notYetStubbed("Mangler sendBrevResponse stub")
+
+        fun verifyHentPesysBrevdata(
+            saksId: SaksId,
+            vedtaksId: VedtaksId?,
+            brevkode: Brevkode.Redigerbart,
+            avsenderEnhetsId: EnhetId?,
+        ) {
+            assertThat(utfoerteHentPesysBrevdataKall.distinct()).contains(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
+        }
+
+        fun verifySendBrev(
+            sendRedigerbartBrevRequest: Pen.SendRedigerbartBrevRequest, distribuer: Boolean
+        ) {
+            assertThat(utfoerteSendBrevKall.distinct()).contains(Pair(sendRedigerbartBrevRequest, distribuer))
+        }
     }
 }
