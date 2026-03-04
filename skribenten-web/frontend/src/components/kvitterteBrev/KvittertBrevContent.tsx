@@ -69,22 +69,34 @@ const AccordionContentSuccess = (props: {
       `}
       data-cy={`journalpostId-${props.journalpostId}`}
     >
-      <VStack align="start" gap="space-16">
+      <VStack
+        align="start"
+        css={css`
+          color: var(--ax-text-neutral);
+        `}
+        gap="space-16"
+      >
         <Oppsummeringspar
+          size="small"
           tittel="Mottaker"
           verdi={props.brev?.mottaker?.navn ?? sakenGjelderNavn ?? "Fant ikke mottakerens navn"}
         />
 
-        <Oppsummeringspar tittel="Distribueres via" verdi={distribusjonstypeTilText(props.brev.distribusjonstype)} />
-        {props.journalpostId && <Oppsummeringspar tittel="Journalpost ID" verdi={props.journalpostId!} />}
+        <Oppsummeringspar
+          size="small"
+          tittel="Distribusjon"
+          verdi={distribusjonstypeTilText(props.brev.distribusjonstype)}
+        />
+        {props.journalpostId && <Oppsummeringspar size="small" tittel="Journalpost" verdi={props.journalpostId!} />}
         {showOpenPdf && (
           <Button
             loading={pdfForJournalpost.isPending}
             onClick={() => pdfForJournalpost.mutate(props.journalpostId!)}
             size="small"
             type="button"
+            variant="secondary"
           >
-            Åpne PDF i ny fane
+            Åpne PDF
           </Button>
         )}
         {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title="Klarte ikke å hente PDF" />}

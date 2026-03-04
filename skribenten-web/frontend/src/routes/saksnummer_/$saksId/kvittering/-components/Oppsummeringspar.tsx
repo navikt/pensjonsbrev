@@ -14,7 +14,7 @@ const Oppsummeringspar = (properties: {
       };
 }) => {
   return (
-    <VStack>
+    <VStack gap="space-4">
       {properties.boldedTitle ? (
         <Label size={typeof properties.size === "object" ? properties.size.label : properties.size}>
           {properties.tittel}
@@ -22,9 +22,10 @@ const Oppsummeringspar = (properties: {
       ) : (
         <BodyShort
           css={css`
-            color: var(--ax-neutral-700);
+            color: var(--ax-text-neutral);
           `}
           size={typeof properties.size === "object" ? properties.size.bodyShort : properties.size}
+          weight="semibold"
         >
           {properties.tittel}
         </BodyShort>
