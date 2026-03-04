@@ -80,9 +80,9 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
   });
 
@@ -135,11 +135,11 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
@@ -195,11 +195,11 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -226,19 +226,19 @@ describe("Brevbehandler", () => {
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
-    cy.get('[data-cy="journalpostId-80912"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("Sentral print").should("be.visible");
-    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
 
     cy.contains("Lokalprint - sendt til joark").should("be.visible");
     cy.contains(brevSomSendesSomLokalPrint.brevtittel);
-    cy.get('[data-cy="journalpostId-80913"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
-    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("80913").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
@@ -258,9 +258,9 @@ describe("Brevbehandler", () => {
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
 
     cy.contains("Sendt til lokalprint").should("not.exist");
@@ -361,9 +361,9 @@ describe("Brevbehandler", () => {
     cy.get("button").contains("Prøv å sende igjen").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
   });
 

@@ -118,7 +118,7 @@ describe("<KvitterteBrev />", () => {
     //ser ut som at .contains cacher elementet som vi får, så vi henter disse med .get
     cy.get('p:contains("Mottaker")').eq(1).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
-    cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
+    cy.get('p:contains("Distribusjon")').eq(1).should("be.visible");
     cy.get('p:contains("Sentral print")').should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
     cy.contains("Klar til attestering").click();
@@ -127,10 +127,10 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Sendt til mottaker").click();
     cy.get('p:contains("Mottaker")').eq(2).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(2).should("be.visible");
-    cy.get('p:contains("Distribueres via")').eq(2).should("be.visible");
+    cy.get('p:contains("Distribusjon")').eq(2).should("be.visible");
     cy.get('p:contains("Sentral print")').eq(1).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(2).should("be.visible");
-    cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
+    cy.get('p:contains("Journalpost")').eq(1).should("be.visible");
     cy.get('p:contains("1")').eq(1).should("be.visible");
   });
 

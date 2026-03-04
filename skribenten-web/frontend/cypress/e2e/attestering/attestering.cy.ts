@@ -170,9 +170,9 @@ describe("attestering", () => {
     cy.contains("Informasjon om saksbehandlingstid").click();
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
-    cy.contains("Distribueres via").should("exist");
+    cy.contains("Distribusjon").should("exist");
     cy.contains("Sentral print").should("exist");
-    cy.contains("Journalpost ID").should("exist");
+    cy.contains("Journalpost").should("exist");
     cy.contains("9908").should("exist");
   });
 
