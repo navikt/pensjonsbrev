@@ -1,6 +1,8 @@
+import { css } from "@emotion/react";
 import { Accordion } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
@@ -76,15 +78,41 @@ const AccordionItem = (props: {
       props.brevFørHandling.status.type !== "Attestering") ||
     props.apiStatus === "error";
 
+  const [open, setOpen] = useState(isDefaultOpen);
+
   return (
-    <Accordion.Item defaultOpen={isDefaultOpen}>
-      <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
+    <Accordion.Item
+      css={css`
+        border-radius: var(--ax-radius-12);
+        background: var(--ax-bg-default);
+        margin-top: var(--ax-space-8);
+        ${open ? "border: 1px solid var(--ax-border-neutral);" : ""}
+      `}
+      onOpenChange={setOpen}
+      open={open}
+    >
+      <AccordionHeader
+        apiStatus={props.apiStatus}
+        brevInfo={props.brevFørHandling}
+        context={props.context}
+        open={open}
+      />
+      {open && (
+        <div
+          css={css`
+            border-bottom: 1px solid var(--ax-border-neutral-subtle);
+            margin-left: var(--ax-space-16);
+            margin-right: var(--ax-space-16);
+          `}
+        />
+      )}
       <AccordionContent
         apiStatus={props.apiStatus}
         brev={props.brevFørHandling}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
         onRetry={() => sendBrevMutation.mutate()}
+        open={open}
         saksId={props.saksId}
       />
     </Accordion.Item>

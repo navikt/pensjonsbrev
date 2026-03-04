@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Accordion, Label, Tag, VStack } from "@navikt/ds-react";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
@@ -6,6 +7,7 @@ const AccordionHeader = (props: {
   apiStatus: "error" | "success";
   context: "sendBrev" | "attestering";
   brevInfo: BrevInfo;
+  open: boolean;
 }) => {
   const { tag, tittel } = hentTagOgTittelForHeader({
     apiStatus: props.apiStatus,
@@ -14,8 +16,35 @@ const AccordionHeader = (props: {
   });
 
   return (
-    <Accordion.Header>
-      <VStack align="start" justify="start">
+    <Accordion.Header
+      css={css`
+        ${!props.open ? "border-radius: var(--ax-radius-12); border: 1px solid var(--ax-border-neutral);" : ""}
+
+        &::before,
+        &::after {
+          content: none;
+          display: none;
+        }
+
+        > span:first-of-type {
+          order: 2;
+          margin-left: auto;
+          background: none;
+          color: var(--ax-text-neutral);
+        }
+
+        > span:last-of-type {
+          order: 1;
+          color: var(--ax-text-neutral);
+        }
+
+        &:hover > span:first-of-type,
+        &:focus-visible > span:first-of-type {
+          color: var(--ax-text-neutral);
+        }
+      `}
+    >
+      <VStack align="start" gap="space-8" justify="start">
         {tag}
         <Label>{tittel}</Label>
       </VStack>

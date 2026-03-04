@@ -1,3 +1,4 @@
+import { css } from "@emotion/react";
 import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -18,19 +19,32 @@ const AccordionContent = (props: {
   onRetry: () => void;
   journalpostId: Nullable<number>;
   brev: BrevInfo;
+  open: boolean;
 }) => {
   switch (props.apiStatus) {
     case "error":
-      return <AccordionContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
+      return <AccordionContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} open={props.open} />;
 
     case "success":
-      return <AccordionContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
+      return (
+        <AccordionContentSuccess
+          brev={props.brev}
+          journalpostId={props.journalpostId}
+          open={props.open}
+          saksId={props.saksId}
+        />
+      );
   }
 };
 
 export default AccordionContent;
 
-const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
+const AccordionContentSuccess = (props: {
+  saksId: string;
+  brev: BrevInfo;
+  journalpostId: Nullable<number>;
+  open: boolean;
+}) => {
   const pdfForJournalpost = useMutation<Blob, Error, number>({
     mutationFn: (journalpostId) => hentPdfForJournalpost.queryFn(props.saksId, journalpostId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
@@ -41,7 +55,20 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
     props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && props.brev.status.type !== "Attestering";
 
   return (
-    <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
+    <Accordion.Content
+      css={css`
+        box-shadow: none;
+        margin: ${props.open ? "var(--ax-space-12)" : "0"} var(--ax-space-8);
+        padding-block: 0;
+        padding-inline: var(--ax-space-8);
+
+        > div {
+          padding-block: 0;
+          padding-inline: 0;
+        }
+      `}
+      data-cy={`journalpostId-${props.journalpostId}`}
+    >
       <VStack align="start" gap="space-16">
         <Oppsummeringspar
           tittel="Mottaker"
@@ -66,9 +93,21 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
   );
 };
 
-const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
+const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean; open: boolean }) => {
   return (
-    <Accordion.Content>
+    <Accordion.Content
+      css={css`
+        box-shadow: none;
+        margin: ${props.open ? "var(--ax-space-12)" : "0"} var(--ax-space-8);
+        padding-block: 0;
+        padding-inline: var(--ax-space-8);
+
+        > div {
+          padding-block: 0;
+          padding-inline: 0;
+        }
+      `}
+    >
       <VStack align="start" gap="space-12">
         <VStack gap="space-20">
           <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
