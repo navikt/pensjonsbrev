@@ -314,7 +314,7 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             }
 
             class NumberedList<out Lang : LanguageSupport> internal constructor(
-                override val items: List<ListItemElement<Lang>>
+                items: List<ListItemElement<Lang>>
             ) : AbstractList<Lang>(items) {
                 override fun equals(other: Any?): Boolean {
                     if (other !is NumberedList<*>) return false

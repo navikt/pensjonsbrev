@@ -7,6 +7,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import no.nav.brev.brevbaker.FellesFactory.felles
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.writeTestPDF
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -99,7 +100,9 @@ class BrevtekstITest {
             )
         }.body()
 
-        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
+        val pdffil = Loader.loadPDF(pdf.file)
+        val tekstIPDF = PDFTextStripper().getText(pdffil)
+        writeTestPDF("build/test_pdf/lettertemplate.pdf", pdf.file)
         assertContains(tekstIPDF, "Saksnummer: 1337123 side 1 av 6")
         assertContains(tekstIPDF, "Du har fått innvilget pensjon")
         assertContains(tekstIPDF, "Hei Test, håper du har en fin dag!")

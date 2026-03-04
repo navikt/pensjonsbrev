@@ -57,6 +57,13 @@ sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : Text
             .also { addParagraphContent(it) }
     }
 
+    fun numberedList(create: ListScope<Lang, LetterData>.() -> Unit) {
+        ListScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.ParagraphContent.NumberedList(it.elements) }
+            .let { Content(it) }
+            .also { addParagraphContent(it) }
+    }
+
     fun table(
         header: TableHeaderScope<Lang, LetterData>.() -> Unit,
         init: TableScope<Lang, LetterData>.() -> Unit

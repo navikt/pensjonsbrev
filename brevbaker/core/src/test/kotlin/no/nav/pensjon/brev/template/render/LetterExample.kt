@@ -88,6 +88,18 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                 )
             }
 
+            paragraph {
+                numberedList {
+                    item {
+                        text(bokmal { +"Test1" }, nynorsk { +"Test1" })
+                    }
+
+                    item {
+                        text(bokmal { +"Test2" }, nynorsk { +"Test2" })
+                    }
+                }
+            }
+
 
             // Fetch a value from the letter arguments
             paragraph {
