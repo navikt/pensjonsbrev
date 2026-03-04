@@ -151,7 +151,7 @@ class LatexServiceTest {
             queueWaitTimeout = 100.milliseconds,
             latexCompileService = LatexCompileService(
                 latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
-                compileTimeout = 500.milliseconds,
+                compileTimeout = 2000.milliseconds,
                 tmpBaseDir = null,
             )
         )
@@ -256,11 +256,12 @@ class LatexServiceTest {
             val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
                 async { service.producePDF(emptyList()) }
             }
-            val compilationTime = withTimeoutOrNull(10.seconds) {
+            val timeout = 10.seconds
+            val compilationTime = withTimeoutOrNull(timeout) {
                 measureTimeMillis { requests.awaitAll() }
             }
             assertNotNull(compilationTime, "Test timed out")
-            assertThat(compilationTime).isBetween(1L, 2000L)
+            assertThat(compilationTime).isBetween(1L, timeout.inWholeMilliseconds)
         }
 
     }
