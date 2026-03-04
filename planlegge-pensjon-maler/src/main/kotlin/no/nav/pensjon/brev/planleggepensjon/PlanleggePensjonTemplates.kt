@@ -19,7 +19,7 @@ object PlanleggePensjonTemplates : AllTemplates {
 }
 
 enum class Brevkategori : TemplateDescription.IBrevkategori {
-    ;
+    SIMULERINGSBREV;
 
     override val kode = name
 }
@@ -30,7 +30,7 @@ object PlanleggePensjonBrevkoder {
         override fun kode() = name
     }
     enum class Redigerbar : Brevkode.Redigerbart {
-        ;
+        PENSJONSKALKULATOR_SIMULERING;
         override fun kode() = name
     }
 }
