@@ -228,17 +228,19 @@ function Brevmaler({
   const filters = ["Skribenten", "Vedtaksbrev"];
   return (
     <VStack gap="space-16" height="calc(100% - 27px)">
-      <Search
-        autoFocus={true}
-        data-cy="brevmal-search"
-        hideLabel={false}
-        label="Søk etter brevmal"
-        onChange={(value) => setSearchTerm(value)}
-        placeholder="Søk"
-        size="small"
-        value={searchTerm}
-        variant="simple"
-      />
+      <Box width="334px">
+        <Search
+          autoFocus={true}
+          data-cy="brevmal-search"
+          hideLabel={false}
+          label="Søk etter brevmal"
+          onChange={(value) => setSearchTerm(value)}
+          placeholder="Søk"
+          size="small"
+          value={searchTerm}
+          variant="simple"
+        />
+      </Box>
       <Box asChild paddingBlock="space-0 space-4">
         <Chips size="small">
           {filters.map((filter) => (

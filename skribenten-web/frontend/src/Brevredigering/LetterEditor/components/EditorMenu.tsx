@@ -57,21 +57,18 @@ type EditorMenuProps = {
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
   return (
-    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" minHeight="48px" width="100%">
-      <HStack align="center" gap="space-4" justify="space-between" paddingInline="space-16">
-        <HStack align="center" gap="space-16" margin-block="2">
-          <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-          <VerticalDivider />
-          <EditorFonts />
-          <VerticalDivider />
-          <EditorBulletList />
-          <VerticalDivider />
-          <EditorTableTools />
-          <VerticalDivider />
-          <SelectTypography />
-        </HStack>
-
-        <HStack align="center" gap="space-16">
+    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
+      <HStack align="center" gap="space-8 space-16" paddingBlock="space-8" paddingInline="space-16">
+        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+        <VerticalDivider />
+        <EditorFonts />
+        <VerticalDivider />
+        <EditorBulletList />
+        <VerticalDivider />
+        <EditorTableTools />
+        <VerticalDivider />
+        <SelectTypography />
+        <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8">
           <LagringStatus />
           <Button
             data-color="danger"
