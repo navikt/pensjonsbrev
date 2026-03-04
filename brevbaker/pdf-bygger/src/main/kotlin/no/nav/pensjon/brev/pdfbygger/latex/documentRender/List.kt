@@ -17,11 +17,11 @@ internal fun LatexAppendable.renderList(list: ItemList) {
 
 internal fun LatexAppendable.renderList(list: NumberedList) {
     if (list.items.isNotEmpty()) {
-        appendCmd("begin", "enumerate")
+        appendCmd("begin", "letterenumerate")
         list.items.forEach { item ->
             append("""\item """, escape = false)
             renderTextContent(item.content)
         }
-        appendCmd("end", "enumerate")
+        appendCmd("end", "letterenumerate")
     }
 }
