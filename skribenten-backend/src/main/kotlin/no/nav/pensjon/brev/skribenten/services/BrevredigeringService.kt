@@ -28,23 +28,6 @@ interface HentBrevService {
 class BrevredigeringService : HentBrevService {
     private val brevreservasjonPolicy = BrevreservasjonPolicy()
 
-
-    /**
-     * Slett brev med id.
-     * @return `true` om brevet ble slettet, false om brevet ikke eksisterer,
-     */
-    fun slettBrev(saksId: SaksId, brevId: BrevId): Boolean {
-        return transaction {
-            val brev = BrevredigeringEntity.findByIdAndSaksId(brevId, saksId)
-            if (brev != null) {
-                brev.delete()
-                true
-            } else {
-                false
-            }
-        }
-    }
-
     override fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }

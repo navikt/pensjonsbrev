@@ -145,13 +145,9 @@ fun Route.sakBrev(
 
             delete {
                 val brevId = call.parameters.brevId()
-                val sak: Pen.SakSelection = call.attributes[SakKey]
 
-                if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-                }
+                val result = brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+                apiRespond(dto2ApiService, result)
             }
 
             route("/mottaker") {

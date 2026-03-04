@@ -275,25 +275,6 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = bestillBrevresponse
     }
 
-
-    @Test
-    fun `can delete brevredigering`(): Unit = runBlocking {
-        val brev = opprettBrev()
-
-        assertEquals(
-            brev.copy(propertyUsage = null),
-            hentBrev(brev.info.id)
-        )
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = brev.info.id)).isTrue()
-        assertThat(hentBrev(brev.info.id)).isNull()
-    }
-
-    @Test
-    fun `delete brevredigering returns false for non-existing brev`(): Unit = runBlocking {
-        assertThat(hentBrev(brevId = BrevId(1337))).isNull()
-        assertThat(brevredigeringService.slettBrev(saksId = sak1.saksId, brevId = BrevId(1337))).isFalse()
-    }
-
     @Test
     fun `kan hente brev for flere saker`(): Unit = runBlocking {
         val sak2 = sak1.copy(saksId = SaksId(sak1.saksId.id + 1))
