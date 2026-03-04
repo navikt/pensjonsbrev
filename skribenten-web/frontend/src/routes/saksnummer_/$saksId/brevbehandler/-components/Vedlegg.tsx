@@ -107,7 +107,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     return (
       <div>
         <HStack align="center" gap="space-8">
-          <BodyShort size="medium" weight="semibold">
+          <BodyShort size="small" weight="semibold">
             Vedlegg
           </BodyShort>
         </HStack>
@@ -120,7 +120,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
     return (
       <div>
         <HStack align="center" gap="space-8">
-          <BodyShort size="medium" weight="semibold">
+          <BodyShort size="small" weight="semibold">
             Vedlegg
           </BodyShort>
         </HStack>
@@ -134,7 +134,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   if (props.erLaast && !hasVedleggToShow) {
     return (
       <VStack gap="space-8">
-        <BodyShort size="medium" weight="semibold">
+        <BodyShort size="small" weight="semibold">
           Ingen vedlegg
         </BodyShort>
       </VStack>
@@ -144,7 +144,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   return (
     <VStack gap="space-8">
       <HStack align="center" gap="space-8">
-        <BodyShort size="medium" weight="semibold">
+        <BodyShort size="small" weight="semibold">
           Vedlegg
         </BodyShort>
         {!props.erLaast && (

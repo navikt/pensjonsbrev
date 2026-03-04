@@ -259,7 +259,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             flexGrow="1"
           >
             <HStack justify="space-between" wrap={false}>
-              <BodyShort size="medium" weight="semibold">
+              <BodyShort size="small" weight="semibold">
                 Mottaker
               </BodyShort>
               {!erLaast && edit}
@@ -312,7 +312,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 css={css`
                   color: var(--ax-text-neutral);
                 `}
-                size="medium"
+                size="small"
                 weight="semibold"
               >
                 Distribusjon
