@@ -31,12 +31,12 @@ object PlanleggePensjonBrevkoder {
         override fun kode() = name
     }
     enum class Redigerbar : Brevkode.Redigerbart {
-        PENSJONSKALKULATOR_SIMULERING;
+        PENSJONSKALKULATOR_AP_SIMULERING;
         override fun kode() = name
     }
 }
 
 enum class FeatureToggles(key: String) {
-    ;
+    apSimulering("apSimulering");
     val toggle = FeatureToggle(key)
 }

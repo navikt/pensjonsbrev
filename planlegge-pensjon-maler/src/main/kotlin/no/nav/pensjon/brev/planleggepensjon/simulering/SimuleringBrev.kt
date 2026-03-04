@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
+import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.alderAar
 import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.beloep
@@ -27,7 +28,8 @@ object SimuleringBrev : RedigerbarTemplate<SimuleringBrevDto> {
     override val kategori: TemplateDescription.IBrevkategori = Brevkategori.SIMULERINGSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
-    override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_SIMULERING
+    override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
+    override val featureToggle = FeatureToggles.apSimulering.toggle
 
     override val template: LetterTemplate<*, SimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
