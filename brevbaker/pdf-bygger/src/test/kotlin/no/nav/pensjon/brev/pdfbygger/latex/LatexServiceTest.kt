@@ -151,7 +151,7 @@ class LatexServiceTest {
             queueWaitTimeout = 100.milliseconds,
             latexCompileService = LatexCompileService(
                 latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
-                compileTimeout = 2000.milliseconds,
+                compileTimeout = 2.seconds,
                 tmpBaseDir = null,
             )
         )
