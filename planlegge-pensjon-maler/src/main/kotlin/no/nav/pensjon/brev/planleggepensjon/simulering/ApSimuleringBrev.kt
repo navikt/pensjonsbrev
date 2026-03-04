@@ -7,10 +7,10 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.alderAar
-import no.nav.pensjon.brev.planleggepensjon.simulering.LagreAlderspensjonSelectors.beloep
-import no.nav.pensjon.brev.planleggepensjon.simulering.LagreSimuleringDtoSelectors.alderspensjonListe
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.simulering.AlderspensjonSelectors.alderAar
+import no.nav.pensjon.brev.planleggepensjon.simulering.AlderspensjonSelectors.beloep
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.alderspensjonListe
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -21,17 +21,17 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-data class SimuleringBrevDto(override val saksbehandlerValg: LagreSimuleringDto, override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata) : RedigerbarBrevdata<LagreSimuleringDto, EmptyFagsystemdata>
+data class ApSimuleringBrevDto(override val saksbehandlerValg: ApSimuleringDto, override val pesysData: EmptyFagsystemdata = EmptyFagsystemdata) : RedigerbarBrevdata<ApSimuleringDto, EmptyFagsystemdata>
 
 @TemplateModelHelpers
-object SimuleringBrev : RedigerbarTemplate<SimuleringBrevDto> {
-    override val kategori: TemplateDescription.IBrevkategori = Brevkategori.SIMULERINGSBREV
+object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
+    override val kategori: TemplateDescription.IBrevkategori = Brevkategori.AP_SIMULERINGSBREV
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper: Set<TemplateDescription.ISakstype> = emptySet()
     override val kode: Brevkode.Redigerbart = PlanleggePensjonBrevkoder.Redigerbar.PENSJONSKALKULATOR_AP_SIMULERING
     override val featureToggle = FeatureToggles.apSimulering.toggle
 
-    override val template: LetterTemplate<*, SimuleringBrevDto> = createTemplate(
+    override val template: LetterTemplate<*, ApSimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
             displayTitle = "Simulering av alderspensjon", //TODO Riktig navn på brevet - journalpost tittel i dokumentoversikten

@@ -3,24 +3,24 @@ package no.nav.pensjon.brev.planleggepensjon.simulering
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
-data class LagreSimuleringDto(
+data class ApSimuleringDto(
     @DisplayText("placeholder")
-    val alderspensjonListe: List<LagreAlderspensjon>,
+    val alderspensjonListe: List<Alderspensjon>,
     @DisplayText("placeholder")
-    val livsvarigOffentligAfpListe: List<LagreAfpOffentlig>,
+    val livsvarigOffentligAfpListe: List<LivsvarigOffentligAfp>,
     @DisplayText("placeholder")
-    val tidsbegrensetOffentligAfp: LagreTidsbegrensetOffentligAfp?,
+    val tidsbegrensetOffentligAfp: TidsbegrensetOffentligAfp?,
     @DisplayText("placeholder")
-    val privatAfpListe: List<LagreAfpPrivat>,
+    val privatAfpListe: List<PrivatAfp>,
     @DisplayText("placeholder")
-    val vilkaarsproevingsresultat: LagreVilkaarsproevingsresultat,
+    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat,
     @DisplayText("placeholder")
-    val trygdetid: LagreTrygdetid?,
+    val trygdetid: Trygdetid?,
     @DisplayText("placeholder")
-    val pensjonsgivendeInntektListe: List<LagreAarligBeloep>
+    val pensjonsgivendeInntektListe: List<AarligBeloep>
 ) : SaksbehandlerValgBrevdata
 
-data class LagreAlderspensjon(
+data class Alderspensjon(
     @DisplayText("placeholder")
     val alderAar: Int,
     @DisplayText("placeholder")
@@ -29,7 +29,7 @@ data class LagreAlderspensjon(
     val gjenlevendetillegg: Int?
 )
 
-data class LagreAfpOffentlig(
+data class LivsvarigOffentligAfp(
     @DisplayText("placeholder")
     val alderAar: Int,
     @DisplayText("placeholder")
@@ -38,7 +38,7 @@ data class LagreAfpOffentlig(
     val maanedligBeloep: Int?
 )
 
-data class LagreTidsbegrensetOffentligAfp(
+data class TidsbegrensetOffentligAfp(
     @DisplayText("placeholder")
     val alderAar: Int,
     @DisplayText("placeholder")
@@ -69,7 +69,7 @@ data class LagreTidsbegrensetOffentligAfp(
     val erAvkortet: Boolean
 )
 
-data class LagreAfpPrivat(
+data class PrivatAfp(
     @DisplayText("placeholder")
     val alderAar: Int,
     @DisplayText("placeholder")
@@ -84,37 +84,37 @@ data class LagreAfpPrivat(
     val maanedligBeloep: Int?
 )
 
-data class LagreVilkaarsproevingsresultat(
+data class Vilkaarsproevingsresultat(
     @DisplayText("placeholder")
     val erInnvilget: Boolean,
     @DisplayText("placeholder")
-    val alternativ: LagreUttaksparametre?
+    val alternativ: Uttaksparametre?
 )
 
-data class LagreTrygdetid(
+data class Trygdetid(
     @DisplayText("placeholder")
     val antallAar: Int,
     @DisplayText("placeholder")
     val erUtilstrekkelig: Boolean
 )
 
-data class LagreAarligBeloep(
+data class AarligBeloep(
     @DisplayText("placeholder")
     val aarstall: Int,
     @DisplayText("placeholder")
     val beloep: Int
 )
 
-data class LagreUttaksparametre(
+data class Uttaksparametre(
     @DisplayText("placeholder")
-    val gradertUttakAlder: LagreAlder?,
+    val gradertUttakAlder: Alder?,
     @DisplayText("placeholder")
     val uttaksgrad: Int?,
     @DisplayText("placeholder")
-    val heltUttakAlder: LagreAlder
+    val heltUttakAlder: Alder
 )
 
-data class LagreAlder(
+data class Alder(
     @DisplayText("placeholder")
     val aar: Int,
     @DisplayText("placeholder")
