@@ -100,9 +100,7 @@ class BrevtekstITest {
             )
         }.body()
 
-        val pdffil = Loader.loadPDF(pdf.file)
-        val tekstIPDF = PDFTextStripper().getText(pdffil)
-        writeTestPDF("build/test_pdf/lettertemplate.pdf", pdf.file)
+        val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
         assertContains(tekstIPDF, "Saksnummer: 1337123 side 1 av 6")
         assertContains(tekstIPDF, "Du har fått innvilget pensjon")
         assertContains(tekstIPDF, "Hei Test, håper du har en fin dag!")
