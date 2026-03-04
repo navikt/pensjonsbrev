@@ -99,8 +99,6 @@ suspend fun <T> RoutingContext.respondOutcome(
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
 
-                // TODO: På en måte kan det være greit å skille mellom "Brev er arkivert, og derfor kan ikke redigeres" og "Brev er arkivert, og derfor kan ikke slettes.
-                //       Men spørsmålet er om det gir oss noe mer av verdi?
                 is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
                     call.respond(HttpStatusCode.Conflict, "Kan ikke slette arkivert brev med journalpostId: ${outcome.error.journalpostId}")
 
