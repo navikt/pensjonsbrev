@@ -180,7 +180,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
             }
 
             title1 { text(bokmal { +"Ny minstesats for de som gikk fra uførepensjon til uføretrygd 1. januar 2015 " }) }
-            paragraph { text(bokmal { +"Minstesatsen for uføretrygd for gifte/samboende som gikk fra uførepensjon til uføretrygd i 2015 endres fra 1. juli 2026. Den endres fra 2,379 G (309 651 kroner) til 2,329 G (303 143).  Det fører til at minstesatsen for uføretrygd nå blir lik for alle." }) }
+            paragraph { text(bokmal { +"Minstesatsen for uføretrygd for gifte/samboende som gikk fra uførepensjon til uføretrygd i 2015 endres fra 1. juli 2026. Den endres fra 2,379 G (309 651 kroner) til 2,329 G (303 143 kroner).  Det fører til at minstesatsen for uføretrygd nå blir lik for alle." }) }
             paragraph { text(bokmal { +"Grunnbeløpet justeres 1. mai hvert år, og minstesatsen vil derfor endre seg fra år til år." }) }
 
             title3 { text(bokmal { +"Slik påvirkes du av endringen" }) }
