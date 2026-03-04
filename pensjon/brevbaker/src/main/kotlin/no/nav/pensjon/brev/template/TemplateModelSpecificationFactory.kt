@@ -94,7 +94,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
 
                 "kotlin.collections.List" -> {
-                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), paakrevDisplayText))
+                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false))
                 }
 
                 "java.time.LocalDate" ->

@@ -53,6 +53,9 @@ inboundRules:
   - application: pensjon-pen-q5
     namespace: pensjon-q5
     cluster: dev-fss
+  - application: pensjonskalkulator-backend
+    namespace: pensjonskalkulator
+    cluster: dev-gcp
 
   - application: azure-token-generator
     namespace: nais
