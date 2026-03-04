@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.planleggepensjon
 
 import no.nav.brev.brevbaker.BrevmodulTest
+import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringBrev
 
 class PlanleggePensjonTemplatesTest : BrevmodulTest(
     templates = PlanleggePensjonTemplates,
     auto = PlanleggePensjonBrevkoder.AutoBrev.entries,
     redigerbare = PlanleggePensjonBrevkoder.Redigerbar.entries,
     fixtures = Fixtures,
-    filterForPDF = listOf(),
+    filterForPDF = listOf(SimuleringBrev.kode),
 )
