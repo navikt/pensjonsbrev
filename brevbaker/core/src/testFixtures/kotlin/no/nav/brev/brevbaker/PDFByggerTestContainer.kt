@@ -10,7 +10,7 @@ object PDFByggerTestContainer {
     private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
 
     // Overstyr denne hvis du vil kjøre testene lokalt mot din nyest bygde pdf-bygger
-    private const val BRUK_LOKAL_CONTAINER = true
+    private const val BRUK_LOKAL_CONTAINER = false
 
     private const val PORT = 8080
 
