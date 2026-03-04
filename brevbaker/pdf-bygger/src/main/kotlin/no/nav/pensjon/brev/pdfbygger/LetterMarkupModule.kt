@@ -32,6 +32,8 @@ internal object LetterMarkupModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkup.Signatur, SignaturImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList, ParagraphContentImpl.ItemListImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.ItemList.Item, ParagraphContentImpl.ItemListImpl.ItemImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.NumberedList, ParagraphContentImpl.NumberedListImpl>()
+        addAbstractTypeMapping<LetterMarkup.ParagraphContent.NumberedList.Item, ParagraphContentImpl.NumberedListImpl.ItemImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Literal, ParagraphContentImpl.TextImpl.LiteralImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.Variable, ParagraphContentImpl.TextImpl.VariableImpl>()
         addAbstractTypeMapping<LetterMarkup.ParagraphContent.Text.NewLine, ParagraphContentImpl.TextImpl.NewLineImpl>()
