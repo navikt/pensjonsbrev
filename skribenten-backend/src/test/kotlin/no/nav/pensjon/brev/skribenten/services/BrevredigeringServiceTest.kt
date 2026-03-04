@@ -243,8 +243,6 @@ class BrevredigeringServiceTest {
         )
     )
 
-    private val brevredigeringService: BrevredigeringService = BrevredigeringService()
-
     private val brevredigeringFacade = BrevredigeringFacadeFactory.create(
         brevService = BrevService(penService, LegacyBrevServiceStub()),
         brevdataService = BrevdataService(penService, FakeSamhandlerService()),
@@ -274,21 +272,7 @@ class BrevredigeringServiceTest {
         penService.sendBrevResponse = bestillBrevresponse
     }
 
-    @Test
-    fun `kan hente brev for flere saker`(): Unit = runBlocking {
-        val sak2 = sak1.copy(saksId = SaksId(sak1.saksId.id + 1))
-        val sak3 = sak1.copy(saksId = SaksId(sak2.saksId.id + 1))
-        val forventedeBrev = listOf(
-            opprettBrev(sak = sak1),
-            opprettBrev(sak = sak1),
-            opprettBrev(sak = sak2)
-        ).map { it.info }.toSet()
-        val ikkeForventetBrev = opprettBrev(sak = sak3).info
 
-        val resultat = brevredigeringService.hentBrevForAlleSaker(setOf(sak1.saksId, sak2.saksId)).toSet()
-        assertThat(resultat).containsAll(forventedeBrev)
-        assertThat(resultat).doesNotContain(ikkeForventetBrev)
-    }
 
     private suspend fun opprettBrev(
         principal: UserPrincipal = saksbehandler1Principal,

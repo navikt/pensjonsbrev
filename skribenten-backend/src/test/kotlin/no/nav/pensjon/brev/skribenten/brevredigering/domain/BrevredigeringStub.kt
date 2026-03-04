@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.brevredigering.application.domain
+package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
