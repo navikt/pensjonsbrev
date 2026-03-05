@@ -102,6 +102,7 @@ const BrevItem = (properties: {
       aria-label={properties.brev.brevtittel}
       onToggle={() => properties.onOpenChange(!properties.open)}
       open={properties.open}
+      size="small"
     >
       <ExpansionCard.Header
         css={css`
@@ -109,12 +110,13 @@ const BrevItem = (properties: {
         `}
       >
         <ExpansionCard.Title
+          as="h4"
           css={css`
             font-size: var(--ax-font-size-heading-xsmall);
           `}
           size="small"
         >
-          <VStack gap="space-8">
+          <VStack align="start" gap="space-8" justify="start">
             <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
             {properties.brev.brevtittel}
           </VStack>
@@ -283,17 +285,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 };
 
 const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
+  const { color, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
 
   return (
-    <Tag
-      css={css`
-        align-self: flex-start;
-        box-shadow: none;
-      `}
-      size="xsmall"
-      variant={variant}
-    >
+    <Tag data-color={color} size="small" variant="moderate">
       {text}
     </Tag>
   );
