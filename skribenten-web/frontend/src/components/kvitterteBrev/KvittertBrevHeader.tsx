@@ -117,7 +117,7 @@ const hentTagOgTittelForHeader = (args: {
                 size="small"
                 variant="outline"
               >
-                Lokalprint - sendt til joark
+                Lokalprint – arkivert
               </Tag>
             );
             return { tag, tittel: args.brevInfo.brevtittel };

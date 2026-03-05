@@ -32,7 +32,9 @@ describe("Brevbehandler", () => {
   });
 
   it("saken inneholder ingen brev", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", {
+      body: [],
+    });
     cy.contains("Fant ingen brev som er under behandling").should("be.visible");
   });
 
@@ -89,7 +91,11 @@ describe("Brevbehandler", () => {
   it("kan ferdigstille og sende brev med lokalprint", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
+    const lokalprintBrev = {
+      ...kladdBrev,
+      distribusjonstype: "LOKALPRINT",
+      status: { type: "Klar" },
+    };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
 
@@ -97,7 +103,10 @@ describe("Brevbehandler", () => {
       request.reply({ journalpostId: 80_912, error: null });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
+      request.reply({
+        fixture: "helloWorldPdf.txt",
+        headers: { "content-type": "application/pdf" },
+      });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([brevResponse[hentBrevRequestNr++]]);
@@ -133,7 +142,7 @@ describe("Brevbehandler", () => {
 
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering");
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
@@ -145,7 +154,11 @@ describe("Brevbehandler", () => {
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
+    const lokalprintBrev = {
+      ...kladdBrev,
+      distribusjonstype: "LOKALPRINT",
+      status: { type: "Klar" },
+    };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
 
@@ -157,7 +170,10 @@ describe("Brevbehandler", () => {
     });
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
-      request.reply({ body: "simulerer en feil ved henting av pdf for journalpostId'en", statusCode: 500 });
+      request.reply({
+        body: "simulerer en feil ved henting av pdf for journalpostId'en",
+        statusCode: 500,
+      });
     });
 
     cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
@@ -193,7 +209,7 @@ describe("Brevbehandler", () => {
 
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
     cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
@@ -210,7 +226,10 @@ describe("Brevbehandler", () => {
       request.reply({ journalpostId: 80_913, error: null });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80913", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
+      request.reply({
+        fixture: "helloWorldPdf.txt",
+        headers: { "content-type": "application/pdf" },
+      });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([klarBrev, brevSomSendesSomLokalPrint]);
@@ -232,7 +251,7 @@ describe("Brevbehandler", () => {
     cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
     cy.contains(kladdBrev.brevtittel).click();
 
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(brevSomSendesSomLokalPrint.brevtittel);
     cy.get('[data-cy="journalpostId-80913"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
@@ -391,7 +410,11 @@ describe("Brevbehandler", () => {
   });
 
   it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
-    const arkivertBrev: BrevInfo = { ...klarBrev, status: { type: "Arkivert" }, journalpostId: 123_456 };
+    const arkivertBrev: BrevInfo = {
+      ...klarBrev,
+      status: { type: "Arkivert" },
+      journalpostId: 123_456,
+    };
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([arkivertBrev]);
@@ -418,7 +441,10 @@ describe("Brevbehandler", () => {
     });
     cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
       expect(request.body).deep.equal({ klar: true });
-      request.reply({ statusCode: 400, body: { message: "dette er en feil" } });
+      request.reply({
+        statusCode: 400,
+        body: { message: "dette er en feil" },
+      });
     });
 
     cy.contains("Informasjon om saksbehandlingstid").click();

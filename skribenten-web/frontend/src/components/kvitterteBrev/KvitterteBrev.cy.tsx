@@ -102,8 +102,8 @@ describe("<KvitterteBrev />", () => {
     cy.get('button:contains("Prøv å sende igjen")').should("be.visible");
     cy.get('span:contains("Kunne ikke sende brev")').eq(2).click();
 
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("Lokalprint - sendt til joark");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
+    cy.contains("Lokalprint – arkivert");
     cy.contains("Mottaker").should("be.visible");
     cy.contains("Tydelig Bakke").should("be.visible");
     cy.contains("Distribusjon").should("be.visible");
@@ -111,7 +111,7 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Journalpost").should("be.visible");
     cy.contains("1").should("be.visible");
     cy.contains("Åpne PDF").should("be.visible");
-    cy.contains("Lokalprint - sendt til joark").click();
+    cy.contains("Lokalprint – arkivert").click();
 
     cy.contains("Klar til attestering").should("be.visible");
     cy.contains("Klar til attestering").click();
@@ -149,7 +149,7 @@ describe("<KvitterteBrev />", () => {
     cy.get(".aksel-accordion__item").eq(0).contains("Kunne ikke sende brev");
     cy.get(".aksel-accordion__item").eq(1).contains("Kunne ikke sende brev");
     cy.get(".aksel-accordion__item").eq(2).contains("Kunne ikke sende brev");
-    cy.get(".aksel-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
+    cy.get(".aksel-accordion__item").eq(3).contains("Lokalprint – arkivert");
     cy.get(".aksel-accordion__item").eq(4).contains("Klar til attestering");
     cy.get(".aksel-accordion__item").eq(5).contains("Sendt til mottaker");
   });
