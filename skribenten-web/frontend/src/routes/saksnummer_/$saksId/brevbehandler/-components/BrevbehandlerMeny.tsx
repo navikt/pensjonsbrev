@@ -208,12 +208,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         endreAsIcon
         kanTilbakestilleMottaker={!erLaast}
         overrideOppsummering={(edit) => (
-          <VStack
-            css={css`
-              gap: var(--ax-space-8);
-            `}
-            flexGrow="1"
-          >
+          <VStack flexGrow="1" gap="space-8">
             <HStack justify="space-between" wrap={false}>
               <BodyShort size="small" weight="semibold">
                 Mottaker
@@ -264,13 +259,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           data-cy="brevbehandler-distribusjonstype"
           description={
             <HStack align="center" gap="space-20">
-              <BodyShort
-                css={css`
-                  color: var(--ax-text-neutral);
-                `}
-                size="small"
-                weight="semibold"
-              >
+              <BodyShort color="text-neutral" size="small" weight="semibold">
                 Distribusjon
               </BodyShort>
               {distribusjonstypeMutation.isPending && <Loader size="small" />}
