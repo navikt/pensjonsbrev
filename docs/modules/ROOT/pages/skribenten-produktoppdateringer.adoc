@@ -1,26 +1,60 @@
 = Produktoppdateringer
 
-== Januar 2025
+== Februar 2026
+Februar ble en travel måned! Vi fikk ut en del nytt, og fikset en rekke småting underveis :-)
+
+=== Nye ting vi har laget
+* Forbedringer på feilutbetalingsbrev på uføretrygd. Dette inkluderer vedtaksbrev feilutbetaling, varselbrev generelt og varselbrev for foreldelse – alle med støtte for nynorsk https://github.com/navikt/pensjonsbrev/commit/faec9c16e[#2689]
+* Nytt infobrev om regelendringer for uføretrygd 2026. Brevet informerer brukere om lovendringer som trer i kraft https://github.com/navikt/pensjonsbrev/commit/c498180f8[#2839]
+* Støtte for redigering av enkeltfelt fra Pesys i brevmaler. Brevmaler kan nå åpne opp for at saksbehandler kan redigere spesifikke felt direkte i brevet. Dette var etterlengtet for bruk av vilkårsvurderingen i uførebrevene https://github.com/navikt/pensjonsbrev/commit/adb460b20[#2833]
+
+=== Ting vi har forbedret
+* Satsen i innvilgelsesbrev vises nå med 3 desimaler for økt presisjon https://github.com/navikt/pensjonsbrev/commit/542ba2a61[#2844]
+* P1-modalen lukkes nå automatisk etter lagring https://github.com/navikt/pensjonsbrev/commit/c90d104c6[#2765]
+* Avsenderenhet er nå obligatorisk og valideres før brev kan sendes https://github.com/navikt/pensjonsbrev/commit/48bb31fd2[#2776]
+
+=== Ting vi har fikset
+* VedtaksId forsvant ikke lenger fra URL-en ved navigering mellom sider i Skribenten https://github.com/navikt/pensjonsbrev/commit/539ced6ac[#2826]
+* Hvis adresse mangler eller ikke er registrert i Pesys, vises dette nå tydelig for saksbehandler https://github.com/navikt/pensjonsbrev/commit/f22a565c5[#2742]
+* PDF hentes ikke lenger på nytt unødvendig når man bytter fokus mellom vinduer eller faner https://github.com/navikt/pensjonsbrev/commit/f002da275[#2744]
+* Sveits var ikke med i listen over land ved redigering av P1 – det er det nå https://github.com/navikt/pensjonsbrev/commit/df0525a1e[#2752]
+* Datoen i seksjon 5 i P1 viser nå alltid dagens dato https://github.com/navikt/pensjonsbrev/commit/4c69ca84e[#2750]
+* Viser nå en mer spesifikk feilmelding i brevbehandler hvis P1-data mangler https://github.com/navikt/pensjonsbrev/commit/d926395833[#2812]
+* Kulepunkter som kom utenfor en liste (f.eks. fra Gjenny) vises nå riktig som tekst https://github.com/navikt/pensjonsbrev/commit/a97a0c738[#2834]
+* Feilutbetalingsbrev lå ikke i vedtakskontekst – det gjør det nå https://github.com/navikt/pensjonsbrev/commit/67fe6dd97[#2835]
+* Feil tekst i vedlegg til uførebrev "Slik beregner vi størrelsen på barnetillegget" er rettet https://github.com/navikt/pensjonsbrev/commit/7f85cfc0a[#2819]
+
+=== Ting vi jobber med
+* Vi jobber med å få opp støtte for datadrevet innsikt. I første omgang ved bruk av https://startumami.ansatt.nav.no/[Umami]. Her sikter vi på lansering i produksjon i løpet av mars, og det vil gi oss mulighet til å se hvordan Skribenten brukes i praksis og hvor det er mest behov for forbedringer fremover.
+* Vi pynter en del på det visuelle uttrykket i Skribenten i disse dager. Noe vil være synlig, andre ting er kanskje litt mer skjult :-)
+* Nummererte lister. Lister som punktlistene i dag, men med nummer!
+
+=== Kjente problemer og behov vi tenker på
+* Noen kladder har fått duplikate avsnitt i tilfeller der malen har blitt endret etter at kladden ble opprettet. Dette er et problem som oppstår i tilfeller der en mal har blitt redigert etter at kladden ble opprettet, og det er ikke alltid lett å fange opp alle tilfeller av dette. Vi jobber med å finne en god løsning for å unngå at dette skjer i fremtiden.
+* Signaturen til første saksbehandler som åpner et brev satt til "Klar for attestering" blir lagt inn, til tross for at dette ikke er den som skal attestere saken og brevet.
+* Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
+
+== Januar 2026
 Nytt år, nye muligheter! Vi har fått på plass noen artige greier i løpet av årets første måned! Også har vi naturligvis fikset litt smårusk i samme slengen :-)
 
 === Nye ting vi har laget
-* Redigering av P1. Vi fikk redigering av brevet P1 med forside ut i produksjon, og det betyr at vi også sa adjø til det siste redigerbare doksysbrevet i Pesys! Veldig gøy!
-* Vise og legge til vedlegg til brev. Det er nå mulig å legge til vedlegg som er tilgjengelig som valgfrie vedlegg. Disse vedleggene kan legges til på alle brev ved behov
+* Redigering av P1. Vi fikk redigering av brevet P1 med forside ut i produksjon, og det betyr at vi også sa adjø til det siste redigerbare doksysbrevet i Pesys! Veldig gøy! https://github.com/navikt/pensjonsbrev/commit/79c11424e[#2529]
+* Vise og legge til vedlegg til brev. Det er nå mulig å legge til vedlegg som er tilgjengelig som valgfrie vedlegg. Disse vedleggene kan legges til på alle brev ved behov https://github.com/navikt/pensjonsbrev/commit/d603bcb9f[#2681]
 
 === Ting vi har forbedret
-* Redigering av signaturen til venstre i brev påvirker ikke lenger bredden til signaturen til høyre i brevet
-* Vi har rettet en liten utfordring med - i lenker. URL som inneholder - vil nå fungere hvis den kopieres fra PDF til nettleser
-* Minimering av listen med land som kan velges i ved redigering av P1 slik at kun EØS-land dukker opp
-* Felt 3.5 i P1 manglet muligheten til å velge "ikke oppgitt" i tilfeller der vi ikke vet hva som burde legges inn her
+* Redigering av signaturen til venstre i brev påvirker ikke lenger bredden til signaturen til høyre i brevet https://github.com/navikt/pensjonsbrev/commit/6c5121fd0[#2613]
+* Vi har rettet en liten utfordring med - i lenker. URL som inneholder - vil nå fungere hvis den kopieres fra PDF til nettleser https://github.com/navikt/pensjonsbrev/commit/c8b9088ed[#2600]
+* Minimering av listen med land som kan velges ved redigering av P1 slik at kun EØS-land dukker opp https://github.com/navikt/pensjonsbrev/commit/1321cea69[#2703]
+* Felt 3.5 i P1 manglet muligheten til å velge "ikke oppgitt" i tilfeller der vi ikke vet hva som burde legges inn her https://github.com/navikt/pensjonsbrev/commit/755d43ba3[#2716]
 
 === Ting vi har fikset
-* Henting av PDF i Skribenten kræsjet hvis det ble lagt inn spesialtegn i tittelen. For eksempen % eller $
-* Feltet 3.8 i P1 var satt som standard til Nav familie- og pensjonsytelser. Den hentes nå dynamisk slik at det legges inn korrekt informasjon basert på sakstype
-* Vi hentet ikke ny PDF når mottaker ble endret i brevbehandler. Det gjør vi nå. Dette var kun et problem i forhåndsvisningen. Brev som ble sendt hadde med endringen av mottaker, men nå kan man altså se dette i forhåndsvisningen i tillegg
-* Vi fjernet tomme rader i P1 redigeringen som kun var estetiske
-* Autolagring kunne stjele fokus fra feltet der underskrift kan redigeres
-* Lagring av redigeringer gjort på P1 i uføresaker fungerte ikke
-* Feltet for vedtaksdato i P1 fikk noen ganger et annet format som vi ikke støttet. Det gjør vi nå
+* Henting av PDF i Skribenten kræsjet hvis det ble lagt inn spesialtegn i tittelen. For eksempel % eller $ https://github.com/navikt/pensjonsbrev/commit/a6232f040[#2726]
+* Feltet 3.8 i P1 var satt som standard til Nav familie- og pensjonsytelser. Den hentes nå dynamisk slik at det legges inn korrekt informasjon basert på sakstype https://github.com/navikt/pensjonsbrev/commit/ec9e1ea274119d5952e458ffb4e94c097314fc13[#2641]
+* Vi hentet ikke ny PDF når mottaker ble endret i brevbehandler. Det gjør vi nå. Dette var kun et problem i forhåndsvisningen. Brev som ble sendt hadde med endringen av mottaker, men nå kan man altså se dette i forhåndsvisningen i tillegg https://github.com/navikt/pensjonsbrev/commit/0733b8e44[#2631]
+* Vi fjernet tomme rader i P1 redigeringen som kun var estetiske https://github.com/navikt/pensjonsbrev/commit/8eae8958d[#2670]
+* Autolagring kunne stjele fokus fra feltet der underskrift kan redigeres https://github.com/navikt/pensjonsbrev/commit/13796e591[#2672]
+* Lagring av redigeringer gjort på P1 i uføresaker fungerte ikke https://github.com/navikt/pensjonsbrev/commit/00405dbd1[#2698]
+* Feltet for vedtaksdato i P1 fikk noen ganger et annet format som vi ikke støttet. Det gjør vi nå https://github.com/navikt/pensjonsbrev/commit/597ba6795[#2717]
 
 === Ting vi jobber med
 * Støtte for redigering av enkelt felt vi henter fra Pesys inn i brev i Skribenten. Dette gir malutvikler muligheten til å åpne opp for redigering på enkelte felt i brevmaler der det er relevant. Behovet stammer fra bruk av vilkårsvurderingen i brevene våre på uføretrygd
@@ -30,9 +64,9 @@ Nytt år, nye muligheter! Vi har fått på plass noen artige greier i løpet av 
 
 === Kjente problemer og behov vi tenker på
 * Signaturen til første saksbehandler som åpner et brev satt til "Klar for attestering" blir lagt inn, til tross for at dette ikke er den som skal attestere saken og brevet.
-* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved å gå ut og inn av redigering
 * Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
-* Datoen i seksjon 5. i P1 oppdateres ikke til dagens dato hvis en endring er lagt inn å lagret tidligere
+* Datoen i seksjon 5. i P1 oppdateres ikke til dagens dato hvis en endring er lagt inn og lagret tidligere
 
 == Desember 2025
 Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desember. Nye ting er enklere å slippe ut når ferien er overstått og alle er tilbake i 2026 :-)
@@ -41,15 +75,15 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 * Ingenting helt nytt i desember
 
 === Ting vi har forbedret
-* Flere tekniske forbedringer under panseret i både Skribenten og Brevbaker. Ikke mye som merkes i hverdagen, men det hjulene må smøres innimellom!
-* Litt bedre filtrering i brevvelger. Noen brev som kun hørte til alderspensjon dukket også opp på uføresaker
-* Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med nye data
+* Flere tekniske forbedringer under panseret i både Skribenten og Brevbaker. Ikke mye som merkes i hverdagen, men hjulene må smøres innimellom!
+* Litt bedre filtrering i brevvelger. Noen brev som kun hørte til alderspensjon dukket også opp på uføresaker https://github.com/navikt/pensjonsbrev/commit/96f2ad7ce[#2577]
+* Vi gir nå en liten varsling i brevbehandler under forhåndsvisning av PDF hvis data i Pesys har blitt endret. Brevet kan da oppdateres og hentes på nytt med nye data https://github.com/navikt/pensjonsbrev/commit/a0246003e[#2543]
 
 === Ting vi har fikset
-* VedtaksID beholdes nå selv om man navigerer mellom sider i Skribenten
-* Eldre avslagsbrev for alderspensjon fra Exstream var fremdeles synlig i brevvelger. De er nå tatt bort fordi de har blitt erstattet av nye brev i Skribenten
-* Litt bedre navigasjon med piltastene i Skribenten
-* Scrolling ved visning av PDF er gjenopprettet
+* VedtaksID beholdes nå selv om man navigerer mellom sider i Skribenten https://github.com/navikt/pensjonsbrev/commit/ffa886df5[#1656]
+* Eldre avslagsbrev for alderspensjon fra Exstream var fremdeles synlig i brevvelger. De er nå tatt bort fordi de har blitt erstattet av nye brev i Skribenten https://github.com/navikt/pensjonsbrev/commit/38021fc36[#2583]
+* Litt bedre navigasjon med piltastene i Skribenten https://github.com/navikt/pensjonsbrev/commit/4f0eadeab[#2550]
+* Scrolling ved visning av PDF er gjenopprettet https://github.com/navikt/pensjonsbrev/commit/88b95880b[#2557]
 
 === Ting vi jobber med
 * Redigering av P1
@@ -57,26 +91,26 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 
 === Kjente problemer og behov vi tenker på
 * Signaturen til første saksbehandler som åpner et brev satt til "Klar for attestering" blir lagt inn, til tross for at dette ikke er den som skal attestere saken og brevet.
-* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved å gå ut og inn av redigering
 * Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
 
 == November 2025
 
 === Nye ting vi har laget
-* Validering av adresser, postnummer og poststed når man legger til adresse manuelt
-* Personlinjen inneholder nå mer informasjon om bruker når vi har den informasjonen. Inkludert vergemål, skjerming o.l.
+* Validering av adresser, postnummer og poststed når man legger til adresse manuelt https://github.com/navikt/pensjonsbrev/commit/1f5e9a3a6[#2417]
+* Personlinjen inneholder nå mer informasjon om bruker når vi har den informasjonen. Inkludert vergemål, skjerming o.l. https://github.com/navikt/pensjonsbrev/commit/15812016f[#2443]
 
 === Ting vi har forbedret
-* Oppdatering av data fra Pesys ved flere tilfeller for å sikre at siste endringer er med. Henter også ny PDF i forhåndsvisning når data er oppdatert, og vi gir beskjed i Skribenten hvis dette skjer
+* Oppdatering av data fra Pesys ved flere tilfeller for å sikre at siste endringer er med. Henter også ny PDF i forhåndsvisning når data er oppdatert, og vi gir beskjed i Skribenten hvis dette skjer https://github.com/navikt/pensjonsbrev/commit/b5fb0096a[#2406]
 * Forbedret tekstmarkering
-* Forbedret feilhåndtering og feilmeldinger slik at de gir mer informasjon
+* Forbedret feilhåndtering og feilmeldinger slik at de gir mer informasjon https://github.com/navikt/pensjonsbrev/commit/ed7b4805a[#2465]
 * Bedre søk i Brevvelger. Det trenger ikke lenger være fullstendig match med tekst i tittel på brev. Søk på kategori slik som "Skribenten" fungerer også
 
 === Ting vi har fikset
 * P1 gjort om til informasjonsbrev, og dermed tilgjengelig fra brukeroversikten i Pesys også
 * Rettet flere utfordringer med datakvalitet i P1 ved automatisk utfylling
 * Fjernet lenke til Teams i "Meld feil" meldingen da denne lenken ikke fungerte for alle brukere
-* Man kunne ikke redigere fritekstfelt hvis man brukte hurtigtasten "tab" for å tabbe seg til neste felt
+* Man kunne ikke redigere fritekstfelt hvis man brukte hurtigtasten "tab" for å tabbe seg til neste felt https://github.com/navikt/pensjonsbrev/commit/e8b3a5731[#2458]
 
 === Ting vi jobber med
 * Redigering av P1. Vi jobber med å få ut redigering av P1 slik at saksbehandler kan justere data fra utland som er manglende eller feil før utsendelse
@@ -84,7 +118,7 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 * Tekstmarkering forsvinner etter at man legger på formatering
 
 === Kjente problemer og behov vi tenker på
-* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved gå ut og inn av redigering
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge. Løses ofte ved å gå ut og inn av redigering
 
 == Oktober 2025
 
@@ -92,13 +126,13 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 * Tastatursnarveier for kopier og lim inn (ctrl+c og ctrl+v)
 * Viser kun tekstvalg i venstremenyen som er relevante for valgt mal og sakskontekst
 * P1 automatisk utfylling av data basert på alle P6000 SED'er som er valgt inn i P7000 i EESSI-pensjon og data fra Pesys
-* Ved endring av mottaker kan man nå markere at brevet skal til en annen mottaker enn bruker
-* Mulighet til å sette markøren inn i fritekstfelt ved behov
+* Ved endring av mottaker kan man nå markere at brevet skal til en annen mottaker enn bruker https://github.com/navikt/pensjonsbrev/commit/68e3366c5[#2250]
+* Mulighet til å sette markøren inn i fritekstfelt ved behov https://github.com/navikt/pensjonsbrev/commit/728237a84[#2281]
 
 === Ting vi har forbedret
 * Redigering av titler i brev. Nå kan tittelen til brev også redigeres i Skribenten
 * Rolle vises ikke lenger i signatur. Dette er endret slik at vi følger brevstandard
-* Håndtering av utenlandske adresser ved manuell endring av mottaker
+* Håndtering av utenlandske adresser ved manuell endring av mottaker https://github.com/navikt/pensjonsbrev/commit/efd06458c[#2087]
 * Saksbehandler kan nå selv sette vedtaksbrev tilbake til status "kladd" fra "Klar til attestering"
 
 === Ting vi har fikset
@@ -106,7 +140,7 @@ Vi jobbet en del med å smøre hjulene til både Skribenten og Brevbaker i desem
 * Fikset slik at attestant får litt bedre respons når de sletter en kladd fra skjermbildet "Brevbehandler". Tidligere skjedde det ingenting når man trykket slett brev
 * Henter nå ny PDF selv når dokumentdato er ulik dagens dato
 * Viser kun relevante hurtigtaster for overskrifter
-* Vise slett knappen hvis vi ikke klarer å hente PDF slik at kladden kan slettes ved behov
+* Vise slett knappen hvis vi ikke klarer å hente PDF slik at kladden kan slettes ved behov https://github.com/navikt/pensjonsbrev/commit/b2b829180[#2273]
 
 === Ting vi jobber med
 Ingenting spesielt å nevne her denne måneden
@@ -119,7 +153,7 @@ Ingenting spesielt å nevne her denne måneden
 == September 2025
 
 === Nye ting vi har laget
-Ingeting helt nytt denne måneden!
+Ingenting helt nytt denne måneden!
 
 === Ting vi har forbedret
 * Anførselstegn kan fjernes ved behov
@@ -127,13 +161,13 @@ Ingeting helt nytt denne måneden!
 === Ting vi har fikset
 * Knappene som brukes til navigering er nå synlig uavhengig av størrelse på skjerm og vindu
 * Utfordring med visning av titler i forhåndsvisningen av brev
-* Tekstvalg i venstremenyen kunne overskrive tekst som var skrevet inn i brevet
+* Tekstvalg i venstremenyen kunne overskrive tekst som var skrevet inn i brevet https://github.com/navikt/pensjonsbrev/commit/125f80771[#2077]
 
 === Ting vi jobber med
 * Redigering av titler
 * Markering av flere avsnitt + overskrifter for enklere sletting av tekst
 * Bedre håndtering av adresser utenfor Norge når disse legges til manuelt
-* Tastatursnarveier for kopier og lim inn(ctrl+c og ctrl+v)
+* Tastatursnarveier for kopier og lim inn (ctrl+c og ctrl+v)
 * P1. Automatisk utfylling av P1 PDF for å forenkle prosessen ved utsendelse
 * Bevaring av format på tekst ved innliming (her må vi ha litt hjelp av gjengen som jobber med digital arbeidsflate for å kunne bevare original formatering på ting som er kopiert, så her kan vi ikke løse problemet helt selv dessverre)
 * Sletting av brev når brevet er satt til status "klar til attestering"
