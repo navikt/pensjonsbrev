@@ -14,7 +14,7 @@ Februar ble en travel måned! Vi fikk ut en del nytt, og fikset en rekke småtin
 * Avsenderenhet er nå obligatorisk og valideres før brev kan sendes https://github.com/navikt/pensjonsbrev/commit/48bb31fd2[#2776]
 
 === Ting vi har fikset
-* VedtaksId forsvant ikke lenger fra URL-en ved navigering mellom sider i Skribenten https://github.com/navikt/pensjonsbrev/commit/539ced6ac[#2826]
+* VedtaksId forsvinner ikke lenger fra URL-en ved navigering mellom sider i Skribenten https://github.com/navikt/pensjonsbrev/commit/539ced6ac[#2826]
 * Hvis adresse mangler eller ikke er registrert i Pesys, vises dette nå tydelig for saksbehandler https://github.com/navikt/pensjonsbrev/commit/f22a565c5[#2742]
 * PDF hentes ikke lenger på nytt unødvendig når man bytter fokus mellom vinduer eller faner https://github.com/navikt/pensjonsbrev/commit/f002da275[#2744]
 * Sveits var ikke med i listen over land ved redigering av P1 – det er det nå https://github.com/navikt/pensjonsbrev/commit/df0525a1e[#2752]
