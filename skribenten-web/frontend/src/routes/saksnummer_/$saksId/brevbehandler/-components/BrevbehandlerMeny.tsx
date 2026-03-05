@@ -217,6 +217,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             : "ikke klar";
 
           trackEvent("brev klar status endret", {
+            brevId: props.brev.id,
             brevType,
             klarStatus,
             erKlar: isKlar,
@@ -269,6 +270,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           onChange={(v) => {
             const distribusjonstype = v === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint";
             trackEvent("brev distribusjonstype endret", {
+              brevId: props.brev.id,
               distribusjonstype,
             });
             distribusjonstypeMutation.mutate(v);

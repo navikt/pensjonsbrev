@@ -31,6 +31,7 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 
 function Brevbehandler() {
   const { saksId } = Route.useParams();
+  const { brevId, enhetsId, vedtaksId } = Route.useSearch();
   const startTime = useRef(Date.now());
 
   useEffect(() => {
@@ -42,7 +43,6 @@ function Brevbehandler() {
       });
     };
   }, []);
-  const { brevId, enhetsId, vedtaksId } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
