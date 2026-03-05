@@ -19,10 +19,10 @@ groups:
     id: "7c2f2439-b67a-41c0-b50b-0abb02e3b479"
   #0000-GA-Fortrolig_Adresse
   - name: "Fortrolig_Adresse"
-    id: "9ec6487d-f37a-4aad-a027-cd221c1ac32b"
+    id: "e98efc34-12d1-401f-b059-f17e62834065"
   #0000-GA-Strengt_Fortrolig_Adresse
   - name: "Strengt_Fortrolig_Adresse"
-    id: "ad7b87a6-9180-467c-affc-20a566b0fec0"
+    id: "2931da41-8b8e-42cd-99c0-04a169ddae40"
   #0000-GA-PENSJON_ATTESTERING
   - name: "Attestant"
     id: "11053fd7-e674-4552-9a88-f9fcedfa70b3"
@@ -44,6 +44,10 @@ inboundRules:
   - application: pensjon-pen
     namespace: pensjondeployer
     cluster: prod-fss
+
+  - application: pensjonskalkulator-backend
+    namespace: pensjonskalkulator
+    cluster: prod-gcp
 
 outboundRules:
   - application: pensjon-brevbaker

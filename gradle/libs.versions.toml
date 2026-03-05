@@ -11,7 +11,7 @@ exposedVersion = "1.0.0"
 flywayVersion = "12.0.2"
 hikariVersion = "7.0.2"
 # TODO: Vi burde egentlig bruke samme versjon av Jackson, men jsr310 er publisert med 2.21.0, og resten med 2.21
-jacksonJsr310Version = "2.21.0"
+jacksonJsr310Version = "2.21.1"
 jacksonVersion = "2.21"
 jupiterVersion = "6.0.3"
 kotlinxHtmlVersion = "0.12.0"

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
-import io.ktor.util.collections.ConcurrentSet
+import io.ktor.util.collections.*
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -12,13 +12,11 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.testcontainers.postgresql.PostgreSQLContainer

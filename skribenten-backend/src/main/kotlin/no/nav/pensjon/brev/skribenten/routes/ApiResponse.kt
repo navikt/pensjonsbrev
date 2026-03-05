@@ -1,22 +1,13 @@
 package no.nav.pensjon.brev.skribenten.routes
 
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.response.respond
-import io.ktor.server.routing.RoutingCall
-import io.ktor.server.routing.RoutingContext
+import io.ktor.http.*
+import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import no.nav.brev.BrevExceptionDto
-import no.nav.pensjon.brev.skribenten.domain.AttesterBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.BrevmalFinnesIkke
-import no.nav.pensjon.brev.skribenten.domain.BrevredigeringError
-import no.nav.pensjon.brev.skribenten.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.domain.FerdigRedigertPolicy
-import no.nav.pensjon.brev.skribenten.domain.OpprettBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.RedigerBrevPolicy
-import no.nav.pensjon.brev.skribenten.domain.Reservasjon
-import no.nav.pensjon.brev.skribenten.domain.SendBrevPolicy
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
 import org.slf4j.LoggerFactory
 
 @JvmName("apiRespondBrevredigering")
@@ -74,6 +65,16 @@ suspend fun RoutingContext.apiRespond(
     }
 }
 
+@JvmName("apiRespondNoContent")
+suspend fun RoutingContext.apiRespond(
+    dto2ApiService: Dto2ApiService,
+    outcome: Outcome<Unit, BrevredigeringError>?
+) {
+    respondOutcome(dto2ApiService, outcome) {
+        respond(HttpStatusCode.NoContent)
+    }
+}
+
 private val logger = LoggerFactory.getLogger("ApiResponse")
 
 suspend fun <T> RoutingContext.respondOutcome(
@@ -97,6 +98,9 @@ suspend fun <T> RoutingContext.respondOutcome(
                 // TODO: Muligens burde dette være internal server error siden det burde indikere at koden ikke forsøkte å reserver eller at feil fra reservasjon ble ignorert
                 is RedigerBrevPolicy.KanIkkeRedigere.IkkeReservert ->
                     call.respond(HttpStatusCode.Conflict, "Brev er ikke reservert for redigering av deg")
+
+                is SlettBrevPolicy.KanIkkeSlette.ArkivertBrev ->
+                    call.respond(HttpStatusCode.Conflict, "Kan ikke slette arkivert brev med journalpostId: ${outcome.error.journalpostId}")
 
                 is RedigerBrevPolicy.KanIkkeRedigere.LaastBrev ->
                     call.respond(HttpStatusCode.Locked, "Brev er låst for redigering")

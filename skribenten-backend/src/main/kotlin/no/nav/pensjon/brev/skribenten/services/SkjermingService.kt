@@ -10,10 +10,10 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
