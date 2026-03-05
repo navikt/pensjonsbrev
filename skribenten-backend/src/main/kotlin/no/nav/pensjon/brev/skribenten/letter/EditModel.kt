@@ -193,7 +193,6 @@ object Edit {
         sealed class Text(type: Type) : ParagraphContent(type) {
             abstract val text: String
             abstract val fontType: FontType
-            abstract val missingFromTemplate: Boolean?
 
             enum class FontType { PLAIN, BOLD, ITALIC }
 
@@ -205,7 +204,6 @@ object Edit {
                 val editedFontType: FontType? = null,
                 val tags: Set<ElementTags> = emptySet(),
                 override val parentId: Int? = null,
-                override val missingFromTemplate: Boolean? = null,
             ) : Text(Type.LITERAL) {
                 override fun isEdited(): Boolean = isNew() || editedText != null || editedFontType != null
             }
@@ -216,7 +214,6 @@ object Edit {
                 override val fontType: FontType = FontType.PLAIN,
                 override val parentId: Int? = null,
                 val tags: Set<ElementTags> = emptySet(),
-                override val missingFromTemplate: Boolean? = null,
             ) : Text(Type.VARIABLE) {
                 override fun isEdited(): Boolean = false
             }
@@ -225,7 +222,6 @@ object Edit {
                 override val text: String = ""
                 override val fontType: FontType = FontType.PLAIN
                 override fun isEdited(): Boolean = isNew()
-                override val missingFromTemplate: Boolean? = null
             }
         }
     }
