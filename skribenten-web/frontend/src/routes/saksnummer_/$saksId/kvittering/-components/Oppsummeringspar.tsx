@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Label, VStack } from "@navikt/ds-react";
 
 const Oppsummeringspar = (properties: {
@@ -21,9 +20,7 @@ const Oppsummeringspar = (properties: {
         </Label>
       ) : (
         <BodyShort
-          css={css`
-            color: var(--ax-text-neutral);
-          `}
+          color="text-neutral"
           size={typeof properties.size === "object" ? properties.size.bodyShort : properties.size}
           weight="semibold"
         >
