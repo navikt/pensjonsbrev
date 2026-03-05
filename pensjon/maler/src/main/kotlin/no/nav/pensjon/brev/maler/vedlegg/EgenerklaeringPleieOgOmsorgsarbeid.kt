@@ -23,9 +23,9 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.avsenderEnhet
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brevbaker.api.model.NavEnhetSelectors.navn
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.avsenderEnhet
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.NavEnhetSelectors.navn
 
 
 @TemplateModelHelpers

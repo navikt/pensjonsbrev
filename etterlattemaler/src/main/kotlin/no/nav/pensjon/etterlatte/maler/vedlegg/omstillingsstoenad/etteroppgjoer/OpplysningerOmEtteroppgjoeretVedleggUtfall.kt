@@ -51,9 +51,9 @@ object EtteroppgjoerBeregningVedleggRedigerbartUtfall : EtterlatteTemplate<Etter
         outline {
             title2 {
                 text(
-                    bokmal { +"Beløp trukket fra din pensjonsgivende inntekt" },
-                    nynorsk { +"Beløp som er trekt frå den pensjonsgivande inntekta di" },
-                    english { +"Amounts deducted from your pensionable income" },
+                    bokmal { +"Hvordan vi har beregnet etteroppgjøret" },
+                    nynorsk { +"Korleis vi har rekna ut etteroppgjeret" },
+                    english { +"How we calculated the final settlement" },
                 )
             }
             paragraph {

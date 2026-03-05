@@ -22,6 +22,8 @@ fun <T : Any> Expression<T?>.ifNull(then: Expression<T>): Expression<T> =
 fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
     ifNull(then.expr())
 
+fun Expression<String?>.ifNull(then: Fritekst): BrevdataEllerFritekst = BrevdataEllerFritekst(this, then.somExpression())
+
 fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = isNull().not()
 
 fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> =

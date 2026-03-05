@@ -1,0 +1,45 @@
+package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
+
+import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.*
+import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.letter.toEdit
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Dto
+
+class TilbakestillBrevHandler(
+    private val redigerBrevPolicy: RedigerBrevPolicy,
+    private val brevmalService: BrevmalService,
+    private val brevdataService: BrevdataService,
+    private val brevreservasjonPolicy: BrevreservasjonPolicy,
+) : BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> {
+
+    data class Request(
+        override val brevId: BrevId,
+    ) : BrevredigeringRequest
+
+    override suspend fun handle(request: Request): Outcome<Dto.Brevredigering, BrevredigeringError>? {
+        val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
+        val principal = PrincipalInContext.require()
+
+        redigerBrevPolicy.kanRedigere(brev, principal).onError { return failure(it) }
+
+        val modelSpec = brevmalService.getModelSpecification(brev.brevkode)
+            ?: return failure(BrevmalFinnesIkke(brev.brevkode))
+        brev.tilbakestillSaksbehandlerValg(modelSpec)
+
+        val pesysdata = brevdataService.hentBrevdata(brev)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+        brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
+
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
+    }
+
+    override fun requiresReservasjon(request: Request) = true
+}
+
+

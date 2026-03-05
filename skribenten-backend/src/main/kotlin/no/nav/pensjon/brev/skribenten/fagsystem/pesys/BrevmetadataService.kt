@@ -1,0 +1,158 @@
+package no.nav.pensjon.brev.skribenten.fagsystem.pesys
+
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.typesafe.config.Config
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
+import no.nav.pensjon.brev.skribenten.context.CallIdFromContext
+import no.nav.pensjon.brev.skribenten.services.ServiceStatus
+import no.nav.pensjon.brev.skribenten.services.ping
+import org.slf4j.LoggerFactory
+
+interface BrevmetadataService {
+    suspend fun getAllBrev(): List<BrevdataDto>
+    suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto>
+    suspend fun getEblanketter(): List<BrevdataDto>
+    suspend fun getMal(brevkode: String): BrevdataDto
+}
+
+class BrevmetadataServiceHttp(
+    config: Config,
+) : BrevmetadataService, ServiceStatus {
+    private val brevmetadataUrl = config.getString("url")
+    private val logger = LoggerFactory.getLogger(BrevmetadataService::class.java)
+    private val httpClient = HttpClient(CIO) {
+        defaultRequest {
+            url(brevmetadataUrl)
+        }
+        install(ContentNegotiation) {
+            jackson {
+                disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            }
+        }
+        install(CallIdFromContext)
+    }
+
+    override suspend fun getAllBrev(): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/allBrev")
+        if (httpResponse.status.isSuccess()) {
+            return httpResponse.body<List<BrevdataDto>>()
+        } else {
+            logger.error("Feil ved henting av alle brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
+            return emptyList()
+        }
+    }
+
+    override suspend fun getBrevmalerForSakstype(sakstype: ISakstype): List<BrevdataDto> {
+        val httpResponse = httpClient.get("/api/brevdata/brevdataForSaktype/${sakstype.kode}?includeXsd=false") {
+            contentType(ContentType.Application.Json)
+        }
+        if (httpResponse.status.isSuccess()) {
+            return httpResponse.body<List<BrevdataDto>>()
+        } else {
+            logger.error("Feil ved henting av brevmetadata. Status: ${httpResponse.status} Message: ${httpResponse.bodyAsText()}")
+            return emptyList()
+        }
+    }
+
+    override suspend fun getEblanketter(): List<BrevdataDto> {
+        return httpClient.get("/api/brevdata/eblanketter") {
+            contentType(ContentType.Application.Json)
+        }.body<List<BrevdataDto>>()
+            .filter { it.dokumentkategori == BrevdataDto.DokumentkategoriCode.E_BLANKETT }
+    }
+
+    override suspend fun getMal(brevkode: String): BrevdataDto {
+        return httpClient.get("/api/brevdata/brevForBrevkode/${brevkode}") {
+            contentType(ContentType.Application.Json)
+        }.body<BrevdataDto>()
+    }
+
+    override suspend fun ping() =
+        ping("Brevmetadata") { httpClient.get("/api/internal/isReady") }
+
+}
+
+enum class SpraakKode {
+    EN, // Engelsk
+    NB, // Bokmaal
+    NN, // Nynorsk
+    FR, // Fransk
+    SE, // Nord-samisk
+}
+
+data class BrevdataDto(
+    val redigerbart: Boolean,
+    val dekode: String,
+    val brevkategori: BrevkategoriCode?,
+    val dokType: DokumentType,
+    val sprak: List<SpraakKode>?,
+    val visIPselv: Boolean?,
+    val utland: String?,
+    val brevregeltype: BrevregeltypeCode?,
+    val brevkravtype: String?,
+    val brevkontekst: BrevkontekstCode?,
+    val dokumentkategori: DokumentkategoriCode,
+    val synligForVeileder: Boolean?,
+    val prioritet: Int?,
+    val brevkodeIBrevsystem: String,
+    val brevsystem: BrevSystem,
+    val brevgruppe: String?,
+) {
+    @Suppress("unused")
+    enum class DokumentkategoriCode { B, E_BLANKETT, IB, SED, VB }
+
+    @Suppress("unused")
+    enum class BrevkategoriCode { BREV_MED_SKJEMA, INFORMASJON, INNHENTE_OPPL, NOTAT, OVRIG, VARSEL, VEDTAK }
+    enum class BrevSystem { DOKSYS, GAMMEL /*EXSTREAM*/, }
+    enum class BrevkontekstCode { ALLTID, SAK, VEDTAK }
+
+    @Suppress("unused")
+    enum class DokumentType {
+        I, //Inngende dokument
+        N, //Notat
+        U, //Utgende dokument
+    }
+
+    fun isRedigerbarBrevtittel(): Boolean =
+        brevkodeIBrevsystem == Brevkoder.FRITEKSTBREV_KODE
+                || (dokType == DokumentType.N && brevkodeIBrevsystem !in Brevkoder.ikkeRedigerbarBrevtittel)
+
+    enum class BrevregeltypeCode {
+        GG, //Gammelt regelverk
+        GN, //Nytt regelverk med gammel opptjening
+        NN, //Nytt regelverk
+        ON, //Overgangsordning med ny og gammel opptjening
+        OVRIGE; //Øvrige brev, ikke knyttet til gammelt eller nytt regelverk.
+
+        fun gjelderGammeltRegelverk() =
+            when (this) {
+                GG, OVRIGE -> true
+                GN, NN, ON -> false
+            }
+
+        fun gjelderNyttRegelverk() =
+            when (this) {
+                GN, OVRIGE -> true
+                GG, NN, ON -> false
+            }
+    }
+}
+
+object Brevkoder {
+    const val FRITEKSTBREV_KODE = "PE_IY_05_300"
+    const val POSTERINGSGRUNNLAG_KODE = "PE_OK_06_100"
+    const val POSTERINGSGRUNNLAG_VIRK0101_KODE = "PE_OK_06_101"
+    const val POSTERINGSGRUNNLAG_VIRK0102_KODE = "PE_OK_06_102"
+
+    val ikkeRedigerbarBrevtittel =
+        setOf(POSTERINGSGRUNNLAG_KODE, POSTERINGSGRUNNLAG_VIRK0101_KODE, POSTERINGSGRUNNLAG_VIRK0102_KODE)
+}

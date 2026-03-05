@@ -62,6 +62,16 @@ fun <L: LanguageSupport, D : BrevDTO> OutlineOnlyScope<L, D>.konverterElementerT
                     lagPunktliste(element.children)
                 }
             }
+        }.orShowIf(element.type.equalTo(ElementType.LIST_ITEM)) {
+            paragraph {
+                list {
+                    forEach(element.children) { listItem ->
+                        item {
+                            ifNotNull(listItem.text) { text -> eval(text) }
+                        }
+                    }
+                }
+            }
         }
     }
 }

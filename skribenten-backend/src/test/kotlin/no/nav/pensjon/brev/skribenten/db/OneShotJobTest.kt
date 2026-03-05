@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.db
 import com.typesafe.config.ConfigFactory
 import kotlinx.coroutines.runBlocking
 import no.nav.pensjon.brev.skribenten.SharedPostgres
-import no.nav.pensjon.brev.skribenten.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.oneShotJobs
 import org.assertj.core.api.Assertions.assertThat
 import org.jetbrains.exposed.v1.core.eq
 import org.jetbrains.exposed.v1.jdbc.selectAll

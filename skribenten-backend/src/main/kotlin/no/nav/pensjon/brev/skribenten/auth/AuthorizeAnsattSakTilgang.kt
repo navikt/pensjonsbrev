@@ -5,13 +5,13 @@ import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.routes.brevId
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.services.PdlService
-import no.nav.pensjon.brev.skribenten.services.PenService
 import org.slf4j.LoggerFactory
 
 const val SAKSID_PARAM = "saksId"
@@ -21,7 +21,7 @@ private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
 open class AuthorizeAnsattSakTilgangConfiguration {
     lateinit var pdlService: PdlService
-    lateinit var penService: PenService
+    lateinit var fagsakService: FagsakService
 }
 
 // TODO: Vurder om disse to pluginene bør erstattes med policy-klasser som kan brukes i usecasene direkte.
@@ -58,7 +58,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
     saksId: SaksId
 ) {
     val pdlService = pluginConfig.pdlService
-    val penService = pluginConfig.penService
+    val penService = pluginConfig.fagsakService
 
     val sak = penService.hentSak(saksId)
 

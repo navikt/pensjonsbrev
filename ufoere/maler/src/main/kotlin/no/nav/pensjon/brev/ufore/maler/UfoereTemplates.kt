@@ -4,7 +4,7 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
-import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VarselFeilutbetaling
+import no.nav.pensjon.brev.ufore.maler.feilutbetaling.varsel.VarselFeilutbetaling
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakFeilutbetaling
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekreving
 import no.nav.pensjon.brev.ufore.maler.feilutbetaling.VedtakIngenTilbakekrevingForeldelse
@@ -17,11 +17,13 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettMidlertidigOppHo
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettOppHoer
 import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
+import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
-        InfoEndretUforetrygdPgaInntekt
+        InfoEndretUforetrygdPgaInntekt,
+        InfobrevLovendringer2026
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(

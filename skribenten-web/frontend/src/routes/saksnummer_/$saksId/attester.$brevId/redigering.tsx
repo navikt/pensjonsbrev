@@ -267,7 +267,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           </FormProvider>
         }
         right={
-          <VStack justify="center">
+          <VStack height="var(--main-page-content-height)" justify="center">
             <ReservertBrevError
               doRetry={props.doReload}
               onNeiClick={() =>

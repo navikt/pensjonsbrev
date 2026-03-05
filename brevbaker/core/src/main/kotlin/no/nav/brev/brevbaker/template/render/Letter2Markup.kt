@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.render.LanguageSetting
 import no.nav.pensjon.brev.template.render.fulltNavn
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.Paragraph
@@ -20,7 +21,7 @@ import java.util.*
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
-class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>){
+class LetterWithAttachmentsMarkup(val letterMarkup: LetterMarkup, val attachments: List<Attachment>) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
@@ -208,15 +209,31 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
         }
 
     private fun StringExpression.toContent(scope: ExpressionScope<*>, fontType: FontType): List<Text> =
-        if (this is Expression.Literal) {
-            listOf(LiteralImpl(stableHashCode(), eval(scope), fontType, tags))
-        } else if (this is Expression.BinaryInvoke<*, *, *> && operation is BinaryOperation.Concat) {
-            // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
-            @Suppress("UNCHECKED_CAST")
-            (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
-        } else {
-            listOf(VariableImpl(stableHashCode(), eval(scope), fontType, tags))
+        when (this) {
+            is Expression.Literal -> lagLiteral(scope, fontType)
+            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.Concat -> {
+                // Since we know that operation is Concat, we also know that `first` and `second` are StringExpression.
+                @Suppress("UNCHECKED_CAST")
+                (first as StringExpression).toContent(scope, fontType) + (second as StringExpression).toContent(scope, fontType)
+            }
+            is Expression.BinaryInvoke<*, *, *> if operation is BinaryOperation.BrevdataEllerFritekst -> {
+                val (erFritekst, text) = (operation as BinaryOperation.BrevdataEllerFritekst).getResultat(first, second, scope)
+                if (erFritekst) {
+                    lagLiteral(scope, fontType, text, ElementTags.FRITEKST)
+                } else {
+                    lagVariabel(scope, fontType, text)
+                }
+            }
+            is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.Fritekst -> lagLiteral(scope, fontType, eval(scope), ElementTags.FRITEKST)
+            is Expression.UnaryInvoke<*, *> if operation is UnaryOperation.RedigerbarData -> lagLiteral(scope, fontType, eval(scope), ElementTags.REDIGERBAR_DATA)
+            else -> lagVariabel(scope, fontType)
         }.mergeLiterals(fontType)
+
+    private fun Expression<String>.lagLiteral(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope), tag: ElementTags? = null) =
+        listOf(LiteralImpl(stableHashCode(), text, fontType, tag?.let { setOf(it) } ?: emptySet()))
+
+    private fun Expression<String>.lagVariabel(scope: ExpressionScope<*>, fontType: FontType, text: String = eval(scope)) =
+        listOf(VariableImpl(stableHashCode(), text, fontType))
 
     private fun List<Text>.mergeLiterals(fontType: FontType): List<Text> =
         fold(emptyList()) { acc, current ->
