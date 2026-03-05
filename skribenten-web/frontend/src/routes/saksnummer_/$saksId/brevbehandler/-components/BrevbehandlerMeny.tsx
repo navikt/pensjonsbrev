@@ -160,7 +160,20 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
-    onSuccess: (response) => {
+    onSuccess: (response, isKlar) => {
+      const brevType = erVedtaksbrev(response) ? "vedtaksbrev" : "informasjonsbrev";
+      const klarStatus = isKlar
+        ? erVedtaksbrev(response)
+          ? "klart for attestering"
+          : "klart for sending"
+        : "ikke klar";
+      trackEvent("brev klar status endret", {
+        brevId: response.id,
+        brevType,
+        klarStatus,
+        erKlar: isKlar,
+      });
+
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
@@ -175,7 +188,11 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       endreDistribusjonstype(props.saksId, props.brev.id, {
         distribusjon: distribusjonstype,
       }),
-    onSuccess: (response) => {
+    onSuccess: (response, distribusjonstype) => {
+      trackEvent("brev distribusjonstype endret", {
+        brevId: response.id,
+        distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
+      });
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
@@ -208,22 +225,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
         onChange={(event) => {
-          const isKlar = event.target.checked;
-          const brevType = erVedtaksbrev(props.brev) ? "vedtaksbrev" : "informasjonsbrev";
-          const klarStatus = isKlar
-            ? erVedtaksbrev(props.brev)
-              ? "klart for attestering"
-              : "klart for sending"
-            : "ikke klar";
-
-          trackEvent("brev klar status endret", {
-            brevId: props.brev.id,
-            brevType,
-            klarStatus,
-            erKlar: isKlar,
-          });
-
-          laasForRedigeringMutation.mutate(isKlar);
+          laasForRedigeringMutation.mutate(event.target.checked);
         }}
         size="small"
       >
@@ -268,11 +270,6 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           }
           legend=""
           onChange={(v) => {
-            const distribusjonstype = v === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint";
-            trackEvent("brev distribusjonstype endret", {
-              brevId: props.brev.id,
-              distribusjonstype,
-            });
             distribusjonstypeMutation.mutate(v);
           }}
           size="small"
