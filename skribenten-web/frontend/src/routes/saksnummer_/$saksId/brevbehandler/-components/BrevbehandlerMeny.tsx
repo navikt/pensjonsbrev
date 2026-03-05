@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
-  Accordion,
   Alert,
   BodyShort,
   Button,
   Detail,
+  ExpansionCard,
   HStack,
-  Label,
   Loader,
   Radio,
   RadioGroup,
@@ -76,7 +75,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   }
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
@@ -86,7 +85,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
           saksId={properties.saksId}
         />
       ))}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -99,72 +98,29 @@ const BrevItem = (properties: {
   const gjeldendeBruker = useUserInfo();
 
   return (
-    <Accordion.Item
-      css={css`
-        border-radius: var(--ax-radius-12);
-        background: var(--ax-bg-default);
-        margin-top: var(--ax-space-8);
-        ${properties.open ? "border: 1px solid var(--ax-border-neutral);" : ""}
-      `}
-      onOpenChange={() => properties.onOpenChange(!properties.open)}
+    <ExpansionCard
+      aria-label={properties.brev.brevtittel}
+      onToggle={() => properties.onOpenChange(!properties.open)}
       open={properties.open}
     >
-      <Accordion.Header
+      <ExpansionCard.Header
         css={css`
-          ${!properties.open ? "border-radius: var(--ax-radius-12); border: 1px solid var(--ax-border-neutral);" : ""}
-
-          &::before,
-          &::after {
-            content: none;
-            display: none;
-          }
-
-          > span:first-of-type {
-            order: 2;
-            margin-left: auto;
-            background: none;
-            color: var(--ax-text-neutral);
-          }
-
-          > span:last-of-type {
-            order: 1;
-            color: var(--ax-text-neutral);
-          }
-
-          &:hover > span:first-of-type,
-          &:focus-visible > span:first-of-type {
-            color: var(--ax-text-neutral);
-          }
+          gap: var(--ax-space-6);
         `}
       >
-        <VStack gap="space-8">
-          <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
-          <Label size="medium">{properties.brev.brevtittel}</Label>
-        </VStack>
-      </Accordion.Header>
-      {properties.open && (
-        <div
+        <ExpansionCard.Title
           css={css`
-            border-bottom: 1px solid var(--ax-border-neutral-subtle);
-            margin-left: var(--ax-space-16);
-            margin-right: var(--ax-space-16);
+            font-size: var(--ax-font-size-heading-xsmall);
           `}
-        />
-      )}
-      <Accordion.Content
-        css={css`
-          box-shadow: none;
-          margin: ${properties.open ? "var(--ax-space-12)" : "0"}
-            var(--ax-space-8);
-          padding-block: 0;
-          padding-inline: var(--ax-space-8);
-
-          > div {
-            padding-block: 0;
-            padding-inline: 0;
-          }
-        `}
-      >
+          size="small"
+        >
+          <VStack gap="space-8">
+            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+            {properties.brev.brevtittel}
+          </VStack>
+        </ExpansionCard.Title>
+      </ExpansionCard.Header>
+      <ExpansionCard.Content>
         <VStack>
           {erBrevArkivert(properties.brev) ? (
             <ArkivertBrev brev={properties.brev} />
@@ -186,8 +142,8 @@ const BrevItem = (properties: {
             <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
           </div>
         </VStack>
-      </Accordion.Content>
-    </Accordion.Item>
+      </ExpansionCard.Content>
+    </ExpansionCard>
   );
 };
 

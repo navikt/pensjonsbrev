@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { Accordion } from "@navikt/ds-react";
+import { ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useState } from "react";
@@ -21,7 +20,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
   );
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sorted.map((kvittertBrev, index) => {
         return (
           <AccordionItem
@@ -34,7 +33,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
           />
         );
       })}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -81,40 +80,16 @@ const AccordionItem = (props: {
   const [open, setOpen] = useState(isDefaultOpen);
 
   return (
-    <Accordion.Item
-      css={css`
-        border-radius: var(--ax-radius-12);
-        background: var(--ax-bg-default);
-        margin-top: var(--ax-space-8);
-        ${open ? "border: 1px solid var(--ax-border-neutral);" : ""}
-      `}
-      onOpenChange={setOpen}
-      open={open}
-    >
-      <AccordionHeader
-        apiStatus={props.apiStatus}
-        brevInfo={props.brevFørHandling}
-        context={props.context}
-        open={open}
-      />
-      {open && (
-        <div
-          css={css`
-            border-bottom: 1px solid var(--ax-border-neutral-subtle);
-            margin-left: var(--ax-space-16);
-            margin-right: var(--ax-space-16);
-          `}
-        />
-      )}
+    <ExpansionCard aria-label={props.brevFørHandling.brevtittel} onToggle={setOpen} open={open}>
+      <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
         brev={props.brevFørHandling}
         isPending={sendBrevMutation.isPending}
         journalpostId={props.journalpostId}
         onRetry={() => sendBrevMutation.mutate()}
-        open={open}
         saksId={props.saksId}
       />
-    </Accordion.Item>
+    </ExpansionCard>
   );
 };
