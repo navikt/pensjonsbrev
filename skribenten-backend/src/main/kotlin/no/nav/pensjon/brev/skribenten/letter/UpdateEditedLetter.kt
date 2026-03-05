@@ -86,7 +86,20 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(updateVariables(currentEdited))
+
+                    if (currentEdited is Edit.Block) {
+                        val updatedVariables = updateVariables(currentEdited)
+                        val vars: E = when (updatedVariables) {
+                            is Edit.Block.Title1 -> updatedVariables.copy(missingFromTemplate = true)
+                            is Edit.Block.Title2 -> updatedVariables.copy(missingFromTemplate = true)
+                            is Edit.Block.Title3 -> updatedVariables.copy(missingFromTemplate = true)
+                            is Edit.Block.Paragraph -> updatedVariables.copy(missingFromTemplate = true)
+                            else -> throw IllegalStateException("Unexpected type: $updatedVariables")
+                        } as E // Denne cast-en burde vært unødvendig, men trengs visst
+                        add(vars)
+                    } else {
+                        add(updateVariables(currentEdited))
+                    }
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
