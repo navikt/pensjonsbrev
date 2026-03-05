@@ -89,14 +89,13 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
                     if (currentEdited is Edit.Block) {
                         val updatedVariables = updateVariables(currentEdited)
-                        val vars: E = when (updatedVariables) {
+                        add(when (updatedVariables) {
                             is Edit.Block.Title1 -> updatedVariables.copy(missingFromTemplate = true)
                             is Edit.Block.Title2 -> updatedVariables.copy(missingFromTemplate = true)
                             is Edit.Block.Title3 -> updatedVariables.copy(missingFromTemplate = true)
                             is Edit.Block.Paragraph -> updatedVariables.copy(missingFromTemplate = true)
                             else -> throw IllegalStateException("Unexpected type: $updatedVariables")
-                        } as E // Denne cast-en burde vært unødvendig, men trengs visst
-                        add(vars)
+                        } as E) // Denne cast-en burde vært unødvendig, men trengs visst for å unngå en typefeil.
                     } else {
                         add(updateVariables(currentEdited))
                     }
