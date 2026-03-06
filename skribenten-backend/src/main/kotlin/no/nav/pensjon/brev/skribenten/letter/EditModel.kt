@@ -85,6 +85,7 @@ object Edit {
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: Set<Int>
         abstract val originalType: Type?
+        abstract val missingFromTemplate: Boolean?
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -98,6 +99,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean? = null,
         ) : Block(Type.TITLE1)
 
         data class Title2(
@@ -107,6 +109,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean? = null,
         ) : Block(Type.TITLE2)
 
         data class Title3(
@@ -116,6 +119,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean? = null,
         ) : Block(Type.TITLE3)
 
         data class Paragraph(
@@ -125,6 +129,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean? = null,
         ) : Block(Type.PARAGRAPH)
     }
 

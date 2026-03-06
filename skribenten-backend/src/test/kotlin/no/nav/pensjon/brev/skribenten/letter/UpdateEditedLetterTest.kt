@@ -1039,11 +1039,11 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 2, true,
                 listOf(E_Variable(12, "oppdatert v1"),E_Literal(21, "hei", editedText = "heisann")),
+                missingFromTemplate = true
             ),
         )
         assertEquals(expected, edited.updateEditedLetter(next))
     }
-
 
     @Test
     fun `content moved into an item list is kept`() {
