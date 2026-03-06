@@ -4,26 +4,26 @@ import type { BrevInfo, BrevStatus, NavAnsatt } from "~/types/brev";
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
   switch (status.type) {
     case "Kladd": {
-      return { variant: "warning" as const, text: "Kladd" };
+      return { color: "warning" as const, text: "Kladd" };
     }
 
     case "UnderRedigering": {
       return {
-        variant: "neutral" as const,
+        color: "neutral" as const,
         text: `Redigeres av ${forkortetSaksbehandlernavn(status.redigeresAv, gjeldendeBruker)}`,
       };
     }
 
     case "Attestering": {
-      return { variant: "alt2" as const, text: "Klar til Attestering" };
+      return { color: "meta-lime" as const, text: "Klar til Attestering" };
     }
 
     case "Klar": {
-      return { variant: "success" as const, text: "Klar til sending" };
+      return { color: "success" as const, text: "Klar til sending" };
     }
 
     case "Arkivert": {
-      return { variant: "error" as const, text: "Kunne ikke sende brev" };
+      return { color: "danger" as const, text: "Kunne ikke sende brev" };
     }
   }
 };
@@ -32,7 +32,13 @@ export const forkortetSaksbehandlernavn = (navAnsatt: NavAnsatt, gjeldendeBruker
   return navAnsatt.id === gjeldendeBruker?.navident ? "deg" : (navAnsatt.navn ?? navAnsatt.id);
 };
 
-const sorteringsRekkefølge = { Arkivert: 1, Kladd: 2, UnderRedigering: 3, Klar: 4, Attestering: 5 };
+const sorteringsRekkefølge = {
+  Arkivert: 1,
+  Kladd: 2,
+  UnderRedigering: 3,
+  Klar: 4,
+  Attestering: 5,
+};
 
 export const sortBrev = (brev: BrevInfo[]): BrevInfo[] =>
   brev.toSorted((a, b) => {

@@ -1,4 +1,5 @@
-import { Accordion, Label, Tag, VStack } from "@navikt/ds-react";
+import { css } from "@emotion/react";
+import { ExpansionCard, Tag, VStack } from "@navikt/ds-react";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
@@ -14,12 +15,24 @@ const AccordionHeader = (props: {
   });
 
   return (
-    <Accordion.Header>
-      <VStack align="start" justify="start">
-        {tag}
-        <Label>{tittel}</Label>
-      </VStack>
-    </Accordion.Header>
+    <ExpansionCard.Header
+      css={css`
+        gap: var(--ax-space-6);
+      `}
+    >
+      <ExpansionCard.Title
+        as="h4"
+        css={css`
+          font-size: var(--ax-font-size-heading-xsmall);
+        `}
+        size="small"
+      >
+        <VStack align="start" gap="space-8" justify="start">
+          {tag}
+          {tittel}
+        </VStack>
+      </ExpansionCard.Title>
+    </ExpansionCard.Header>
   );
 };
 
@@ -33,7 +46,7 @@ const hentTagOgTittelForHeader = (args: {
   switch (args.apiStatus) {
     case "error": {
       const tag = (
-        <Tag data-color="danger" size="small" variant="outline">
+        <Tag data-color="danger" size="small" variant="moderate">
           Kunne ikke sende brev
         </Tag>
       );
@@ -42,7 +55,7 @@ const hentTagOgTittelForHeader = (args: {
     case "success": {
       if (args.context === "attestering") {
         const tag = (
-          <Tag data-color="meta-lime" size="small" variant="outline">
+          <Tag data-color="meta-lime" size="small" variant="moderate">
             Klar til attestering
           </Tag>
         );
@@ -51,7 +64,7 @@ const hentTagOgTittelForHeader = (args: {
         switch (args.brevInfo.distribusjonstype) {
           case Distribusjonstype.SENTRALPRINT: {
             const tag = (
-              <Tag data-color="success" size="small" variant="outline">
+              <Tag data-color="success" size="small" variant="moderate">
                 Sendt til mottaker
               </Tag>
             );
@@ -59,8 +72,8 @@ const hentTagOgTittelForHeader = (args: {
           }
           case Distribusjonstype.LOKALPRINT: {
             const tag = (
-              <Tag data-color="info" size="small" variant="outline">
-                Lokalprint - sendt til joark
+              <Tag data-color="info" size="small" variant="moderate">
+                Lokalprint – arkivert
               </Tag>
             );
             return { tag, tittel: args.brevInfo.brevtittel };

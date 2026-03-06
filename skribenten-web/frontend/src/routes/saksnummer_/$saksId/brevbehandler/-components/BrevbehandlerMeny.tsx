@@ -1,13 +1,12 @@
 import { css } from "@emotion/react";
 import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
-  Accordion,
   Alert,
   BodyShort,
   Button,
   Detail,
+  ExpansionCard,
   HStack,
-  Label,
   Loader,
   Radio,
   RadioGroup,
@@ -76,7 +75,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   }
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
@@ -86,7 +85,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
           saksId={properties.saksId}
         />
       ))}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -99,21 +98,42 @@ const BrevItem = (properties: {
   const gjeldendeBruker = useUserInfo();
 
   return (
-    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-      <Accordion.Header>
-        <VStack gap="space-8">
-          <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
-          <Label size="small">{properties.brev.brevtittel}</Label>
-        </VStack>
-      </Accordion.Header>
-      <Accordion.Content>
-        <VStack gap="space-16">
+    <ExpansionCard
+      aria-label={properties.brev.brevtittel}
+      onToggle={() => properties.onOpenChange(!properties.open)}
+      open={properties.open}
+      size="small"
+    >
+      <ExpansionCard.Header
+        css={css`
+          gap: var(--ax-space-6);
+        `}
+      >
+        <ExpansionCard.Title
+          as="h4"
+          css={css`
+            font-size: var(--ax-font-size-heading-xsmall);
+          `}
+          size="small"
+        >
+          <VStack align="start" gap="space-8" justify="start">
+            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+            {properties.brev.brevtittel}
+          </VStack>
+        </ExpansionCard.Title>
+      </ExpansionCard.Header>
+      <ExpansionCard.Content>
+        <VStack>
           {erBrevArkivert(properties.brev) ? (
             <ArkivertBrev brev={properties.brev} />
           ) : (
             <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
           )}
-          <div>
+          <div
+            css={css`
+              margin-top: var(--ax-space-20);
+            `}
+          >
             <Detail textColor="subtle">
               Sist endret:{" "}
               {isDateToday(properties.brev.sistredigert)
@@ -124,8 +144,8 @@ const BrevItem = (properties: {
             <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
           </div>
         </VStack>
-      </Accordion.Content>
-    </Accordion.Item>
+      </ExpansionCard.Content>
+    </ExpansionCard>
   );
 };
 
@@ -133,7 +153,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
   return (
-    <VStack gap="space-16">
+    <VStack>
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
@@ -163,13 +183,17 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
-      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: getBrev.queryKey(props.brev.id),
+      });
     },
   });
 
   const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
+      endreDistribusjonstype(props.saksId, props.brev.id, {
+        distribusjon: distribusjonstype,
+      }),
     onSuccess: (response) => {
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
@@ -180,13 +204,13 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
-    <VStack gap="space-16">
+    <VStack gap="space-20">
       <EndreMottakerMedOppsummeringOgApiHåndtering
         brev={props.brev}
         endreAsIcon
         kanTilbakestilleMottaker={!erLaast}
         overrideOppsummering={(edit) => (
-          <VStack flexGrow="1">
+          <VStack flexGrow="1" gap="space-8">
             <HStack justify="space-between" wrap={false}>
               <BodyShort size="small" weight="semibold">
                 Mottaker
@@ -215,7 +239,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </Alert>
       )}
       {!erLaast && (
-        <VStack align="start" gap="space-16">
+        <VStack align="start">
           <Button
             data-color="neutral"
             onClick={() =>
@@ -236,8 +260,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         <RadioGroup
           data-cy="brevbehandler-distribusjonstype"
           description={
-            <HStack align="center">
-              Distribusjon
+            <HStack align="center" gap="space-20">
+              <BodyShort color="text-neutral" size="small" weight="semibold">
+                Distribusjon
+              </BodyShort>
               {distribusjonstypeMutation.isPending && <Loader size="small" />}
               {distribusjonstypeMutation.isError && (
                 <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
@@ -259,16 +285,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 };
 
 const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
+  const { color, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
 
   return (
-    <Tag
-      css={css`
-        align-self: flex-start;
-      `}
-      size="xsmall"
-      variant={variant}
-    >
+    <Tag data-color={color} size="small" variant="moderate">
       {text}
     </Tag>
   );
@@ -278,10 +298,7 @@ const LokalPrintInfoAlerts = () => {
   return (
     <VStack gap="space-20">
       <Alert size="small" variant="warning">
-        Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
-      </Alert>
-      <Alert size="small" variant="info">
-        Skribenten-brev som skal til samhandler kan sendes via sentralprint.
+        Husk å åpne PDF og skriv ut brevet.
       </Alert>
     </VStack>
   );

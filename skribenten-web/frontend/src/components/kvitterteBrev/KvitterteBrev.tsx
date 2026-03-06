@@ -1,6 +1,7 @@
-import { Accordion } from "@navikt/ds-react";
+import { ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
@@ -19,7 +20,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
   );
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sorted.map((kvittertBrev, index) => {
         return (
           <AccordionItem
@@ -32,7 +33,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
           />
         );
       })}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -76,8 +77,10 @@ const AccordionItem = (props: {
       props.brevFørHandling.status.type !== "Attestering") ||
     props.apiStatus === "error";
 
+  const [open, setOpen] = useState(isDefaultOpen);
+
   return (
-    <Accordion.Item defaultOpen={isDefaultOpen}>
+    <ExpansionCard aria-label={props.brevFørHandling.brevtittel} onToggle={setOpen} open={open}>
       <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
       <AccordionContent
         apiStatus={props.apiStatus}
@@ -87,6 +90,6 @@ const AccordionItem = (props: {
         onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
       />
-    </Accordion.Item>
+    </ExpansionCard>
   );
 };
