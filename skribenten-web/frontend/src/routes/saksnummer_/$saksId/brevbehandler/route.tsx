@@ -32,9 +32,10 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 function Brevbehandler() {
   const { saksId } = Route.useParams();
   const { brevId, enhetsId, vedtaksId } = Route.useSearch();
-  const startTime = useRef(Date.now());
+  const startTime = useRef(0);
 
   useEffect(() => {
+    startTime.current = Date.now();
     return () => {
       const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
       trackEvent("tid brukt i brevbehandler", {

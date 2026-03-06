@@ -33,8 +33,7 @@ const isUmamiAvailable = (): boolean =>
 export const trackEvent = (eventName: UmamiEventName, eventData?: UmamiEventData): void => {
   if (!isUmamiAvailable()) {
     if (import.meta.env.DEV) {
-      // biome-ignore lint/suspicious/noConsole: intentional dev logging
-      console.log("[Umami]", eventName, eventData);
+      console.info("[Umami]", eventName, eventData);
     }
     return;
   }

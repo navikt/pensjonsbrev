@@ -61,9 +61,10 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
-  const startTime = useRef(Date.now());
+  const startTime = useRef(0);
 
   useEffect(() => {
+    startTime.current = Date.now();
     return () => {
       const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
       trackEvent("tid brukt i brevvelger", {
