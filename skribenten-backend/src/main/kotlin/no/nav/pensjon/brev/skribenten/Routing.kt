@@ -45,7 +45,6 @@ fun Application.configureRouting(
     val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penClient)
-    val brevredigeringService = BrevredigeringService()
 
     val brevService = BrevService(penClient, legacyBrevService)
     val brevdataService = BrevdataService(penClient, samhandlerService)
@@ -54,8 +53,8 @@ fun Application.configureRouting(
     val renderService = RenderService(brevbakerService)
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
-    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringService, brevmalService)
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -87,7 +86,6 @@ fun Application.configureRouting(
             sakRoute(
                 brevService,
                 brevmalService,
-                brevredigeringService,
                 krrService,
                 pdlService,
                 fagsakService,

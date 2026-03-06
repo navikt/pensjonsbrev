@@ -60,7 +60,7 @@ interface BrevbakerService {
 }
 
 class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: Cache) : BrevbakerService, ServiceStatus {
-    private val logger = LoggerFactory.getLogger(BrevredigeringService::class.java)!!
+    private val logger = LoggerFactory.getLogger(BrevbakerServiceHttp::class.java)!!
 
     private val brevbakerUrl = config.getString("url")
     private val scope = config.getString("scope")

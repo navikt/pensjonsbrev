@@ -245,6 +245,7 @@ private fun createFacade(
         tilbakestillBrev = tilbakestillBrev,
         endreValgteVedlegg = endreValgteVedlegg,
         sendBrev = sendBrev,
+        slettBrev = handlerStub(),
     )
 }
 
