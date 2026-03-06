@@ -443,7 +443,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         trackEvent("tekst limt inn", {
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
-          erStor: pasteLength > 200,
+          merEnn200: pasteLength > 200,
         });
       }
 
