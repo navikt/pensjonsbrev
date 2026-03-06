@@ -1,5 +1,7 @@
 = Produktoppdateringer
 
+Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
+
 == Februar 2026
 Februar ble en travel måned! Vi fikk ut en del nytt, og fikset en rekke småting underveis :-)
 
