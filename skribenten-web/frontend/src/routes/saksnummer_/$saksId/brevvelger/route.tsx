@@ -17,7 +17,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
 import { getBrevmetadata } from "~/api/brev-queries";
@@ -31,6 +31,7 @@ import type { BrevInfo } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
+import { trackEvent } from "~/utils/umami";
 
 import BrevmalPanel from "./-components/BrevmalPanel";
 import BrevvelgerFooter from "./-components/BrevvelgerFooter";
@@ -60,6 +61,18 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
+  const startTime = useRef(0);
+
+  useEffect(() => {
+    startTime.current = Date.now();
+    return () => {
+      const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
+      trackEvent("tid brukt i brevvelger", {
+        varighetSekunder,
+        varighetMinutter: Math.round(varighetSekunder / 60),
+      });
+    };
+  }, []);
   const { brevmalKoder } = Route.useLoaderData();
   const brevmetadata = useQuery({ ...getBrevmetadata, select: metadataMapFromList }).data ?? {};
 

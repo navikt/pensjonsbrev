@@ -15,6 +15,7 @@ import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
 import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
+import { trackEvent } from "~/utils/umami";
 
 import type { SubmitTemplateOptions } from "../../route";
 import { Route } from "../../route";
@@ -118,6 +119,10 @@ const BrevmalBrevbaker = (props: {
       }),
 
     onSuccess: async (response) => {
+      trackEvent("brev opprettet", {
+        brevkode: props.letterTemplate.id,
+        brevtittel: props.letterTemplate.name,
+      });
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
         to: "/saksnummer/$saksId/brev/$brevId",
