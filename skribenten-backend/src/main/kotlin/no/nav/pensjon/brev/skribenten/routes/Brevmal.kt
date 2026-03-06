@@ -18,7 +18,7 @@ fun Route.brevmal(brevmalService: BrevmalService) {
 
         get {
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
-            call.respond(brevmalService.hentBrevmaler(hasAccessToEblanketter))
+            call.respond(brevmalService.hentBrevmaler(hasAccessToEblanketter, inkluderBrevSomIkkeBestillesFraSkribenten = false))
         }
 
         route("/{brevkode}") {

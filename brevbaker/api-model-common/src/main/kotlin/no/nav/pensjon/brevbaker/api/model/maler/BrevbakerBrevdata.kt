@@ -17,4 +17,6 @@ interface FagsystemBrevdata
 
 interface SaksbehandlerValgBrevdata
 
+interface ValgForBrevSomBestillesEksternt : SaksbehandlerValgBrevdata
+
 interface VedleggData

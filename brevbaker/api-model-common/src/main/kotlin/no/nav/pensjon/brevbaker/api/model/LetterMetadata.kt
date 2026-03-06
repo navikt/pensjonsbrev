@@ -11,6 +11,7 @@ class LetterMetadata(
     val displayTitle: String,
     val distribusjonstype: Distribusjonstype,
     val brevtype: Brevtype,
+    val bestillesFraSkribenten: Boolean = true,
 ) {
     enum class Distribusjonstype { VEDTAK, VIKTIG, ANNET, }
     enum class Brevtype{ VEDTAKSBREV, INFORMASJONSBREV }
@@ -20,11 +21,12 @@ class LetterMetadata(
         return displayTitle == other.displayTitle
                 && distribusjonstype == other.distribusjonstype
                 && brevtype == other.brevtype
+                && bestillesFraSkribenten == other.bestillesFraSkribenten
     }
 
-    override fun hashCode() = Objects.hash(displayTitle, distribusjonstype, brevtype)
+    override fun hashCode() = Objects.hash(displayTitle, distribusjonstype, brevtype, bestillesFraSkribenten)
 
     override fun toString() =
-        "LetterMetadata(displayTitle='$displayTitle', distribusjonstype=$distribusjonstype, brevtype=$brevtype)"
+        "LetterMetadata(displayTitle='$displayTitle', distribusjonstype=$distribusjonstype, brevtype=$brevtype, bestillesFraSkribenten=$bestillesFraSkribenten)"
 
 }

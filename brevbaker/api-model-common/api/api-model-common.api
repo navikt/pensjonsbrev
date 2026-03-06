@@ -263,6 +263,9 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/maler/ValgForBrevSomBestillesEksternt : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
+}
+
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {
 }
 
@@ -740,8 +743,10 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 }
 
 public final class no/nav/pensjon/brevbaker/api/model/LetterMetadata {
-	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;)V
+	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;Z)V
+	public synthetic fun <init> (Ljava/lang/String;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;ZILkotlin/jvm/internal/DefaultConstructorMarker;)V
 	public fun equals (Ljava/lang/Object;)Z
+	public final fun getBestillesFraSkribenten ()Z
 	public final fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public final fun getDisplayTitle ()Ljava/lang/String;
 	public final fun getDistribusjonstype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Distribusjonstype;

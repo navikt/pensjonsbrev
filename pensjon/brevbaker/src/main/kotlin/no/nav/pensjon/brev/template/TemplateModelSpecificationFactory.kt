@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.ValgForBrevSomBestillesEksternt
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
@@ -67,8 +68,10 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
     }
 
     private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class)) }
+        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, paakrevDisplayText(type)) }
             ?: emptyMap()
+
+    private fun paakrevDisplayText(type: KClass<*>): Boolean = type.isSubclassOf(SaksbehandlerValgBrevdata::class) && !type.isSubclassOf(ValgForBrevSomBestillesEksternt::class)
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean): FieldType {
         val theClassifier = classifier

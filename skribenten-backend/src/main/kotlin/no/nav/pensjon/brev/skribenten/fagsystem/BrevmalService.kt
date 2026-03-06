@@ -67,8 +67,8 @@ class BrevmalService(
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()
 
-    suspend fun hentBrevmaler(includeEblanketter: Boolean): List<Api.Brevmal> =
-        hentAlleMaler(includeEblanketter).toList()
+    suspend fun hentBrevmaler(includeEblanketter: Boolean, inkluderBrevSomIkkeBestillesFraSkribenten: Boolean): List<Api.Brevmal> =
+        hentAlleMaler(includeEblanketter, inkluderBrevSomIkkeBestillesFraSkribenten).toList()
 
     suspend fun hentBrevmalerForSak(sakType: ISakstype, includeEblanketter: Boolean): List<Api.Brevmal> =
         hentMaler(sakType, includeEblanketter)
@@ -115,9 +115,9 @@ class BrevmalService(
                 .filter { it.brevkode !in ekskluderteBrev }
         }
 
-    private suspend fun hentAlleMaler(includeEblanketter: Boolean): Sequence<Api.Brevmal> =
+    private suspend fun hentAlleMaler(includeEblanketter: Boolean, inkluderBrevSomIkkeBestillesFraSkribenten: Boolean): Sequence<Api.Brevmal> =
         withContext(Dispatchers.IO) {
-            val brevbaker = async { hentBrevbakerMaler() }
+            val brevbaker = async { hentBrevbakerMaler().filter { it.metadata.bestillesFraSkribenten || inkluderBrevSomIkkeBestillesFraSkribenten } }
             val legacy = async {
                 brevmetadataService.getAllBrev().asSequence()
                     .filter { includeEblanketter || it.dokumentkategori != BrevdataDto.DokumentkategoriCode.E_BLANKETT }
