@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.ufore.maler.hvilenderett.HvilendeRettVarselOpphoer
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.opphor.OpphorOrientering
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
@@ -80,6 +81,7 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
         HvilendeRettMidlertidigOppHoer,
+        OpphorOrientering
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
