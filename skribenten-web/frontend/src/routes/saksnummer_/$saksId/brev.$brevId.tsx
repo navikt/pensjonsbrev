@@ -313,7 +313,13 @@ function RedigerBrev({
               </Box>
               <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
             </HGrid>
-            <Box asChild background="default" borderColor="neutral-subtle" borderWidth="1 0 0 0" height="48px">
+            <Box
+              asChild
+              background="default"
+              borderColor="neutral-subtle"
+              borderWidth="1 0 0 0"
+              height="var(--nav-bar-height)"
+            >
               <HStack justify="space-between" paddingBlock="space-8" paddingInline="space-16">
                 <Button
                   onClick={() =>
