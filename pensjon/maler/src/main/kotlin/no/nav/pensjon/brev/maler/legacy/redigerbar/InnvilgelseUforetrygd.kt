@@ -353,11 +353,13 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("f_bh_med_utl")){
                 //[TBU1126EN, TBU1126, TBU1126NN]
 
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Dette er en foreløpig beregning" },
                         nynorsk { + "Dette er ei førebels berekning" },
                     )
+                }
+                paragraph {
                     text (
                         bokmal { + "Fordi du har jobbet eller bodd i et annet EØS-land, er dette en foreløpig beregning basert på trygdetiden du har opparbeidet deg i Norge. Vi venter på informasjon fra " + fritekst("land") + ". Når vi har fått den informasjonen vi trenger, sender vi deg et vedtak med en endelig beregning av uføretrygden din. Der vil du se den totale summen du får utbetalt fra både Norge og eventuelt " + fritekst("land") + "." },
                         nynorsk { + "Fordi du har jobba eller budd i eit anna EØS-land, er dette ei førebels berekning basert på trygdetida du har opparbeidd deg i Noreg. Vi ventar på informasjon frå " + fritekst("Land") + ". Når vi har fått den informasjonen vi treng, sender vi deg eit vedtak med ei endeleg berekning av uføretrygda di. Der vil du sjå den totale summen du får betalt ut frå både Noreg og eventuelt " + fritekst("Land") + "." },
@@ -369,11 +371,13 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(pe.vedtaksdata_kravhode_kravgjelder().equalTo("mellombh")){
                 //[TBU1127EN, TBU1127, TBU1127NN]
 
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Dette er et forskudd" },
                         nynorsk { + "Dette er eit forskot" },
                     )
+                }
+                paragraph {
                     text (
                         bokmal { + "Forskuddet ditt tilsvarer uføretrygd beregnet etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype() + " på bakgrunn av norsk trygdetid og opplysninger om trygdetid fra " + fritekst("Land") + ". Vi utbetaler dette forskuddet fram til vi har foretatt en endelig beregning av uføretrygden din. Det betyr at beløpet kan bli endret når det endelige vedtaket er klart." },
                         nynorsk { + "Forskotet ditt svarer til uføretrygd rekna ut etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype() + " på bakgrunn av norsk trygdetid og opplysningar om trygdetid frå " + fritekst("Land") + ". Vi betaler ut dette forskotet fram til vi har rekna ut uføretrygda di endeleg. Det vil seie at beløpet kan bli endra når det endelege vedtaket er klart." },
