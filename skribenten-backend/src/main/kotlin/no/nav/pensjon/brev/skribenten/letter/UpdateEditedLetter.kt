@@ -178,6 +178,14 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
                 }
+            is Edit.ParagraphContent.NumberedList ->
+                if (rendered is Edit.ParagraphContent.NumberedList) {
+                    edited.copy(
+                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues),
+                    )
+                } else {
+                    throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
+                }
 
             is Edit.ParagraphContent.Text ->
                 if (rendered is Edit.ParagraphContent.Text) {
@@ -223,6 +231,11 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
         )
 
+    private fun mergeItems(edited: Edit.ParagraphContent.NumberedList.Item, rendered: Edit.ParagraphContent.NumberedList.Item): Edit.ParagraphContent.NumberedList.Item =
+        edited.copy(
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
+        )
+
     private fun updateVariableValues(edited: Edit.Block): Edit.Block =
         when (edited) {
             is Edit.Block.Title1 -> edited.copy(content = edited.content.map { updateVariableValues(it) })
@@ -234,6 +247,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
     private fun updateVariableValues(content: Edit.ParagraphContent): Edit.ParagraphContent =
         when (content) {
             is Edit.ParagraphContent.ItemList -> updateVariableValues(content)
+            is Edit.ParagraphContent.NumberedList -> updateVariableValues(content)
             is Edit.ParagraphContent.Table -> updateVariableValues(content)
             is Edit.ParagraphContent.Text -> updateVariableValues(content)
         }
@@ -256,7 +270,13 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
     private fun updateVariableValues(itemList: Edit.ParagraphContent.ItemList): Edit.ParagraphContent.ItemList =
         itemList.copy(items = itemList.items.map(::updateVariableValues))
 
+    private fun updateVariableValues(itemList: Edit.ParagraphContent.NumberedList): Edit.ParagraphContent.NumberedList =
+        itemList.copy(items = itemList.items.map(::updateVariableValues))
+
     private fun updateVariableValues(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
+        item.copy(content = item.content.map(::updateVariableValues))
+
+    private fun updateVariableValues(item: Edit.ParagraphContent.NumberedList.Item): Edit.ParagraphContent.NumberedList.Item =
         item.copy(content = item.content.map(::updateVariableValues))
 
     private fun updateVariableValues(table: Edit.ParagraphContent.Table): Edit.ParagraphContent.Table =

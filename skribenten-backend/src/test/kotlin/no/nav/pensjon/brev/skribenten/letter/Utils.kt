@@ -57,6 +57,7 @@ private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
 private fun Edit.ParagraphContent.fixParentIds(parentId: Int?): Edit.ParagraphContent =
     when(this) {
         is Edit.ParagraphContent.ItemList -> copy(items = items.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
+        is Edit.ParagraphContent.NumberedList -> copy(items = items.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
         is Edit.ParagraphContent.Table -> copy(rows = rows.map { it.fixParentIds(id) }, header = header.fixParentIds(id), parentId = this.parentId ?: parentId)
         is Edit.ParagraphContent.Text -> fixParentIds(parentId)
     }
@@ -69,6 +70,9 @@ private fun Edit.ParagraphContent.Text.fixParentIds(parentId: Int?): Edit.Paragr
     }
 
 private fun Edit.ParagraphContent.ItemList.Item.fixParentIds(parentId: Int?): Edit.ParagraphContent.ItemList.Item =
+    copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
+
+private fun Edit.ParagraphContent.NumberedList.Item.fixParentIds(parentId: Int?): Edit.ParagraphContent.NumberedList.Item =
     copy(content = content.map { it.fixParentIds(id) }, parentId = this.parentId ?: parentId)
 
 private fun Edit.ParagraphContent.Table.Row.fixParentIds(parentId: Int?): Edit.ParagraphContent.Table.Row =

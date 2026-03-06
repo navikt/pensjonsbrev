@@ -64,6 +64,7 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
                 val node = p.codec.readTree<JsonNode>(p)
                 val type = when (LetterMarkup.ParagraphContent.Type.valueOf(node.get("type").textValue())) {
                     LetterMarkup.ParagraphContent.Type.ITEM_LIST -> LetterMarkup.ParagraphContent.ItemList::class.java
+                    LetterMarkup.ParagraphContent.Type.NUMBERED_LIST -> LetterMarkup.ParagraphContent.NumberedList::class.java
                     LetterMarkup.ParagraphContent.Type.LITERAL -> LetterMarkup.ParagraphContent.Text.Literal::class.java
                     LetterMarkup.ParagraphContent.Type.VARIABLE -> LetterMarkup.ParagraphContent.Text.Variable::class.java
                     LetterMarkup.ParagraphContent.Type.TABLE -> LetterMarkup.ParagraphContent.Table::class.java
@@ -86,6 +87,7 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
                     LetterMarkup.ParagraphContent.Type.TABLE,
                     LetterMarkup.ParagraphContent.Type.FORM_TEXT,
                     LetterMarkup.ParagraphContent.Type.FORM_CHOICE,
+                    LetterMarkup.ParagraphContent.Type.NUMBERED_LIST,
                     LetterMarkup.ParagraphContent.Type.ITEM_LIST -> throw BrevbakerServiceException("$contentType is not allowed in a text-only block.")
                 }
                 return p.codec.treeToValue(node, clazz)

@@ -231,7 +231,7 @@ sealed class ContentOrControlStructure<out Lang : LanguageSupport, out C : Eleme
 typealias TextElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.Text<Lang>>
 typealias TableRowElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.Table.Row<Lang>>
 typealias ParagraphContentElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent<Lang>>
-typealias ListItemElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.ItemList.Item<Lang>>
+typealias ListItemElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent.ParagraphContent.AbstractList.Item<Lang>>
 typealias OutlineElement<Lang> = ContentOrControlStructure<Lang, Element.OutlineContent<Lang>>
 
 sealed class Element<out Lang : LanguageSupport> : StableHash {
@@ -276,19 +276,12 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
 
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
 
-            class ItemList<out Lang : LanguageSupport> internal constructor(
-                val items: List<ListItemElement<Lang>>
+            sealed class AbstractList<out Lang : LanguageSupport>(
+                open val items: List<ListItemElement<Lang>>
             ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
-
-                override fun equals(other: Any?): Boolean {
-                    if (other !is ItemList<*>) return false
-                    return items == other.items
-                }
-                override fun hashCode() = Objects.hash(items)
-                override fun toString() = "ItemList(items=$items)"
 
                 class Item<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>
@@ -307,7 +300,28 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
                         is ContentOrControlStructure.ForEach<Lang, Item<Lang>, *> -> item.body.flatMap { getItems(it) }
                         is ContentOrControlStructure.Content -> listOf(item.content)
                     }
+            }
 
+            class ItemList<out Lang : LanguageSupport> internal constructor(
+                items: List<ListItemElement<Lang>>
+            ) : AbstractList<Lang>(items) {
+                override fun equals(other: Any?): Boolean {
+                    if (other !is ItemList<*>) return false
+                    return items == other.items
+                }
+                override fun hashCode() = Objects.hash(items)
+                override fun toString() = "ItemList(items=$items)"
+            }
+
+            class NumberedList<out Lang : LanguageSupport> internal constructor(
+                items: List<ListItemElement<Lang>>
+            ) : AbstractList<Lang>(items) {
+                override fun equals(other: Any?): Boolean {
+                    if (other !is NumberedList<*>) return false
+                    return items == other.items
+                }
+                override fun hashCode() = Objects.hash(items)
+                override fun toString() = "NumberedList(items=$items)"
             }
 
             // TODO: Siden tabellene skal passe inn i et brev, så bør vi ha en maksimumsgrense på antall-kolonner (evt. bare total bredde)

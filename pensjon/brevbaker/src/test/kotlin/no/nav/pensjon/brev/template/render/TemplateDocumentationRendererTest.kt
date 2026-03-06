@@ -190,11 +190,13 @@ object ExpressionVisitor {
     fun visit(element: Element): List<Expression> =
         when (element) {
             is Element.ParagraphContent.ItemList.Item -> visit(element.text)
+            is Element.ParagraphContent.NumberedList.Item -> visit(element.text)
             is Paragraph -> visit(element.paragraph)
             is Element.OutlineContent.Title1 -> visit(element.text)
             is Element.OutlineContent.Title2 -> visit(element.text)
             is Element.OutlineContent.Title3 -> visit(element.text)
             is Element.ParagraphContent.ItemList -> visit(element.items)
+            is Element.ParagraphContent.NumberedList -> visit(element.items)
             is Element.ParagraphContent.Table -> visit(element.header) + visit(element.rows)
             is Text.Expression -> listOf(element.expression)
             is Text.Literal -> emptyList()

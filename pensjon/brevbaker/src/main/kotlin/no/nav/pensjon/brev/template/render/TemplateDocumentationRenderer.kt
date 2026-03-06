@@ -7,8 +7,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.BinaryOperation.Documentation
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.NumberedList
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.intValueSelector
+import no.nav.pensjon.brev.template.render.TemplateDocumentation.Element.ParagraphContent.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.*
 import no.nav.pensjon.brev.template.render.TemplateDocumentation.Expression.Invoke.Operation
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
@@ -111,8 +113,13 @@ object TemplateDocumentationRenderer {
         when (element) {
             is Element.OutlineContent.ParagraphContent.Form -> listOf(TemplateDocumentation.Element.ParagraphContent.Text.Literal("## missing documentation ##"))
             is Element.OutlineContent.ParagraphContent.ItemList -> listOf(
-                TemplateDocumentation.Element.ParagraphContent.ItemList(
+                ItemList(
                     renderContentOrStructure(element.items) { listOf(renderItem(it, lang)) }
+                )
+            )
+            is NumberedList<*> -> listOf(
+                NumberedList(
+                    renderContentOrStructure(element.items) { listOf(renderNumberedItem(it, lang)) }
                 )
             )
 
@@ -158,10 +165,16 @@ object TemplateDocumentationRenderer {
         }
 
     private fun renderItem(
-        item: Element.OutlineContent.ParagraphContent.ItemList.Item<*>,
+        item: Element.OutlineContent.ParagraphContent.AbstractList.Item<*>,
         lang: Language,
     ): TemplateDocumentation.Element.ParagraphContent.ItemList.Item =
         TemplateDocumentation.Element.ParagraphContent.ItemList.Item(renderText(item.text, lang))
+
+    private fun renderNumberedItem(
+        item: Element.OutlineContent.ParagraphContent.AbstractList.Item<*>,
+        lang: Language,
+    ): TemplateDocumentation.Element.ParagraphContent.NumberedList.Item =
+        TemplateDocumentation.Element.ParagraphContent.NumberedList.Item(renderText(item.text, lang))
 
     private fun renderTextExpression(
         expr: Expression<String>,
@@ -391,6 +404,10 @@ data class TemplateDocumentation(
             }
 
             data class ItemList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent() {
+                data class Item(val text: List<ContentOrControlStructure<Text>>) : Element()
+            }
+
+            data class NumberedList(val items: List<ContentOrControlStructure<Item>>) : ParagraphContent() {
                 data class Item(val text: List<ContentOrControlStructure<Text>>) : Element()
             }
 

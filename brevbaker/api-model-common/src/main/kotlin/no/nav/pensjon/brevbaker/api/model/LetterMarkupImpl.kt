@@ -7,6 +7,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form.MultipleChoice
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
+import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.NumberedList
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
 import java.time.LocalDate
@@ -91,6 +92,13 @@ data class LetterMarkupImpl(
 
             @InterneDataklasser
             data class ItemImpl(override val id: Int, override val content: List<ParagraphContent.Text>) : ItemList.Item
+        }
+        @InterneDataklasser
+        data class NumberedListImpl(override val id: Int, override val items: List<NumberedList.Item>) : NumberedList {
+            override val type = ParagraphContent.Type.NUMBERED_LIST
+
+            @InterneDataklasser
+            data class ItemImpl(override val id: Int, override val content: List<ParagraphContent.Text>) : NumberedList.Item
         }
 
         object TextImpl {

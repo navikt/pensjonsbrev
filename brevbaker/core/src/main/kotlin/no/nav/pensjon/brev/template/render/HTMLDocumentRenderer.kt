@@ -148,6 +148,7 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
             is ParagraphContent.Form -> renderForm(element)
             is ParagraphContent.Text -> renderTextContent(element)
             is ParagraphContent.ItemList -> renderList(element)
+            is ParagraphContent.NumberedList -> renderList(element)
             is ParagraphContent.Table -> renderTable(element)
         }
     }
@@ -211,6 +212,14 @@ internal object HTMLDocumentRenderer : DocumentRenderer<HTMLDocument> {
 
     private fun FlowContent.renderList(element: ParagraphContent.ItemList) {
         ul {
+            element.items.forEach {
+                li { renderText(it.content) }
+            }
+        }
+    }
+
+    private fun FlowContent.renderList(element: ParagraphContent.NumberedList) {
+        ol {
             element.items.forEach {
                 li { renderText(it.content) }
             }

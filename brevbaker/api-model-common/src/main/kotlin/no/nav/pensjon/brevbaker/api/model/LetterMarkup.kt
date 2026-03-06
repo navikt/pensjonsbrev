@@ -79,10 +79,18 @@ interface LetterMarkup {
         val id: Int
         val type: Type
         enum class Type {
-            ITEM_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
+            ITEM_LIST, NUMBERED_LIST, LITERAL, VARIABLE, TABLE, FORM_TEXT, FORM_CHOICE, NEW_LINE
         }
 
         interface ItemList : ParagraphContent {
+            val items: List<Item>
+            interface Item {
+                val id: Int
+                val content: List<Text>
+            }
+        }
+
+        interface NumberedList : ParagraphContent {
             val items: List<Item>
             interface Item {
                 val id: Int
