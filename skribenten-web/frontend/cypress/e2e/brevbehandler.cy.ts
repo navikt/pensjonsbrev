@@ -57,7 +57,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     //brev med id 1
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
@@ -81,7 +81,7 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost").should("be.visible");
@@ -121,7 +121,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -187,7 +187,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     //brev med id 1
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
@@ -244,12 +244,12 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.get('[data-cy="journalpostId-80912"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("Sentral print").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
 
     cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(brevSomSendesSomLokalPrint.brevtittel);
@@ -276,7 +276,7 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
     cy.contains("Journalpost").should("be.visible");
@@ -300,7 +300,7 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([kladdBrev]);
     });
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -329,7 +329,7 @@ describe("Brevbehandler", () => {
       request.reply(204);
     }).as("slettBrev");
 
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -406,7 +406,7 @@ describe("Brevbehandler", () => {
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).click();
     cy.contains("Ja, send valgte brev").click();
     cy.contains("Gå til brevbehandler").click();
-    cy.get("label:contains('Informasjon om saksbehandlingstid')").should("have.length", 1);
+    cy.get("[aria-label='Informasjon om saksbehandlingstid']").should("have.length", 1);
   });
 
   it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
@@ -420,7 +420,7 @@ describe("Brevbehandler", () => {
       request.reply([arkivertBrev]);
     });
 
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
 
     cy.contains("Brevet er klart for sending").should("not.exist");
     cy.contains("Fortsett redigering").should("not.exist");
@@ -447,7 +447,7 @@ describe("Brevbehandler", () => {
       });
     });
 
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
     cy.contains("Brevet er klart for sending").click();
 
     //TODO - Her skal vi egentlig på en faktisk feilmelding om at brevet inneholder uendret fritekst

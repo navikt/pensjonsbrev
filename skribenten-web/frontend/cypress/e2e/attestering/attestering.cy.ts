@@ -167,7 +167,7 @@ describe("attestering", () => {
       .should("eq", "?enhetsId=0001");
     cy.contains("Sendt til mottaker").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
     cy.contains("Distribusjon").should("exist");
