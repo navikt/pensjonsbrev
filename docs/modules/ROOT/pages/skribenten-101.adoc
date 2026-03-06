@@ -34,7 +34,7 @@ Hvis du åpnet feil brev kan du gå tilbake til brevmenyen via knappen nede til 
 
 == Brevredigering
 === Hva er den blå, understrekede teksten i brevmalen?
-De blå, understrekede tekstene kalles fritekstfelt. Fritekstfeltene kan klikkes 1 gang på for å markere og erstatte innholdet. Vi jobber med en løsning for å sette tekstmarkøren inn i fritekstfeltet. Du kan gå til neste fritekstfelt ved å bruke hurtigtasten tab.
+De blå, understrekede tekstene kalles fritekstfelt. Fritekstfeltene kan klikkes 1 gang på for å markere og erstatte innholdet. Du kan også klikke deg inn i feltet for å plassere markøren akkurat der du vil. Du kan gå til neste fritekstfelt ved å bruke hurtigtasten tab.
 
 === Hva er forskjellen på de ulike tekstvalgene?
 I Skribenten-brev har du to ulike tekstvalg. Den ene typen er radioknapper, hvor du må velge enten/eller ut ifra alternativene, og er som regel obligatorisk. Den andre typen er vis/ikke vis (samme som i Doksys) og velges ut ifra hva som er relevant for bruker. Du har mulighet til å redigere tekstene som kommer fra venstremenyen.
@@ -60,8 +60,8 @@ Skribenten har innebygget automatisk lagring. Du finner brev du har startet på 
 === Hvordan fjerner jeg alle endringene jeg har gjort?
 Du kan tilbakestille malen ved å trykke på tilbakestill-knappen. Da vil alle endringer du har gjort i brevet forsvinne, og du kan begynne å redigere på nytt.
 
-=== Hvordan kan jeg legge til skjemaer i Skribenten-brev?
-Vi holder på å undersøke muligheter for skjemaer og vedlegg. Enn så lenge er det ikke mulighet for å legge til skjemaer som vedlegg i Skribenten-brev.
+=== Hvordan legger jeg til vedlegg i brevet?
+Det er mulig å legge til valgfrie vedlegg i brev. Tilgjengelige vedlegg vises i venstremenyen i Brevbehandler når man klikker på pluss(+)knappen rett til høyre for teksten Vedlegg. Disse kan legges til ved behov.
 
 == Brevbehandler
 === Hvorfor kommer ikke adressen opp i selve brevet?
@@ -80,7 +80,7 @@ For å gå tilbake til redigering må du først fjerne markeringen «klar for se
 Nei, du kan ikke attestere brev du selv har opprettet.
 
 === Jeg får ikke redigert brevet etter at attestant har sett på det. Hva gjør jeg?
-Attestant må lukke brevet hos seg, og du må vente i 10 minutter før du kan åpne det igjen. Vi jobber med en bedre løsning!
+Attestant må lukke brevet hos seg. Vent litt, og prøv deretter å åpne brevet igjen.
 
 == Attestering
 === Hvordan attesterer jeg brevet?
@@ -90,7 +90,7 @@ For å attestere et vedtaksbrev, må brevet først og fremst være markert «kla
 Du legger til signaturen din ved å klikke på underskrift i venstremenyen, og skriver den inn. Den vil da dukke opp på venstre side av saksbehandlers underskrift.
 
 === Brevet inneholder feil/mangler, og jeg vil sende det tilbake til saksbehandler
-Da må du lukke Skribenten, og saksbehandler må vente 10 minutter før hen kan åpne brevet. Vi jobber med en bedre løsning!
+Lukk brevet i Skribenten. Saksbehandler kan da åpne brevet igjen og fortsette å redigere.
 
 == Hurtigtaster
 
@@ -104,7 +104,7 @@ Da må du lukke Skribenten, og saksbehandler må vente 10 minutter før hen kan 
 | Gjør tekst til overskrift 2 | Alt+2
 | Gjør tekst til vanlig tekst | Alt+3
 | Fet tekst | Ctrl+F
-| Kuriv tekst | Ctrl+K
+| Kursiv tekst | Ctrl+K
 | Angre | Ctrl+Z
-| Gjør om | Ctrl+shift+Z (kommer snart)
+| Gjør om | Ctrl+Shift+Z
 |===
