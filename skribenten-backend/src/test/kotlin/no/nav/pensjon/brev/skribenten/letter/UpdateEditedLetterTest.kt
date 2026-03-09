@@ -348,7 +348,7 @@ class UpdateRenderedLetterTest {
                     LiteralImpl(1, "Noe tekst "),
                     VariableImpl(2, "med en oppdatert variabel"),
                     LiteralImpl(3, " og noe mer tekst"),
-                    ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste"))))),
+                    ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste")))), Listetype.PUNKTLISTE),
                 )
             )
         )
@@ -631,7 +631,8 @@ class UpdateRenderedLetterTest {
                     ItemListImpl(
                         16, listOf(
                             ItemImpl(160, listOf(LiteralImpl(161, "punkt 1"), LiteralImpl(162, "punkt 2"), LiteralImpl(163, "punkt 3"))),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                 )
             )
@@ -790,7 +791,8 @@ class UpdateRenderedLetterTest {
                         11, listOf(
                             ItemImpl(111, listOf(LiteralImpl(1111, "item 1"))),
                             ItemImpl(112, listOf(LiteralImpl(1121, "item 2"))),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                 ),
             ),
@@ -955,7 +957,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1")))), Listetype.PUNKTLISTE),
                 )
             ),
             ParagraphImpl(
@@ -995,7 +997,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1")))), Listetype.PUNKTLISTE),
                 )
             )
         )
@@ -1085,7 +1087,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             ParagraphImpl(
                 1, true,
-                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))), LiteralImpl(14, "lit2"))
+                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1")))), Listetype.PUNKTLISTE), LiteralImpl(14, "lit2"))
             )
         )
         val edited = editedLetter(

@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte
 
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -192,7 +193,8 @@ class BlockTilSlateKonvertererTest {
                                     )
                                 )
                             ),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                     LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                         id = 7,
