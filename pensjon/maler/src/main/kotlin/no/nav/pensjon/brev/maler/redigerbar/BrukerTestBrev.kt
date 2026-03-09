@@ -61,6 +61,35 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 )
             }
             paragraph {
+                numberedList {
+                    item {
+                        text(
+                            bokmal { +" første punkt" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"andre punkt" }
+                        )
+                    }
+                }
+            }
+            paragraph {
+                list {
+                    item {
+                        text(
+                            bokmal { +"kulepunkt1" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"kulepunkt2" }
+                        )
+                    }
+                }
+            }
+
+            paragraph {
                 text(
                     bokmal { + "Sokkelesten på kontorbyggets tak krever jevnlig inspeksjon for å unngå opphopning av løv og smuss som kan tette avløpene. Men det er ikke din jobb å verken tenke på eller utføre, så det er ikke relevant informasjon for deg." },
                 )
