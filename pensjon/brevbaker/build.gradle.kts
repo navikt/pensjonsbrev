@@ -87,6 +87,7 @@ dependencies {
 
     implementation(project(":pensjon:maler"))
     implementation(project(":alder:maler"))
+    implementation(project(":planlegge-pensjon-maler"))
     implementation(project(":ufoere:maler"))
     implementation(project(":etterlattemaler"))
     implementation(project(":brevbaker:core"))

@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.skribenten.services
 
-import no.nav.pensjon.brev.skribenten.domain.MottakerType
-import no.nav.pensjon.brev.skribenten.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Api.BrevStatus
 import no.nav.pensjon.brev.skribenten.model.Api.NavAnsatt
@@ -10,11 +12,14 @@ import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 class Dto2ApiService(
-    private val brevbakerService: BrevbakerService,
+    private val brevmalService: BrevmalService,
     private val navansattService: NavansattService,
     private val norg2Service: Norg2Service,
     private val samhandlerService: SamhandlerService,
 ) {
+
+    // TODO: Se på en bedre løsning som bruker BrevredigeringError her i stedet for å kaste exceptions
+    class BrevmalFinnesIkke(override val message: String) : Exception()
 
     suspend fun toApi(brevredigering: Dto.Brevredigering): Api.BrevResponse =
         Api.BrevResponse(
@@ -27,8 +32,8 @@ class Dto2ApiService(
         )
 
     suspend fun toApi(info: Dto.BrevInfo): Api.BrevInfo {
-        val template = brevbakerService.getRedigerbarTemplate(info.brevkode)
-            ?: throw BrevredigeringException.BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
+        val template = brevmalService.getRedigerbarTemplate(info.brevkode)
+            ?: throw BrevmalFinnesIkke("Fant ikke mal for brevkode i brevbaker: ${info.brevkode}")
 
         return Api.BrevInfo(
             id = info.id,
@@ -76,6 +81,12 @@ class Dto2ApiService(
         rendretBrevErEndret = hentDocumentResult.rendretBrevErEndret,
     )
 
+    fun toApi(result: Dto.SendBrevResult) = Api.BestillBrevResponse(
+        journalpostId = result.journalpostId,
+        error = result.error?.let { Api.BestillBrevResponse.Error(it.brevIkkeStoettet, it.tekniskgrunn, it.beskrivelse) }
+    )
+
+
     private suspend fun Dto.Mottaker.toApi(): Api.OverstyrtMottaker = when (type) {
         MottakerType.SAMHANDLER -> Api.OverstyrtMottaker.Samhandler(
             tssId = tssId!!,
@@ -102,7 +113,7 @@ class Dto2ApiService(
         )
     }
 
-    suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
+    private suspend fun hentNavAnsatt(navIdent: NavIdent): NavAnsatt =
         NavAnsatt(navIdent, navansattService.hentNavansatt(navIdent.id)?.navn)
 
 }

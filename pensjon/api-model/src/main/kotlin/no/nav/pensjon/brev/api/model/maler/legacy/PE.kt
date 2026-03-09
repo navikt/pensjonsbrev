@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.Vedtaksbrev
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class PE(
@@ -57,5 +57,11 @@ data class PE(
         val pe_ut_kravlinjekode_vedtakresultat_forekomst_bt_innv: Int,
         val harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste: Boolean,
         val foedselsdatoTilBarnTilleggErInnvilgetFor: List<LocalDate>,
+        val pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall: String? = null,
+        val pe_ut_tbu4071_btfbinnvilget: Boolean? = null,
+        val pe_ut_inntekt_hoeyere_lavere: String? = null,
+        val pe_ut_fradrag_hoeyere_lavere: String? = null,
+        val pe_ut_bruttoetterreduksjonbt_hoeyere_lavere: String? = null,
+        val pe_saksdata_sakapogup: Boolean? = null,
         )
 }

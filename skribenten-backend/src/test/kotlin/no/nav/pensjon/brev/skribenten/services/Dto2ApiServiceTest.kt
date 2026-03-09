@@ -5,12 +5,8 @@ import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.EksempelRedigerbartDto
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
-import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.BrevId
-import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
-import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.assertj.core.api.Assertions.assertThat
@@ -25,20 +21,27 @@ class Dto2ApiServiceTest {
 
     private fun lagDto2ApiService(navansattService: NavansattService = FakeNavansattService(), norg2Service: Norg2Service = FakeNorg2Service(mapOf("0123" to NavEnhet(EnhetId("0123"), "En vanlig enhet"))), samhandlerService: SamhandlerService = FakeSamhandlerService()): Dto2ApiService =
         Dto2ApiService(
-            brevbakerService = FakeBrevbakerService(
-                redigerbareMaler = mutableMapOf(Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
-                    name = Testbrevkoder.TESTBREV.kode(),
-                    letterDataClass = EksempelRedigerbartDto::class.java.name,
-                    languages = listOf(LanguageCode.BOKMAL),
-                    metadata = LetterMetadata(
-                        "Redigerbart eksempelbrev",
-                        LetterMetadata.Distribusjonstype.VIKTIG,
-                        LetterMetadata.Brevtype.INFORMASJONSBREV
-                    ),
-                    kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
-                    brevkontekst = TemplateDescription.Brevkontekst.ALLE,
-                    sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("Sakstype1")),
-                ))),
+            brevmalService = BrevmalService(
+                FakeBrevbakerService(
+                    redigerbareMaler = mutableMapOf(
+                        Testbrevkoder.TESTBREV to TemplateDescription.Redigerbar(
+                            name = Testbrevkoder.TESTBREV.kode(),
+                            letterDataClass = EksempelRedigerbartDto::class.java.name,
+                            languages = listOf(LanguageCode.BOKMAL),
+                            metadata = LetterMetadata(
+                                "Redigerbart eksempelbrev",
+                                LetterMetadata.Distribusjonstype.VIKTIG,
+                                LetterMetadata.Brevtype.INFORMASJONSBREV
+                            ),
+                            kategori = TemplateDescription.Redigerbar.Brevkategori("INFORMASJONSBREV"),
+                            brevkontekst = TemplateDescription.Brevkontekst.ALLE,
+                            sakstyper = setOf(TemplateDescription.Redigerbar.Sakstype("Sakstype1")),
+                        )
+                    )
+                ),
+                penClient = PenClientStub(),
+                brevmetadataService = FakeBrevmetadataService(),
+            ),
             navansattService = navansattService,
             norg2Service = norg2Service,
             samhandlerService = samhandlerService,

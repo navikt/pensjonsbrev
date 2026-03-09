@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -134,11 +134,19 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                         english { + "We have received information from foreign national insurance authorities regarding your accumulated rights in " }
                     )
                     showIf(landNavn.isNull()) {
-                        eval(fritekst("LANDNAVN"))
+                        text(
+                            bokmal { + fritekst("LANDNAVN") },
+                            nynorsk { + fritekst("LANDNAVN") },
+                            english { + fritekst("LANDNAVN") }
+                        )
                     }
                     ifNotNull(landNavn) { land ->
                         showIf(land.isEmpty()) {
-                            eval(fritekst("LANDNAVN"))
+                            text(
+                                bokmal { + fritekst("LANDNAVN") },
+                                nynorsk { + fritekst("LANDNAVN") },
+                                english { + fritekst("LANDNAVN") }
+                            )
                         }.orShow {
                             eval(land.format())
                         }
@@ -244,7 +252,7 @@ object InnvilgelseAvAlderspensjonTrygdeavtale : RedigerbarTemplate<InnvilgelseAv
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel(
+                BilateralAvtaleHjemmelFritekst(
                     avtalelandNavn = avtalelandNavn,
                     eksportTrygdeavtaleAvtaleland = eksportTrygdeavtaleAvtaleland,
                     erEOSLand = erEOSLand,

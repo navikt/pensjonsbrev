@@ -1,8 +1,8 @@
 package no.nav.pensjon.brev.template.expression
 
 import no.nav.pensjon.brev.template.StableHash
-import no.nav.pensjon.brevbaker.api.model.Kroner
-import no.nav.pensjon.brevbaker.api.model.Year
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 sealed interface ExpressionMapper<In, Out>: StableHash {
     val name: String

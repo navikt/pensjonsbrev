@@ -10,13 +10,14 @@ import java.time.LocalDate
 
 data class Vedtaksdata(
     val beregningsdata: BeregningsData?,
+    val etteroppgjorresultat: Etteroppgjoerresultat?,
+    val faktoromregnet: Boolean?,
+    val forrigeetteroppgjor: ForrigeEtteroppgjor?,
+    val harLopendealderspensjon: Boolean? = null,
     val kravhode: Kravhode?,
+    val reaktiviseringsforskriften: Boolean?,
+    val trygdetidavdod: TrygdetidAvdod?,
+    val vedtakfattetdatominus1mnd: LocalDate? = null,
     val vilkarsvedtaklist: VilkarsVedtakList?,
     val virkningfom: LocalDate?,
-    val faktoromregnet: Boolean?,
-    val etteroppgjorresultat: Etteroppgjoerresultat?,
-    val forrigeetteroppgjor: ForrigeEtteroppgjor?,
-    val trygdetidavdod: TrygdetidAvdod?,
-    val harLopendealderspensjon: Boolean? = null,
-    val vedtakfattetdatominus1mnd: LocalDate? = null,
 )

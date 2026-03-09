@@ -30,6 +30,7 @@ import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -179,7 +180,20 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
-    onSuccess: (response) => {
+    onSuccess: (response, isKlar) => {
+      const brevType = erVedtaksbrev(response) ? "vedtaksbrev" : "informasjonsbrev";
+      const klarStatus = isKlar
+        ? erVedtaksbrev(response)
+          ? "klart for attestering"
+          : "klart for sending"
+        : "ikke klar";
+      trackEvent("brev klar status endret", {
+        brevId: response.id,
+        brevType,
+        klarStatus,
+        erKlar: isKlar,
+      });
+
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
@@ -194,7 +208,11 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       endreDistribusjonstype(props.saksId, props.brev.id, {
         distribusjon: distribusjonstype,
       }),
-    onSuccess: (response) => {
+    onSuccess: (response, distribusjonstype) => {
+      trackEvent("brev distribusjonstype endret", {
+        brevId: response.id,
+        distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
+      });
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
@@ -226,7 +244,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
-        onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
+        onChange={(event) => {
+          laasForRedigeringMutation.mutate(event.target.checked);
+        }}
         size="small"
       >
         {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
@@ -271,7 +291,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             </HStack>
           }
           legend=""
-          onChange={(v) => distribusjonstypeMutation.mutate(v)}
+          onChange={(v) => {
+            distribusjonstypeMutation.mutate(v);
+          }}
           size="small"
           value={props.brev.distribusjonstype}
         >

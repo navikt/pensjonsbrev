@@ -91,7 +91,11 @@ data class TBU039V_TBU044V_1(
         // manuellt konvertert logikk
 
         //[TBU039V-TBU044V_1]
-        showIf(pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()))) {
+        showIf(
+            pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                    and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad())) {
             paragraph {
                 text(
                     bokmal { + "Trygdetiden din er fastsatt til 40 år, for den delen du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom." },
@@ -99,18 +103,6 @@ data class TBU039V_TBU044V_1(
                     english { + "Your period of national insurance coverage has been set to 40 years, for the part you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness." },
                 )
             }
-        }
-
-        //IF(  ((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge)+ FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk))/12) < 40  AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" ) THEN      INCLUDE ENDIF
-        //[TBU039V-TBU044V_1]
-        // manuellt konvertert logikk
-        showIf(
-            pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad())
-                    and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
-
-        ){
             paragraph {
                 text(
                     bokmal { + "Trygdetiden i folketrygden er fastsatt til " + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
@@ -132,7 +124,6 @@ data class TBU039V_TBU044V_1(
                     )
                 }
             }
-
         }
 
         // manuellt konvertert logikk
