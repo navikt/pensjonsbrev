@@ -280,17 +280,17 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
             class ItemList<out Lang : LanguageSupport> internal constructor(
                 val items: List<ListItemElement<Lang>>,
                 val type: Listetype,
-            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
+            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(StableHash.of(items), StableHash.of(type)) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
 
                 override fun equals(other: Any?): Boolean {
                     if (other !is ItemList<*>) return false
-                    return items == other.items
+                    return items == other.items && type == other.type
                 }
-                override fun hashCode() = Objects.hash(items)
-                override fun toString() = "ItemList(items=$items)"
+                override fun hashCode() = Objects.hash(items, type)
+                override fun toString() = "ItemList(items=$items, type=$type)"
 
                 class Item<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>

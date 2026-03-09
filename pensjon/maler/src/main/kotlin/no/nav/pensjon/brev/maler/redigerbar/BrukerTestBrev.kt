@@ -64,7 +64,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                 numberedList {
                     item {
                         text(
-                            bokmal { +" første punkt" }
+                            bokmal { +"første punkt" }
                         )
                     }
                     item {
