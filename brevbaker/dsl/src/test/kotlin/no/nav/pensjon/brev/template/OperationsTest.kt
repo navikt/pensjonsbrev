@@ -4,9 +4,10 @@ import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.parallel.Isolated
 
 class OperationsTest {
 
@@ -89,6 +90,7 @@ class OperationsTest {
 
     @Nested
     @DisplayName("Feature-toggling")
+    @Isolated
     inner class FunksjonsbryterEnabled {
         private val scope = ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)
 

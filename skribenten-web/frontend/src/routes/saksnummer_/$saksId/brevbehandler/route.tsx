@@ -2,12 +2,13 @@ import { PlusIcon } from "@navikt/aksel-icons";
 import { Box, Button, Heading, HGrid, HStack, Label, Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
+import { trackEvent } from "~/utils/umami";
 
 import BrevbehandlerMeny from "./-components/BrevbehandlerMeny";
 import BrevForhåndsvisning from "./-components/BrevForhåndsvisning";
@@ -31,6 +32,18 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brevbehandler")({
 function Brevbehandler() {
   const { saksId } = Route.useParams();
   const { brevId, enhetsId, vedtaksId } = Route.useSearch();
+  const startTime = useRef(0);
+
+  useEffect(() => {
+    startTime.current = Date.now();
+    return () => {
+      const varighetSekunder = Math.round((Date.now() - startTime.current) / 1000);
+      trackEvent("tid brukt i brevbehandler", {
+        varighetSekunder,
+        varighetMinutter: Math.round(varighetSekunder / 60),
+      });
+    };
+  }, []);
   const navigate = useNavigate({ from: Route.fullPath });
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
 
@@ -43,20 +56,13 @@ function Brevbehandler() {
 
   return (
     <Box asChild background="default">
-      <VStack height="calc(var(--main-page-content-height) + 48px)" marginInline="auto">
+      <VStack marginInline="auto">
         {modalÅpen && (
           <FerdigstillOgSendBrevModal onClose={() => setModalÅpen(false)} sakId={saksId} åpen={modalÅpen} />
         )}
-        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="calc(100% - 48px)">
+        <HGrid columns="minmax(304px, 384px) minmax(640px, 720px)" height="var(--main-page-content-height)">
           {/* Meny */}
-          <Box
-            asChild
-            borderColor="neutral-subtle"
-            borderWidth="0 1 0 0"
-            height="100%"
-            overflowY="auto"
-            padding="space-24"
-          >
+          <Box asChild borderColor="neutral-subtle" borderWidth="0 1 0 0" overflowY="auto" padding="space-24">
             <VStack gap="space-12">
               <Heading level="1" size="small">
                 Brevbehandler
@@ -79,7 +85,14 @@ function Brevbehandler() {
         </HGrid>
 
         {/* Footer */}
-        <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0" paddingBlock="space-8" paddingInline="space-12">
+        <Box
+          asChild
+          borderColor="neutral-subtle"
+          borderWidth="1 0 0 0"
+          height="48px"
+          paddingBlock="space-8"
+          paddingInline="space-12"
+        >
           <HStack gridColumn="footer" justify="space-between">
             <Button
               onClick={() =>

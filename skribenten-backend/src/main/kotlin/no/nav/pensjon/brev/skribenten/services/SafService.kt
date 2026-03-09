@@ -28,8 +28,8 @@ private val hentDokumenterQuery = SafService::class.java.getResource(HENT_DOKUME
 
 private const val TIMEOUT = 60
 
-data class JournalVariables(val journalpostId: String)
-data class JournalQuery(
+private data class JournalVariables(val journalpostId: String)
+private data class JournalQuery(
     val query: String,
     val variables: JournalVariables
 )

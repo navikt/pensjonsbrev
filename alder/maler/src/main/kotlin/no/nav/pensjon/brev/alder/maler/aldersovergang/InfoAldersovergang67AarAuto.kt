@@ -3,9 +3,7 @@ package no.nav.pensjon.brev.aldersovergang
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.borMedSivilstand
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.kronebelop2G
-import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.over2G
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.ytelseForAldersovergang
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoAFPprivatAP
 import no.nav.pensjon.brev.aldersovergang.fraser.InfoArbeidsinntekt
@@ -55,9 +53,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoOnsketUttakAP(ytelseForAldersovergang))
                 includePhrase(InfoOenskeSokeAP(ytelseForAldersovergang))
                 includePhrase(InfoSivilstandAP(
-                    ytelseForAldersovergang,
-                    borMedSivilstand = borMedSivilstand,
-                    over2G = over2G,
+                    ytelseForAldersovergangKode = ytelseForAldersovergang,
                     kronebelop2G = kronebelop2G,
                 ))
                 includePhrase(InfoFTAP(ytelseForAldersovergang))

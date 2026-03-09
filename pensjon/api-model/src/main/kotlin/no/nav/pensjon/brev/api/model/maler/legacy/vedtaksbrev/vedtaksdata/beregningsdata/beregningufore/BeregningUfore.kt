@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.bereg
 
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BeregningYtelsesKomp
 import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.uforetrygdberegning.Uforetrygdberegning
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class BeregningUfore(
@@ -14,6 +14,7 @@ data class BeregningUfore(
     val belopsendring: Belopsendring?,
     val uforetrygdberegning: Uforetrygdberegning?,
     val beregningsivilstandanvendt: String?,
+    val beregningbenyttetsivilstand: String?,
     val belopokt: Boolean?,
     val beregningvirkningdatofom: LocalDate?,
     val beregningbrukersivilstand: String?,

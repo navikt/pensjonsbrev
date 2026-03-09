@@ -9,6 +9,11 @@ import kotlinx.coroutines.coroutineScope
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.SakKey
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
 import no.nav.pensjon.brev.skribenten.model.Pen
@@ -17,13 +22,11 @@ import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
 
 fun Route.sakRoute(
-    brevbakerService: BrevbakerService,
+    brevService: BrevService,
     brevmalService: BrevmalService,
-    brevredigeringService: BrevredigeringService,
     krrService: KrrService,
-    legacyBrevService: LegacyBrevService,
     pdlService: PdlService,
-    penService: PenService,
+    fagsakService: FagsakService,
     pensjonPersonDataService: PensjonPersonDataService,
     safService: SafService,
     skjermingService: SkjermingServiceHttp,
@@ -35,7 +38,7 @@ fun Route.sakRoute(
     route("/sak/{saksId}") {
         install(AuthorizeAnsattSakTilgang) {
             this.pdlService = pdlService
-            this.penService = penService
+            this.fagsakService = fagsakService
         }
 
         get {
@@ -62,9 +65,9 @@ fun Route.sakRoute(
         get("/brukerstatus") {
             coroutineScope {
                 val sak: Pen.SakSelection = call.attributes[SakKey]
-                val erSkjermet = async { skjermingService.hentSkjerming(sak.foedselsnr) ?: false }
-                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.foedselsnr) ?: false }
-                val person = pdlService.hentBrukerContext(sak.foedselsnr, Pen.finnBehandlingsnummer(sak.sakType))
+                val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
+                val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
+                val person = pdlService.hentBrukerContext(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(
@@ -86,8 +89,8 @@ fun Route.sakRoute(
                     val sak = call.attributes[SakKey]
 
                     call.respond(
-                        legacyBrevService.bestillOgRedigerExstreamBrev(
-                            gjelderPid = sak.foedselsnr,
+                        brevService.bestillOgRedigerExstreamBrev(
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -98,8 +101,8 @@ fun Route.sakRoute(
                     val sak = call.attributes[SakKey]
 
                     call.respond(
-                        legacyBrevService.bestillOgRedigerEblankett(
-                            gjelderPid = sak.foedselsnr,
+                        brevService.bestillOgRedigerEblankett(
+                            gjelderPid = sak.pid,
                             request = request,
                             saksId = sak.saksId,
                         )
@@ -110,7 +113,7 @@ fun Route.sakRoute(
 
         get("/adresse") {
             val sak = call.attributes[SakKey]
-            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.foedselsnr)
+            val adresse = pensjonPersonDataService.hentKontaktadresse(sak.pid)
 
             if (adresse != null) {
                 call.respond(adresse)
@@ -121,7 +124,7 @@ fun Route.sakRoute(
 
         get("/foretrukketSpraak") {
             val sak = call.attributes[SakKey]
-            call.respond(krrService.getPreferredLocale(sak.foedselsnr))
+            call.respond(krrService.getPreferredLocale(sak.pid))
         }
 
         get("/pdf/{journalpostId}") {
@@ -134,6 +137,6 @@ fun Route.sakRoute(
             }
         }
 
-        sakBrev(brevbakerService, brevredigeringService, p1Service, brevredigeringFacade, dto2ApiService)
+        sakBrev(brevmalService, p1Service, brevredigeringFacade, dto2ApiService)
     }
 }

@@ -1,6 +1,10 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
 class UpdateEditedLetterException(message: String) : RuntimeException(message)
 
@@ -22,7 +26,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             sakspart = rendered.sakspart,
-            signatur = rendered.signatur,
+            signatur = mergeSignatur(edited.signatur, rendered.signatur),
             blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues),
             deletedBlocks = edited.deletedBlocks.filter { id -> rendered.blocks.any { it.id == id } }.toSet(),
         )
@@ -92,6 +96,16 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         }
         addAll(remainingRendered)
     }
+
+    private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.Signatur): LetterMarkup.Signatur =
+        LetterMarkupImpl.SignaturImpl(
+            // Template-controlled fields: always use rendered values
+            hilsenTekst = rendered.hilsenTekst,
+            navAvsenderEnhet = rendered.navAvsenderEnhet,
+            // User-editable fields: preserve edited values
+            saksbehandlerNavn = edited.saksbehandlerNavn,
+            attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
+        )
 
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(

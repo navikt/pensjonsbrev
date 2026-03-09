@@ -10,15 +10,16 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
-import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.Cacheomraade
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 
 interface SkjermingService {
-    suspend fun hentSkjerming(fnr: String): Boolean?
+    suspend fun hentSkjerming(pid: Pid): Boolean?
 }
 
 private val logger = LoggerFactory.getLogger(SkjermingService::class.java)
@@ -34,11 +35,11 @@ class SkjermingServiceHttp(config: Config, authService: AuthService, private val
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    override suspend fun hentSkjerming(fnr: String): Boolean? =
-        cache.cached(Cacheomraade.SKJERMING, fnr, ttl = { 5.minutes }) {
+    override suspend fun hentSkjerming(pid: Pid): Boolean? =
+        cache.cached(Cacheomraade.SKJERMING, pid, ttl = { 5.minutes }) {
             val response = client.post {
                 contentType(ContentType.Application.Json)
-                setBody(mapOf("personident" to fnr))
+                setBody(mapOf("personident" to pid.value))
             }
             return@cached if (response.status.isSuccess()) {
                 response.body<Boolean>()

@@ -60,7 +60,10 @@ describe("attestant redigering", () => {
     cy.contains("Brevet er utilgjengelig for deg fordi Hugo Weaving har brevet åpent.").should("exist");
     cy.contains("Nei, gå til brevbehandler").should("exist");
     cy.contains("Nei, gå til brevbehandler").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?enhetsId=0001");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
   });
 
   it("Gjenoppta redigering", () => {

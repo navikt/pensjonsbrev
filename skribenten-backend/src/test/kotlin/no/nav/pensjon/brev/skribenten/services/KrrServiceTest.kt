@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.ConfigFactory
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
-import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponse
-import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoKRRResponseEnkeltperson
-import no.nav.pensjon.brev.skribenten.services.KrrService.KontaktinfoResponse
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brev.skribenten.services.KrrService.*
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertNull
@@ -15,7 +15,7 @@ class KrrServiceTest {
     @Test
     fun `kan hente foretrukket spraak fra KRR`() {
         val respons = KontaktinfoKRRResponse(
-            personer = mapOf("12345" to KontaktinfoKRRResponseEnkeltperson(KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn)),
+            personer = mapOf(Pid("12345") to KontaktinfoKRRResponseEnkeltperson(KontaktinfoKRRResponseEnkeltperson.SpraakKode.nn)),
             feil = mapOf()
         )
 
@@ -26,7 +26,7 @@ class KrrServiceTest {
                 engine = engine,
             )
 
-            val preferredLocale = service.getPreferredLocale("12345")
+            val preferredLocale = service.getPreferredLocale(Pid("12345"))
             assertNull(preferredLocale.failure)
             assertEquals(SpraakKode.NN, preferredLocale.spraakKode)
         }
@@ -36,7 +36,7 @@ class KrrServiceTest {
     fun `not found fra KRR gir not found ogsaa hos oss`() {
         val respons = KontaktinfoKRRResponse(
             personer = mapOf(),
-            feil = mapOf("12345" to KrrService.Feiltype.person_ikke_funnet)
+            feil = mapOf(Pid("12345") to KrrService.Feiltype.person_ikke_funnet)
         )
 
         httpClientTest(respons) { engine ->
@@ -46,7 +46,7 @@ class KrrServiceTest {
                 engine = engine,
             )
 
-            val preferredLocale = service.getPreferredLocale("12345")
+            val preferredLocale = service.getPreferredLocale(Pid("12345"))
             assertNull(preferredLocale.spraakKode)
             assertEquals(KontaktinfoResponse.FailureType.NOT_FOUND, preferredLocale.failure)
         }
@@ -56,7 +56,7 @@ class KrrServiceTest {
     fun `feil fra KRR gir feil ogsaa hos oss`() {
         val respons = KontaktinfoKRRResponse(
             personer = mapOf(),
-            feil = mapOf("12345" to KrrService.Feiltype.skjermet)
+            feil = mapOf(Pid("12345") to KrrService.Feiltype.skjermet)
         )
 
         httpClientTest(respons) { engine ->
@@ -66,7 +66,7 @@ class KrrServiceTest {
                 engine = engine
             )
 
-            val preferredLocale = service.getPreferredLocale("12345")
+            val preferredLocale = service.getPreferredLocale(Pid("12345"))
             assertNull(preferredLocale.spraakKode)
             assertEquals(KontaktinfoResponse.FailureType.ERROR, preferredLocale.failure)
         }

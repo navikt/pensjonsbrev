@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.fixtures
 
-import no.nav.brev.Landkode
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.brev.brevbaker.vilkaarligDato
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
@@ -18,7 +18,7 @@ import no.nav.pensjon.brev.api.model.maler.P1Dto.Postnummer
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Poststed
 import no.nav.pensjon.brev.api.model.maler.P1Dto.Reduksjonsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.SamletMeldingOmPensjonsvedtakDto
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.time.LocalDate
 import java.time.Month
 

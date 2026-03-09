@@ -13,7 +13,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
@@ -93,8 +93,8 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.TILBAKEKREVING)) {
                     paragraph {
                         text(
-                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstiger ett rettsgebyr. Du må derfor betale tilbake det feilutbetalte beløpet." },
-                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for mykje omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake det feilutbetalte beløpet." },
+                            bokmal { +"Vår beregning viser at du har fått " + data.avviksBeloep.absoluteValue().format() + " for mye omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Fordi beløpet er høyere enn ett rettsgebyr, må du betale tilbake hele det beløpet som er utbetalt for mye." },
+                            nynorsk { +"Utrekninga vår viser at du har fått utbetalt " + data.avviksBeloep.absoluteValue().format() + " for mykje omstillingsstønad i " + data.etteroppgjoersAar.format() + ". Dette overstig eitt rettsgebyr, og du må difor betale tilbake heile det feilutbetalte beløpet." },
                             english { +"Our calculations show that you have been overpaid " + data.avviksBeloep.absoluteValue().format() + " adjustment allowance in " + data.etteroppgjoersAar.format() + ". This exceeds a standard court fee, which means that you must repay the incorrect amount paid to you." }
                         )
                     }

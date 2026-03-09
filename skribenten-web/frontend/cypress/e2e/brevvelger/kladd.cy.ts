@@ -36,7 +36,7 @@ describe("Kladd", () => {
     cy.contains("Avsenderenhet").should("be.visible");
     cy.contains("Språk").should("be.visible");
     cy.contains("Gå til brevbehandler").should("be.visible");
-    cy.contains("Åpne brev").should("be.visible");
+    cy.contains("Fortsett").should("be.visible");
   });
 
   it("Kan slette kladd", () => {
@@ -109,13 +109,13 @@ describe("Kladd", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
     cy.contains("Lag nytt brev").should("be.visible");
     cy.contains("Ja, bruk eksisterende kladd").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/2");
   });
 
   it("lager nytt brev selv om saken har eksisterende kladd", () => {
@@ -138,7 +138,17 @@ describe("Kladd", () => {
         },
         vedtaksId: null,
       });
-      req.reply(nyBrevResponse({ info: nyBrevInfo({ id: 2 }) }));
+      req.reply(
+        nyBrevResponse({
+          info: nyBrevInfo({
+            id: 2,
+            avsenderEnhet: {
+              enhetNr: "4405",
+              navn: "Nav Arbeid og ytelser Innlandet",
+            },
+          }),
+        }),
+      );
     }).as("createBrev");
 
     cy.wait("@getAlleBrevForSak");
@@ -150,12 +160,13 @@ describe("Kladd", () => {
     cy.contains("Mottatt søknad").click().type("09.10.2024");
     cy.contains("Ytelse").click().type("Alderspensjon");
     cy.contains("Svartid uker").click().type("4");
-    cy.contains("Åpne brev").click();
+    cy.contains("Fortsett").click();
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
     cy.contains("Lag nytt brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brev/2");
+    cy.location("pathname").should("eq", "/saksnummer/123456/brev/2");
+    cy.location("search").should("include", "enhetsId");
   });
 
   it("arkiverte brev i brevvelger skal ikke kunne gjøre endringer på brev, og kun navigere videre til brevbehandler", () => {
@@ -176,7 +187,10 @@ describe("Kladd", () => {
     cy.wait(1000);
     cy.contains("Endre mottaker").should("not.exist");
     cy.contains("Slett brev").should("not.exist");
-    cy.contains("Åpne brev").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?brevId=1");
+    cy.contains("Fortsett").click();
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?brevId=1");
   });
 });

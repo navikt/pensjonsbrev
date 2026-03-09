@@ -1,0 +1,24 @@
+package no.nav.pensjon.brev.skribenten.brevredigering.domain
+
+import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.common.Outcome
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
+import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
+import no.nav.pensjon.brev.skribenten.model.JournalpostId
+
+class RedigerBrevPolicy {
+    fun kanRedigere(brev: Brevredigering, principal: UserPrincipal): Outcome<Unit, BrevredigeringError> {
+        return when {
+            brev.journalpostId != null -> failure(KanIkkeRedigere.ArkivertBrev(brev.journalpostId!!))
+            brev.laastForRedigering && !principal.isAttestant() -> failure(KanIkkeRedigere.LaastBrev)
+            brev.redigeresAv != principal.navIdent -> failure(KanIkkeRedigere.IkkeReservert)
+            else -> success(Unit)
+        }
+    }
+
+    sealed interface KanIkkeRedigere : BrevredigeringError {
+        data object LaastBrev : KanIkkeRedigere
+        data class ArkivertBrev(val journalpostId: JournalpostId) : KanIkkeRedigere
+        data object IkkeReservert : KanIkkeRedigere
+    }
+}

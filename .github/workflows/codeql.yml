@@ -10,6 +10,7 @@ on:
       - "main"
     paths:
       - .github/workflows/codeql.yml
+      - gradle/libs.versions.toml
 
 env:
   JavaDistribution: "temurin"
@@ -48,6 +49,16 @@ jobs:
         uses: gradle/actions/setup-gradle@v5
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
+
+      - name: "publish common to Maven local"
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+
+      - name: "publish extra modules to Maven local"
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          ./gradlew :pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal
 
       - name: Assemble (PR)
         if: ${{ github.event_name == 'pull_request' }}

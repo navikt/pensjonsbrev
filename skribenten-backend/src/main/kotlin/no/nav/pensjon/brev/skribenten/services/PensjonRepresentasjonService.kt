@@ -1,23 +1,20 @@
 package no.nav.pensjon.brev.skribenten.services
 
 import com.typesafe.config.Config
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
-import io.ktor.serialization.jackson.jackson
-import no.nav.pensjon.brev.skribenten.Cache
-import no.nav.pensjon.brev.skribenten.Cacheomraade
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brev.skribenten.cached
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -43,7 +40,7 @@ class PensjonRepresentasjonService(
     }
 
     data class HasRepresentantRequest(
-        val representertPid: String,
+        val representertPid: Pid,
         val validRepresentasjonstyper: List<RelevanteRepresentasjonstyper>,
     )
 
@@ -55,16 +52,16 @@ class PensjonRepresentasjonService(
         PENSJON_VERGE_PENGEMOTTAKER,
     }
 
-    suspend fun harVerge(fnr: String): Boolean? =
+    suspend fun harVerge(pid: Pid): Boolean? =
         cache.cached(
             Cacheomraade.PENSJON_REPRESENTASJON,
-            fnr,
+            pid,
             ttl = { 10.minutes }
         ){
             try {
                 val response = client.post("/representasjon/hasRepresentant") {
                     contentType(ContentType.Application.Json)
-                    setBody(HasRepresentantRequest(fnr, RelevanteRepresentasjonstyper.entries))
+                    setBody(HasRepresentantRequest(pid, RelevanteRepresentasjonstyper.entries))
                 }
                 return@cached if (response.status.isSuccess()) {
                     response.body<HasRepresentantResponse>().value

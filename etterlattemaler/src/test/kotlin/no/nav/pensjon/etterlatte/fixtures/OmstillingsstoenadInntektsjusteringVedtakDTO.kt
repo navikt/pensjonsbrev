@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.etterlatte.maler.*
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTO
 import java.time.LocalDate
@@ -26,6 +26,7 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteri
                 ytelseFoerAvkorting = Kroner(22000),
                 trygdetid = 40,
                 sanksjon = false,
+                erFakeSanksjon = false,
                 institusjon = false,
             ),
         ),
@@ -43,6 +44,7 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteri
             ytelseFoerAvkorting = Kroner(22000),
             trygdetid = 40,
             sanksjon = false,
+            erFakeSanksjon = false,
             institusjon = false,
         ),
         sisteBeregningsperiodeNesteAar = null,

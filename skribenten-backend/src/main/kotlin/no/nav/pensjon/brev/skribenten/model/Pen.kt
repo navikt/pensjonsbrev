@@ -1,16 +1,14 @@
 package no.nav.pensjon.brev.skribenten.model
 
-import no.nav.brev.Landkode
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B222
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B255
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B280
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.B359
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brev.skribenten.services.BrevdataDto
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
 
@@ -27,10 +25,10 @@ object Pen {
 
     data class SakSelection(
         val saksId: SaksId,
-        val foedselsnr: String,
         val foedselsdato: LocalDate,
         val navn: Navn,
         val sakType: ISakstype,
+        val pid: Pid
     ) {
         data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
     }
@@ -62,7 +60,7 @@ object Pen {
             val fagomradeKode: String? = null,
             val fagspesifikkgradering: String? = null,
             val fagsystem: String? = null,
-            val gjelder: String? = null,
+            val gjelder: Pid? = null,
             val innhold: String? = null,
             val journalenhet: EnhetId? = null,
             val kategori: String? = null,

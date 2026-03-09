@@ -3,22 +3,19 @@ package no.nav.pensjon.brev.skribenten.services
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.typesafe.config.Config
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.HttpClientEngine
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.request.accept
-import io.ktor.client.request.get
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.statement.bodyAsText
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
-import io.ktor.serialization.jackson.jackson
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
 
 class KrrService(config: Config, authService: AuthService, engine: HttpClientEngine = CIO.create()) : ServiceStatus {
@@ -58,7 +55,7 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    data class KontaktinfoKRRResponse(val personer: Map<String, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<String, Feiltype>)
+    data class KontaktinfoKRRResponse(val personer: Map<Pid, KontaktinfoKRRResponseEnkeltperson>, val feil: Map<Pid, Feiltype>)
 
     private data class KontaktinfoRequest(val personidenter: List<String>)
 
@@ -72,11 +69,11 @@ class KrrService(config: Config, authService: AuthService, engine: HttpClientEng
         }
     }
 
-    suspend fun getPreferredLocale(pid: String): KontaktinfoResponse {
+    suspend fun getPreferredLocale(pid: Pid): KontaktinfoResponse {
         val response = client.post("/rest/v1/personer") {
             contentType(ContentType.Application.Json)
             accept(ContentType.Application.Json)
-            setBody(KontaktinfoRequest(listOf(pid)))
+            setBody(KontaktinfoRequest(listOf(pid.value)))
         }
         return if (response.status.isSuccess()) {
             val body = response.body<KontaktinfoKRRResponse>()

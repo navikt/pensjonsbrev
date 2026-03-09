@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
-import no.nav.pensjon.brevbaker.api.model.Broek
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Broek
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
@@ -94,7 +94,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
 
                 "kotlin.collections.List" -> {
-                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), paakrevDisplayText))
+                    FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false))
                 }
 
                 "java.time.LocalDate" ->

@@ -58,7 +58,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AP2025TidligUttakHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.AfpPrivatErBrukt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmel
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.BilateralAvtaleHjemmelFritekst
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.EOSLandAvtaleHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GarantitilleggHjemmel
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.GjenlevendetilleggKap19Hjemmel
@@ -107,7 +107,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.VEDTAKSBREV
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -406,7 +406,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 )
             )
             includePhrase(
-                BilateralAvtaleHjemmel(
+                BilateralAvtaleHjemmelFritekst(
                     avtalelandNavn.ifNull(fritekst("avtaleland")),
                     eksportTrygdeavtaleAvtaleland,
                     erEOSLand,

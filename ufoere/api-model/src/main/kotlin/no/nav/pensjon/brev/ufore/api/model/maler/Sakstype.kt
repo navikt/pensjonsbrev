@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.ufore.api.model.maler
 
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 
 enum class Sakstype : ISakstype {
     AFP,

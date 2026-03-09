@@ -6,7 +6,8 @@ import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 
 object Ufoerebrevkoder {
     enum class AutoBrev : Automatisk {
-        UT_INFO_ENDRET_PGA_INNTEKT
+        UT_INFO_ENDRET_PGA_INNTEKT,
+        UT_INFO_LOVENDRINGER_2026
         ;
         override fun kode(): String = this.name
     }
