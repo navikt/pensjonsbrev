@@ -45,6 +45,14 @@ public abstract interface annotation class no/nav/brev/InternKonstruktoer : java
 public abstract interface annotation class no/nav/brev/InterneDataklasser : java/lang/annotation/Annotation {
 }
 
+public final class no/nav/brev/Listetype : java/lang/Enum {
+	public static final field NUMMERERT_LISTE Lno/nav/brev/Listetype;
+	public static final field PUNKTLISTE Lno/nav/brev/Listetype;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/Listetype;
+	public static fun values ()[Lno/nav/brev/Listetype;
+}
+
 public final class no/nav/brev/brevbaker/PDFCompilationOutput {
 	public fun <init> ([B)V
 	public fun equals (Ljava/lang/Object;)Z
