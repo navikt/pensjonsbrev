@@ -1,13 +1,13 @@
 * xref:index.adoc[Hjem]
+
 .For saksbehandlere
 * xref:skribenten-101.adoc[Veiledning (101)]
 * xref:skribenten-produktoppdateringer.adoc[Produktoppdateringer]
 
 .For utviklere
-.xref:brevbaker-arkitektur.adoc[Brevbaker]
-* xref:brevbaker-arkitektur.adoc[Arkitektur]
-* xref:skribenten-beskrivelse.adoc[Teknisk beskrivelse]
-* xref:brevbaker-pdfbygger-beskrivelse.adoc[Teknisk beskrivelse]
+* xref:skribenten-beskrivelse.adoc[Skribenten – teknisk beskrivelse]
+* xref:brevbaker-arkitektur.adoc[Brevbaker – arkitektur]
+* xref:brevbaker-pdfbygger-beskrivelse.adoc[PDFbygger – teknisk beskrivelse]
 * xref:dsl/index.adoc[DSL (WIP)]
 ** xref:dsl/index.adoc[Quickstart]
 ** xref:dsl/stegvis guide nytt brev.adoc[]
