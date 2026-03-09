@@ -8,8 +8,8 @@ import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-component
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
-import AccordionContent from "./KvittertBrevContent";
-import AccordionHeader from "./KvittertBrevHeader";
+import KvittertBrevContent from "./KvittertBrevContent";
+import KvittertBrevHeader from "./KvittertBrevHeader";
 import { getPriorityKey, type KvittertBrev, kvitteringSorteringsPrioritet } from "./KvitterteBrevUtils";
 
 const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[] }) => {
@@ -81,8 +81,8 @@ const AccordionItem = (props: {
 
   return (
     <ExpansionCard aria-label={props.brevFørHandling.brevtittel} onToggle={setOpen} open={open}>
-      <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
-      <AccordionContent
+      <KvittertBrevHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
+      <KvittertBrevContent
         apiStatus={props.apiStatus}
         brev={props.brevFørHandling}
         isPending={sendBrevMutation.isPending}

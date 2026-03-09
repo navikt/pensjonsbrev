@@ -3,7 +3,7 @@ import { ExpansionCard, Tag, VStack } from "@navikt/ds-react";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
-const AccordionHeader = (props: {
+const KvittertBrevHeader = (props: {
   apiStatus: "error" | "success";
   context: "sendBrev" | "attestering";
   brevInfo: BrevInfo;
@@ -32,7 +32,7 @@ const AccordionHeader = (props: {
   );
 };
 
-export default AccordionHeader;
+export default KvittertBrevHeader;
 
 const hentTagOgTittelForHeader = (args: {
   apiStatus: "error" | "success";

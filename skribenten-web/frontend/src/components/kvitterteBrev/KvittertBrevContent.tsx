@@ -11,7 +11,7 @@ import type { Nullable } from "~/types/Nullable";
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
-const AccordionContent = (props: {
+const KvittertBrevContent = (props: {
   saksId: string;
   apiStatus: "error" | "success";
   isPending: boolean;
@@ -21,16 +21,16 @@ const AccordionContent = (props: {
 }) => {
   switch (props.apiStatus) {
     case "error":
-      return <AccordionContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
+      return <KvittertBrevContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
 
     case "success":
-      return <AccordionContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
+      return <KvittertBrevContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
   }
 };
 
-export default AccordionContent;
+export default KvittertBrevContent;
 
-const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
+const KvittertBrevContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
   const pdfForJournalpost = useMutation<Blob, Error, number>({
     mutationFn: (journalpostId) => hentPdfForJournalpost.queryFn(props.saksId, journalpostId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
@@ -72,7 +72,7 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
   );
 };
 
-const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
+const KvittertBrevContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
     <ExpansionCard.Content>
       <VStack align="start" gap="space-12">
