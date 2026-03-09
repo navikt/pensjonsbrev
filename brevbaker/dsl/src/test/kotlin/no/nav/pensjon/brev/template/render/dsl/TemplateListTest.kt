@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
@@ -33,7 +34,8 @@ class TemplateListTest {
                                     ContentOrControlStructure.Content(
                                         Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
                                     )
-                                )
+                                ),
+                                Listetype.PUNKTLISTE,
                             )
                         )
                     )
@@ -102,7 +104,8 @@ class TemplateListTest {
                                             )
                                         ), emptyList()
                                     )
-                                )
+                                ),
+                                Listetype.PUNKTLISTE,
                             )
                         )
                     )

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
@@ -277,7 +278,8 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
 
             class ItemList<out Lang : LanguageSupport> internal constructor(
-                val items: List<ListItemElement<Lang>>
+                val items: List<ListItemElement<Lang>>,
+                val type: Listetype,
             ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")

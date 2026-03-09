@@ -1,6 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block.*
@@ -86,7 +87,7 @@ data class LetterMarkupImpl(
 
     object ParagraphContentImpl {
         @InterneDataklasser
-        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>) : ItemList {
+        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>, override val listType: Listetype) : ItemList {
             override val type = ParagraphContent.Type.ITEM_LIST
 
             @InterneDataklasser

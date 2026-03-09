@@ -145,7 +145,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                     )
                 }
 
-                list {
+                numberedList {
                     forEach(tilleggEksempel) { tillegg ->
                         ifNotNull(tillegg.tillegg1) {
                             item {

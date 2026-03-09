@@ -347,6 +347,7 @@ public final class no/nav/pensjon/brev/template/Element$OutlineContent$Paragraph
 public final class no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$ItemList : no/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent, no/nav/pensjon/brev/template/StableHash {
 	public fun equals (Ljava/lang/Object;)Z
 	public final fun getItems ()Ljava/util/List;
+	public final fun getType ()Lno/nav/brev/Listetype;
 	public fun hashCode ()I
 	public fun stableHashCode ()I
 	public fun toString ()Ljava/lang/String;
@@ -1155,6 +1156,7 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphOnlyScope : no/nav/
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/TextOnlyPhrase;)V
 	public fun list (Lkotlin/jvm/functions/Function1;)V
 	public fun newline ()V
+	public fun numberedList (Lkotlin/jvm/functions/Function1;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
 	public fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;
@@ -1169,6 +1171,7 @@ public abstract interface class no/nav/pensjon/brev/template/dsl/ParagraphScope 
 	public fun formText (Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;Z)V
 	public static synthetic fun formText$default (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lno/nav/pensjon/brev/template/Element$OutlineContent$ParagraphContent$Form$Text$Size;Lkotlin/jvm/functions/Function1;ZILjava/lang/Object;)V
 	public fun list (Lkotlin/jvm/functions/Function1;)V
+	public fun numberedList (Lkotlin/jvm/functions/Function1;)V
 	public fun table (Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }
 
@@ -1183,6 +1186,7 @@ public final class no/nav/pensjon/brev/template/dsl/ParagraphScope$DefaultImpls 
 	public static fun getArgument (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun getFelles (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)Lno/nav/pensjon/brev/template/Expression;
 	public static fun list (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)V
+	public static fun numberedList (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)V
 	public static fun nynorsk (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public static fun table (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;Lkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;)V
 }

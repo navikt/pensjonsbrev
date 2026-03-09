@@ -605,6 +605,7 @@ public final class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphCont
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList : no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent {
 	public abstract fun getItems ()Ljava/util/List;
+	public abstract fun getListType ()Lno/nav/brev/Listetype;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkup$ParagraphContent$ItemList$Item {

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.*
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item
@@ -39,6 +40,7 @@ class VariableValuesTest {
                             Item(null, listOf(vars.create())),
                             Item(null, listOf(vars.create(), vars.create())),
                         ),
+                        Listetype.PUNKTLISTE,
                     ),
                     Table(
                         null,
