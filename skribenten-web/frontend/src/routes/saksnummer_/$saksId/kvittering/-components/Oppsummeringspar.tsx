@@ -20,7 +20,6 @@ const Oppsummeringspar = (properties: {
         </Label>
       ) : (
         <BodyShort
-          color="text-neutral"
           size={typeof properties.size === "object" ? properties.size.bodyShort : properties.size}
           weight="semibold"
         >

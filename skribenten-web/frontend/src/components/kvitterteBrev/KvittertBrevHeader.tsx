@@ -15,13 +15,9 @@ const AccordionHeader = (props: {
   });
 
   return (
-    <ExpansionCard.Header
-      css={css`
-        gap: var(--ax-space-6);
-      `}
-    >
+    <ExpansionCard.Header>
       <ExpansionCard.Title
-        as="h4"
+        as="h2"
         css={css`
           font-size: var(--ax-font-size-heading-xsmall);
         `}
