@@ -3,7 +3,7 @@
 
 = TextOnlyPhrase
 
-`TextOnlyPhrase` brukes for gjenbrukbare tekstfragmenter som kan inneholde variabler og formattering.
+`TextOnlyPhrase` brukes for gjenbrukbare tekstfragmenter som kan inneholde formattering.
 Den er nyttig for standardiserte tekstbiter som skal brukes på flere steder. F.eks i tabeller eller liste-elementer.
 
 == Definere en TextOnlyPhrase

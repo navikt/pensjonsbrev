@@ -21,11 +21,11 @@ De sikrer konsistent innhold på tvers av brev og gjør vedlikehold enklere.
 |xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 
 |xref:dsl/fraser/textOnlyPhrase.adoc[]
-|Tekst med variabler, formattering, linjeskift
+|Tekst med formattering (bold/italic), linjeskift
 |xref:dsl/scopes.adoc#TextScope[TextScope], xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 
 |xref:dsl/fraser/plainTextPhrase.adoc[]
-|Tekst med variabler
+| Ren tekst
 |xref:dsl/scopes.adoc#PlainTextScope[PlainTextScope], xref:dsl/scopes.adoc#TextScope[TextScope], xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
 |===
 

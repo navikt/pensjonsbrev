@@ -73,7 +73,7 @@ ParagraphScope {
 
 [[TextScope]]
 ==== TextScope
-Tekst med variabler og formattering:
+Tekst med formattering:
 [listing,subs="+macros"]
 ....
 TextScope {
@@ -86,7 +86,7 @@ TextScope {
 
 [[PlainTextScope]]
 ==== PlainTextScope
-Kun ren tekst (brukes i titler):
+Kun ren tekst:
 [listing,subs="+macros"]
 ....
 PlainTextScope {
