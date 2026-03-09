@@ -109,6 +109,7 @@ const BrevItem = (properties: {
           gap: var(--ax-space-6);
         `}
       >
+        <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
         <ExpansionCard.Title
           as="h4"
           css={css`
@@ -117,7 +118,6 @@ const BrevItem = (properties: {
           size="small"
         >
           <VStack align="start" gap="space-8" justify="start">
-            <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
             {properties.brev.brevtittel}
           </VStack>
         </ExpansionCard.Title>
