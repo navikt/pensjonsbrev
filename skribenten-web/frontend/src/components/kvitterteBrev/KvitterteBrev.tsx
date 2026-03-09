@@ -1,14 +1,15 @@
-import { Accordion } from "@navikt/ds-react";
+import { ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
+import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 
-import AccordionContent from "./KvittertBrevContent";
-import AccordionHeader from "./KvittertBrevHeader";
+import KvittertBrevContent from "./KvittertBrevContent";
+import KvittertBrevHeader from "./KvittertBrevHeader";
 import { getPriorityKey, type KvittertBrev, kvitteringSorteringsPrioritet } from "./KvitterteBrevUtils";
 
 const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[] }) => {
@@ -19,7 +20,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
   );
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sorted.map((kvittertBrev, index) => {
         return (
           <AccordionItem
@@ -32,7 +33,7 @@ const KvitterteBrev = (properties: { sakId: string; kvitterteBrev: KvittertBrev[
           />
         );
       })}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -76,10 +77,12 @@ const AccordionItem = (props: {
       props.brevFørHandling.status.type !== "Attestering") ||
     props.apiStatus === "error";
 
+  const [open, setOpen] = useState(isDefaultOpen);
+
   return (
-    <Accordion.Item defaultOpen={isDefaultOpen}>
-      <AccordionHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
-      <AccordionContent
+    <ExpansionCard aria-label={props.brevFørHandling.brevtittel} onToggle={setOpen} open={open}>
+      <KvittertBrevHeader apiStatus={props.apiStatus} brevInfo={props.brevFørHandling} context={props.context} />
+      <KvittertBrevContent
         apiStatus={props.apiStatus}
         brev={props.brevFørHandling}
         isPending={sendBrevMutation.isPending}
@@ -87,6 +90,6 @@ const AccordionItem = (props: {
         onRetry={() => sendBrevMutation.mutate()}
         saksId={props.saksId}
       />
-    </Accordion.Item>
+    </ExpansionCard>
   );
 };

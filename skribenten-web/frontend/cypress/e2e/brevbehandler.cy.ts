@@ -32,7 +32,9 @@ describe("Brevbehandler", () => {
   });
 
   it("saken inneholder ingen brev", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [] });
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", {
+      body: [],
+    });
     cy.contains("Fant ingen brev som er under behandling").should("be.visible");
   });
 
@@ -55,7 +57,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     //brev med id 1
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
@@ -79,17 +81,21 @@ describe("Brevbehandler", () => {
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
   });
 
   it("kan ferdigstille og sende brev med lokalprint", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
+    const lokalprintBrev = {
+      ...kladdBrev,
+      distribusjonstype: "LOKALPRINT",
+      status: { type: "Klar" },
+    };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
 
@@ -97,7 +103,10 @@ describe("Brevbehandler", () => {
       request.reply({ journalpostId: 80_912, error: null });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
+      request.reply({
+        fixture: "helloWorldPdf.txt",
+        headers: { "content-type": "application/pdf" },
+      });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([brevResponse[hentBrevRequestNr++]]);
@@ -112,7 +121,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -133,19 +142,23 @@ describe("Brevbehandler", () => {
 
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering");
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("kan ferdigstille og sende brev med lokalprint selv om henting av pdf feiler", () => {
     //ser ikke ut til å være en god måte å gi ulik respons på hvert kall, så vi må ha en teller
     let hentBrevRequestNr = 0;
-    const lokalprintBrev = { ...kladdBrev, distribusjonstype: "LOKALPRINT", status: { type: "Klar" } };
+    const lokalprintBrev = {
+      ...kladdBrev,
+      distribusjonstype: "LOKALPRINT",
+      status: { type: "Klar" },
+    };
 
     const brevResponse = [kladdBrev, lokalprintBrev];
 
@@ -157,7 +170,10 @@ describe("Brevbehandler", () => {
     });
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80912", (request) => {
-      request.reply({ body: "simulerer en feil ved henting av pdf for journalpostId'en", statusCode: 500 });
+      request.reply({
+        body: "simulerer en feil ved henting av pdf for journalpostId'en",
+        statusCode: 500,
+      });
     });
 
     cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
@@ -171,7 +187,7 @@ describe("Brevbehandler", () => {
     });
 
     //åpner brevet
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     //brev med id 1
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
@@ -193,13 +209,13 @@ describe("Brevbehandler", () => {
 
     //verifisering av kvittering
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(kladdBrev.brevtittel);
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("kan sende flere ferdigstilte brev samtidig", () => {
@@ -210,7 +226,10 @@ describe("Brevbehandler", () => {
       request.reply({ journalpostId: 80_913, error: null });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/pdf/80913", (request) => {
-      request.reply({ fixture: "helloWorldPdf.txt", headers: { "content-type": "application/pdf" } });
+      request.reply({
+        fixture: "helloWorldPdf.txt",
+        headers: { "content-type": "application/pdf" },
+      });
     });
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([klarBrev, brevSomSendesSomLokalPrint]);
@@ -225,20 +244,20 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
-    cy.get('[data-cy="journalpostId-80912"]').contains("Distribueres via").should("be.visible");
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
+    cy.get('[data-cy="journalpostId-80912"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("Sentral print").should("be.visible");
-    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80912"]').contains("Journalpost").should("be.visible");
     cy.get('[data-cy="journalpostId-80912"]').contains("80912").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
 
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
     cy.contains(brevSomSendesSomLokalPrint.brevtittel);
-    cy.get('[data-cy="journalpostId-80913"]').contains("Distribueres via").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Distribusjon").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("Lokal print").should("be.visible");
-    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost ID").should("be.visible");
+    cy.get('[data-cy="journalpostId-80913"]').contains("Journalpost").should("be.visible");
     cy.get('[data-cy="journalpostId-80913"]').contains("80913").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
+    cy.contains("Åpne PDF").should("be.visible");
   });
 
   it("velger hvilke brev som skal sendes", () => {
@@ -257,10 +276,10 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains(kladdBrev.brevtittel).click();
-    cy.contains("Distribueres via").should("be.visible");
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
 
     cy.contains("Sendt til lokalprint").should("not.exist");
@@ -281,7 +300,7 @@ describe("Brevbehandler", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([kladdBrev]);
     });
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -310,7 +329,7 @@ describe("Brevbehandler", () => {
       request.reply(204);
     }).as("slettBrev");
 
-    cy.contains(kladdBrev.brevtittel).click();
+    cy.get(`[aria-label="${kladdBrev.brevtittel}"] button[aria-expanded]`).click();
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevbehandler")
       .location("search")
@@ -361,9 +380,9 @@ describe("Brevbehandler", () => {
     cy.get("button").contains("Prøv å sende igjen").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Sentral print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("80912").should("be.visible");
   });
 
@@ -387,17 +406,21 @@ describe("Brevbehandler", () => {
     cy.get(`[data-cy="ferdigstillbrev-valgte-brev"] input[type="checkbox"][value="1"]`).click();
     cy.contains("Ja, send valgte brev").click();
     cy.contains("Gå til brevbehandler").click();
-    cy.get("label:contains('Informasjon om saksbehandlingstid')").should("have.length", 1);
+    cy.get("[aria-label='Informasjon om saksbehandlingstid']").should("have.length", 1);
   });
 
   it("et arkivert brev kan ikke endre på noe informasjon, og kan kun sendes på nytt", () => {
-    const arkivertBrev: BrevInfo = { ...klarBrev, status: { type: "Arkivert" }, journalpostId: 123_456 };
+    const arkivertBrev: BrevInfo = {
+      ...klarBrev,
+      status: { type: "Arkivert" },
+      journalpostId: 123_456,
+    };
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {
       request.reply([arkivertBrev]);
     });
 
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
 
     cy.contains("Brevet er klart for sending").should("not.exist");
     cy.contains("Fortsett redigering").should("not.exist");
@@ -418,10 +441,13 @@ describe("Brevbehandler", () => {
     });
     cy.intercept("PUT", "/bff/skribenten-backend/sak/123456/brev/1/status", (request) => {
       expect(request.body).deep.equal({ klar: true });
-      request.reply({ statusCode: 400, body: { message: "dette er en feil" } });
+      request.reply({
+        statusCode: 400,
+        body: { message: "dette er en feil" },
+      });
     });
 
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
     cy.contains("Brevet er klart for sending").click();
 
     //TODO - Her skal vi egentlig på en faktisk feilmelding om at brevet inneholder uendret fritekst
