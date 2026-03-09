@@ -1,4 +1,3 @@
-import { css } from "@emotion/react";
 import { BodyShort, Button, ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
@@ -43,13 +42,7 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
 
   return (
     <ExpansionCard.Content data-cy={`journalpostId-${props.journalpostId}`}>
-      <VStack
-        align="start"
-        css={css`
-          color: var(--ax-text-neutral);
-        `}
-        gap="space-16"
-      >
+      <VStack align="start" gap="space-16">
         <Oppsummeringspar
           size="small"
           tittel="Mottaker"
