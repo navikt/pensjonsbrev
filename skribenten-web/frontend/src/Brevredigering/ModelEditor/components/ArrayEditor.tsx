@@ -1,62 +1,83 @@
-// TODO: reimplement when an example template exists
+import { PlusIcon, TrashIcon } from "@navikt/aksel-icons";
+import { Button, ErrorMessage, HStack, Label, VStack } from "@navikt/ds-react";
+import { useFieldArray, useFormContext } from "react-hook-form";
 
-// import { useState } from "react";
-//
-// import type { FieldType, ObjectTypeSpecifications, TArray } from "~/types/brevbakerTypes";
-//
-// import type { BoundAction } from "../../LetterEditor/lib/actions";
-// import { bindAction } from "../../LetterEditor/lib/actions";
-// import { ModelValueAction } from "../actions";
-// import type { FieldValue } from "../model";
-// import { initValueFromSpec } from "../model";
-// import { FieldEditor } from "./FieldEditor";
-//
-// interface AddArrayValueProperties {
-//   allSpecs: ObjectTypeSpecifications;
-//   spec: FieldType;
-//   addValue: BoundAction<[newValue: FieldValue<FieldType>]>;
-// }
-// const AddArrayValue = ({ allSpecs, spec, addValue }: AddArrayValueProperties) => {
-//   const [value, updateValue] = useState(initValueFromSpec(allSpecs, spec, false));
-//   const doAddValue = () => {
-//     addValue(value);
-//     updateValue(initValueFromSpec(allSpecs, spec, false));
-//   };
-//   return (
-//     <div>
-//       <FieldEditor allSpecs={allSpecs} spec={spec} updateValue={updateValue} value={value} />
-//       <button onClick={doAddValue} type="button">
-//         Add
-//       </button>
-//     </div>
-//   );
-// };
-//
-// export interface ArrayEditorProperties {
-//   allSpecs: ObjectTypeSpecifications;
-//   spec: TArray;
-//   array: FieldValue<TArray>;
-//   updateArray: BoundAction<[FieldValue<TArray>]>;
-// }
-//
-// export const ArrayEditor = ({ allSpecs, spec, array, updateArray }: ArrayEditorProperties) => (
-//   <div>
-//     <ul>
-//       {array.map((item: FieldValue<FieldType>, index: number) => (
-//         <li key={index}>
-//           <FieldEditor
-//             allSpecs={allSpecs}
-//             spec={spec.items}
-//             updateValue={bindAction(ModelValueAction.UpdateArrayIndex, updateArray, array, index)}
-//             value={item}
-//           />
-//         </li>
-//       ))}
-//     </ul>
-//     <AddArrayValue
-//       addValue={bindAction(ModelValueAction.AddToArray, updateArray, array)}
-//       allSpecs={allSpecs}
-//       spec={spec.items}
-//     />
-//   </div>
-// );
+import { useModelSpecification } from "~/api/brev-queries";
+import type { TArray } from "~/types/brevbakerTypes";
+
+import { initValueFromSpec } from "../model";
+import { FieldEditor } from "./ObjectEditor";
+import { convertFieldToReadableLabel } from "./utils";
+
+export const ArrayEditor = ({
+  fieldName,
+  fieldType,
+  brevkode,
+  submitOnChange,
+}: {
+  fieldName: string;
+  fieldType: TArray;
+  brevkode: string;
+  submitOnChange?: () => void;
+}) => {
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext();
+
+  const { specification: objectTypes } = useModelSpecification(brevkode, (s) => s.types);
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: fieldName,
+    rules: !fieldType.nullable
+      ? { validate: (v) => (v as unknown[]).length > 0 || "Minst ett element er påkrevd" }
+      : undefined,
+  });
+
+  const arrayError = (errors[fieldName] as { root?: { message?: string } } | undefined)?.root?.message;
+
+  const handleAppend = () => {
+    append(initValueFromSpec(objectTypes ?? {}, fieldType.items, false) as object);
+    submitOnChange?.();
+  };
+
+  const handleRemove = (index: number) => {
+    remove(index);
+    submitOnChange?.();
+  };
+
+  const label = fieldType.displayText ?? convertFieldToReadableLabel(fieldName);
+
+  return (
+    <VStack gap="space-8">
+      <Label size="small">{label}</Label>
+      {fields.map((field, index) => (
+        <HStack align="start" gap="space-8" key={field.id}>
+          <VStack flexGrow="1" gap="space-8">
+            <FieldEditor
+              brevkode={brevkode}
+              field={String(index)}
+              fieldType={fieldType.items}
+              prependedName={fieldName}
+              submitOnChange={submitOnChange}
+            />
+          </VStack>
+          <Button
+            icon={<TrashIcon aria-hidden />}
+            onClick={() => handleRemove(index)}
+            size="small"
+            type="button"
+            variant="tertiary-neutral"
+          />
+        </HStack>
+      ))}
+      {arrayError && <ErrorMessage size="small">{arrayError}</ErrorMessage>}
+      <div>
+        <Button icon={<PlusIcon aria-hidden />} onClick={handleAppend} size="small" type="button" variant="secondary">
+          Legg til
+        </Button>
+      </div>
+    </VStack>
+  );
+};

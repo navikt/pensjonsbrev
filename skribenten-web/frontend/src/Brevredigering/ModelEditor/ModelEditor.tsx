@@ -133,7 +133,7 @@ export const SaksbehandlerValgModelEditor = (props: {
 
   if (props.fieldsToRender === "required") {
     for (const field of fieldsWithElements.requiredFields) {
-      if (!field.fieldType.nullable) {
+      if (!field.fieldType.nullable && field.fieldType.type !== "array") {
         register(`saksbehandlerValg.${field.field}`, {
           required: "Obligatorisk: du må velge et alternativ",
         });

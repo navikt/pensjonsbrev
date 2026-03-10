@@ -7,44 +7,44 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class ApSimuleringDto(
-    @DisplayText("placeholder")
+    @DisplayText("Alderspensjon liste")
     val alderspensjonListe: List<Alderspensjon>,
-    @DisplayText("placeholder")
+    @DisplayText("Livsvarig Offentlig AFP liste")
     val livsvarigOffentligAfpListe: List<LivsvarigOffentligAfp>,
-    @DisplayText("placeholder")
+    @DisplayText("Tidsbegrenset offentlig AFP")
     val tidsbegrensetOffentligAfp: TidsbegrensetOffentligAfp?,
-    @DisplayText("placeholder")
+    @DisplayText("Privat AFP liste")
     val privatAfpListe: List<PrivatAfp>,
-    @DisplayText("placeholder")
+    @DisplayText("Vilårsprøvingsresultat")
     val vilkaarsproevingsresultat: Vilkaarsproevingsresultat,
-    @DisplayText("placeholder")
+    @DisplayText("Trygdetid")
     val trygdetid: Trygdetid?,
-    @DisplayText("placeholder")
+    @DisplayText("Pensjonsgivende inntekt liste")
     val pensjonsgivendeInntektListe: List<AarligBeloep>
 ) : SaksbehandlerValgBrevdata
 
 data class Alderspensjon(
-    @DisplayText("placeholder")
+    @DisplayText("Alder (antall år)")
     val alderAar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Beløp")
     val beloep: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Gjenlevendetillegg")
     val gjenlevendetillegg: Kroner?
 )
 
 data class LivsvarigOffentligAfp(
-    @DisplayText("placeholder")
+    @DisplayText("Alder (antall år)")
     val alderAar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Årlig beløp")
     val aarligBeloep: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Månedlig beløp")
     val maanedligBeloep: Kroner?
 )
 
 data class TidsbegrensetOffentligAfp(
-    @DisplayText("placeholder")
+    @DisplayText("Alder (antall år)")
     val alderAar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Totalt AFP beløp")
     val totaltAfpBeloep: Kroner,
     @DisplayText("placeholder")
     val tidligereArbeidsinntekt: Kroner,
@@ -73,53 +73,53 @@ data class TidsbegrensetOffentligAfp(
 )
 
 data class PrivatAfp(
-    @DisplayText("placeholder")
+    @DisplayText("Alder (anttall år)")
     val alderAar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Årlig beløp")
     val aarligBeloep: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Kompensasjonstillegg")
     val kompensasjonstillegg: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Kronetillegg")
     val kronetillegg: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Livsvarig beløp")
     val livsvarig: Kroner,
-    @DisplayText("placeholder")
+    @DisplayText("Månedlig beløp")
     val maanedligBeloep: Kroner?
 )
 
 data class Vilkaarsproevingsresultat(
-    @DisplayText("placeholder")
+    @DisplayText("Er innvilget")
     val erInnvilget: Boolean,
-    @DisplayText("placeholder")
+    @DisplayText("Alternativ")
     val alternativ: Uttaksparametre?
 )
 
 data class Trygdetid(
-    @DisplayText("placeholder")
+    @DisplayText("Antall år")
     val antallAar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Er utilstrekkelig")
     val erUtilstrekkelig: Boolean
 )
 
 data class AarligBeloep(
-    @DisplayText("placeholder")
+    @DisplayText("Årstall")
     val aarstall: Year,
-    @DisplayText("placeholder")
+    @DisplayText("Beløp")
     val beloep: Kroner
 )
 
 data class Uttaksparametre(
-    @DisplayText("placeholder")
+    @DisplayText("Gradert uttak alder")
     val gradertUttakAlder: Alder?,
-    @DisplayText("placeholder")
+    @DisplayText("Uttaksgrad")
     val uttaksgrad: Percent?,
-    @DisplayText("placeholder")
+    @DisplayText("Helt uttak alder")
     val heltUttakAlder: Alder
 )
 
 data class Alder(
-    @DisplayText("placeholder")
+    @DisplayText("År")
     val aar: Int,
-    @DisplayText("placeholder")
+    @DisplayText("Måneder")
     val maaneder: Int
 )

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
+import { ArrayEditor } from "~/Brevredigering/ModelEditor/components/ArrayEditor";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
 import {
@@ -52,9 +53,15 @@ export const FieldEditor = ({
     }
     case "array": {
       return (
-        <div>
-          Dette brevet kan ikke bestilles fra Skribenten per nå. Hvis dette er simuleringsbrev, må du gå via kalkulator.
-        </div>
+        // <div>
+        //   Dette brevet kan ikke bestilles fra Skribenten per nå. Hvis dette er simuleringsbrev, må du gå via kalkulator.
+        // </div>
+        <ArrayEditor
+          brevkode={brevkode}
+          fieldName={prependedName ? `${prependedName}.${field}` : field}
+          fieldType={fieldType}
+          submitOnChange={submitOnChange}
+        />
       );
     }
     case "enum": {
