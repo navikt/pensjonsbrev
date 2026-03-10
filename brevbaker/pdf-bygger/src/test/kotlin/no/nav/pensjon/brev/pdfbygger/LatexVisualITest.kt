@@ -367,6 +367,7 @@ class LatexVisualITest {
         when (elementA) {
             ElementType.T1 -> testTitle1()
             ElementType.T2 -> testTitle2()
+            ElementType.T3 -> testTitle3()
             ElementType.PAR -> {
                 paragraph { ipsumText() }
             }
@@ -382,16 +383,32 @@ class LatexVisualITest {
                     testList()
                 }
             }
+            ElementType.NUMBERED_LIST -> {
+                paragraph {
+                    testNumberedList()
+                }
+            }
         }
     }
 
     private fun ParagraphOnlyScope<LangBokmal, *>.testList() {
         list {
             item {
-                text(bokmal { +"Text point 1" })
+                text(bokmal { +"Bullet point 1" })
             }
             item {
-                text(bokmal { +"Text point 2" })
+                text(bokmal { +"Bullet point 2" })
+            }
+        }
+    }
+
+    private fun ParagraphOnlyScope<LangBokmal, *>.testNumberedList() {
+        numberedList {
+            item {
+                text(bokmal { +"Numbered point 1" })
+            }
+            item {
+                text(bokmal { +"Numbered point 2" })
             }
         }
     }
@@ -420,12 +437,18 @@ class LatexVisualITest {
         title2 { text(bokmal { +"Second title" }) }
     }
 
+    private fun OutlineOnlyScope<LangBokmal, *>.testTitle3() {
+        title3 { text(bokmal { +"Third title" }) }
+    }
+
     enum class ElementType(val description: String) {
         T1("Title 1"),
         T2("Title 2"),
+        T3("Title 3"),
         PAR("Paragraph"),
         TABLE("Table"),
-        LIST("Item list")
+        LIST("Item list"),
+        NUMBERED_LIST("Numbered list")
     }
 
     companion object {
