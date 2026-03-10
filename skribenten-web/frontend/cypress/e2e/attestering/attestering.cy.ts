@@ -208,6 +208,9 @@ describe("attestering", () => {
       });
     }).as("attester");
 
+    //fyller inn underskrift for attestant
+    cy.contains("Underskrift").click().type("Attestant Navn");
+
     //attesterer
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
