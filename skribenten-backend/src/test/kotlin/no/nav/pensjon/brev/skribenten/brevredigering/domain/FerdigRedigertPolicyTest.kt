@@ -19,13 +19,13 @@ class FerdigRedigertPolicyTest {
     private val policy = FerdigRedigertPolicy()
 
     @Test
-    fun `tomt brev er klar til sending`() {
+    suspend fun `tomt brev er klar til sending`() {
         val brev = RedigertBrevStub(editedLetter())
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
-    fun `brev uten fritekst er klar til sending`() {
+    suspend fun `brev uten fritekst er klar til sending`() {
         val brev = RedigertBrevStub(
             editedLetter(Edit.Block.Paragraph(null, true, listOf(Edit.ParagraphContent.Text.Literal(null, "lit1"))))
         )
@@ -33,7 +33,7 @@ class FerdigRedigertPolicyTest {
     }
 
     @Test
-    fun `brev med redigert fritekst er klar til sending`() {
+    suspend fun `brev med redigert fritekst er klar til sending`() {
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(
@@ -47,7 +47,7 @@ class FerdigRedigertPolicyTest {
     }
 
     @Test
-    fun `brev med ikke redigert fritekst er ikke klar til sending`() {
+    suspend fun `brev med ikke redigert fritekst er ikke klar til sending`() {
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(
