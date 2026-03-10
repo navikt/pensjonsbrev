@@ -87,7 +87,7 @@ data class LetterMarkupImpl(
 
     object ParagraphContentImpl {
         @InterneDataklasser
-        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>, override val listType: Listetype) : ItemList {
+        data class ItemListImpl(override val id: Int, override val items: List<ItemList.Item>, override val listType: Listetype = Listetype.PUNKTLISTE) : ItemList {
             override val type = ParagraphContent.Type.ITEM_LIST
 
             @InterneDataklasser

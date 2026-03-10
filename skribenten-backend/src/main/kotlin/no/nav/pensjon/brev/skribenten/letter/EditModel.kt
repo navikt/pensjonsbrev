@@ -137,7 +137,7 @@ object Edit {
         data class ItemList(
             override val id: Int?,
             val items: List<Item>,
-            val listType: Listetype,
+            val listType: Listetype = Listetype.PUNKTLISTE,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
