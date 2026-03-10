@@ -6,7 +6,15 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 
-export const UnderskriftTextField = ({ of }: { of: "Saksbehandler" | "Attestant" }) => {
+export const UnderskriftTextField = ({
+  of,
+  error: externalError,
+  controlled = false,
+}: {
+  of: "Saksbehandler" | "Attestant";
+  error?: string;
+  controlled?: boolean;
+}) => {
   const { editorState, setEditorState } = useManagedLetterEditorContext();
 
   const signatur = editorState.redigertBrev.signatur;
@@ -17,14 +25,20 @@ export const UnderskriftTextField = ({ of }: { of: "Saksbehandler" | "Attestant"
   );
 
   const onFocus = useCallback(
-    () => applyAction(Actions.updateFocus, setEditorState, { blockIndex: -1, contentIndex: -1 }),
+    () =>
+      applyAction(Actions.updateFocus, setEditorState, {
+        blockIndex: -1,
+        contentIndex: -1,
+      }),
     [setEditorState],
   );
+
+  const error = controlled ? externalError : (value?.length ?? 0) > 0 ? undefined : "Underskrift må oppgis";
 
   return (
     <TextField
       autoComplete="on"
-      error={(value?.length ?? 0) > 0 ? undefined : "Underskrift må oppgis"}
+      error={error}
       label="Underskrift"
       onChange={update}
       onFocus={onFocus}
