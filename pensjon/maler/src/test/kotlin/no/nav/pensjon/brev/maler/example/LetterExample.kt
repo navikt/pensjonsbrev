@@ -150,25 +150,27 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
                         ifNotNull(tillegg.tillegg1) {
                             item {
                                 text(
-                                    bokmal { + "Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
-                                    nynorsk { + "Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
+                                    bokmal { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
+                                    nynorsk { +"Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
                                 )
                             }
                         }
-                        item { text(bokmal { + "Joda" }, nynorsk { + "Jauda" }) }
+                        item { text(bokmal { +"Joda" }, nynorsk { +"Jauda" }) }
                     }
                     item {
-                        text(bokmal { + "Test1" }, nynorsk { + "Test1" })
+                        text(bokmal { +"Test1" }, nynorsk { +"Test1" })
                     }
                     ifNotNull(datoAvslaatt) { dato ->
                         item {
                             text(
-                                bokmal { + "Du har fått avslag på noe " + dato.format() },
-                                nynorsk { + "Du har fått avslag på noe " + dato.format() }
+                                bokmal { +"Du har fått avslag på noe " + dato.format() },
+                                nynorsk { +"Du har fått avslag på noe " + dato.format() }
                             )
                         }
                     }
+                }
 
+                list {
                     item {
                         text(bokmal { + "Test2" }, nynorsk { + "Test2" })
                     }
