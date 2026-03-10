@@ -188,12 +188,6 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         setForbidReason(reason);
         return;
       }
-      if (err.response?.status === 422) {
-        form.setError("attestantSignatur", {
-          message: "Underskrift må oppgis",
-        });
-        return;
-      }
       setUnexpectedError(err);
     },
   });
