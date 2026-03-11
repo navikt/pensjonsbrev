@@ -2193,18 +2193,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) <> "") THEN      INCLUDE ENDIF
             showIf(bostedutland){
-                title1 {
-                    text(
-                        bokmal { +"Beregningen din kan bli endret" },
-                        nynorsk { +"Berekninga di kan bli endra" },
-                    )
-                }
-                paragraph {
-                    text (
-                        bokmal { + "Når vi mottar vedtak fra utenlandske trygdemyndigheter, fatter vi et nytt vedtak der vi gjør en endelig beregning av uføretrygden din. Hvis det viser seg at du har fått utbetalt mer enn du skulle, kan vi kreve at du betaler tilbake det du skylder. Hvis du får etterbetalt penger fra en utenlandsk trygdemyndighet, kan vi trekke det du skylder fra etterbetalingen." },
-                        nynorsk { + "Når vi får vedtak frå utanlandske trygdeorgan, fattar vi eit nytt vedtak der vi reknar ut uføretrygda di endeleg. Viss det viser seg at du har fått betalt ut meir enn du skulle ha, kan vi krevje at du betaler tilbake det du skuldar. Viss du får etterbetalt pengar frå eit utanlandsk trygdeorgan, kan vi trekkje det du skuldar frå etterbetalinga." },
-                    )
-                }
+                includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
             }
 
             //IF(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) <> "nor" AND PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) <> "") THEN      INCLUDE ENDIF
