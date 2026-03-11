@@ -7,11 +7,7 @@ import { useModelSpecification } from "~/api/brev-queries";
 import { ArrayEditor } from "~/Brevredigering/ModelEditor/components/ArrayEditor";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
 import { ScalarEditor } from "~/Brevredigering/ModelEditor/components/ScalarEditor";
-import {
-  convertFieldToReadableLabel,
-  getFieldDefaultValue,
-  isFieldNullableOrBoolean,
-} from "~/Brevredigering/ModelEditor/components/utils";
+import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import type { FieldType } from "~/types/brevbakerTypes";
 
 export const FieldEditor = ({
@@ -88,20 +84,18 @@ export const ObjectEditor = ({ brevkode, typeName, parentFieldName, submitOnChan
 
   return (
     <>
-      {Object.entries(objectTypeSpecification ?? {})
-        .filter(([, fieldType]) => !isFieldNullableOrBoolean(fieldType))
-        .map(([field, fieldType]) => {
-          const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
-          return (
-            <FieldEditor
-              brevkode={brevkode}
-              field={fieldName}
-              fieldType={fieldType}
-              key={field}
-              submitOnChange={submitOnChange}
-            />
-          );
-        })}
+      {Object.entries(objectTypeSpecification ?? {}).map(([field, fieldType]) => {
+        const fieldName = parentFieldName ? `${parentFieldName}.${field}` : field;
+        return (
+          <FieldEditor
+            brevkode={brevkode}
+            field={fieldName}
+            fieldType={fieldType}
+            key={field}
+            submitOnChange={submitOnChange}
+          />
+        );
+      })}
     </>
   );
 };

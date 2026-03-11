@@ -30,12 +30,11 @@ export const ArrayEditor = ({
   const { fields, append, remove } = useFieldArray({
     control,
     name: fieldName,
-    rules: !fieldType.nullable
-      ? { validate: (v) => (v as unknown[]).length > 0 || "Minst ett element er påkrevd" }
-      : undefined,
   });
 
-  const arrayError = (errors[fieldName] as { root?: { message?: string } } | undefined)?.root?.message;
+  const arrayError = `${fieldName}.root.message`
+    .split(".")
+    .reduce<unknown>((acc, key) => (acc as Record<string, unknown>)?.[key], errors) as string | undefined;
 
   const handleAppend = () => {
     append(initValueFromSpec(objectTypes ?? {}, fieldType.items, false) as object);
