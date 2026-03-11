@@ -344,8 +344,16 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
             showIf(saksbehandlerValg.brukerHarSoktAfpPrivat) {
                 paragraph {
                     text(
-                        bokmal { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen " +fritekst("fritekst") },
-                        nynorsk { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen "+fritekst("fritekst") }
+                        bokmal {
+                            +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen " + fritekst(
+                                "fritekst"
+                            )
+                        },
+                        nynorsk {
+                            +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen " + fritekst(
+                                "fritekst"
+                            )
+                        }
                     )
                 }
 
