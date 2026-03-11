@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.dsl
 
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.ContentOrControlStructure.Content
 
@@ -52,7 +53,14 @@ sealed interface ParagraphScope<Lang : LanguageSupport, LetterData : Any> : Text
 
     fun list(create: ListScope<Lang, LetterData>.() -> Unit) {
         ListScope<Lang, LetterData>().apply(create)
-            .let { Element.OutlineContent.ParagraphContent.ItemList(it.elements) }
+            .let { Element.OutlineContent.ParagraphContent.ItemList(it.elements, type = Listetype.PUNKTLISTE) }
+            .let { Content(it) }
+            .also { addParagraphContent(it) }
+    }
+
+    fun numberedList(create: ListScope<Lang, LetterData>.() -> Unit) {
+        ListScope<Lang, LetterData>().apply(create)
+            .let { Element.OutlineContent.ParagraphContent.ItemList(it.elements, type = Listetype.NUMMERERT_LISTE) }
             .let { Content(it) }
             .also { addParagraphContent(it) }
     }

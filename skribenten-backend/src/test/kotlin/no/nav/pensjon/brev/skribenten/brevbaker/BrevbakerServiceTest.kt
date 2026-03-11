@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -38,7 +39,8 @@ class BrevbakerServiceTest {
                                     )
                                 )
                             )
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                     LetterMarkupImpl.ParagraphContentImpl.TableImpl(
                         12,

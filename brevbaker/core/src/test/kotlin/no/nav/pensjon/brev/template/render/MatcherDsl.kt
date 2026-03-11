@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render
 
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.template.render.LetterWithAttachmentsMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
@@ -166,6 +167,7 @@ class ContentAssert {
 
 class ListAssert {
     private val itemMatchers = mutableListOf<Matcher<ItemList.Item>>()
+    private val listTypeMatchers = mutableListOf<Matcher<Listetype>>()
 
     fun item(that: ContentAssert.() -> Unit) {
         itemMatchers.add({
@@ -173,11 +175,16 @@ class ListAssert {
         })
     }
 
+    fun listType(expected: Listetype) {
+        listTypeMatchers.add({ assertThat(it).isEqualTo(expected) })
+    }
+
     fun build(): Matcher<ItemList> = { actual ->
         assertThat(actual.items).hasSameSizeAs(itemMatchers)
         itemMatchers.forEachIndexed { index, assertion ->
             assertThat(actual.items[index]).satisfies(assertion)
         }
+        listTypeMatchers.forEach { it(actual.listType) }
     }
 }
 

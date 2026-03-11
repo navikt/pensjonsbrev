@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.pensjon.brev.template.Language
@@ -29,6 +30,26 @@ class TemplateListTest {
         assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
             title1 { literal("this text should render") }
             paragraph { }
+        }
+    }
+
+    @Test
+    fun `numberedList renders with NUMMERERT_LISTE list type`() {
+        val doc = outlineTestTemplate<EmptyAutobrevdata> {
+            paragraph {
+                numberedList {
+                    item { text(bokmal { +"First item" }) }
+                }
+            }
+        }
+
+        assertThat(Letter2Markup.render(LetterImpl(doc, EmptyAutobrevdata, Language.Bokmal, FellesFactory.felles)).letterMarkup).hasBlocks {
+            paragraph {
+                list {
+                    listType(Listetype.NUMMERERT_LISTE)
+                    item { literal("First item") }
+                }
+            }
         }
     }
 }
