@@ -46,8 +46,8 @@ data class BeregningsDetaljer(
         }
         paragraph {
             text(
-                bokmal { +"Beløp: " + beloep.format() + " kroner" },
-                nynorsk { +"Beløp: " + beloep.format() + " kroner" }
+                bokmal { +"Beløp: " + beloep.format() },
+                nynorsk { +"Beløp: " + beloep.format() }
             )
         }
     }

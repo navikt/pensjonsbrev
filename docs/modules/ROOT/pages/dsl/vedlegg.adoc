@@ -2,7 +2,7 @@
 :source-highlighter: highlight.js
 
 = Vedlegg (WIP)
-
+//TODO namedReference
 Vedlegg er separate dokumenter som kan inkluderes i et brev. I brevbakeren er de fortsatt i samme pdf, men de kommer på eget ark.
 
 == Definere et vedlegg
@@ -39,7 +39,7 @@ Se: xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
 |Om sakspartinformasjon skal vises (navn, adresse osv.)
 
 |`<Data>`
-|Datatypen vedlegget bruker (kan være Unit hvis ingen data trengs)
+|Datatypen vedlegget bruker (kan være EmptyVedleggData hvis ingen data trengs)
 |===
 
 == Inkludere vedlegg i brev
@@ -93,14 +93,14 @@ val generellInfoVedlegg = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
 ) {
     paragraph {
         text(
-            bokmal { +"Her er generell informasjon om NAV." },
-            nynorsk { +"Her er generell informasjon om NAV." }
+            bokmal { +"Her er generell informasjon om Nav." },
+            nynorsk { +"Her er generell informasjon om Nav." }
         )
     }
 }
 
 // I malen
-includeAttachment(generellInfoVedlegg, Unit)
+includeAttachment(generellInfoVedlegg, EmptyVedleggData)
 ----
 
 == Eksempel: Komplett vedlegg
@@ -166,6 +166,6 @@ val detaljertBeregning = createAttachment<LangBokmalNynorsk, BeregningDto>(
 
 == Se også
 
-* xref:dsl/scopes.adoc#OutlineOnlyScope[OutlineOnlyScope]
+* xref:dsl/scopes.adoc#OutlineScope[OutlineScope]
 * xref:dsl/kontroll-struktur/showIf.adoc[]
 

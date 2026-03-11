@@ -74,20 +74,20 @@ TIP: Bruk `format(denominator = false)` for å utelate "kroner"/"NOK".
 
 === Desimaltall (Double)
 
-Desimaltall formateres med angitt antall desimaler via `scale`-parameteren.
+Desimaltall formateres med angitt antall desimaler via `scale`-parameteren. Default antall er 2.
 
 .Input data
 [source,kotlin]
 ----
-val prosent: Expression<Double> = 66.666.expr()
+val prosent: Expression<Double> = 66.66666.expr()
 ----
 
 .Kode
 [source,kotlin]
 ----
 text(
-    bokmal { +"Prosentsatsen er " + prosent.format(scale = 2) + " %." },
-    english { +"The percentage is " + prosent.format(scale = 2) + " %." }
+    bokmal { +"Prosentsatsen er " + prosent.format(scale = 3) + " %." },
+    english { +"The percentage is " + prosent.format(scale = 3) + " %." }
 )
 ----
 
@@ -97,10 +97,10 @@ text(
 |Språk |Resultat
 
 |Bokmål
-|Prosentsatsen er 66,67 %.
+|Prosentsatsen er 66,666 %.
 
 |English
-|The percentage is 66.67 %.
+|The percentage is 66.666 %.
 |===
 
 == Datoer

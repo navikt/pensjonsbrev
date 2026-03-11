@@ -3,21 +3,23 @@
 
 = Hvordan utvikle en ny brevmal steg for steg
 
+Om det mangler noen steg her, legg de gjerne til.
+
 == Steg 1: Opprette en ny brevmal
 
-=== 1.1 Opprett Dto(data-klasse) for brevet i API-modellen
+=== 1.1 Opprett Dto(data-klasse) for brevet i API-modellen (for alder/uføre brev)
 
 Først må du definere dataklassen som beskriver informasjonsbehovet til malen.
 
-I api-model prosjektet, opprett en ny data-klasse, og fyll den ut etterhvert som du skriver brevet:
+I api-model prosjektet under alder eller uføre modulene, opprett en ny data-klasse, og fyll den ut etterhvert som du skriver brevet:
 
-Når man legger til nye verdier underveis er det nødvendig å publisere api-modellen lokalt og bygge mal-modulen på nytt.
+Når man legger til nye verdier underveis er det nødvendig å publisere api-modellen lokalt og bygge relevant mal-modul på nytt.
 
 [source,kotlin]
 ----
-// I f.eks pensjon/brevbaker/api/model/maler/
+// I f.eks pensjonsbrev/alder/api-model/.../maler/<relevantDomene>/
 data class MittBrevDto(
-    val uforegrad: Int,
+    val uforegrad: Percent,
     val virkningFom: LocalDate,
     val maanedligBeloep: Kroner,
     val harBarnetillegg: Boolean,
@@ -33,6 +35,8 @@ data class MittBrevDto(
 TIP: Når du legger til nye felter, se om det er mulig å data-minimere.
 Kompleks forretnings-logikk hører ikke hjemme i brevmaler.
 Ofte kan man uttrykke kompleks logikk som ett boolsk uttrykk som beskriver situasjonen vi ønsker å agere på mer nøyaktig.
+
+TIP: Legg api-modellen under samme domene-mappe som malen slik at den blir lett å finne.
 
 
 === 1.2 Legg til brevkode
@@ -141,6 +145,7 @@ object EndringAvAlderspensjonPgaGarantitillegg : RedigerbarTemplate<EndringAvAld
 
 ----
 
+
 Fortsett og fyll ut resten av innholdet, logikken, vedleggene, inndata osv.
 
 For mer detaljer om funksjonalitet som kan brukes til å definere innhold, les videre i dokumentasjonen:
@@ -148,3 +153,7 @@ xref:dsl/scopes.adoc[]
 
 == 2.2
 Legg inn malen i ProductionTemplates.kt under relevant modul.
+
+== 2.3
+Dersom brevet tar inn data eller saksbehandlervalg krever vi at det lages en stub/fixture av dataene.
+Dette er for å kunne teste alle malene. Da kan man også se hvordan malen ser ut fra output av testene [ufoere/alder]/maler/build/test_html/...

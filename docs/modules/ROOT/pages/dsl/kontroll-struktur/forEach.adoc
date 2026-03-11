@@ -127,7 +127,7 @@ forEach(beregninger) { beregning ->
         list {
             forEach(beregning.poster) { post ->
                 item {
-                    text(bokmal { +post.beskrivelse + ": " + post.beloep.format() + " kroner" })
+                    text(bokmal { +post.beskrivelse + ": " + post.beloep.format() })
                 }
             }
         }
@@ -149,7 +149,7 @@ showIf(inntekter.isNotEmpty()) {
         list {
             forEach(inntekter) { inntekt ->
                 item {
-                    text(bokmal { +inntekt.kilde + ": " + inntekt.beloep.format() + " kroner" })
+                    text(bokmal { +inntekt.kilde + ": " + inntekt.beloep.format() })
                 }
             }
         }
