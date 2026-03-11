@@ -169,10 +169,10 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<Innvilge
                 )
             }
 
-            paragraph {
+            title1 {
                 text (
                     bokmal { + "Begrunnelse for vedtaket" },
-                    nynorsk { + "Begrunnelse for vedtaket" },
+                    nynorsk { + "Grunngiving for vedtaket" },
                 )
             }
 
