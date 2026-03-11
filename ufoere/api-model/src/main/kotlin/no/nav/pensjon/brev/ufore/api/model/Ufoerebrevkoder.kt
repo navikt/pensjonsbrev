@@ -66,6 +66,7 @@ object Ufoerebrevkoder {
         UT_S_HVILENDE_RETT_MIDL_OPPHOER,
         UT_S_HVILENDE_RETT_OPPHOER,
         UT_S_HVILENDE_RETT_VARSEL_OPPHOER,
+        UT_HONNORKORT,
         ;
 
         override fun kode(): String = this.name
