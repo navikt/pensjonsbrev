@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.services
+package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import com.typesafe.config.ConfigValueFactory
 import kotlinx.coroutines.runBlocking
@@ -7,10 +7,18 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
-import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.BrevId
+import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
+import no.nav.pensjon.brev.skribenten.model.Dto
+import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
+import no.nav.pensjon.brev.skribenten.services.FakeBrevmetadataService
+import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
@@ -68,6 +76,6 @@ class ExternalAPIServiceTest {
     @Test
     fun `legger til url for aa aapne brev i skribenten`(): Unit = runBlocking {
         val brev = externalAPIService.hentAlleBrevForSaker(setOf(saksId)).single()
-        assertThat(brev.url).startsWith(skribentenWebUrl).endsWith("/214")
+        Assertions.assertThat(brev.url).startsWith(skribentenWebUrl).endsWith("/214")
     }
 }

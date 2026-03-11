@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.routes
+package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respond
@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.model.SaksId
-import no.nav.pensjon.brev.skribenten.services.ExternalAPIService
 
 fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIService) =
     authenticate(authConfig.name) {

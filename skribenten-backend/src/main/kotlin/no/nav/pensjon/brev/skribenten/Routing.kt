@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
+import no.nav.pensjon.brev.skribenten.eksterntApi.externalAPI
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService

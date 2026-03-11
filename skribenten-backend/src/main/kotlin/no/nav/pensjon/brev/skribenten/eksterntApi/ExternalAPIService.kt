@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.skribenten.services
+package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -6,8 +6,9 @@ import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.model.ExternalAPI
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPI
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.services.toApi
 import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
