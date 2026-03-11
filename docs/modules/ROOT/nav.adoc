@@ -7,5 +7,30 @@
 .For utviklere
 * xref:skribenten-beskrivelse.adoc[Skribenten – teknisk beskrivelse]
 * xref:brevbaker-arkitektur.adoc[Brevbaker – arkitektur]
-* xref:brevbaker-hvordan-utvikle-maler.adoc[Brevbaker – utvikle maler]
 * xref:brevbaker-pdfbygger-beskrivelse.adoc[PDFbygger – teknisk beskrivelse]
+* xref:dsl/index.adoc[DSL (WIP)]
+** xref:dsl/index.adoc[Quickstart]
+** xref:dsl/stegvis guide nytt brev.adoc[]
+** xref:dsl/scopes.adoc[]
+** xref:dsl/brevmal.adoc[]
+** xref:dsl/vedlegg.adoc[]
+
+** Paragraph
+*** xref:dsl/paragraph/lister.adoc[]
+*** xref:dsl/paragraph/tabeller.adoc[]
+
+** xref:dsl/kontroll-struktur/index.adoc[]
+*** xref:dsl/kontroll-struktur/showIf.adoc[]
+*** xref:dsl/kontroll-struktur/ifNotNull.adoc[]
+*** xref:dsl/kontroll-struktur/forEach.adoc[]
+*** xref:dsl/kontroll-struktur/predikat.adoc[]
+
+** xref:dsl/fraser/oversikt.adoc[]
+*** xref:dsl/fraser/outlinePhrase.adoc[]
+*** xref:dsl/fraser/paragraphPhrase.adoc[]
+*** xref:dsl/fraser/plainTextPhrase.adoc[]
+*** xref:dsl/fraser/textOnlyPhrase.adoc[]
+
+** xref:dsl/text/index.adoc[Text]
+*** xref:dsl/text/formattering.adoc[]
+*** xref:dsl/text/ifElse.adoc[]
