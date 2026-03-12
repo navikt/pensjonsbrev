@@ -23,6 +23,7 @@ import {
   type ItemList,
   LITERAL,
   type LiteralValue,
+  ListType,
   NEW_LINE,
   type NewLine,
   PARAGRAPH,
@@ -542,11 +543,17 @@ export function newItem({
   };
 }
 
-export function newItemList(args: { id?: Nullable<number>; items: Item[]; deletedItems?: number[] }): ItemList {
+export function newItemList(args: {
+  id?: Nullable<number>;
+  listType?: ListType;
+  items: Item[];
+  deletedItems?: number[];
+}): ItemList {
   return {
     id: args.id ?? null,
     parentId: null,
     type: "ITEM_LIST",
+    listType: args.listType ?? ListType.PUNKTLISTE,
     items: args.items,
     deletedItems: args.deletedItems ?? [],
   };

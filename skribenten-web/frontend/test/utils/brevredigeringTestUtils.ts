@@ -18,6 +18,7 @@ import {
   FontType,
   type Item,
   type ItemList,
+  ListType,
   type LiteralValue,
   type ParagraphBlock,
   type Sakspart,
@@ -29,7 +30,7 @@ import {
   type Title3Block,
   type VariableValue,
 } from "~/types/brevbakerTypes";
-import { type Nullable } from "~/types/Nullable";
+import type { Nullable } from "~/types/Nullable";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),
@@ -211,10 +212,11 @@ export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] })
 });
 
 //TODO - kan heller bruke newItemList fra common.ts
-export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
+export const nyItemList = (args: { id?: Nullable<number>; listType?: ListType; items?: Item[] }): ItemList => ({
   type: "ITEM_LIST",
   id: args.id ?? null,
   parentId: null,
+  listType: args.listType ?? ListType.PUNKTLISTE,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
 });

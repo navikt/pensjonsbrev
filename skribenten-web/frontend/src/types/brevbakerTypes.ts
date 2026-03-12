@@ -104,9 +104,15 @@ export enum FontType {
   ITALIC = "ITALIC",
 }
 
+export enum ListType {
+  PUNKTLISTE = "PUNKTLISTE",
+  NUMMERERT_LISTE = "NUMMERERT_LISTE",
+}
+
 export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
   readonly type: typeof ITEM_LIST;
+  readonly listType: ListType;
   readonly items: Item[];
   readonly deletedItems: number[];
 };
