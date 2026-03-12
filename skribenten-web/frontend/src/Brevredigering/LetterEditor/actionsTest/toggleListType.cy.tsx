@@ -564,6 +564,35 @@ describe("blanding av liste-typer", () => {
     cy.viewport(800, 1400);
   });
 
+  it("toggler midterste punkt i en punktliste med 5 punkt til nummerert liste – hele listen bytter type", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ items: newItems("item1", "item2", "item3", "item4", "item5") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ul").should("have.length", 1);
+    cy.get("ul li").should("have.length", 5);
+
+    cy.get("ul li span").contains("item3").click();
+    cy.getDataCy("editor-number-list").click();
+
+    cy.get("ul").should("have.length", 0);
+    cy.get("ol").should("have.length", 1);
+    cy.get("ol li").should("have.length", 5);
+    cy.get("ol li").eq(0).contains("item1");
+    cy.get("ol li").eq(1).contains("item2");
+    cy.get("ol li").eq(2).contains("item3");
+    cy.get("ol li").eq(3).contains("item4");
+    cy.get("ol li").eq(4).contains("item5");
+  });
+
   it("toggler første punkt av punktliste og gjør det om til nummerert liste, andre punkt forblir punktliste", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
