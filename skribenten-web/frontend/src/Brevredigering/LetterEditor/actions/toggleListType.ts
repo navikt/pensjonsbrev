@@ -22,12 +22,12 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
     return;
   }
 
-  const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
-  if (isTextContent(theContentTheUserIsOn)) {
+  const blockContent = block.content[literalIndex.contentIndex];
+  if (isTextContent(blockContent)) {
     toggleListOn(draft, literalIndex, listType);
     mergeListWithAdjacentBlocks(draft, draft.focus.blockIndex, draft.focus.contentIndex, listType);
-  } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
-    if (theContentTheUserIsOn.listType === listType) {
+  } else if (isItemList(blockContent) && "itemIndex" in literalIndex) {
+    if (blockContent.listType === listType) {
       toggleListOff(draft, literalIndex as ItemContentIndex);
     } else {
       switchListType(draft, literalIndex, listType);
@@ -60,51 +60,50 @@ const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIn
 };
 
 /**
- * Når vi lager et punkt, så må vi ta høyde for at det kan være en punktliste før, etter, eller
- * ingen punktliste.  Det kan finnes punktliste i blokk før, blokk etter, eller begge. Det kan også
- * være punktliste i samme blokk, før / etter / begge, på literalen vi er på
+ * Når vi lager et nytt listeelement, må vi ta høyde for at det kan ligge inntil en eksisterende liste.  Det kan
+ * være en liste i blokken før, etter, eller begge. Det kan også være en liste i samme
+ * blokk; før, etter eller begge.
  *
- * Det vil si at når vi converterer en literal til en ny punktliste, merger vi med
- * nabo-punktlistene, hvis de eksisterer Så må vi sjekke om det finnes nabo-punktlister på
- * blokk-nivå, og merge de også
+ * Det vil si at når vi konverterer en literal til en liste, må vi merge med
+ * nabolister - hvis de eksisterer - i samme blokk eller naboblokk.
  *
- * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til
- * editorstaten til å være på rett plass
+ * Denne mergingen kan også påvirke adressen til fokus
  */
 const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   draft.saveStatus = "DIRTY";
 
-  const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
-  const theIndexOfTheContent = literalIndex.contentIndex;
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const contentIndex = literalIndex.contentIndex;
 
   // move sentence into a new item list
-  const sentenceIndex = findAdjoiningContent(theIndexOfTheContent, thisBlock.content, isTextContent);
-  const sentence = removeElements(sentenceIndex.startIndex, sentenceIndex.count, {
-    content: thisBlock.content,
-    deletedContent: thisBlock.deletedContent,
-    id: thisBlock.id,
+  const textIndex = findAdjoiningContent(contentIndex, block.content, isTextContent);
+  const text = removeElements(textIndex.startIndex, textIndex.count, {
+    content: block.content,
+    deletedContent: block.deletedContent,
+    id: block.id,
   }).filter(isTextContent);
   addElements(
-    [newItemList({ listType, items: [newItem({ content: sentence })] })],
-    sentenceIndex.startIndex,
-    thisBlock.content,
-    thisBlock.deletedContent,
+    [newItemList({ listType, items: [newItem({ content: text })] })],
+    textIndex.startIndex,
+    block.content,
+    block.deletedContent,
   );
 
-  // merge adjoining item lists of the same type only
-  const itemListsIndex = findAdjoiningContent(
-    sentenceIndex.startIndex,
-    thisBlock.content,
+  // merge with neighbors
+  const itemListIndex = findAdjoiningContent(
+    textIndex.startIndex,
+    block.content,
     (c): c is ItemList => isItemList(c) && c.listType === listType,
   );
-  const itemLists = removeElements(itemListsIndex.startIndex, itemListsIndex.count, {
-    content: thisBlock.content,
-    deletedContent: thisBlock.deletedContent,
-    id: thisBlock.id,
+  const itemLists = removeElements(itemListIndex.startIndex, itemListIndex.count, {
+    content: block.content,
+    deletedContent: block.deletedContent,
+    id: block.id,
   }).filter(isItemList);
 
+  // TODO(stw): May this fail if there are no list with ID?
   // Collect all items from the lists to merge, preserving order.
-  // We identify the list with a non-null id to keep (so the backend can track it),
+  // Identify a list with a non-null id to keep (so the backend can track it),
   // falling back to the last list in the sequence.
   const listWithId = itemLists.find((l) => l.id !== null) ?? itemLists[itemLists.length - 1];
   const allItems = itemLists.flatMap((l) => [...l.items]);
@@ -116,15 +115,15 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
     items: allItems,
     deletedItems: allDeletedItems,
   });
-  addElements([mergedList], itemListsIndex.startIndex, thisBlock.content, thisBlock.deletedContent);
+  addElements([mergedList], itemListIndex.startIndex, block.content, block.deletedContent);
 
   // update focus
-  const newItemIndex = mergedList.items.findIndex((i) => isEqual(i.content, sentence));
+  const newItemIndex = mergedList.items.findIndex((i) => isEqual(i.content, text));
   draft.focus = {
     blockIndex: literalIndex.blockIndex,
-    contentIndex: itemListsIndex.startIndex,
+    contentIndex: itemListIndex.startIndex,
     itemIndex: newItemIndex,
-    itemContentIndex: theIndexOfTheContent - sentenceIndex.startIndex,
+    itemContentIndex: contentIndex - textIndex.startIndex,
     cursorPosition: draft.focus.cursorPosition,
   };
 };
@@ -176,7 +175,7 @@ const mergeAdjacentListsInBlock = (
 };
 
 /**
- * also end/start with a same-type list, and merge them all into one paragraph with one list.
+ * If end/start with a same-type list, merge them all into one paragraph with one list.
  */
 const mergeListWithAdjacentBlocks = (
   draft: Draft<LetterEditorState>,
@@ -261,10 +260,9 @@ const mergeListWithAdjacentBlocks = (
 };
 
 /**
- * - om det er det første punktet så flyttes item.content ut i block.content før listen
- * - om det er det siste punktet så flyttes item.content ut i block.content etter listen
- * - om det er et punkt i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
- *
+ * - om det er det første elelentet så flyttes item.content ut i block.content før listen
+ * - om det er det siste elementet så flyttes item.content ut i block.content etter listen
+ * - om det er et element i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
  */
 const toggleListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
