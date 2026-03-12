@@ -1,4 +1,4 @@
-import type { Draft } from "immer";
+import { current, type Draft } from "immer";
 import { isEqual } from "lodash";
 
 import { type ItemList, ListType } from "~/types/brevbakerTypes";
@@ -25,6 +25,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
   const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
   if (isTextContent(theContentTheUserIsOn)) {
     toggleListOn(draft, literalIndex, listType);
+    mergeListWithAdjacentBlocks(draft, listType);
   } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
     if (theContentTheUserIsOn.listType === listType) {
       toggleListOff(draft, literalIndex as ItemContentIndex);
@@ -115,7 +116,85 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
 };
 
 /**
- * Fjerner angitt punkt fra en liste, og flytter item.content ut til block.content.
+ * After toggling a text content to a list within a block, check if the previous and next blocks
+ * also end/start with a same-type list, and merge them all into one paragraph with one list.
+ */
+const mergeListWithAdjacentBlocks = (draft: Draft<LetterEditorState>, listType: ListType) => {
+  const blocks = draft.redigertBrev.blocks;
+  let blockIndex = draft.focus.blockIndex;
+  const contentIndex = draft.focus.contentIndex;
+
+  const currentBlock = blocks[blockIndex];
+  if (!currentBlock || currentBlock.type !== "PARAGRAPH") return;
+
+  const currentList = currentBlock.content[contentIndex];
+  if (!isItemList(currentList) || currentList.listType !== listType) return;
+
+  // Check previous block: if its last content is a same-type ITEM_LIST, merge it in front.
+  if (blockIndex > 0) {
+    const prevBlock = blocks[blockIndex - 1];
+    if (prevBlock.type === "PARAGRAPH" && prevBlock.content.length > 0) {
+      const lastPrevContent = prevBlock.content[prevBlock.content.length - 1];
+      if (isItemList(lastPrevContent) && lastPrevContent.listType === listType) {
+        const prevItems = current(lastPrevContent.items);
+        const prevDeletedItems = current(lastPrevContent.deletedItems);
+
+        removeElements(prevBlock.content.length - 1, 1, {
+          content: prevBlock.content,
+          deletedContent: prevBlock.deletedContent,
+          id: prevBlock.id,
+        });
+
+        if (prevBlock.content.length === 0) {
+          removeElements(blockIndex - 1, 1, {
+            content: blocks,
+            deletedContent: draft.redigertBrev.deletedBlocks,
+            id: null,
+          });
+          blockIndex--;
+        }
+
+        const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
+        curList.items.unshift(...(prevItems as ItemList["items"]));
+        curList.deletedItems.push(...(prevDeletedItems as ItemList["deletedItems"]));
+        draft.focus.blockIndex = blockIndex;
+      }
+    }
+  }
+
+  // Check next block: if its first content is a same-type ITEM_LIST, merge it at the end.
+  const nextBlockIndex = blockIndex + 1;
+  if (nextBlockIndex < blocks.length) {
+    const nextBlock = blocks[nextBlockIndex];
+    if (nextBlock.type === "PARAGRAPH" && nextBlock.content.length > 0) {
+      const firstNextContent = nextBlock.content[0];
+      if (isItemList(firstNextContent) && firstNextContent.listType === listType) {
+        const nextItems = current(firstNextContent.items);
+        const nextDeletedItems = current(firstNextContent.deletedItems);
+
+        removeElements(0, 1, {
+          content: nextBlock.content,
+          deletedContent: nextBlock.deletedContent,
+          id: nextBlock.id,
+        });
+
+        if (nextBlock.content.length === 0) {
+          removeElements(nextBlockIndex, 1, {
+            content: blocks,
+            deletedContent: draft.redigertBrev.deletedBlocks,
+            id: null,
+          });
+        }
+
+        const curList = blocks[blockIndex].content[contentIndex] as Draft<ItemList>;
+        curList.items.push(...(nextItems as ItemList["items"]));
+        curList.deletedItems.push(...(nextDeletedItems as ItemList["deletedItems"]));
+      }
+    }
+  }
+};
+
+/**
  * - om det er det første punktet så flyttes item.content ut i block.content før listen
  * - om det er det siste punktet så flyttes item.content ut i block.content etter listen
  * - om det er et punkt i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
