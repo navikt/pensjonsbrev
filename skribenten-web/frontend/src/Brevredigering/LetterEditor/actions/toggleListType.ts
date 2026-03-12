@@ -25,12 +25,26 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
   const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
   if (isTextContent(theContentTheUserIsOn)) {
     toggleListOn(draft, literalIndex, listType);
-    mergeListWithAdjacentBlocks(draft, listType);
+    mergeListWithAdjacentBlocks(draft, draft.focus.blockIndex, draft.focus.contentIndex, listType);
   } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
     if (theContentTheUserIsOn.listType === listType) {
       toggleListOff(draft, literalIndex as ItemContentIndex);
     } else {
       switchListType(draft, literalIndex, listType);
+      const { newContentIndex, itemIndexOffset } = mergeAdjacentListsInBlock(
+        draft,
+        literalIndex.blockIndex,
+        literalIndex.contentIndex,
+        listType,
+      );
+      draft.focus = {
+        blockIndex: literalIndex.blockIndex,
+        contentIndex: newContentIndex,
+        itemIndex: itemIndexOffset + (literalIndex as ItemContentIndex).itemIndex,
+        itemContentIndex: (literalIndex as ItemContentIndex).itemContentIndex,
+        cursorPosition: draft.focus.cursorPosition,
+      };
+      mergeListWithAdjacentBlocks(draft, literalIndex.blockIndex, newContentIndex, listType);
     }
   }
 };
@@ -116,13 +130,62 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
 };
 
 /**
- * After toggling a text content to a list within a block, check if the previous and next blocks
+ * After switching a list's type in-place, merges it with any immediately adjacent same-type
+ * lists within the same block. Returns the new contentIndex of the merged list and the number
+ * of items prepended from lists that preceded the current list (used to update itemIndex).
+ */
+const mergeAdjacentListsInBlock = (
+  draft: Draft<LetterEditorState>,
+  blockIndex: number,
+  contentIndex: number,
+  listType: ListType,
+): { newContentIndex: number; itemIndexOffset: number } => {
+  const block = draft.redigertBrev.blocks[blockIndex];
+  if (!block || block.type !== "PARAGRAPH") return { newContentIndex: contentIndex, itemIndexOffset: 0 };
+
+  const currentList = block.content[contentIndex];
+  if (!isItemList(currentList) || currentList.listType !== listType)
+    return { newContentIndex: contentIndex, itemIndexOffset: 0 };
+
+  const itemListsIndex = findAdjoiningContent(
+    contentIndex,
+    block.content,
+    (c): c is ItemList => isItemList(c) && c.listType === listType,
+  );
+
+  if (itemListsIndex.count <= 1) return { newContentIndex: contentIndex, itemIndexOffset: 0 };
+
+  const itemLists = removeElements(itemListsIndex.startIndex, itemListsIndex.count, {
+    content: block.content,
+    deletedContent: block.deletedContent,
+    id: block.id,
+  }).filter(isItemList);
+
+  // Count items from lists that preceded the current list in the adjoining range.
+  const currentListPosition = contentIndex - itemListsIndex.startIndex;
+  const itemIndexOffset = itemLists.slice(0, currentListPosition).reduce((sum, l) => sum + l.items.length, 0);
+
+  const listWithId = itemLists.find((l) => l.id !== null) ?? itemLists[itemLists.length - 1];
+  const allItems = itemLists.flatMap((l) => [...l.items]);
+  const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
+
+  const mergedList = newItemList({ id: listWithId.id, listType, items: allItems, deletedItems: allDeletedItems });
+  addElements([mergedList], itemListsIndex.startIndex, block.content, block.deletedContent);
+
+  return { newContentIndex: itemListsIndex.startIndex, itemIndexOffset };
+};
+
+/**
  * also end/start with a same-type list, and merge them all into one paragraph with one list.
  */
-const mergeListWithAdjacentBlocks = (draft: Draft<LetterEditorState>, listType: ListType) => {
+const mergeListWithAdjacentBlocks = (
+  draft: Draft<LetterEditorState>,
+  initialBlockIndex: number,
+  contentIndex: number,
+  listType: ListType,
+) => {
   const blocks = draft.redigertBrev.blocks;
-  let blockIndex = draft.focus.blockIndex;
-  const contentIndex = draft.focus.contentIndex;
+  let blockIndex = initialBlockIndex;
 
   const currentBlock = blocks[blockIndex];
   if (!currentBlock || currentBlock.type !== "PARAGRAPH") return;
@@ -158,6 +221,9 @@ const mergeListWithAdjacentBlocks = (draft: Draft<LetterEditorState>, listType: 
         curList.items.unshift(...(prevItems as ItemList["items"]));
         curList.deletedItems.push(...(prevDeletedItems as ItemList["deletedItems"]));
         draft.focus.blockIndex = blockIndex;
+        if ("itemIndex" in draft.focus) {
+          draft.focus.itemIndex += prevItems.length;
+        }
       }
     }
   }
