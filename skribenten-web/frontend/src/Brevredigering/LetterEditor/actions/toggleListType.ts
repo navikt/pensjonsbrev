@@ -1,7 +1,7 @@
 import type { Draft } from "immer";
 import { isEqual } from "lodash";
 
-import type { ItemList } from "~/types/brevbakerTypes";
+import { type ItemList, ListType } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import type { ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
@@ -9,20 +9,40 @@ import { isItemList, isTextContent } from "../model/utils";
 import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = withPatches(
-  (draft, literalIndex) => {
-    const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
-    if (block?.type !== "PARAGRAPH") {
-      return;
-    }
-
-    const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
-    if (isTextContent(theContentTheUserIsOn)) {
-      toggleBulletListOn(draft, literalIndex);
-    } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
-      toggleBulletListOff(draft, literalIndex as ItemContentIndex);
-    }
-  },
+  (draft, literalIndex) => toggleList(draft, literalIndex, ListType.PUNKTLISTE),
 );
+
+export const toggleNumberList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = withPatches(
+  (draft, literalIndex) => toggleList(draft, literalIndex, ListType.NUMMERERT_LISTE),
+);
+
+const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  if (block?.type !== "PARAGRAPH") {
+    return;
+  }
+
+  const theContentTheUserIsOn = block.content[literalIndex.contentIndex];
+  if (isTextContent(theContentTheUserIsOn)) {
+    toggleListOn(draft, literalIndex, listType);
+  } else if (isItemList(theContentTheUserIsOn) && "itemIndex" in literalIndex) {
+    if (theContentTheUserIsOn.listType === listType) {
+      toggleListOff(draft, literalIndex as ItemContentIndex);
+    } else {
+      switchListType(draft, literalIndex, listType);
+    }
+  }
+};
+
+/**
+ * Endrer listType på en eksisterende liste uten å endre innholdet eller fokuset.
+ */
+const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
+  const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
+  const itemList = block.content[literalIndex.contentIndex] as Draft<ItemList>;
+  itemList.listType = listType;
+  draft.saveStatus = "DIRTY";
+};
 
 /**
  * Når vi lager et punkt, så må vi ta høyde for at det kan være en punktliste før, etter, eller
@@ -36,7 +56,7 @@ export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralI
  * Fordi vi gjør en såpass stor endring i dokument strukturen, Så må vi oppdatere fokuset til
  * editorstaten til å være på rett plass
  */
-const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex) => {
+const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   draft.saveStatus = "DIRTY";
 
   const thisBlock = draft.redigertBrev.blocks[literalIndex.blockIndex];
@@ -50,7 +70,7 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
     id: thisBlock.id,
   }).filter(isTextContent);
   addElements(
-    [newItemList({ items: [newItem({ content: sentence })] })],
+    [newItemList({ listType, items: [newItem({ content: sentence })] })],
     sentenceIndex.startIndex,
     thisBlock.content,
     thisBlock.deletedContent,
@@ -87,13 +107,13 @@ const toggleBulletListOn = (draft: Draft<LetterEditorState>, literalIndex: Liter
 };
 
 /**
- * Fjerner angitt punkt fra en punktliste, og flytter item.content ut til block.content.
+ * Fjerner angitt punkt fra en liste, og flytter item.content ut til block.content.
  * - om det er det første punktet så flyttes item.content ut i block.content før listen
  * - om det er det siste punktet så flyttes item.content ut i block.content etter listen
  * - om det er et punkt i midten så splittes listen i to ved angitt punkt og item.content settes inn i mellom listene.
  *
  */
-const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex) => {
+const toggleListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const itemList = block.content[literalIndex.contentIndex] as ItemList;
 
@@ -125,7 +145,7 @@ const toggleBulletListOff = (draft: Draft<LetterEditorState>, literalIndex: Item
         id: itemList.id,
       });
       addElements(
-        [...itemContent, newItemList({ items: itemsAfter })],
+        [...itemContent, newItemList({ listType: itemList.listType, items: itemsAfter })],
         insertItemContentIndex,
         block.content,
         block.deletedContent,

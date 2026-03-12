@@ -2,6 +2,7 @@ import { useState } from "react";
 
 import type { BrevResponse } from "~/types/brev";
 import type { Item } from "~/types/brevbakerTypes";
+import { ListType } from "~/types/brevbakerTypes";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../../../cypress/utils/brevredigeringTestUtils";
 import Actions from "../actions";
@@ -26,7 +27,7 @@ function newItems(...texts: string[]): Item[] {
   return texts.map((t) => newItem({ content: [newLiteral({ text: t })] }));
 }
 
-describe("toggle bullet-liet", () => {
+describe("toggle bullet-list", () => {
   beforeEach(() => {
     cy.viewport(800, 1400);
   });
@@ -383,5 +384,177 @@ describe("toggle bullet-liet", () => {
       cy.get("li").should("have.length", 2);
       cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
+  });
+});
+
+describe("toggle number-list", () => {
+  beforeEach(() => {
+    cy.viewport(800, 1400);
+  });
+
+  it("viser number-list som ol-element", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [
+              newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("første punkt", "andre punkt") }),
+            ],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol").should("have.length", 1);
+    cy.get("ul").should("have.length", 0);
+    cy.get("ol li").should("have.length", 2);
+    cy.get("ol li").eq(0).contains("første punkt");
+    cy.get("ol li").eq(1).contains("andre punkt");
+  });
+
+  it("viser PUNKTLISTE som ul-element", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.PUNKTLISTE, items: newItems("kulepunkt1", "kulepunkt2") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ul").should("have.length", 1);
+    cy.get("ol").should("have.length", 0);
+  });
+
+  it("toggler et avsnitt til nummerert liste", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [newParagraph({ content: [newLiteral({ text: "Et avsnitt" })] })],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol").should("have.length", 0);
+    cy.contains("Et avsnitt").click();
+    cy.getDataCy("editor-number-list").click();
+    cy.get("ol li span").contains("Et avsnitt");
+    cy.get("ol").should("have.length", 1);
+    cy.get("ul").should("have.length", 0);
+  });
+
+  it("nummerert-liste-knapp er aktiv når fokus er på nummerert liste", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("punkt") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol li span").contains("punkt").click();
+    cy.getDataCy("editor-number-list")
+      .should("have.attr", "data-variant", "primary")
+      .should("have.attr", "data-color", "neutral");
+    cy.getDataCy("editor-bullet-list")
+      .should("have.attr", "data-variant", "tertiary")
+      .should("have.attr", "data-color", "neutral");
+  });
+
+  it("punktliste-knapp er aktiv når fokus er på punktliste", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.PUNKTLISTE, items: newItems("punkt") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ul li span").contains("punkt").click();
+    cy.getDataCy("editor-bullet-list")
+      .should("have.attr", "data-variant", "primary")
+      .should("have.attr", "data-color", "neutral");
+    cy.getDataCy("editor-number-list")
+      .should("have.attr", "data-variant", "tertiary")
+      .should("have.attr", "data-color", "neutral");
+  });
+
+  it("toggler av nummerert liste med nummerert-liste-knapp", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("punkt1", "punkt2") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol li").should("have.length", 2);
+    cy.get("ol li span").contains("punkt1").click();
+    cy.getDataCy("editor-number-list").click();
+    cy.get("ol li").should("have.length", 1);
+    cy.contains("punkt1").should("exist");
+    cy.get("ol").contains("punkt1").should("not.exist");
+    cy.get("ol").contains("punkt2").should("exist");
+  });
+
+  it("konverterer nummerert liste til punktliste ved klikk på punktliste-knapp", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("punkt1", "punkt2") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol li span").contains("punkt1").click();
+    cy.getDataCy("editor-bullet-list").click();
+    cy.get("ol").should("have.length", 0);
+    cy.get("ul").should("have.length", 1);
+    cy.get("ul li").should("have.length", 2);
+    cy.get("ul li").eq(0).contains("punkt1");
+    cy.get("ul li").eq(1).contains("punkt2");
+  });
+
+  it("konverterer punktliste til nummerert liste ved klikk på nummerert-liste-knapp", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.PUNKTLISTE, items: newItems("punkt1", "punkt2") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ul li span").contains("punkt1").click();
+    cy.getDataCy("editor-number-list").click();
+    cy.get("ul").should("have.length", 0);
+    cy.get("ol").should("have.length", 1);
+    cy.get("ol li").should("have.length", 2);
+    cy.get("ol li").eq(0).contains("punkt1");
+    cy.get("ol li").eq(1).contains("punkt2");
   });
 });

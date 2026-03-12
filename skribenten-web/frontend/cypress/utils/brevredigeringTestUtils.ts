@@ -11,24 +11,25 @@ import type {
   SaksbehandlerValg,
 } from "~/types/brev";
 import { Distribusjonstype } from "~/types/brev";
-import type {
-  AnyBlock,
-  Content,
-  EditedLetter,
-  Item,
-  ItemList,
-  LiteralValue,
-  ParagraphBlock,
-  Sakspart,
-  Signatur,
-  TextContent,
-  Title,
-  Title1Block,
-  Title2Block,
-  Title3Block,
-  VariableValue,
+import {
+  type AnyBlock,
+  type Content,
+  type EditedLetter,
+  FontType,
+  type Item,
+  type ItemList,
+  ListType,
+  type LiteralValue,
+  type ParagraphBlock,
+  type Sakspart,
+  type Signatur,
+  type TextContent,
+  type Title,
+  type Title1Block,
+  type Title2Block,
+  type Title3Block,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export const nyBrevResponse = ({
@@ -211,10 +212,11 @@ export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] })
 });
 
 //TODO - kan heller bruke newItemList fra common.ts
-export const nyItemList = (args: { id?: Nullable<number>; items?: Item[] }): ItemList => ({
+export const nyItemList = (args: { id?: Nullable<number>; listType?: ListType; items?: Item[] }): ItemList => ({
   type: "ITEM_LIST",
   id: args.id ?? null,
   parentId: null,
+  listType: args.listType ?? ListType.PUNKTLISTE,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
 });
