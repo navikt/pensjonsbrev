@@ -558,3 +558,43 @@ describe("toggle number-list", () => {
     cy.get("ol li").eq(1).contains("punkt2");
   });
 });
+
+describe("blanding av liste-typer", () => {
+  beforeEach(() => {
+    cy.viewport(800, 1400);
+  });
+
+  it("toggler første punkt av punktliste og gjør det om til nummerert liste, andre punkt forblir punktliste", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ listType: ListType.PUNKTLISTE, items: newItems("item1", "item2") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    // toggle off the first bullet item
+    cy.get("ul li span").contains("item1").click();
+    cy.getDataCy("editor-bullet-list").click();
+
+    // "item1" is now regular text; "item2" is still in the bullet list
+    cy.get("ul li").should("have.length", 1);
+    cy.get("ul li").contains("item2");
+
+    // toggle "item1" as a number list
+    cy.contains("item1").click();
+    cy.getDataCy("editor-number-list").click();
+
+    // item1 should be in an ordered list, item2 should still be in an unordered list
+    cy.get("ol").should("have.length", 1);
+    cy.get("ul").should("have.length", 1);
+    cy.get("ol li").should("have.length", 1);
+    cy.get("ol li").contains("item1");
+    cy.get("ul li").should("have.length", 1);
+    cy.get("ul li").contains("item2");
+  });
+});

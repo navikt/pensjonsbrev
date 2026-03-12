@@ -76,8 +76,12 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
     thisBlock.deletedContent,
   );
 
-  // merge adjoining item lists
-  const itemListsIndex = findAdjoiningContent(sentenceIndex.startIndex, thisBlock.content, isItemList);
+  // merge adjoining item lists of the same type only
+  const itemListsIndex = findAdjoiningContent(
+    sentenceIndex.startIndex,
+    thisBlock.content,
+    (c): c is ItemList => isItemList(c) && c.listType === listType,
+  );
   const itemLists = removeElements(itemListsIndex.startIndex, itemListsIndex.count, {
     content: thisBlock.content,
     deletedContent: thisBlock.deletedContent,
