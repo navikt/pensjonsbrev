@@ -564,6 +564,47 @@ describe("blanding av liste-typer", () => {
     cy.viewport(800, 1400);
   });
 
+  it("punkt 2 i en punktliste av 3 gjøres om til nummerert – deretter konverteres punkt 3 til nummerert og merges med punkt 2", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [newItemList({ items: newItems("item1", "item2", "item3") })],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    // Step 1: toggle item2 off to regular text
+    cy.get("ul li span").contains("item2").click();
+    cy.getDataCy("editor-bullet-list").click();
+    // Now: bulletList[item1] | text(item2) | bulletList[item3]
+    cy.get("ul").should("have.length", 2);
+    cy.get("ul li").should("have.length", 2);
+
+    // Step 2: toggle item2 to number list
+    cy.contains("item2").click();
+    cy.getDataCy("editor-number-list").click();
+    // Now: bulletList[item1] | numberList[item2] | bulletList[item3]
+    cy.get("ul").should("have.length", 2);
+    cy.get("ol").should("have.length", 1);
+    cy.get("ol li").should("have.length", 1);
+
+    // Step 3: toggle item3 from bullet list to number list
+    cy.get("ul li span").contains("item3").click();
+    cy.getDataCy("editor-number-list").click();
+    // item3 converts to number list and merges with item2's number list
+    cy.get("ul").should("have.length", 1);
+    cy.get("ul li").should("have.length", 1);
+    cy.get("ul li").contains("item1");
+    cy.get("ol").should("have.length", 1);
+    cy.get("ol li").should("have.length", 2);
+    cy.get("ol li").eq(0).contains("item2");
+    cy.get("ol li").eq(1).contains("item3");
+  });
+
   it("toggler midterste punkt i en punktliste med 5 punkt til nummerert liste – hele listen bytter type", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
