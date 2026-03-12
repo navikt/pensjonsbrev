@@ -597,4 +597,36 @@ describe("blanding av liste-typer", () => {
     cy.get("ul li").should("have.length", 1);
     cy.get("ul li").contains("item2");
   });
+
+  it("to like nummererte lister med tekst i midten skal bli én liste med fem punkter", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({
+            content: [
+              newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("item1", "item2") }),
+              newLiteral({ text: "middle" }),
+              newItemList({ listType: ListType.NUMMERERT_LISTE, items: newItems("item3", "item4") }),
+            ],
+          }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ol").should("have.length", 2);
+    cy.get("ol li").should("have.length", 4);
+
+    cy.contains("middle").click();
+    cy.getDataCy("editor-number-list").click();
+
+    cy.get("ol").should("have.length", 1);
+    cy.get("ol li").should("have.length", 5);
+    cy.get("ol li").eq(0).contains("item1");
+    cy.get("ol li").eq(1).contains("item2");
+    cy.get("ol li").eq(2).contains("middle");
+    cy.get("ol li").eq(3).contains("item3");
+    cy.get("ol li").eq(4).contains("item4");
+  });
 });
