@@ -56,7 +56,6 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<Innvilge
         outline {
             val pe = pesysData.pe
 
-            val bostedUtland = (pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and (pe.grunnlag_persongrunnlagsliste_personbostedsland()).notEqualTo(""))
             val trygdetideosland = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_trygdetidsgrunnlageos_trygdetidsgrunnlageos_trygdetideosland().notEqualTo("")
             val uforegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
             val barnetilleggSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
