@@ -21,5 +21,7 @@ data class OpphoerGjenlevendepensjonDto(
         val erSamboerBarn: Boolean = false,
         @DisplayText("Blir samboer med person han/hun tidligere var gift med")
         val blirSamboerTidligereGift: Boolean = false,
+        @DisplayText("Opphør med tilbakekreving")
+        val tilbakekreving: Boolean = false,
     ) : SaksbehandlerValgBrevdata
 }
