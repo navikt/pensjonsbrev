@@ -16,6 +16,8 @@ env:
     value: "api://prod-gcp.pensjonsbrev.skribenten-backend/.default"
   - name: PSAK_BASE_URL
     value: "https://pensjon-psak.nais.adeo.no"
+  - name: UMAMI_HOST_URL
+    value: "https://umami.nav.no"
 
 groups:
   - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER

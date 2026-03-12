@@ -1,7 +1,12 @@
+import fs from "node:fs";
 import path from "node:path";
 
-import { addServeSpaHandler, serveViteMode } from "@navikt/vite-mode";
+import { serveViteMode } from "@navikt/vite-mode";
 import express, { type Express } from "express";
+
+function getUmamiHostUrl(): string {
+  return process.env.UMAMI_HOST_URL ?? "";
+}
 
 export function setupStaticRoutes(server: Express) {
   server.use(express.static("./public", { index: false }));
@@ -10,5 +15,14 @@ export function setupStaticRoutes(server: Express) {
   const spaFilePath = path.resolve("./public", "index.html");
 
   serveViteMode(server, { port: "5173" });
-  addServeSpaHandler(server, spaFilePath);
+
+  server.get("*", (_req, res) => {
+    try {
+      const html = fs.readFileSync(spaFilePath, "utf-8");
+      const injected = html.replace("{{UMAMI_HOST_URL}}", getUmamiHostUrl());
+      res.type("html").send(injected);
+    } catch {
+      res.sendStatus(404);
+    }
+  });
 }
