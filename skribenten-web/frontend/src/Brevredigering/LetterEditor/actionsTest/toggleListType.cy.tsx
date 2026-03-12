@@ -126,7 +126,7 @@ describe("toggle bullet-list", () => {
       cy.get("li").should("have.length", 1);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 2);
+      cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 2);
     });
 
@@ -144,7 +144,7 @@ describe("toggle bullet-list", () => {
       cy.get("li").should("have.length", 1);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 2);
+      cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 2);
     });
 
@@ -163,9 +163,9 @@ describe("toggle bullet-list", () => {
       cy.get("li").should("have.length", 2);
       cy.contains("Avsnitt uten punktliste").click();
       cy.getDataCy("editor-bullet-list").click();
-      cy.get("ul").should("have.length", 3);
+      cy.get("ul").should("have.length", 1);
       cy.get("li").should("have.length", 3);
-      cy.contains("Avsnitt uten punktliste").should("exist");
+      cy.get("li span").eq(1).contains("Avsnitt uten punktliste");
     });
   });
 
@@ -596,6 +596,34 @@ describe("blanding av liste-typer", () => {
     cy.get("ol li").contains("item1");
     cy.get("ul li").should("have.length", 1);
     cy.get("ul li").contains("item2");
+  });
+
+  it("en kuleliste i ett avsnitt, tekst i neste avsnitt, kuleliste i tredje avsnitt – slås sammen til én liste", () => {
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [
+          newParagraph({ content: [newItemList({ items: newItems("item1", "item2") })] }),
+          newParagraph({ content: [newLiteral({ text: "middle" })] }),
+          newParagraph({ content: [newItemList({ items: newItems("item3", "item4") })] }),
+        ],
+      }),
+    });
+
+    cy.mount(<EditorWithState brev={brev} />);
+
+    cy.get("ul").should("have.length", 2);
+    cy.get("ul li").should("have.length", 4);
+
+    cy.contains("middle").click();
+    cy.getDataCy("editor-bullet-list").click();
+
+    cy.get("ul").should("have.length", 1);
+    cy.get("ul li").should("have.length", 5);
+    cy.get("ul li").eq(0).contains("item1");
+    cy.get("ul li").eq(1).contains("item2");
+    cy.get("ul li").eq(2).contains("middle");
+    cy.get("ul li").eq(3).contains("item3");
+    cy.get("ul li").eq(4).contains("item4");
   });
 
   it("to like nummererte lister med tekst i midten skal bli én liste med fem punkter", () => {
