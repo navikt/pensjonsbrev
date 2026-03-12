@@ -28,10 +28,6 @@ function newItems(...texts: string[]): Item[] {
 }
 
 describe("toggle bullet-list", () => {
-  beforeEach(() => {
-    cy.viewport(800, 1400);
-  });
-
   describe("toggle on", () => {
     it("toggler et enkelt avsnitt", () => {
       const brev = nyBrevResponse({
@@ -388,10 +384,6 @@ describe("toggle bullet-list", () => {
 });
 
 describe("toggle number-list", () => {
-  beforeEach(() => {
-    cy.viewport(800, 1400);
-  });
-
   it("viser number-list som ol-element", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
@@ -560,10 +552,6 @@ describe("toggle number-list", () => {
 });
 
 describe("blanding av liste-typer", () => {
-  beforeEach(() => {
-    cy.viewport(800, 1400);
-  });
-
   it("punkt 2 i en punktliste av 3 gjøres om til nummerert – deretter konverteres punkt 3 til nummerert og merges med punkt 2", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
