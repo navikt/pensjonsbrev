@@ -16,7 +16,7 @@ export function setupStaticRoutes(server: Express) {
 
   serveViteMode(server, { port: "5173" });
 
-  server.get("*", (_req, res) => {
+  server.get("*splat", (_req, res) => {
     try {
       const html = fs.readFileSync(spaFilePath, "utf-8");
       const injected = html.replace("{{UMAMI_HOST_URL}}", getUmamiHostUrl());
