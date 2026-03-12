@@ -88,19 +88,23 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
     id: thisBlock.id,
   }).filter(isItemList);
 
-  let listToKeep = itemLists[0];
-  for (const list of itemLists.slice(1)) {
-    if (listToKeep.id === null) {
-      addElements(listToKeep.items, 0, list.items, list.deletedItems);
-      listToKeep = list;
-    } else {
-      addElements(list.items, listToKeep.items.length, listToKeep.items, listToKeep.deletedItems);
-    }
-  }
-  addElements([listToKeep], itemListsIndex.startIndex, thisBlock.content, thisBlock.deletedContent);
+  // Collect all items from the lists to merge, preserving order.
+  // We identify the list with a non-null id to keep (so the backend can track it),
+  // falling back to the last list in the sequence.
+  const listWithId = itemLists.find((l) => l.id !== null) ?? itemLists[itemLists.length - 1];
+  const allItems = itemLists.flatMap((l) => [...l.items]);
+  const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
+
+  const mergedList = newItemList({
+    id: listWithId.id,
+    listType,
+    items: allItems,
+    deletedItems: allDeletedItems,
+  });
+  addElements([mergedList], itemListsIndex.startIndex, thisBlock.content, thisBlock.deletedContent);
 
   // update focus
-  const newItemIndex = listToKeep.items.findIndex((i) => isEqual(i.content, sentence));
+  const newItemIndex = mergedList.items.findIndex((i) => isEqual(i.content, sentence));
   draft.focus = {
     blockIndex: literalIndex.blockIndex,
     contentIndex: itemListsIndex.startIndex,
