@@ -192,6 +192,11 @@ const mergeListWithAdjacentBlocks = (
   const currentList = currentBlock.content[contentIndex];
   if (!isItemList(currentList) || currentList.listType !== listType) return;
 
+  // Only merge across block boundaries when the current block contains nothing but this list.
+  // If the block has other content (text, other lists), the list is part of a richer paragraph
+  // and should not be pulled into adjacent blocks.
+  if (currentBlock.content.length !== 1) return;
+
   // Check previous block: if its last content is a same-type ITEM_LIST, merge it in front.
   if (blockIndex > 0) {
     const prevBlock = blocks[blockIndex - 1];
