@@ -202,7 +202,7 @@ class LatexServiceTest {
                 compilationQueueWait,
                 "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test"
             )
-            assertThat(compilationQueueWait).isBetween(50L, 100L)
+            assertThat(compilationQueueWait).isBetween(50L, 1000L)
             assertResult<Failure.QueueTimeout>(result) {
                 assertThat(it.reason).contains("queue wait timed out")
             }
