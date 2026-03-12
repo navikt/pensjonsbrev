@@ -17,13 +17,13 @@ function umamiHostUrlPlugin(): Plugin {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   plugins: [
     react({
       jsxImportSource: "@emotion/react",
     }),
     tanstackRouter(),
-    umamiHostUrlPlugin(),
+    ...(command === "serve" ? [umamiHostUrlPlugin()] : []),
   ],
   resolve: {
     alias: {
