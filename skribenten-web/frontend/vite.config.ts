@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { fileURLToPath, URL } from "node:url";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import { tanstackRouter } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
@@ -22,7 +22,7 @@ export default defineConfig(() => ({
     react({
       jsxImportSource: "@emotion/react",
     }),
-    TanStackRouterVite(),
+    tanstackRouter(),
     umamiHostUrlPlugin(),
   ],
   resolve: {
