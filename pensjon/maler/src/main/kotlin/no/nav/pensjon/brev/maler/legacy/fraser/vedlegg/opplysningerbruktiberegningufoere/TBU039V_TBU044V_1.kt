@@ -148,7 +148,7 @@ data class TBU039V_TBU044V_1(
         showIf(
             pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
             and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-            and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
+            and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt")
         ){
             paragraph {
                 text(
