@@ -3,16 +3,16 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglisteeos
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.vedtaksbrev.VedtaksbrevSelectors.grunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.vedtaksbrev
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.GrunnlagSelectors.persongrunnlagsliste
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglisteeos
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistenor
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagbilateral.TrygdetidsgrunnlagListeBilateralSelectors.trygdetidsgrunnlagbilateral
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.VedtaksbrevSelectors.grunnlag
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
-    createAttachment<LangBokmalNynorskEnglish, PE>(
+    createAttachment<LangBokmalNynorskEnglish, PEgruppe10>(
         title = {
             text(
                 bokmal { +"Opplysninger om beregningen" },

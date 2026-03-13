@@ -1,0 +1,12 @@
+package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor
+
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+
+data class UforetrygdEtteroppgjorDetaljBruker(
+    val fratrekkliste: FratrekkListe?,
+    val inntektliste: InntektListe?,
+    val sumfratrekkut: Kroner?,
+    val sumfratrekkbt: Kroner?,
+    val suminntekterbt: Kroner?,
+    val suminntekterut: Kroner?,
+)

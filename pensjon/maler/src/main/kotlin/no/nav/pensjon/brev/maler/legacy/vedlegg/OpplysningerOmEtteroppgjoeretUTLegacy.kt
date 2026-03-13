@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.TabellBeloepFratrukketInntektAnnenForelder
@@ -17,7 +17,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
 
 @TemplateModelHelpers
-val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, PE>(
+val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, PEgruppe10>(
     title = {
         text(
             bokmal { +"Opplysninger om etteroppgjøret" },
