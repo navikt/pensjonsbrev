@@ -90,6 +90,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val txtBarnetBarnaOpphorForsørgaForsørgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
             val txtDineDittBarnOpphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "dine barn" else "ditt barn"
             val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
+            val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
             val oifuKroner = pesysData.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
             val oifuMerEnnIfu = oifuKroner.greaterThan(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt())
@@ -1117,7 +1118,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))) {
-                paragraph {
+                title1 {
                     text(
                         bokmal { +"Utbetaling av uføretrygd for deg som er innlagt på institusjon" },
                         nynorsk { +"Utbetaling av uføretrygd når du er innlagd på institusjon" },
@@ -1172,20 +1173,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs") and (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt() or pe.ut_forsorgeransvar_ingen_er_false() or pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().notEqualTo(Kroner(0))))) {
                 paragraph {
                     text(
-                        bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn " },
-                        nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" },
-                    )
-
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"og/eller ektefelle " },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-                    text(
-                        bokmal { +"under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din." },
-                        nynorsk { +" mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di." },
+                        bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn" + txtOgEllerEktefelle +" under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din." },
+                        nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" + txtOgEllerEktefelle + " mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di."},
                     )
                 }
             }
@@ -1204,20 +1193,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((pe.ut_forsorgeransvar_ingen_er_false() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs") and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().equalTo(0))) {
                 paragraph {
                     text(
-                        bokmal { +"Du forsørger barn" },
-                        nynorsk { +"Du forsørgjer barn " },
-                    )
-
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +" og/eller" + " ektefelle" },
-                            nynorsk { +"og/eller ektefelle " },
-                        )
-                    }
-                    text(
-                        bokmal { +" under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
-                        nynorsk { +"under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di derfor ikkje skal reduserast." },
+                        bokmal { +"Du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres."},
+                        nynorsk { +"Du forsørgjer barn " + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di derfor ikkje skal reduserast."},
                     )
                 }
             }
@@ -1236,20 +1213,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().notEqualTo(0) and pe.ut_forsorgeransvar_ingen_er_false() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig, og du forsørger barn " },
-                        nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad, og du forsørgjer barn" },
-                    )
-
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +"og/eller ektefelle " },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-                    text(
-                        bokmal { +"under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
-                        nynorsk { +" under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast." },
+                        bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig, og du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
+                        nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad, og du forsørgjer barn" + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di ikkje skal reduserast." },
                     )
                 }
             }
@@ -1267,21 +1232,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOpphAnvendt = true  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType = "reduksjon_hs"  AND PE_Vedtaksbrev_Grunnlag_Persongrunnlagsliste_InstOpphFasteUtgifterperiodeListe_InstOpphFasteUtgifterperiode_FasteUtgifter = 0  AND PE_UT_Forsorgeransvar_ingen_er_true()) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt() and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype().equalTo("reduksjon_hs") and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().equalTo(0) and pe.ut_forsorgeransvar_ingen_er_true())) {
                 paragraph {
-                    text(
-                        bokmal { +"Du forsørger ikke barn" },
-                        nynorsk { +"Du forsørgjer ikkje barn" },
-                    )
-
-                    //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Ektefelletillegg_ETinnvilget = true
-                    showIf(ektefelletilleggInnvilget) {
-                        text(
-                            bokmal { +" og/eller ektefelle" },
-                            nynorsk { +" og/eller ektefelle" },
-                        )
-                    }
-                    text(
-                        bokmal { +", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
-                        nynorsk { +", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
+                    text (
+                        bokmal { + "Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner."},
+                        nynorsk { + "Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
                     )
                 }
             }
@@ -2520,18 +2473,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_SaksData_SakAPogUP = true AND PE_SaksData_SakAPStatus = "lopende" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_harLopendealderspensjon() and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("instopphold"))) {
-                title1 {
-                    text(
-                        bokmal { +"For deg som kombinerer uføretrygd og alderspensjon" },
-                        nynorsk { +"For deg som kombinerer uføretrygd og alderspensjon" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du mottar alderspensjon fra folketrygden. Når du kombinerer uføretrygd og alderspensjon kan disse til sammen ikke utgjøre mer enn 100 prosent." },
-                        nynorsk { +"Du mottar alderspensjon frå folketrygda. Viss du kombinerer uføretrygd og alderspensjon, kan den totale prosenten ikkje vere høgare enn 100 prosent." },
-                    )
-                }
+                includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = true AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Utbetalingsgrad = PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato < PE_VedtakFattetDato_minus_1mnd) THEN      INCLUDE ENDIF

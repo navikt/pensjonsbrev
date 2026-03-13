@@ -1,0 +1,14 @@
+package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp
+
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+
+data class OpptjeningUT(
+    val forstegansgstjeneste: Int?,
+    val inntektiavtaleland: Boolean?,
+    val ar: Int?,
+    val pgi: Kroner?,
+    val omsorgsaar: Boolean?,
+    val justertbelop: Kroner?,
+    val avkortetbelop: Kroner?,
+    val brukt: Boolean?,
+)

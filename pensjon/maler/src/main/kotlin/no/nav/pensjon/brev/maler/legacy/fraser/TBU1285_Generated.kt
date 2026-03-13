@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.ut_btsbinnvilget_ikke_btfbinnvilget
 import no.nav.pensjon.brev.maler.legacy.ut_btsbinnvilget_og_justbeloppa
 import no.nav.pensjon.brev.maler.legacy.ut_inntekt_hoyere_lavere
@@ -10,13 +10,12 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_ber
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 
 data class TBU1285_Generated(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU1285NN, TBU1285, TBU1285EN]

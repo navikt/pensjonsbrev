@@ -329,6 +329,38 @@ object Ufoeretrygd {
             }
         }
     }
+
+    object RettTilNyVurdering : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text (
+                    bokmal { + "Du har rett til ny vurdering" },
+                    nynorsk { + "Du har rett til ny vurdering" },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Hvis du mener uføretrygden din har blitt negativt påvirket av at flere lands trygdemyndigheter er involvert, kan du be om en ny vurdering. Du kan lese mer om dette i «P1 - Samlet melding om pensjonsvedtak» og «Informasjon om skjemaet P1 og hvordan det brukes»." },
+                    nynorsk { + "Hvis du mener uføretrygden din har blitt negativt påvirket av at flere lands trygdemyndigheter er involvert, kan du be om en ny vurdering. Du kan lese mer om dette i «P1 - Samlet melding om pensjonsvedtak» og «Informasjon om skjemaet P1 og hvordan det brukes»." },
+                )
+            }
+        }
+    }
+
+    object KombinereUforetrygdAldersPensjon : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text (
+                    bokmal { + "For deg som kombinerer uføretrygd og alderspensjon" },
+                    nynorsk { + "For deg som kombinerer uføretrygd og alderspensjon" },
+                )
+                text (
+                    bokmal { + "Du mottar alderspensjon fra folketrygden. Hvis du kombinerer uføretrygd og alderspensjon kan disse til sammen ikke utgjøre mer enn 100 prosent." },
+                    nynorsk { + "Du mottar alderspensjon frå folketrygda. Viss du kombinerer uføretrygd og alderspensjon, kan den totale prosenten ikkje vere høgare enn 100 prosent." },
+                )
+            }
+        }
+    }
 }
 
 

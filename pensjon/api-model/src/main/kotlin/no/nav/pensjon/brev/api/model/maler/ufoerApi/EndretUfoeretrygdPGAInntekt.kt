@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUfoeretrygdPGAInntekt
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
@@ -69,7 +69,7 @@ data class EndretUfoeretrygdPGAInntektDto(
     val antallBarnBTSB: Int,
 
     // Trengs for vedlegg. Husk å fjerne når vedleggene er konvertert
-    val pe: PE,
+    val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 ) : AutobrevData

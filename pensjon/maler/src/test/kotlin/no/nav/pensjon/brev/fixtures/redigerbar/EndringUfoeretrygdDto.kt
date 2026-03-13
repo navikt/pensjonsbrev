@@ -3,14 +3,14 @@ package no.nav.pensjon.brev.fixtures.redigerbar
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
-import no.nav.pensjon.brev.fixtures.createPE
+import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 fun createEndringUfoeretrygdDto() =
     EndringUfoeretrygdDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = EndringUfoeretrygdDto.PesysData(
-            pe = createPE(),
+            pe = createPEgruppe10(),
             opphortEktefelletillegg = true,
             opphortBarnetillegg = true,
             opphortGjenlevendetillegg = true,
