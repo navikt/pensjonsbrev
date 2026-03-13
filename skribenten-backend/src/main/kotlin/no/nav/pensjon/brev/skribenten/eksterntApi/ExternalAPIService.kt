@@ -88,19 +88,16 @@ class ExternalAPIService(
         )
     }
 
-    suspend fun opprettBrev(request: ExternalAPI.OpprettBrevRequest): Outcome<Dto.Brevredigering, BrevredigeringError> {
-        val map = Api.GeneriskBrevdata()
-        request.saksbehandlerValg.forEach { (k, v) -> map[k] = v }
-        return brevredigeringFacade.opprettBrev(
+    suspend fun opprettBrev(request: ExternalAPI.OpprettBrevRequest): Outcome<Dto.Brevredigering, BrevredigeringError> =
+        brevredigeringFacade.opprettBrev(
             OpprettBrevHandlerImpl.Request(
                 saksId = request.saksId,
                 vedtaksId = request.vedtaksId,
                 brevkode = request.brevkode,
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
-                saksbehandlerValg = map,
+                saksbehandlerValg = Api.GeneriskBrevdata().also { data -> request.saksbehandlerValg.forEach { (k, v) -> data[k] = v } },
                 reserverForRedigering = true
             )
         )
-    }
 }
