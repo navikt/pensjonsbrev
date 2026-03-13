@@ -1,16 +1,29 @@
 /// <reference types="vitest" />
 import { fileURLToPath, URL } from "node:url";
-import { TanStackRouterVite } from "@tanstack/router-vite-plugin";
+import { tanstackRouter } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
-import { defineConfig } from "vite";
+import { defineConfig, type Plugin } from "vite";
+
+function umamiHostUrlPlugin(): Plugin {
+  return {
+    name: "umami-host-url",
+    transformIndexHtml(html) {
+      return html.replace(
+        "{{UMAMI_HOST_URL}}",
+        process.env.UMAMI_HOST_URL ?? "https://reops-event-proxy.ekstern.dev.nav.no",
+      );
+    },
+  };
+}
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
+export default defineConfig(({ command }) => ({
   plugins: [
     react({
       jsxImportSource: "@emotion/react",
     }),
-    TanStackRouterVite(),
+    tanstackRouter(),
+    ...(command === "serve" ? [umamiHostUrlPlugin()] : []),
   ],
   resolve: {
     alias: {
