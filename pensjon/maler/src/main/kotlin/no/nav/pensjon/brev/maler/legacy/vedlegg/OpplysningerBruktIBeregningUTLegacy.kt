@@ -3,7 +3,7 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.GrunnlagSelectors.persongrunnlagsliste
 import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral
@@ -24,7 +24,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
-    createAttachment<LangBokmalNynorskEnglish, PE>(
+    createAttachment<LangBokmalNynorskEnglish, PEgruppe10>(
         title = {
             text(
                 bokmal { +"Opplysninger om beregningen" },
