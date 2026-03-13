@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_opplyningerombergeningen_nettoperar
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.ExstreamFunctionsSelectors.pe_ut_overskytende
-import no.nav.pensjon.brev.api.model.maler.legacy.PESelectors.functions
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_ut_opplyningerombergeningen_nettoperar
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_ut_overskytende
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.functions
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression

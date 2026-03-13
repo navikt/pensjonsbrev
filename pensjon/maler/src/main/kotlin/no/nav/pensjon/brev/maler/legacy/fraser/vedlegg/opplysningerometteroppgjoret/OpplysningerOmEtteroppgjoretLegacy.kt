@@ -2,10 +2,10 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgj
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde
 import no.nav.pensjon.brev.maler.legacy.ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.maler.legacy.ut_sum_inntekterbt_totalbeloput
 import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
