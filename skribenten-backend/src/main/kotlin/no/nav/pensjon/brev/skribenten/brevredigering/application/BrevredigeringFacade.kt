@@ -33,9 +33,9 @@ class BrevredigeringFacade(
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
     private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) : HentBrevService {
+) : HentBrevService, OpprettBrevService {
 
-    suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
+    override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         suspendTransaction {
             opprettBrev.handle(request)
         }

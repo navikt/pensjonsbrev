@@ -10,6 +10,10 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.OpprettBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.BrevId
@@ -82,7 +86,17 @@ class ExternalAPIServiceTest {
             brevbakerService = FakeBrevbakerService(redigerbareMaler = mutableMapOf(Testbrevkoder.INFORMASJONSBREV to brevmal)),
             penClient = PenClientStub(),
             brevmetadataService = FakeBrevmetadataService(),
-        )
+        ),
+        opprettBrevService = object : OpprettBrevService {
+            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(Dto.Brevredigering(
+                info = brevDto,
+                redigertBrev = TODO(),
+                redigertBrevHash = TODO(),
+                saksbehandlerValg = TODO(),
+                propertyUsage = TODO(),
+                valgteVedlegg = TODO()
+            ))
+        }
     )
 
 
