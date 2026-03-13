@@ -29,8 +29,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @Execution(ExecutionMode.CONCURRENT)
 class LatexVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+    //private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
 
     private fun render(
         overrideName: String? = null,

@@ -1,5 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
+import no.nav.pensjon.brev.pdfbygger.latex.LatexAppendable
+
 @DslMarker
 internal annotation class LatexAppendableMarker
 
@@ -12,6 +14,13 @@ internal class TypstAppendable(private val output: Appendable) {
             s.typstEscape()
         else
             s
+    fun appendDictionary(name: String, map: Map<String, String?>) {
+        output.append("#let $name = (")
+        map.forEach { (key, value) ->
+            output.appendLine("    $key: \"${value?.typstEscape()}\",")
+        }
+        output.appendLine(")")
+    }
 
     @LatexAppendableMarker
     internal class CommandBuilder(private val typstAppendable: TypstAppendable) {
@@ -22,4 +31,3 @@ internal class TypstAppendable(private val output: Appendable) {
         }
     }
 }
-

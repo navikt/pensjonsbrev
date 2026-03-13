@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 
@@ -127,6 +128,7 @@ private fun Application.setUp() {
                 // TODO TEST-KODE
                 call.receive<PDFRequest>().let {
                     // todo typst elementer fra markup
+                    TypstDocumentRenderer.render(it)
                     typstCompileService.createLetter(
                         listOf(
                             DocumentFile(
