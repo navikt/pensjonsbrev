@@ -2,19 +2,25 @@ package no.nav.pensjon.brev.skribenten.eksterntApi
 
 import com.typesafe.config.Config
 import no.nav.pensjon.brev.api.model.TemplateDescription
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OpprettBrevHandlerImpl
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.Dto
-import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPI
+import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.routes.toLanguageCode
 import no.nav.pensjon.brev.skribenten.services.toApi
 import org.slf4j.LoggerFactory
 
 class ExternalAPIService(
     config: Config,
     private val hentBrevService: HentBrevService,
-    private val brevmalService: BrevmalService
+    private val brevmalService: BrevmalService,
+    private val brevredigeringFacade: BrevredigeringFacade,
 ) {
     private val skribentenWebUrl = config.getString("skribentenWebUrl")
 
@@ -79,6 +85,22 @@ class ExternalAPIService(
             adresselinje2 = adresselinje2,
             adresselinje3 = adresselinje3,
             landkode = landkode!!
+        )
+    }
+
+    suspend fun opprettBrev(request: ExternalAPI.OpprettBrevRequest): Outcome<Dto.Brevredigering, BrevredigeringError> {
+        val map = Api.GeneriskBrevdata()
+        request.saksbehandlerValg.forEach { (k, v) -> map[k] = v }
+        return brevredigeringFacade.opprettBrev(
+            OpprettBrevHandlerImpl.Request(
+                saksId = request.saksId,
+                vedtaksId = request.vedtaksId,
+                brevkode = request.brevkode,
+                spraak = request.spraak.toLanguageCode(),
+                avsenderEnhetsId = request.avsenderEnhetsId,
+                saksbehandlerValg = map,
+                reserverForRedigering = true
+            )
         )
     }
 }

@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.eksterntApi
 
+import io.ktor.http.HttpStatusCode
 import io.ktor.server.auth.authenticate
 import io.ktor.server.response.respond
 import io.ktor.server.routing.*
@@ -7,7 +8,11 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import org.slf4j.LoggerFactory
+
+private val logger = LoggerFactory.getLogger("ExternalApi")
 
 fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIService) =
     authenticate(authConfig.name) {
@@ -25,6 +30,23 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
                     ?: emptyList()
 
                 call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
+            }
+            post<ExternalAPI.OpprettBrevRequest>("/brev") { request ->
+                externalAPIService.opprettBrev(request).onSuccess {
+                    call.respond(HttpStatusCode.Created, it)
+                }.onError { error -> when (error) {
+                    is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId ->
+                        call.respond(HttpStatusCode.BadRequest, "Brevmal krever vedtaksId: ${error.brevkode}")
+
+                    is OpprettBrevPolicy.KanIkkeOppretteBrev.IkkeTilgangTilEnhet ->
+                        call.respond(HttpStatusCode.BadRequest, "Ikke tilgang til enhet: ${error.enhetsId}")
+
+                    else -> {
+                        logger.warn("Feil ved opprettelse av brev: {}", error)
+                        call.respond(HttpStatusCode.InternalServerError, "Feil ved opprettelse av brev")
+                    }
+                }
+                }
             }
         }
     }

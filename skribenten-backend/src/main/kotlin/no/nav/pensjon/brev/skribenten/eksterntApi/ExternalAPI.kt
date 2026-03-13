@@ -36,6 +36,16 @@ object ExternalAPI {
         val status: BrevStatus,
     )
 
+    data class OpprettBrevRequest(
+        val saksId: SaksId,
+        val brevkode: Brevkode.Redigerbart,
+        val spraak: SpraakKode,
+        val avsenderEnhetsId: EnhetId,
+        val saksbehandlerValg: Map<String, Any?>,
+        val reserverForRedigering: Boolean?,
+        val vedtaksId: VedtaksId?
+    )
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes(
         JsonSubTypes.Type(OverstyrtMottaker.Samhandler::class, name = "Samhandler"),
