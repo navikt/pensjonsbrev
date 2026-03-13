@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.pdfbygger.latex.LatexAppendable
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocument
-import no.nav.pensjon.brev.pdfbygger.latex.clean
+import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.render.pensjonLatexSettings
 import no.nav.pensjon.brevbaker.api.model.AttachmentTitle
@@ -27,7 +27,7 @@ internal object LatexDocumentRenderer {
         pdfVedlegg = pdfRequest.pdfVedlegg,
     )
 
-    private fun render(
+    fun render(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,

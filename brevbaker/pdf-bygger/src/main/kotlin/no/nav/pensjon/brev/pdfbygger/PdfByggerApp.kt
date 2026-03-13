@@ -31,7 +31,8 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
-import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
@@ -68,6 +69,7 @@ private fun Application.setUp() {
     }
 
     val blockingLatexService = BlockingLatexService(environment.config.config(LATEX_CONFIG_PATH))
+    val typstCompileService = TypstCompileService()
 
     val activityCounter =
         ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
@@ -122,9 +124,30 @@ private fun Application.setUp() {
 
         post("/produserBrev") {
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
-                    .let { LatexDocumentRenderer.render(it) }
-                    .let { blockingLatexService.producePDF(it.files) }
+                // TODO TEST-KODE
+                call.receive<PDFRequest>().let {
+                    // todo typst elementer fra markup
+                    typstCompileService.createLetter(
+                        listOf(
+                            DocumentFile(
+                                "letter.typ",
+                                """
+                        #set page(paper: "a4")
+                        #set text(font: "SourceSans3", size: 11pt)
+                        
+                        = Hello World
+                        
+                        This is a basic Typst document.
+                        
+                        == Features
+                        - Simple syntax
+                        - Fast compilation
+                        - Modern typesetting
+                        """.trimIndent()
+                            )
+                        )
+                    )
+                }
             }
             handleResult(result, call.application.environment.log)
         }
@@ -147,6 +170,7 @@ private fun Application.setUp() {
     }
 
 }
+
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     logger: Logger,

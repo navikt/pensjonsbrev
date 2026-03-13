@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
-import io.ktor.server.config.ApplicationConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withContext
@@ -13,39 +12,19 @@ import java.io.IOException
 import java.nio.file.Path
 import kotlin.io.path.createTempDirectory
 
-class TypstCompileService(
-    typstCommand: String,
-    private val tmpBaseDir: Path? = Path.of("/app/tmp")
-) {
-    constructor(config: ApplicationConfig) : this(
-        typstCommand = config.propertyOrNull("typstCommand")?.getString()!!,
-        tmpBaseDir = Path.of(config.property("compileTmpDir").getString())
-    )
+private val typstCommand = listOf("typst", "compile", "letter.typ")
 
-    private val typstCommand = typstCommand.split(" ").filter { it.isNotBlank() } + "letter.typ"
+class TypstCompileService {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private val tmpTestFile =
-        """
-        #set page(paper: "a4")
-        #set text(font: "SourceSans3", size: 11pt)
-        
-        = Hello World
-        
-        This is a basic Typst document.
-        
-        == Features
-        - Simple syntax
-        - Fast compilation
-        - Modern typesetting
-        """.trimIndent()
-
     suspend fun createLetter(typstFiles: List<DocumentFile>): PDFCompilationResponse {
         val tmpDir = createTempDirectory(Path.of("/tmp"))
-        tmpDir.resolve("test.typ").toFile().apply {
-            createNewFile()
-            writeText(tmpTestFile)
+        typstFiles.forEach {
+            tmpDir.resolve(it.fileName).toFile().apply {
+                createNewFile()
+                writeText(it.content)
+            }
         }
 
         return when (val result: Execution = executeCompileProcess(tmpDir)) {
@@ -77,7 +56,7 @@ class TypstCompileService(
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
-                process = ProcessBuilder("typst test.typ")
+                process = ProcessBuilder(typstCommand)
                     .directory(workingDir.toFile())
                     .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
                     .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
