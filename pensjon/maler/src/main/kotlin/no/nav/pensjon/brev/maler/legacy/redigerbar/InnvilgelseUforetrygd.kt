@@ -818,8 +818,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert." },
                     )
                     text (
-                        bokmal { + "Du oppfyller ikke vilkåret om rettighet som ung ufør, fordi det ikke er dokumentert at du ble alvorlig og varig syk før du fylte 26 år. <FRITEKST: konkret begrunnelse>. " },
-                        nynorsk { + "Du oppfyller ikkje vilkåret om rett som ung ufør fordi det ikkje er dokumentert at du blei alvorleg og varig sjuk før du fylte 26 år. <FRITEKST: Konkret begrunnelse>." },
+                        bokmal { + "Du oppfyller ikke vilkåret om rettighet som ung ufør, fordi det ikke er dokumentert at du ble alvorlig og varig syk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
+                        nynorsk { + "Du oppfyller ikkje vilkåret om rett som ung ufør fordi det ikkje er dokumentert at du blei alvorleg og varig sjuk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
                     )
                 }
             }
