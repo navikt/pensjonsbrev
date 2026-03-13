@@ -294,7 +294,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           </FormProvider>
         }
         right={
-          <VStack height="var(--main-page-content-height)" justify="center">
+          <>
+            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+            {/* Modal som ikke tar opp plass i DOM her */}
             <ReservertBrevError
               doRetry={props.doReload}
               onNeiClick={() =>
@@ -309,8 +311,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               }
               reservasjon={reservasjonQuery.data}
             />
-            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
-          </VStack>
+          </>
         }
       />
     </form>
