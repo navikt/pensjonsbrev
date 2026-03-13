@@ -29,7 +29,7 @@ function newItems(...texts: string[]): Item[] {
 
 describe("toggle bullet-list", () => {
   describe("toggle on", () => {
-    it("toggler et enkelt avsnitt", () => {
+    it("toggles a single paragraph", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [newParagraph({ content: [newLiteral({ text: "Dette er kun et avsnitt" })] })],
@@ -46,7 +46,7 @@ describe("toggle bullet-list", () => {
       cy.get("ul").should("have.length", 1);
     });
 
-    it("lager en punktliste når man allerede har en ItemList i samme blokk før", () => {
+    it("creates a bullet list when there is already an ItemList earlier in the same block", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -64,7 +64,7 @@ describe("toggle bullet-list", () => {
       cy.get("li span").eq(1).contains("Avsnitt med punktliste");
     });
 
-    it("lager en punktliste når man allerede har en ItemList i samme blokk etter", () => {
+    it("creates a bullet list when there is already an ItemList later in the same block", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -83,7 +83,7 @@ describe("toggle bullet-list", () => {
       cy.get("li span").eq(0).contains("Avsnitt med punktliste");
     });
 
-    it("lager en punktliste når man allerede har en ItemList i samme blokk før og etter", () => {
+    it("creates a bullet list when there are already ItemLists on both sides in the same block", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -107,7 +107,7 @@ describe("toggle bullet-list", () => {
       cy.get("li span").eq(1).contains("Avsnitt med punktliste");
     });
 
-    it("lager en punktliste når man allerede har en itemList i en annen blokk før", () => {
+    it("merges with a bullet list in the preceding block", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -126,7 +126,7 @@ describe("toggle bullet-list", () => {
       cy.get("li").should("have.length", 2);
     });
 
-    it("lager en punktliste når man allerede har en itemList i en annen blokk etter", () => {
+    it("merges with a bullet list in the following block", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -144,7 +144,7 @@ describe("toggle bullet-list", () => {
       cy.get("li").should("have.length", 2);
     });
 
-    it("toggler punktliste mellom 2 punktlister", () => {
+    it("merges a paragraph between two bullet lists into one list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -166,7 +166,7 @@ describe("toggle bullet-list", () => {
   });
 
   describe("toggle off", () => {
-    it("toggler av et enkelt avsnitt", () => {
+    it("toggles off a single paragraph", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [newParagraph({ content: [newItemList({ items: newItems("Dette er kun et avsnitt") })] })],
@@ -183,7 +183,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Dette er kun et avsnitt").should("exist");
     });
 
-    it("toggler av et punkt på starten av en punktliste", () => {
+    it("toggles off the first item in a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [newParagraph({ content: [newItemList({ items: newItems("skal brytes ut", "Punkt 1") })] })],
@@ -201,7 +201,7 @@ describe("toggle bullet-list", () => {
       cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
 
-    it("bevarer content som er rundt en punktliste når man toggler av på starten av en punktliste", () => {
+    it("preserves surrounding content when toggling off the first item of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -230,7 +230,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
-    it("bevarer content som er rundt en punktliste når man toggler av på starten av en punktliste som kun inneholder 1 punkt", () => {
+    it("preserves surrounding content when toggling off the only item of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -259,7 +259,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
-    it("bevarer content som er rundt en punktliste når man toggler av på midten av en punktliste", () => {
+    it("preserves surrounding content when toggling off a middle item of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -288,7 +288,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
-    it("bevarer content som er rundt en punktliste når man toggler av på slutten av en punktliste", () => {
+    it("preserves surrounding content when toggling off the last item of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -317,7 +317,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
-    it("bevarer content som er rundt en punktliste når man toggler av på slutten av en punktliste som kun inneholder 1 punkt", () => {
+    it("preserves surrounding content when toggling off the last and only item of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -346,7 +346,7 @@ describe("toggle bullet-list", () => {
       cy.contains("Denne skal heller ikke forsvinne når man trigger av punktliste").should("be.visible");
     });
 
-    it("toggler av et punkt på slutten av en punktliste", () => {
+    it("toggles off the last item in a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [newParagraph({ content: [newItemList({ items: newItems("Punkt 1", "skal brytes ut") })] })],
@@ -363,7 +363,7 @@ describe("toggle bullet-list", () => {
       cy.get(".PARAGRAPH").eq(0).contains("skal brytes ut").should("exist");
     });
 
-    it("fjerner punkt fra midten av en punktliste", () => {
+    it("removes an item from the middle of a bullet list", () => {
       const brev = nyBrevResponse({
         redigertBrev: nyRedigertBrev({
           blocks: [
@@ -384,7 +384,7 @@ describe("toggle bullet-list", () => {
 });
 
 describe("toggle number-list", () => {
-  it("viser number-list som ol-element", () => {
+  it("renders a number-list as an ol element", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -406,7 +406,7 @@ describe("toggle number-list", () => {
     cy.get("ol li").eq(1).contains("andre punkt");
   });
 
-  it("viser PUNKTLISTE som ul-element", () => {
+  it("renders a PUNKTLISTE as a ul element", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -423,7 +423,7 @@ describe("toggle number-list", () => {
     cy.get("ol").should("have.length", 0);
   });
 
-  it("toggler et avsnitt til nummerert liste", () => {
+  it("toggles a paragraph to a numbered list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [newParagraph({ content: [newLiteral({ text: "Et avsnitt" })] })],
@@ -440,7 +440,7 @@ describe("toggle number-list", () => {
     cy.get("ul").should("have.length", 0);
   });
 
-  it("nummerert-liste-knapp er aktiv når fokus er på nummerert liste", () => {
+  it("number-list button is active when focus is on a numbered list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -462,7 +462,7 @@ describe("toggle number-list", () => {
       .should("have.attr", "data-color", "neutral");
   });
 
-  it("punktliste-knapp er aktiv når fokus er på punktliste", () => {
+  it("bullet-list button is active when focus is on a bullet list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -484,7 +484,7 @@ describe("toggle number-list", () => {
       .should("have.attr", "data-color", "neutral");
   });
 
-  it("toggler av nummerert liste med nummerert-liste-knapp", () => {
+  it("toggles off a numbered list with the number-list button", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -506,7 +506,7 @@ describe("toggle number-list", () => {
     cy.get("ol").contains("punkt2").should("exist");
   });
 
-  it("konverterer nummerert liste til punktliste ved klikk på punktliste-knapp", () => {
+  it("converts a numbered list to a bullet list when clicking the bullet-list button", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -528,7 +528,7 @@ describe("toggle number-list", () => {
     cy.get("ul li").eq(1).contains("punkt2");
   });
 
-  it("konverterer punktliste til nummerert liste ved klikk på nummerert-liste-knapp", () => {
+  it("converts a bullet list to a numbered list when clicking the number-list button", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -551,8 +551,8 @@ describe("toggle number-list", () => {
   });
 });
 
-describe("blanding av liste-typer", () => {
-  it("punkt 2 i en punktliste av 3 gjøres om til nummerert – deretter konverteres punkt 3 til nummerert og merges med punkt 2", () => {
+describe("mixed list types", () => {
+  it("item 2 of a 3-item bullet list is converted to numbered, then item 3 is also converted and merges with item 2", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -593,7 +593,7 @@ describe("blanding av liste-typer", () => {
     cy.get("ol li").eq(1).contains("item3");
   });
 
-  it("toggler midterste punkt i en punktliste med 5 punkt til nummerert liste – hele listen bytter type", () => {
+  it("toggling the middle item of a 5-item bullet list to a numbered list converts the whole list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -622,7 +622,7 @@ describe("blanding av liste-typer", () => {
     cy.get("ol li").eq(4).contains("item5");
   });
 
-  it("toggler første punkt av punktliste og gjør det om til nummerert liste, andre punkt forblir punktliste", () => {
+  it("toggling the first bullet item off and then on as a numbered list leaves the second item as a bullet list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -656,7 +656,7 @@ describe("blanding av liste-typer", () => {
     cy.get("ul li").contains("item2");
   });
 
-  it("en kuleliste i ett avsnitt, tekst i neste avsnitt, kuleliste i tredje avsnitt – slås sammen til én liste", () => {
+  it("a bullet list, then a paragraph of text, then a bullet list are merged into one list when the text is toggled to a bullet list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
@@ -684,7 +684,7 @@ describe("blanding av liste-typer", () => {
     cy.get("ul li").eq(4).contains("item4");
   });
 
-  it("to like nummererte lister med tekst i midten skal bli én liste med fem punkter", () => {
+  it("two numbered lists with a text paragraph in between are merged into one list of five items when the text is toggled to a numbered list", () => {
     const brev = nyBrevResponse({
       redigertBrev: nyRedigertBrev({
         blocks: [
