@@ -37,7 +37,7 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
                 }
                 post<ExternalAPI.OpprettBrevRequest>("/brev") { request ->
                     externalAPIService.opprettBrev(request).onSuccess {
-                        call.respond(HttpStatusCode.Created, ExternalAPI.OpprettetBrev(id = it.info.id))
+                        call.respond(HttpStatusCode.Created, ExternalAPI.OpprettetBrev(brevId = it.info.id, sakId = it.info.saksId))
                     }.onError { error ->
                         when (error) {
                             is OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId ->

@@ -47,7 +47,8 @@ object ExternalAPI {
     )
 
     data class OpprettetBrev(
-        val id: BrevId,
+        val brevId: BrevId,
+        val sakId: SaksId,
     )
 
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
