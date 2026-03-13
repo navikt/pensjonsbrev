@@ -46,6 +46,10 @@ object ExternalAPI {
         val vedtaksId: VedtaksId?
     )
 
+    data class OpprettetBrev(
+        val id: BrevId,
+    )
+
     @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
     @JsonSubTypes(
         JsonSubTypes.Type(OverstyrtMottaker.Samhandler::class, name = "Samhandler"),
