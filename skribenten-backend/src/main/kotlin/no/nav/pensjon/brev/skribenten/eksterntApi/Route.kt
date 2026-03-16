@@ -35,7 +35,7 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
 
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
-                post<ExternalAPI.OpprettBrevRequest>("/brev") { request ->
+                post<ExternalAPI.OpprettBrevRequest> { request ->
                     externalAPIService.opprettBrev(request).onSuccess {
                         call.respond(HttpStatusCode.Created, ExternalAPI.OpprettetBrev(brevId = it.info.id, sakId = it.info.saksId))
                     }.onError { error ->

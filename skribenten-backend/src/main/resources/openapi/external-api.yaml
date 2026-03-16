@@ -261,7 +261,7 @@ components:
       type: "object"
       properties:
         saksId:
-          type: number
+          type: integer
           format: int64
           description: PESYS-saksnummer
         brevkode:
@@ -288,14 +288,13 @@ components:
           description: Enhetsid for avdelinga som skal sende brevet.
         saksbehandlerValg:
           type: object
-          additionalProperties:
-            type: any
+          additionalProperties: {}
           description: Saksbehandlervalg, map. Nøkkel er string, verdi kan være hva som helst (any)
         reserverForRedigering:
           type: boolean
           description: Om brevet skal reserveres for redigering.
         vedtaksId:
-          type: number
+          type: integer
           format: int64
           description: VedtaksId. Må oppgis for brev som bruker vedtakskontekst.
       required:

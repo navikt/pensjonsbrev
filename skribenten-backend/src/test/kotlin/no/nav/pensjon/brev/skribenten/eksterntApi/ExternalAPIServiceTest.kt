@@ -153,7 +153,7 @@ class Yamlstruktur(
     }
     data class Components(
         val schemas: Schemas,
-        val securitySchemes: Map.Entry<String, SecurityScheme>,
+        val securitySchemes: Map<String, SecurityScheme>,
     ) {
         data class Schemas(val brevinfo: Brevinfo, val mottaker: Mottaker, val opprettetBrev: OpprettetBrev, val opprettBrevRequest: OpprettBrevRequest) {
             data class Brevinfo(val type: String, val required: List<String>, val properties: Map<String, Property>)
