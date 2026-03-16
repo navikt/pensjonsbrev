@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.VedtakMinstesats2026Dto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
@@ -132,6 +133,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjo
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
+import no.nav.pensjon.brev.fixtures.ufoere.createVedtakMinstesats2026
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
@@ -221,6 +223,7 @@ object Fixtures : LetterDataFactory {
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
+            VedtakMinstesats2026Dto::class -> createVedtakMinstesats2026() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
