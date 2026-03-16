@@ -15,7 +15,6 @@ import io.ktor.server.auth.Authentication
 import io.ktor.server.auth.basic
 import io.ktor.server.testing.ApplicationTestBuilder
 import io.ktor.server.testing.testApplication
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
@@ -44,14 +43,14 @@ import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.skribentenContenNegotiation
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.Instant
 
-@OptIn(InternKonstruktoer::class)
 class RouteTest {
-    init {
-        initADGroups()
-    }
+
+   @BeforeAll
+   fun initAdGroups() = initADGroups()
 
     private val creds = BasicAuthCredentials("test", "123")
     private val navIdent = NavIdent("testSaksbehandler")
@@ -67,11 +66,9 @@ class RouteTest {
         requireAzureAdClaims = false
     )
 
-    private val saksId = SaksId(1L)
-    private val brevId = BrevId(42L)
     private val brevInfo = Dto.BrevInfo(
-        id = brevId,
-        saksId = saksId,
+        id = BrevId(42L),
+        saksId = SaksId(1L),
         vedtaksId = null,
         opprettetAv = navIdent,
         opprettet = Instant.now(),
@@ -93,7 +90,7 @@ class RouteTest {
     private val successBrevredigering = Dto.Brevredigering(
         info = brevInfo,
         redigertBrev = editedLetter(),
-        redigertBrevHash = Hash("deadbeef"),
+        redigertBrevHash = Hash("abc"),
         saksbehandlerValg = Api.GeneriskBrevdata(),
         propertyUsage = null,
         valgteVedlegg = null
@@ -101,8 +98,8 @@ class RouteTest {
 
     private val opprettBrevRequestJson = """
         {
-            "saksId": ${saksId.id},
-            "brevkode": "${Testbrevkoder.INFORMASJONSBREV.kode()}",
+            "saksId": 1,
+            "brevkode": "INFORMASJONSBREV",
             "spraak": "NB",
             "avsenderEnhetsId": "0001"
         }
@@ -113,7 +110,7 @@ class RouteTest {
     ) = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to "https://example.com")).toConfig(),
         hentBrevService = object : HentBrevService {
-            override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = emptyList()
+            override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
         },
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
@@ -121,8 +118,7 @@ class RouteTest {
             brevmetadataService = FakeBrevmetadataService(),
         ),
         opprettBrevService = object : OpprettBrevService {
-            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
-                opprettBrevResult
+            override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request) = opprettBrevResult
         }
     )
 
@@ -165,9 +161,7 @@ class RouteTest {
         }
 
         assertThat(response.status).isEqualTo(HttpStatusCode.Created)
-        val body = response.bodyAsText()
-        assertThat(body).contains(brevId.id.toString())
-        assertThat(body).contains(saksId.id.toString())
+        assertThat(response.bodyAsText()).isEqualTo("{\"brevId\":42,\"sakId\":1}")
     }
 
     @Test
