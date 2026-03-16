@@ -37,28 +37,33 @@ paths:
 
     post:
       description: "Opprette brev"
+      security:
+        - entraId: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/opprettBrevRequest"
       responses:
         "400":
           description: "Bad Request"
           content:
-            '*/*':
+            application/json:
               schema:
                 type: "string"
         "201":
           description: "Created"
           content:
-            '*/*':
+            application/json:
               schema:
-                $ref: "#/components/schemas/OpprettetBrev"
+                $ref: "#/components/schemas/opprettetBrev"
         "500":
           description: "Internal Server Error. Samlerespons for alle feil som skyldes feil på vår side."
           content:
-            '*/*':
+            application/json:
               schema:
                 type: "string"
-              examples:
-                Example#1:
-                  value: "Feil ved opprettelse av brev"
 
 components:
   schemas:
@@ -238,7 +243,7 @@ components:
             landkode:
               type: string
               description: To-bokstavers landkode ihht iso3166-1 alfa-2
-    OpprettetBrev:
+    opprettetBrev:
       type: "object"
       properties:
         brevId:
@@ -252,6 +257,52 @@ components:
       required:
         - "brevId"
         - "sakId"
+    opprettBrevRequest:
+      type: "object"
+      properties:
+        saksId:
+          type: number
+          format: int64
+          description: PESYS-saksnummer
+        brevkode:
+          type: string
+          description: brevkode for brevmalen som skal brukes
+        spraak:
+          type: string
+          enum:
+            - EN
+            - NB
+            - NN
+            - FR
+            - SE
+          description: >
+            Språk du vil opprette malen på. Må være støtta i malen.
+            * `EN` - Engelsk
+            * `NB` - Bokmål
+            * `NN` - Nynorsk
+            * `FR` - Fransk
+            * `SE` - Nord-samisk
+
+        avsenderEnhetsId:
+          type: string
+          description: Enhetsid for avdelinga som skal sende brevet.
+        saksbehandlerValg:
+          type: object
+          additionalProperties:
+            type: any
+          description: Saksbehandlervalg, map. Nøkkel er string, verdi kan være hva som helst (any)
+        reserverForRedigering:
+          type: boolean
+          description: Om brevet skal reserveres for redigering.
+        vedtaksId:
+          type: number
+          format: int64
+          description: VedtaksId. Må oppgis for brev som bruker vedtakskontekst.
+      required:
+          - saksId
+          - brevkode
+          - spraak
+          - avsenderEnhetsId
 
 
   securitySchemes:

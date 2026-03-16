@@ -41,7 +41,7 @@ object ExternalAPI {
         val brevkode: Brevkode.Redigerbart,
         val spraak: SpraakKode,
         val avsenderEnhetsId: EnhetId,
-        val saksbehandlerValg: Map<String, Any?>,
+        val saksbehandlerValg: Map<String, Any?>?,
         val reserverForRedigering: Boolean?,
         val vedtaksId: VedtaksId?
     )

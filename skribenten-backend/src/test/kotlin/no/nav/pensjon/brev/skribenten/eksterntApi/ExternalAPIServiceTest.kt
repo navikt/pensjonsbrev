@@ -146,21 +146,24 @@ class Yamlstruktur(
 ) {
     data class Info(val title: String, val description: String, val version: String)
     data class Server(val url: String, val description: String)
-    data class Path(val description: String, val security: List<Any>, val parameters: List<Map<String, Any>>, val responses: Map<String, Response>) {
+    data class Path(val description: String, val security: List<Any>, val parameters: List<Map<String, Any>>?, val requestBody: Any?/*TODO*/, val responses: Map<String, Response>) {
         data class Response(val description: String, val content: Map<String, Map<String, Content>>) {
-            data class Content(val type: String, val items: Map<String, Any>)
+            data class Content(val type: String?, val items: Map<String, Any>?, val ref: String?)
         }
     }
     data class Components(
         val schemas: Schemas,
         val securitySchemes: Map.Entry<String, SecurityScheme>,
     ) {
-        data class Schemas(val brevinfo: Brevinfo, val mottaker: Mottaker) {
+        data class Schemas(val brevinfo: Brevinfo, val mottaker: Mottaker, val opprettetBrev: OpprettetBrev, val opprettBrevRequest: OpprettBrevRequest) {
             data class Brevinfo(val type: String, val required: List<String>, val properties: Map<String, Property>)
             data class Mottaker(val oneOf: List<OneOfMottaker>) {
                 data class OneOfMottaker(val type: String, val description: String, val required: List<String>, val properties: Map<String, Property>)
             }
-            data class Property(val type: String?, val format: String? = null, val description: String?, val enum: List<String>?, val ref: String?)
+            data class OpprettetBrev(val type: String, val required: List<String>, val properties: Map<String, Property>)
+            data class OpprettBrevRequest(val type: String, val required: List<String>, val properties: Map<String, Property>)
+
+            data class Property(val type: String?, val format: String? = null, val description: String?, val enum: List<String>?, val ref: String?, val additionalProperties: Map<String, String>?)
         }
 
         data class SecurityScheme(val type: String, val scheme: String, val bearerFormat: String, val description: String)

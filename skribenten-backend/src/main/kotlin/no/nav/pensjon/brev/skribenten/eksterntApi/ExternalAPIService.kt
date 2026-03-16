@@ -96,7 +96,7 @@ class ExternalAPIService(
                 brevkode = request.brevkode,
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
-                saksbehandlerValg = Api.GeneriskBrevdata().also { data -> request.saksbehandlerValg.forEach { (k, v) -> data[k] = v } },
+                saksbehandlerValg = Api.GeneriskBrevdata().also { data -> request.saksbehandlerValg?.forEach { (k, v) -> data[k] = v } },
                 reserverForRedigering = true
             )
         )
