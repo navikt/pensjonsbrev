@@ -35,6 +35,31 @@ paths:
                 items:
                   $ref: "#/components/schemas/brevinfo"
 
+    post:
+      description: "Opprette brev"
+      responses:
+        "400":
+          description: "Bad Request"
+          content:
+            '*/*':
+              schema:
+                type: "string"
+        "201":
+          description: "Created"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/OpprettetBrev"
+        "500":
+          description: "Internal Server Error. Samlerespons for alle feil som skyldes feil på vår side."
+          content:
+            '*/*':
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Feil ved opprettelse av brev"
+
 components:
   schemas:
     brevinfo:
@@ -213,6 +238,20 @@ components:
             landkode:
               type: string
               description: To-bokstavers landkode ihht iso3166-1 alfa-2
+    OpprettetBrev:
+      type: "object"
+      properties:
+        brevId:
+          type: "integer"
+          format: "int64"
+          description: "Brevets id"
+        sakId:
+          type: "integer"
+          format: "int64"
+          description: "Sakas id"
+      required:
+        - "brevId"
+        - "sakId"
 
 
   securitySchemes:
