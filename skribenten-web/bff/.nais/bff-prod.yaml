@@ -18,6 +18,8 @@ env:
     value: "https://pensjon-psak.nais.adeo.no"
   - name: UMAMI_HOST_URL
     value: "https://umami.nav.no"
+  - name: UMAMI_WEBSITE_ID
+    value: "9d7fee10-f315-4e79-a54b-7440596de606"
 
 groups:
   - "0af3955f-df85-4eb0-b5b2-45bf2c8aeb9e" #0000-GA-PENSJON_SAKSBEHANDLER

@@ -4,14 +4,13 @@ import { tanstackRouter } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
 
-function umamiHostUrlPlugin(): Plugin {
+function umamiConfigPlugin(): Plugin {
   return {
-    name: "umami-host-url",
+    name: "umami-config",
     transformIndexHtml(html) {
-      return html.replace(
-        "{{UMAMI_HOST_URL}}",
-        process.env.UMAMI_HOST_URL ?? "https://reops-event-proxy.ekstern.dev.nav.no",
-      );
+      return html
+        .replace("{{UMAMI_HOST_URL}}", process.env.UMAMI_HOST_URL ?? "https://reops-event-proxy.ekstern.dev.nav.no")
+        .replace("{{UMAMI_WEBSITE_ID}}", process.env.UMAMI_WEBSITE_ID ?? "85abe8ab-e9d6-4179-b727-9c856715343f");
     },
   };
 }
@@ -23,7 +22,7 @@ export default defineConfig(({ command }) => ({
       jsxImportSource: "@emotion/react",
     }),
     tanstackRouter(),
-    ...(command === "serve" ? [umamiHostUrlPlugin()] : []),
+    ...(command === "serve" ? [umamiConfigPlugin()] : []),
   ],
   resolve: {
     alias: {
