@@ -19,6 +19,11 @@ on:
         description: 'Cluster to deploy to'
         required: true
         type: string
+      redeployProd:
+        description: 'Redeploy to prod'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   deploy:
@@ -29,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{
       (inputs.cluster == 'dev-gcp' && ((github.event_name == 'push' && github.ref == 'refs/heads/main' )  || github.event_name == 'workflow_dispatch' )) ||
-      (inputs.cluster == 'prod-gcp' && (github.event_name == 'push' && github.ref == 'refs/heads/main')) }}
+      (inputs.cluster == 'prod-gcp' && (github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.redeployProd))) }}
     steps:
       - uses: actions/checkout@v6
         with:
