@@ -10,15 +10,21 @@ import no.nav.pensjon.brevbaker.api.model.ElementTags
 
 class FerdigRedigertPolicy {
 
-    suspend fun erFerdigRedigert(brev: Brevredigering): Outcome<Unit, IkkeFerdigRedigert> =
-        if (brev.redigertBrev.alleFritekstFelterErRedigert() && ((!Features.hindreDuplikateAvsnitt.isEnabled()) || brev.redigertBrev.alleDuplikateAvsnittErHaandtert())) {
+    suspend fun erFerdigRedigert(brev: Brevredigering): Outcome<Unit, IkkeFerdigRedigert> {
+        val alleFritekstFelterErRedigert = brev.redigertBrev.alleFritekstFelterErRedigert()
+        val alleDuplikateAvsnittErHaandtert = (!Features.hindreDuplikateAvsnitt.isEnabled()) || brev.redigertBrev.alleDuplikateAvsnittErHaandtert()
+        return if (alleFritekstFelterErRedigert && alleDuplikateAvsnittErHaandtert) {
             success(Unit)
-        } else {
+        } else if (!alleFritekstFelterErRedigert) {
             failure(IkkeFerdigRedigert.FritekstFelterUredigert)
+        } else {
+            failure(IkkeFerdigRedigert.DuplikatAvsnittUhaandtert)
         }
+    }
 
     sealed interface IkkeFerdigRedigert : BrevredigeringError {
         data object FritekstFelterUredigert : IkkeFerdigRedigert
+        data object DuplikatAvsnittUhaandtert : IkkeFerdigRedigert
     }
 
     private fun Edit.Letter.alleFritekstFelterErRedigert(): Boolean =
