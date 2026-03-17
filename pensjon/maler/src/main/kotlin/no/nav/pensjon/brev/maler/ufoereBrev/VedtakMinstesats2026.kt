@@ -227,19 +227,6 @@ object VedtakMinstesats2026  : AutobrevTemplate<VedtakMinstesats2026Dto> {
                 )
             }
 
-            title1 {
-                text(
-                    bokmal { +"Dette kan du gjøre nå" },
-                    nynorsk { +"Dette kan du gjere no" }
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Du har rett til å klage på vedtaket, selv om endringen i uføretrygden din skyldes endringer i lovverket. Mener du vi har feil opplysninger om saken din, kan du også klage på vedtaket." },
-                    nynorsk { + "Du har rett til å klage på vedtaket, sjølv om endringen i uføretrygda din skyldes endringar i lovverket. Mener du vi har feil opplysningar om saka di, kan du også klage på vedtaket." }
-                )
-            }
-
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
