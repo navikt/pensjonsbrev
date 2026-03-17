@@ -229,7 +229,7 @@ describe("Endrer på mottaker", () => {
     //søker opp og velger brevet vi vil ha
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
-    cy.contains("Endre mottaker").click();
+    cy.contains("Endre").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");
     cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
@@ -278,7 +278,7 @@ describe("Endrer på mottaker", () => {
 
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
-    cy.contains("Endre mottaker").click();
+    cy.contains("Endre").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");
     cy.contains("Avbryt").click();

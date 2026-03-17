@@ -1,4 +1,4 @@
-import { Alert, Button, HStack, Select, TextField, VStack } from "@navikt/ds-react";
+import { Alert, Button, HStack, Search, Select, TextField, VStack } from "@navikt/ds-react";
 import type { UseMutationResult } from "@tanstack/react-query";
 import type { Control } from "react-hook-form";
 import { Controller, useWatch } from "react-hook-form";
@@ -81,7 +81,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
         <ApiError error={properties.onFinnSamhandlerSubmit.error} title="En feil skjedde" />
       )}
 
-      <HStack justify="end">
+      <HStack justify="start">
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
@@ -134,7 +134,14 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         control={properties.control}
         name="finnSamhandler.direkteOppslag.id"
         render={({ field, fieldState }) => (
-          <TextField {...field} error={fieldState.error?.message} label="ID" size="small" value={field.value ?? ""} />
+          <Search
+            variant="simple"
+            {...field}
+            error={fieldState.error?.message}
+            label="ID"
+            size="small"
+            value={field.value ?? ""}
+          />
         )}
       />
     </VStack>
@@ -173,7 +180,14 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
         control={properties.control}
         name="finnSamhandler.organisasjonsnavn.navn"
         render={({ field, fieldState }) => (
-          <TextField label="Navn" {...field} error={fieldState.error?.message} size="small" value={field.value ?? ""} />
+          <Search
+            label="Navn"
+            variant="simple"
+            {...field}
+            error={fieldState.error?.message}
+            size="small"
+            value={field.value ?? ""}
+          />
         )}
       />
     </VStack>
@@ -207,8 +221,9 @@ const SamhandlerPersonnavn = (properties: { control: Control<CombinedFormData> }
         control={properties.control}
         name="finnSamhandler.personnavn.etternavn"
         render={({ field, fieldState }) => (
-          <TextField
+          <Search
             label="Etternavn"
+            variant="simple"
             {...field}
             error={fieldState.error?.message}
             size="small"
