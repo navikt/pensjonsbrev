@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneUforeTrygdSokerAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
@@ -16,6 +17,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 
@@ -416,8 +418,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                     }
                 }
             }
-
         }
+        includeAttachment(forbeholdTilBeregningeneUforeTrygdSokerAfpPrivat)
     }
 
     override val kategori = Brevkategori.INFORMASJONSBREV

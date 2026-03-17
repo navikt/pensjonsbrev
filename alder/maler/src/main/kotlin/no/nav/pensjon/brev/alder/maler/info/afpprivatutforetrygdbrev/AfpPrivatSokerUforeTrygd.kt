@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUforeTrygd
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
@@ -405,6 +406,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd)
     }
 
     override val kategori = Brevkategori.INFORMASJONSBREV
