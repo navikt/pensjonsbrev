@@ -42,7 +42,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
         outline {
             paragraph {
-                val dato = fritekst("dato")
+                val dato = fritekst("dato: 01.mm.20åå")
                 text(
                     bokmal {
                         +"Du har i dag uføretrygd fra Nav. For å ha rett til AFP i privat sektor, kan du ikke ha fått utbetalt uføretrygd etter den måneden du fyller 62 år. Dette går fram av AFP-tilskottsloven § 8. Hvis du ønsker å ta ut AFP i privat sektor må du si fra deg retten til uføretrygd senest fra " + dato + ". Du må derfor velge mellom:"
@@ -234,8 +234,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +"Alderspensjon 100%" },
-                                nynorsk { +"Alderspensjon 100%" }
+                                bokmal { +"Alderspensjon " + fritekst("100" + "%") },
+                                nynorsk { +"Alderspensjon " + fritekst("100" + "%") }
                             )
                         }
                         column(alignment = RIGHT) {
@@ -348,12 +348,12 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                     text(
                         bokmal {
                             +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen " + fritekst(
-                                "fritekst"
+                                "(Fristen og formuleringen må tilpasses den enkelte situasjon og hvor lang tid det er til bruker fyller 62 år)."
                             )
                         },
                         nynorsk {
                             +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut AFP eller om du ønsker å beholde uføretrygden. Vi må ha tilbakemelding fra deg innen " + fritekst(
-                                "fritekst"
+                                "(Fristen og formuleringen må tilpasses den enkelte situasjon og hvor lang tid det er til bruker fyller 62 år)."
                             )
                         }
                     )
