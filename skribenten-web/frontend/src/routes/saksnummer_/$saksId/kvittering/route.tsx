@@ -47,7 +47,7 @@ function Kvittering() {
     <Box
       asChild
       background="default"
-      height="calc(var(--main-page-content-height) + 48px)"
+      height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
       marginInline="auto"
       width="fit-content"
     >

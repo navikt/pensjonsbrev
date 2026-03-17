@@ -9,14 +9,14 @@ function LetterTemplateTags({ letterTemplate }: { letterTemplate: LetterMetadata
         switch (letterTemplate.brevsystem) {
           case BrevSystem.Brevbaker: {
             return (
-              <Tag data-color="meta-lime" size="small" variant="outline">
+              <Tag data-color="meta-lime" size="small" variant="moderate">
                 Skribenten
               </Tag>
             );
           }
           case BrevSystem.Exstream: {
             return (
-              <Tag data-color="meta-purple" size="small" variant="outline">
+              <Tag data-color="meta-purple" size="small" variant="moderate">
                 Exstream
               </Tag>
             );

@@ -375,26 +375,38 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     bokmal { + "For å ha rett til økt uføretrygd må du oppfylle disse vilkårene:" },
                     nynorsk { + "For å ha rett til auka uføretrygd må du oppfylle desse vilkåra:" },
                 )
-                text (
-                    bokmal { + "Du må være mellom 18 og 67 år." },
-                    nynorsk { + "Du må vere mellom 18 og 67 år." },
-                )
-                text (
-                    bokmal { + "Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
-                    nynorsk { + "Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
-                )
-                text (
-                    bokmal { + "Inntektsevnen din må ha blitt ytterligere nedsatt, og denne nedsettelsen må være varig." },
-                    nynorsk { + "Inntektsevna di må ha blitt ytterlegare sett ned, og denne nedsetjinga må vere varig." },
-                )
-                text (
-                    bokmal { + "Sykdom eller skade må være hovedårsak til at inntektsevnen din har blitt ytterligere nedsatt." },
-                    nynorsk { + "Sjukdom eller skade må vere hovudårsak til at inntektsevna di er blitt ytterlegare sett ned." },
-                )
-                text (
-                    bokmal { + "Du må ha gjennomført hensiktsmessig behandling og arbeidsrettede tiltak." },
-                    nynorsk { + "Du må ha gjennomført formålstenleg behandling og arbeidsretta tiltak." },
-                )
+                list {
+                    item {
+                        text (
+                            bokmal { + "Du må være mellom 18 og 67 år." },
+                            nynorsk { + "Du må vere mellom 18 og 67 år." },
+                        )
+                    }
+                    item {
+                        text (
+                            bokmal { + "Du må ha vært medlem av folketrygden i de siste tre årene fram til uføretidspunktet, eller oppfylle en av unntaksreglene." },
+                            nynorsk { + "Du må ha vore medlem av folketrygda i dei siste tre åra fram til uføretidspunktet, eller oppfylle ein av unntaksreglane." },
+                        )
+                    }
+                    item {
+                        text (
+                            bokmal { + "Inntektsevnen din må ha blitt ytterligere nedsatt, og denne nedsettelsen må være varig." },
+                            nynorsk { + "Inntektsevna di må ha blitt ytterlegare sett ned, og denne nedsetjinga må vere varig." },
+                        )
+                    }
+                    item {
+                        text (
+                            bokmal { + "Sykdom eller skade må være hovedårsak til at inntektsevnen din har blitt ytterligere nedsatt." },
+                            nynorsk { + "Sjukdom eller skade må vere hovudårsak til at inntektsevna di er blitt ytterlegare sett ned." },
+                        )
+                    }
+                    item {
+                        text (
+                            bokmal { + "Du må ha gjennomført hensiktsmessig behandling og arbeidsrettede tiltak." },
+                            nynorsk { + "Du må ha gjennomført formålstenleg behandling og arbeidsretta tiltak." },
+                        )
+                    }
+                }
             }
             //[TBU1257NN, TBU1257]
 

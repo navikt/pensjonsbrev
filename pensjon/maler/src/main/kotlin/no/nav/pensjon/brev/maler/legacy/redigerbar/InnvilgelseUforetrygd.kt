@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -17,6 +16,7 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -379,8 +379,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Forskuddet ditt tilsvarer uføretrygd beregnet etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype() + " på bakgrunn av norsk trygdetid og opplysninger om trygdetid fra " + fritekst("Land") + ". Vi utbetaler dette forskuddet fram til vi har foretatt en endelig beregning av uføretrygden din. Det betyr at beløpet kan bli endret når det endelige vedtaket er klart." },
-                        nynorsk { + "Forskotet ditt svarer til uføretrygd rekna ut etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype() + " på bakgrunn av norsk trygdetid og opplysningar om trygdetid frå " + fritekst("Land") + ". Vi betaler ut dette forskotet fram til vi har rekna ut uføretrygda di endeleg. Det vil seie at beløpet kan bli endra når det endelege vedtaket er klart." },
+                        bokmal { + "Forskuddet ditt tilsvarer uføretrygd beregnet etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland() + " på bakgrunn av norsk trygdetid og opplysninger om trygdetid fra " + fritekst("land") + ". Vi utbetaler dette forskuddet fram til vi har foretatt en endelig beregning av uføretrygden din. Det betyr at beløpet kan bli endret når det endelige vedtaket er klart." },
+                        nynorsk { + "Forskotet ditt svarer til uføretrygd rekna ut etter " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland() + " på bakgrunn av norsk trygdetid og opplysningar om trygdetid frå " + fritekst("land") + ". Vi betaler ut dette forskotet fram til vi har rekna ut uføretrygda di endeleg. Det vil seie at beløpet kan bli endra når det endelege vedtaket er klart." },
                     )
                 }
             }
@@ -463,23 +463,19 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom()) { trygdetidfom ->
                     ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidtom()) { trygdetidtom ->
-                        ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral()) { trygdetidfombilateral ->
-                            ifNotNull(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidtombilateral()) { trygdetidtombilateral ->
-                                paragraph {
-                                    text(
-                                        bokmal {+"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
-                                                "Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". " +
-                                                "Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". " +
-                                                "Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden."
-                                        },
-                                        nynorsk {+"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
-                                                "Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + trygdetidfombilateral.format() + " til " + trygdetidtombilateral.format() + ". " +
-                                                "Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". " +
-                                                "Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda."
-                                        },
-                                    )
-                                }
-                            }
+                        paragraph {
+                            text(
+                                bokmal {+"Du har vært medlem av folketrygden fra " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
+                                        "Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + fritekst("fom") + " til " + fritekst("tom") + ". " +
+                                        "Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". " +
+                                        "Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i tre år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden."
+                                },
+                                nynorsk {+"Du har vore medlem av den norske folketrygda frå " + trygdetidfom.format() + " til " + trygdetidtom.format() + ". " +
+                                        "Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + fritekst("fom") + " til " + fritekst("tom") + ". " +
+                                        "Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". " +
+                                        "Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i tre år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda."
+                                },
+                            )
                         }
                     }
                 }
@@ -755,7 +751,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF ( (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneResultat) = "oppfylt"  AND  FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) = "stdbegr_12_7_2_o_2")  OR   ( FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Uforegrad) < 50   AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_YrkesskadeGrad) > 0 AND  FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_NedsattInntektsevneBegrunnelse) = "stdbegr_12_7_2_o_3") ) THEN     INCLUDE ENDIF
             showIf((((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_nedsattinntektsevneresultat()).equalTo("oppfylt") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_nedsattinntektsevnebegrunnelse()).equalTo("stdbegr_12_7_2_o_2")) or ((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()).lessThan(50) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()).greaterThan(0) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_nedsattinntektsevnebegrunnelse()).equalTo("stdbegr_12_7_2_o_3")))){
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Du oppfyller unntaksregel om nedsatt inntektsevne" },
                         nynorsk { + "Du oppfyller unntaksregel om nedsett inntektsevne" },
@@ -818,8 +814,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert." },
                     )
                     text (
-                        bokmal { + "Du oppfyller ikke vilkåret om rettighet som ung ufør, fordi det ikke er dokumentert at du ble alvorlig og varig syk før du fylte 26 år. <FRITEKST: konkret begrunnelse>. " },
-                        nynorsk { + "Du oppfyller ikkje vilkåret om rett som ung ufør fordi det ikkje er dokumentert at du blei alvorleg og varig sjuk før du fylte 26 år. <FRITEKST: Konkret begrunnelse>." },
+                        bokmal { + "Du oppfyller ikke vilkåret om rettighet som ung ufør, fordi det ikke er dokumentert at du ble alvorlig og varig syk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
+                        nynorsk { + "Du oppfyller ikkje vilkåret om rett som ung ufør fordi det ikkje er dokumentert at du blei alvorleg og varig sjuk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
                     )
                 }
             }
@@ -2142,6 +2138,6 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.orienteringOmRettigheterUfoere)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore)
     }
 }

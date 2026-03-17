@@ -1,4 +1,4 @@
-import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
+import { BodyShort, Heading, HStack, Loader, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -115,11 +115,18 @@ const Brevmal = (props: {
         )}
         <VStack align="start" gap="space-8">
           <Heading size="small">{props.brev.brevtittel}</Heading>
-          {props.letterMetadata ? (
-            <LetterTemplateTags letterTemplate={props.letterMetadata} />
-          ) : (
-            <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
-          )}
+          <HStack gap="space-8">
+            {props.letterMetadata ? (
+              <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            ) : (
+              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+            )}
+            {props.letterMetadata?.redigerbart && (
+              <Tag data-color="neutral" size="small" variant="moderate">
+                Redigerbar
+              </Tag>
+            )}
+          </HStack>
         </VStack>
       </VStack>
       <Divider />
