@@ -105,7 +105,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 )
                 {
                     val datoSamboerskap = fritekst("dato for samboerskap")
-                    val datoFellesbarn = fritekst("dato for fødsel fellesbarn")
+                    val datoFellesbarn = fritekst("dato for fødsel av fellesbarn")
                     text(
                         bokmal {
                             +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
@@ -129,7 +129,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 }
 
                 showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
-                    val dato = fritekst("dato for fødsel fellesbarn")
+                    val dato = fritekst("dato for fødsel av fellesbarn")
                     text(
                         bokmal {
                             +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
