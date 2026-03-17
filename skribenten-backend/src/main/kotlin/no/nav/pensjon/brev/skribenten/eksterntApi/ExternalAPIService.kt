@@ -97,7 +97,7 @@ class ExternalAPIService(
                 spraak = request.spraak.toLanguageCode(),
                 avsenderEnhetsId = request.avsenderEnhetsId,
                 saksbehandlerValg = Api.GeneriskBrevdata().also { data -> request.saksbehandlerValg?.forEach { (k, v) -> data[k] = v } },
-                reserverForRedigering = true
+                reserverForRedigering = request.reserverForRedigering ?: true
             )
         )
 }
