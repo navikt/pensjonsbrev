@@ -8,16 +8,24 @@ import io.ktor.server.routing.get
 import io.ktor.server.routing.post
 import io.ktor.server.routing.route
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
+import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.services.PdlService
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("ExternalApi")
 
-fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIService) =
+fun Route.externalAPI(
+    authConfig: JwtConfig,
+    externalAPIService: ExternalAPIService,
+    pdlService: PdlService,
+    fagsakService: FagsakService,
+) =
     authenticate(authConfig.name) {
         install(PrincipalInContext)
         install(PrincipalHasGroup) {
@@ -26,6 +34,10 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
         }
         route("/external/api/v1") {
             route("/brev") {
+                install(AuthorizeAnsattSakTilgang) {
+                    this.pdlService = pdlService
+                    this.fagsakService = fagsakService
+                }
                 get {
                     val saksIder = call.queryParameters.getAll("saksId")
                         ?.flatMap { it.split(",") }
@@ -35,7 +47,7 @@ fun Route.externalAPI(authConfig: JwtConfig, externalAPIService: ExternalAPIServ
 
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
-                post<ExternalAPI.OpprettBrevRequest> { request ->
+                post<ExternalAPI.OpprettBrevRequest>("/sak/{saksId}") { request ->
                     externalAPIService.opprettBrev(request).onSuccess {
                         call.respond(HttpStatusCode.Created, ExternalAPI.OpprettetBrev(brevId = it.info.id, sakId = it.info.saksId))
                     }.onError { error ->

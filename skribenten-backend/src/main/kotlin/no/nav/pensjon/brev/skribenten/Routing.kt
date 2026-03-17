@@ -105,6 +105,6 @@ fun Application.configureRouting(
 
         }
 
-        externalAPI(authConfig, externalAPIService)
+        externalAPI(authConfig, externalAPIService, pdlService, fagsakService)
     }
 }

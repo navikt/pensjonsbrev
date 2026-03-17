@@ -28,6 +28,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.initADGroups
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -35,17 +36,23 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
+import no.nav.pensjon.brev.skribenten.model.Pdl
+import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.FakeBrevbakerService
 import no.nav.pensjon.brev.skribenten.services.FakeBrevmetadataService
+import no.nav.pensjon.brev.skribenten.services.PdlServiceStub
 import no.nav.pensjon.brev.skribenten.services.PenClientStub
 import no.nav.pensjon.brev.skribenten.skribentenContenNegotiation
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
 import java.time.Instant
+import java.time.LocalDate
 
 class RouteTest {
 
@@ -105,13 +112,16 @@ class RouteTest {
         }
     """.trimIndent()
 
+    private val hentBrevService = object : HentBrevService {
+        override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
+        override fun hentBrevInfo(brevId: BrevId) = brevInfo
+    }
+
     private fun lagExternalAPIService(
         opprettBrevResult: Outcome<Dto.Brevredigering, BrevredigeringError> = Outcome.success(successBrevredigering)
     ) = ExternalAPIService(
         config = ConfigValueFactory.fromMap(mapOf("skribentenWebUrl" to "https://example.com")).toConfig(),
-        hentBrevService = object : HentBrevService {
-            override fun hentBrevForAlleSaker(saksIder: Set<SaksId>) = listOf(brevInfo)
-        },
+        hentBrevService = hentBrevService,
         brevmalService = BrevmalService(
             brevbakerService = FakeBrevbakerService(),
             penClient = PenClientStub(),
@@ -138,7 +148,11 @@ class RouteTest {
             skribentenContenNegotiation()
         }
         routing {
-            externalAPI(jwtConfig, externalAPIService)
+            externalAPI(jwtConfig, externalAPIService, object : PdlServiceStub() {
+                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnummer: Pdl.Behandlingsnummer?) = null
+            }, FagsakService(object : PenClientStub() {
+                override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"))
+            }))
         }
 
         val client = createClient {
@@ -155,7 +169,7 @@ class RouteTest {
 
     @Test
     fun `opprettBrev returnerer 201 med brevId og sakId ved suksess`() = routeTestApplication { client ->
-        val response = client.post("/external/api/v1/brev") {
+        val response = client.post("/external/api/v1/brev/sak/1") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
@@ -170,7 +184,7 @@ class RouteTest {
             Outcome.failure(OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId(Testbrevkoder.INFORMASJONSBREV))
         )
     ) { client ->
-        val response = client.post("/external/api/v1/brev") {
+        val response = client.post("/external/api/v1/brev/sak/1") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
@@ -184,7 +198,7 @@ class RouteTest {
             Outcome.failure(BrevmalFinnesIkke(Testbrevkoder.INFORMASJONSBREV))
         )
     ) { client ->
-        val response = client.post("/external/api/v1/brev") {
+        val response = client.post("/external/api/v1/brev/sak/1") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
