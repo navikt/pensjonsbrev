@@ -57,24 +57,27 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
     call: ApplicationCall,
     saksId: SaksId
 ) {
-    val pdlService = pluginConfig.pdlService
-    val penService = pluginConfig.fagsakService
+    validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService, { call.attributes.put(SakKey, it) })
+        .takeIf { it }
+        ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+}
 
+suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService, putSak: (Pen.SakSelection) -> Unit): Boolean {
     val sak = penService.hentSak(saksId)
-
     if (sak != null) {
-        call.attributes.put(SakKey, sak)
+        putSak(sak)
         val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 
         if (!harTilgang) {
             logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
-            call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+            return false
         }
+        return true
     } else {
         logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
-        call.respond(status = HttpStatusCode.NotFound, "Sak ikke funnet")
+        return false
     }
 }
 
