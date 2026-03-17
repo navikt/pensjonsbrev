@@ -11,9 +11,9 @@ data class OpphoerGjenlevendepensjonDto(
     override val pesysData: EmptyFagsystemdata
 ) : RedigerbarBrevdata<OpphoerGjenlevendepensjonDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
-        @DisplayText("§ 17-11 alternativ")
+        @DisplayText("Velg § 17-11 alternativ")
         val folketrygdlovenAlternativ: FolketrygdlovenAlternativ,
-        @DisplayText("Opphør med tilbakekreving")
+        @DisplayText("Hvis opphør med tilbakekreving")
         val opphoerMedTilbakekreving: Boolean
     ) : SaksbehandlerValgBrevdata {
         enum class FolketrygdlovenAlternativ {
