@@ -54,7 +54,7 @@ import org.junit.jupiter.api.Test
 import java.time.Instant
 import java.time.LocalDate
 
-class RouteTest {
+class ExternalAPIRouteTest {
 
    @BeforeAll
    fun initAdGroups() = initADGroups()
@@ -169,7 +169,7 @@ class RouteTest {
 
     @Test
     fun `opprettBrev returnerer 201 med brevId og sakId ved suksess`() = routeTestApplication { client ->
-        val response = client.post("/external/api/v1/brev/sak/1") {
+        val response = client.post("/external/api/v1/brev") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
@@ -184,7 +184,7 @@ class RouteTest {
             Outcome.failure(OpprettBrevPolicy.KanIkkeOppretteBrev.BrevmalKreverVedtaksId(Testbrevkoder.INFORMASJONSBREV))
         )
     ) { client ->
-        val response = client.post("/external/api/v1/brev/sak/1") {
+        val response = client.post("/external/api/v1/brev") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
@@ -198,7 +198,7 @@ class RouteTest {
             Outcome.failure(BrevmalFinnesIkke(Testbrevkoder.INFORMASJONSBREV))
         )
     ) { client ->
-        val response = client.post("/external/api/v1/brev/sak/1") {
+        val response = client.post("/external/api/v1/brev") {
             contentType(ContentType.Application.Json)
             setBody(opprettBrevRequestJson)
         }
