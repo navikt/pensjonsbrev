@@ -11,7 +11,7 @@ data class OpphoerGjenlevendepensjonDto(
     override val pesysData: EmptyFagsystemdata
 ) : RedigerbarBrevdata<OpphoerGjenlevendepensjonDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
-        @DisplayText("Velg § 17-11 alternativ")
+        @DisplayText("Velg § 17-11 alternativ:")
         val folketrygdlovenAlternativ: FolketrygdlovenAlternativ,
         @DisplayText("Hvis opphør med tilbakekreving")
         val opphoerMedTilbakekreving: Boolean
