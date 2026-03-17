@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
@@ -63,6 +64,7 @@ class FerdigRedigertPolicyTest {
 
     @Test
     suspend fun `brev uten duplikat avsnitt er klar til sending`() {
+        Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = false),
@@ -74,6 +76,7 @@ class FerdigRedigertPolicyTest {
 
     @Test
     suspend fun `brev med duplikat avsnitt er ikke klar til sending`() {
+        Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = true),
