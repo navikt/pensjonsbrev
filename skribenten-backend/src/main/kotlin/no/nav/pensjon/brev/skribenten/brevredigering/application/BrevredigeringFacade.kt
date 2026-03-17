@@ -43,7 +43,7 @@ class BrevredigeringFacade(
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         oppdaterBrev.runHandler(request)
 
-    fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
+    override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
 
     fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
