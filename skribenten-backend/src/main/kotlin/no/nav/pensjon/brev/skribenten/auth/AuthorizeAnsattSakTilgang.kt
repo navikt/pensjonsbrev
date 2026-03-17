@@ -62,7 +62,7 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 }
 
-suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService, putSak: (Pen.SakSelection) -> Unit): Boolean {
+suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService, putSak: (Pen.SakSelection) -> Unit = {}): Boolean {
     val sak = penService.hentSak(saksId)
     if (sak != null) {
         putSak(sak)

@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgang
 import no.nav.pensjon.brev.skribenten.auth.JwtConfig
 import no.nav.pensjon.brev.skribenten.auth.PrincipalHasGroup
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
+import no.nav.pensjon.brev.skribenten.auth.validerTilgangTilSak
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.SaksId
@@ -44,6 +45,9 @@ fun Route.externalAPI(
                         ?.mapNotNull { it.toLongOrNull() }
                         ?.map { SaksId(it) }
                         ?: emptyList()
+                    if (!saksIder.all { validerTilgangTilSak(fagsakService, it, pdlService) }) {
+                        call.respond(HttpStatusCode.NotFound, "Minst én sak ikke funnet")
+                    }
 
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
