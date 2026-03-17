@@ -4,6 +4,11 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.*
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.fodselsdato
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.resultat
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggAvslatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
@@ -185,13 +190,11 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
             showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)){
                 paragraph {
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)){
-                        text (
-                            bokmal { + "Du er innvilget barnetillegg i uføretrygden din." },
-                            nynorsk { + "Du er innvilga barnetillegg i uføretrygda di. " },
-                        )
-                    }
+                    text (
+                        bokmal { + "Du er innvilget barnetillegg til uføretrygden din for" },
+                        nynorsk { + "Du er innvilga barnetillegg til uføretrygda di for" },
+                    )
+                    includePhrase(Felles.TextOrList(pesysData.barnetilleggInnvilget.map(BarnetilleggFormatter), 5))
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
                     showIf((barnetilleggFellesInnvilget and (((barnetilleggSerkullInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)) and (barnetilleggFellesInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0))) or (barnetilleggSerkullInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0) and not(barnetilleggFellesInnvilget)) or (barnetilleggFellesInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0) and not(barnetilleggSerkullInnvilget))))){
@@ -208,6 +211,16 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                             nynorsk { + "Tillegget blir ikkje betalt ut fordi inntekta di er over grensa for å få utbetalt barnetillegg." },
                         )
                     }
+                }
+            }
+
+            showIf(pesysData.barnetilleggAvslatt.isNotEmpty()) {
+                paragraph {
+                    text(
+                        bokmal { +"Vi har avslått barnetillegg til uføretrygden din for" },
+                        nynorsk { +"Vi har avslått barnetillegg til uføretrygda di for" },
+                    )
+                    includePhrase(Felles.TextOrList(pesysData.barnetilleggAvslatt.map(BarnetilleggFormatter), 5))
                 }
             }
 
@@ -2027,7 +2040,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 //IF (PE_UT_KravLinjeKode_VedtakResultat_forekomst_bt_innv()) THEN INCLUDE ENDIF
                 showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))){
                     includePhrase(TBU5005_Generated)
-                    includePhrase(TBU5007_Generated)
+                    paragraph {
+                        text(
+                            bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
+                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
+                        )
+                    }
                 }
             }
 
@@ -2108,6 +2126,66 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     text (
                         bokmal { + "Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
                         nynorsk { + "Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
+                    )
+                }
+            }
+            forEach(pesysData.barnetilleggAvslatt) { barnetillegg ->
+                title1 {
+                    text(
+                        bokmal { +"Nav har avslått søknaden din om barnetillegg" },
+                        nynorsk { +"Nav har avslått søknaden din om barnetillegg" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Søknaden er avslått for barn født " + barnetillegg.fodselsdato.format() + "." },
+                        nynorsk { +"Søknaden er avslått for barn fødd " + barnetillegg.fodselsdato.format() + "." },
+                    )
+                }
+                title2 {
+                    text(
+                        bokmal { +"Begrunnelse for vedtaket" },
+                        nynorsk { +"Begrunnelse for vedtaket" },
+                    )
+                }
+                paragraph {
+                    showIf(barnetillegg.resultat.equalTo(ANNEN_FORLD_RETT_BT)) {
+                        text(
+                            bokmal { +"Når barnet blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. Barnets andre forelder har rett til et høyere barnetillegg enn det du vil få." },
+                            nynorsk { +"Når barnet vert forsørgd av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til barnet har rett til eit høgare barnetillegg enn det du vil få." },
+                        )
+                    }.orShowIf(barnetillegg.resultat.equalTo(BT_GITT_TIL_ANNEN)) {
+                        text(
+                            bokmal { +"Når barnet blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som barnet." },
+                            nynorsk { +"Når barnet vert forsørgd av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som barnet. Du bur ikkje på same folkeregistrerte adresse som barnet." },
+                        )
+                    }.orShowIf(barnetillegg.resultat.equalTo(MINDRE_ETT_AR_BT_FLT)) {
+                        text(
+                            bokmal { +"Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." },
+                            nynorsk { +"Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen." },
+                        )
+                    }.orShowIf(barnetillegg.resultat.equalTo(BT_OVER_18)) {
+                        text(
+                            bokmal { +"Barnet har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." },
+                            nynorsk { +"Barnet har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år." },
+                        )
+                    }.orShowIf(barnetillegg.resultat.equalTo(BT_INNT_OVER_1G)) {
+                        text(
+                            bokmal { +"Barnets inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis barnet har inntekt over 1G." },
+                            nynorsk { +"Barnets inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis barnet har inntekt over 1G." },
+                        )
+                    }
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden." },
+                        nynorsk { +"Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda." },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-15." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova § 12-15." },
                     )
                 }
             }
