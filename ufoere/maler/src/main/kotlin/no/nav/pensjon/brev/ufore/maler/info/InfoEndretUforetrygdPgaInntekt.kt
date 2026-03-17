@@ -32,7 +32,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
 
     override val template = createTemplate(
         letterDataType = InfoEndretUTPgaInntektDto::class, languages = languages(Language.Bokmal), letterMetadata = LetterMetadata(
-            displayTitle = "Endring av uføretrygd på grunn av inntekt",
+            displayTitle = "Varsel - endring av uføretrygd på grunn av inntekt",
             distribusjonstype = VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
@@ -49,15 +49,10 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
 
         title {
             text(
-                bokmal { +"Endring av uføretrygd på grunn av inntekt" })
+                bokmal { +"Nav har mottatt opplysninger om inntekten din" })
         }
 
         outline {
-            paragraph {
-                text(
-                    bokmal { +"Nav har mottatt opplysninger om inntekten din." })
-            }
-
             paragraph {
                 text(
                     bokmal {
@@ -161,11 +156,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
                 )
             }
 
-            includePhrase(Felles.RettTilAKlageKort)
-            includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
         }
-
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
     }
 }
