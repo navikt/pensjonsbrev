@@ -113,7 +113,7 @@ describe("Kladd", () => {
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
-    cy.contains("Lag nytt brev").should("be.visible");
+    cy.contains("Nei, lag nytt brev").should("be.visible");
     cy.contains("Ja, bruk eksisterende kladd").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/2");
   });
@@ -164,7 +164,7 @@ describe("Kladd", () => {
 
     cy.contains("Vil du bruke eksisterende kladd?").should("be.visible");
     cy.contains("Du har en eksisterende kladd basert på samme brevmal.").should("be.visible");
-    cy.contains("Lag nytt brev").click();
+    cy.contains("Nei, lag nytt brev").click();
     cy.location("pathname").should("eq", "/saksnummer/123456/brev/2");
     cy.location("search").should("include", "enhetsId");
   });
