@@ -16,12 +16,12 @@
 }
 
 .letter-title {
-  margin-bottom: "var(--ax-space-28)";
-  font-weight: "700";
-  letter-spacing: "0.108px";
-  line-height: "1.875rem"; /* Effektiv linjehøyde */
+  margin-bottom: var(--ax-space-20);
+  font-weight: 700;
+  letter-spacing: 0.108px;
+  line-height: 1.875rem; /* Effektiv linjehøyde */
   > span {
-    line-height: "1.625rem"; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+    line-height: 1.625rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
   }
 }
 
@@ -83,13 +83,13 @@
 }
 
 /* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH:has(+ .PARAGRAPH > ul) {
+.PARAGRAPH:has(+ .PARAGRAPH > :is(ul, ol)) {
   margin-bottom: 0;
 }
 
-/* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH > ul {
-  margin-top: 0;
+.PARAGRAPH > :is(ul, ol) {
+  margin-top: var(--ax-space-6);
+  margin-bottom: var(--ax-space-20);
 }
 
 .editor-surface td [data-literal-index],

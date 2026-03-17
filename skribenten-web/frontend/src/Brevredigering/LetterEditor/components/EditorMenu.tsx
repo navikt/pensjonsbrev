@@ -7,14 +7,15 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { VerticalDivider } from "~/components/Divider";
 import EditorTableTools from "~/components/EditorTableTools";
+import { ListType } from "~/types/brevbakerTypes";
 import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
 import type { Typography } from "../utils";
 import { TypographyToText } from "../utils";
-import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
+import EditorListButton from "./EditorListButton";
 import { EditorUndoRedo } from "./EditorUndoRedo";
 
 const SelectTypography = () => {
@@ -58,13 +59,14 @@ type EditorMenuProps = {
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
   return (
     <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" minHeight="48px" width="100%">
-      <HStack align="center" gap="space-4" justify="space-between" paddingInline="space-16">
-        <HStack align="center" gap="space-16" margin-block="2">
+      <HStack align="center" gap="space-4" justify="space-between" paddingInline="space-8">
+        <HStack align="center" gap="space-8" margin-block="2">
           <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
           <VerticalDivider />
           <EditorFonts />
           <VerticalDivider />
-          <EditorBulletList />
+          <EditorListButton listType={ListType.PUNKTLISTE} />
+          <EditorListButton listType={ListType.NUMMERERT_LISTE} />
           <VerticalDivider />
           <EditorTableTools />
           <VerticalDivider />

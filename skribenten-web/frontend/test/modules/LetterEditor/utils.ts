@@ -23,7 +23,7 @@ import type {
   Title3Block,
   VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
+import { ITEM_LIST, ListType, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 import type { Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
@@ -192,6 +192,7 @@ export function newLine(): NewLine {
 export function itemList(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
+  listType?: ListType;
   items: Item[];
   deletedItems?: number[];
 }): ItemList {
@@ -200,6 +201,7 @@ export function itemList(args: {
     id: id,
     parentId: args.parentId ?? null,
     type: ITEM_LIST,
+    listType: args.listType ?? ListType.PUNKTLISTE,
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
   };
