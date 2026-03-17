@@ -1,4 +1,4 @@
-import { BodyShort, Label, VStack } from "@navikt/ds-react";
+import { BodyShort, HStack, Label, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
@@ -24,7 +24,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   });
 
   return (
-    <div>
+    <VStack>
       {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <>
@@ -44,7 +44,7 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
           )}
         </>
       )}
-    </div>
+    </VStack>
   );
 };
 
@@ -73,8 +73,23 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
 
   return (
     <>
+      {properties.adresse &&
+      (properties.adresse.type === "VERGE_SAMHANDLER_POSTADRESSE" ||
+        properties.adresse.type === "VERGE_PERSON_POSTADRESSE") ? (
+        <HStack>
+          <Tag data-color="brand-magenta" size="xsmall" variant="strong">
+            Verge
+          </Tag>
+        </HStack>
+      ) : (
+        <HStack>
+          <Tag data-color="info" size="xsmall" variant="strong">
+            Bruker
+          </Tag>
+        </HStack>
+      )}
       <BodyShort size="small">{navn}</BodyShort>
-      <VStack gap="space-0">
+      <VStack>
         {properties.adresse.adresselinjer.map((linje) => (
           <BodyShort key={linje} size="small">
             {humanizeName(linje)}
@@ -88,10 +103,25 @@ const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: 
 const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: boolean }) => {
   return (
     <>
-      <BodyShort size="small">
-        {properties.adresse.navn} {properties.erSamhandler && "(Samhandler)"}
-      </BodyShort>
-      <VStack gap="space-0">
+      {properties.erSamhandler && (
+        <HStack>
+          <Tag data-color="warning" size="xsmall" variant="strong">
+            Samhandler
+          </Tag>
+          {properties.adresse.manueltAdressertTil === "BRUKER" && (
+            <Tag data-color="info" size="xsmall" variant="strong">
+              Bruker
+            </Tag>
+          )}
+          {properties.adresse.manueltAdressertTil === "ANNEN" && (
+            <Tag data-color="brand-magenta" size="xsmall" variant="strong">
+              Verge
+            </Tag>
+          )}
+        </HStack>
+      )}
+      <BodyShort size="small">{properties.adresse.navn}</BodyShort>
+      <VStack>
         <BodyShort size="small">{properties.adresse.linje1}</BodyShort>
         <BodyShort size="small">
           {properties.adresse.postnr} {properties.adresse.poststed}{" "}

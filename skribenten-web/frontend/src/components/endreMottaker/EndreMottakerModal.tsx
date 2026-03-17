@@ -112,6 +112,7 @@ export const EndreMottakerModal = (properties: {
     <Modal
       data-cy="endre-mottaker-modal"
       header={{
+        closeButton: false,
         heading:
           vilAvbryte && form.formState.dirtyFields.manuellAdresse
             ? "Vil du avbryte endring av mottaker?"

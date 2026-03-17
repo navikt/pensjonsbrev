@@ -15,7 +15,7 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
     }
 
     case "Attestering": {
-      return { color: "meta-lime" as const, text: "Klar til Attestering" };
+      return { color: "meta-purple" as const, text: "Klar til Attestering" };
     }
 
     case "Klar": {

@@ -1,4 +1,4 @@
-import { BodyShort, Label, VStack } from "@navikt/ds-react";
+import { BodyShort, HStack, Label, Tag, VStack } from "@navikt/ds-react";
 
 import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import { useLandData } from "~/hooks/useLandData";
@@ -22,6 +22,22 @@ const OppsummeringAvMottaker = (props: { saksId: string; mottaker: Nullable<Mott
   return (
     <VStack>
       {props.withTitle && <Label size="small">Mottaker</Label>}
+      {(props.mottaker?.type === "NorskAdresse" || props.mottaker?.type === "UtenlandskAdresse") &&
+        props.mottaker.manueltAdressertTil === "BRUKER" && (
+          <HStack>
+            <Tag data-color="info" size="xsmall" variant="strong">
+              Bruker
+            </Tag>
+          </HStack>
+        )}
+      {(props.mottaker?.type === "NorskAdresse" || props.mottaker?.type === "UtenlandskAdresse") &&
+        props.mottaker.manueltAdressertTil === "ANNEN" && (
+          <HStack>
+            <Tag data-color="brand-magenta" size="xsmall" variant="strong">
+              Verge
+            </Tag>
+          </HStack>
+        )}
       <BodyShort size="small">{props.mottaker.navn}</BodyShort>
       {props.mottaker.adresselinje1 && <BodyShort size="small">{props.mottaker.adresselinje1}</BodyShort>}
       {props.mottaker.adresselinje2 && <BodyShort size="small">{props.mottaker.adresselinje2}</BodyShort>}

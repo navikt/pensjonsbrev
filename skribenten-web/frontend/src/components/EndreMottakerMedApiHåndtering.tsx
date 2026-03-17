@@ -1,5 +1,5 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
-import { Box, Button, HStack, VStack } from "@navikt/ds-react";
+import { Box, Button, HStack, Label, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
 import { useState } from "react";
@@ -65,60 +65,77 @@ const EndreMottakerMedOppsummeringOgApiHåndtering = (props: {
           åpen={modalÅpen}
         />
       )}
-      <HStack align="center" gap="space-8">
-        {props.overrideOppsummering ? (
-          props.overrideOppsummering(
-            props.endreAsIcon && (
-              <Box asChild borderRadius="4">
-                <Button
-                  icon={<PencilIcon />}
-                  onClick={() => setModalÅpen(true)}
-                  size="xsmall"
-                  type="button"
-                  variant="tertiary"
-                />
-              </Box>
-            ),
-          )
-        ) : (
-          <OppsummeringAvMottaker
-            mottaker={props.brev.mottaker}
-            saksId={props.saksId}
-            withTitle={props.withOppsummeringTitle ?? false}
-          />
-        )}
-      </HStack>
-      <HStack>
-        {!props.endreAsIcon && (
-          <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
-            Endre mottaker
-          </Button>
-        )}
-
-        {props.brev.mottaker && props.kanTilbakestilleMottaker && (
-          <HStack>
+      {props.overrideOppsummering ? (
+        <HStack align="center" gap="space-8">
+          {props.overrideOppsummering(
+            <Box asChild borderRadius="4">
+              <Button
+                icon={<PencilIcon />}
+                onClick={() => setModalÅpen(true)}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            </Box>,
+          )}
+        </HStack>
+      ) : (
+        <VStack gap="space-8">
+          {props.withOppsummeringTitle && (
+            <HStack align="center" justify="space-between">
+              <Label size="small">Mottaker</Label>
+              <Button
+                icon={<PencilIcon />}
+                iconPosition="right"
+                onClick={() => setModalÅpen(true)}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              >
+                Endre
+              </Button>
+            </HStack>
+          )}
+          {!props.withOppsummeringTitle && (
             <Button
-              css={{ padding: "var(--ax-space-8) 0" }}
-              loading={fjernMottakerMutation.isPending}
-              onClick={() => fjernMottakerMutation.mutate()}
-              size="small"
+              icon={<PencilIcon />}
+              iconPosition="right"
+              onClick={() => setModalÅpen(true)}
+              size="xsmall"
               type="button"
               variant="tertiary"
             >
-              Tilbakestill mottaker
+              Endre
             </Button>
-            {fjernMottakerMutation.isError && (
-              <XMarkOctagonFillIcon
-                css={{
-                  alignSelf: "center",
-                  color: "var(--ax-text-logo)",
-                }}
-                title="error"
-              />
-            )}
-          </HStack>
-        )}
-      </HStack>
+          )}
+          <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
+        </VStack>
+      )}
+      {props.kanTilbakestilleMottaker && "Kan tilbakestille mottaker"}
+
+      {props.brev.mottaker && props.kanTilbakestilleMottaker && (
+        <HStack>
+          <Button
+            css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
+            loading={fjernMottakerMutation.isPending}
+            onClick={() => fjernMottakerMutation.mutate()}
+            size="xsmall"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbakestill mottaker
+          </Button>
+          {fjernMottakerMutation.isError && (
+            <XMarkOctagonFillIcon
+              css={{
+                alignSelf: "center",
+                color: "var(--ax-text-logo)",
+              }}
+              title="error"
+            />
+          )}
+        </HStack>
+      )}
     </VStack>
   );
 };

@@ -1,8 +1,10 @@
-import { Button, HStack } from "@navikt/ds-react";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { Button, HStack, Label, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
+import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import { type Adresse } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
 
@@ -11,13 +13,14 @@ import { Route } from "../../route";
 const EndreMottaker = (properties: {
   //kan være undefined fordi vi ikke kan gjøre noe manuellAdresse enda
   onManuellAdresseBekreft?: (a: Nullable<Adresse>) => void;
+  saksId: string;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
 
   return (
-    <div>
+    <VStack gap="space-8">
       {modalÅpen && (
         <EndreMottakerModal
           error={null}
@@ -46,33 +49,40 @@ const EndreMottaker = (properties: {
           åpen={modalÅpen}
         />
       )}
-      <HStack>
+      <HStack align="center" justify="space-between">
+        <Label size="small">Mottaker</Label>
         <Button
           data-cy="toggle-endre-mottaker-modal"
+          icon={<PencilIcon />}
+          iconPosition="right"
           onClick={() => setModalÅpen(true)}
-          size="small"
+          size="xsmall"
           type="button"
-          variant="secondary"
+          variant="tertiary"
         >
-          Endre mottaker
+          Endre
         </Button>
-        {idTSSEkstern && (
+      </HStack>
+      <HentOgVisAdresse sakId={properties.saksId} samhandlerId={idTSSEkstern} />
+      {idTSSEkstern && (
+        <HStack>
           <Button
+            css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
             onClick={() =>
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
               })
             }
-            size="small"
+            size="xsmall"
             type="button"
             variant="tertiary"
           >
             Tilbakestill mottaker
           </Button>
-        )}
-      </HStack>
-    </div>
+        </HStack>
+      )}
+    </VStack>
   );
 };
 
