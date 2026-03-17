@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_030 Vedtak opphør av gjenlevendepensjon
@@ -31,10 +30,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonDto> {
 
-//  override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.toggle  TODO
+override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_OPPHOER_GJENLEVENDEPENSJON
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING //TODO
+    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.GJENLEV)
 
