@@ -11,17 +11,26 @@ data class OpphoerGjenlevendepensjonDto(
     override val pesysData: EmptyFagsystemdata
 ) : RedigerbarBrevdata<OpphoerGjenlevendepensjonDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
-        @DisplayText("Gifter seg")
-        val gifterSeg: Boolean = false,
-        @DisplayText("Inngår partnerskap")
-        val inngaaPartnerskap: Boolean = false,
-        @DisplayText("Blir samboer og har felles barn")
-        val blirSamboerBarn: Boolean = false,
-        @DisplayText("Er samboer og får felles barn")
-        val erSamboerBarn: Boolean = false,
-        @DisplayText("Blir samboer med person han/hun tidligere var gift med")
-        val blirSamboerTidligereGift: Boolean = false,
+        @DisplayText("§ 17-11 alternativ")
+        val folketrygdlovenAlternativ: FolketrygdlovenAlternativ,
         @DisplayText("Opphør med tilbakekreving")
-        val tilbakekreving: Boolean = false,
-    ) : SaksbehandlerValgBrevdata
+        val opphoerMedTilbakekreving: Boolean
+    ) : SaksbehandlerValgBrevdata {
+        enum class FolketrygdlovenAlternativ {
+            @DisplayText("Gifter seg")
+            gifterSeg,
+
+            @DisplayText("Inngår partnerskap")
+            inngaaPartnerskap,
+
+            @DisplayText("Blir samboer og har felles barn")
+            blirSamboerOgHarFellesBarn,
+
+            @DisplayText("Er samboer og får felles barn")
+            erErSamboerOgFellesBarn,
+
+            @DisplayText("Blir samboer med personen han/hun tidligere var gift med")
+            blirSamboerTidligereGift,
+        }
+    }
 }

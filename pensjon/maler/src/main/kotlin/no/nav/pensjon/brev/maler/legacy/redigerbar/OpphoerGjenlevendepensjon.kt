@@ -4,12 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.blirSamboerBarn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.blirSamboerTidligereGift
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.erSamboerBarn
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.gifterSeg
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.inngaaPartnerskap
-import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.tilbakekreving
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenAlternativ.*
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.folketrygdlovenAlternativ
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.opphoerMedTilbakekreving
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
@@ -20,7 +17,8 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.or
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -30,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonDto> {
 
-override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.toggle
+    override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_OPPHOER_GJENLEVENDEPENSJON
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -69,7 +67,9 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                     }
                 )
 
-                showIf(saksbehandlerValg.gifterSeg) {
+                showIf(
+                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(gifterSeg)
+                ) {
                     val dato = fritekst("dato")
                     text(
                         bokmal { +"Vi viser til at du giftet deg " + dato + "." },
@@ -78,7 +78,9 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                     )
                 }
 
-                showIf(saksbehandlerValg.inngaaPartnerskap) {
+                showIf(
+                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
+                ) {
                     val dato = fritekst("dato")
                     text(
                         bokmal {
@@ -96,7 +98,12 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                     )
                 }
 
-                showIf(saksbehandlerValg.blirSamboerBarn or saksbehandlerValg.erSamboerBarn) {
+                showIf(
+                    saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(
+                        erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn
+                    )
+                )
+                {
                     val datoSamboerskap = fritekst("dato for samboerskap")
                     val datoFellesbarn = fritekst("dato for fødsel fellesbarn")
                     text(
@@ -113,7 +120,7 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                             +"We have based our decision on our finding that from "
                         }
                     )
-                    showIf(saksbehandlerValg.blirSamboerBarn) {
+                    showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerOgHarFellesBarn)) {
                         text(bokmal { +datoSamboerskap }, nynorsk { +datoSamboerskap }, english { +datoSamboerskap })
                     }.orShow {
                         text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
@@ -121,7 +128,7 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                     text(bokmal { +" er samboere med felles barn." }, nynorsk { +" er sambuarar med felles barn." }, english { +" you are cohabiting and have children in common." })
                 }
 
-                showIf(saksbehandlerValg.blirSamboerTidligereGift) {
+                showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
                     val dato = fritekst("dato for fødsel fellesbarn")
                     text(
                         bokmal {
@@ -140,7 +147,7 @@ override val featureToggle = FeatureToggles.brevmalOpphoerGjenlevendepensjon.tog
                 }
             }
 
-            showIf(saksbehandlerValg.tilbakekreving) {
+            showIf(saksbehandlerValg.opphoerMedTilbakekreving) {
                 paragraph {
                     text(
                         bokmal {
