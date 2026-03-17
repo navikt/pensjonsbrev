@@ -118,7 +118,7 @@ fun createPEgruppe10() =
             harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste = false,
             foedselsdatoTilBarnTilleggErInnvilgetFor = listOf(LocalDate.of(2010,1,1)),
             pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall = "samboer",
-            pe_ut_tbu4071_btfbinnvilget = false,
+            pe_ut_tbu4071_btfbinnvilget = true,
             pe_ut_fradrag_hoeyere_lavere = "høyere",
             pe_ut_inntekt_hoeyere_lavere = "lavere",
             pe_ut_bruttoetterreduksjonbt_hoeyere_lavere = "høyere",
@@ -575,7 +575,7 @@ fun createBarnetilleggSerkull() =
 fun createBarnetilleggFelles() =
     BarnetilleggFelles(
         avkortningsinformasjon = createAvkortningsInformasjonBT(),
-        btfbinnvilget = false,
+        btfbinnvilget = true,
         btfbnetto = Kroner(1200),
         btfbbrukersinntekttilavkortning = Kroner(1201),
         btfbinntektbruktiavkortning = Kroner(1202),
