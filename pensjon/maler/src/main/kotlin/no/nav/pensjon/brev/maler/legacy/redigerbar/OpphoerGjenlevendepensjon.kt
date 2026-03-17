@@ -58,7 +58,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         +"Pensjonen opphører fra måneden etter at eksteskapet ble inngått. "
                     },
                     nynorsk {
-                        +"«Etter folketrygdlova paragraf 17‑11 fell ytingar til attlevande ektefelle bort dersom han eller ho giftar seg på nytt. "
+                        +"Etter folketrygdlova paragraf 17‑11 fell ytingar til attlevande ektefelle bort dersom han eller ho giftar seg på nytt. "
                         +"Pensjonen fell bort frå månaden etter at ekteskapet vart inngått. "
                     },
                     english {
@@ -89,7 +89,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         },
                         nynorsk {
                             +"Registrert partnarskap er i folketrygdlova likestilt med ekteskap. "
-                            +"«Vi viser til at du har inngjekk partnarskap " + dato + "."
+                            +"Vi viser til at du har inngjekk partnarskap " + dato + "."
                         },
                         english {
                             +"According to the National Insurance Act, registered partnerships are equivalent to marriage. "
