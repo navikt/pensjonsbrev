@@ -60,4 +60,26 @@ class FerdigRedigertPolicyTest {
         )
         assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
     }
+
+    @Test
+    suspend fun `brev uten duplikat avsnitt er klar til sending`() {
+        val brev = RedigertBrevStub(
+            editedLetter(
+                Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = false),
+                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = null),
+            )
+        )
+        assertThat(policy.erFerdigRedigert(brev)).isSuccess()
+    }
+
+    @Test
+    suspend fun `brev med duplikat avsnitt er ikke klar til sending`() {
+        val brev = RedigertBrevStub(
+            editedLetter(
+                Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = true),
+                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = null),
+            )
+        )
+        assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert, _, _>()
+    }
 }
