@@ -216,6 +216,7 @@ jobs:
       resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "brevbaker/pdf-bygger/.nais/prod.yaml"
+      redeployProd: true
 
   "klarTilMerge":
     name: "Klar til merge"
