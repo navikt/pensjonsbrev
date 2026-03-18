@@ -3,6 +3,7 @@ import path from "node:path";
 
 import { serveViteMode } from "@navikt/vite-mode";
 import express, { type Express } from "express";
+import rateLimit from "express-rate-limit";
 
 function getUmamiHostUrl(): string {
   return process.env.UMAMI_HOST_URL ?? "";
@@ -20,7 +21,12 @@ export function setupStaticRoutes(server: Express) {
 
   serveViteMode(server, { port: "5173" });
 
-  server.get("*splat", (_req, res) => {
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 100,
+  });
+
+  server.get("*splat", limiter, (_req, res) => {
     try {
       const html = fs.readFileSync(spaFilePath, "utf-8");
       const injected = html
