@@ -39,7 +39,7 @@ fun Route.externalAPI(
                         ?.flatMap { it.split(",") }
                         ?.mapNotNull { it.toLongOrNull() }
                         ?.map { SaksId(it) }
-                        ?: emptyList()
+                        ?: return@get call.respond(HttpStatusCode.BadRequest, "Mangler saksId")
                     if (!saksIder.all { validerTilgangTilSak(fagsakService, it, pdlService) }) {
                         return@get call.respond(HttpStatusCode.NotFound, "Minst én sak ikke funnet")
                     }
