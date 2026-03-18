@@ -1,13 +1,37 @@
-import { BodyShort, HStack, Label, Tag, VStack } from "@navikt/ds-react";
+import { BodyShort, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import type { AdresseVisningTag } from "~/components/AdresseVisning";
+import AdresseVisning from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { humanizeName } from "~/utils/stringUtils";
 
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
+
+function mapKontaktAdresseTags(adresse: KontaktAdresseResponse): AdresseVisningTag[] {
+  if (adresse.type === "VERGE_SAMHANDLER_POSTADRESSE" || adresse.type === "VERGE_PERSON_POSTADRESSE") {
+    return [{ label: "Verge", color: "brand-magenta" }];
+  }
+  return [{ label: "Bruker", color: "info" }];
+}
+
+function mapSamhandlerAdresseTags(adresse: Adresse): AdresseVisningTag[] {
+  const tags: AdresseVisningTag[] = [{ label: "Samhandler", color: "warning" }];
+  if (adresse.manueltAdressertTil === "BRUKER") {
+    tags.push({ label: "Bruker", color: "info" });
+  } else if (adresse.manueltAdressertTil === "ANNEN") {
+    tags.push({ label: "Verge", color: "brand-magenta" });
+  }
+  return tags;
+}
+
+function mapSamhandlerAdresseLinjer(adresse: Adresse): string[] {
+  const postLinje = [adresse.postnr, adresse.poststed].filter(Boolean).join(" ");
+  const landSuffix = adresse.land && adresse.land !== "NOR" ? `, ${adresse.land}` : "";
+  return [adresse.linje1, `${postLinje}${landSuffix}`].filter((l): l is string => !!l);
+}
 
 /**
   En basic HentOgVis-komponent som henter og viser adresseinformasjon for en sak eller samhandler.
@@ -25,13 +49,17 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
 
   return (
     <VStack>
-      {properties.showMottakerTitle && <Label size="small">Mottaker</Label>}
       {!properties.samhandlerId && (
         <>
           {adresseQuery.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {adresseQuery.error && <ApiError error={adresseQuery.error} title="Fant ikke adresse" />}
           {adresseQuery.isSuccess && (
-            <MottakerAdresseOppsummering adresse={adresseQuery.data} erSamhandler={false} saksId={properties.sakId} />
+            <ResolvedAdresse
+              adresse={adresseQuery.data}
+              erSamhandler={false}
+              saksId={properties.sakId}
+              withTitle={properties.showMottakerTitle}
+            />
           )}
         </>
       )}
@@ -40,7 +68,12 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
           {samhandlerAdresse.isPending && <BodyShort size="small">Henter...</BodyShort>}
           {samhandlerAdresse.error && <ApiError error={samhandlerAdresse.error} title="Fant ikke adresse" />}
           {samhandlerAdresse.isSuccess && (
-            <MottakerAdresseOppsummering adresse={samhandlerAdresse.data} erSamhandler saksId={properties.sakId} />
+            <ResolvedAdresse
+              adresse={samhandlerAdresse.data}
+              erSamhandler
+              saksId={properties.sakId}
+              withTitle={properties.showMottakerTitle}
+            />
           )}
         </>
       )}
@@ -48,87 +81,32 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   );
 };
 
-/**
- *
- * @param properties - erSamhandler burde settes dersom adressen er en Adresse, og ikke en KontaktAdresseResponse
- */
-const MottakerAdresseOppsummering = (properties: {
+const ResolvedAdresse = (properties: {
   saksId: string;
   adresse: Adresse | KontaktAdresseResponse;
-  erSamhandler?: boolean;
+  erSamhandler: boolean;
+  withTitle?: boolean;
 }) => {
-  return (
-    <>
-      {erAdresseKontaktAdresse(properties.adresse) ? (
-        <ValgtKontaktAdresseOppsummering adresse={properties.adresse} saksId={properties.saksId} />
-      ) : (
-        <ValgtAdresseOppsummering adresse={properties.adresse} erSamhandler={properties.erSamhandler ?? false} />
-      )}
-    </>
-  );
-};
+  const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: properties.saksId });
 
-const ValgtKontaktAdresseOppsummering = (properties: { saksId: string; adresse: KontaktAdresseResponse }) => {
-  const navn = useSakGjelderNavnFormatert(properties);
+  if (erAdresseKontaktAdresse(properties.adresse)) {
+    return (
+      <AdresseVisning
+        adresselinjer={properties.adresse.adresselinjer.map(humanizeName)}
+        navn={sakGjelderNavn ?? ""}
+        tags={mapKontaktAdresseTags(properties.adresse)}
+        withTitle={properties.withTitle}
+      />
+    );
+  }
 
   return (
-    <>
-      {properties.adresse &&
-      (properties.adresse.type === "VERGE_SAMHANDLER_POSTADRESSE" ||
-        properties.adresse.type === "VERGE_PERSON_POSTADRESSE") ? (
-        <HStack>
-          <Tag data-color="brand-magenta" size="xsmall" variant="strong">
-            Verge
-          </Tag>
-        </HStack>
-      ) : (
-        <HStack>
-          <Tag data-color="info" size="xsmall" variant="strong">
-            Bruker
-          </Tag>
-        </HStack>
-      )}
-      <BodyShort size="small">{navn}</BodyShort>
-      <VStack>
-        {properties.adresse.adresselinjer.map((linje) => (
-          <BodyShort key={linje} size="small">
-            {humanizeName(linje)}
-          </BodyShort>
-        ))}
-      </VStack>
-    </>
-  );
-};
-
-const ValgtAdresseOppsummering = (properties: { adresse: Adresse; erSamhandler: boolean }) => {
-  return (
-    <>
-      {properties.erSamhandler && (
-        <HStack>
-          <Tag data-color="warning" size="xsmall" variant="strong">
-            Samhandler
-          </Tag>
-          {properties.adresse.manueltAdressertTil === "BRUKER" && (
-            <Tag data-color="info" size="xsmall" variant="strong">
-              Bruker
-            </Tag>
-          )}
-          {properties.adresse.manueltAdressertTil === "ANNEN" && (
-            <Tag data-color="brand-magenta" size="xsmall" variant="strong">
-              Verge
-            </Tag>
-          )}
-        </HStack>
-      )}
-      <BodyShort size="small">{properties.adresse.navn}</BodyShort>
-      <VStack>
-        <BodyShort size="small">{properties.adresse.linje1}</BodyShort>
-        <BodyShort size="small">
-          {properties.adresse.postnr} {properties.adresse.poststed}{" "}
-          {properties.adresse.land === "NOR" ? "" : `, ${properties.adresse.land}`}
-        </BodyShort>
-      </VStack>
-    </>
+    <AdresseVisning
+      adresselinjer={mapSamhandlerAdresseLinjer(properties.adresse)}
+      navn={properties.adresse.navn}
+      tags={properties.erSamhandler ? mapSamhandlerAdresseTags(properties.adresse) : undefined}
+      withTitle={properties.withTitle}
+    />
   );
 };
 
