@@ -50,7 +50,8 @@ fun createInnvilgelseUfoeretrygdDto() =
             ),
             barnetilleggAvslatt = listOf(
                 InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1990, Month.APRIL, 4), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_INNT_OVER_1G),
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1991, Month.MAY, 5), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN)
+                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1991, Month.MAY, 5), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN),
+                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1992, Month.JUNE, 5), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BARN_FLYTTET_IKKE_AVT_LAND)
             ),
         ),
     )
