@@ -4,8 +4,9 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
+import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
+import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
@@ -18,6 +19,8 @@ const EndreMottaker = (properties: {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
+
+  const mottaker: Nullable<Mottaker> = idTSSEkstern ? { type: "Samhandler", tssId: idTSSEkstern, navn: null } : null;
 
   return (
     <VStack gap="space-8">
@@ -63,7 +66,7 @@ const EndreMottaker = (properties: {
           Endre
         </Button>
       </HStack>
-      <HentOgVisAdresse sakId={properties.saksId} samhandlerId={idTSSEkstern} />
+      <OppsummeringAvMottaker mottaker={mottaker} saksId={properties.saksId} withTitle={false} />
       {idTSSEkstern && (
         <HStack>
           <Button

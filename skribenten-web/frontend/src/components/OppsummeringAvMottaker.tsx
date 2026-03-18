@@ -1,6 +1,6 @@
 import type { AdresseVisningTag } from "~/components/AdresseVisning";
 import AdresseVisning from "~/components/AdresseVisning";
-import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
+import HentOgVisAdresse from "~/components/HentOgVisAdresse";
 import { useLandData } from "~/hooks/useLandData";
 import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";

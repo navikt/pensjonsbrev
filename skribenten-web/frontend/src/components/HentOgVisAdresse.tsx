@@ -4,11 +4,10 @@ import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-e
 import type { AdresseVisningTag } from "~/components/AdresseVisning";
 import AdresseVisning from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
+import { erAdresseKontaktAdresse } from "~/components/endreMottaker/EndreMottakerUtils";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import { type Adresse, type KontaktAdresseResponse } from "~/types/apiTypes";
 import { humanizeName } from "~/utils/stringUtils";
-
-import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";
 
 function mapKontaktAdresseTags(adresse: KontaktAdresseResponse): AdresseVisningTag[] {
   if (adresse.type === "VERGE_SAMHANDLER_POSTADRESSE" || adresse.type === "VERGE_PERSON_POSTADRESSE") {
