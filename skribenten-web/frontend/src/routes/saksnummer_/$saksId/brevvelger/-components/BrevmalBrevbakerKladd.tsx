@@ -1,4 +1,5 @@
-import { BodyShort, Heading, HStack, Loader, Tag, VStack } from "@navikt/ds-react";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, Heading, HStack, Label, Loader, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -6,10 +7,11 @@ import { useEffect } from "react";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
-import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
+import { useEndreMottaker } from "~/hooks/useEndreMottaker";
 import type { LetterMetadata } from "~/types/apiTypes";
 import type { BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
@@ -69,6 +71,16 @@ const Brevmal = (props: {
   const { saksId, brev, setOnFormSubmitClick } = props;
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
+
+  const {
+    modalÅpen,
+    åpneModal,
+    lukkModal,
+    endreMottaker,
+    resetEndreMottaker,
+    endreMottakerError,
+    endreMottakerIsPending,
+  } = useEndreMottaker(props.saksId, props.brev.id);
 
   useEffect(() => {
     setOnFormSubmitClick({
@@ -134,12 +146,32 @@ const Brevmal = (props: {
         {erBrevArkivert(props.brev) ? (
           <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
         ) : (
-          <EndreMottakerMedOppsummeringOgApiHåndtering
-            brev={props.brev}
-            saksId={props.saksId}
-            withGap
-            withOppsummeringTitle
-          />
+          <VStack gap="space-8">
+            {modalÅpen && (
+              <EndreMottakerModal
+                error={endreMottakerError}
+                isPending={endreMottakerIsPending}
+                onBekreftNyMottaker={endreMottaker}
+                onClose={lukkModal}
+                resetOnBekreftState={resetEndreMottaker}
+                åpen={modalÅpen}
+              />
+            )}
+            <HStack align="center" justify="space-between">
+              <Label size="small">Mottaker</Label>
+              <Button
+                icon={<PencilIcon />}
+                iconPosition="right"
+                onClick={åpneModal}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              >
+                Endre
+              </Button>
+            </HStack>
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
+          </VStack>
         )}
         <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />
         <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />
