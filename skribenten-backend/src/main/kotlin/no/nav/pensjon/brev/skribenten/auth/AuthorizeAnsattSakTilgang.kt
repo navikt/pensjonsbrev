@@ -57,9 +57,9 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
     call: ApplicationCall,
     saksId: SaksId
 ) {
-    validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService, { call.attributes.put(SakKey, it) })
-        .takeIf { it }
-        ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+    if (!validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService, { call.attributes.put(SakKey, it) })) {
+        call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+    }
 }
 
 suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService, putSak: (Pen.SakSelection) -> Unit = {}): Boolean {
