@@ -43,7 +43,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             paragraph {
                 text(
                     bokmal {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. TODO: Du har i dag AFP i privat sektor og vurderer å søke om uføretrygd fra Nav. Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:"
+                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
 
                     },
                     nynorsk {
@@ -361,10 +361,10 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     )
                 }
                 paragraph {
-                    //TODO fristen og formuleringen må tilpasses enkelstest situasjon det er til bruker kan få uføre
+                    val fristOgFormulering = fritekst("Frist og formulering")
                     text(
-                        bokmal { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut uføretrygd eller om du ønsker å beholde AFP. Vi må ha tilbakemelding fra deg innen" },
-                        nynorsk { +"Du må sende oss ei skriftleg tilbakemelding på om du ønskjer å ta ut uføretrygd eller om du ønskjer å behalde AFP. Vi må ha tilbakemelding frå deg innan dd.mm.åå. (Fristen og formuleringa må tilpassast den enkelte situasjon og kor lang tid det er til brukar kan få innvilga uføretrygd.) " }
+                        bokmal { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut uføretrygd eller om du ønsker å beholde AFP. Vi må ha tilbakemelding fra deg innen "+fristOgFormulering },
+                        nynorsk { +"Du må sende oss ei skriftleg tilbakemelding på om du ønskjer å ta ut uføretrygd eller om du ønskjer å behalde AFP. Vi må ha tilbakemelding frå deg innan "+fristOgFormulering }
                     )
                     list {
                         item {
