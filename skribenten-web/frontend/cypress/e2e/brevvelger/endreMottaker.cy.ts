@@ -68,7 +68,7 @@ describe("Endrer på mottaker", () => {
     //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
     cy.getDataCy("endre-mottaker-identtype-select").select("Norsk orgnr");
-    cy.contains("ID").click().type("direkte-oppslag-id");
+    cy.get('[name="finnSamhandler.direkteOppslag.id"]').type("direkte-oppslag-id");
     cy.getDataCy("endre-mottaker-søk-button").click();
     cy.getDataCy("velg-samhandler").first().click();
 
@@ -125,7 +125,7 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("endre-mottaker-organisasjonsnavn-innOgUtland").should("have.value", "ALLE");
     //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
-    cy.contains("Navn").click().type("navnet på samhandler");
+    cy.get('[name="finnSamhandler.organisasjonsnavn.navn"]').type("navnet på samhandler");
 
     cy.getDataCy("endre-mottaker-søk-button").click();
     cy.getDataCy("velg-samhandler").first().click();
@@ -182,7 +182,7 @@ describe("Endrer på mottaker", () => {
     //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
     cy.contains("Fornavn").click().type("Fornavnet");
-    cy.contains("Etternavn").click().type("Etternavnet");
+    cy.get('[name="finnSamhandler.personnavn.etternavn"]').type("Etternavnet");
 
     cy.getDataCy("endre-mottaker-søk-button").click();
     cy.getDataCy("velg-samhandler").first().click();
@@ -236,7 +236,7 @@ describe("Endrer på mottaker", () => {
     cy.contains("Postnummer").click().type("0000");
     cy.contains("Poststed").click().type("Poststedet");
     cy.getDataCy("land-combobox").click().type("Sver{enter}");
-    cy.contains("Gå videre").click();
+    cy.contains("Lagre og lukk").click();
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
