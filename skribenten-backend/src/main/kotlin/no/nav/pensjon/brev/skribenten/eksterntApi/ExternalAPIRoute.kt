@@ -47,9 +47,9 @@ fun Route.externalAPI(
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
                 post<ExternalAPI.OpprettBrevRequest> { request ->
-                    validerTilgangTilSak(fagsakService, request.saksId, pdlService)
-                        .takeIf { it }
-                        ?: return@post call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+                    if (!validerTilgangTilSak(fagsakService, request.saksId, pdlService)) {
+                        return@post call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
+                    }
                     externalAPIService.opprettBrev(request).onSuccess {
                         call.respond(HttpStatusCode.Created, ExternalAPI.OpprettetBrev(brevId = it.info.id, sakId = it.info.saksId))
                     }.onError { error ->
