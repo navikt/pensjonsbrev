@@ -29,6 +29,10 @@ data class InnvilgelseUfoeretrygdDto(
         ANNEN_FORLD_RETT_BT,
         BT_OVER_18,
         MINDRE_ETT_AR_BT_FLT,
-        BT_INNT_OVER_1G
+        BT_INNT_OVER_1G,
+        BRK_FORSO_IKKE_BARN,
+        BRUKER_FLYTTET_IKKE_AVT_LAND,
+        BARN_FLYTTET_IKKE_AVT_LAND,
+        BARN_OPPH_IKKE_AVT_LAND
     }
 }
