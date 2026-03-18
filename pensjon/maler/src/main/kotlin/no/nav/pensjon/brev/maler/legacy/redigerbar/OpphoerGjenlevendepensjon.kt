@@ -76,9 +76,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                         nynorsk { +"Vi viser til at du har gifta deg " + dato + "." },
                         english { +"We refer to your marriage of " + dato + "." }
                     )
-                }
-
-                showIf(
+                }.orShowIf(
                     saksbehandlerValg.folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
                 ) {
                     val dato = fritekst("dato")
@@ -96,9 +94,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                             +"We refer to your registered partnership of " + dato + "."
                         }
                     )
-                }
-
-                showIf(
+                }.orShowIf(
                     saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(
                         erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn
                     )
@@ -125,10 +121,12 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                     }.orShow {
                         text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
                     }
-                    text(bokmal { +" er samboere med felles barn." }, nynorsk { +" er sambuarar med felles barn." }, english { +" you are cohabiting and have children in common." })
-                }
-
-                showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
+                    text(
+                        bokmal { +" er samboere med felles barn." },
+                        nynorsk { +" er sambuarar med felles barn." },
+                        english { +" you are cohabiting and have children in common." }
+                    )
+                }.orShowIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
                     val dato = fritekst("dato for fødsel av fellesbarn")
                     text(
                         bokmal {
