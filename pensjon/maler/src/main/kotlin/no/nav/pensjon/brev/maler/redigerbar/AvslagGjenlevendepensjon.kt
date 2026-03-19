@@ -4,7 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.SaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.folketrygdlovenParagraf
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.saksbehandlerValg
@@ -18,7 +17,6 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -59,8 +57,10 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                     nynorsk { +"Nav viser til søknaden din om etterlatnepensjon motteken PE_Kravdata_Kravhode_KravMotattDato. Søknaden din er avslått." },
                     english { +"Nav makes reference to your application for a survivor's pension, received on PE_Kravdata_Kravhode_KravMotattDato. Your application has been denied." }
                 )
+            }
 
-                showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_foersteEllerTredje_ledd)) {
+            showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_foersteEllerTredje_ledd)) {
+                paragraph {
                     text(
                         bokmal {
                             +"I folketrygdloven paragraf 17-2 er det angitt hvilke personer som kan få rett til ytelser til gjenlevende ektefelle. "
@@ -76,8 +76,8 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-
-                showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_andre_ledd)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_andre_ledd)) {
+                paragraph {
                     text(
                         bokmal {
                             +"Etter folketrygdloven paragraf 17-2 andre ledd kan det gis gjenlevendeytelser dersom ektefellen er forsvunnet og det er avsagt kjennelse eller dom om at vedkommende formodes å være død. "
@@ -93,8 +93,8 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-
-                showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_3)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_3)) {
+                paragraph {
                     text(
                         bokmal {
                             +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
@@ -109,47 +109,52 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                             +"We have based our decision on our finding that from "
                         }
                     )
-                    showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerOgHarFellesBarn)) {
-                        text(bokmal { +datoSamboerskap }, nynorsk { +datoSamboerskap }, english { +datoSamboerskap })
-                    }.orShow {
-                        text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
-                    }
-                    text(bokmal { +" er samboere med felles barn." }, nynorsk { +" er sambuarar med felles barn." }, english { +" you are cohabiting and have children in common." })
                 }
-
-                showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
-                    val dato = fritekst("dato for fødsel av fellesbarn")
-                    text(
-                        bokmal {
-                            +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere tidligere har vært gift med hverandre og er samboere fra " + dato + "."
-                        },
-                        nynorsk {
-                            +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at de tidlegare har vore gifte med kvarandre og er sambuarar frå " + dato + "."
-                        },
-                        english {
-                            +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children in common. "
-                            +"We have based our decision on you having previously been married to each other and that you started cohabiting from " + dato + "."
-                        }
-                    )
-                }
-            }
-
-            showIf(saksbehandlerValg.opphoerMedTilbakekreving) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_5)) {
                 paragraph {
                     text(
                         bokmal {
-                            +"Fordi pensjonen din er opphørt med virkning tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon i en periode. "
-                            +"Vi vil sende deg eget forhåndsvarsel om eventuell tilbakekreving av det feilutbetalte beløpet."
+                            +"Etter folketrygdloven paragraf 17-5 er det et vilkår for rett til pensjon at ekteskapet har vart i minst fem år, eller at ektefellene har eller har hatt felles barn. "
+                            +"Gjenlevende ektefelle kan også få pensjon hvis han/hun hadde omsorg for avdødes barn ved dødsfallet, og ekteskapet og omsorgen for barna til sammen da hadde vart i minst fem år. "
+                            +"Du fyller ikke disse vilkårene fordi <FRITEKST: Angi grunn>. Vi har også vurdert din rett til overgangsstønad til gjenlevende ektefelle etter folketrygdloven paragraf 17-6. "
+                            +"Du fyller ikke rett til overgangsstønad fordi <FRITEKST: Angi grunn>."
                         },
                         nynorsk {
-                            +"Fordi pensjonen din er falle bort med verknad tilbake i tid, fører dette til at du har fått utbetalt for mykje pensjon i ein periode. "
-                            +"Vi vil sende deg eit eige førehandsvarsel om eventuell tilbakekrevjing av det feilutbetalte beløpet."
+                            +"Etter folketrygdlova paragraf 17-5 er det eit vilkår for rett til pensjon at ekteskapet har vart i minst fem år, eller at ektefellane har eller har hatt felles barn. "
+                            +"Gjenlevande ektefelle kan òg få pensjon dersom han/ho hadde omsorg for avdøde sine barn ved dødsfallet, og ekteskapet og omsorga for barna til saman då hadde vart i minst fem år. "
+                            +"Du oppfyller ikkje desse vilkåra fordi <FRITEKST: Angi grunn>. "
+                            +"Vi har òg vurdert retten din til overgangsstønad til gjenlevande ektefelle etter folketrygdlova paragraf 17-6. "
+                            +"Du har ikkje rett til overgangsstønad fordi <FRITEKST: Angi grunn>."
                         },
                         english {
-                            +"Because your pension has been stopped and the stop takes effect back in time, you have incorrectly received pension payments during this period. "
-                            +"We will send you a separate notification of whether you are required to pay back the money that were paid to you in error."
+                            +"According to the National Insurance Act paragraph 17-5, it is a requirement for a right to a pension that the marriage has lasted for at least five years or that the spouses have or have had children together. "
+                            +"The surviving spouse may also be entitled to a pension if he/she cared for the deceased's children at the time of death, and that the marriage and the care for the children in combination had lasted at least five years. "
+                            +"You do not meet these requirements because <FRITEKST: Angi grunn>. "
+                            +"We have also assessed your right to transitional benefit as a surviving spouse in accordance with the National Insurance Act paragraph 17-6. "
+                            +"You do not meet the requirements for transitional benefit because <FRITEKST: Angi grunn>"
+                        }
+                    )
+                }
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_10)) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Etter folketrygdloven paragraf 17-10 kan det gis ytelser til gjenlevende skilt person når vedkommende ikke har giftet seg igjen og den tidligere ektefellen døde innen fem år etter skilsmissen. "
+                            +"Det er også et vilkår at ekteskapet varte minst 25 år, eller 15 år hvis ektefellene hadde barn sammen. "
+                            +"Dersom den skilte personen helt eller delvis var forsørget av bidrag fra avdøde, kan det gis ytelser selv om dødsfallet skjedde mer enn fem år etter skilsmissen. "
+                            +"Du fyller ikke disse vilkårene fordi <FRITEKST: Angi grunn>."
+                        },
+                        nynorsk {
+                            +"Etter folketrygdlova paragraf 17-10 kan det givast ytingar til gjenlevande skild person når vedkomande ikkje har gifta seg igjen, og den tidlegare ektefellen døydde innan fem år etter skilsmissa. "
+                            +"Det er òg eit vilkår at ekteskapet varte i minst 25 år, eller 15 år dersom ektefellane hadde barn saman. "
+                            +"Dersom den skilde personen heilt eller delvis var forsørgd av bidrag frå avdøde, kan det givast ytingar sjølv om dødsfallet skjedde meir enn fem år etter skilsmissa. "
+                            +"Du oppfyller ikkje desse vilkåra fordi <FRITEKST: Angi grunn>."
+                        },
+                        english {
+                            +"According to paragraph 17-10 of the National Insurance Act, benefits may be given to a surviving divorced person if the person has not remarried and the previous spouse died within five years of the divorce. "
+                            +"It is also a requirement that the marriage lasted at least 25 years, or 15 years if the couple had children in common. "
+                            +"If the divorced person was partly or entirely supported by contributions from the deceased, benefits may be given even if the death occurred more than five years after the divorce. "
+                            +"You do not meet these requirements because <FRITEKST: Angi grunn>."
                         }
                     )
                 }
