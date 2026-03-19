@@ -1,9 +1,11 @@
 import { Box } from "@navikt/ds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
+
 import React from "react";
 
 import { AppHeader } from "~/components/AppHeader";
+import { GenerellFeilmelding } from "~/components/GenerellFeilmelding";
 
 export const queryClient = new QueryClient();
 
@@ -49,6 +51,12 @@ export const Route = createRootRouteWithContext<{
         <AppHeader />
         <Outlet />
       </Box>
+    </>
+  ),
+  errorComponent: ({ error }) => (
+    <>
+      <AppHeader />
+      <GenerellFeilmelding error={error} />
     </>
   ),
   notFoundComponent: () => "Finner ikke siden",
