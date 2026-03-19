@@ -4,24 +4,29 @@ import { useQuery } from "@tanstack/react-query";
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
-import { erAdresseKontaktAdresse } from "~/components/endreMottaker/EndreMottakerUtils";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
+import {
+  erAdresseKontaktAdresse,
+  MOTTAKER_TAG_BRUKER,
+  MOTTAKER_TAG_SAMHANDLER,
+  MOTTAKER_TAG_VERGE,
+} from "~/utils/AdresseUtils";
 import { humanizeName } from "~/utils/stringUtils";
 
 function mapKontaktAdresseTags(adresse: KontaktAdresseResponse): AdresseVisningTag[] {
   if (adresse.type === "VERGE_SAMHANDLER_POSTADRESSE" || adresse.type === "VERGE_PERSON_POSTADRESSE") {
-    return [{ label: "Verge", color: "brand-magenta" }];
+    return [MOTTAKER_TAG_VERGE];
   }
-  return [{ label: "Bruker", color: "info" }];
+  return [MOTTAKER_TAG_BRUKER];
 }
 
 function mapSamhandlerAdresseTags(adresse: Adresse): AdresseVisningTag[] {
-  const tags: AdresseVisningTag[] = [{ label: "Samhandler", color: "warning" }];
+  const tags: AdresseVisningTag[] = [MOTTAKER_TAG_SAMHANDLER];
   if (adresse.manueltAdressertTil === "BRUKER") {
-    tags.push({ label: "Bruker", color: "info" });
+    tags.push(MOTTAKER_TAG_BRUKER);
   } else if (adresse.manueltAdressertTil === "ANNEN") {
-    tags.push({ label: "Verge", color: "brand-magenta" });
+    tags.push(MOTTAKER_TAG_VERGE);
   }
   return tags;
 }
