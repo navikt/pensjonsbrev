@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.services.KontaktAdresseResponseDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -90,7 +91,8 @@ object Pen {
         val enhetId: EnhetId,
         val pdf: ByteArray,
         val eksternReferanseId: String,
-        val mottaker: Mottaker?
+        val mottaker: Mottaker?,
+        val adresse: Adresse,
     ) {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -127,6 +129,7 @@ object Pen {
             data class NorskAdresse(val navn: String, val postnummer: NorskPostnummer, val poststed: String, val adresselinje1: String?, val adresselinje2: String?, val adresselinje3: String?)
             data class UtenlandsAdresse(val navn: String, val landkode: Landkode, val adresselinje1: String, val adresselinje2: String?, val adresselinje3: String?)
         }
+        data class Adresse(val adresselinjer: List<String>)
     }
 
     data class BestillBrevResponse(

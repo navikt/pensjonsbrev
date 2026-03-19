@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.success
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.model.*
+import no.nav.pensjon.brev.skribenten.model.Pen.SendRedigerbartBrevRequest.Adresse
 import java.sql.Connection
 
 class SendBrevHandler(
@@ -20,6 +21,7 @@ class SendBrevHandler(
 
     data class Request(
         override val brevId: BrevId,
+        val adresse: Adresse?
     ) : BrevredigeringRequest
 
     override suspend fun handle(request: Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? {
@@ -40,6 +42,8 @@ class SendBrevHandler(
                 pdf = document.pdf,
                 eksternReferanseId = "skribenten:${brev.id.value.id}",
                 mottaker = brev.mottaker?.toPen(),
+                adresse = request.adresse ?: throw IllegalStateException("Fant ikke kontaktadresse for mottaker"),
+                // TODO spesifikk exception
             ),
             distribuer = brev.distribusjonstype == Distribusjonstype.SENTRALPRINT,
         )

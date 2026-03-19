@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.services.NavansattService
-import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
 
 object BrevredigeringFacadeFactory {
 
@@ -19,7 +18,6 @@ object BrevredigeringFacadeFactory {
         navansattService: NavansattService,
         p1Service: P1Service,
         renderService: RenderService,
-        pensjonPersonDataService: PensjonPersonDataService,
     ): BrevredigeringFacade {
         val redigerBrevPolicy = RedigerBrevPolicy()
         val opprettBrevPolicy = OpprettBrevPolicy(brevmalService, navansattService)
@@ -102,7 +100,6 @@ object BrevredigeringFacadeFactory {
                 sendBrevPolicy = sendBrevPolicy,
                 brevService = brevService,
                 brevmalService = brevmalService,
-                pensjonPersonDataService = pensjonPersonDataService,
             ),
             slettBrev = SlettBrevHandler(
                 slettBrevPolicy = slettBrevPolicy,

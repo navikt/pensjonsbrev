@@ -116,7 +116,6 @@ abstract class BrevredigeringHandlerTestBase {
         navansattService = navAnsattService,
         p1Service = FakeP1Service(),
         renderService = RenderService(brevbakerService),
-        pensjonPersonDataService = PensjonPersonDataServiceStub(),
     )
 
     protected companion object Fixtures {
@@ -354,7 +353,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected suspend fun sendBrev(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id))
+            brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brev.info.id, adresse = Pen.SendRedigerbartBrevRequest.Adresse(listOf())))
         }
 
     protected fun stagePdf(pdf: ByteArray) {
@@ -413,7 +412,7 @@ abstract class BrevredigeringHandlerTestBase {
 
     protected class FakePenClient(
         var saker: MutableMap<SaksId, Pen.SakSelection> = mutableMapOf(),
-        var pesysBrevdata: BrevdataResponse.Data? = null,
+        var pesysBrevdata: Data? = null,
         var sendBrevResponse: Pen.BestillBrevResponse? = null,
     ) : PenClientStub() {
         val utfoerteHentPesysBrevdataKall = mutableListOf<PesysBrevdatakallRequest>()
@@ -429,7 +428,7 @@ abstract class BrevredigeringHandlerTestBase {
 
         override suspend fun hentSak(saksId: SaksId): Pen.SakSelection? = saker[saksId]
 
-        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): BrevdataResponse.Data =
+        override suspend fun hentPesysBrevdata(saksId: SaksId, vedtaksId: VedtaksId?, brevkode: Brevkode.Redigerbart, avsenderEnhetsId: EnhetId): Data =
             pesysBrevdata.also {
                 utfoerteHentPesysBrevdataKall.add(PesysBrevdatakallRequest(saksId, vedtaksId, brevkode, avsenderEnhetsId))
             } ?: notYetStubbed("Mangler pesysBrevdata stub")

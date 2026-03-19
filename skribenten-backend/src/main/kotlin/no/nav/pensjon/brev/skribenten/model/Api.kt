@@ -222,4 +222,6 @@ object Api {
             NAVANSATT_MANGLER_NAVN,
         }
     }
+
+    data class SendBrevRequest(val adresse: List<String> = listOf()) // TODO: fjern default-verdi når denne blir sendt med frå frontend
 }

@@ -7,6 +7,7 @@ import io.ktor.server.routing.*
 import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.SendBrevHandler.Request
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
@@ -176,10 +177,10 @@ fun Route.sakBrev(
                     apiRespond(dto2ApiService, result)
                 }
 
-                post("/send") {
+                post<Api.SendBrevRequest>("/send") {
                     val brevId = call.parameters.brevId()
 
-                    val resultat = brevredigeringFacade.sendBrev(SendBrevHandler.Request(brevId = brevId))
+                    val resultat = brevredigeringFacade.sendBrev(Request(brevId = brevId, adresse = Pen.SendRedigerbartBrevRequest.Adresse(it.adresse)))
                     apiRespond(dto2ApiService, resultat)
                 }
             }
