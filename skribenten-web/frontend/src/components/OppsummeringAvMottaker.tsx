@@ -3,15 +3,16 @@ import HentOgVisAdresse from "~/components/HentOgVisAdresse";
 import { useLandData } from "~/hooks/useLandData";
 import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
+import { MOTTAKER_TAG_BRUKER, MOTTAKER_TAG_VERGE } from "~/utils/AdresseUtils";
 import { getCountryNameByKode } from "~/utils/countryUtils";
 
 function mapMottakerTags(mottaker: Mottaker): AdresseVisningTag[] {
   if (mottaker.type === "NorskAdresse" || mottaker.type === "UtenlandskAdresse") {
     if (mottaker.manueltAdressertTil === "BRUKER") {
-      return [{ label: "Bruker", color: "info" }];
+      return [MOTTAKER_TAG_BRUKER];
     }
     if (mottaker.manueltAdressertTil === "ANNEN") {
-      return [{ label: "Verge", color: "brand-magenta" }];
+      return [MOTTAKER_TAG_VERGE];
     }
   }
   return [];
