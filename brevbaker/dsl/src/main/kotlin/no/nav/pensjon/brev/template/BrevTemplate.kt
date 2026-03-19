@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.brev.InternKonstruktoer
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
@@ -75,16 +76,16 @@ internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
 }
 
 @JvmInline
-value class Fritekst(val str: String) : SpesialkonstruksjonIMal {
+value class Fritekst @InternKonstruktoer constructor(val str: String) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 @JvmInline
-value class RedigerbarData(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+value class RedigerbarData @InternKonstruktoer constructor(val variabel: StringExpression) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
-class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+class BrevdataEllerFritekst @InternKonstruktoer constructor(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
