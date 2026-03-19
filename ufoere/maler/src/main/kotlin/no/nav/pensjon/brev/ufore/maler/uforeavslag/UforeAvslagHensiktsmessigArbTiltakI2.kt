@@ -69,8 +69,8 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering },
-                        nynorsk { +pesysData.vurdering } )
+                    text(bokmal { +redigerbarData(pesysData.vurdering) },
+                        nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
             }
             paragraph {
