@@ -49,3 +49,11 @@ abstract class OutlinePhrase<Lang : LanguageSupport> {
             .forEach { scope.addOutlineContent(it) }
     }
 }
+
+abstract class OutlinePhraseRedigerbar<Lang : LanguageSupport, T : RedigerbarTemplate<*>> : OutlinePhrase<Lang>() {
+    fun TemplateGlobalScope<*>.fritekst(beskrivelse: String): Fritekst = beskrivelse.takeIf { it.trim().isNotEmpty() }
+        ?.let { Fritekst(it) }
+        ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
+
+    fun TemplateGlobalScope<*>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
+}
