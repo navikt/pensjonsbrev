@@ -39,7 +39,11 @@ data class KontaktAdresseResponseDto(
 }
 class PensjonPersonDataServiceException(message: String) : ServiceException(message)
 
-class PensjonPersonDataService(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
+interface PensjonPersonDataService {
+    suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto?
+}
+
+class PensjonPersonDataServiceImpl(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus, PensjonPersonDataService {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -56,7 +60,7 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? {
+    override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? {
         val response = client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
