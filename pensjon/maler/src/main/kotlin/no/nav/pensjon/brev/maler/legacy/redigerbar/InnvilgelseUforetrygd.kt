@@ -56,10 +56,18 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
         )
     ) {
         title {
-            text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
-            )
+            showIf(pesysData.pe.vedtaksdata_kravhode_kravgjelder().equalTo("mellombh")){
+                text(
+                    bokmal { +"Nav har innvilget forskudd på søknaden din om uføretrygd" },
+                    nynorsk { +"Nav har innvilga forskot på søknaden din om uføretrygd" },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
+                    nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                )
+            }
+
         }
         outline {
             val pe = pesysData.pe
