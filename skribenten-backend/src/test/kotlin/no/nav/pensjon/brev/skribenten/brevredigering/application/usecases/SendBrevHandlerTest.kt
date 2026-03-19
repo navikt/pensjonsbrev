@@ -63,6 +63,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
                 pdf = stagetPDF,
                 eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
+                adresse = Pen.SendRedigerbartBrevRequest.Adresse(listOf()),
             ), true
         )
     }
@@ -87,6 +88,7 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
                 pdf = stagetPDF,
                 eksternReferanseId = "skribenten:${brev.info.id.id}",
                 mottaker = null,
+                adresse = Pen.SendRedigerbartBrevRequest.Adresse(listOf()),
             ), false
         )
     }
@@ -141,7 +143,8 @@ class SendBrevHandlerTest : BrevredigeringHandlerTestBase() {
                     mottaker.tssId,
                     null,
                     null
-                )
+                ),
+                adresse = Pen.SendRedigerbartBrevRequest.Adresse(listOf()),
             ), true
         )
     }

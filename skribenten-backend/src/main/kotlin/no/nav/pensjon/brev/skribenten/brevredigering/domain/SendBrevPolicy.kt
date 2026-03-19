@@ -30,6 +30,7 @@ class SendBrevPolicy(private val ferdigRedigertPolicy: FerdigRedigertPolicy) {
         data class IkkeLaastForRedigering(val brevId: BrevId) : KanIkkeSende
         data class DocumentIkkeForGjeldendeRedigertBrev(val brevId: BrevId) : KanIkkeSende
         data class VedtaksbrevIkkeAttestert(val brevId: BrevId) : KanIkkeSende
+        data class ManglerAdresse(val brevId: BrevId) : KanIkkeSende
     }
 }
 

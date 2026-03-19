@@ -32,6 +32,8 @@ class SendBrevHandler(
         val template = brevmalService.getRedigerbarTemplate(brev.brevkode)
             ?: return failure(BrevmalFinnesIkke(brev.brevkode))
 
+        val adresse = request.adresse ?: return failure(SendBrevPolicy.KanIkkeSende.ManglerAdresse(request.brevId))
+
         val response = brevService.sendbrev(
             sendRedigerbartBrevRequest = Pen.SendRedigerbartBrevRequest(
                 dokumentDato = document.dokumentDato,
@@ -42,8 +44,7 @@ class SendBrevHandler(
                 pdf = document.pdf,
                 eksternReferanseId = "skribenten:${brev.id.value.id}",
                 mottaker = brev.mottaker?.toPen(),
-                adresse = request.adresse ?: throw IllegalStateException("Fant ikke kontaktadresse for mottaker"),
-                // TODO spesifikk exception
+                adresse = adresse
             ),
             distribuer = brev.distribusjonstype == Distribusjonstype.SENTRALPRINT,
         )

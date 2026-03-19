@@ -152,6 +152,12 @@ suspend fun <T> RoutingContext.respondOutcome(
                         status = HttpStatusCode.UnprocessableEntity,
                         message = BrevExceptionDto(tittel = "Brev ikke klart til sending", melding = "Vedtaksbrev ${outcome.error.brevId} er ikke attestert")
                     )
+
+                is SendBrevPolicy.KanIkkeSende.ManglerAdresse ->
+                    call.respond(
+                        status = HttpStatusCode.UnprocessableEntity,
+                        message = BrevExceptionDto(tittel = "Mangler adresse", melding = "Fant ikke kontaktadresse for mottaker av ${outcome.error.brevId}")
+                    )
             }
         }
 
