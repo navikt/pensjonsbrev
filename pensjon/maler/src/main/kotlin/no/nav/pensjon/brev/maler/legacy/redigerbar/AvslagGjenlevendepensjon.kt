@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_010 Vedtak - avslag av gjenlevendepensjon
+//Brevgruppe 3
 
 @TemplateModelHelpers
 object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto> {
