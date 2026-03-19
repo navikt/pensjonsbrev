@@ -129,4 +129,5 @@ enum class Cacheomraade(val prefix: String) {
     SAMHANDLER("Samhandler"),
     SAMHANDLER_ADRESSE("SamhandlerAdresse"),
     PENSJON_REPRESENTASJON("PensjonRepresentasjon"),
+    PENSJON_PERSONDATA("PensjonPersondata"),
 }
