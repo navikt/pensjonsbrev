@@ -36,7 +36,7 @@ fun Application.configureRouting(
     val safService = SafServiceHttp(servicesConfig.getConfig("saf"), authService)
     val penClient = PentHttpClient(servicesConfig.getConfig("pen"), authService)
     val skjermingService = SkjermingServiceHttp(servicesConfig.getConfig("skjerming"), authService, cache)
-    val pensjonPersonDataService = PensjonPersonDataService(servicesConfig.getConfig("pensjon_persondata"), authService)
+    val pensjonPersonDataService = PensjonPersonDataServiceImpl(servicesConfig.getConfig("pensjon_persondata"), authService)
     val pensjonRepresentasjonService = PensjonRepresentasjonService(servicesConfig.getConfig("pensjonRepresentasjon"), authService, cache)
     val pdlService = PdlServiceHttp(servicesConfig.getConfig("pdl"), authService)
     val krrService = KrrService(servicesConfig.getConfig("krr"), authService)

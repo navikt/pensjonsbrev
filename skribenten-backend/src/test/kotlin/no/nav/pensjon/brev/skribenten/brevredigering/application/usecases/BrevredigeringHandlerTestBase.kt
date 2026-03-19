@@ -115,7 +115,7 @@ abstract class BrevredigeringHandlerTestBase {
         brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
         navansattService = navAnsattService,
         p1Service = FakeP1Service(),
-        renderService = RenderService(brevbakerService)
+        renderService = RenderService(brevbakerService),
     )
 
     protected companion object Fixtures {

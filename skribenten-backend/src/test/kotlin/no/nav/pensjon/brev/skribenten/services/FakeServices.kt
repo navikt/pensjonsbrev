@@ -173,3 +173,7 @@ open class LegacyBrevServiceStub : LegacyBrevService {
     override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
     override suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
 }
+
+open class PensjonPersonDataServiceStub : PensjonPersonDataService {
+    override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = null
+}

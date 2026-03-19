@@ -24,7 +24,7 @@ class PensjonPersonDataServiceTest {
         assertThat(actual).isEqualTo(null)
     }
 
-    private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataService(
+    private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataServiceImpl(
         ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
         FakeAuthService,
         engine,
