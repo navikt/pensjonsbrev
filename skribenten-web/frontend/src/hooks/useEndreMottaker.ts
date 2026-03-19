@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
+import type { Adresse } from "~/types/apiTypes";
 import type { BrevInfo, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
@@ -37,7 +38,7 @@ export function useEndreMottaker(saksId: string, brevId: number) {
     modalÅpen,
     åpneModal: () => setModalÅpen(true),
     lukkModal: () => setModalÅpen(false),
-    endreMottaker: (mottaker: string | import("~/types/apiTypes").Adresse) => {
+    endreMottaker: (mottaker: string | Adresse) => {
       mottakerMutation.mutate(mapEndreMottakerValueTilMottaker(mottaker));
     },
     resetEndreMottaker: () => mottakerMutation.reset(),

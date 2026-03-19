@@ -1,5 +1,4 @@
-import type { AdresseVisningTag } from "~/components/AdresseVisning";
-import AdresseVisning from "~/components/AdresseVisning";
+import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisning";
 import HentOgVisAdresse from "~/components/HentOgVisAdresse";
 import { useLandData } from "~/hooks/useLandData";
 import { type Mottaker } from "~/types/brev";
