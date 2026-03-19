@@ -86,8 +86,8 @@ val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, E
                 }
                 item {
                     text(
-                        bokmal { +"sivilstanden din endrer seg" },
-                        nynorsk { +"sivilstanden din endrar seg" }
+                        bokmal { +"sivilstanden din endrer seg (inngår ekteskap/partnerskap/samboerskap, blir separert eller skiller deg)" },
+                        nynorsk { +"sivilstanden din endrar seg (inngår ekteskap/partnarskap/sambuarskap, blir separert eller skil deg)" }
                     )
                 }
                 item {
@@ -224,8 +224,8 @@ val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, E
         }
         paragraph {
             text(
-                bokmal { +"Du kan sende oss en skriftlig klage, bruk gjerne skjemaet som du finner på ${KLAGE_URL}. Kan du ikke skrive klagen selv, kan vi hjelpe deg. Du er velkommen til å ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON." },
-                nynorsk { +"Du kan sende oss ei skriftleg klage, bruk gjerne skjemaet som du finn på ${KLAGE_URL}. Kan du ikkje skrive klaga sjølv, kan vi hjelpe deg. Du er velkomen til å ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON." }
+                bokmal { +"Du kan sende oss en skriftlig klage, bruk gjerne skjemaet som du finner på ${KLAGE_URL}. Kan du ikke skrive klagen selv, kan vi hjelpe deg. Du er velkommen til å ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON. Bor du i utlandet kan du ringe oss på telefon +47 21 07 31 00." },
+                nynorsk { +"Du kan sende oss ei skriftleg klage, bruk gjerne skjemaet som du finn på ${KLAGE_URL}. Kan du ikkje skrive klaga sjølv, kan vi hjelpe deg. Du er velkomen til å ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON. Bur du i utlandet kan du ringe oss på telefon +47 21 07 31 00." }
             )
         }
         paragraph {
