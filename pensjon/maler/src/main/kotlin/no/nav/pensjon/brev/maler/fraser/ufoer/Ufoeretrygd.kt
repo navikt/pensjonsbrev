@@ -446,8 +446,8 @@ object Ufoeretrygd {
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(ANNET)) {
                         text(
-                            bokmal { +Fritekst("Evt avslagstekst for perioden") },
-                            nynorsk { +Fritekst("Evt avslagstekst for perioden") },
+                            bokmal { +Fritekst("Avslagstekst for perioden") },
+                            nynorsk { +Fritekst("Avslagstekst for perioden") },
                         )
                     }
                 }
