@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonUtlandDto
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
@@ -24,7 +25,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepensjonUtlandDto> {
 
-    //override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjonUtland.toggle
+    override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjonUtland.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
