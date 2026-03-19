@@ -35,7 +35,7 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - avslag av gjenlevendepensjon",
+            displayTitle = "Vedtak - avslag på ytelse til gjenlevende",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
