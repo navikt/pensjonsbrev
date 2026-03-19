@@ -1,20 +1,17 @@
-package no.nav.pensjon.brev.maler.redigerbar
+package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.*
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.folketrygdlovenParagraf
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
-import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.Language.Nynorsk
+import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
@@ -23,12 +20,12 @@ import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-//PE_GP_04_010 Vedtak avslag av gjenlevendepensjon
+//PE_GP_04_010 Vedtak - avslag av gjenlevendepensjon
 
 @TemplateModelHelpers
 object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto> {
 
-//    override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.toggle
+override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_AVSLAG_GJENLEVENDEPENSJON
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -36,7 +33,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
     override val sakstyper = setOf(Sakstype.GJENLEV)
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk, English),
+        languages = languages(Language.Bokmal, Language.Nynorsk, Language.English),
         letterMetadata = LetterMetadata(
             displayTitle = "Vedtak - avslag av gjenlevendepensjon",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
@@ -59,7 +56,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                 )
             }
 
-            showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_foersteEllerTredje_ledd)) {
+            showIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_2_foersteEllerTredje_ledd)) {
                 paragraph {
                     text(
                         bokmal {
@@ -76,7 +73,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_2_andre_ledd)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_2_andre_ledd)) {
                 paragraph {
                     text(
                         bokmal {
@@ -93,7 +90,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_3)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_3)) {
                 paragraph {
                     text(
                         bokmal {
@@ -110,7 +107,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_5)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_5)) {
                 paragraph {
                     text(
                         bokmal {
@@ -135,7 +132,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                         }
                     )
                 }
-            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(paragraf17_10)) {
+            }.orShowIf(saksbehandlerValg.folketrygdlovenParagraf.isOneOf(AvslagGjenlevendepensjonDto.SaksbehandlerValg.FolketrygdlovenParagraf.paragraf17_10)) {
                 paragraph {
                     text(
                         bokmal {
@@ -160,10 +157,10 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
                 }
             }
 
-            includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+            includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
             includePhrase(Felles.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk))
+            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk)
+        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon)
     }
 }
