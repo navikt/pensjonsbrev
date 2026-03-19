@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import java.time.LocalDate
 
-data class BarnetilleggUTDto(val fodselsdato: LocalDate, val resultat: BarnetilleggResultatCode)
+data class BarnetilleggUTDto(val resultat: BarnetilleggResultatCode, val fodselsdato: LocalDate, val fom: LocalDate, val tom: LocalDate? = null)
     enum class BarnetilleggResultatCode {
         INNVILGET,
         BT_GITT_TIL_ANNEN,
