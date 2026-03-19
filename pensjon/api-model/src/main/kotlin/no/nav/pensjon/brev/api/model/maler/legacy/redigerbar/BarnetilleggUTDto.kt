@@ -13,5 +13,7 @@ data class BarnetilleggUTDto(val resultat: BarnetilleggResultatCode, val fodsels
         BRK_FORSO_IKKE_BARN,
         BRUKER_FLYTTET_IKKE_AVT_LAND,
         BARN_FLYTTET_IKKE_AVT_LAND,
-        BARN_OPPH_IKKE_AVT_LAND
+        BARN_OPPH_IKKE_AVT_LAND,
+        IKKE_MOTTATT_DOK,
+        ANNET
     }

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResulta
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_INNT_OVER_1G
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_OVER_18
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.IKKE_MOTTATT_DOK
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.MINDRE_ETT_AR_BT_FLT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fodselsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.resultat
@@ -424,7 +425,7 @@ object Ufoeretrygd {
                             bokmal { +"Barnets inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis barnet har inntekt over 1G." },
                             nynorsk { +"Barnets inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis barnet har inntekt over 1G." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BRK_FORSO_IKKE_BARN)) {
+                    }.orShowIf(barnetillegg.resultat.equalTo(BRK_FORSO_IKKE_BARN).or(barnetillegg.resultat.equalTo(IKKE_MOTTATT_DOK))) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må du forsørge barnet. Vi har ikke fått dokumentasjon som viser at du forsørger barnet." },
                             nynorsk { +"For å ha rett til barnetillegg må du forsørge barnet. Vi har ikkje fått dokumentasjon som viser at du forsørger barnet." },
