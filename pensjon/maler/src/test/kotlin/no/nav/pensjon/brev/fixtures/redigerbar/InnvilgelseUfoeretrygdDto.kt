@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto.UfoeretrygdPerMaaned
@@ -44,14 +46,14 @@ fun createInnvilgelseUfoeretrygdDto() =
             ),
             createOrienteringOmRettigheterUfoereDto(),
             barnetilleggInnvilget = listOf(
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1990, Month.JANUARY, 1), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.INNVILGET),
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1991, Month.FEBRUARY, 2), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.INNVILGET),
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1992, Month.MARCH, 3), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.INNVILGET),
+                BarnetilleggUTDto(LocalDate.of(1990, Month.JANUARY, 1), BarnetilleggResultatCode.INNVILGET),
+                BarnetilleggUTDto(LocalDate.of(1991, Month.FEBRUARY, 2), BarnetilleggResultatCode.INNVILGET),
+                BarnetilleggUTDto(LocalDate.of(1992, Month.MARCH, 3), BarnetilleggResultatCode.INNVILGET),
             ),
             barnetilleggAvslatt = listOf(
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1990, Month.APRIL, 4), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_INNT_OVER_1G),
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1991, Month.MAY, 5), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN),
-                InnvilgelseUfoeretrygdDto.Barnetillegg(LocalDate.of(1992, Month.JUNE, 5), InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BARN_FLYTTET_IKKE_AVT_LAND)
+                BarnetilleggUTDto(LocalDate.of(1990, Month.APRIL, 4), BarnetilleggResultatCode.BT_INNT_OVER_1G),
+                BarnetilleggUTDto(LocalDate.of(1991, Month.MAY, 5), BarnetilleggResultatCode.BT_GITT_TIL_ANNEN),
+                BarnetilleggUTDto(LocalDate.of(1992, Month.JUNE, 5), BarnetilleggResultatCode.BARN_FLYTTET_IKKE_AVT_LAND)
             ),
         ),
     )

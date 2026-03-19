@@ -4,9 +4,6 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.resultat
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggAvslatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
@@ -33,7 +30,6 @@ import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
@@ -200,8 +196,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)){
                 paragraph {
                     text (
-                        bokmal { + "Du er innvilget barnetillegg til uføretrygden din for" },
-                        nynorsk { + "Du er innvilga barnetillegg til uføretrygda di for" },
+                        bokmal { + "Du er innvilget barnetillegg i uføretrygden din for" },
+                        nynorsk { + "Du er innvilga barnetillegg i uføretrygda di for" },
                     )
                     includePhrase(Felles.TextOrList(pesysData.barnetilleggInnvilget.map(BarnetilleggFormatter), 5))
 
@@ -226,8 +222,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(pesysData.barnetilleggAvslatt.isNotEmpty()) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har avslått barnetillegg til uføretrygden din for" },
-                        nynorsk { +"Vi har avslått barnetillegg til uføretrygda di for" },
+                        bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
+                        nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
                     includePhrase(Felles.TextOrList(pesysData.barnetilleggAvslatt.map(BarnetilleggFormatter), 5))
                 }
