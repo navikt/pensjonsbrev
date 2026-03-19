@@ -104,10 +104,10 @@ class LaTeXCompilerService(
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
-        } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
+        }
     } catch (e: CancellationException) {
         throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf", e)
-    }
+    } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
     suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
