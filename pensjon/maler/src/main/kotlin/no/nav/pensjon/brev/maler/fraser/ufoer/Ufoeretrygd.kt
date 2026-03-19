@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNEN_FORLD_RETT_BT
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNET
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_OPPH_IKKE_AVT_LAND
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BRK_FORSO_IKKE_BARN
@@ -11,7 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.B
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.IKKE_MOTTATT_DOK
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.MINDRE_ETT_AR_BT_FLT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.resultat
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.begrunnelse
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
@@ -400,53 +401,57 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    showIf(barnetillegg.resultat.equalTo(ANNEN_FORLD_RETT_BT)) {
+                    showIf(barnetillegg.begrunnelse.equalTo(ANNEN_FORLD_RETT_BT)) {
                         text(
                             bokmal { +"Når barnet blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. Barnets andre forelder har rett til et høyere barnetillegg enn det du vil få." },
                             nynorsk { +"Når barnet vert forsørgd av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til barnet har rett til eit høgare barnetillegg enn det du vil få." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_GITT_TIL_ANNEN)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_GITT_TIL_ANNEN)) {
                         text(
                             bokmal { +"Når barnet blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som barnet." },
                             nynorsk { +"Når barnet vert forsørgd av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som barnet. Du bur ikkje på same folkeregistrerte adresse som barnet." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(MINDRE_ETT_AR_BT_FLT)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(MINDRE_ETT_AR_BT_FLT)) {
                         text(
                             bokmal { +"Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." },
                             nynorsk { +"Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_OVER_18)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_OVER_18)) {
                         text(
                             bokmal { +"Barnet har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." },
                             nynorsk { +"Barnet har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_INNT_OVER_1G)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_INNT_OVER_1G)) {
                         text(
                             bokmal { +"Barnets inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis barnet har inntekt over 1G." },
                             nynorsk { +"Barnets inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis barnet har inntekt over 1G." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BRK_FORSO_IKKE_BARN).or(barnetillegg.resultat.equalTo(IKKE_MOTTATT_DOK))) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BRK_FORSO_IKKE_BARN).or(barnetillegg.begrunnelse.equalTo(IKKE_MOTTATT_DOK))) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må du forsørge barnet. Vi har ikke fått dokumentasjon som viser at du forsørger barnet." },
                             nynorsk { +"For å ha rett til barnetillegg må du forsørge barnet. Vi har ikkje fått dokumentasjon som viser at du forsørger barnet." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
                             nynorsk { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Norge ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BARN_FLYTTET_IKKE_AVT_LAND)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_FLYTTET_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Barnet bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
                             nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Barnet bur i eit land som Norge ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
                         )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BARN_OPPH_IKKE_AVT_LAND)) {
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_OPPH_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes barnet ikke lenger som medlem i folketrygden." },
                             nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har opphalde seg i meir enn 90 dagar i eit land som Norge ikkje har trygdeavtale med, reknast barnet ikkje lenger som medlem i folketrygden." },
                         )
-                    }
-                }
+                    }.orShowIf(barnetillegg.begrunnelse.equalTo(ANNET)) {
+                        text(//TODO: sett inn fritekst
+                            bokmal { +""+fritekst },
+                            nynorsk { +"" },
+                        )
+                    }                }
                 paragraph {
                     text(
                         bokmal { +"Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden." },
