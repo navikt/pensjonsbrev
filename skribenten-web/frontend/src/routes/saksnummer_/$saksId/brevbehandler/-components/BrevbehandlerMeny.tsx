@@ -26,8 +26,7 @@ import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModa
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { useEndreMottaker } from "~/hooks/useEndreMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { BrevStatus } from "~/types/brev";
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type BrevInfo, type BrevStatus, Distribusjonstype } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";

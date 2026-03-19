@@ -8,6 +8,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import type { Adresse } from "~/types/apiTypes";
 import type { Mottaker } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+
 import { Route } from "../../route";
 
 const EndreMottaker = (properties: {

@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Modal, Tabs } from "@navikt/ds-react";
-import type { UseMutationResult } from "@tanstack/react-query";
-import { useMutation } from "@tanstack/react-query";
+import { type UseMutationResult, useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useCallback, useState } from "react";
-import type { Control } from "react-hook-form";
-import { FormProvider, useForm } from "react-hook-form";
+import { type Control, FormProvider, useForm } from "react-hook-form";
+
 import { finnSamhandler } from "~/api/skribenten-api-endpoints";
 import type { Adresse, FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
 import { ManueltAdressertTil } from "~/types/brev";
 import type { Nullable } from "~/types/Nullable";
+
 import BekreftAvbrytelse from "./BekreftAvbrytelse";
 import {
   type CombinedFormData,

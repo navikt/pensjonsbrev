@@ -1,8 +1,8 @@
 import { BodyShort, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
-import type { AdresseVisningTag } from "~/components/AdresseVisning";
-import AdresseVisning from "~/components/AdresseVisning";
+import AdresseVisning, { type AdresseVisningTag } from "~/components/AdresseVisning";
 import { ApiError } from "~/components/ApiError";
 import { erAdresseKontaktAdresse } from "~/components/endreMottaker/EndreMottakerUtils";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
