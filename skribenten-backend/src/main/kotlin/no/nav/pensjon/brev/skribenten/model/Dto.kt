@@ -177,33 +177,6 @@ fun Api.OverstyrtMottaker.toDto() =
         )
     }
 
-// TODO: Flytt
-fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) {
-    MottakerType.SAMHANDLER -> Pen.SendRedigerbartBrevRequest.Mottaker(type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID, tssId = tssId!!)
-    MottakerType.NORSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
-        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.NORSK_ADRESSE,
-        norskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.NorskAdresse(
-            navn = navn!!,
-            postnummer = postnummer!!,
-            poststed = poststed!!,
-            adresselinje1 = adresselinje1,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-        ),
-    )
-
-    MottakerType.UTENLANDSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
-        type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.UTENLANDSK_ADRESSE,
-        utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
-            navn = navn!!,
-            landkode = landkode!!,
-            adresselinje1 = adresselinje1!!,
-            adresselinje2 = adresselinje2,
-            adresselinje3 = adresselinje3,
-        ),
-    )
-}
-
 
 @JvmInline
 value class NorskPostnummer(val value: String) {

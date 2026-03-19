@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.brevredigering.application.usecases
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevmalFinnesIkke
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.SendBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.common.Outcome.Companion.failure
@@ -58,6 +59,32 @@ class SendBrevHandler(
         }
 
         return success(Dto.SendBrevResult(journalpostId = response.journalpostId, error = response.error))
+    }
+
+    fun Dto.Mottaker.toPen(): Pen.SendRedigerbartBrevRequest.Mottaker = when (type) {
+        MottakerType.SAMHANDLER -> Pen.SendRedigerbartBrevRequest.Mottaker(type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.TSS_ID, tssId = tssId!!)
+        MottakerType.NORSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
+            type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.NORSK_ADRESSE,
+            norskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.NorskAdresse(
+                navn = navn!!,
+                postnummer = postnummer!!,
+                poststed = poststed!!,
+                adresselinje1 = adresselinje1,
+                adresselinje2 = adresselinje2,
+                adresselinje3 = adresselinje3,
+            ),
+        )
+
+        MottakerType.UTENLANDSK_ADRESSE -> Pen.SendRedigerbartBrevRequest.Mottaker(
+            type = Pen.SendRedigerbartBrevRequest.Mottaker.Type.UTENLANDSK_ADRESSE,
+            utenlandskAdresse = Pen.SendRedigerbartBrevRequest.Mottaker.UtenlandsAdresse(
+                navn = navn!!,
+                landkode = landkode!!,
+                adresselinje1 = adresselinje1!!,
+                adresselinje2 = adresselinje2,
+                adresselinje3 = adresselinje3,
+            ),
+        )
     }
 
     override fun requiresReservasjon(request: Request): Boolean = true
