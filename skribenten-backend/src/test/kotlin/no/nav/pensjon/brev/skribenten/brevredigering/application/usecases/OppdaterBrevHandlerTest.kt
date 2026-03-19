@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
+import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.letter.updateEditedLetter
 import no.nav.pensjon.brev.skribenten.model.Api
@@ -16,12 +17,41 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.VariableImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
     private val nyttRedigertBrev = editedLetter(Paragraph(1, true, listOf(Literal(1, text = "red pill", editedText = "blue pill"))))
+
+    @Test
+    suspend fun `naar vi ikke klarer aa kople avsnitt saksbehandler har redigert med avsnitt i mal markerer vi avsnittet`() {
+        brevbakerService.renderMarkupResultat = {
+            letter(ParagraphImpl(1, true, listOf(LiteralImpl(2, "red pill"))))
+        }
+        val originalBrevmal = opprettBrev(reserverForRedigering = true, saksbehandlerValg = Api.GeneriskBrevdata()).resultOrFail()
+
+        brevbakerService.renderMarkupResultat = {
+            letter(ParagraphImpl(3, true, listOf(LiteralImpl(4, "green pill"))), ParagraphImpl(5, true, listOf(LiteralImpl(6, "red pill"))))
+        }
+
+        val etterSaksbehandlersEndringerOgDeretterEndringIMalen = oppdaterBrev(
+            brevId = originalBrevmal.info.id,
+            nyeSaksbehandlerValg = Api.GeneriskBrevdata(),
+            nyttRedigertbrev = editedLetter(Paragraph(1, true, listOf(Literal(2, text = "red pill", editedText = "blue pill")))),
+        )
+
+        assertThat(etterSaksbehandlersEndringerOgDeretterEndringIMalen).isSuccess {
+            assertThat(it.redigertBrev.blocks).hasSize(3)
+            assertThat(it.redigertBrev.blocks[0].content).isEqualTo(listOf(Literal(2, text = "red pill", editedText = "blue pill", parentId = 1)))
+            assertThat(it.redigertBrev.blocks[1].content).isEqualTo(listOf(Literal(4, "green pill", parentId = 3)))
+            assertThat(it.redigertBrev.blocks[2].content).isEqualTo(listOf(Literal(6, "red pill", parentId = 5)))
+            assertThat(it.redigertBrev.blocks[0].missingFromTemplate).isTrue
+            assertThat(it.redigertBrev.blocks[1].missingFromTemplate).isNotEqualTo(true)
+            assertThat(it.redigertBrev.blocks[2].missingFromTemplate).isNotEqualTo(true)
+        }
+    }
 
     @Test
     suspend fun `kan oppdatere brevredigering`() {
