@@ -375,8 +375,6 @@ object Ufoeretrygd {
         }
     }
 
-    val jalla = 3
-
     data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto>>) :
         OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -447,11 +445,12 @@ object Ufoeretrygd {
                             nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har opphalde seg i meir enn 90 dagar i eit land som Norge ikkje har trygdeavtale med, reknast barnet ikkje lenger som medlem i folketrygden." },
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(ANNET)) {
-                        text(//TODO: sett inn fritekst
-                            bokmal { +""+fritekst },
-                            nynorsk { +"" },
+                        text(
+                            bokmal { +Fritekst("Evt avslagstekst for perioden") },
+                            nynorsk { +Fritekst("Evt avslagstekst for perioden") },
                         )
-                    }                }
+                    }
+                }
                 paragraph {
                     text(
                         bokmal { +"Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden." },
