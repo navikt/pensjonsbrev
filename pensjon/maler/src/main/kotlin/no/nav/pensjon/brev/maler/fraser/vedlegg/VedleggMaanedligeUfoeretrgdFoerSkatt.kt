@@ -25,7 +25,6 @@ import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -217,7 +216,7 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     }
                 }
 
-                showIf(annetBelop.greaterThan(0)) {
+                showIf(annetBelop.notEqualTo(0)) {
                     showIf(dekningFasteUtgifter.ifNull(Kroner(0)).greaterThan(0)) {
                         row {
                             cell {
