@@ -94,16 +94,19 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
                 paragraph {
                     text(
                         bokmal {
-                            +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere fra "
+                            +"Etter hovedregelen i folketrygdloven paragraf 17-3 er det et vilkår for rett til gjenlevendepensjon at avdøde de siste <FRITEKST: tre/fem> årene fram til dødsfallet var medlem i folketrygden. "
+                            +"Vi har lagt til grunn at avdøde de siste <FRITEKST: tre/fem> årene hadde følgende medlemsperioder: <FRITEKST: FOM - TOM>. "
+                            +"Vilkåret om medlemskap før dødsfallet er derfor ikke oppfylt, og det er heller ikke unntaksregler som gir deg rett til gjenlevendepensjon."
                         },
                         nynorsk {
-                            +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere frå "
+                            +"Etter hovudregelen i folketrygdlova paragraf 17‑3 er det eit vilkår for rett til attlevandepensjon at den avdøde dei siste <FRITEKST: tre/fem> åra fram til dødsfallet var medlem i folketrygda. "
+                            +"Vi har lagt til grunn at den avdøde dei siste <FRITEKST: tre/fem> åra hadde følgjande medlemsperiodar: <FRITEKST: FOM – TOM>. "
+                            +"Vilkåret om medlemskap før dødsfallet er difor ikkje oppfylt, og det finst heller ikkje unntaksreglar som gir deg rett til attlevandepensjon."
                         },
                         english {
-                            +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children. "
-                            +"We have based our decision on our finding that from "
+                            +"The main provision of paragraph 17-3 of the National Insurance Act states that it is a requirement for a survivor's pension that the deceased had been a member of the National Insurance Scheme during the <FRITEKST: three/five> years prior to death. "
+                            +"We have based our decision on our finding that the deceased in the <FRITEKST: three/five> years prior to death was a member of the National Insurance Scheme for the following period(s): <FRITEKST: FOM - TOM>. "
+                            +"Thus the National Insurance Scheme's requirement that the deceased must have been a member for <FRITEKST: three/five> years prior to death has not been met, and there are no exemption rules that entitle you to a survivor's benefit."
                         }
                     )
                 }
