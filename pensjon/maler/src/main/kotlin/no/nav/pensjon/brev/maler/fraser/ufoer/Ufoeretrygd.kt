@@ -1,16 +1,16 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.ANNEN_FORLD_RETT_BT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BARN_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BARN_OPPH_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BRK_FORSO_IKKE_BARN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BRUKER_FLYTTET_IKKE_AVT_LAND
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_INNT_OVER_1G
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.BT_OVER_18
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.MINDRE_ETT_AR_BT_FLT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.resultat
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.ANNEN_FORLD_RETT_BT
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BARN_FLYTTET_IKKE_AVT_LAND
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BARN_OPPH_IKKE_AVT_LAND
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BRK_FORSO_IKKE_BARN
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BRUKER_FLYTTET_IKKE_AVT_LAND
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_GITT_TIL_ANNEN
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_INNT_OVER_1G
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.BT_OVER_18
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggResultatCode.MINDRE_ETT_AR_BT_FLT
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fodselsdato
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.resultat
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
@@ -373,7 +373,9 @@ object Ufoeretrygd {
         }
     }
 
-    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.Barnetillegg>>) :
+    val jalla = 3
+
+    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto>>) :
         OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
