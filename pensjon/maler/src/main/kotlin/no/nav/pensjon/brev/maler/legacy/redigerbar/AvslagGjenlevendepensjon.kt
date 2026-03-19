@@ -28,7 +28,7 @@ object AvslagGjenlevendepensjon : RedigerbarTemplate<AvslagGjenlevendepensjonDto
 override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_AVSLAG_GJENLEVENDEPENSJON
-    override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
+    override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.GJENLEV)
 
