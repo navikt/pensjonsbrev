@@ -40,14 +40,14 @@ fun Route.externalAPI(
                         ?.mapNotNull { it.toLongOrNull() }
                         ?.map { SaksId(it) }
                         ?: return@get call.respond(HttpStatusCode.BadRequest, "Mangler saksId")
-                    if (saksIder.any { !validerTilgangTilSak(fagsakService, it, pdlService) }) {
+                    if (saksIder.any { validerTilgangTilSak(fagsakService, it, pdlService) == null }) {
                         return@get call.respond(HttpStatusCode.NotFound, "Minst én sak ikke funnet")
                     }
 
                     call.respond(externalAPIService.hentAlleBrevForSaker(saksIder.toSet()))
                 }
                 post<ExternalAPI.OpprettBrevRequest> { request ->
-                    if (!validerTilgangTilSak(fagsakService, request.saksId, pdlService)) {
+                    if (validerTilgangTilSak(fagsakService, request.saksId, pdlService) == null) {
                         return@post call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
                     }
                     externalAPIService.opprettBrev(request).onSuccess {

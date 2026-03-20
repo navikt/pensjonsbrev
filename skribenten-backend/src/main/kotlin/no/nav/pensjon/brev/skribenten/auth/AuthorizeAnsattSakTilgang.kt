@@ -56,28 +56,25 @@ val AuthorizeAnsattSakTilgangForBrev =
 private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfiguration>.validerTilgangTilSak(
     call: ApplicationCall,
     saksId: SaksId
-) {
-    if (!validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService, { call.attributes.put(SakKey, it) })) {
-        call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
-    }
-}
+) = validerTilgangTilSak(pluginConfig.fagsakService, saksId, pluginConfig.pdlService)
+        ?.also { call.attributes.put(SakKey, it) }
+        ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 
-suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService, putSak: (Pen.SakSelection) -> Unit = {}): Boolean {
+suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService): Pen.SakSelection? {
     val sak = penService.hentSak(saksId)
     if (sak != null) {
-        putSak(sak)
         val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 
         if (!harTilgang) {
             logger.warn("Tilgang til sak avvist: sak med id $saksId har adressebeskyttelse")
-            return false
+            return null
         }
-        return true
+        return sak
     } else {
         logger.info("Tilgang til sak avvist: sak med id $saksId ikke funnet")
-        return false
+        return null
     }
 }
 
