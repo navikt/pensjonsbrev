@@ -1,6 +1,6 @@
 @file:Suppress("FunctionName", "DuplicatedCode")
 
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.legacy.pegruppe10
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.vedtaksbrev

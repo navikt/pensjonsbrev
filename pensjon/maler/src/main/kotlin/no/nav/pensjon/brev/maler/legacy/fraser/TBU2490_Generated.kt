@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_felles_en_entall_flertall
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull
-import no.nav.pensjon.brev.maler.legacy.ut_barnet_barna_serkull_en_entall_flertall
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_barnet_barna_felles
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_barnet_barna_felles_en_entall_flertall
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_barnet_barna_serkull
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_barnet_barna_serkull_en_entall_flertall
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*

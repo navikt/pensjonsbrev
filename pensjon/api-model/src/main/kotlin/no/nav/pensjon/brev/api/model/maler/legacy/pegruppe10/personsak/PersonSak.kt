@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.legacy.personsak
+package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.personsak
 
 import java.time.LocalDate
 

@@ -1,7 +1,16 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_etteroppgjorfratrekklistebrukeretterbetaling
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_periodefomstorre0101periodetomlik3112
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_periodetommindre3112periodefomlik0101
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_periodetommindre3112periodefomstorre0101
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_erstatning_innttap_erstoppgj
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_fratrekkliste_inntektsgrunnlag_grunnikkereduksjon_har_etterslepsinnt_avslt_akt
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_sumfratrekkut
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_uforetrygdetteroppgjordetaljbruker_suminntekterut
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_inntektut
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*

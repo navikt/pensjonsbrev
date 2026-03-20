@@ -4,7 +4,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_ut_opplyningerombergeningen_nettoperar
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_ut_overskytende
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.functions
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.pebrevkode
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopgammelut
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_belopsendring_uforetrygdordineryk_belopnyut
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish

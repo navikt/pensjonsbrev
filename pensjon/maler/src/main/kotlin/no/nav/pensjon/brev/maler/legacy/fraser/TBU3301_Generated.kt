@@ -1,7 +1,19 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_avviksbeloputenminus
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpensjonogandreytelser_new
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringbruker_endretpgi_new
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpensjonogandreytelser_new
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_eoendringeps_endretpgi_new
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_resultatforrigeeo_new
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_forrigeetteroppgjor_tidligereeoiverksatt_new
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*

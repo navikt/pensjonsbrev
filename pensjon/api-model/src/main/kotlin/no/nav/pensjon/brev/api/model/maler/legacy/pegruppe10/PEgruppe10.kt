@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.Vedtaksbrev
-import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.personsak.PersonSak
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 

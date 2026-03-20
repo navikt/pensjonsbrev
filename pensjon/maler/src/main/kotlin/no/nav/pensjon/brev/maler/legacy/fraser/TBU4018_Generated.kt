@@ -1,7 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.*
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_etteroppgjoravviksbeloptsbogtfbuliknull
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*

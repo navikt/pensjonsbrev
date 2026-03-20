@@ -1,10 +1,10 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
-import no.nav.pensjon.brev.maler.legacy.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_uforetrygdetteroppgjor_periodefom_year
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptfb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloptsb
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbeloput
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*

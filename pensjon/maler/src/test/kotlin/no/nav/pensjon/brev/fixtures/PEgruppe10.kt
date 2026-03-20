@@ -24,8 +24,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYK
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.Belopsendring
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.beregningytelseskomp.BarnetilleggFelles
-import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PSfnr
-import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSak
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.personsak.PSfnr
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.personsak.PersonSak
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.Vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggSerkullYK
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BeregningUfore

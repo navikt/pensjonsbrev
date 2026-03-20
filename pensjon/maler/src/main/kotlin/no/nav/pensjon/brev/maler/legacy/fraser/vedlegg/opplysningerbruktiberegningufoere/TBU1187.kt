@@ -1,12 +1,12 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_brukerflyktning
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag
-import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom
-import no.nav.pensjon.brev.maler.legacy.ut_sum_fattnorge_framtidigttnorge_div_12_avdod
-import no.nav.pensjon.brev.maler.legacy.ut_trygdetid_avdod
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_boddarbeidutlandavdod
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.grunnlag_persongrunnlagavdod_brukerflyktning
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_sum_fattnorge_framtidigttnorge_div_12_avdod
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_trygdetid_avdod
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_kravhode_boddarbeidutlandavdod
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase

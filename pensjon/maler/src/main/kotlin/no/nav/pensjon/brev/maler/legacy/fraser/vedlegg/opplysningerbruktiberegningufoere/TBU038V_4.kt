@@ -1,13 +1,13 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
-import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
-import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
-import no.nav.pensjon.brev.maler.legacy.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
-import no.nav.pensjon.brev.maler.legacy.pebrevkode
-import no.nav.pensjon.brev.maler.legacy.ut_avdod
-import no.nav.pensjon.brev.maler.legacy.ut_inntektslandtruehvorbruktlikfalse_avdod
-import no.nav.pensjon.brev.maler.legacy.vedtaksdata_kravhode_kravarsaktype
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.avdodHarOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.avdodHarOpptjeningUTMedFoerstegangstjenesteOgOmsorg
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.avdodHarOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.pebrevkode
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_avdod
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_inntektslandtruehvorbruktlikfalse_avdod
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_kravhode_kravarsaktype
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
