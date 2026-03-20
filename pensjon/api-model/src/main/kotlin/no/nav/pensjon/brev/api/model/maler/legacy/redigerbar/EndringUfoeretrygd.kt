@@ -31,6 +31,9 @@ data class EndringUfoeretrygdDto(
 
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+
+        val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
+        val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList()
     ) : FagsystemBrevdata
 
     data class Opphoersbegrunnelse(
