@@ -25,7 +25,7 @@ fun Route.brev(
         install(AuthorizeAnsattSakTilgangForBrev) {
             this.pdlService = pdlService
             this.fagsakService = fagsakService
-            this.brevredigeringFacade = brevredigeringFacade
+            this.hentBrevService = brevredigeringFacade
         }
 
         get("/info") {

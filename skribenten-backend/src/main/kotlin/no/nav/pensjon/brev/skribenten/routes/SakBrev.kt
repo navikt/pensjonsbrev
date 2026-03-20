@@ -243,7 +243,7 @@ fun Route.sakBrev(
         }
     }
 
-private fun SpraakKode.toLanguageCode(): LanguageCode =
+fun SpraakKode.toLanguageCode(): LanguageCode =
     when (this) {
         SpraakKode.NB -> LanguageCode.BOKMAL
         SpraakKode.NN -> LanguageCode.NYNORSK

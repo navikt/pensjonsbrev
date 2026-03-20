@@ -11,6 +11,8 @@ import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.common.Cache
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.eksterntApi.ExternalAPIService
+import no.nav.pensjon.brev.skribenten.eksterntApi.externalAPI
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
@@ -54,7 +56,7 @@ fun Application.configureRouting(
 
     val dto2ApiService = Dto2ApiService(brevmalService, navansattService, norg2Service, samhandlerService)
     val brevredigeringFacade = BrevredigeringFacadeFactory.create(brevService, brevdataService, brevmalService, navansattService, p1Service, renderService)
-    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService)
+    val externalAPIService = ExternalAPIService(servicesConfig.getConfig("externalApi"), brevredigeringFacade, brevmalService, brevredigeringFacade)
 
     Features.initUnleash(servicesConfig.getConfig("unleash"))
 
@@ -103,6 +105,6 @@ fun Application.configureRouting(
 
         }
 
-        externalAPI(authConfig, externalAPIService)
+        externalAPI(authConfig, externalAPIService, pdlService, fagsakService)
     }
 }
