@@ -6,10 +6,9 @@
   "scripts": {
     "build": "tsc && vite build",
     "check-types": "tsc --noemit",
-    "cypress": "cypress open",
-    "cypress:component": "cypress run --component -b chrome",
-    "cypress:e2e": "start-server-and-test 'vite preview --port 4173' localhost:4173 'cypress run -b chrome --config baseUrl=http://localhost:4173'",
     "dev": "vite --host",
+    "e2e": "playwright test",
+    "e2e:ui:dev": "playwright test --ui",
     "format": "biome format --write .",
     "lint": "biome check .",
     "lint:write": "biome check --write .",
@@ -19,7 +18,7 @@
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
     "test": "vitest --config ./vite.config.ts",
     "tsc:watch": "tsc --watch",
-    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run cypress:component && ${npm_execpath} run build && ${npm_execpath} run cypress:e2e"
+    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run build && ${npm_execpath} run e2e"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -44,6 +43,7 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.10",
     "@navikt/aksel-stylelint": "8.9.0",
+    "@playwright/test": "^1.58.2",
     "@tanstack/react-query-devtools": "5.96.0",
     "@tanstack/react-router-devtools": "1.166.11",
     "@tanstack/router-vite-plugin": "1.166.27",
@@ -54,21 +54,14 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.2.0",
-    "cypress": "15.13.0",
     "happy-dom": "20.8.9",
     "jsdom": "29.0.1",
     "lint-staged": "16.4.0",
     "postcss-styled-syntax": "0.7.1",
-    "start-server-and-test": "3.0.0",
     "stylelint": "17.6.0",
     "stylelint-config-standard": "40.0.0",
     "typescript": "6.0.2",
     "vite": "7.3.2",
     "vitest": "4.1.2"
-  },
-  "overrides": {
-    "cypress": {
-      "qs": ">=6.14.1"
-    }
   }
 }

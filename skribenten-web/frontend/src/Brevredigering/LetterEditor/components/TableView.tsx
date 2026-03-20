@@ -82,7 +82,7 @@ const TableView: React.FC<{
     <>
       <table
         css={tableStyles}
-        data-cy="letter-table"
+        data-e2e="letter-table"
         onContextMenu={(e) => {
           e.preventDefault();
 
@@ -117,7 +117,7 @@ const TableView: React.FC<{
               return (
                 <th
                   css={isHeaderHighlighted && selectedBackgroundStyle}
-                  data-cy={`table-header-${colIdx}`}
+                  data-e2e={`table-header-${colIdx}`}
                   key={colIdx}
                   scope="col"
                 >
@@ -136,14 +136,14 @@ const TableView: React.FC<{
         <tbody>
           {node.rows.map((row, rowIdx) => {
             return (
-              <tr data-cy={`table-row-${rowIdx}`} key={rowIdx}>
+              <tr data-e2e={`table-row-${rowIdx}`} key={rowIdx}>
                 {row.cells.map((cell, cellIdx) => {
                   const isHighlighted =
                     !!highlight && highlight.row === rowIdx && (highlight.col === -1 || highlight.col === cellIdx);
                   return (
                     <td
                       css={isHighlighted && selectedBackgroundStyle}
-                      data-cy={`table-cell-${rowIdx}-${cellIdx}`}
+                      data-e2e={`table-cell-${rowIdx}-${cellIdx}`}
                       key={cellIdx}
                     >
                       {renderCellText(cell, cellIdx, {
@@ -164,7 +164,7 @@ const TableView: React.FC<{
 
       <TableContextMenu
         anchor={menuAnchor}
-        data-cy="table-action-menu"
+        data-e2e="table-action-menu"
         onClose={() => {
           setMenuAnchor(null);
           setHighlight(null);

@@ -679,8 +679,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
      */
     <span
       // contentEditable='plaintext-only' blocks rich text content and prevents unhandled native
-      // bold/italic/underline formatting from interfering with Skribenten-styling. However, Cypress
-      // and jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
+      // bold/italic/underline formatting from interfering with Skribenten-styling. However,
+      // jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
       // shortcuts and pasting can be blocked/overridden in event handlers.
       contentEditable={!freeze}
       css={{

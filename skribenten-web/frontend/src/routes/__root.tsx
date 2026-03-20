@@ -1,4 +1,3 @@
-import { Global } from "@emotion/react";
 import { Box } from "@navikt/ds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -8,15 +7,16 @@ import { AppHeader } from "~/components/AppHeader";
 
 export const queryClient = new QueryClient();
 
-const isProdOrCypressTest = process.env.NODE_ENV === "production" || globalThis.Cypress !== undefined;
-const TanStackRouterDevtools = isProdOrCypressTest
+const isProd = process.env.NODE_ENV === "production";
+const { Global } = isProd ? { Global: () => null } : await import("@emotion/react");
+const TanStackRouterDevtools = isProd
   ? () => null
   : React.lazy(() =>
       import("@tanstack/react-router-devtools").then((response) => ({
         default: response.TanStackRouterDevtools,
       })),
     );
-const ReactQueryDevtools = isProdOrCypressTest
+const ReactQueryDevtools = isProd
   ? () => null
   : React.lazy(() =>
       import("@tanstack/react-query-devtools").then((response) => ({
@@ -34,7 +34,7 @@ export const Route = createRootRouteWithContext<{
         <Outlet />
       </Box>
       <React.Suspense fallback="">
-        {!isProdOrCypressTest && (
+        {!isProd && (
           <Global
             styles={{
               ".TanStackRouterDevtools > button": {

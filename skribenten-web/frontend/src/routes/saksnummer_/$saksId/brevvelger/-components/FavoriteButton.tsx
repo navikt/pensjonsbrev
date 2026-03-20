@@ -23,7 +23,7 @@ export default function FavoriteButton(props: {
   if (isFavoritt) {
     return (
       <Button
-        data-cy="remove-favorite-button"
+        data-e2e="remove-favorite-button"
         icon={<StarFillIcon aria-hidden />}
         onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
         size="small"
@@ -37,7 +37,7 @@ export default function FavoriteButton(props: {
   return (
     <Button
       data-color="neutral"
-      data-cy="add-favorite-button"
+      data-e2e="add-favorite-button"
       icon={<StarIcon aria-hidden />}
       onClick={() => toggleFavoritesMutation.mutate(props.templateId)}
       size="small"

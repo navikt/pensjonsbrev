@@ -339,7 +339,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       )}
       {erLaast && (
         <RadioGroup
-          data-cy="brevbehandler-distribusjonstype"
+          data-e2e="brevbehandler-distribusjonstype"
           description={
             <HStack align="center" gap="space-20">
               <BodyShort color="text-neutral" size="small" weight="semibold">

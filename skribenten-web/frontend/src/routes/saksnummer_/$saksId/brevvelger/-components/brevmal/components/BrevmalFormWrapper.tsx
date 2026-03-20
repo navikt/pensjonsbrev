@@ -29,7 +29,7 @@ export const OrderLetterResult = (props: {
     <>
       {props.error && <ApiError error={props.error} title="Bestilling feilet" />}
       {props.data && (
-        <Alert data-cy="order-letter-success-message" size="small" variant="success">
+        <Alert data-e2e="order-letter-success-message" size="small" variant="success">
           <Heading level="3" size="xsmall">
             Brev bestilt
           </Heading>

@@ -300,7 +300,7 @@ function DatePickerEditor({
     <FullWidthDatePickerWrapper>
       <DatePicker {...datepicker.datepickerProps}>
         <DatePicker.Input
-          data-cy="datepicker-editor"
+          data-e2e="datepicker-editor"
           {...datepicker.inputProps}
           error={error}
           label={label}

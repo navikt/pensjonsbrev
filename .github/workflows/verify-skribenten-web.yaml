@@ -18,7 +18,7 @@ jobs:
     secrets: inherit
     with:
       workingDir: skribenten-web
-      cypress: true
+      runTests: true
 
   "klarTilMerge":
     name: "Klar til merge"

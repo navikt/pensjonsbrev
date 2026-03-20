@@ -38,7 +38,7 @@ const BrevvelgerFooter = (props: {
         </Button>
         {props.onSubmitClick && (
           <Button
-            data-cy="order-letter"
+            data-e2e="order-letter"
             loading={mutationState.at(-1)?.status === "pending"}
             onClick={props.onSubmitClick.onClick}
             size="small"

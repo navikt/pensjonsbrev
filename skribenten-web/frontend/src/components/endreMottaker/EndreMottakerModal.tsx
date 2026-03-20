@@ -108,7 +108,7 @@ export const EndreMottakerModal = (properties: {
 
   return (
     <Modal
-      data-cy="endre-mottaker-modal"
+      data-e2e="endre-mottaker-modal"
       header={{
         closeButton: false,
         heading:

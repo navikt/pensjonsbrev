@@ -171,7 +171,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           {!props.erLaast && (
             <Box asChild borderRadius="4">
               <Button
-                data-cy="p1-edit-button"
+                data-e2e="p1-edit-button"
                 icon={<PencilIcon />}
                 onClick={() => setIsP1ModalOpen(true)}
                 size="xsmall"

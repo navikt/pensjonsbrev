@@ -16,7 +16,7 @@ function SelectLanguage({
 
   return (
     <VStack gap="space-8">
-      <Select {...register("spraak")} data-cy="språk-velger-select" label="Språk" size="small">
+      <Select {...register("spraak")} data-e2e="språk-velger-select" label="Språk" size="small">
         {sorterteSpråk.map((spraak) => (
           <option key={spraak} value={spraak}>
             {SPRAAK_ENUM_TO_TEXT[spraak]} {preferredLanguage === spraak ? "(foretrukket språk)" : ""}
