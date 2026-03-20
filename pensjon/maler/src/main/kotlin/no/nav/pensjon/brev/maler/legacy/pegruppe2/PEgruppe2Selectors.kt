@@ -1,4 +1,4 @@
-@file:Suppress("FunctionName")
+@file:Suppress("FunctionName", "unused")
 
 package no.nav.pensjon.brev.maler.legacy.pegruppe2
 
