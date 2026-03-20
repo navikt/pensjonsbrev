@@ -432,17 +432,17 @@ object Ufoeretrygd {
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
-                            nynorsk { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Norge ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
+                            nynorsk { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_FLYTTET_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Barnet bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
-                            nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Barnet bur i eit land som Norge ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
+                            nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Barnet bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_OPPH_IKKE_AVT_LAND)) {
                         text(
                             bokmal { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes barnet ikke lenger som medlem i folketrygden." },
-                            nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har opphalde seg i meir enn 90 dagar i eit land som Norge ikkje har trygdeavtale med, reknast barnet ikkje lenger som medlem i folketrygden." },
+                            nynorsk { +"For å ha rett til barnetillegg må barnet være medlem i folketrygden. Fordi barnet har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast barnet ikkje lenger som medlem i folketrygden." },
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(ANNET)) {
                         text(
