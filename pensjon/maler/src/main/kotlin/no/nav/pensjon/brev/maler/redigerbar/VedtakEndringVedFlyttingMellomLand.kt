@@ -63,8 +63,8 @@ import no.nav.pensjon.brev.maler.fraser.alderspensjon.BeregnaPaaNytt
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.FeilutbetalingAP
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.MeldFraOmEndringer2
+import no.nav.pensjon.brev.maler.fraser.alderspensjon.UtbetalingsinformasjonRedigerbar
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.UfoereAlder
-import no.nav.pensjon.brev.maler.fraser.alderspensjon.Utbetalingsinformasjon
 import no.nav.pensjon.brev.maler.fraser.alderspensjon.VedtakAlderspensjon
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -503,7 +503,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 }
             }
 
-            includePhrase(Utbetalingsinformasjon)
+            includePhrase(UtbetalingsinformasjonRedigerbar<VedtakEndringVedFlyttingMellomLand>())
 
             showIf(pesysData.inngangOgEksportVurdering.eksportTrygdeavtaleEOES and pesysData.bruker.borIEOES) {
                 // hvisFlyttetBosattEØS_001

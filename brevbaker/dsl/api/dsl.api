@@ -253,7 +253,6 @@ public final class no/nav/pensjon/brev/template/BrevTemplateKt {
 }
 
 public final class no/nav/pensjon/brev/template/BrevdataEllerFritekst : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
-	public fun <init> (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun getFritekst ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getTekst ()Lno/nav/pensjon/brev/template/Expression;
 	public fun toString ()Ljava/lang/String;
@@ -590,7 +589,6 @@ public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {
 
 public final class no/nav/pensjon/brev/template/Fritekst : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
 	public static final synthetic fun box-impl (Ljava/lang/String;)Lno/nav/pensjon/brev/template/Fritekst;
-	public static fun constructor-impl (Ljava/lang/String;)Ljava/lang/String;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Ljava/lang/String;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Ljava/lang/String;Ljava/lang/String;)Z
@@ -826,6 +824,12 @@ public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 }
 
+public abstract class no/nav/pensjon/brev/template/OutlinePhraseRedigerbar : no/nav/pensjon/brev/template/OutlinePhrase {
+	public fun <init> ()V
+	public final fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+	public final fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public abstract class no/nav/pensjon/brev/template/ParagraphPhrase {
 	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
@@ -846,7 +850,6 @@ public final class no/nav/pensjon/brev/template/PreventToStringForExpressionExce
 
 public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/brev/template/SpesialkonstruksjonIMal {
 	public static final synthetic fun box-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/RedigerbarData;
-	public static fun constructor-impl (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public fun equals (Ljava/lang/Object;)Z
 	public static fun equals-impl (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/Object;)Z
 	public static final fun equals-impl0 (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Z
@@ -1110,6 +1113,7 @@ public final class no/nav/pensjon/brev/template/dsl/OutlineOnlyScope : no/nav/pe
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function2;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public fun ifNotNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function3;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhrase;)V
+	public final fun includePhrase (Lno/nav/pensjon/brev/template/OutlinePhraseRedigerbar;)V
 	public fun nynorsk (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;
 	public fun paragraph (Lkotlin/jvm/functions/Function1;)V
 	public synthetic fun scopeFactory ()Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;
