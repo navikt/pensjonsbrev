@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetids
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUforetidspunkt26DtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagInntektsevne50.redigerbarData
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -67,8 +68,8 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering },
-                        nynorsk { +pesysData.vurdering } )
+                    text(bokmal { +redigerbarData(pesysData.vurdering) },
+                        nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
             }
             paragraph {
