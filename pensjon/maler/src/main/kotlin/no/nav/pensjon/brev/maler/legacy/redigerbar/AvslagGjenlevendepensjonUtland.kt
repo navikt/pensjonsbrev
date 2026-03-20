@@ -50,7 +50,7 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." },
+                    bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." },  //TODO
                     nynorsk { +"Nav viser til søknaden din om attlevandepensjon motteken <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." },
                     english { +"Nav makes reference to your application for a survivor's pension, received on <PE_Kravdata_Kravhode_KravMotattDato>. Your application has been denied." }
                 )
@@ -68,19 +68,19 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                         +"Et vilkår for å ha rett til ytelser som gjenlevende er at avdøde de siste "
                         + fritekst("tre/fem") + " årene før dødsfallet har vært medlem i folketrygden eller mottatt pensjon fra folketrygden. Vi har lagt til grunn at avdøde de siste "
                         + fritekst("tre/fem") + " årene før dødsfallet hadde følgende medlemsperioder i folketrygden: "
-                        + fritekst("FOM-TOM") + ". Vilkåret i folketrygdloven om medlemskap fram til dødsfallet er derfor ikke oppfylt."
+                        + fritekst("FOM - TOM") + ". Vilkåret i folketrygdloven om medlemskap fram til dødsfallet er derfor ikke oppfylt."
                     },
                     nynorsk {
                         +"Eit vilkår for å ha rett til ytingar som attlevande er at den avdøde dei siste "
                         + fritekst("tre/fem") + " åra før dødsfallet har vore medlem i folketrygda eller har motteke pensjon frå folketrygda. Vi har lagt til grunn at den avdøde dei siste "
                         + fritekst("tre/fem") + " åra før dødsfallet hadde følgjande medlemsperiodar i folketrygda: "
-                        + fritekst("FOM-TOM") + ". Vilkåret i folketrygdlova om medlemskap fram til dødsfallet er derfor ikkje oppfylt."
+                        + fritekst("FOM - TOM") + ". Vilkåret i folketrygdlova om medlemskap fram til dødsfallet er derfor ikkje oppfylt."
                     },
                     english {
                         +"In order to receive benefits as a survivor, it is a requirement that the deceased was a member of the National Insurance Scheme or received a pension from the National Insurance Scheme in the "
                         + fritekst("three/five") + " years prior to death. We have based our decision on our finding that the deceased in the "
                         + fritekst("three/five") + " years prior to death was a member of the National Insurance Scheme in the following periods: "
-                        + fritekst("FOM-TOM") + ". Thus the requirement in the National Insurance Act that the deceased must have been a member for "
+                        + fritekst("FOM - TOM") + ". Thus the requirement in the National Insurance Act that the deceased must have been a member for "
                         + fritekst("three/five") + " years prior to death has not been met."
                     },
                 )
@@ -112,21 +112,21 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                     bokmal {
                         +"Vi har fått opplyst at avdøde har vært medlem i trygden i "
                         + fritekst("Fyll inn aktuelt land") + " i tidsrommet "
-                        + fritekst("FOM-TOM") + ". Vilkåret om minst "
+                        + fritekst("FOM - TOM") + ". Vilkåret om minst "
                         + fritekst("tre/fem") + " års medlemskap fram til dødsfallet kan derfor heller ikke oppfylles gjennom medregning av medlemsperioder i "
                         + fritekst("Fyll inn aktuelt land") + "."
                     },
                     nynorsk {
                         +"Vi har fått opplyst at den avdøde har vore medlem i trygda i "
                         + fritekst("Fyll inn aktuelt land") + " i tidsrommet "
-                        + fritekst("FOM-TOM") + ". Vilkåret om minst "
+                        + fritekst("FOM - TOM") + ". Vilkåret om minst "
                         + fritekst("tre/fem") + " års medlemskap fram til dødsfallet kan derfor heller ikkje oppfyllast gjennom medrekning av medlemsperiodar i "
                         + fritekst("Fyll inn aktuelt land") + "."
                     },
                     english {
                         +"We have been informed that the deceased has been a member of the social security scheme in "
                         + fritekst("Fyll inn aktuelt land") + " in the period between "
-                        + fritekst("FOM-TOM") + ". The requirement that the deceased must have been a member of the National Insurance Scheme for at least "
+                        + fritekst("FOM - TOM") + ". The requirement that the deceased must have been a member of the National Insurance Scheme for at least "
                         + fritekst("three/five") + " years prior to death is therefore not met by including the deceased's period of membership in "
                         + fritekst("Fyll inn aktuelt land") + "."
                     },
