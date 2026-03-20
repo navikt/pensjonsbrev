@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.ufore.maler.info
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -11,10 +11,7 @@ import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.LoependeInntektsAvkortningSelectors.forventetInntektAar
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.LoependeInntektsAvkortningSelectors.inntektsgrenseAar
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.UforetrygdSelectors.ufoeregrad
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.UforetrygdSelectors.utbetalingsgrad
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.loependeInntektsAvkortning
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.uforetrygdInnevarendeAr
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -33,10 +30,7 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
 
         val forventetInntekt = loependeInntektsAvkortning.forventetInntektAar
         val inntektsgrense = loependeInntektsAvkortning.inntektsgrenseAar
-
-        val utbetalinggradErLikUfoeregrad = uforetrygdInnevarendeAr.utbetalingsgrad.equalTo(uforetrygdInnevarendeAr.ufoeregrad)
-        val avkortet = uforetrygdInnevarendeAr.utbetalingsgrad.lessThan(uforetrygdInnevarendeAr.ufoeregrad) or (utbetalinggradErLikUfoeregrad and forventetInntekt.greaterThan(inntektsgrense))
-        val belopsgrense = if (avkortet.equals(true) ) forventetInntekt else inntektsgrense
+        val belopsgrense = if (forventetInntekt.greaterThan(inntektsgrense).equals(true)) forventetInntekt else inntektsgrense
 
         title {
             text(

@@ -4,12 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto.BarnetilleggResultatCode.*
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.fodselsdato
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.BarnetilleggSelectors.resultat
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggAvslatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.barnetilleggInnvilget
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
@@ -56,10 +53,18 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
         )
     ) {
         title {
-            text(
-                bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
-            )
+            showIf(pesysData.pe.vedtaksdata_kravhode_kravgjelder().equalTo("mellombh")){
+                text(
+                    bokmal { +"Nav har innvilget forskudd på søknaden din om uføretrygd" },
+                    nynorsk { +"Nav har innvilga forskot på søknaden din om uføretrygd" },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
+                    nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                )
+            }
+
         }
         outline {
             val pe = pesysData.pe
@@ -188,13 +193,13 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) THEN      INCLUDE ENDIF
-            showIf((barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget)){
+            showIf((pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty())){
                 paragraph {
                     text (
-                        bokmal { + "Du er innvilget barnetillegg til uføretrygden din for" },
-                        nynorsk { + "Du er innvilga barnetillegg til uføretrygda di for" },
+                        bokmal { + "Du er innvilget barnetillegg i uføretrygden din for" },
+                        nynorsk { + "Du er innvilga barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.barnetilleggInnvilget.map(BarnetilleggFormatter), 5))
+                    includePhrase(Felles.TextOrList(pesysData.nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
                     //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND  (((PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0)   AND   (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0))   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false)   OR  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBnetto = 0  AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false))  ) THEN      INCLUDE ENDIF
                     showIf((barnetilleggFellesInnvilget and (((barnetilleggSerkullInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)) and (barnetilleggFellesInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0))) or (barnetilleggSerkullInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0) and not(barnetilleggFellesInnvilget)) or (barnetilleggFellesInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0) and not(barnetilleggSerkullInnvilget))))){
@@ -214,13 +219,13 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.barnetilleggAvslatt.isNotEmpty()) {
+            showIf(pesysData.nyeAvslagBarnetillegg.isNotEmpty()) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har avslått barnetillegg til uføretrygden din for" },
-                        nynorsk { +"Vi har avslått barnetillegg til uføretrygda di for" },
+                        bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
+                        nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
                     )
-                    includePhrase(Felles.TextOrList(pesysData.barnetilleggAvslatt.map(BarnetilleggFormatter), 5))
+                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
                 }
             }
 
@@ -822,10 +827,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             //IF(FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_UngUforBegrunnelse) = "stdbegr_12_13_1_i_1") THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforbegrunnelse()).equalTo("stdbegr_12_13_1_i_1"))){
                 paragraph {
-                    text (
-                        bokmal { + "For å bli innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." },
-                        nynorsk { + "For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert." },
+                    text(
+                        bokmal { +"For å bli innvilget rettighet som ung ufør, er det et krav at du ble ufør før du fylte 26 år på grunn av en alvorlig og varig sykdom eller skade, som er klart dokumentert." },
+                        nynorsk { +"For å bli innvilga rett som ung ufør er det eit krav at du blei ufør før du fylte 26 år på grunn av ein alvorleg og varig sjukdom eller skade, som er klart dokumentert." },
                     )
+                }
+                paragraph {
                     text (
                         bokmal { + "Du oppfyller ikke vilkåret om rettighet som ung ufør, fordi det ikke er dokumentert at du ble alvorlig og varig syk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
                         nynorsk { + "Du oppfyller ikkje vilkåret om rett som ung ufør fordi det ikkje er dokumentert at du blei alvorleg og varig sjuk før du fylte 26 år. " + fritekst("Konkret begrunnelse") },
@@ -1472,11 +1479,15 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 )
             }
 
-            // TODO: Legg til sjekk og tekst når vi vet mer om dette
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense = PE_Grunnbelop_40_prosent AND FF_GetArrayElement_Float(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_IEUInntekt) = 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100) THEN      INCLUDE ENDIF
-//           showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().equalTo(pe.grunnbelop_40_prosent()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()).equalTo(0) and uforegrad.equalTo(100))){
-//                includePhrase(TBU1205_Generated(pe))
-//            }
+           showIf((uforegrad.equalTo(100) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(60000) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt().equalTo(0))) {
+               paragraph {
+                   text(
+                       bokmal { +"Du kan ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. I dag er dette " + pe.ut_inntektsgrense_faktisk().format() + ". Dette er inntektsgrensen din." },
+                       nynorsk { +"Du kan ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. I dag er dette " + pe.ut_inntektsgrense_faktisk().format() + ". Dette er inntektsgrensa di." },
+                   )
+               }
+           }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop = PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Inntektsgrense) THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().equalTo(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()))){
@@ -2129,66 +2140,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
             }
-            forEach(pesysData.barnetilleggAvslatt) { barnetillegg ->
-                title1 {
-                    text(
-                        bokmal { +"Nav har avslått søknaden din om barnetillegg" },
-                        nynorsk { +"Nav har avslått søknaden din om barnetillegg" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Søknaden er avslått for barn født " + barnetillegg.fodselsdato.format() + "." },
-                        nynorsk { +"Søknaden er avslått for barn fødd " + barnetillegg.fodselsdato.format() + "." },
-                    )
-                }
-                title2 {
-                    text(
-                        bokmal { +"Begrunnelse for vedtaket" },
-                        nynorsk { +"Begrunnelse for vedtaket" },
-                    )
-                }
-                paragraph {
-                    showIf(barnetillegg.resultat.equalTo(ANNEN_FORLD_RETT_BT)) {
-                        text(
-                            bokmal { +"Når barnet blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. Barnets andre forelder har rett til et høyere barnetillegg enn det du vil få." },
-                            nynorsk { +"Når barnet vert forsørgd av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til barnet har rett til eit høgare barnetillegg enn det du vil få." },
-                        )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_GITT_TIL_ANNEN)) {
-                        text(
-                            bokmal { +"Når barnet blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som barnet." },
-                            nynorsk { +"Når barnet vert forsørgd av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som barnet. Du bur ikkje på same folkeregistrerte adresse som barnet." },
-                        )
-                    }.orShowIf(barnetillegg.resultat.equalTo(MINDRE_ETT_AR_BT_FLT)) {
-                        text(
-                            bokmal { +"Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." },
-                            nynorsk { +"Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen." },
-                        )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_OVER_18)) {
-                        text(
-                            bokmal { +"Barnet har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." },
-                            nynorsk { +"Barnet har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år." },
-                        )
-                    }.orShowIf(barnetillegg.resultat.equalTo(BT_INNT_OVER_1G)) {
-                        text(
-                            bokmal { +"Barnets inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis barnet har inntekt over 1G." },
-                            nynorsk { +"Barnets inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis barnet har inntekt over 1G." },
-                        )
-                    }
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden." },
-                        nynorsk { +"Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda." },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven § 12-15." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova § 12-15." },
-                    )
-                }
-            }
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad >= 50 AND PE_Vedtaksdata_Kravhode_KravGjelder <> "f_bh_bo_utl") THEN      INCLUDE ENDIF
             showIf((uforegrad.greaterThanOrEqual(50) and pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("f_bh_bo_utl"))){
