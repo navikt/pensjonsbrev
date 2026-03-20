@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOmsorg
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.harOpptjeningUTMedOpptjeningBruktAaretFoerOgFoerstegangstjeneste
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_bruker_var_gammel_nok_til_a_ha_inntekt_pa_uforetidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_saksdata_sakapogup
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.ExstreamFunctionsSelectors.pe_sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
@@ -424,6 +425,7 @@ fun Expression<PEgruppe10>.ut_vilfylle67ivirkningfomar(): Expression<Boolean> = 
 fun Expression<PEgruppe10>.ut_vilkargjelderpersonalder(): Expression<Int> = functions.pe_ut_vilkargjelderpersonalder
 fun Expression<PEgruppe10>.ut_virkningfomar(): Expression<Int> = functions.pe_ut_virkningfomar
 fun Expression<PEgruppe10>.ut_virkningstidpunktarminus1ar(): Expression<Int> = functions.pe_ut_virkningstidpunktarminus1ar
+fun Expression<PEgruppe10>.ut_bruker_var_gammel_nok_til_a_ha_inntekt_pa_uforetidspunkt(): Expression<Boolean> = functions.pe_bruker_var_gammel_nok_til_a_ha_inntekt_pa_uforetidspunkt.ifNull(true)
 fun Expression<PEgruppe10>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggfb(): Expression<Boolean> = vedtaksbrev.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { uforetrygdetteroppgjor }.safe { barnetilleggfb }.ifNull(false)
 fun Expression<PEgruppe10>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_barnetilleggsb(): Expression<Boolean> = vedtaksbrev.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { uforetrygdetteroppgjor }.safe { barnetilleggsb }.ifNull(false)
 fun Expression<PEgruppe10>.vedtaksbrev_grunnlag_persongrunnlagsliste_uforetrygdetteroppgjor_periodefom(): Expression<LocalDate?> = vedtaksbrev.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { uforetrygdetteroppgjor }.safe { periodefom }

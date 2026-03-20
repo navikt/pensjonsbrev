@@ -64,5 +64,6 @@ data class PEgruppe10(
         val pe_ut_fradrag_hoeyere_lavere: String? = null,
         val pe_ut_bruttoetterreduksjonbt_hoeyere_lavere: String? = null,
         val pe_saksdata_sakapogup: Boolean? = null,
+        val pe_bruker_var_gammel_nok_til_a_ha_inntekt_pa_uforetidspunkt: Boolean? = null,
     )
 }
