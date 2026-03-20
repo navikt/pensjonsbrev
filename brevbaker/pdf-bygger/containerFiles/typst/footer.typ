@@ -1,0 +1,27 @@
+#import "input.typ": languageSettings
+#import "content/state.typ": sectionCounter
+
+#let shouldShowFooter = {
+  context {
+      return true
+  }
+}
+
+#let footer = context {
+  let currentPageNumber = counter(page).get().first()
+
+  let currentSection = sectionCounter.at(here()).first()
+  
+  let currentSectionEnd = query(label("section-end-" + str(currentSection)))
+
+  let currentSectionEndLocation = currentSectionEnd.first().location()
+  let pageNumberAtEndOfSection = counter(page).at(currentSectionEndLocation).first()
+
+  set text(9pt)
+  set align(right)
+  if(currentPageNumber <= pageNumberAtEndOfSection) {
+      [#languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+  }
+}
+
+
