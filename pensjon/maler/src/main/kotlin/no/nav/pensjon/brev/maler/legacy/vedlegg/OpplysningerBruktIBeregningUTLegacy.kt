@@ -80,14 +80,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 TBU034V_036V(pe)
             )
         }
-        includePhrase(TBU037V_1(pe))
-        includePhrase(TBU037V_2(pe))
-        includePhrase(TBU038V_1(pe))
-        includePhrase(TBU038V_2(pe))
-        includePhrase(TBU037V_3(pe))
-        includePhrase(TBU037V_4(pe))
-        includePhrase(TBU038V_3(pe))
-        includePhrase(TBU038V_4(pe))
+        showIf(pe.ut_bruker_var_gammel_nok_til_a_ha_inntekt_pa_uforetidspunkt()) {
+            includePhrase(TBU037V_1(pe))
+            includePhrase(TBU037V_2(pe))
+            includePhrase(TBU038V_1(pe))
+            includePhrase(TBU038V_2(pe))
+            includePhrase(TBU037V_3(pe))
+            includePhrase(TBU037V_4(pe))
+            includePhrase(TBU038V_3(pe))
+            includePhrase(TBU038V_4(pe))
+        }
 
         showIf(pe.ut_trygdetid()) {
             includePhrase(TBU039V_TBU044V_1(pe))
