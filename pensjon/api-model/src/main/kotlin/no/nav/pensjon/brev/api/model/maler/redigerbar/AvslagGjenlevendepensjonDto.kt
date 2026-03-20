@@ -33,6 +33,6 @@ data class AvslagGjenlevendepensjonDto(
     }
 }
 /*  data class PesysData(
-    val mottattDato: LocalDateTime,  //TODO  ikke støtte for PEbrevgruppe2
+    val mottattDato: LocalDateTime,  //TODO  ikke støtte for PEbrevgruppe3
 ) : FagsystemBrevdata
 */
