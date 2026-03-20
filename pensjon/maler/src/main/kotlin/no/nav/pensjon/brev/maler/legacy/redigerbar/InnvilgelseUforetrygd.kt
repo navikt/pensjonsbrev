@@ -2144,8 +2144,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             showIf(kravGjelder.equalTo("f_bh_bo_utl")){
                 paragraph {
                     text(
-                        bokmal { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
-                        nynorsk { +"<STRYK TEKSTEN UNDER DERSOM DEN IKKE ER AKTUELL>" },
+                        bokmal { +fritekst("Stryk teksten under dersom den ikke er aktuell") },
+                        nynorsk { +fritekst("Stryk teksten under dersom den ikke er aktuell") },
                     )
                 }
                 title1 {
