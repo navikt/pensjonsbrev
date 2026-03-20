@@ -57,9 +57,9 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
             }
             paragraph {
                 text(
-                    bokmal { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3" },
-                    nynorsk { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3" },
-                    english { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3" }
+                    bokmal { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3." },
+                    nynorsk { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3." },
+                    english { +"FRITEKST: Endre avslagsbegrunnelsen nedenfor dersom avdøde mottok pensjon eller tidsbegrenset uførestønad ved dødsfallet men likevel ikke fyller inngangsvilkårene i § 17-3." }
                 )
             }
             paragraph {
@@ -141,7 +141,7 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                     nynorsk {
                         +"Vedtaket er gjort etter føresegner i folketrygdlova kapittel 17 og "
                         +"<FRITEKST: EØS-avtala sine føresegner om trygd/trygdeavtalen mellom Noreg og "
-                        +"<FRITEKST: Fyll inn aktuelt land>"
+                        +"<FRITEKST: Fyll inn aktuelt land>."
                     },
                     english {
                         +"This decision has been made in accordance with Chapter 17 of the National Insurance Act and "
