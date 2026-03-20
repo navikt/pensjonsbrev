@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { fileURLToPath, URL } from "node:url";
+
 import { tanstackRouter } from "@tanstack/router-vite-plugin";
 import react from "@vitejs/plugin-react";
 import { defineConfig, type Plugin } from "vite";
