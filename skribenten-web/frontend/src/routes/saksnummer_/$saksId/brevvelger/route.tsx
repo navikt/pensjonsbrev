@@ -207,10 +207,14 @@ function Brevmaler({
 
   const fuse = useMemo(() => {
     const fuseOptions = {
-      keys: ["name", "brevsystem", "brevkategori"],
-      threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
+      keys: ["name", "brevsystemDisplay", "brevkategori"],
+      threshold: 0.3, // lower => stricter, less fuzzy (default is 0.6)
     };
-    return new Fuse(filteredBrevmaler, fuseOptions);
+    const searchableBrevmaler = filteredBrevmaler.map((b) => ({
+      ...b,
+      brevsystemDisplay: b.brevsystem === BrevSystem.Brevbaker ? "Skribenten" : "Exstream",
+    }));
+    return new Fuse(searchableBrevmaler, fuseOptions);
   }, [filteredBrevmaler]);
 
   const brevmalerMatchingSearchTerm =
@@ -300,7 +304,7 @@ function Brevmaler({
                   defaultOpen={type === "Favoritter"}
                   key={type}
                   onOpenChange={() => handleOpenAccordionChange(type)}
-                  open={searchTerm.length > 0 ? true : openAccordions[type]}
+                  open={searchTerm.length > 0 || selectedFilters.length > 0 ? true : openAccordions[type]}
                 >
                   <Accordion.Header
                     css={{
