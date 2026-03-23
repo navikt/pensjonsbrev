@@ -4,5 +4,5 @@ package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaks
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningnokkelinfo.beregningnokkelinfo2.spt.poengrekke.poengtall.ar.Ar
 
 data class Poengtall(
-    val ar: Ar?
+    val ar: List<Ar>?
 )

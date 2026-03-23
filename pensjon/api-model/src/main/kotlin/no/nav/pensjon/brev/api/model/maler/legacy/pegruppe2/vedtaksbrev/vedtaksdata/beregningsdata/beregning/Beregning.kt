@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksd
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningsinformasjonkapittel19.Beregningsinformasjonkapittel19
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningssammendragavdod.Beregningssammendragavdod
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningssammendragbruker.Beregningssammendragbruker
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningytelsekomp.Beregningytelsekomp
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.beregningytelseskomp.Beregningytelseskomp
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregning.periodearsakliste.Periodearsakliste
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -19,7 +18,6 @@ data class Beregning(
     val beregningsivilstandanvendt: String?,
     val beregningssammendragavdod: Beregningssammendragavdod?,
     val beregningssammendragbruker: Beregningssammendragbruker?,
-    val beregningytelsekomp: Beregningytelsekomp?,
     val beregningytelseskomp: Beregningytelseskomp?,
     val brutto: Kroner?,
     val grunnbelop: Kroner?,

@@ -3,13 +3,13 @@ package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaks
 
 import java.time.LocalDate
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregningperiode.beregningssammendragbruker.Beregningssammendragbruker
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregningperiode.beregningytelsekomp.Beregningytelsekomp
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregningperiode.beregningytelseskomp.Beregningytelseskomp
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaksdata.beregningsdata.beregningperiode.periodearsakliste.Periodearsakliste
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class Beregningperiode(
     val beregningssammendragbruker: Beregningssammendragbruker?,
-    val beregningytelsekomp: Beregningytelsekomp?,
+    val beregningytelseskomp: Beregningytelseskomp?,
     val brutto: Kroner?,
     val grunnbelop: Kroner?,
     val netto: Kroner?,

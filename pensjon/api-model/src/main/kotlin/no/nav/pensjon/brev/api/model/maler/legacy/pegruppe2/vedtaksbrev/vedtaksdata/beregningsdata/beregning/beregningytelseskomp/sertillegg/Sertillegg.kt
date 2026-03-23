@@ -4,5 +4,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.pegruppe2.vedtaksbrev.vedtaks
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class Sertillegg(
-    val stbrutto: Kroner?
+    val stbrutto: Kroner?,
+    val stinnvilget: Boolean?,
+    val stnetto: Kroner?
 )
