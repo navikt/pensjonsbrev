@@ -1,37 +1,23 @@
-#import "state.typ": updateElementType, lastElementType
-#import "../input.typ": languageSettings
 
-// Colors matching LaTeX table styling
+
 #let columnheadercolor = rgb("#E6F0FF")
 #let linecolor = rgb("#7C8695")
 #let headersepcolor = rgb("#000000")
 #let row1color = rgb("#F2F3F5")
 #let row2color = rgb("#FFFFFF")
 
-#let tableTitle(title) = {
-  context {
-    if(lastElementType.get() != "title") {
-      block(above: 26pt, sticky: true)[
-        #text(size: 12pt, weight: "bold", tracking: 0.2pt, title)
-      ]
-    } else {
-      block(sticky: true)[
-        #text(size: 12pt, weight: "bold", tracking: 0.2pt, title)
-      ]
-    }
+#let next-page-table(head: [], ..table-args) = context {
+  let columns = table-args.named().at("columns", default: 1)
+  let column-amount = if type(columns) == int {
+    columns
+  } else if type(columns) == array {
+    columns.len()
+  } else {
+    1
   }
-  updateElementType("title")
-}
 
-#let letterTable(columns, caption, ..cells) = {
-  tableTitle(caption)
-
-  let cellArray = cells.pos()
-  let numColumns = columns.len()
-  let numRows = calc.ceil(cellArray.len() / numColumns)
-
-  set table(
-    columns: columns,
+  
+    set table(
     column-gutter: 0pt,
     row-gutter: 0pt,
     inset: (x: 8pt, y: 6.4pt),
@@ -42,31 +28,60 @@
       bottom: 1pt + linecolor,
     ),
     fill: (x, y) => {
-      if y == 0 {
-        columnheadercolor
-      } else if calc.odd(y) {
+      if calc.odd(y) {
         row1color
       } else {
         row2color
       }
     },
   )
+  set table.header(repeat: true)
 
-  // Build cells with header styling
-  let styledCells = cellArray.enumerate().map(((i, cell)) => {
-    let row = calc.floor(i / numColumns)
-    if row == 0 {
-      text(weight: "semibold", tracking: 0.2pt, size: 11pt, cell)
-    } else {
-      cell
+  // Counter of tables so we can create a unique table-part-counter for each table
+  let table-counter = counter("table")
+  table-counter.step()
+
+  // Counter for the amount of pages in the table
+  // It is increased by one for each footer repetition
+  let table-part-counter = counter("table-part" + str(table-counter.get().first()))
+  show <table-footer>: footer => {
+    table-part-counter.step()
+    context {
+      if table-part-counter.get() != table-part-counter.final() {
+      // if table-part-counter.get().first() > 1 {
+        // Display the footer only if we aren't at the last page
+        footer
+      }
     }
-  })
+  }
+  show <table-header>: header => {
+    table-part-counter.step()
+    context {
+      if table-part-counter.get().first() != 1 {
+        // Display the header only if we aren't at the first page
+        header
+        v(-0.7em)
+        head
+      } else {
+        head
+      }
+    }
+  }
 
-  block(above: 5.5mm, below: 3.5mm)[
-    #table(
-      ..styledCells
+  table(
+    table.header(
+        // The 'next page' content spans all columns and has no stroke
+        // Must be selectable by the show rule above which hides it at the last page
+        table.cell(inset: 0pt, colspan: column-amount, stroke: none, align(left)[Continuation of Previous Table <table-header> ] ),
+      ),
+    ..table-args,
+    table.footer(
+      // The 'next page' content spans all columns and has no stroke
+      // Must be selectable by the show rule above which hides it at the last page
+      table.cell(inset: (x:0pt), colspan: column-amount, stroke: none, align(right)[See next page for continuation <table-footer> ])
     )
-  ]
+  )
 
-  updateElementType("table")
+  // Compensate for the empty footer at the last page of the table
+  v(-1em)
 }

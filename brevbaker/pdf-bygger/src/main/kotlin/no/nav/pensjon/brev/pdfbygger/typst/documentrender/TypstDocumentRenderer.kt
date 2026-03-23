@@ -46,6 +46,11 @@ object TypstDocumentRenderer {
                         "annenMottakerNavn" to letter.sakspart.annenMottakerNavn,
                         "saksnummer" to letter.sakspart.saksnummer,
                         "dokumentDato" to letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                        "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
+                        "signerendeSaksbehandler" to letter.signatur.saksbehandlerNavn,
+                        "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn,
+                        "erVedtaksbrev" to (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV),
+                        "attachments" to (attachments.map { it.title.joinToString("") { text -> text.text } } + pdfVedlegg.map { it.title.joinToString("") { text -> text.text } }),
                     )
                 )
             }

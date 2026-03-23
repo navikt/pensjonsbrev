@@ -1,4 +1,4 @@
-#import "input.typ": languageSettings
+#import "input.typ": languageSettings, input
 #import "content/state.typ": sectionCounter
 
 #let shouldShowFooter = {
@@ -20,7 +20,8 @@
   set text(9pt)
   set align(right)
   if(currentPageNumber <= pageNumberAtEndOfSection) {
-      [#languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+      [#languageSettings.saksnummerprefix #input.saksnummer #h(1fr)
+      #languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
   }
 }
 

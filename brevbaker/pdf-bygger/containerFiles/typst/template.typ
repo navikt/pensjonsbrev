@@ -3,8 +3,9 @@
 #import "closing.typ": closing
 #import "content/state.typ": section-start
 #import "content/list.typ": 
-#import "content/table.typ": letterTable
 #import "footer.typ": footer
+#import "content/table.typ": next-page-table
+
 
 #let mainTitle(lettertitle) = {
     title[
@@ -36,21 +37,6 @@
     size: 11pt,
   )
 
-  set table(
-    stroke: none,
-    gutter: 0.2em,
-    fill: (x, y) => {
-      if(y == 0) {
-        blue
-      } else if calc.even(y) {
-        gray
-      }
-      //if x == 0 or y == 0 { gray }
-    },
-    inset: (right: 1.5em),
-  )
-
-  
   set page(margin: (
       x: 64pt,
       y: 64pt,

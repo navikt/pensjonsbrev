@@ -3,7 +3,7 @@
 #import "content/paragraph.typ": paragraph
 #import "content/state.typ": section-end
 #import "content/list.typ": bulletlist
-#import "content/table.typ": letterTable
+#import "content/table.typ": next-page-table
 #import "attachment.typ" : attachment
 #import "closing.typ" : closing
 #show : template.with(
@@ -13,29 +13,24 @@
 #{
   title1[Test 1]
 
-  // Short table example
-  letterTable(
-    (1fr, 1fr),
-    [Tabell oversikt],
-    columnAlign: (left, right),
-    [Heading 1], [Heading 2],
-    [Data row 1], [Value 1],
+  next-page-table(
+    columns: (1fr, 1fr),
+    [Tabell oversikt], [Heading 1], [Heading 2], [Data row 1], [Value 1],
+    [Data row 2], [Value 2],
+    [Data row 3], [Value 3],
+    [Data row 4], [Value 4],[Tabell oversikt], [Heading 1], [Heading 2], [Data row 1], [Value 1],
+    [Data row 2], [Value 2],
+    [Data row 3], [Value 3],
+    [Data row 4], [Value 4],[Tabell oversikt], [Heading 1], [Heading 2], [Data row 1], [Value 1],
+    [Data row 2], [Value 2],
+    [Data row 3], [Value 3],
+    [Data row 4], [Value 4],[Tabell oversikt], [Heading 1], [Heading 2], [Data row 1], [Value 1],
     [Data row 2], [Value 2],
     [Data row 3], [Value 3],
     [Data row 4], [Value 4],
   )
 
   paragraph[#lorem(50)]
-
-  // Long table that spans multiple pages to demonstrate continuation messages
-  letterTable(
-    (1fr, 1fr, 1fr),
-    [Lang tabell som går over flere sider],
-    columnAlign: (left, center, right),
-    [Beskrivelse], [Dato], [Beløp],
-    ..range(1, 40).map(i => ([Rad #i beskrivelse], [01.0#calc.rem(i, 9 + 1).2025], [#(i * 1000) kr])).flatten()
-  )
-
   title2[Test 2]
   bulletlist([test], [test])
   title3[Test 3]
