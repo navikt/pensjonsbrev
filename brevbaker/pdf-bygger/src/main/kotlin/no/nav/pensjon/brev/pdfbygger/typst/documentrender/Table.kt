@@ -10,28 +10,26 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
  * Output format:
  * #next-page-table(
  *   columns: (1fr, 1fr, ...),
- *   [Title (optional)], [Header1], [Header2], ...
+ *   [Header1], [Header2], ...
  *   [Cell1], [Cell2], ...
  * )
  *
+ * The Typst template handles header styling (bold, background color, extra padding),
+ * header repetition on subsequent pages, and continuation messages using languageSettings.
+ *
  * @param table The table to render
- * @param previous The previous block, used to extract table title from preceding Title block
+ * @param previous The previous block (unused, kept for API compatibility)
  */
 internal fun TypstAppendable.renderTable(table: Table, previous: LetterMarkup.Block?) {
     if (table.rows.isEmpty() && table.header.colSpec.isEmpty()) return
 
     val columnSpec = table.header.colSpec
-    val title = titleTextOrNull(previous)
 
     appendCodeFunction("next-page-table") {
         args {
             // Column specification - span defines relative width (e.g., 2fr is twice as wide as 1fr)
             namedArgRaw("columns", columnSpecToTypst(columnSpec))
 
-            // Optional title as first content arg
-            if (title != null) {
-                contentArg { append(title, escape = false) } // Already escaped from renderToString
-            }
 
             // Header row - one cell per column
             columnSpec.forEach { spec ->
@@ -48,16 +46,6 @@ internal fun TypstAppendable.renderTable(table: Table, previous: LetterMarkup.Bl
     }
 }
 
-/**
- * Extract title text from a preceding Title block if present.
- */
-internal fun titleTextOrNull(previous: LetterMarkup.Block?): String? =
-    when (previous) {
-        is LetterMarkup.Block.Title1 -> previous.content.renderToString()
-        is LetterMarkup.Block.Title2 -> previous.content.renderToString()
-        is LetterMarkup.Block.Title3 -> previous.content.renderToString()
-        else -> null
-    }?.takeIf { it.isNotBlank() }
 
 /**
  * Convert column specifications to Typst column format.

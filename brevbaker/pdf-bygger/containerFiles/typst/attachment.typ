@@ -19,7 +19,7 @@
   )
 }
 
-#let attachment(title, sectionNumber: int, showCaseDetails: bool, outline) = {
+#let startAttachment(title, sectionNumber: int, showCaseDetails: bool) = {
   pagebreak(to: "odd", weak: false)
   section-start(sectionNumber)
 
@@ -36,6 +36,8 @@
     v(28pt)
     mainTitle(title)
   }
-  outline
+}
+
+#let endAttachment(sectionNumber: int) = {
   section-end(sectionNumber)
 }

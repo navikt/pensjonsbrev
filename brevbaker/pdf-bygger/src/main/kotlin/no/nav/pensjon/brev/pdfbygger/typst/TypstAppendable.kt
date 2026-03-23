@@ -92,19 +92,36 @@ internal class TypstAppendable(private val output: Appendable) {
         is String -> "\"${value.typstStringEscape()}\""
         is Boolean -> if (value) "true" else "false"
         is Int -> value.toString()
-        is List<*> -> "(\n${value.joinToString(",\n") { "      ${formatTypstValue(it)}" }}\n    )"
+        is List<*> -> {
+            if (value.isEmpty()) {
+                "()"
+            } else {
+                // Always add trailing comma to ensure it's treated as an array, not a parenthesized expression
+                "(\n${value.joinToString(",\n") { "      ${formatTypstValue(it)}" }},\n    )"
+            }
+        }
         else -> value.toString()
     }
 
     @TypstAppendableMarker
     internal class FunctionBuilder(private val typstAppendable: TypstAppendable) {
         /**
-         * Append a content argument `[content]`.
+         * Append a content argument `[content]` (markup mode).
          */
         fun content(contentBuilder: TypstAppendable.() -> Unit) {
             typstAppendable.output.append("[")
             contentBuilder(typstAppendable)
             typstAppendable.output.append("]")
+        }
+
+        /**
+         * Append a code block argument `{code}` (code mode).
+         * Use this when the content needs to call functions without # prefix.
+         */
+        fun codeBlock(contentBuilder: TypstAppendable.() -> Unit) {
+            typstAppendable.output.append("{")
+            contentBuilder(typstAppendable)
+            typstAppendable.output.append("}")
         }
 
         /**

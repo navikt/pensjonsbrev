@@ -2,7 +2,7 @@
 #import "content/state.typ": section-end
 
 #let attachments = {
-  if(input.attachments != none){
+  if(input.attachments != none and input.attachments.len() > 0){
     text(size: 11pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
     set list(body-indent: 15pt)
     pad(
