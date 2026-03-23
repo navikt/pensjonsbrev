@@ -7,11 +7,12 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
 import no.nav.pensjon.brev.pdfbygger.typst.TypstDocument
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brev.template.Language
+import no.nav.pensjon.brev.template.dateFormatter
 import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
-import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 
 private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med typst"
 
@@ -63,7 +64,7 @@ object TypstDocumentRenderer {
                 "gjelderFoedselsnummer" to letter.sakspart.gjelderFoedselsnummer.value,
                 "annenMottakerNavn" to letter.sakspart.annenMottakerNavn,
                 "saksnummer" to letter.sakspart.saksnummer,
-                "dokumentDato" to letter.sakspart.dokumentDato.format(DateTimeFormatter.ISO_LOCAL_DATE),
+                "dokumentDato" to letter.sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerNavn,
                 "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn,

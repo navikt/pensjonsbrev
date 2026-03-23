@@ -23,8 +23,7 @@
 
 #let logo = {
   pad(
-    image("nav-logo.pdf", height: 16pt),
-    // TODO bytt ut med svg
+    image("NAV_logo.svg", height: 16pt),
     bottom: 48pt
   )
 }

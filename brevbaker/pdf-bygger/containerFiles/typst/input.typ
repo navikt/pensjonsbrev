@@ -21,7 +21,7 @@
     gjelderFoedselsnummer: "01019878910",
     annenMottakerNavn: none,
     saksnummer: "1337123",
-    dokumentDato: "2020-01-01",
+    dokumentDato: "1. januar 2020",
     avsenderEnhet: "Nav Osssssslo",
     signerendeSaksbehandler: "Saksbehandler saksbehandlerson",
     signerendeAttestant: "Attesterende Attestant",
