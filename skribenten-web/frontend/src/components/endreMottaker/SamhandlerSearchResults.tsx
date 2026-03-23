@@ -1,81 +1,163 @@
-import { css } from "@emotion/react";
-import { BodyShort, Button, type SortState, Table, VStack } from "@navikt/ds-react";
-import { sortBy } from "lodash";
+import { BodyShort, Skeleton, Table, Tag, VStack } from "@navikt/ds-react";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { type Samhandler } from "~/types/apiTypes";
+import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
+import { ApiError } from "~/components/ApiError";
+import { type Adresse, type Samhandler } from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
+import { trackEvent } from "~/utils/umami";
+
+type SelectionMethod = "radio" | "row-click" | "keyboard";
 
 export function SamhandlerSearchResults({
   samhandlere,
-  onSelect,
+  selectedId,
+  onSelectedChange,
 }: {
   samhandlere: Samhandler[];
-  onSelect: (idTSSEkstern: string) => void;
+  selectedId: Nullable<string>;
+  onSelectedChange: (idTSSEkstern: string) => void;
 }) {
-  const [sort, setSort] = useState<SortState | undefined>({
-    orderBy: "navn",
-    direction: "ascending",
-  });
-
-  const handleSort = (sortKey: string | undefined) => {
-    if (sortKey) {
-      setSort({
-        orderBy: sortKey,
-        direction: sort && sortKey === sort.orderBy && sort.direction === "ascending" ? "descending" : "ascending",
-      });
-    } else {
-      setSort(undefined);
-    }
-  };
-
-  const sortedSamhandlereAscending = sort?.orderBy ? sortBy(samhandlere, sort.orderBy) : samhandlere;
-  const reversed = sort?.direction === "descending";
-
-  const sortedSamhandlere = reversed ? sortedSamhandlereAscending.reverse() : sortedSamhandlereAscending;
-
   return (
     <VStack gap="space-8">
       <BodyShort size="small" weight="semibold">
-        {sortedSamhandlere.length} treff
+        {samhandlere.length} treff
       </BodyShort>
-      {sortedSamhandlere.length > 0 && (
-        <Table onSortChange={(sortKey) => handleSort(sortKey)} size="small" sort={sort}>
+      {samhandlere.length > 0 && (
+        <Table size="small">
           <Table.Header>
             <Table.Row>
-              <Table.ColumnHeader colSpan={2} sortable sortKey="navn">
-                Navn
-              </Table.ColumnHeader>
+              <Table.HeaderCell />
+              <Table.ColumnHeader>Navn</Table.ColumnHeader>
+              <Table.HeaderCell />
+              <Table.HeaderCell />
             </Table.Row>
           </Table.Header>
           <Table.Body>
-            {sortedSamhandlere.map((samhandler) => (
-              <Table.Row key={samhandler.idTSSEkstern}>
-                <Table.DataCell
-                  css={css`
-                    font-weight: var(--ax-font-weight-regular);
-                  `}
-                  scope="row"
-                >
-                  {humanizeName(samhandler.navn)}
-                </Table.DataCell>
-                <Table.DataCell align="right">
-                  <Button
-                    data-color="neutral"
-                    data-cy="velg-samhandler"
-                    onClick={() => onSelect(samhandler.idTSSEkstern)}
-                    size="xsmall"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Velg
-                  </Button>
-                </Table.DataCell>
-              </Table.Row>
+            {samhandlere.map((samhandler) => (
+              <SamhandlerResultRow
+                key={samhandler.idTSSEkstern}
+                onSelect={() => onSelectedChange(samhandler.idTSSEkstern)}
+                samhandler={samhandler}
+                selected={selectedId === samhandler.idTSSEkstern}
+              />
             ))}
           </Table.Body>
         </Table>
       )}
     </VStack>
+  );
+}
+
+function SamhandlerResultRow({
+  samhandler,
+  selected,
+  onSelect,
+}: {
+  samhandler: Samhandler;
+  selected: boolean;
+  onSelect: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+
+  const selectWithTracking = (method: SelectionMethod) => {
+    onSelect();
+    trackEvent("samhandler valgt", { method });
+  };
+
+  return (
+    <Table.ExpandableRow
+      content={<SamhandlerAdresseDetaljer idTSSEkstern={samhandler.idTSSEkstern} />}
+      onOpenChange={setOpen}
+      open={open}
+      togglePlacement="right"
+    >
+      <Table.DataCell
+        onClick={(e) => {
+          e.stopPropagation();
+          selectWithTracking("radio");
+        }}
+      >
+        <span className="aksel-radio aksel-radio--small">
+          <input
+            aria-label={humanizeName(samhandler.navn)}
+            checked={selected}
+            className="aksel-radio__input"
+            data-cy="velg-samhandler"
+            name="samhandler-valg"
+            onChange={() => selectWithTracking("keyboard")}
+            type="radio"
+            value={samhandler.idTSSEkstern}
+          />
+        </span>
+      </Table.DataCell>
+      <Table.DataCell
+        onClick={() => {
+          selectWithTracking("row-click");
+          if (!open) setOpen(true);
+        }}
+      >
+        {humanizeName(samhandler.navn)}
+      </Table.DataCell>
+      <Table.DataCell
+        onClick={() => {
+          selectWithTracking("row-click");
+          if (!open) setOpen(true);
+        }}
+      >
+        <Tag data-color="neutral" size="xsmall" variant="moderate">
+          Samhandler
+        </Tag>
+      </Table.DataCell>
+    </Table.ExpandableRow>
+  );
+}
+
+function SamhandlerAdresseDetaljer({ idTSSEkstern }: { idTSSEkstern: string }) {
+  const { data, isPending, isError, error } = useQuery(hentSamhandlerAdresse(idTSSEkstern));
+
+  if (isPending) {
+    return (
+      <VStack gap="space-8">
+        <Skeleton height={24} variant="rectangle" width="80%" />
+        <Skeleton height={24} variant="rectangle" width="60%" />
+        <Skeleton height={24} variant="rectangle" width="60%" />
+      </VStack>
+    );
+  }
+
+  if (isError) {
+    return <ApiError error={error} title="Fant ikke samhandleradresse" />;
+  }
+
+  return <AdresseDetaljer adresse={data} />;
+}
+
+function AdresseDetaljer({ adresse }: { adresse: Adresse }) {
+  const rows: { label: string; value: Nullable<string> }[] = [
+    { label: "Navn", value: adresse.navn },
+    { label: "Adresselinje 1", value: adresse.linje1 },
+    { label: "Adresselinje 2", value: adresse.linje2 },
+    { label: "Postnummer", value: adresse.postnr },
+    { label: "Poststed", value: adresse.poststed },
+    { label: "Land", value: adresse.land },
+  ];
+
+  return (
+    <Table size="small">
+      <Table.Body>
+        {rows.map(
+          (row) =>
+            row.value && (
+              <Table.Row key={row.label}>
+                <Table.HeaderCell scope="row">{row.label}</Table.HeaderCell>
+                <Table.DataCell>{humanizeName(row.value)}</Table.DataCell>
+              </Table.Row>
+            ),
+        )}
+      </Table.Body>
+    </Table>
   );
 }
