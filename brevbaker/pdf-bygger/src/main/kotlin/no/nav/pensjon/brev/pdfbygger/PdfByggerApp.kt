@@ -33,7 +33,6 @@ import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
-import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
@@ -125,30 +124,9 @@ private fun Application.setUp() {
 
         post("/produserBrev") {
             val result = activityCounter.count {
-                // TODO TEST-KODE
-                call.receive<PDFRequest>().let {
-                    // todo typst elementer fra markup
-                    TypstDocumentRenderer.render(it)
-                    typstCompileService.createLetter(
-                        listOf(
-                            DocumentFile(
-                                "letter.typ",
-                                """
-                        #set page(paper: "a4")
-                        #set text(font: "SourceSans3", size: 11pt)
-                        
-                        = Hello World
-                        
-                        This is a basic Typst document.
-                        
-                        == Features
-                        - Simple syntax
-                        - Fast compilation
-                        - Modern typesetting
-                        """.trimIndent()
-                            )
-                        )
-                    )
+                call.receive<PDFRequest>().let { pdfRequest ->
+                    val typstDocument = TypstDocumentRenderer.render(pdfRequest)
+                    typstCompileService.createLetter(typstDocument.files)
                 }
             }
             handleResult(result, call.application.environment.log)

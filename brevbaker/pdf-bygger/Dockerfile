@@ -45,6 +45,7 @@ COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-09-08-11_43 /app /app
 COPY containerFiles/latex /app/pensjonsbrev_latex
 
 COPY --from=typst-downloader /typst/typst /app/typst/typst
+COPY containerFiles/typst /app/typst
 
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib

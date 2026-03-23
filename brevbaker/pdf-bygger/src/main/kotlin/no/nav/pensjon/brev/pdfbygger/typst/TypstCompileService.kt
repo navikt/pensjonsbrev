@@ -9,40 +9,83 @@ import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption
 import kotlin.io.path.createTempDirectory
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 
-private val typstCommand = listOf("typst", "compile", "letter.typ")
+private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
 
-class TypstCompileService {
-
+class TypstCompileService(
+    private val templateDir: Path = Path.of(DEFAULT_TYPST_TEMPLATE_DIR)
+) {
     private val logger = LoggerFactory.getLogger(this::class.java)
+
+    private fun typstCommand(workingDir: Path) = listOf(
+        "typst", "compile",
+        "--root", workingDir.toString(),
+        "letter.typ"
+    )
 
     suspend fun createLetter(typstFiles: List<DocumentFile>): PDFCompilationResponse {
         val tmpDir = createTempDirectory(Path.of("/tmp"))
-        typstFiles.forEach {
-            tmpDir.resolve(it.fileName).toFile().apply {
-                createNewFile()
-                writeText(it.content)
+
+        return try {
+            // Copy template files from the template directory to the temp directory
+            copyTemplateFiles(templateDir, tmpDir)
+
+            // Write generated files (input.typ, letter.typ)
+            typstFiles.forEach {
+                tmpDir.resolve(it.fileName).toFile().apply {
+                    createNewFile()
+                    writeText(it.content)
+                }
             }
+
+            when (val result: Execution = executeCompileProcess(tmpDir)) {
+                is Execution.Success -> {
+                    result.pdf.toFile().readBytes()
+                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
+                }
+
+                is Execution.Failure.Compilation ->
+                    PDFCompilationResponse.Failure.Client(
+                        reason = "PDF compilation failed",
+                        output = result.output,
+                        error = result.error
+                    )
+
+                is Execution.Failure.Execution -> {
+                    logger.error("typst command failed", result.cause)
+                    PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: ${typstCommand(tmpDir)}")
+                }
+            }
+        } finally {
+            tmpDir.toFile().deleteRecursively()
+        }
+    }
+
+    /**
+     * Recursively copy all template files from the source directory to the destination directory.
+     */
+    private fun copyTemplateFiles(source: Path, destination: Path) {
+        if (!source.exists()) {
+            logger.warn("Template directory does not exist: $source")
+            return
         }
 
-        return when (val result: Execution = executeCompileProcess(tmpDir)) {
-            is Execution.Success -> {
-                result.pdf.toFile().readBytes()
-                    .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
-            }
+        Files.walk(source).use { paths ->
+            paths.forEach { sourcePath ->
+                val relativePath = source.relativize(sourcePath)
+                val targetPath = destination.resolve(relativePath)
 
-            is Execution.Failure.Compilation ->
-                PDFCompilationResponse.Failure.Client(
-                    reason = "PDF compilation failed",
-                    output = result.output,
-                    error = result.error
-                )
-
-            is Execution.Failure.Execution -> {
-                logger.error("typst command failed", result.cause)
-                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: $typstCommand")
+                if (sourcePath.isDirectory()) {
+                    Files.createDirectories(targetPath)
+                } else {
+                    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING)
+                }
             }
         }
     }
@@ -56,7 +99,7 @@ class TypstCompileService {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
-                process = ProcessBuilder(typstCommand)
+                process = ProcessBuilder(typstCommand(workingDir))
                     .directory(workingDir.toFile())
                     .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
                     .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
