@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.fraser.alderspensjon
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.pensjon.brev.maler.fraser.common.Constants.ALDERSPENSJON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.DITT_NAV
@@ -10,7 +9,6 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UTBETALINGER_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.Fritekst
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.OutlinePhraseRedigerbar
@@ -18,6 +16,7 @@ import no.nav.pensjon.brev.template.ParagraphPhrase
 import no.nav.pensjon.brev.template.PlainTextOnlyPhrase
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScopeRedigerbar
 import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.PlainTextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -72,7 +71,7 @@ object Utbetalingsinformasjon : OutlinePhrase<LangBokmalNynorskEnglish>() {
 }
 
 class UtbetalingsinformasjonRedigerbar<T : RedigerbarTemplate<*>> : OutlinePhraseRedigerbar<LangBokmalNynorskEnglish, T>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+    override fun OutlineOnlyScopeRedigerbar<LangBokmalNynorskEnglish, Unit>.template() {
         paragraph {
             text(
                 bokmal { + fritekst("hei") +
