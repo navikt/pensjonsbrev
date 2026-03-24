@@ -15,27 +15,29 @@
 }
 
 #let closingGreeting = {
+  let signertAvSaksbehandler = input.signerendeSaksbehandler != none
+  let signertAvAttestant = input.signerendeAttestant != none
   [
     #languageSettings.closinggreeting
-    #linebreak()
-    #if (input.signerendeSaksbehandler != none and input.signerendeAttestant == none) {
+    #if (signertAvSaksbehandler and not(signertAvAttestant)) {
       [#input.signerendeSaksbehandler]
-    } else {
+    } else if (signertAvSaksbehandler and signertAvAttestant){
       grid(
         align: left,
         columns: (1fr, 1fr),
         [#input.signerendeAttestant],
         [#input.signerendeSaksbehandler],
       )
+    } else { // autobrev
+      linebreak()
     }
-    #linebreak()
     #input.avsenderEnhet
   ]
-  let erAutobrev = input.signerendeSaksbehandler == none and input.signerendeAttestant == none
-  
+  let erAutobrev = not (signertAvAttestant) and not (signertAvSaksbehandler)
+
   if(erAutobrev) {
+    v(2pt)
     if input.erVedtaksbrev {
-      linebreak()
       [#languageSettings.closingautomatisktextvedtaksbrev]
     } else {
       [#languageSettings.closingautomatisktextinfobrev]
@@ -44,9 +46,10 @@
 }
 
 #let closing = {
-    block(closingGreeting,
+  block(
+    closingGreeting,
     breakable: false,
-    above: 32pt
+    above: 48pt
   )
   block(
     attachments,

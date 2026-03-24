@@ -16,7 +16,7 @@
           lettertitle,
           tracking: 0.3pt
         ),
-        bottom: 16pt,
+        bottom: 19pt,
       )
     ]
 }
@@ -25,7 +25,7 @@
 #let logo = {
   pad(
     image("NAV_logo.svg", height: 16pt),
-    bottom: 34pt
+    bottom: 32pt
   )
 }
 
@@ -35,6 +35,11 @@
   set text(
     font:"Source Sans 3",
     size: 11pt,
+  )
+
+  set par(
+    leading: 8.8pt,  // Line spacing within paragraphs
+    spacing: 24pt, // Space between paragraphs
   )
 
   set page(margin: (
