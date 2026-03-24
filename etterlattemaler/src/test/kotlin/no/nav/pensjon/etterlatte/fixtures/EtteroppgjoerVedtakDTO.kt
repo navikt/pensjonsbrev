@@ -35,7 +35,8 @@ fun createEtteroppgjoerVedtakBrevDTO() =
             utbetaltBeloep = Kroner(4444),
             rettsgebyrBeloep = Kroner(1234),
             harOpphoer = false,
-            mottattSkatteoppgjoer = false
+            mottattSkatteoppgjoer = false,
+            klageOmgjoering = true
         )
     )
 
