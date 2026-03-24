@@ -36,7 +36,6 @@
       let current-page = here().page()
       let is-last-page = end-markers.len() > 0 and current-page == end-markers.first().location().page()
       // Use hide() to maintain stable layout - content takes space but is invisible
-      v(-measure(footer).height)
       if is-last-page {
         hide(footer)
       } else {
@@ -53,7 +52,6 @@
       let is-first-page = start-markers.len() > 0 and current-page == start-markers.first().location().page()
 
       // Subtract the height of the header to keep the space above a table stable. This also means the heading will go into the margin a little bit when visible, but that is an ok compromize for a stable layout.
-      v(-measure(header).height)
       if is-first-page {
         // Use hide() to maintain stable layout - content takes space but is invisible
         hide(header)
@@ -72,6 +70,7 @@
     )[#text(weight: "semibold", tracking: 0.2pt, cell)]
   )
 
+  v(-1em)
   table(
     columns: columns,
     align: column-align,
@@ -133,8 +132,9 @@
         colspan: column-amount,
         stroke: none,
         fill: white,
-        align(right)[#v(2em)#languageSettings.tablenextpagecontinuation <table-footer>],
+        [#v(1em)#languageSettings.tablenextpagecontinuation <table-footer>],
       ),
     ),
   )
+  v(-1em)
 }

@@ -14,8 +14,9 @@
           size: 16pt,
           weight: "bold",
           lettertitle,
+          tracking: 0.3pt
         ),
-        bottom: 32pt,
+        bottom: 16pt,
       )
     ]
 }
@@ -24,7 +25,7 @@
 #let logo = {
   pad(
     image("NAV_logo.svg", height: 16pt),
-    bottom: 48pt
+    bottom: 34pt
   )
 }
 

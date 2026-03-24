@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
+import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
 import no.nav.pensjon.brev.pdfbygger.typst.TypstDocument
@@ -61,7 +62,7 @@ object TypstDocumentRenderer {
             "input",
             mapOf(
                 "gjelderNavn" to letter.sakspart.gjelderNavn,
-                "gjelderFoedselsnummer" to letter.sakspart.gjelderFoedselsnummer.value,
+                "gjelderFoedselsnummer" to letter.sakspart.gjelderFoedselsnummer.format(),
                 "annenMottakerNavn" to letter.sakspart.annenMottakerNavn,
                 "saksnummer" to letter.sakspart.saksnummer,
                 "dokumentDato" to letter.sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),

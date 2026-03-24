@@ -297,7 +297,7 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `Table across multiple pages`() {
+    fun `Table across multiple pages 2`() {
         render {
             paragraph {
                 table(header = {
