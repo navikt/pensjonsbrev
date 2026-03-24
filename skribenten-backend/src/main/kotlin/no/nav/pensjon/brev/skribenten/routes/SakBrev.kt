@@ -13,13 +13,11 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringService
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 fun Route.sakBrev(
     brevmalService: BrevmalService,
-    brevredigeringService: BrevredigeringService,
     p1Service: P1ServiceImpl,
     brevredigeringFacade: BrevredigeringFacade,
     dto2ApiService: Dto2ApiService,
@@ -145,13 +143,9 @@ fun Route.sakBrev(
 
             delete {
                 val brevId = call.parameters.brevId()
-                val sak: Pen.SakSelection = call.attributes[SakKey]
 
-                if (brevredigeringService.slettBrev(sak.saksId, brevId)) {
-                    call.respond(HttpStatusCode.NoContent)
-                } else {
-                    call.respond(HttpStatusCode.NotFound, "Fant ikke brev med id: $brevId")
-                }
+                val result = brevredigeringFacade.slettBrev(SlettBrevHandler.Request(brevId = brevId))
+                apiRespond(dto2ApiService, result)
             }
 
             route("/mottaker") {
@@ -249,7 +243,7 @@ fun Route.sakBrev(
         }
     }
 
-private fun SpraakKode.toLanguageCode(): LanguageCode =
+fun SpraakKode.toLanguageCode(): LanguageCode =
     when (this) {
         SpraakKode.NB -> LanguageCode.BOKMAL
         SpraakKode.NN -> LanguageCode.NYNORSK

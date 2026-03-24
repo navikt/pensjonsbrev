@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ElementTags
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -136,6 +137,7 @@ object Edit {
         data class ItemList(
             override val id: Int?,
             val items: List<Item>,
+            val listType: Listetype = Listetype.PUNKTLISTE,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
@@ -242,7 +244,7 @@ fun List<ParagraphContent.Text>.toEdit(parentId: Int?): List<Edit.ParagraphConte
 
 fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
-        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId)
+        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId, listType = listType)
         is ParagraphContent.Text -> toEdit(parentId)
         is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
         is ParagraphContent.Table -> toEdit(parentId)
@@ -302,7 +304,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = listType)
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }

@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { TextField, VStack } from "@navikt/ds-react";
+import { Spacer, TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useEffect, useRef } from "react";
@@ -122,6 +122,7 @@ export default function BrevmalForExstream({
           )}
         </BrevmalFormWrapper>
 
+        <Spacer />
         <OrderLetterResult data={orderLetterMutation.data} error={orderLetterMutation.error} />
       </FormProvider>
     </>

@@ -42,13 +42,17 @@ const sendBrevError = nyKvittertBrev({
 const sendBrevSuccessLokalprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.LOKALPRINT }),
+  brevFørHandling: nyBrevInfo({
+    distribusjonstype: Distribusjonstype.LOKALPRINT,
+  }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 const sendBrevSuccessSentralprint = nyKvittertBrev({
   apiStatus: "success",
   context: "sendBrev",
-  brevFørHandling: nyBrevInfo({ distribusjonstype: Distribusjonstype.SENTRALPRINT }),
+  brevFørHandling: nyBrevInfo({
+    distribusjonstype: Distribusjonstype.SENTRALPRINT,
+  }),
   sendtBrevResponse: { journalpostId: 1, error: null },
 });
 
@@ -89,44 +93,44 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Skribenten klarte ikke å sende brevet.").should("be.visible");
     cy.contains("Brevet ligger lagret i brevbehandler til brevet er sendt.").should("be.visible");
     cy.contains("Prøv å sende igjen").should("be.visible");
-    cy.get('span:contains("Kunne ikke sende brev")').eq(0).click();
+    cy.get('span:contains("Kunne ikke sende brev")').eq(0).closest("section").find("button[aria-expanded]").click();
 
     cy.get('span:contains("Kunne ikke sende brev")');
     //ser ut som at .contains cacher elementet som vi får, så vi henter disse med .get
     cy.get('p:contains("Skribenten klarte ikke å sende brevet.")').should("be.visible");
     cy.get('p:contains("Brevet ligger lagret i brevbehandler til brevet er sendt.")').should("be.visible");
     cy.get('button:contains("Prøv å sende igjen")').should("be.visible");
-    cy.get('span:contains("Kunne ikke sende brev")').eq(2).click();
+    cy.get('span:contains("Kunne ikke sende brev")').eq(1).closest("section").find("button[aria-expanded]").click();
 
-    cy.contains("Lokalprint - sendt til joark").should("be.visible");
-    cy.contains("Lokalprint - sendt til joark");
+    cy.contains("Lokalprint – arkivert").should("be.visible");
+    cy.contains("Lokalprint – arkivert");
     cy.contains("Mottaker").should("be.visible");
     cy.contains("Tydelig Bakke").should("be.visible");
-    cy.contains("Distribueres via").should("be.visible");
+    cy.contains("Distribusjon").should("be.visible");
     cy.contains("Lokal print").should("be.visible");
-    cy.contains("Journalpost ID").should("be.visible");
+    cy.contains("Journalpost").should("be.visible");
     cy.contains("1").should("be.visible");
-    cy.contains("Åpne PDF i ny fane").should("be.visible");
-    cy.contains("Lokalprint - sendt til joark").click();
+    cy.contains("Åpne PDF").should("be.visible");
+    cy.contains("Lokalprint – arkivert").closest("section").find("button[aria-expanded]").click();
 
     cy.contains("Klar til attestering").should("be.visible");
-    cy.contains("Klar til attestering").click();
+    cy.contains("Klar til attestering").closest("section").find("button[aria-expanded]").click();
     //ser ut som at .contains cacher elementet som vi får, så vi henter disse med .get
     cy.get('p:contains("Mottaker")').eq(1).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
-    cy.get('p:contains("Distribueres via")').eq(1).should("be.visible");
+    cy.get('p:contains("Distribusjon")').eq(1).should("be.visible");
     cy.get('p:contains("Sentral print")').should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
-    cy.contains("Klar til attestering").click();
+    cy.contains("Klar til attestering").closest("section").find("button[aria-expanded]").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
-    cy.contains("Sendt til mottaker").click();
+    cy.contains("Sendt til mottaker").closest("section").find("button[aria-expanded]").click();
     cy.get('p:contains("Mottaker")').eq(2).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(2).should("be.visible");
-    cy.get('p:contains("Distribueres via")').eq(2).should("be.visible");
+    cy.get('p:contains("Distribusjon")').eq(2).should("be.visible");
     cy.get('p:contains("Sentral print")').eq(1).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(2).should("be.visible");
-    cy.get('p:contains("Journalpost ID")').eq(1).should("be.visible");
+    cy.get('p:contains("Journalpost")').eq(1).should("be.visible");
     cy.get('p:contains("1")').eq(1).should("be.visible");
   });
 
@@ -141,12 +145,12 @@ describe("<KvitterteBrev />", () => {
     ];
     cy.mount(<KvitterteBrevWithContext kvitterteBrev={kvitterteBrev} sakId="123456" />);
 
-    cy.get(".aksel-accordion__item").should("have.length", 6);
-    cy.get(".aksel-accordion__item").eq(0).contains("Kunne ikke sende brev");
-    cy.get(".aksel-accordion__item").eq(1).contains("Kunne ikke sende brev");
-    cy.get(".aksel-accordion__item").eq(2).contains("Kunne ikke sende brev");
-    cy.get(".aksel-accordion__item").eq(3).contains("Lokalprint - sendt til joark");
-    cy.get(".aksel-accordion__item").eq(4).contains("Klar til attestering");
-    cy.get(".aksel-accordion__item").eq(5).contains("Sendt til mottaker");
+    cy.get(".aksel-expansioncard").should("have.length", 6);
+    cy.get(".aksel-expansioncard").eq(0).contains("Kunne ikke sende brev");
+    cy.get(".aksel-expansioncard").eq(1).contains("Kunne ikke sende brev");
+    cy.get(".aksel-expansioncard").eq(2).contains("Kunne ikke sende brev");
+    cy.get(".aksel-expansioncard").eq(3).contains("Lokalprint – arkivert");
+    cy.get(".aksel-expansioncard").eq(4).contains("Klar til attestering");
+    cy.get(".aksel-expansioncard").eq(5).contains("Sendt til mottaker");
   });
 });

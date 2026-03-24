@@ -1,17 +1,16 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU039V_TBU044V_1(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
         title1 {
@@ -63,7 +62,9 @@ data class TBU039V_TBU044V_1(
         }
         //IF(  ((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge)+ FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk))/12) >= 40 AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) <> true AND (FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) <> "oppfylt" OR PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad) ) THEN    INCLUDE ENDIF
         // manuellt konvertert logikk
-        showIf(pe.ut_sum_fattnorge_framtidigttnorge_div_12().greaterThanOrEqual(40) and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()))
+        showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().greaterThanOrEqual(40)
+                and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()))
         ) {
             paragraph {
                 text(
@@ -91,7 +92,11 @@ data class TBU039V_TBU044V_1(
         // manuellt konvertert logikk
 
         //[TBU039V-TBU044V_1]
-        showIf(pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()))) {
+        showIf(
+            pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
+                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                    and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad())) {
             paragraph {
                 text(
                     bokmal { + "Trygdetiden din er fastsatt til 40 år, for den delen du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom." },
@@ -99,27 +104,15 @@ data class TBU039V_TBU044V_1(
                     english { + "Your period of national insurance coverage has been set to 40 years, for the part you have been granted disability benefit pursuant to special rules relating to occupational injury or occupational illness." },
                 )
             }
-        }
-
-        //IF(  ((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge)+ FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk))/12) < 40  AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false  AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" ) THEN      INCLUDE ENDIF
-        //[TBU039V-TBU044V_1]
-        // manuellt konvertert logikk
-        showIf(
-            pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
-                    and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad())
-                    and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
-
-        ){
             paragraph {
                 text(
-                    bokmal { + "Trygdetiden i folketrygden er fastsatt til " + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    bokmal { + "Trygdetiden i folketrygden er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
                         .format() + " år for den delen av uførheten din som ikke skyldes en godkjent yrkesskade eller yrkessykdom." },
 
-                    nynorsk { + "Trygdetida i folketrygda er fastsett til " + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    nynorsk { + "Trygdetida i folketrygda er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
                         .format() + " år for den delen av uføretrygda di som ikkje skuldas ein godkjend yrkesskade eller yrkessjukdom." },
 
-                    english { + "The period of national insurance coverage has been set to " + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
+                    english { + "The period of national insurance coverage has been set to " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid()
                         .format() + " years for the part of your disability that is not caused by an approved occupational injury or occupational illness." },
                 )
 
@@ -132,7 +125,6 @@ data class TBU039V_TBU044V_1(
                     )
                 }
             }
-
         }
 
         // manuellt konvertert logikk
@@ -154,16 +146,15 @@ data class TBU039V_TBU044V_1(
         //[TBU039V-TBU044V_1]
 
         showIf(
-            pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
+            pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40)
             and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-            and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt")
+            and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().notEqualTo("oppfylt")
         ){
             paragraph {
                 text(
-                    bokmal { + "Trygdetiden din i folketrygden er fastsatt til " + pe.ut_sum_fattnorge_framtidigttnorge_div_12().format() + " år. " },
-                    nynorsk { + "Trygdetida di i folketrygda er fastsett til " + pe.ut_sum_fattnorge_framtidigttnorge_div_12().format() + " år." },
-                    english { + "Your period of national insurance coverage has been set to " + pe.ut_sum_fattnorge_framtidigttnorge_div_12()
-                        .format() + " years." },
+                    bokmal { + "Trygdetiden din i folketrygden er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år. " },
+                    nynorsk { + "Trygdetida di i folketrygda er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " år." },
+                    english { + "Your period of national insurance coverage has been set to " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().format() + " years." },
                 )
 
                 //IF(FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true) THEN      INCLUDE ENDIF
@@ -179,7 +170,10 @@ data class TBU039V_TBU044V_1(
 
         // manuellt konvertert logikk
         //IF((  (((FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FaTTNorge) +  FF_GetArrayElement_Integer(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_Trygdetid_FramtidigTTNorsk)) / 12) < 40 AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false )  OR  (PE_Vedtaksdata_Kravhode_BoddArbeidUtland = true AND FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = false  ))  AND  FF_GetArrayElement_Date_Boolean(PE_Grunnlag_Persongrunnlagsliste_TrygdetidsgrunnlagListeNor_Trygdetidsgrunnlag_TrygdetidFom) = true )  THEN      INCLUDE ENDIF
-        showIf(pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull() and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())){
+        showIf(
+            pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()
+                and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                    and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())){
             paragraph {
                 text(
                     bokmal { + "Trygdetiden din i Norge" },

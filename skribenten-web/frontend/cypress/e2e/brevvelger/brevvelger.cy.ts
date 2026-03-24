@@ -178,6 +178,22 @@ describe("Brevvelger spec", () => {
     cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
   });
 
+  it("valg av ikke-foretrukket språk viser advarsel (ikke feilmelding)", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", { spraakKode: "EN" });
+    cy.visit('/saksnummer/123456/brevvelger?templateId=PE_IY_03_163&enhetsId="4815"', {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+    cy.wait("@enheter");
+    cy.getDataCy("språk-velger-select").select("Bokmål");
+    cy.contains("Brukers foretrukne språk er engelsk.").as("warning").should("be.visible");
+    cy.getDataCy("språk-velger-select").select("Engelsk (foretrukket språk)");
+    cy.get("@warning").should("not.exist");
+    cy.getDataCy("språk-velger-select").select("Bokmål");
+    cy.get("@warning").should("be.visible");
+  });
+
   it("Saksinformasjon i subheader", () => {
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456", (request) => {
       request.reply({

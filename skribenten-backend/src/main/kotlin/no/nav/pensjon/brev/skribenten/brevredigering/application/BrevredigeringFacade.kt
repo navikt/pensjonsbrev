@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.jetbrains.exposed.v1.core.eq
+import org.jetbrains.exposed.v1.core.inList
 import org.jetbrains.exposed.v1.jdbc.transactions.suspendTransaction
 import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import java.sql.Connection
@@ -30,10 +31,11 @@ class BrevredigeringFacade(
     private val tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering>,
     private val endreValgteVedlegg: BrevredigeringHandler<EndreValgteVedleggHandler.Request, Dto.Brevredigering>,
     private val sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult>,
+    private val slettBrev: BrevredigeringHandler<SlettBrevHandler.Request, Unit>,
     private val brevreservasjonPolicy: BrevreservasjonPolicy,
-) {
+) : HentBrevService, OpprettBrevService {
 
-    suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
+    override suspend fun opprettBrev(request: OpprettBrevHandlerImpl.Request): Outcome<Dto.Brevredigering, BrevredigeringError> =
         suspendTransaction {
             opprettBrev.handle(request)
         }
@@ -41,12 +43,18 @@ class BrevredigeringFacade(
     suspend fun oppdaterBrev(request: OppdaterBrevHandler.Request): Outcome<Dto.Brevredigering, BrevredigeringError>? =
         oppdaterBrev.runHandler(request)
 
-    fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
+    override fun hentBrevInfo(brevId: BrevId): Dto.BrevInfo? =
         transaction { BrevredigeringEntity.findById(brevId)?.toBrevInfo(brevreservasjonPolicy) }
 
     fun hentBrevForSak(saksId: SaksId): List<Dto.BrevInfo> =
         transaction {
             BrevredigeringEntity.find { BrevredigeringTable.saksId eq saksId }
+                .map { it.toBrevInfo(brevreservasjonPolicy) }
+        }
+
+    override fun hentBrevForAlleSaker(saksIder: Set<SaksId>): List<Dto.BrevInfo> =
+        transaction {
+            BrevredigeringEntity.find { BrevredigeringTable.saksId inList saksIder }
                 .map { it.toBrevInfo(brevreservasjonPolicy) }
         }
 
@@ -84,6 +92,9 @@ class BrevredigeringFacade(
 
     suspend fun sendBrev(request: SendBrevHandler.Request): Outcome<Dto.SendBrevResult, BrevredigeringError>? =
         sendBrev.runHandler(request)
+
+    suspend fun slettBrev(request: SlettBrevHandler.Request): Outcome<Unit, BrevredigeringError>? =
+        slettBrev.runHandler(request)
 
     private suspend fun <Request : BrevredigeringRequest, Response> BrevredigeringHandler<Request, Response>.runHandler(request: Request): Outcome<Response, BrevredigeringError>? {
         if (requiresReservasjon(request)) {

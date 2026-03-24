@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.Title1Impl
@@ -347,7 +348,7 @@ class UpdateRenderedLetterTest {
                     LiteralImpl(1, "Noe tekst "),
                     VariableImpl(2, "med en oppdatert variabel"),
                     LiteralImpl(3, " og noe mer tekst"),
-                    ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste"))))),
+                    ItemListImpl(4, listOf(ItemImpl(41, listOf(LiteralImpl(411, "en punktliste")))), Listetype.PUNKTLISTE),
                 )
             )
         )
@@ -630,7 +631,8 @@ class UpdateRenderedLetterTest {
                     ItemListImpl(
                         16, listOf(
                             ItemImpl(160, listOf(LiteralImpl(161, "punkt 1"), LiteralImpl(162, "punkt 2"), LiteralImpl(163, "punkt 3"))),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                 )
             )
@@ -655,7 +657,8 @@ class UpdateRenderedLetterTest {
                                     E_Literal(163, "punkt 3", E_FontType.PLAIN)
                                 )
                             ),
-                        )
+                        ),
+                        listType = Listetype.PUNKTLISTE
                     ),
                 )
             )
@@ -788,7 +791,8 @@ class UpdateRenderedLetterTest {
                         11, listOf(
                             ItemImpl(111, listOf(LiteralImpl(1111, "item 1"))),
                             ItemImpl(112, listOf(LiteralImpl(1121, "item 2"))),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                 ),
             ),
@@ -802,6 +806,7 @@ class UpdateRenderedLetterTest {
                         listOf(
                             E_Item(112, listOf(E_Literal(1121, "item 2", E_FontType.PLAIN))),
                         ),
+                        Listetype.PUNKTLISTE,
                         setOf(111),
                     ),
                 ),
@@ -865,7 +870,7 @@ class UpdateRenderedLetterTest {
                 listOf(
                     E_Literal(11, "en literal", E_FontType.PLAIN),
                     E_Variable(12, "en variabel", E_FontType.PLAIN),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN))))),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN)))), Listetype.PUNKTLISTE),
                     E_Table(
                         id = 14,
                         header = E_Header(
@@ -893,7 +898,7 @@ class UpdateRenderedLetterTest {
                 listOf(
                     E_Literal(11, "en literal", E_FontType.PLAIN),
                     E_Variable(12, "oppdatert variabel", E_FontType.PLAIN),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN))))),
+                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN)))), Listetype.PUNKTLISTE),
                     E_Table(
                         id = 14,
                         header = E_Header(
@@ -952,7 +957,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1")))), Listetype.PUNKTLISTE),
                 )
             ),
             ParagraphImpl(
@@ -992,7 +997,7 @@ class UpdateRenderedLetterTest {
                 1, true,
                 listOf(
                     LiteralImpl(11, "en literal"),
-                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1"))))),
+                    ItemListImpl(12, listOf(ItemImpl(121, listOf(VariableImpl(1211, "oppdatert v1")))), Listetype.PUNKTLISTE),
                 )
             )
         )
@@ -1053,7 +1058,7 @@ class UpdateRenderedLetterTest {
                 listOf(
                     LiteralImpl(11, "lit1"),
                     VariableImpl(12, "var2"),
-                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))),
+                    ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1")))), Listetype.PUNKTLISTE),
                     LiteralImpl(14, "lit2"),
                 )
             )
@@ -1067,7 +1072,8 @@ class UpdateRenderedLetterTest {
                         listOf(
                             E_Item(null, listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))),
                             E_Item(131, listOf(E_Literal(1311, "punkt1"), E_Literal(14, "lit2", parentId = 1)))
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                 ),
                 deletedContent = setOf(11, 12, 14)
@@ -1081,7 +1087,7 @@ class UpdateRenderedLetterTest {
         val next = letter(
             ParagraphImpl(
                 1, true,
-                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1"))))), LiteralImpl(14, "lit2"))
+                listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1")))), Listetype.PUNKTLISTE), LiteralImpl(14, "lit2"))
             )
         )
         val edited = editedLetter(
@@ -1092,7 +1098,7 @@ class UpdateRenderedLetterTest {
             E_Paragraph(
                 1, true,
                 listOf(
-                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1"))))),
+                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1")))), Listetype.PUNKTLISTE),
                     E_Literal(14, "lit2")
                 ),
                 deletedContent = setOf(11, 12)

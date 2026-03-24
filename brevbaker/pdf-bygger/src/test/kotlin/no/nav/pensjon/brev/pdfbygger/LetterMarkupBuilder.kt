@@ -3,6 +3,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -181,7 +182,11 @@ class ParagraphBuilder {
     }
 
     fun list(block: ItemListBuilder.() -> Unit) {
-        content.add(ItemListBuilder().apply(block).build())
+        content.add(ItemListBuilder(Listetype.PUNKTLISTE).apply(block).build())
+    }
+
+    fun numberedList(block: ItemListBuilder.() -> Unit) {
+        content.add(ItemListBuilder(Listetype.NUMMERERT_LISTE).apply(block).build())
     }
 
     fun table(header: TableHeaderBuilder.() -> Unit, bodyBlock: TableBodyBuilder.() -> Unit) {
@@ -205,7 +210,7 @@ class ParagraphBuilder {
 }
 
 @LetterMarkupBuilderDsl
-class ItemListBuilder {
+class ItemListBuilder(val type: Listetype) {
     private val items = mutableListOf<ParagraphContent.ItemList.Item>()
 
     fun item(block: TextBuilder.() -> Unit) {
@@ -221,7 +226,8 @@ class ItemListBuilder {
     fun build(): ParagraphContent.ItemList =
         LetterMarkupImpl.ParagraphContentImpl.ItemListImpl(
             id = items.fold(1) { hash, e -> 31 * hash + (e.id) },
-            items = items
+            items = items,
+            listType = type
         )
 }
 

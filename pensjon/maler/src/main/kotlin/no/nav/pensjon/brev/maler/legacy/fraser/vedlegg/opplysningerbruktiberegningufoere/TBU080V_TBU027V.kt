@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland
 import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.ut_vilkargjelderpersonalder
@@ -35,7 +35,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 data class TBU080V_TBU027V(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ): OutlinePhrase<LangBokmalNynorskEnglish>(){
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 

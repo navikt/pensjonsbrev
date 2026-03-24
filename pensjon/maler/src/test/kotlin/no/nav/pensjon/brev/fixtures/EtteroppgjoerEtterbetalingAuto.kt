@@ -4,6 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.EtteroppgjoerEtterbetalingAutoDto
 
 fun createEtteroppgjoerEtterbetalingAuto() =
     EtteroppgjoerEtterbetalingAutoDto(
-        pe = createPE(),
+        pe = createPEgruppe10(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()
     )

@@ -296,14 +296,7 @@ object Fixtures : LetterDataFactory {
     )
 
     private fun lagInfoEndretUTPgaInntektDto() = InfoEndretUTPgaInntektDto(
-        loependeInntektsAvkortning = InfoEndretUTPgaInntektDto.LoependeInntektsAvkortning(
-            forventetInntektAar = Kroner(2000),
-            inntektsgrenseAar = Kroner(200)
-        ),
-        uforetrygdInnevarendeAr = InfoEndretUTPgaInntektDto.Uforetrygd(
-            utbetalingsgrad = 81,
-            ufoeregrad = 82
-        )
+        belopsgrense = Kroner(60000)
     )
 
 

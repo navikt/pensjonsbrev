@@ -167,12 +167,12 @@ describe("attestering", () => {
       .should("eq", "?enhetsId=0001");
     cy.contains("Sendt til mottaker").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
-    cy.contains("Distribueres via").should("exist");
+    cy.contains("Distribusjon").should("exist");
     cy.contains("Sentral print").should("exist");
-    cy.contains("Journalpost ID").should("exist");
+    cy.contains("Journalpost").should("exist");
     cy.contains("9908").should("exist");
   });
 
@@ -207,6 +207,9 @@ describe("attestering", () => {
         info: { ...defaultBrev.info, status: { type: "Attestering" } },
       });
     }).as("attester");
+
+    //fyller inn underskrift for attestant
+    cy.contains("Underskrift").click().type("Attestant Navn");
 
     //attesterer
     cy.get("@attester.all").should("have.length", 0);

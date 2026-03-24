@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.brevbaker
 
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
 import no.nav.pensjon.brev.skribenten.letter.toMarkup
-import no.nav.pensjon.brev.skribenten.services.GeneriskRedigerbarBrevdata
 
 class RenderService(private val brevbakerService: BrevbakerService) {
 

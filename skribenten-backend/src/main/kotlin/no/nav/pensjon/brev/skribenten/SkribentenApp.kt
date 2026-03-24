@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.skribenten.auth.*
 import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brev.skribenten.common.Valkey
 import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
@@ -37,8 +38,7 @@ import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.BrevmalFinnesIkke
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -122,11 +122,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
-        exception<BrevredigeringException> { call, cause ->
+        exception<Dto2ApiService.BrevmalFinnesIkke> { call, cause ->
             logger.info(cause.message, cause)
-            when (cause) {
-                is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
-            }
+            call.respond(HttpStatusCode.InternalServerError, cause.message)
         }
         exception<P1Exception> { call, cause ->
             logger.info(cause.message, cause)
@@ -185,6 +183,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
+                job("innfoerTypeForListe") {
+                    updateBrevredigeringJson()
+                }
                 // Sett opp evt. jobber her
             }
         }
