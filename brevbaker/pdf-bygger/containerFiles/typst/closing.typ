@@ -35,6 +35,7 @@
   
   if(erAutobrev) {
     if input.erVedtaksbrev {
+      linebreak()
       [#languageSettings.closingautomatisktextvedtaksbrev]
     } else {
       [#languageSettings.closingautomatisktextinfobrev]

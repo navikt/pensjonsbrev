@@ -30,6 +30,9 @@ internal fun TypstAppendable.renderTable(table: Table, previous: LetterMarkup.Bl
             // Column specification - span defines relative width (e.g., 2fr is twice as wide as 1fr)
             namedArgRaw("columns", columnSpecToTypst(columnSpec))
 
+            // Alignment specification - one alignment per column
+            namedArgRaw("column-align", columnAlignmentToTypst(columnSpec))
+
 
             // Header row - one cell per column
             columnSpec.forEach { spec ->
@@ -58,5 +61,21 @@ private fun columnSpecToTypst(columnSpec: List<Table.ColumnSpec>): String {
         "${spec.span}fr"
     }
     return "(${columns.joinToString(", ")})"
+}
+
+/**
+ * Convert column alignments to Typst alignment format.
+ *
+ * Returns a tuple of alignments matching the column order.
+ * LEFT maps to Typst's 'left', RIGHT maps to 'right'.
+ */
+private fun columnAlignmentToTypst(columnSpec: List<Table.ColumnSpec>): String {
+    val alignments = columnSpec.map { spec ->
+        when (spec.alignment) {
+            Table.ColumnAlignment.LEFT -> "left"
+            Table.ColumnAlignment.RIGHT -> "right"
+        }
+    }
+    return "(${alignments.joinToString(", ")})"
 }
 
