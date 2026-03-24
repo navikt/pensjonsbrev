@@ -45,7 +45,7 @@ class AttachmentTemplate<out Lang : LanguageSupport, AttachmentData : VedleggDat
 
 }
 
-class AlltidValgbartVedlegg<out Lang : LanguageSupport>(
+class AlltidValgbartVedlegg<Lang : LanguageSupport>(
     val vedlegg: AttachmentTemplate<Lang, EmptyVedleggData>,
     val kode: AlltidValgbartVedleggKode
 ) : HasModel<EmptyVedleggData>, StableHash by StableHash.of(vedlegg, StableHash.of(kode.kode)) {
