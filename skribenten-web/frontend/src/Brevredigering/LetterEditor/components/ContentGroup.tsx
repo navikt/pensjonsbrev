@@ -52,7 +52,7 @@ import {
 import { isMac } from "../utils";
 
 const WORD_JOINER = "\u2060";
-const NO_BREAK_PUNCTUATION = /^[.,;:!?)\]}>»]/;
+const NO_BREAK_PUNCTUATION = /^[.,;:!?]/;
 
 function startsWithPunctuation(content: Content): boolean {
   if (content.type !== LITERAL) return false;
