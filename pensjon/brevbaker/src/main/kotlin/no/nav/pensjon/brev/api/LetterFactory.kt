@@ -45,7 +45,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             throw BadRequestException("Template '${brevkode}' doesn't support language: ${template.language}")
         }
 
-        val vedlegg = vedleggLibrary.getVedlegg(valgteVedlegg, felles)
+        val vedlegg = vedleggLibrary.getVedlegg(valgteVedlegg)
         vedlegg.forEach {
             require(it.kode.spraak.any { spraak -> template.language.supports(spraak.toLanguage()) }) {
                 "Vedlegg '${it.kode}' støtter ikke språk ${template.language}"
