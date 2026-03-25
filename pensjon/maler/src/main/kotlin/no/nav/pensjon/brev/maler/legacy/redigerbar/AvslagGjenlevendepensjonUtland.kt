@@ -50,7 +50,7 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." },  //TODO
+                    bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." }, //TODO
                     nynorsk { +"Nav viser til søknaden din om attlevandepensjon motteken <PE_Kravdata_Kravhode_KravMotattDato>. Søknaden din er avslått." },
                     english { +"Nav makes reference to your application for a survivor's pension, received on <PE_Kravdata_Kravhode_KravMotattDato>. Your application has been denied." }
                 )
