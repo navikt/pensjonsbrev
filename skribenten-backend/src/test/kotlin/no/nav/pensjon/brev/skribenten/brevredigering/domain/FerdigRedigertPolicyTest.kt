@@ -68,7 +68,7 @@ class FerdigRedigertPolicyTest {
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = false),
-                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = null),
+                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = false),
             )
         )
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
@@ -80,7 +80,7 @@ class FerdigRedigertPolicyTest {
         val brev = RedigertBrevStub(
             editedLetter(
                 Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = true),
-                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = null),
+                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = false),
             )
         )
         assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert, _, _>()
