@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
 import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
-import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
 /**
@@ -18,9 +17,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
  * header repetition on subsequent pages, and continuation messages using languageSettings.
  *
  * @param table The table to render
- * @param previous The previous block (unused, kept for API compatibility)
  */
-internal fun TypstAppendable.renderTable(table: Table, previous: LetterMarkup.Block?) {
+internal fun TypstAppendable.renderTable(table: Table) {
     if (table.rows.isEmpty() && table.header.colSpec.isEmpty()) return
 
     val columnSpec = table.header.colSpec

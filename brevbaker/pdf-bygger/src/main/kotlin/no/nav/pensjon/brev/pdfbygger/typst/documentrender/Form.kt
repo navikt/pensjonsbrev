@@ -49,7 +49,7 @@ private fun TypstAppendable.renderFormText(element: Form.Text) {
                 Form.Text.Size.NONE -> {}
                 Form.Text.Size.SHORT -> append(". ".repeat(25))
                 Form.Text.Size.LONG -> append(". ".repeat(60))
-                Form.Text.Size.FILL -> append("#box(width: 1fr, repeat[.])", escape = false)
+                Form.Text.Size.FILL -> append("#box(width: 1fr, repeat[.#h(1.5pt)])", escape = false)
             }
         }
     }

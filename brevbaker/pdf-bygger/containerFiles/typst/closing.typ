@@ -20,36 +20,38 @@
   [
     #languageSettings.closinggreeting
     #if (signertAvSaksbehandler and not(signertAvAttestant)) {
-      [#input.signerendeSaksbehandler]
+      block(above: 13pt)[#input.signerendeSaksbehandler]
+      block(input.avsenderEnhet, above: 26pt)
     } else if (signertAvSaksbehandler and signertAvAttestant){
-      grid(
-        align: left,
-        columns: (1fr, 1fr),
-        [#input.signerendeAttestant],
-        [#input.signerendeSaksbehandler],
+      block(
+        grid(
+          align: left,
+          columns: (1fr, 1fr),
+          [#input.signerendeAttestant],
+          [#input.signerendeSaksbehandler],
+        ),
+        above: 12pt,
       )
+      block(input.avsenderEnhet, above: 26pt)
     } else { // autobrev
-      linebreak()
+      block(above: 8.8pt)[
+        #input.avsenderEnhet
+        #v(2.5pt)
+        #if input.erVedtaksbrev {
+          languageSettings.closingautomatisktextvedtaksbrev
+        } else {
+          languageSettings.closingautomatisktextinfobrev
+        }
+      ]
     }
-    #input.avsenderEnhet
   ]
-  let erAutobrev = not (signertAvAttestant) and not (signertAvSaksbehandler)
-
-  if(erAutobrev) {
-    v(2pt)
-    if input.erVedtaksbrev {
-      [#languageSettings.closingautomatisktextvedtaksbrev]
-    } else {
-      [#languageSettings.closingautomatisktextinfobrev]
-    }
-  }
 }
 
 #let closing = {
   block(
     closingGreeting,
     breakable: false,
-    above: 32pt
+    above: 47.8pt
   )
   block(
     attachments,

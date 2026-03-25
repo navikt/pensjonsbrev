@@ -36,8 +36,9 @@
     size: 11pt,
   )
 
+  show link: it => it.body // disable automatic hyperlinking.
   set par(
-    leading: 8.8pt,  // Line spacing within paragraphs
+    leading: 8.7pt,  // Line spacing within paragraphs
     spacing: 24pt, // Space between paragraphs
   )
 

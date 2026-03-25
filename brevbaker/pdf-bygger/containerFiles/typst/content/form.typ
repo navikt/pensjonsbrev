@@ -3,9 +3,9 @@
 #let formChoice(prompt, ..choices) = {
   let formContent = [
     #prompt
-    #block(inset: (left: 1em))[
+    #block(inset: (left: 1pt))[
       #for choice in choices.pos() [
-        #box(stroke: 0.5pt, width: 0.8em, height: 0.8em) #choice #linebreak()
+        ☐#h(5pt)#choice #linebreak()
       ]
     ]
   ]
