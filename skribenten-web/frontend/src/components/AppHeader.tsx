@@ -20,7 +20,7 @@ export function AppHeader() {
         </InternalHeader.Title>
         <Spacer />
         <Link
-          css={{ marginRight: "1rem" }}
+          css={{ marginRight: "var(--ax-space-16)" }}
           data-color="neutral"
           href="https://navikt.github.io/pensjonsbrev/docs/main/index.html"
           rel="noopener noreferrer"
