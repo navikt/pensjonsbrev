@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
@@ -186,6 +187,7 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdBosattNorgeEtterUtland,
         OpphoerGjenlevendepensjon,
         AvslagGjenlevendepensjonUtland,
+        AvslagGjenlevendepensjon,
     )
 
     override fun hentAutobrevmaler() = autobrev
