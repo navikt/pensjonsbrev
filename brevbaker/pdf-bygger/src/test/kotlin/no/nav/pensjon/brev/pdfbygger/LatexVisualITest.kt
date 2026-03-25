@@ -297,7 +297,7 @@ class LatexVisualITest {
     }
 
     @Test
-    fun `Table across multiple pages 2`() {
+    fun `Table across multiple pages`() {
         render {
             paragraph {
                 table(header = {
@@ -382,6 +382,14 @@ class LatexVisualITest {
                     testList()
                 }
             }
+
+            ElementType.FORM -> {
+                paragraph {
+                    formText(Size.FILL, {
+                        text(bokmal { +"Underskrift:" })
+                    })
+                }
+            }
         }
     }
 
@@ -425,14 +433,15 @@ class LatexVisualITest {
         T2("Title 2"),
         PAR("Paragraph"),
         TABLE("Table"),
-        LIST("Item list")
+        LIST("Item list"),
+        FORM("Form"),
     }
 
     companion object {
         @JvmStatic
         fun allElementCombinations(): List<Arguments> =
             ElementType.entries.flatMapIndexed { index, type ->
-                ElementType.entries.drop(index + 1).flatMap { otherType ->
+                ElementType.entries.drop(index).flatMap { otherType ->
                     listOf(Arguments.of(type, otherType), Arguments.of(otherType, type), Arguments.of(type, type))
                 }
             }

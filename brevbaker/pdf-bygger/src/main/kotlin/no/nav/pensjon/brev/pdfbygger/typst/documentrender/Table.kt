@@ -58,7 +58,7 @@ private fun columnSpecToTypst(columnSpec: List<Table.ColumnSpec>): String {
     val columns = columnSpec.map { spec ->
         "${spec.span}fr"
     }
-    return "(${columns.joinToString(", ")})"
+    return "(${columns.joinToString(", ")},)"
 }
 
 /**
@@ -74,6 +74,6 @@ private fun columnAlignmentToTypst(columnSpec: List<Table.ColumnSpec>): String {
             Table.ColumnAlignment.RIGHT -> "right"
         }
     }
-    return "(${alignments.joinToString(", ")})"
+    return "(${alignments.joinToString(", ")},)"
 }
 

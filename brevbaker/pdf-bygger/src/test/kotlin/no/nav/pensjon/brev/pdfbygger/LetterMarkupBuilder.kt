@@ -172,8 +172,8 @@ class TextBuilder {
 class ParagraphBuilder {
     private val content = mutableListOf<ParagraphContent>()
 
-    fun text(text: String) {
-        content.add(LiteralImpl(text.hashCode(), text))
+    fun text(text: String, fontType: FontType = FontType.PLAIN) {
+        content.add(LiteralImpl(text.hashCode(), text, fontType))
     }
 
     fun newLine() {
@@ -197,11 +197,61 @@ class ParagraphBuilder {
         )
     }
 
+    fun formText(
+        size: ParagraphContent.Form.Text.Size,
+        vspace: Boolean = false,
+        prompt: TextBuilder.() -> Unit
+    ) {
+        val promptContent = TextBuilder().apply(prompt).build()
+        content.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl(
+                id = promptContent.fold(1) { hash, e -> 31 * hash + (e.id) },
+                prompt = promptContent,
+                size = size,
+                vspace = vspace
+            )
+        )
+    }
+
+    fun formChoice(
+        vspace: Boolean = false,
+        prompt: TextBuilder.() -> Unit,
+        choices: FormChoiceBuilder.() -> Unit
+    ) {
+        val promptContent = TextBuilder().apply(prompt).build()
+        val choicesList = FormChoiceBuilder().apply(choices).build()
+        content.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl(
+                id = promptContent.fold(1) { hash, e -> 31 * hash + (e.id) },
+                prompt = promptContent,
+                choices = choicesList,
+                vspace = vspace
+            )
+        )
+    }
+
     fun build(): LetterMarkup.Block.Paragraph =
         LetterMarkupImpl.BlockImpl.ParagraphImpl(
             id = content.fold(1) { hash, e -> 31 * hash + (e.hashCode()) },
             content = content
         )
+}
+
+@LetterMarkupBuilderDsl
+class FormChoiceBuilder {
+    private val choices = mutableListOf<ParagraphContent.Form.MultipleChoice.Choice>()
+
+    fun choice(block: TextBuilder.() -> Unit) {
+        val text = TextBuilder().apply(block).build()
+        choices.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl(
+                id = text.fold(1) { hash, e -> 31 * hash + (e.id) },
+                text = text
+            )
+        )
+    }
+
+    fun build(): List<ParagraphContent.Form.MultipleChoice.Choice> = choices
 }
 
 @LetterMarkupBuilderDsl
