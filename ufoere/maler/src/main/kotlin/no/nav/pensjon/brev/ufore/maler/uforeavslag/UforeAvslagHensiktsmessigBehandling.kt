@@ -63,8 +63,8 @@ object UforeAvslagHensiktsmessigBehandling : RedigerbarTemplate<UforeAvslagEnkel
                     nynorsk { +"Å ha gjennomført «all føremålstenleg behandling» betyr at all medisinsk behandling som kan bidra til at du blir friskare og kjem i arbeid, skal vere forsøkt." })
             }
             paragraph {
-                text(bokmal { +"Som hovedregel vil vi vurderer at all hensiktsmessig behandling ikke er gjennomført dersom " },
-                    nynorsk { +"Som hovudregel vil vi vurderer at all føremålstenleg behandling ikkje er gjennomført dersom " })
+                text(bokmal { +"Som hovedregel vil vi vurdere at all hensiktsmessig behandling ikke er gjennomført dersom " },
+                    nynorsk { +"Som hovudregel vil vi vurdere at all føremålstenleg behandling ikkje er gjennomført dersom " })
                 list {
                     item {
                         text(
