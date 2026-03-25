@@ -230,6 +230,8 @@ object Fixtures : LetterDataFactory {
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
             OpphoerGjenlevendepensjonDto::class -> createOpphoerGjenlevendepensjonDto() as T
+            AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
+            AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

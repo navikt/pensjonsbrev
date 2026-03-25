@@ -140,11 +140,11 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                     },
                     nynorsk {
                         +"Vedtaket er gjort etter føresegner i folketrygdlova kapittel 17 og "
-                        + fritekst("EØS-avtala sine føresegner om trygd/trygdeavtalen mellom Noreg og <aktuelt land") + "."
+                        + fritekst("EØS-avtala sine føresegner om trygd/trygdeavtalen mellom Noreg og <aktuelt land>") + "."
                     },
                     english {
                         +"This decision has been made in accordance with Chapter 17 of the National Insurance Act and "
-                        + fritekst("the EEA agreement on social security/the social security agreement between Norway and <aktuelt land") + "."
+                        + fritekst("the EEA agreement on social security/the social security agreement between Norway and <aktuelt land>") + "."
                     },
                 )
             }
