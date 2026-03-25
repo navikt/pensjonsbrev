@@ -7,7 +7,7 @@
   "start-title": (1pt, false),
   "start-paragraph": (2pt, false),
   "start-list": (3pt, false),
-  "start-table": (17pt, false),
+  "start-table": (28pt, false),
   "start-form": (5pt, false),
 
   // From "title"

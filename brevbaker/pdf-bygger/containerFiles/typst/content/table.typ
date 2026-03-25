@@ -11,9 +11,8 @@
 
 #let letter-table(column-align: (), ..table-args) = {
   let tableContent = context {
-    let columns = table-args.named().at("columns", default: ())
-    let column-amount = columns.len()
-
+  let columns = table-args.named().at("columns", default: ())
+  let column-amount = columns.len()
 
   // Extract header cells from the positional arguments
   // The first `column-amount` positional args are header cells
@@ -66,24 +65,24 @@
   // Build styled header cells
   let styled-header-cells = header-cells.map(cell =>
     table.cell(
-      inset: (x: 8pt, y: 11pt),
+      inset: (x: 7.8pt, y: 11.3pt),
       fill: columnheadercolor,
-      stroke: (bottom: 1pt + headersepcolor, top: none, left: none, right: none)
-    )[#text(weight: "semibold", tracking: 0.2pt, cell)]
+      stroke: (bottom: 0.9pt + headersepcolor, top: none, left: none, right: none)
+    )[#text(weight: "semibold", cell)]
   )
 
-  v(-1.5em)
+  v(-1em - 6pt) // subtract space due to the hidden "continued from previous page" row (text height + v(10pt)).
   table(
     columns: columns,
     align: column-align,
     column-gutter: 0pt,
     row-gutter: 0pt,
-    inset: (x: 8pt, y: 6.4pt),
+    inset: (x: 7.6pt, y: 7.2pt),
     stroke: (x, y) => (
       left: none,
       right: none,
-      top: if y <= 2 { none } else { 1pt + linecolor },
-      bottom: 1pt + linecolor,
+      top: if y <= 2 { none } else { 0.8pt + linecolor },
+      bottom: 0.8pt + linecolor,
     ),
     fill: (x, y) => {
       if y <= 1 {

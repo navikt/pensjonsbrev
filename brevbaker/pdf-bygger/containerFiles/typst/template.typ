@@ -48,7 +48,7 @@
       right:64pt,
     ),
     footer: footer,
-    footer-descent: 30%,
+    footer-descent: 30% + 4pt,
   )
   set document(
     title: lettertitle,
