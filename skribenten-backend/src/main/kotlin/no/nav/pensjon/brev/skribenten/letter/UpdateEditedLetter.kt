@@ -87,12 +87,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-
-                    if (currentEdited is Edit.Block) {
-                        add(setMissingFromTemplate(updateVariables(currentEdited)))
-                    } else {
-                        add(updateVariables(currentEdited))
-                    }
+                    add(setMissingFromTemplate(updateVariables(currentEdited)))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -281,22 +276,22 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
     private fun updateVariableValues(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         cell.copy(text = cell.text.map(::updateVariableValues))
 
-    private fun setMissing(updatedVariables: Edit.Block): Edit.Block = when (updatedVariables) {
-        is Edit.Block.Title1 -> updatedVariables.copy(missingFromTemplate = true)
-        is Edit.Block.Title2 -> updatedVariables.copy(missingFromTemplate = true)
-        is Edit.Block.Title3 -> updatedVariables.copy(missingFromTemplate = true)
-        is Edit.Block.Paragraph -> updatedVariables.copy(missingFromTemplate = true)
+    private fun setMissing(block: Edit.Block): Edit.Block = when (block) {
+        is Edit.Block.Title1 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Title2 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Title3 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Paragraph -> block.copy(missingFromTemplate = true)
     }
 
-    private fun setMissing(updated: Edit.ParagraphContent): Edit.ParagraphContent = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(content: Edit.ParagraphContent): Edit.ParagraphContent = content
 
-    private fun setMissing(updated: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text = text
 
-    private fun setMissing(updated: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item = item
 
-    private fun setMissing(updated: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(columnSpec: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
 
-    private fun setMissing(updated: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = row
 
-    private fun setMissing(updated: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = throw NotImplementedError("Skal kun brukes for block")
+    private fun setMissing(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
 }
