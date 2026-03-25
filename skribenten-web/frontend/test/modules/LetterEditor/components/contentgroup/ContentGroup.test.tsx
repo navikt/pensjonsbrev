@@ -526,3 +526,41 @@ describe("onFocusHandler", () => {
     expect(selection?.focusNode?.textContent).toBe("tredje literal");
   });
 });
+
+describe("Word Joiner before punctuation-starting literals", () => {
+  const WORD_JOINER = "\u2060";
+
+  test("inserts Word Joiner before a literal starting with a period", () => {
+    const state = letter(
+      paragraph([variable("1. juli 2026"), literal({ text: ". Derfor har vi avslått søknaden din." })]),
+    );
+    const { container } = setupComplex(state);
+    expect(container.textContent).toContain(WORD_JOINER);
+  });
+
+  test("inserts Word Joiner before literals starting with each punctuation char", () => {
+    for (const char of [".", ",", ";", ":", "!", "?"]) {
+      const state = letter(paragraph([variable("verdi"), literal({ text: `${char} tekst` })]));
+      const { container } = setupComplex(state);
+      expect(container.textContent).toContain(WORD_JOINER);
+    }
+  });
+
+  test("does not insert Word Joiner before a literal starting with a letter", () => {
+    const state = letter(paragraph([variable("verdi"), literal({ text: " og noe mer tekst" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("does not insert Word Joiner before the first literal in a block (no preceding content)", () => {
+    const state = letter(paragraph([literal({ text: ". bare en literal" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("inserts Word Joiner before punctuation literal following another literal", () => {
+    const state = letter(paragraph([literal({ text: "første" }), literal({ text: ", andre" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).toContain(WORD_JOINER);
+  });
+});
