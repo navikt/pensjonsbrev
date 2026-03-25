@@ -4,13 +4,10 @@ import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form
 
 /**
- * Render form elements.
+ * Render form elements using form.typ functions.
  *
- * Note: The Typst template doesn't have direct equivalents for form elements.
- * This implementation renders them as styled text with visual indicators.
- *
- * For Form.Text: Renders as "Prompt: ............" (dots indicating input area)
- * For Form.MultipleChoice: Renders as a list with checkbox indicators
+ * For Form.Text: Uses formText(prompt, dots)
+ * For Form.MultipleChoice: Uses formChoice(prompt, ..choices)
  */
 internal fun TypstAppendable.renderForm(element: Form) {
     when (element) {
@@ -21,57 +18,38 @@ internal fun TypstAppendable.renderForm(element: Form) {
 
 /**
  * Render a multiple choice form element.
- * Output: A block with the prompt followed by checkbox-style options.
+ * Output: formChoice[prompt][choice1][choice2]...
  */
 private fun TypstAppendable.renderMultipleChoice(element: Form.MultipleChoice) {
     if (element.vspace) {
         appendln("v(1em)", escape = false)
     }
 
-    // Render prompt
-    appendCodeFunction("paragraph") {
-        content {
-            append("text(weight: \"bold\")[", escape = false)
-            renderTextContent(element.prompt)
-            append("]", escape = false)
+    appendCodeFunction("formChoice") {
+        content { renderTextContent(element.prompt) }
+        element.choices.forEach { choice ->
+            content { renderTextContent(choice.text) }
         }
     }
-
-    // Render choices as a list with checkbox symbols
-    appendln("block(inset: (left: 1em))[", escape = false)
-    element.choices.forEach { choice ->
-        append("  box(stroke: 0.5pt, width: 0.8em, height: 0.8em) ", escape = false)
-        renderTextContent(choice.text)
-        appendln("linebreak()", escape = false)
-    }
-    appendln("]", escape = false)
 }
 
 /**
  * Render a text input form element.
- * Output: "Prompt: ........" where dots indicate the input area size.
+ * Output: formText[prompt][dots]
  */
 private fun TypstAppendable.renderFormText(element: Form.Text) {
     if (element.vspace) {
         appendln("v(1em)", escape = false)
     }
 
-    appendCodeFunction("paragraph") {
+    appendCodeFunction("formText") {
+        content { renderTextContent(element.prompt) }
         content {
-            renderTextContent(element.prompt)
-            append(" ", escape = false)
-
-            val dots = when (element.size) {
-                Form.Text.Size.NONE -> ""
-                Form.Text.Size.SHORT -> ". ".repeat(25)
-                Form.Text.Size.LONG -> ". ".repeat(60)
-                Form.Text.Size.FILL -> "box(width: 1fr, repeat[.])"
-            }
-
-            if (element.size == Form.Text.Size.FILL) {
-                append(dots, escape = false)
-            } else {
-                append(dots)
+            when (element.size) {
+                Form.Text.Size.NONE -> {}
+                Form.Text.Size.SHORT -> append(". ".repeat(25))
+                Form.Text.Size.LONG -> append(". ".repeat(60))
+                Form.Text.Size.FILL -> append("#box(width: 1fr, repeat[.])", escape = false)
             }
         }
     }

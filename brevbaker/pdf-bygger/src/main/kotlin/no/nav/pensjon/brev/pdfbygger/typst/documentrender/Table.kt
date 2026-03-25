@@ -5,10 +5,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
 /**
- * Render a table using the next-page-table function from Typst template.
+ * Render a table using the letter-table function from Typst template.
  *
  * Output format:
- * #next-page-table(
+ * #letter-table(
  *   columns: (1fr, 1fr, ...),
  *   [Header1], [Header2], ...
  *   [Cell1], [Cell2], ...
@@ -25,7 +25,7 @@ internal fun TypstAppendable.renderTable(table: Table, previous: LetterMarkup.Bl
 
     val columnSpec = table.header.colSpec
 
-    appendCodeFunction("next-page-table") {
+    appendCodeFunction("letter-table") {
         args {
             // Column specification - span defines relative width (e.g., 2fr is twice as wide as 1fr)
             namedArgRaw("columns", columnSpecToTypst(columnSpec))

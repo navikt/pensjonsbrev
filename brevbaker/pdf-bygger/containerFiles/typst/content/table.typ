@@ -1,16 +1,18 @@
 
 #import "../input.typ": languageSettings
+#import "state.typ": withSpacing
 
 #let columnheadercolor = rgb("#E4EEFF")
 #let linecolor = rgb("#6F7785")
 #let headersepcolor = rgb("#000000")
 
-#let row1color = rgb("#FFFFFF")
-#let row2color = rgb("#F5F6F7")
+#let row2color = rgb("#FFFFFF")
+#let row1color = rgb("#F5F6F7")
 
-#let next-page-table(column-align: (), ..table-args) = context {
-  let columns = table-args.named().at("columns", default: ())
-  let column-amount = columns.len()
+#let letter-table(column-align: (), ..table-args) = {
+  let tableContent = context {
+    let columns = table-args.named().at("columns", default: ())
+    let column-amount = columns.len()
 
 
   // Extract header cells from the positional arguments
@@ -35,8 +37,8 @@
       let end-markers = query(table-end-label)
       let current-page = here().page()
       let is-last-page = end-markers.len() > 0 and current-page == end-markers.first().location().page()
-      // Use hide() to maintain stable layout - content takes space but is invisible
       if is-last-page {
+        // Use hide() to keep space but make content invisible
         hide(footer)
       } else {
         footer
@@ -70,7 +72,7 @@
     )[#text(weight: "semibold", tracking: 0.2pt, cell)]
   )
 
-  v(-1em)
+  v(-1.5em)
   table(
     columns: columns,
     align: column-align,
@@ -106,7 +108,7 @@
         inset: 0pt,
         colspan: column-amount,
         stroke: none,
-        fill: white,
+        fill: none,
       )[#languageSettings.tablecontinuedfrompreviouspage <table-header>#v(10pt)],
       // ^ Continuation message - shown only on subsequent pages via the show rule
 
@@ -131,10 +133,12 @@
         inset: 0pt,
         colspan: column-amount,
         stroke: none,
-        fill: white,
+        fill: none,
         [#v(1em)#languageSettings.tablenextpagecontinuation <table-footer>],
       ),
     ),
   )
-  v(-1em)
+  v(-1.6em)
+  }
+  withSpacing("table", tableContent)
 }

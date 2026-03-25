@@ -1,9 +1,5 @@
-#import "state.typ": updateElementType, lastElementType
+#import "state.typ": withSpacing
 
 #let paragraph(content) = {
-  context {
-    content
-    parbreak()
-  }
-  updateElementType("paragraph")
+  withSpacing("paragraph", content)
 }

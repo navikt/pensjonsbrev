@@ -49,7 +49,7 @@
   block(
     closingGreeting,
     breakable: false,
-    above: 48pt
+    above: 32pt
   )
   block(
     attachments,

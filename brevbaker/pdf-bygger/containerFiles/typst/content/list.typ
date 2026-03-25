@@ -1,12 +1,9 @@
-#import "state.typ": updateElementType, lastElementType
+#import "state.typ": withSpacing
 
 #let bulletlist(..elements) = {
-  set list(body-indent: 15pt, )
-  block(
-    elements.pos().map((a)=>{
-      [- #a]
-    }).join(),
-    below: 10pt,
-  )
-  updateElementType("list")
+  set list(indent: 6pt, body-indent: 6pt)
+  let listContent = elements.pos().map((a) => {
+    [- #a]
+  }).join()
+  withSpacing("list", listContent)
 }

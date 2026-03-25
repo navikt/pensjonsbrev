@@ -1,15 +1,9 @@
-#import "state.typ": updateElementType, lastElementType
+#import "state.typ": withSpacing
 
 #let letterTitle(size, weight, tracking, title) = {
-  show heading : set text(size: size, weight: "bold", tracking: 0.2pt)
-  context { 
-    if(lastElementType.get() != "title") {
-      block(title, above: 26pt, sticky: true)
-    } else {
-      block(title, sticky: true)
-    }
-  }
-  updateElementType("title")
+  show heading: set text(size: size, weight: "bold", tracking: 0.2pt)
+  show heading: set block(above: 0pt, below: 0pt)
+  withSpacing("title", title)
 }
 
 #let title1(iTitle) = { letterTitle(13pt, "bold",  0.2pt)[= #iTitle]}

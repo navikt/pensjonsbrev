@@ -4,7 +4,7 @@
 #import "content/state.typ": section-start
 #import "content/list.typ": 
 #import "footer.typ": footer
-#import "content/table.typ": next-page-table
+#import "content/table.typ": letter-table
 
 
 #let mainTitle(lettertitle) = {
@@ -16,7 +16,6 @@
           lettertitle,
           tracking: 0.3pt
         ),
-        bottom: 19pt,
       )
     ]
 }
@@ -48,8 +47,8 @@
       bottom:74pt,
       right:64pt,
     ),
-    number-align: right,
     footer: footer,
+    footer-descent: 30%,
   )
   set document(
     title: lettertitle,
