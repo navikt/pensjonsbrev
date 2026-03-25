@@ -20,7 +20,7 @@ enum class FeatureToggles(private val key: String) {
     vedtakOmInnvilgelseAvOmsorgspoeng("vedtakOmInnvilgelseAvOmsorgspoeng"),
     brevmalUtOmregningUfoerepensjonTilUfoeretrygd("brevmalOmregningUfoerepensjonTilUfoeretrygd"),
     brevmalOpphoerGjenlevendepensjon("brevmalOpphoerGjenlevendepensjon"),
-    brevmalAvslagGjenlevendepensjon("brevmalAvslagGjenlevendepensjon");
+    brevmalAvslagGjenlevendepensjon("brevmalAvslagGjenlevendepensjon"),
     brevmalAvslagGjenlevendepensjonUtland("brevmalAvslagGjenlevendepensjonUtland");
 
     val toggle = FeatureToggle(key)
