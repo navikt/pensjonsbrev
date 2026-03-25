@@ -183,7 +183,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
-                job("innfoerTypeForListe") {
+                job("leggPaaSpraakForValgbareVedlegg") {
                     updateBrevredigeringJson()
                 }
                 // Sett opp evt. jobber her

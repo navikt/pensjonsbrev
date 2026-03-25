@@ -39,6 +39,8 @@ object BrevkodeJacksonModule : SimpleModule() {
             gen.writeStartObject()
             gen.writeStringField("kode", value.kode)
             gen.writeStringField("visningstekst", value.visningstekst)
+            gen.writeFieldName("spraak")
+            gen.writeArray(value.spraak?.map { it.name }?.toTypedArray() ?: emptyArray(), 0, value.spraak?.size ?: 0)
             gen.writeEndObject()
         }
     }
