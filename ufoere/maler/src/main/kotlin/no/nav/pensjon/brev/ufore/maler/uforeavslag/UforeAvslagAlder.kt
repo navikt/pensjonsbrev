@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.ufore.maler.uforeavslag
 
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -11,6 +10,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_ALDER
+import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.SaksbehandlervalgSelectors.VisVurderingFraVilkarvedtak
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDtoSelectors.UforeAvslagPendataSelectors.kravMottattDato
@@ -83,8 +83,8 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
 
             showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
-                    text(bokmal { +pesysData.vurdering },
-                        nynorsk { +pesysData.vurdering } )
+                    text(bokmal { +redigerbarData(pesysData.vurdering) },
+                        nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
             }
             paragraph {

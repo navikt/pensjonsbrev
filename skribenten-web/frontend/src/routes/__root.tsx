@@ -1,3 +1,4 @@
+import { Global } from "@emotion/react";
 import { Box } from "@navikt/ds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -8,7 +9,6 @@ import { AppHeader } from "~/components/AppHeader";
 export const queryClient = new QueryClient();
 
 const isProdOrCypressTest = process.env.NODE_ENV === "production" || globalThis.Cypress !== undefined;
-const { css, Global } = isProdOrCypressTest ? { css: () => "", Global: () => null } : await import("@emotion/react");
 const TanStackRouterDevtools = isProdOrCypressTest
   ? () => null
   : React.lazy(() =>
@@ -29,26 +29,25 @@ export const Route = createRootRouteWithContext<{
 }>()({
   component: () => (
     <>
+      <Box background="neutral-moderate">
+        <AppHeader />
+        <Outlet />
+      </Box>
       <React.Suspense fallback="">
         {!isProdOrCypressTest && (
           <Global
-            styles={css`
-              .TanStackRouterDevtools > button {
-                & div:nth-of-type(2),
-                div:nth-of-type(3) {
-                  display: none;
-                }
-              }
-            `}
+            styles={{
+              ".TanStackRouterDevtools > button": {
+                "& div:nth-of-type(2), div:nth-of-type(3)": {
+                  display: "none",
+                },
+              },
+            }}
           />
         )}
         <TanStackRouterDevtools initialIsOpen={false} position="top-right" />
         <ReactQueryDevtools buttonPosition="bottom-left" initialIsOpen={false} />
       </React.Suspense>
-      <Box background="neutral-moderate">
-        <AppHeader />
-        <Outlet />
-      </Box>
     </>
   ),
   notFoundComponent: () => "Finner ikke siden",

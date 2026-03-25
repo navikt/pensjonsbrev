@@ -22,6 +22,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
 import no.nav.brev.brevbaker.LatexTimeoutException
@@ -88,7 +89,7 @@ class LaTeXCompilerService(
             }
         }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput = try {
         withTimeoutOrNull(timeout) {
             val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
             httpClient.post("$pdfByggerUrl/$path") {
@@ -103,7 +104,10 @@ class LaTeXCompilerService(
                 // this needs further investigation
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
-        } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
+        }
+    } catch (e: CancellationException) {
+        throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf", e)
+    } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
 
     suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

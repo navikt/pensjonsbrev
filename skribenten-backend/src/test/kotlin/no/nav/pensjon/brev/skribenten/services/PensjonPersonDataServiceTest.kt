@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.services
 import com.typesafe.config.ConfigFactory
 import io.ktor.client.engine.mock.*
 import no.nav.pensjon.brev.skribenten.auth.FakeAuthService
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
@@ -24,10 +25,11 @@ class PensjonPersonDataServiceTest {
         assertThat(actual).isEqualTo(null)
     }
 
-    private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataService(
+    private fun pensjonPersonDataService(engine: MockEngine) = PensjonPersonDataServiceImpl(
         ConfigFactory.parseMap(mapOf("url" to "http://localhost", "scope" to "fri tilgang")),
         FakeAuthService,
         engine,
+        InMemoryCache()
     )
 
 }

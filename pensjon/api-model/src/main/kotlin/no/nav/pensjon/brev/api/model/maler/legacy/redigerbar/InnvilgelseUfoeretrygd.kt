@@ -17,5 +17,7 @@ data class InnvilgelseUfoeretrygdDto(
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+        val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
+        val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList()
     ) : FagsystemBrevdata
 }

@@ -1,10 +1,15 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
+import java.time.Month
+import kotlin.collections.listOf
 
 fun createEndringUfoeretrygdDto() =
     EndringUfoeretrygdDto(
@@ -30,6 +35,17 @@ fun createEndringUfoeretrygdDto() =
             oifuVedVirkningstidspunkt = Kroner(10000),
 
             maanedligUfoeretrygdFoerSkatt = null,
-            orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()
+            orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
+
+            nyeInnvilgedeBarnetillegg = listOf(
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1991, Month.FEBRUARY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1992, Month.MARCH, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
+            ),
+            nyeAvslagBarnetillegg = listOf(
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.BT_INNT_OVER_1G, fodselsdato = LocalDate.of(1990, Month.APRIL, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fodselsdato = LocalDate.of(1991, Month.MAY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
+                BarnetilleggUTDto(begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fodselsdato = LocalDate.of(1992, Month.JUNE, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
+            ),
         ),
     )
