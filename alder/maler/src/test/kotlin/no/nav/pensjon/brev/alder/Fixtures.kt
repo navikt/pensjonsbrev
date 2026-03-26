@@ -12,6 +12,9 @@ import no.nav.pensjon.brev.alder.maler.aldersovergang.createVedtakOmregningGjenl
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.omregning.createOmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.createUnder5AarTrygdetidAutoDto
+import no.nav.pensjon.brev.alder.maler.info.afpprivatuforetrygdbrev.createAfpPrivatSokerUforeTrygdDto
+import no.nav.pensjon.brev.alder.maler.info.afpprivatuforetrygdbrev.createUforeTrygdSokerAfpPrivatDto
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
 import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.alder.maler.sivilstand.createEndringAvAlderspensjonSivilstandAutoDto
@@ -34,6 +37,8 @@ import no.nav.pensjon.brev.alder.model.aldersovergang.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016RedigerbarDto
 import no.nav.pensjon.brev.alder.model.avslag.*
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonAvdodAutoDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonGarantitilleggDto
 import no.nav.pensjon.brev.alder.model.sivilstand.EndringAvAlderspensjonSivilstandAutoDto
@@ -92,6 +97,8 @@ object Fixtures : LetterDataFactory {
             VedtakStansAlderspensjonFlyttingMellomLandDto::class -> createVedtakStansAlderspensjonFlyttingMellomLandDto() as T
             VedtakOmregningAFPTilEnsligPensjonistAutoDto::class -> createVedtakOmregningAFPTilEnsligPensjonistAutoDto() as T
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto::class -> createVedtakOmregningGjenlevendepensjonTilAlderspensjonAutoDto() as T
+            UforeTrygdSokerAfpPrivatDto::class -> createUforeTrygdSokerAfpPrivatDto() as T
+            AfpPrivatSokerUforeTrygdDto::class -> createAfpPrivatSokerUforeTrygdDto() as T
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
 
