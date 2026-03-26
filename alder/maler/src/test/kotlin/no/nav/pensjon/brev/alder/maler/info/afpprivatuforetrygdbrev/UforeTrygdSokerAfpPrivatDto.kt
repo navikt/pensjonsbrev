@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 
 fun createUforeTrygdSokerAfpPrivatDto() =
     UforeTrygdSokerAfpPrivatDto(
-        saksbehandlerValg = UforeTrygdSokerAfpPrivatDto.SaksBehandlerValg(true),
+        saksbehandlerValg = UforeTrygdSokerAfpPrivatDto.SaksBehandlerValg(false),
         pesysData = EmptyFagsystemdata,
 
 
