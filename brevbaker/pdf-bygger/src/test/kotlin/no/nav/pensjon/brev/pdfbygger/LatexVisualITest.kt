@@ -388,6 +388,14 @@ class LatexVisualITest {
                     testNumberedList()
                 }
             }
+
+            ElementType.FORM -> {
+                paragraph {
+                    formText(Size.FILL, {
+                        text(bokmal { +"Underskrift:" })
+                    })
+                }
+            }
         }
     }
 
@@ -448,6 +456,7 @@ class LatexVisualITest {
         PAR("Paragraph"),
         TABLE("Table"),
         LIST("Item list"),
+        FORM("Form"),
         NUMBERED_LIST("Numbered list")
     }
 

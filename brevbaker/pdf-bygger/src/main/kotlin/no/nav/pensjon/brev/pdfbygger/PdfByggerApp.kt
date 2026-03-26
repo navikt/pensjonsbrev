@@ -32,6 +32,8 @@ import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
@@ -68,6 +70,7 @@ private fun Application.setUp() {
     }
 
     val blockingLatexService = BlockingLatexService(environment.config.config(LATEX_CONFIG_PATH))
+    val typstCompileService = TypstCompileService()
 
     val activityCounter =
         ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
@@ -129,6 +132,15 @@ private fun Application.setUp() {
             handleResult(result, call.application.environment.log)
         }
 
+        post("/produserBrevTypst") {
+            val result = activityCounter.count {
+                call.receive<PDFRequest>()
+                    .let { TypstDocumentRenderer.render(it) }
+                    .let { typstCompileService.createLetter(it.files) }
+            }
+            handleResult(result, call.application.environment.log)
+        }
+
         get("/isAlive") {
             call.respondText("Alive!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
@@ -147,6 +159,7 @@ private fun Application.setUp() {
     }
 
 }
+
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     logger: Logger,
