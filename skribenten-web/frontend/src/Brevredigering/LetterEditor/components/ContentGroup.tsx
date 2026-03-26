@@ -56,8 +56,7 @@ const NO_BREAK_PUNCTUATION = /^[.,;:!?]/;
 
 function startsWithPunctuation(content: Content): boolean {
   if (content.type !== LITERAL) return false;
-  const t = content.editedText ?? content.text;
-  return NO_BREAK_PUNCTUATION.test(t);
+  return NO_BREAK_PUNCTUATION.test(textOf(content));
 }
 
 /**
