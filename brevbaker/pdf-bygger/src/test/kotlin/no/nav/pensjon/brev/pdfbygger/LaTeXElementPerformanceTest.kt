@@ -27,8 +27,8 @@ private const val ELEMENT_COUNT = 100
 @Tag(TestTags.MANUAL_TEST)
 class LaTeXElementPerformanceTest {
 
-    //val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+    val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
 
 
 

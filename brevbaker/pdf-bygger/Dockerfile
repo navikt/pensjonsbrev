@@ -14,7 +14,7 @@ FROM --platform=linux/amd64 debian:trixie-slim AS typst-downloader
 # Replace with the specific version and verified SHA256 hash
 ARG TYPST_VERSION=0.14.2
 ARG TYPST_HASH="a6044cbad2a954deb921167e257e120ac0a16b20339ec01121194ff9d394996d"
-RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends curl xz-utils ca-certificates
 WORKDIR /typst
 RUN curl -sSLO "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
     && echo "${TYPST_HASH}  typst-x86_64-unknown-linux-musl.tar.xz" | sha256sum -c - \
