@@ -190,7 +190,7 @@ private suspend fun RoutingContext.handleResult(
         }
 
         is PDFCompilationResponse.Failure.QueueTimeout -> {
-            logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
+            logger.debug("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
             call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }

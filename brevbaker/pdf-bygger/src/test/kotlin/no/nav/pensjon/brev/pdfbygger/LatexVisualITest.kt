@@ -29,8 +29,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @Execution(ExecutionMode.CONCURRENT)
 class LatexVisualITest {
 
-    //private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
 
     private fun render(
         overrideName: String? = null,
@@ -367,6 +367,7 @@ class LatexVisualITest {
         when (elementA) {
             ElementType.T1 -> testTitle1()
             ElementType.T2 -> testTitle2()
+            ElementType.T3 -> testTitle3()
             ElementType.PAR -> {
                 paragraph { ipsumText() }
             }
@@ -380,6 +381,11 @@ class LatexVisualITest {
             ElementType.LIST -> {
                 paragraph {
                     testList()
+                }
+            }
+            ElementType.NUMBERED_LIST -> {
+                paragraph {
+                    testNumberedList()
                 }
             }
 
@@ -396,10 +402,21 @@ class LatexVisualITest {
     private fun ParagraphOnlyScope<LangBokmal, *>.testList() {
         list {
             item {
-                text(bokmal { +"Text point 1" })
+                text(bokmal { +"Bullet point 1" })
             }
             item {
-                text(bokmal { +"Text point 2" })
+                text(bokmal { +"Bullet point 2" })
+            }
+        }
+    }
+
+    private fun ParagraphOnlyScope<LangBokmal, *>.testNumberedList() {
+        numberedList {
+            item {
+                text(bokmal { +"Numbered point 1" })
+            }
+            item {
+                text(bokmal { +"Numbered point 2" })
             }
         }
     }
@@ -428,20 +445,26 @@ class LatexVisualITest {
         title2 { text(bokmal { +"Second title" }) }
     }
 
+    private fun OutlineOnlyScope<LangBokmal, *>.testTitle3() {
+        title3 { text(bokmal { +"Third title" }) }
+    }
+
     enum class ElementType(val description: String) {
         T1("Title 1"),
         T2("Title 2"),
+        T3("Title 3"),
         PAR("Paragraph"),
         TABLE("Table"),
         LIST("Item list"),
         FORM("Form"),
+        NUMBERED_LIST("Numbered list")
     }
 
     companion object {
         @JvmStatic
         fun allElementCombinations(): List<Arguments> =
             ElementType.entries.flatMapIndexed { index, type ->
-                ElementType.entries.drop(index).flatMap { otherType ->
+                ElementType.entries.drop(index + 1).flatMap { otherType ->
                     listOf(Arguments.of(type, otherType), Arguments.of(otherType, type), Arguments.of(type, type))
                 }
             }

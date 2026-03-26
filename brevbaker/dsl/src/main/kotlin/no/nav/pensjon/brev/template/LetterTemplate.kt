@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
@@ -277,18 +278,19 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
 
             class ItemList<out Lang : LanguageSupport> internal constructor(
-                val items: List<ListItemElement<Lang>>
-            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
+                val items: List<ListItemElement<Lang>>,
+                val type: Listetype,
+            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(StableHash.of(items), StableHash.of(type)) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
 
                 override fun equals(other: Any?): Boolean {
                     if (other !is ItemList<*>) return false
-                    return items == other.items
+                    return items == other.items && type == other.type
                 }
-                override fun hashCode() = Objects.hash(items)
-                override fun toString() = "ItemList(items=$items)"
+                override fun hashCode() = Objects.hash(items, type)
+                override fun toString() = "ItemList(items=$items, type=$type)"
 
                 class Item<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>

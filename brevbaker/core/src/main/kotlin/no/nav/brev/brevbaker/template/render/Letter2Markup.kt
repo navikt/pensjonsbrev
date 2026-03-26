@@ -181,7 +181,7 @@ internal object Letter2Markup : LetterRenderer<LetterWithAttachmentsMarkup>() {
                 add(ParagraphContentImpl.ItemListImpl.ItemImpl(item.stableHashCode(), renderText(inner, item.text)))
             }
         }.takeIf { it.isNotEmpty() }?.let { items ->
-            ParagraphContentImpl.ItemListImpl(itemList.stableHashCode(), items)
+            ParagraphContentImpl.ItemListImpl(itemList.stableHashCode(), items, listType = itemList.type)
         }
 
     private fun renderTextContent(scope: ExpressionScope<*>, element: Element.OutlineContent.ParagraphContent.Text<*>): List<Text> {

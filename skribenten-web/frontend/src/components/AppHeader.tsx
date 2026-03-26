@@ -1,25 +1,27 @@
 import { LeaveIcon } from "@navikt/aksel-icons";
-import { ActionMenu, InternalHeader, Spacer } from "@navikt/ds-react";
+import { ActionMenu, Box, InternalHeader, Spacer } from "@navikt/ds-react";
 import { Link as RouterLink } from "@tanstack/react-router";
 
 import { useUserInfo } from "~/hooks/useUserInfo";
 
 export function AppHeader() {
   return (
-    <InternalHeader css={{ position: "sticky", top: 0, zIndex: 1000 }}>
-      <InternalHeader.Title as="h1">
-        <RouterLink
-          css={{ color: "inherit", textDecoration: "inherit" }}
-          params={(current) => current}
-          search={(current) => current}
-          to="/"
-        >
-          Skribenten
-        </RouterLink>
-      </InternalHeader.Title>
-      <Spacer />
-      <UserDropdown />
-    </InternalHeader>
+    <Box asChild borderColor="neutral-subtleA" borderWidth="0 0 1 0" height="var(--header-height)">
+      <InternalHeader>
+        <InternalHeader.Title as="h1">
+          <RouterLink
+            css={{ color: "inherit", textDecoration: "inherit" }}
+            params={(current) => current}
+            search={(current) => current}
+            to="/"
+          >
+            Skribenten
+          </RouterLink>
+        </InternalHeader.Title>
+        <Spacer />
+        <UserDropdown />
+      </InternalHeader>
+    </Box>
   );
 }
 

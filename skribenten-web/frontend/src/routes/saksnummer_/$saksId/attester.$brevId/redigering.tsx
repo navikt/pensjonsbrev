@@ -1,3 +1,4 @@
+import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -5,6 +6,7 @@ import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router"
 import type { AxiosError } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
+import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
@@ -32,10 +34,12 @@ export const Route = createFileRoute("/saksnummer_/$saksId/attester/$brevId/redi
   component: () => <VedtakWrapper />,
 });
 
-interface VedtakSidemenyFormData {
-  attestantSignatur: string;
-  saksbehandlerValg: SaksbehandlerValg;
-}
+const vedtakSidemenySchema = z.object({
+  attestantSignatur: z.string().min(1, "Underskrift må oppgis"),
+  saksbehandlerValg: z.custom<SaksbehandlerValg>(),
+});
+
+type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
 
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
@@ -103,11 +107,23 @@ const VedtakWrapper = () => {
         </Box>
       );
     },
-    success: (brev) => (
-      <ManagedLetterEditorContextProvider brev={brev}>
-        <Vedtak brev={brev} doReload={hentBrevQuery.refetch} saksId={saksId} />
-      </ManagedLetterEditorContextProvider>
-    ),
+    success: (brev) => {
+      const brevUtenAttestantSignatur = {
+        ...brev,
+        redigertBrev: {
+          ...brev.redigertBrev,
+          signatur: {
+            ...brev.redigertBrev.signatur,
+            attesterendeSaksbehandlerNavn: undefined,
+          },
+        },
+      };
+      return (
+        <ManagedLetterEditorContextProvider brev={brevUtenAttestantSignatur}>
+          <Vedtak brev={brevUtenAttestantSignatur} doReload={hentBrevQuery.refetch} saksId={saksId} />
+        </ManagedLetterEditorContextProvider>
+      );
+    },
   });
 };
 
@@ -133,12 +149,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: { ...props.brev.saksbehandlerValg },
-      attestantSignatur: props.brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn,
+      attestantSignatur: "",
     }),
-    [props.brev.redigertBrev.signatur.attesterendeSaksbehandlerNavn, props.brev.saksbehandlerValg],
+    [props.brev.saksbehandlerValg],
   );
 
   const form = useForm<VedtakSidemenyFormData>({
+    resolver: zodResolver(vedtakSidemenySchema),
     defaultValues: defaultValuesModelEditor,
   });
 
@@ -191,6 +208,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   useEffect(() => {
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
+
+  useEffect(() => {
+    form.setValue("attestantSignatur", editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn ?? "", {
+      shouldValidate: form.formState.isSubmitted,
+    });
+  }, [editorState.redigertBrev.signatur.attesterendeSaksbehandlerNavn, form]);
 
   return (
     <form
@@ -248,7 +271,11 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <Hide above="sm" asChild>
                   <Switch size="small">Vis slettet tekst</Switch>
                 </Hide>
-                <UnderskriftTextField of="Attestant" />
+                <UnderskriftTextField
+                  controlled
+                  error={form.formState.errors.attestantSignatur?.message}
+                  of="Attestant"
+                />
               </VStack>
               <Divider />
               <VStack>
@@ -267,7 +294,9 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           </FormProvider>
         }
         right={
-          <VStack height="var(--main-page-content-height)" justify="center">
+          <>
+            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+            {/* Modal som ikke tar opp plass i DOM her */}
             <ReservertBrevError
               doRetry={props.doReload}
               onNeiClick={() =>
@@ -282,8 +311,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               }
               reservasjon={reservasjonQuery.data}
             />
-            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
-          </VStack>
+          </>
         }
       />
     </form>

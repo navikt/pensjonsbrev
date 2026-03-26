@@ -13,7 +13,7 @@ export type UmamiEventName =
   | "brev klar status endret"
   | "brev distribusjonstype endret"
   | "tekst limt inn"
-  | "pesys redirect"
+  | "pesys omdirigering"
   | "pesys feil"
   | "attestering blokkert"
   | "tid brukt i editor"

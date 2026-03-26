@@ -6,6 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDt
 fun createAvslagUfoeretrygdDto() = AvslagUfoeretrygdDto(
     saksbehandlerValg = EmptySaksbehandlerValg,
     pesysData = AvslagUfoeretrygdDto.PesysData(
-        pe = createPE(),
+        pe = createPEgruppe10(),
     )
 )

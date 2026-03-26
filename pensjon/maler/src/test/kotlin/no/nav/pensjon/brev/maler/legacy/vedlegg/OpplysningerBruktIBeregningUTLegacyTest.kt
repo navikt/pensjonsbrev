@@ -6,7 +6,7 @@ import no.nav.brev.brevbaker.createVedleggTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.*
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.languages
@@ -20,7 +20,7 @@ class OpplysningerBruktIBeregningUTLegacyTest {
     fun testVedlegg() {
         val template = createVedleggTestTemplate(
             vedleggOpplysningerBruktIBeregningUTLegacy,
-            Fixtures.create(PE::class).expr(),
+            Fixtures.create(PEgruppe10::class).expr(),
             languages(Language.Bokmal, Language.Nynorsk, Language.English),
         )
         LetterTestImpl(

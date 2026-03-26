@@ -1,0 +1,100 @@
+:docinfo: shared
+:source-highlighter: highlight.js
+
+= Lister
+
+Lister brukes for å vise punkter med informasjon på en oversiktlig måte.
+De defineres med `list` inne i et avsnitt (`paragraph`).
+
+== Grunnleggende bruk
+
+[source,kotlin]
+----
+paragraph {
+    text(bokmal { +"Du må melde fra om:" })
+
+    list {
+        item {
+            text(
+                bokmal { +"Endringer i inntekt" },
+                nynorsk { +"Endringar i inntekt" }
+            )
+        }
+        item {
+            text(
+                bokmal { +"Endringer i sivilstand" },
+                nynorsk { +"Endringar i sivilstand" }
+            )
+        }
+        item {
+            text(
+                bokmal { +"Flytting til utlandet" },
+                nynorsk { +"Flytting til utlandet" }
+            )
+        }
+    }
+}
+----
+
+== Betinget visning av punkter
+
+Bruk `showIf` for å vise punkter betinget:
+
+[source,kotlin]
+----
+list {
+    item {
+        text(bokmal { +"Dette vises alltid" })
+    }
+
+    showIf(harBarnetillegg) {
+        item {
+            text(bokmal { +"Dette vises kun med barnetillegg" })
+        }
+    }
+
+    showIf(borIUtlandet) {
+        item {
+            text(bokmal { +"Dette vises kun for bosatt i utlandet" })
+        }
+    }
+}
+----
+
+== Dynamiske lister med forEach
+
+Bruk `forEach` for å generere punkter fra en liste:
+
+[source,kotlin]
+----
+showIf(barn.isNotEmpty()) {
+    paragraph {
+        text(bokmal { +"Barnetillegget gjelder for:" })
+
+        list {
+            forEach(barn) { enkeltBarn ->
+                item {
+                    text(
+                        bokmal {
+                            + enkeltBarn.navn + ", født "
+                            + enkeltBarn.fodselsdato.format()
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+----
+
+TIP: Husk å håndtere hva som skjer når en liste er tom.
+I eksempelet over sjekkes det at listen ikke er tom før teksten over listen skrives ut.
+Uten denne sjekken ville teksten over listen stått alene.
+
+== Se også
+
+* xref:dsl/kontroll-struktur/forEach.adoc[]
+* xref:dsl/kontroll-struktur/showIf.adoc[]
+* xref:dsl/paragraph/tabeller.adoc[]
+* xref:dsl/scopes.adoc#ParagraphScope[ParagraphScope]
+

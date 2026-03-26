@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template.render.dsl
 
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.newText
 import no.nav.pensjon.brev.template.ContentOrControlStructure
 import no.nav.pensjon.brev.template.Element
@@ -33,7 +34,8 @@ class TemplateListTest {
                                     ContentOrControlStructure.Content(
                                         Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
                                     )
-                                )
+                                ),
+                                Listetype.PUNKTLISTE,
                             )
                         )
                     )
@@ -72,6 +74,40 @@ class TemplateListTest {
     }
 
     @Test
+    fun `numberedList creates ItemList with NUMMERERT_LISTE type`() {
+        val doc = outlineTestTemplate<Unit> {
+            paragraph {
+                numberedList {
+                    item {
+                        text(bokmal { +"Test" })
+                    }
+                }
+            }
+        }
+
+        val expected = outlineTestLetter(
+            ContentOrControlStructure.Content(
+                Element.OutlineContent.Paragraph(
+                    listOf(
+                        ContentOrControlStructure.Content(
+                            Element.OutlineContent.ParagraphContent.ItemList(
+                                listOf(
+                                    ContentOrControlStructure.Content(
+                                        Element.OutlineContent.ParagraphContent.ItemList.Item(listOf(newText(Language.Bokmal to "Test")))
+                                    )
+                                ),
+                                Listetype.NUMMERERT_LISTE,
+                            )
+                        )
+                    )
+                )
+            )
+        )
+
+        Assertions.assertEquals(doc, expected)
+    }
+
+    @Test
     fun `item conditions are added`() {
         val doc = outlineTestTemplate<Unit> {
             paragraph {
@@ -102,7 +138,8 @@ class TemplateListTest {
                                             )
                                         ), emptyList()
                                     )
-                                )
+                                ),
+                                Listetype.PUNKTLISTE,
                             )
                         )
                     )
