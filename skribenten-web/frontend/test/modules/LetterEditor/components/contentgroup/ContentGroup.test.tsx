@@ -530,15 +530,7 @@ describe("onFocusHandler", () => {
 describe("Word Joiner before punctuation-starting literals", () => {
   const WORD_JOINER = "\u2060";
 
-  test("inserts Word Joiner before a literal starting with a period", () => {
-    const state = letter(
-      paragraph([variable("1. juli 2026"), literal({ text: ". Derfor har vi avslått søknaden din." })]),
-    );
-    const { container } = setupComplex(state);
-    expect(container.textContent).toContain(WORD_JOINER);
-  });
-
-  test("inserts Word Joiner before literals starting with each punctuation char", () => {
+  test("inserts Word Joiner before literals starting with punctuation", () => {
     for (const char of [".", ",", ";", ":", "!", "?"]) {
       const state = letter(paragraph([variable("verdi"), literal({ text: `${char} tekst` })]));
       const { container } = setupComplex(state);
