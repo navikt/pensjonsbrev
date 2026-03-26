@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy
 
+import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -21,7 +22,23 @@ object BarnetilleggFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
             English -> throw Exception()
         }
     }
+
     override fun stableHashCode(): Int = "BarnetilleggFormatter".hashCode()
 
     private fun LocalDate.format(lang: Language) = this.format(dateFormatter(lang, FormatStyle.LONG))
+}
+
+object UTOgTilleggMapper : LocalizedFormatter<Collection<Tillegg>>() {
+    override fun apply(first: Collection<Tillegg>, second: Language): String {
+        val tillegg = first.map {
+            when (second) {
+                Bokmal -> it.bokmal
+                Nynorsk -> it.nynorsk
+                English -> throw Exception()
+            }.lowercase()
+        }
+        return CollectionFormat.apply(listOf("uføretrygd") + tillegg, second)
+    }
+
+    override fun stableHashCode(): Int = "UTOgTilleggMapper".hashCode()
 }
