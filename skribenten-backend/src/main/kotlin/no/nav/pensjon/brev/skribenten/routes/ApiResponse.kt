@@ -120,6 +120,12 @@ suspend fun <T> RoutingContext.respondOutcome(
                         message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder fritekst-felter som ikke er endret")
                     )
 
+                is FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert ->
+                    call.respond(
+                        status = HttpStatusCode.UnprocessableEntity,
+                        message = BrevExceptionDto(tittel = "Brev ikke klart", melding = "Brevet inneholder potensielt duplikate avsnitt som ikke er håndtert")
+                    )
+
                 is AttesterBrevPolicy.KanIkkeAttestere.HarIkkeAttestantrolle ->
                     call.respond(HttpStatusCode.Forbidden, "Bruker ${outcome.error.navIdent} har ikke attestantrolle")
 

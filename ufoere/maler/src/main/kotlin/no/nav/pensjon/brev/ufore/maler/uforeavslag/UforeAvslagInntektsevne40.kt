@@ -84,8 +84,8 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { +"Inntekta di før du blei ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner." }
                 )
                 showIf(saksbehandlerValg.visVurderingIFU) {
-                    text( bokmal { + pesysData.vurderingIFU },
-                        nynorsk { + pesysData.vurderingIFU } )
+                    text( bokmal { + redigerbarData(pesysData.vurderingIFU) },
+                        nynorsk { + redigerbarData(pesysData.vurderingIFU) } )
                 }.orShow {
                     text( bokmal { + fritekst("Begrunnelse for IFU") },
                         nynorsk { + fritekst("Begrunnelse for IFU") } )
@@ -94,8 +94,8 @@ object UforeAvslagInntektsevne40 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { + " Oppjustert til dagens verdi tilsvarar dette ein inntekt på " + fritekst("oppjustert IFU") + " kroner. Inntekt etter uførleik er sett til " + pesysData.inntektEtterUforhet.format(CurrencyFormat) + " kroner. " }
                 )
                 showIf(saksbehandlerValg.visVurderingIEU) {
-                    text( bokmal { + pesysData.vurderingIEU },
-                        nynorsk { + pesysData.vurderingIEU } )
+                    text( bokmal { + redigerbarData(pesysData.vurderingIEU) },
+                        nynorsk { + redigerbarData(pesysData.vurderingIEU) } )
                 }.orShow {
                     text( bokmal { + fritekst("Begrunnelse for IEU") },
                         nynorsk { + fritekst("Begrunnelse for IEU") } )

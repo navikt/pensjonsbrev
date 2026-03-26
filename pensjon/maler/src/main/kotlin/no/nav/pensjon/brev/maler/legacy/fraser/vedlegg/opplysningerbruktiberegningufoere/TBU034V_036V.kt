@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegn
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.pebrevkode
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_uforetidspunkt_foer_17
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_kravhode_kravarsaktype
@@ -73,12 +74,14 @@ data class TBU034V_036V(
         ) {
             //[TBU034V-TBU36V]
 
-            title1 {
-                text(
-                    bokmal { + "Dette er inntektene vi har brukt i beregningen din" },
-                    nynorsk { + "Dette er inntektene vi har brukt i berekninga di" },
-                    english { + "This is the income on which we have based your calculations" },
-                )
+            showIf(!pe.ut_uforetidspunkt_foer_17()) {
+                title1 {
+                    text(
+                        bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
+                        nynorsk { +"Dette er inntektene vi har brukt i berekninga di" },
+                        english { +"This is the income on which we have based your calculations" },
+                    )
+                }
             }
         }
     }
