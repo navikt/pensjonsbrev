@@ -1,16 +1,17 @@
 package no.nav.pensjon.brev.api.model.maler.redigerbar
 
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
+import java.time.LocalDate
 
 @Suppress("unused")
 data class AvslagGjenlevendepensjonUtlandDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
-    override val pesysData: EmptyFagsystemdata
-) : RedigerbarBrevdata<EmptySaksbehandlerValg, EmptyFagsystemdata>
+    override val pesysData: PesysData,
+) : RedigerbarBrevdata<EmptySaksbehandlerValg, AvslagGjenlevendepensjonUtlandDto.PesysData> {
+    data class PesysData(
+        val kravMottattDato: LocalDate,
+    ) : FagsystemBrevdata
+}
 
-/*  data class PesysData(
-    val mottattDato: LocalDateTime,  //TODO  ikke støtte for PEbrevgruppe2
-) : FagsystemBrevdata
-*/
