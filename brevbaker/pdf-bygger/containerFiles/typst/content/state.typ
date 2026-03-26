@@ -4,7 +4,7 @@
 
 // Set to true to show visible borders around content blocks for debugging
 // DO NOT SET TO TRUE IN PROD
-#let debug = true
+#let debug = false
 
 #let updateElementType(elementType) = {
   lastElementType.update(elementType)
