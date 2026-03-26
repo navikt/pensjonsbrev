@@ -47,8 +47,8 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
 
         val vedlegg = vedleggLibrary.getVedlegg(valgteVedlegg)
         vedlegg.forEach {
-            require(it.kode.spraak.any { spraak -> template.language.supports(spraak.toLanguage()) }) {
-                "Vedlegg '${it.kode}' støtter ikke språk ${template.language}"
+            require(it.kode.spraak.any { it == spraak }) {
+                "Vedlegg '${it.kode}' støtter ikke språk $spraak"
             }
         }
 
