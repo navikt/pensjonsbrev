@@ -163,8 +163,9 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         cell {
                             text(
                                 bokmal { +"67 år" },
-                                nynorsk { +"67 år " }
+                                nynorsk { +"67 år" }
                             )
+                            newline()
                             text(
                                 bokmal { +"Utbetalingen av kronetillegg i AFP stanser ved fylte 67 år " },
                                 nynorsk { +"Utbetalinga av kronetillegg i AFP stanser ved fylte 67 år " })
@@ -257,17 +258,14 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 ) {
                     row {
+                        val dato = fritekst("dd.mm.åå")
                         cell {
                             text(
                                 bokmal {
-                                    +"" + fritekst(
-                                        "dd.mm.yy"
-                                    )
+                                    +"Per " + dato
                                 },
                                 nynorsk {
-                                    +"" + fritekst(
-                                        "dd.mm.yy"
-                                    )
+                                    +"Per " + dato
                                 }
                             )
                         }
@@ -296,9 +294,6 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                                 bokmal { +"67 år" },
                                 nynorsk { +"67 år " }
                             )
-                            text(
-                                bokmal { +"Utbetalingen av kronetillegg i AFP stanser ved fylte 67 år " },
-                                nynorsk { +"Utbetalinga av kronetillegg i AFP stanser ved fylte 67 år " })
                         }
                         cell {
                             text(
@@ -364,8 +359,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                 paragraph {
                     val fristOgFormulering = fritekst("Frist og formulering")
                     text(
-                        bokmal { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut uføretrygd eller om du ønsker å beholde AFP. Vi må ha tilbakemelding fra deg innen "+fristOgFormulering },
-                        nynorsk { +"Du må sende oss ei skriftleg tilbakemelding på om du ønskjer å ta ut uføretrygd eller om du ønskjer å behalde AFP. Vi må ha tilbakemelding frå deg innan "+fristOgFormulering }
+                        bokmal { +"Du må sende oss en skriftlig tilbakemelding på om du ønsker å ta ut uføretrygd eller om du ønsker å beholde AFP. Vi må ha tilbakemelding fra deg innen " + fristOgFormulering },
+                        nynorsk { +"Du må sende oss ei skriftleg tilbakemelding på om du ønskjer å ta ut uføretrygd eller om du ønskjer å behalde AFP. Vi må ha tilbakemelding frå deg innan " + fristOgFormulering }
                     )
                     list {
                         item {
