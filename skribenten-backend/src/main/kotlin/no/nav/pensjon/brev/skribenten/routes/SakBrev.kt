@@ -240,6 +240,11 @@ fun Route.sakBrev(
                 val brevId = call.parameters.brevId()
                 call.respond(brevmalService.getAlltidValgbareVedlegg(brevId))
             }
+
+            get("/v2/alltidValgbareVedlegg") {
+                val brevId = call.parameters.brevId()
+                call.respond(brevmalService.getAlltidValgbareVedleggV2(brevId))
+            }
         }
     }
 

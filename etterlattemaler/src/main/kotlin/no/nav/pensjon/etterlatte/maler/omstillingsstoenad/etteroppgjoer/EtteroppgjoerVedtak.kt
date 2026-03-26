@@ -32,6 +32,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.Etteropp
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.bosattUtland
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.etteroppgjoersAar
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.harOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.klageOmgjoering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.resultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.rettsgebyrBeloep
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTOSelectors.utbetaltBeloep
@@ -58,7 +59,8 @@ data class EtteroppgjoerVedtakDataDTO(
     val grunnlag: EtteroppgjoerGrunnlagDTO,
     val rettsgebyrBeloep: Kroner,
     val harOpphoer: Boolean,
-    val mottattSkatteoppgjoer: Boolean
+    val mottattSkatteoppgjoer: Boolean,
+    val klageOmgjoering: Boolean
 ) {
     val utbetalingData = EtteroppgjoerUtbetalingDTO(stoenad, faktiskStoenad, avviksBeloep)
     val beregningsVedleggData = BeregningsVedleggData(vedleggInnhold, etteroppgjoersAar, utbetalingData, grunnlag, true, harOpphoer, mottattSkatteoppgjoer)
@@ -78,12 +80,23 @@ object EtteroppgjoerVedtak : EtterlatteTemplate<EtteroppgjoerVedtakBrevDTO>, Hov
                 brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
             ),
         ) {
+
             title {
-                text(
-                    bokmal { +"Vedtak om etteroppgjør" },
-                    nynorsk { +"Vedtak om etteroppgjer" },
-                    english { +"Decision on final settlement" },
-                )
+
+                showIf(data.klageOmgjoering) {
+                    text(
+                        bokmal { +"Vi har omgjort vedtak om etteroppgjør for "+ data.etteroppgjoersAar.format() },
+                        nynorsk { +"Vi har omgjort vedtak om etteroppgjer for "+ data.etteroppgjoersAar.format() },
+                        english { +"We have reversed our decision regarding the final settlement for "+data.etteroppgjoersAar.format() },
+                    )
+                }.orShow {
+                    text(
+                        bokmal { +"Vedtak om etteroppgjør" },
+                        nynorsk { +"Vedtak om etteroppgjer" },
+                        english { +"Decision on final settlement" },
+                    )
+                }
+
             }
 
             outline {
