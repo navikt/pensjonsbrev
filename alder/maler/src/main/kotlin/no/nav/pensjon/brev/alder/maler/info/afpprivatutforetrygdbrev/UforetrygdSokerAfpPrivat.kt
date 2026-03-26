@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneUforeTrygdSokerAfpPrivat
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDtoSelectors.SaksBehandlerValgSelectors.brukerHarSoktAfpPrivat
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.UforeTrygdSokerAfpPrivatDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -23,6 +25,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto> {
+
+    override val featureToggle: FeatureToggle = FeatureToggles.afpPrivatUfore.toggle
+
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT
 
     override val template = createTemplate(

@@ -1,12 +1,14 @@
 package no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUforeTrygd
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
@@ -23,7 +25,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto> {
+
+    override val featureToggle: FeatureToggle = FeatureToggles.afpPrivatUfore.toggle
+
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD
+
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
