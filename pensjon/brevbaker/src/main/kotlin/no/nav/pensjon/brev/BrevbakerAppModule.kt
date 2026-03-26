@@ -25,9 +25,12 @@ import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
 import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.pdfbygger.PDFByggerServiceImpl
+import no.nav.pensjon.brev.pdfbygger.RendererToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
 import no.nav.pensjon.brev.template.brevbakerConfig
+import no.nav.pensjon.brev.typst.TypstCompilerService
 import kotlin.time.Duration.Companion.minutes
 
 fun Application.brevbakerModule(
@@ -121,15 +124,24 @@ fun Application.brevbakerModule(
     } else null
 
 
-    val latexCompilerService = LaTeXCompilerService(
-        pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
-        maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
+    val pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString()
+    val maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30
+
+    val pdfByggerService = PDFByggerServiceImpl(
+        latexCompilerService = LaTeXCompilerService(
+            pdfByggerUrl = pdfByggerUrl,
+            maxRetries = maxRetries,
+        ),
+        typstCompilerService = TypstCompilerService(
+            pdfByggerUrl = pdfByggerUrl,
+            maxRetries = maxRetries,
+        ),
     )
 
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), pdfByggerService, templates)
 }
 
 private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
@@ -146,7 +158,9 @@ private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {
     monitor.subscribe(ServerReady) {
         async {
             delay(1.minutes)
-            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(FeatureToggles.entries.map { it.toggle })
+            FeatureToggleSingleton.verifiserAtAlleBrytereErDefinert(
+                FeatureToggles.entries.map { it.toggle } + RendererToggles.all
+            )
         }
     }
 }

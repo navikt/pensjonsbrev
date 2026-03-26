@@ -666,6 +666,7 @@ public final class no/nav/pensjon/brev/template/LanguageSettings {
 	public final fun getSetting (Lno/nav/pensjon/brev/template/Language;Ljava/lang/String;)Ljava/lang/String;
 	public final fun getSettings ()Ljava/util/Map;
 	public fun hashCode ()I
+	public final fun languageSettings (Lno/nav/pensjon/brev/template/Language;)Ljava/util/Map;
 	public fun toString ()Ljava/lang/String;
 	public final fun writeLanguageSettings (Lno/nav/pensjon/brev/template/Language;Lkotlin/jvm/functions/Function2;)V
 }
@@ -1591,8 +1592,8 @@ public final class no/nav/pensjon/brev/template/render/LanguageSetting$Sakspart 
 }
 
 public final class no/nav/pensjon/brev/template/render/LanguageSettingsKt {
+	public static final fun getDocumentLanguageSettings ()Lno/nav/pensjon/brev/template/LanguageSettings;
 	public static final fun getPensjonHTMLSettings ()Lno/nav/pensjon/brev/template/LanguageSettings;
-	public static final fun getPensjonLatexSettings ()Lno/nav/pensjon/brev/template/LanguageSettings;
 }
 
 public final class no/nav/pensjon/brev/template/render/UtilsKt {

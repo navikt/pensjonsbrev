@@ -5,6 +5,7 @@ package no.nav.pensjon.brev.pdfbygger.typst
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.LaTeXCompilerService
+import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.writeTestPDF
 import no.nav.pensjon.brev.PDFRequest
@@ -30,16 +31,13 @@ import java.nio.file.Path
  *
  * This test puts ALL special characters into EVERY possible field/scenario
  * to verify that escaping works correctly everywhere.
- *
- * To run this test locally:
- * 1. Start pdf-bygger locally on port 8081
  */
-@Tag(TestTags.MANUAL_TEST)
+@Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(ExecutionMode.CONCURRENT)
 class TypstEscapingVisualITest {
 
-    private val pdfByggerService = LaTeXCompilerService("http://localhost:8081")
+    private val pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     /**
      * The ultimate escape test string - contains ALL characters that might need escaping:
@@ -62,19 +60,16 @@ class TypstEscapingVisualITest {
     @Test
     fun `escaping all symbols in all fields`() {
         val letter = letterMarkup {
-            // Title with all symbols
             title {
                 text(ALL_THE_SYMBOLS)
             }
 
-            // Sakspart with all symbols in all fields
             sakspart {
                 gjelderNavn = ALL_THE_SYMBOLS
                 saksnummer = ALL_THE_SYMBOLS
                 annenMottakerNavn = ALL_THE_SYMBOLS
             }
 
-            // Signatur with all symbols
             signatur {
                 saksbehandlerNavn = ALL_THE_SYMBOLS
                 attesterendeSaksbehandlerNavn = ALL_THE_SYMBOLS
@@ -82,37 +77,30 @@ class TypstEscapingVisualITest {
             }
 
             outline {
-                // Title1 with all symbols
                 title1 {
                     text(ALL_THE_SYMBOLS)
                 }
 
-                // Title2 with all symbols
                 title2 {
                     text(ALL_THE_SYMBOLS)
                 }
 
-                // Title3 with all symbols
                 title3 {
                     text(ALL_THE_SYMBOLS)
                 }
 
-                // Paragraph with plain text
                 paragraph {
                     text(ALL_THE_SYMBOLS)
                 }
 
-                // Paragraph with bold text
                 paragraph {
                     text(ALL_THE_SYMBOLS, FontType.BOLD)
                 }
 
-                // Paragraph with italic text
                 paragraph {
                     text(ALL_THE_SYMBOLS, FontType.ITALIC)
                 }
 
-                // Paragraph with mixed formatting
                 paragraph {
                     text(ALL_THE_SYMBOLS)
                     newLine()
@@ -121,7 +109,6 @@ class TypstEscapingVisualITest {
                     text(ALL_THE_SYMBOLS, FontType.ITALIC)
                 }
 
-                // List with all symbols in items
                 paragraph {
                     list {
                         item { text(ALL_THE_SYMBOLS) }
@@ -130,7 +117,6 @@ class TypstEscapingVisualITest {
                     }
                 }
 
-                // Table with all symbols in headers and cells
                 paragraph {
                     table(
                         header = {
@@ -150,7 +136,6 @@ class TypstEscapingVisualITest {
                     )
                 }
 
-                // FormText with all symbols
                 paragraph {
                     formText(
                         size = LetterMarkup.ParagraphContent.Form.Text.Size.LONG,
@@ -178,7 +163,6 @@ class TypstEscapingVisualITest {
                     }
                 }
 
-                // FormChoice with all symbols
                 paragraph {
                     formChoice(
                         vspace = true,
@@ -193,7 +177,6 @@ class TypstEscapingVisualITest {
             }
         }
 
-        // Attachment with all symbols
         val attachment = attachment {
             title {
                 text(ALL_THE_SYMBOLS)
@@ -248,7 +231,6 @@ class TypstEscapingVisualITest {
             }
         }
 
-        // PDF vedlegg with all symbols in title
         val pdfVedleggTitles = listOf(
             PDFTittel(
                 title = listOf(
