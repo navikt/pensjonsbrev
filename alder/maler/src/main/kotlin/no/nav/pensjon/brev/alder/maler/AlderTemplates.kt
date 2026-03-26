@@ -33,6 +33,8 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.UforetrygdSokerAfpPrivat
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
@@ -96,6 +98,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,
             VedtakStansAlderspensjonFlyttingMellomLand,
+            AfpPrivatSokerUforeTrygd,
+            UforetrygdSokerAfpPrivat,
         )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
