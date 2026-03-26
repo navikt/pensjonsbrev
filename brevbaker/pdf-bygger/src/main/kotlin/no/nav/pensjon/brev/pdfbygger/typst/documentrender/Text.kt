@@ -24,7 +24,7 @@ internal fun TypstAppendable.renderTextContent(elements: List<Text>) {
 private fun TypstAppendable.renderPlainTextContent(element: Text) {
     when (element) {
         is Text.Literal, is Text.Variable -> append(element.text)
-        is Text.NewLine -> append("\n", escape = false)
+        is Text.NewLine -> append("#linebreak()", escape = false)
     }
 }
 
@@ -64,9 +64,7 @@ internal fun TypstAppendable.renderTextContent(element: Text) {
  * Returns escaped text suitable for use in Typst content.
  */
 internal fun List<Text>.renderToString(): String =
-    StringBuilder().also { sb ->
-        TypstAppendable(sb).renderTextAsPlain(this)
-    }.toString()
+    TypstAppendable(StringBuilder()).renderTextAsPlain(this).toString()
 
 /**
  * Render text elements to an unescaped plain string.
