@@ -27,10 +27,10 @@ import org.junit.jupiter.params.provider.MethodSource
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(ExecutionMode.CONCURRENT)
-class LatexVisualITest {
+class RenderPDFVisualITest {
 
-    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+    private val pdfCompileService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val pdfCompileService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
 
     private fun render(
         overrideName: String? = null,
@@ -48,7 +48,7 @@ class LatexVisualITest {
             brevtype = brevtype,
             outlineInit = outlineInit,
             title = title ?: testName,
-            pdfByggerService = laTeXCompilerService
+            pdfByggerService = pdfCompileService
         )
     }
 
@@ -64,7 +64,7 @@ class LatexVisualITest {
                 .walk { frames -> frames.skip(2).findFirst().map { it.methodName }.orElse("") },
             includeSakspart = includeSakspart,
             outlineInit = vedleggOutlineInit,
-            pdfByggerService = laTeXCompilerService,
+            pdfByggerService = pdfCompileService,
             felles = felles,
         )
     }
@@ -463,9 +463,9 @@ class LatexVisualITest {
     companion object {
         @JvmStatic
         fun allElementCombinations(): List<Arguments> =
-            ElementType.entries.flatMapIndexed { index, type ->
-                ElementType.entries.drop(index + 1).flatMap { otherType ->
-                    listOf(Arguments.of(type, otherType), Arguments.of(otherType, type), Arguments.of(type, type))
+            ElementType.entries.flatMap { typeA ->
+                ElementType.entries.map { typeB ->
+                    Arguments.of(typeA, typeB)
                 }
             }
     }

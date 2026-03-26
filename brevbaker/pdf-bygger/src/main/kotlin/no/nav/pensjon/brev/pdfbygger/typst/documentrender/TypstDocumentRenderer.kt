@@ -111,7 +111,7 @@ object TypstDocumentRenderer {
         appendln("""#import "content/title.typ": title1, title2, title3""", escape = false)
         appendln("""#import "content/paragraph.typ": paragraph""", escape = false)
         appendln("""#import "content/state.typ": section-end""", escape = false)
-        appendln("""#import "content/list.typ": bulletlist""", escape = false)
+        appendln("""#import "content/list.typ": bulletlist, numberedlist""", escape = false)
         appendln("""#import "content/table.typ": letter-table""", escape = false)
         appendln("""#import "content/form.typ": formChoice, formText""", escape = false)
         appendln("""#import "attachment.typ": startAttachment, endAttachment""", escape = false)
