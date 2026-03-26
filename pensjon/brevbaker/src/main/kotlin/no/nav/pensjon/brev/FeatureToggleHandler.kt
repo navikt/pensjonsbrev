@@ -45,7 +45,11 @@ object FeatureToggleHandler : FeatureToggleService {
         }
     }
 
-    fun shutdown() = unleash.shutdown()
+    fun shutdown() {
+        if (::unleash.isInitialized) {
+            unleash.shutdown()
+        }
+    }
 
     override fun verifiserAtAlleBrytereErDefinert(entries: List<FeatureToggle>) {
         if (isFakeUnleash) {

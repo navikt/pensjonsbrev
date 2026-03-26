@@ -240,10 +240,15 @@ fun Route.sakBrev(
                 val brevId = call.parameters.brevId()
                 call.respond(brevmalService.getAlltidValgbareVedlegg(brevId))
             }
+
+            get("/v2/alltidValgbareVedlegg") {
+                val brevId = call.parameters.brevId()
+                call.respond(brevmalService.getAlltidValgbareVedleggV2(brevId))
+            }
         }
     }
 
-private fun SpraakKode.toLanguageCode(): LanguageCode =
+fun SpraakKode.toLanguageCode(): LanguageCode =
     when (this) {
         SpraakKode.NB -> LanguageCode.BOKMAL
         SpraakKode.NN -> LanguageCode.NYNORSK

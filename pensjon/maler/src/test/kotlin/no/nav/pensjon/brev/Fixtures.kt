@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepens
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.BekreftelsePaaUfoeretrygdDto
@@ -31,6 +32,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnhentingInformasjonFraBr
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OmsorgEgenManuellDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.OpphoerGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.OrienteringOmSaksbehandlingstidDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.TilbakekrevingAvFeilutbetaltBeloepDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.VarselRevurderingAvPensjonDto
@@ -90,6 +92,7 @@ import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDtoUfoere
 import no.nav.pensjon.brev.fixtures.createOmregningUfoerepensjonTilUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createOmsorgEgenAutoDto
 import no.nav.pensjon.brev.fixtures.createOpphoerBarnetilleggAutoDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createOpphoerGjenlevendepensjonDto
 import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDto
 import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldende
 import no.nav.pensjon.brev.fixtures.createOpplysningerBruktIBeregningUTDtoBarnetilleggGjeldendeFellesbarn
@@ -110,6 +113,7 @@ import no.nav.pensjon.brev.fixtures.createUngUfoerAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakAvslagPaaOmsorgsopptjeningDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmInnvilgelseAvOmsorgspoengDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagForLiteTrygdetidAPDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagGjenlevendepensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createAvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaPensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createBekreftelsePaaUfoeretrygdDto
@@ -134,6 +138,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringVedFlyttingMel
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -221,6 +226,8 @@ object Fixtures : LetterDataFactory {
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T
+            OpphoerGjenlevendepensjonDto::class -> createOpphoerGjenlevendepensjonDto() as T
+            AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
