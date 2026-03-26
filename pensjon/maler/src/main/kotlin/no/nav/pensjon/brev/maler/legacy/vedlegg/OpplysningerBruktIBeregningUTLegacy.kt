@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.maler.legacy.pegruppe10.pe_ut_tbu601v_tbu604v
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_sum_fattnorge_framtidigttnorge_div_12
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_trygdetid
+import no.nav.pensjon.brev.maler.legacy.pegruppe10.ut_uforetidspunkt_foer_17
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_andelytelseavoifu
 import no.nav.pensjon.brev.maler.legacy.pegruppe10.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid
