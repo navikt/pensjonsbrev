@@ -377,8 +377,18 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         item {
                             text(
-                                bokmal { +"Du kan også sende brev merket med fødselsnummeret ditt til: Nav familie- og pensjonsytelser Postboks 6600 Etterstad 0607 OSLO" },
-                                nynorsk { +"Du kan også sende brev merka med fødselsnummeret ditt til: Nav familie- og pensjonsytelse Postboks 6600 Etterstad 0607 OSLO " }
+                                bokmal { +"Du kan også sende brev merket med fødselsnummeret ditt til:" },
+                                nynorsk { +"Du kan også sende brev merket med fødselsnummeret ditt til:" }
+                            )
+                            newline()
+                            text(
+                                bokmal { +"Nav familie- og pensjonsytelser" },
+                                nynorsk { +"Nav familie- og pensjonsytelser, Postboks 6600 Etterstad 0607 OSLO" }
+                            )
+                            newline()
+                            text(
+                                bokmal { +"Postboks 6600 Etterstad 0607 OSLO" },
+                                nynorsk { +"Postboks 6600 Etterstad 0607 OSLO" }
                             )
                         }
                     }
