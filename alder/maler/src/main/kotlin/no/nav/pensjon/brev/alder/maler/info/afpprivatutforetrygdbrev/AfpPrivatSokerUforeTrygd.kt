@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUfo
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.PesysDataSelectors.uforeTrygdTil_ATT
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -29,6 +31,12 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     override val featureToggle: FeatureToggle = FeatureToggles.afpPrivatUfore.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD
+
+    override val kategori = Brevkategori.INFORMASJONSBREV
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
+
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT, Sakstype.AFP)
 
 
     override val template = createTemplate(
@@ -418,12 +426,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
-        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd)
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd,pesysData.uforeTrygdTil_ATT)
     }
 
-    override val kategori = Brevkategori.INFORMASJONSBREV
 
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.ALDER)
 }

@@ -28,7 +28,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT
 
-    override val sakstyper = setOf(Sakstype.AFP, Sakstype.AFP_PRIVAT)
+    override val sakstyper = setOf(Sakstype.UFOREP)
 
     override val kategori = Brevkategori.INFORMASJONSBREV
 
