@@ -12,15 +12,19 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.includeAttachment
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import java.time.LocalDate
 
 
 @TemplateModelHelpers
@@ -29,6 +33,12 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
     override val featureToggle: FeatureToggle = FeatureToggles.afpPrivatUfore.toggle
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT
+
+    override val sakstyper = setOf(Sakstype.AFP, Sakstype.AFP_PRIVAT)
+
+    override val kategori = Brevkategori.INFORMASJONSBREV
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
@@ -47,11 +57,10 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
         outline {
             paragraph {
-                val dato = fritekst("dato: 01.mm.20åå")
+                val dato = fritekst("01.mm.åå")
                 text(
                     bokmal {
                         +"Du har i dag uføretrygd fra Nav. For å ha rett til AFP i privat sektor, kan du ikke ha fått utbetalt uføretrygd etter den måneden du fyller 62 år. Dette går fram av AFP-tilskottsloven § 8. Hvis du ønsker å ta ut AFP i privat sektor må du si fra deg retten til uføretrygd senest fra " + dato + ". Du må derfor velge mellom:"
-
                     },
                     nynorsk {
                         +"Du har i dag uføretrygd frå Nav. For å ha rett til AFP i privat sektor, kan du ikkje ha fått utbetalt uføretrygd etter den månaden du fyller 62 år. Dette går fram av AFP-tilskottsloven § 8. Om du ønskjer å ta ut AFP i privat sektor må du seie frå deg retten til uføretrygd seinast frå " + dato + ". Du må derfor vel mellom:"
@@ -151,20 +160,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -177,20 +186,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -260,20 +269,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -286,20 +295,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -443,9 +452,5 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
         includeAttachment(forbeholdTilBeregningeneUforeTrygdSokerAfpPrivat)
     }
 
-    override val kategori = Brevkategori.INFORMASJONSBREV
 
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.ALDER)
 }

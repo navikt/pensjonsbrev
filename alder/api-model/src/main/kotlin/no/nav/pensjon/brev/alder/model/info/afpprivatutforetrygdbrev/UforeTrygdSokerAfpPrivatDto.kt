@@ -12,7 +12,7 @@ data class UforeTrygdSokerAfpPrivatDto(
 
     ) : RedigerbarBrevdata<UforeTrygdSokerAfpPrivatDto.SaksBehandlerValg, EmptyFagsystemdata> {
     data class SaksBehandlerValg(
-        @DisplayText("Bruker har søkt AfpPrivat")
+        @DisplayText("Bruker har søkt Afp Privat")
         val brukerHarSoktAfpPrivat: Boolean,
     ) : SaksbehandlerValgBrevdata
 }
