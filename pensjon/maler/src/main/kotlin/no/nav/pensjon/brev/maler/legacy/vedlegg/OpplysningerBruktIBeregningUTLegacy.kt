@@ -136,7 +136,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             }
         }
 
-        showIf(pe.ut_trygdetid() and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid() and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())) {
+        showIf(pe.ut_trygdetid()
+                and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
+                and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                and not (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))) {
             includePhrase(TBU047V)
         }
 
