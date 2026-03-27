@@ -1,13 +1,14 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.alder.model.vedlegg.AfpPrivatSokerUforeTrygdVedleggDto
+import no.nav.pensjon.brev.alder.model.vedlegg.AfpPrivatSokerUforeTrygdVedleggDtoSelectors.utTilattestering
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
-val forbeholdTilBeregningeneAfpTIlUforeTrygd = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
+val forbeholdTilBeregningeneAfpTIlUforeTrygd = createAttachment<LangBokmalNynorsk, AfpPrivatSokerUforeTrygdVedleggDto>(
     title = {
         text(
             bokmal { +"Forbehold" },
@@ -51,7 +52,14 @@ val forbeholdTilBeregningeneAfpTIlUforeTrygd = createAttachment<LangBokmalNynors
         )
     }
 
-    //TODO Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå. Slettes om UT er lagt til attestering.
+    showIf(utTilattestering) {
+        paragraph {
+            text(
+                bokmal { +"Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå." },
+                nynorsk { +"Vi har ikkje vurdert om du har rett til å få innvilga uføretrygd då søknaden om uføretrygd ikkje er ferdig behandla enno." }
+            )
+        }
+    }
 
     paragraph {
         text(

@@ -6,10 +6,10 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUfo
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.PesysDataSelectors.uforeTrygdTil_ATT
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harIkkeSoktUforeTrygd
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.vedleggData
+import no.nav.pensjon.brev.alder.model.vedlegg.AfpPrivatSokerUforeTrygdVedleggDtoSelectors.utTilattestering
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
@@ -18,7 +18,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -363,7 +362,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            showIf(saksbehandlerValg.harSoktUforeTrygd.not()) {
+            showIf(saksbehandlerValg.harIkkeSoktUforeTrygd) {
                 title2 {
                     text(
                         bokmal { +"Dette må du gjøre" },
@@ -426,7 +425,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
-        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd,pesysData.uforeTrygdTil_ATT)
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd, vedleggData)
     }
 
 
