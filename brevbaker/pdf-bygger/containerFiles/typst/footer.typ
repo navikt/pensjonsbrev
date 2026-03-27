@@ -3,7 +3,7 @@
 
 #let shouldShowFooter = {
   context {
-      return true
+    return true
   }
 }
 
@@ -20,8 +20,8 @@
   set text(9pt)
   set align(right)
   if(currentPageNumber <= pageNumberAtEndOfSection) {
-      [#languageSettings.saksnummerprefix #input.saksnummer #h(1fr)
-      #languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
+    [#languageSettings.saksnummerprefix #input.saksnummer #h(1fr)
+    #languageSettings.sideprefix #currentPageNumber #languageSettings.sideinfix #pageNumberAtEndOfSection]
   }
 }
 

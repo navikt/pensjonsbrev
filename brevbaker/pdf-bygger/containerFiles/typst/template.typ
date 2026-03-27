@@ -8,16 +8,16 @@
 
 
 #let mainTitle(lettertitle) = {
-    title[
-      #pad(
-        text(
-          size: 16pt,
-          weight: "bold",
-          lettertitle,
-          tracking: 0.3pt
-        ),
-      )
-    ]
+  title[
+    #pad(
+      text(
+        size: 16pt,
+        weight: "bold",
+        lettertitle,
+        tracking: 0.3pt
+      ),
+    )
+  ]
 }
 
 
