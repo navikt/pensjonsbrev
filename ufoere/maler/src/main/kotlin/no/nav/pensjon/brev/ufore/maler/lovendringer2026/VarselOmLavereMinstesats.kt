@@ -36,7 +36,7 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
         outline {
             paragraph {
                 text(
-                    bokmal { + "Fra 1. juli 2026 vil du få en endring i uføretrygden fordi stortinget har vedtatt at minstesatsen endres."},
+                    bokmal { + "Fra 1. juli 2026 vil du få en endring i uføretrygden fordi Stortinget har vedtatt at minstesatsen endres."},
                 )
             }
             paragraph {
