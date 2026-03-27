@@ -227,7 +227,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16 og 22-12." },
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-16 og 22-12." },
                         )
                     }
                 }
@@ -249,7 +249,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-16, 12-18 og 22-12." },
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-16, 12-18 og 22-12." },
                         )
                     }
                 }
@@ -297,7 +297,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-17 og 22-12." },
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-17 og 22-12." },
                         )
                     }
                 }
@@ -319,7 +319,7 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
 
                     paragraph {
                         text (
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§12-11 til 12-18 og 22-12." },
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-11 til 12-18 og 22-12." },
                         )
                     }
                 }

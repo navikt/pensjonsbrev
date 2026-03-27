@@ -1039,7 +1039,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                             nynorsk { +"må også barn vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med " },
                         )
                         text(
-                            bokmal { +"Dette går frem av folketrygdloven §12-15 som gjelder fra 1.juli 2020." },
+                            bokmal { +"Dette går frem av folketrygdloven § 12-15 som gjelder fra 1.juli 2020." },
                             nynorsk { +"Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020" },
                         )
                     }
