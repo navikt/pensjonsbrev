@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.UforetrygdSokerAfpPrivat.fritekst
 import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUforeTrygd
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
@@ -148,20 +149,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -178,20 +179,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -277,20 +278,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
@@ -303,20 +304,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst(" ") + " kr" },
+                                nynorsk { +fritekst(" ") + " kr" }
                             )
                         }
                     }
