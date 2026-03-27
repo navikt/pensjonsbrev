@@ -91,6 +91,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             val ungUforResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()
             val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
+            val avtaletypeEos = pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype().equalTo("eos_nor")
 
             val beregningsvilkarYrkesskadegrad = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
             val beregnetYrkesskadegrad = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
@@ -904,9 +905,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_ForutgaendeMedlemskap_UnntakFraForutgaendeMedlemskap) = true) THEN      INCLUDE ENDIF
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))){
-                //[TBU1156EN, TBU1156, TBU1156NN]
-
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Du oppfyller unntaksregel om medlemskap" },
                         nynorsk { + "Du oppfyller unntaksregel om medlemskap" },
@@ -976,20 +975,26 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true) THEN      INCLUDE ENDIF
             showIf((bosattUtland and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
-                //[TBU1162EN, TBU1162, TBU1162NN]
                 paragraph {
                     text (
                         bokmal { + "Du har vært medlem av folketrygden fra " + fritekst("Norsk trygdetid fom") + " til " + fritekst("Norsk trygdetid tom") + ". Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + fritekst("Trygdetid utland fom") + " til " + fritekst("trygdetid utland tom") + ". Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i fem år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden." },
                         nynorsk { + "Du har vore medlem av den norske folketrygda frå " + fritekst("Norsk trygdetid fom") + " til " + fritekst("Norsk trygdetid tom") + ". Vi har fått opplyst at du har vore medlem av den " + fritekst("nasjonalitet") + " frå " + fritekst("Trygdetid utland fom") + " til " + fritekst("trygdetid utland tom") + ". Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du har derfor vore medlem av den norske folketrygda og den " + fritekst("nasjonalitet") + " trygdeordninga samanhengande i fem år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda." },
                     )
                 }
-                //[TBU1163EN, TBU1163, TBU1163NN]
-
-                paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter EØS-avtalen artikkel 7 i forordning 883/2004 og folketrygdloven § 12-2." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova § 12-2 og reglane i EØS-avtalen i forordning 883/2004, artikkel 6." },
-                    )
+                showIf(avtaletypeEos) {
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14 og 22-12 " + fritekst("fritekst") + " og EØS-avtalens bestemmelser om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14 og 22-12 " + fritekst("fritekst") + " og EØS-avtalens bestemmelser om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45." },
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14 og 22-12 " + fritekst("fritekst") },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14 og 22-12 " + fritekst("fritekst") },
+                        )
+                    }
                 }
             }
 
@@ -2152,10 +2157,17 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text(
-                        bokmal { +"Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
-                        nynorsk { +"Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
-                    )
+                    showIf(avtaletypeEos) {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                        )
+                    }
                 }
             }
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
