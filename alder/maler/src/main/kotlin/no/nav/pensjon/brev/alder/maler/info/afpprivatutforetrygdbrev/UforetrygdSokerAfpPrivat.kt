@@ -154,20 +154,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -180,20 +180,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -263,20 +263,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -289,20 +289,20 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +fritekst(" ") + " kr" },
-                                nynorsk { +fritekst(" ") + " kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
