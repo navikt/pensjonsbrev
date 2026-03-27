@@ -1,4 +1,4 @@
-#import "content/state.typ": updateElementType, section-start, section-end, sectionCounter
+#import "content/state.typ": section-start, section-end
 #import "template.typ": logo, mainTitle
 #import "input.typ": languageSettings, input
 

@@ -1,10 +1,7 @@
 #import "casedetails.typ" : casedetails
 #import "input.typ": input, languageSettings
-#import "closing.typ": closing
 #import "content/state.typ": section-start
-#import "content/list.typ": 
 #import "footer.typ": footer
-#import "content/table.typ": letter-table
 
 
 #let mainTitle(lettertitle) = {
@@ -45,8 +42,7 @@
   set page(margin: (
       x: 64pt,
       y: 64pt,
-      bottom:74pt,
-      right:64pt,
+      bottom: 74pt,
     ),
     footer: footer,
     footer-descent: 30% + 4pt,
