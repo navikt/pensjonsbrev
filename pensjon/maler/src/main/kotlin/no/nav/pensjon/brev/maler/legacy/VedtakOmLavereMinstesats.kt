@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.avkortetPgaRedusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.egenopptjentUforetrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringNettoBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringNettoGjenlevendetillegg
@@ -9,7 +10,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSel
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringReduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.harGradertUfoeretrygd
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.harMinstesats
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.harRedusertTrygdetid
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.hjemmeltekst
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.nettoBarnetillegg
@@ -37,6 +37,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -150,7 +151,11 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                 })
             }
             paragraph { text(bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." }) }
-            paragraph { text(bokmal { +"I vedlegget “Opplysninger om beregning” kan du se hvordan vi har beregnet uføretrygden din." }) }
+            paragraph {
+                text(bokmal { +"I vedlegget " })
+                namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                text(bokmal { +" kan du se hvordan vi har beregnet uføretrygden din." })
+            }
 
             title1 { text(bokmal { +"Derfor endrer vi uføretrygden din" }) }
             paragraph {
@@ -180,7 +185,7 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     )
                 }
             }
-            showIf(harRedusertTrygdetid) {
+            showIf(avkortetPgaRedusertTrygdetid) {
                 paragraph {
                     text(
                         bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. Derfor er minstesatsen din lavere enn 2,329 G." },

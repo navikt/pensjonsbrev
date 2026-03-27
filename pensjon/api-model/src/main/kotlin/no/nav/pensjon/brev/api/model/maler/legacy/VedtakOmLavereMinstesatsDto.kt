@@ -15,7 +15,7 @@ data class VedtakOmLavereMinstesatsDto(
     val harMinstesats: Boolean,
     val tidligereMinstesats: Kroner,
     val nyMinstesats: Kroner,
-    val harRedusertTrygdetid: Boolean,
+    val avkortetPgaRedusertTrygdetid: Boolean,
     val harGradertUfoeretrygd: Boolean,
     val tillegg: Collection<Tillegg>,
     val endringNettoUforetrygdUtenTillegg: Boolean,
