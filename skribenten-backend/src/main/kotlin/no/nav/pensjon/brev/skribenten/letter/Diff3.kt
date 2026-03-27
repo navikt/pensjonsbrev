@@ -17,8 +17,14 @@ fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): List<EditO
     MyersDiff(old.toList(), new.toList()).shortestEditScript()
 
 sealed class EditOperation<T : Any> {
-    data class Insert<T : Any>(val insert: T) : EditOperation<T>()
-    data class Delete<T : Any>(val delete: T) : EditOperation<T>()
+    abstract val value : T
+
+    data class Insert<T : Any>(val insert: T) : EditOperation<T>() {
+        override val value get() = insert
+    }
+    data class Delete<T : Any>(val delete: T) : EditOperation<T>() {
+        override val value get() = delete
+    }
 }
 
 private class Vectors private constructor(private val negativeOffset: Int, private val array: IntArray) {
@@ -47,12 +53,8 @@ private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
     val endCoords get() = Coords(n, m)
 
     init {
-        if (first !is RandomAccess) {
-            throw RuntimeException("first er ikke RandomAccess (ArrayList)")
-        }
-        if (second !is RandomAccess) {
-            throw RuntimeException("second er ikke RandomAccess (ArrayList)")
-        }
+        require(first is RandomAccess) { "first er ikke RandomAccess (ArrayList)" }
+        require(second is RandomAccess) { "second er ikke RandomAccess (ArrayList)" }
     }
 
     fun slice(from: Coords, to: Coords): MyersDiff<T> =
