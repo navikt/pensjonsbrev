@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSo
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -17,6 +16,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -34,7 +34,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Du må velge mellom Afp i privat sektor og uføretrygd fra Nav",
+            displayTitle = "Afp Privat til Uføre",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
@@ -148,20 +148,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -178,20 +178,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -277,20 +277,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -303,20 +303,20 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                         cell {
                             text(
-                                bokmal { +" kr" },
-                                nynorsk { +" kr" }
+                                bokmal { +fritekst("beløp") + " kr" },
+                                nynorsk { +fritekst("beløp") + " kr" }
                             )
                         }
                     }
@@ -334,7 +334,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     bokmal { +"Det er også viktig å vite:" },
                     nynorsk { +"Det er også viktig å vite:" }
                 )
-                list {
+                list {""
                     item {
                         text(
                             bokmal { +"AFP, uføretrygd og alderspensjon gir forskjellige muligheter til å ha inntekt ved siden av. Du finner informasjon på www.nav.no" },
