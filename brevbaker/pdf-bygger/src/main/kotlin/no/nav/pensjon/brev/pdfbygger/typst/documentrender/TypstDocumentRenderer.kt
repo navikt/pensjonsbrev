@@ -4,7 +4,7 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.pdfbygger.clean
-import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.TypstDocument
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brev.template.Language
@@ -14,8 +14,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.PDFTittel
 import java.time.format.FormatStyle
-
-private const val DOCUMENT_PRODUCER = "brevbaker / pdf-bygger med typst"
 
 object TypstDocumentRenderer {
 
@@ -47,7 +45,7 @@ object TypstDocumentRenderer {
     /**
      * Append the input.typ file with language settings and input data dictionary.
      */
-    private fun TypstAppendable.appendInputData(
+    private fun TypstCodeScope.appendInputData(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>,
         language: Language,
@@ -102,36 +100,36 @@ object TypstDocumentRenderer {
      * - Attachments
      * - End marker
      */
-    private fun TypstAppendable.renderLetterTemplate(
+    private fun TypstCodeScope.renderLetterTemplate(
         letter: LetterMarkup,
         attachments: List<LetterMarkup.Attachment>
     ) {
         // Imports
-        appendln("""#import "template.typ": template""", escape = false)
-        appendln("""#import "content/title.typ": title1, title2, title3""", escape = false)
-        appendln("""#import "content/paragraph.typ": paragraph""", escape = false)
-        appendln("""#import "content/state.typ": section-end""", escape = false)
-        appendln("""#import "content/list.typ": bulletlist, numberedlist""", escape = false)
-        appendln("""#import "content/table.typ": letter-table""", escape = false)
-        appendln("""#import "content/form.typ": formChoice, formText""", escape = false)
-        appendln("""#import "attachment.typ": startAttachment, endAttachment""", escape = false)
-        appendln("""#import "closing.typ": closing""", escape = false)
+        appendCodeln("""#import "template.typ": template""")
+        appendCodeln("""#import "content/title.typ": title1, title2, title3""")
+        appendCodeln("""#import "content/paragraph.typ": paragraph""")
+        appendCodeln("""#import "content/state.typ": section-end""")
+        appendCodeln("""#import "content/list.typ": bulletlist, numberedlist""")
+        appendCodeln("""#import "content/table.typ": letter-table""")
+        appendCodeln("""#import "content/form.typ": formChoice, formText""")
+        appendCodeln("""#import "attachment.typ": startAttachment, endAttachment""")
+        appendCodeln("""#import "closing.typ": closing""")
 
         // Template setup with letter title
         val letterTitle = letter.title.renderToPlainString()
-        appendln("""#show: template.with(""", escape = false)
-        appendln("""  lettertitle: "${letterTitle.typstStringEscape()}"""", escape = false)
-        appendln(""")""", escape = false)
-        appendln()
+        appendCodeln("""#show: template.with(""")
+        appendCodeln("""  lettertitle: "${letterTitle.typstStringEscape()}"""")
+        appendCodeln(""")""")
+        appendCodeln()
 
         // Main content block
-        appendln("#{" , escape = false)
+        appendCodeln("#{")
 
         // Render all letter content blocks
         renderBlocks(letter.blocks)
 
         // Closing section
-        appendln("  closing", escape = false)
+        appendCodeln("  closing")
 
         // Render attachments
         attachments.forEachIndexed { index, attachment ->
@@ -140,7 +138,7 @@ object TypstDocumentRenderer {
         }
 
         // End marker for PDF processing
-        appendln("""  [#metadata("end") <endOfLetter>]""", escape = false)
-        appendln("}", escape = false)
+        appendCodeln("""  [#metadata("end") <endOfLetter>]""")
+        appendCodeln("}")
     }
 }

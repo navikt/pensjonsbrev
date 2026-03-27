@@ -25,6 +25,7 @@ private const val ELEMENT_COUNT = 100
 
 // Brukes for å måle hvordan ulike typer innholds-elementer påvirker kompilerings-tiden
 @Tag(TestTags.MANUAL_TEST)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LaTeXElementPerformanceTest {
 
     val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())

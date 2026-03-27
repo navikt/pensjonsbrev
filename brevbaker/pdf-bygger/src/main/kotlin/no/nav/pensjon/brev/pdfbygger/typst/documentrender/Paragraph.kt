@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Form
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.ItemList
@@ -10,7 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 // Note: renderForm, renderList, renderTable, and renderTextContent are extension functions
 // defined in Form.kt, List.kt, Table.kt, and Text.kt respectively.
 
-internal fun TypstAppendable.renderParagraph(
+internal fun TypstCodeScope.renderParagraph(
     element: LetterMarkup.Block.Paragraph,
 ) {
     var continuousTextContent = mutableListOf<Text>()
@@ -37,13 +37,10 @@ internal fun TypstAppendable.renderParagraph(
 }
 
 /**
- * Render accumulated text content as a Typst paragraph.
  * Output: paragraph[text content here]
  */
-private fun TypstAppendable.renderTextParagraph(text: List<Text>) {
+private fun TypstCodeScope.renderTextParagraph(text: List<Text>) {
     appendCodeFunction("paragraph") {
         content { renderTextContent(text) }
     }
 }
-
-

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
 
 /**
@@ -18,7 +18,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Table
  *
  * @param table The table to render
  */
-internal fun TypstAppendable.renderTable(table: Table) {
+internal fun TypstCodeScope.renderTable(table: Table) {
     if (table.rows.isEmpty() && table.header.colSpec.isEmpty()) return
 
     val columnSpec = table.header.colSpec
@@ -76,4 +76,3 @@ private fun columnAlignmentToTypst(columnSpec: List<Table.ColumnSpec>): String {
     }
     return "(${alignments.joinToString(", ")},)"
 }
-

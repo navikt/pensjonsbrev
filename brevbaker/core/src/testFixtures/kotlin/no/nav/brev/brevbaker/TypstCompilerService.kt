@@ -45,7 +45,7 @@ class TypstCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 
     companion object {
-        const val PATH = "/produserBrevTypst"
+        const val PATH = "/produserBrev?typst=true"
     }
 }
 

@@ -7,6 +7,7 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.TypstCompilerService
 import no.nav.brev.brevbaker.writeTestPDF
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.attachment
@@ -37,6 +38,7 @@ import java.nio.file.Path
 @Execution(ExecutionMode.CONCURRENT)
 class TypstEscapingVisualITest {
 
+    //private val pdfByggerService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
     private val pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
 
     /**

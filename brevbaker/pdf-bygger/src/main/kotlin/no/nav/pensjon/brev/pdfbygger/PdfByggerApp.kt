@@ -124,19 +124,16 @@ private fun Application.setUp() {
     routing {
 
         post("/produserBrev") {
+            val useTypst = call.request.queryParameters["typst"]?.toBoolean() == true
             val result = activityCounter.count {
-                call.receive<PDFRequest>()
-                    .let { LatexDocumentRenderer.render(it) }
-                    .let { blockingLatexService.producePDF(it.files) }
-            }
-            handleResult(result, call.application.environment.log)
-        }
-
-        post("/produserBrevTypst") {
-            val result = activityCounter.count {
-                call.receive<PDFRequest>()
-                    .let { TypstDocumentRenderer.render(it) }
-                    .let { typstCompileService.createLetter(it.files) }
+                val request = call.receive<PDFRequest>()
+                if (useTypst) {
+                    TypstDocumentRenderer.render(request)
+                        .let { typstCompileService.createLetter(it.files) }
+                } else {
+                    LatexDocumentRenderer.render(request)
+                        .let { blockingLatexService.producePDF(it.files) }
+                }
             }
             handleResult(result, call.application.environment.log)
         }

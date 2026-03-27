@@ -1,30 +1,31 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
+import no.nav.pensjon.brev.pdfbygger.typst.EscapedTypstContent
+import no.nav.pensjon.brev.pdfbygger.typst.TypstMarkupScope
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
 
 /**
  * Render a list of text elements as plain text (no formatting).
  * Used for titles and places where only plain text is needed.
  */
-internal fun TypstAppendable.renderTextAsPlain(elements: List<Text>) {
+internal fun TypstMarkupScope.renderTextAsPlain(elements: List<Text>) {
     elements.forEach { renderPlainTextContent(it) }
 }
 
 /**
  * Render a list of text elements with full formatting support.
  */
-internal fun TypstAppendable.renderTextContent(elements: List<Text>) {
+internal fun TypstMarkupScope.renderTextContent(elements: List<Text>) {
     elements.forEach { renderTextContent(it) }
 }
 
 /**
  * Render a single text element as plain text.
  */
-private fun TypstAppendable.renderPlainTextContent(element: Text) {
+private fun TypstMarkupScope.renderPlainTextContent(element: Text) {
     when (element) {
-        is Text.Literal, is Text.Variable -> append(element.text)
-        is Text.NewLine -> append("#linebreak()", escape = false)
+        is Text.Literal, is Text.Variable -> appendContent(element.text)
+        is Text.NewLine -> appendCode("#linebreak()")
     }
 }
 
@@ -32,39 +33,40 @@ private fun TypstAppendable.renderPlainTextContent(element: Text) {
  * Render a single text element with formatting (bold, italic).
  *
  * In Typst:
- * - Bold: Uses #text(weight: "bold")[text] for reliable bold
- * - Italic: Uses #emph[text] for reliable italic
- * - Line break: Uses #linebreak()
+ * - Bold: `#text(weight: "bold")[text]`
+ * - Italic: `#emph[text]`
+ * - Line break: `#linebreak()`
  */
-internal fun TypstAppendable.renderTextContent(element: Text) {
+internal fun TypstMarkupScope.renderTextContent(element: Text) {
     when (element) {
         is Text.Literal, is Text.Variable -> {
             when (element.fontType) {
-                Text.FontType.PLAIN -> append(element.text)
+                Text.FontType.PLAIN -> appendContent(element.text)
                 Text.FontType.BOLD -> {
-                    // Use #text(weight: "bold") for reliable bold that doesn't interfere with escaping
-                    append("#text(weight: \"bold\")[", escape = false)
-                    append(element.text)
-                    append("]", escape = false)
+                    appendCode("#text(weight: \"bold\")[")
+                    appendContent(element.text)
+                    appendCode("]")
                 }
                 Text.FontType.ITALIC -> {
-                    // Use #emph for reliable italic that doesn't interfere with escaping
-                    append("#emph[", escape = false)
-                    append(element.text)
-                    append("]", escape = false)
+                    appendCode("#emph[")
+                    appendContent(element.text)
+                    appendCode("]")
                 }
             }
         }
-        is Text.NewLine -> append("#linebreak()", escape = false)
+        is Text.NewLine -> appendCode("#linebreak()")
     }
 }
 
 /**
- * Render text elements to a plain string (for use in function arguments).
+ * Render text elements to a plain string.
  * Returns escaped text suitable for use in Typst content.
  */
-internal fun List<Text>.renderToString(): String =
-    TypstAppendable(StringBuilder()).renderTextAsPlain(this).toString()
+internal fun List<Text>.renderToEscapedContent(): EscapedTypstContent {
+    val output = StringBuilder()
+    TypstMarkupScope(output).renderTextAsPlain(this)
+    return EscapedTypstContent(output.toString())
+}
 
 /**
  * Render text elements to an unescaped plain string.
@@ -72,4 +74,3 @@ internal fun List<Text>.renderToString(): String =
  */
 internal fun List<Text>.renderToPlainString(): String =
     this.joinToString("") { it.text }
-

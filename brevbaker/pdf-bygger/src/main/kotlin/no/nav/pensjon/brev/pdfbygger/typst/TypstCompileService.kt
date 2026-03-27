@@ -11,10 +11,9 @@ import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardCopyOption
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.exists
-import kotlin.io.path.isDirectory
+import kotlin.io.path.listDirectoryEntries
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
 
@@ -33,8 +32,7 @@ class TypstCompileService(
         val tmpDir = createTempDirectory(Path.of("/tmp"))
 
         return try {
-            // Copy template files from the template directory to the temp directory
-            copyTemplateFiles(templateDir, tmpDir)
+            symlinkTemplateFiles(templateDir, tmpDir)
 
             // Write generated files (input.typ, letter.typ)
             typstFiles.forEach {
@@ -67,26 +65,13 @@ class TypstCompileService(
         }
     }
 
-    /**
-     * Recursively copy all template files from the source directory to the destination directory.
-     */
-    private fun copyTemplateFiles(source: Path, destination: Path) {
+    private fun symlinkTemplateFiles(source: Path, destination: Path) {
         if (!source.exists()) {
-            logger.warn("Template directory does not exist: $source")
-            return
+            throw IllegalStateException("Template directory does not exist: $source")
         }
 
-        Files.walk(source).use { paths ->
-            paths.forEach { sourcePath ->
-                val relativePath = source.relativize(sourcePath)
-                val targetPath = destination.resolve(relativePath)
-
-                if (sourcePath.isDirectory()) {
-                    Files.createDirectories(targetPath)
-                } else {
-                    Files.copy(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING)
-                }
-            }
+        source.listDirectoryEntries().forEach { entry ->
+            Files.createSymbolicLink(destination.resolve(entry.fileName), entry)
         }
     }
 

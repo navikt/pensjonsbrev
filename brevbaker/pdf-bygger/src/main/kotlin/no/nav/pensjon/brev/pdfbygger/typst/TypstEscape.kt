@@ -1,6 +1,13 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
 /**
+ * A string that has already been escaped for Typst content mode.
+ * Use this to safely pass pre-escaped content without risk of double-escaping.
+ */
+@JvmInline
+internal value class EscapedTypstContent(val value: String)
+
+/**
  * Control characters that should be stripped from output.
  * These are non-printable characters that could cause issues in the output.
  */

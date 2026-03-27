@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.pdfbygger.typst.documentrender
 
-import no.nav.pensjon.brev.pdfbygger.typst.TypstAppendable
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
@@ -15,7 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
  * This pattern avoids issues with Typst content/code block syntax and matches
  * the LaTeX approach with startvedlegg/sluttvedlegg.
  */
-internal fun TypstAppendable.renderAttachment(attachment: LetterMarkup.Attachment, sectionNumber: Int) {
+internal fun TypstCodeScope.renderAttachment(attachment: LetterMarkup.Attachment, sectionNumber: Int) {
     val title = attachment.title.renderToPlainString()
 
     // Start the attachment

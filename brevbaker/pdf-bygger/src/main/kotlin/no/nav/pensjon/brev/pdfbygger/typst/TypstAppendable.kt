@@ -1,81 +1,73 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
 @DslMarker
-internal annotation class TypstAppendableMarker
+internal annotation class TypstDslMarker
 
-@TypstAppendableMarker
-internal class TypstAppendable(private val output: Appendable) {
+/**
+ * Scope for Typst markup/content mode (inside `[...]` content blocks).
+ *
+ * In this scope you can:
+ * - [appendContent] to write user-facing text (always escaped)
+ * - [appendCode] to write inline Typst code like `#emph[`, `#linebreak()`
+ */
+@TypstDslMarker
+internal class TypstMarkupScope(internal val output: Appendable) {
 
     /**
-     * Append text to output, optionally escaping special Typst content characters.
+     * Append user-facing text. Always escapes special Typst characters.
      */
-    internal fun append(s: String, escape: Boolean = true) {
-        output.append(if (escape) s.typstEscape() else s)
+    fun appendContent(s: String) {
+        output.append(s.typstEscape())
     }
 
     /**
-     * Append text followed by newline, optionally escaping special Typst content characters.
+     * Append pre-escaped content. No additional escaping is performed.
      */
-    internal fun appendln(s: String = "", escape: Boolean = true) {
-        output.appendLine(if (escape) s.typstEscape() else s)
+    fun appendContent(s: EscapedTypstContent) {
+        output.append(s.value)
     }
 
     /**
-     * Append a Typst function call in code mode (inside #{...}).
-     * Does NOT add # prefix since we're already in code mode.
-     * Example output: `paragraph[content]` or `title1[content]`
+     * Append inline Typst code within a content block. Never escapes.
+     * Use for Typst syntax like `#emph[`, `]`, `#linebreak()`.
      */
-    internal fun appendCodeFunction(name: String, builder: FunctionBuilder.() -> Unit) {
+    fun appendCode(s: String) {
+        output.append(s)
+    }
+}
+
+/**
+ * Scope for Typst code mode (top-level file or inside `#{...}` blocks).
+ *
+ * In this scope you can:
+ * - [appendCodeln] to write lines of Typst code
+ * - [appendCodeFunction] to write function calls with content/args builders
+ * - [appendDictionary] to write `#let name = (...)` dictionary definitions
+ */
+@TypstDslMarker
+internal class TypstCodeScope(internal val output: Appendable) {
+
+    /**
+     * Append raw Typst code followed by a newline. Never escapes.
+     * Use for complete lines of Typst code like imports, `#show`, `#{`, etc.
+     */
+    fun appendCodeln(s: String = "") {
+        output.appendLine(s)
+    }
+
+    /**
+     * Append a Typst function call in code mode.
+     */
+    fun appendCodeFunction(name: String, builder: FunctionCallBuilder.() -> Unit) {
         output.append(name)
-        FunctionBuilder(this).builder()
+        FunctionCallBuilder(this).builder()
         output.appendLine()
-    }
-
-    /**
-     * Append a Typst function call in markup mode (outside #{...}).
-     * Adds # prefix for function calls.
-     * Example output: `#functionName[content]` or `#functionName(args)[content]`
-     */
-    internal fun appendFunction(name: String, builder: FunctionBuilder.() -> Unit) {
-        output.append("#$name")
-        FunctionBuilder(this).builder()
-        output.appendLine()
-    }
-
-    /**
-     * Append a Typst function call with content block, e.g., `#paragraph[Hello world]`.
-     */
-    internal fun appendFunctionWithContent(name: String, contentBuilder: TypstAppendable.() -> Unit) {
-        output.append("#$name[")
-        contentBuilder()
-        output.append("]")
-        output.appendLine()
-    }
-
-    /**
-     * Append a content block `[content]`.
-     */
-    internal fun appendContentBlock(contentBuilder: TypstAppendable.() -> Unit) {
-        output.append("[")
-        contentBuilder()
-        output.append("]")
     }
 
     /**
      * Append a dictionary definition like `#let name = (key: value, ...)`.
      */
-    fun appendDictionary(name: String, map: Map<String, String?>) {
-        output.appendLine("#let $name = (")
-        map.forEach { (key, value) ->
-            output.appendLine("    $key: ${formatTypstValue(value)},")
-        }
-        output.appendLine(")")
-    }
-
-    /**
-     * Append a dictionary definition with any value types.
-     */
-    fun appendDictionary(name: String, map: Map<String, Any?>, @Suppress("UNUSED_PARAMETER") anyValue: Unit = Unit) {
+    fun appendDictionary(name: String, map: Map<String, Any?>) {
         output.appendLine("#let $name = (")
         map.forEach { (key, value) ->
             output.appendLine("    $key: ${formatTypstValue(value)},")
@@ -96,59 +88,47 @@ internal class TypstAppendable(private val output: Appendable) {
             if (value.isEmpty()) {
                 "()"
             } else {
-                // Always add trailing comma to ensure it's treated as an array, not a parenthesized expression
-                "(\n${value.joinToString(",\n") { "      ${formatTypstValue(it)}" }},\n    )"
+                // Trailing comma ensures Typst treats single-element lists as arrays, not parenthesized expressions
+                val elements = value.joinToString(",\n") { "  ${formatTypstValue(it)}" }
+                """
+                    |(
+                    |$elements,
+                    |)
+                """.trimMargin()
             }
         }
         else -> value.toString()
     }
 
-    @TypstAppendableMarker
-    internal class FunctionBuilder(private val typstAppendable: TypstAppendable) {
+    @TypstDslMarker
+    internal class FunctionCallBuilder(private val codeScope: TypstCodeScope) {
+
         /**
-         * Append a content argument `[content]` (markup mode).
+         * Append a trailing content block `[content]` (enters markup mode).
          */
-        fun content(contentBuilder: TypstAppendable.() -> Unit) {
-            typstAppendable.output.append("[")
-            contentBuilder(typstAppendable)
-            typstAppendable.output.append("]")
+        fun content(contentBuilder: TypstMarkupScope.() -> Unit) {
+            codeScope.output.append("[")
+            TypstMarkupScope(codeScope.output).contentBuilder()
+            codeScope.output.append("]")
         }
 
         /**
-         * Append a code block argument `{code}` (code mode).
-         * Use this when the content needs to call functions without # prefix.
-         */
-        fun codeBlock(contentBuilder: TypstAppendable.() -> Unit) {
-            typstAppendable.output.append("{")
-            contentBuilder(typstAppendable)
-            typstAppendable.output.append("}")
-        }
-
-        /**
-         * Append parenthesized arguments `(arg1, arg2, ...)`.
+         * Append parenthesized arguments `(...)`.
          */
         fun args(argsBuilder: ArgsBuilder.() -> Unit) {
-            typstAppendable.output.append("(")
-            ArgsBuilder(typstAppendable).argsBuilder()
-            typstAppendable.output.append(")")
+            codeScope.output.append("(")
+            ArgsBuilder(codeScope).argsBuilder()
+            codeScope.output.append(")")
         }
     }
 
-    @TypstAppendableMarker
-    internal class ArgsBuilder(private val typstAppendable: TypstAppendable) {
+    @TypstDslMarker
+    internal class ArgsBuilder(private val codeScope: TypstCodeScope) {
         private var first = true
 
         private fun separator() {
-            if (!first) typstAppendable.output.append(", ")
+            if (!first) codeScope.output.append(", ")
             first = false
-        }
-
-        /**
-         * Append a named argument like `name: value`.
-         */
-        fun namedArg(name: String, value: String) {
-            separator()
-            typstAppendable.output.append("$name: ${typstAppendable.formatTypstValue(value)}")
         }
 
         /**
@@ -156,7 +136,7 @@ internal class TypstAppendable(private val output: Appendable) {
          */
         fun namedArg(name: String, value: Int) {
             separator()
-            typstAppendable.output.append("$name: $value")
+            codeScope.output.append("$name: $value")
         }
 
         /**
@@ -164,7 +144,7 @@ internal class TypstAppendable(private val output: Appendable) {
          */
         fun namedArg(name: String, value: Boolean) {
             separator()
-            typstAppendable.output.append("$name: ${if (value) "true" else "false"}")
+            codeScope.output.append("$name: ${if (value) "true" else "false"}")
         }
 
         /**
@@ -172,17 +152,17 @@ internal class TypstAppendable(private val output: Appendable) {
          */
         fun namedArgRaw(name: String, value: String) {
             separator()
-            typstAppendable.output.append("$name: $value")
+            codeScope.output.append("$name: $value")
         }
 
         /**
-         * Append a content block argument `[content]`.
+         * Append a content block argument `[content]` inside parenthesized args.
          */
-        fun contentArg(contentBuilder: TypstAppendable.() -> Unit) {
+        fun contentArg(contentBuilder: TypstMarkupScope.() -> Unit) {
             separator()
-            typstAppendable.output.append("[")
-            contentBuilder(typstAppendable)
-            typstAppendable.output.append("]")
+            codeScope.output.append("[")
+            TypstMarkupScope(codeScope.output).contentBuilder()
+            codeScope.output.append("]")
         }
 
         /**
@@ -190,19 +170,7 @@ internal class TypstAppendable(private val output: Appendable) {
          */
         fun rawArg(value: String) {
             separator()
-            typstAppendable.output.append(value)
-        }
-
-        /**
-         * Append a raw function call with a content block argument, e.g., `table.cell(colspan: 2)[content]`.
-         * This ensures no comma is added between the function call and the content block.
-         */
-        fun rawArgWithContent(functionCall: String, contentBuilder: TypstAppendable.() -> Unit) {
-            separator()
-            typstAppendable.output.append(functionCall)
-            typstAppendable.output.append("[")
-            contentBuilder(typstAppendable)
-            typstAppendable.output.append("]")
+            codeScope.output.append(value)
         }
     }
 }

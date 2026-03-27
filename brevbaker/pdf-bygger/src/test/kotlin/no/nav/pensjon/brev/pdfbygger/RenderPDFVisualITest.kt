@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.TypstCompilerService
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestVedleggPdf
 import no.nav.brev.brevbaker.copy
