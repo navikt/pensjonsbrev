@@ -120,7 +120,7 @@ object VarselGjpOpphorArskull6070Utland : AutobrevTemplate<Gjenlevenderett2027Dt
 
             paragraph {
                 text(
-                    bokmal { + "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven §17 A-3, for å få forlenget stønadsperiode." },
+                    bokmal { + "Ut fra våre opplysninger fyller du ikke vilkårene i folketrygdloven § 17 A-3, for å få forlenget stønadsperiode." },
                     english { + "Based on the information we have about you, you do not meet the requirements for an extended benefit period, as established by Section 17 A-3 of the National Insurance Act." }
                 )
             }
