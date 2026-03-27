@@ -14,7 +14,7 @@ import java.time.Month
 
 fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
+        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(refusjon = true),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
