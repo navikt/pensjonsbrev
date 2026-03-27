@@ -52,11 +52,11 @@ import {
 import { isMac } from "../utils";
 
 const WORD_JOINER = "\u2060";
-const NO_BREAK_PUNCTUATION = /^[.,;:!?]/;
+const STARTS_WITHOUT_SPACE = /^[^ ]/;
 
-function startsWithPunctuation(content: Content): boolean {
+function startsWithoutSpace(content: Content): boolean {
   if (content.type !== LITERAL) return false;
-  return NO_BREAK_PUNCTUATION.test(textOf(content));
+  return STARTS_WITHOUT_SPACE.test(textOf(content));
 }
 
 /**
@@ -84,7 +84,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   return (
     <>
       {contents.map((content, contentIndex) => {
-        const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
+        const needsWordJoiner = contentIndex > 0 && startsWithoutSpace(content);
 
         switch (content.type) {
           case LITERAL: {
