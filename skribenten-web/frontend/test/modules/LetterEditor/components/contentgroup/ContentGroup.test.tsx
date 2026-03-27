@@ -527,19 +527,45 @@ describe("onFocusHandler", () => {
   });
 });
 
-describe("Word Joiner before non-space-starting literals", () => {
+describe("Word Joiner before punctuation-starting literals", () => {
   const WORD_JOINER = "\u2060";
 
-  test("inserts Word Joiner before literals starting without a space", () => {
-    for (const text of [",tekst", ".tekst", "%", "°C", "…", "»", "100 kr", "%‰", '"sitat"']) {
+  test("inserts Word Joiner before literals starting with punctuation", () => {
+    for (const text of [
+      ",tekst",
+      ".tekst",
+      ";tekst",
+      ":tekst",
+      "!tekst",
+      "?tekst",
+      "'tekst",
+      '"tekst',
+      "(tekst",
+      ")tekst",
+      "[tekst",
+      "]tekst",
+      "%",
+      "\u00B0C",
+      "\u2026",
+      "\u00ABtekst",
+      "\u00BB",
+      "\u201Dtekst",
+      "\u2019tekst",
+    ]) {
       const state = letter(paragraph([variable("verdi"), literal({ text })]));
       const { container } = setupComplex(state);
       expect(container.textContent).toContain(WORD_JOINER);
     }
   });
 
-  test("does not insert Word Joiner before a literal starting with a space", () => {
+  test("does not insert Word Joiner before a literal starting with a letter", () => {
     const state = letter(paragraph([variable("verdi"), literal({ text: " og noe mer tekst" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("does not insert Word Joiner before a literal starting with a digit", () => {
+    const state = letter(paragraph([variable("verdi"), literal({ text: "100 kr" })]));
     const { container } = setupComplex(state);
     expect(container.textContent).not.toContain(WORD_JOINER);
   });
@@ -550,7 +576,7 @@ describe("Word Joiner before non-space-starting literals", () => {
     expect(container.textContent).not.toContain(WORD_JOINER);
   });
 
-  test("inserts Word Joiner before non-space literal following another literal", () => {
+  test("inserts Word Joiner before punctuation literal following another literal", () => {
     const state = letter(paragraph([literal({ text: "første" }), literal({ text: ", andre" })]));
     const { container } = setupComplex(state);
     expect(container.textContent).toContain(WORD_JOINER);
