@@ -12,8 +12,7 @@ import {
   UNSAFE_Combobox,
   VStack,
 } from "@navikt/ds-react";
-import type { Control } from "react-hook-form";
-import { Controller, useFormContext, useWatch } from "react-hook-form";
+import { type Control, Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
 import { ManueltAdressertTil } from "~/types/brev";
@@ -38,12 +37,12 @@ const UtfyllingAvManuellAdresseForm = (properties: {
     <VStack gap="space-24">
       <VStack gap="space-16">
         <Alert size="small" variant="warning">
-          <Heading size="xsmall">Manuell adresseendringsrutine</Heading>
+          <Heading size="xsmall">Rutine for adresseendring</Heading>
           <Link
             href="https://navno.sharepoint.com/sites/fag-og-ytelser-pensjon-alderspensjon/SitePages/Maler/Mal-for-rutiner.aspx "
             target="_blank"
           >
-            Les rutinen for endring av adresse her {<ExternalLinkIcon />}
+            Les rutinen for manuell adresseendring her {<ExternalLinkIcon />}
           </Link>
         </Alert>
 
@@ -175,11 +174,11 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           )}
         </div>
       </VStack>
-      <HStack gap="space-16" justify="end">
+      <HStack gap="space-16" justify="space-between">
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
-        <Button size="small">Gå videre</Button>
+        <Button size="small">Lagre og lukk</Button>
       </HStack>
     </VStack>
   );
