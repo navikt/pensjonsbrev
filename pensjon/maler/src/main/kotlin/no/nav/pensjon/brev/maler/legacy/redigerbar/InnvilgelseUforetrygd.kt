@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.SaksbehandlervalgSelectors.refusjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -102,6 +104,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             val totalNettoUforeberegning = pe.vedtaksdata_beregningsdata_beregningufore_totalnetto()
 
             val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
+            val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl")
 
             val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
             val ifuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
@@ -972,7 +975,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true) THEN      INCLUDE ENDIF
-            showIf((kravGjelder.equalTo("f_bh_bo_utl") and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
+            showIf((bosattUtland and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
                 //[TBU1162EN, TBU1162, TBU1162NN]
                 paragraph {
                     text (
@@ -1128,10 +1131,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(kravGjelder.equalTo("f_bh_bo_utl")){
-                //[TBU1169EN, TBU1169, TBU1169NN]
-
+            showIf(bosattUtland){
                 title1 {
                     text (
                         bokmal { + "Uføretrygd for deg som er bosatt i utlandet" },
@@ -1141,7 +1141,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true) THEN      INCLUDE ENDIF
-            showIf((kravGjelder.equalTo("f_bh_bo_utl") and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
+            showIf((bosattUtland and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())){
                 //[TBU1170EN, TBU1170, TBU1170NN]
 
                 paragraph {
@@ -1153,7 +1153,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_FortsattMedlemskap_Minst20ArBotid) = true AND PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl") THEN      INCLUDE ENDIF
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_fortsattmedlemskap_minst20arbotid()) and kravGjelder.equalTo("f_bh_bo_utl"))){
+            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_fortsattmedlemskap_minst20arbotid()) and bosattUtland)){
                 //[TBU1171EN, TBU1171, TBU1171NN]
 
                 paragraph {
@@ -1165,7 +1165,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             //IF(FF_GetArrayElement_Boolean(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_ForutgaendeMedlemskap_MinstTreArsFMNorge) = true AND PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl") THEN      INCLUDE ENDIF
-            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_minsttrearsfmnorge()) and kravGjelder.equalTo("f_bh_bo_utl"))){
+            showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_minsttrearsfmnorge()) and bosattUtland)){
                 //[TBU1172EN, TBU1172, TBU1172NN]
 
                 paragraph {
@@ -1176,8 +1176,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(kravGjelder.equalTo("f_bh_bo_utl")){
+            showIf(bosattUtland){
                 //[TBU1173EN, TBU1173, TBU1173NN]
 
                 paragraph {
@@ -1528,8 +1527,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(TBU1208_Generated(pe))
             includePhrase(TBU1210_Generated(pe))
 
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(kravGjelder.equalTo("f_bh_bo_utl")){
+            showIf(bosattUtland){
                 paragraph {
                     text (
                         bokmal { + "Inntektsgrensen gjelder bare for den norske uføretrygden din. Har du spørsmål om inntektsgrensen i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
@@ -2140,14 +2138,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
             }
 
-            //PE_Vedtaksdata_Kravhode_KravGjelder = "f_bh_bo_utl"
-            showIf(kravGjelder.equalTo("f_bh_bo_utl")){
-                paragraph {
-                    text(
-                        bokmal { +fritekst("Stryk teksten under dersom den ikke er aktuell") },
-                        nynorsk { +fritekst("Stryk teksten under dersom den ikke er aktuell") },
-                    )
-                }
+            showIf(bosattUtland and saksbehandlerValg.refusjon){
                 title1 {
                     text(
                         bokmal { +"En utenlandsk myndighet krever refusjon" },
@@ -2161,16 +2152,23 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
-                        nynorsk { + "Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
-                    )
+                    showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")) {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                        )
+                    }
                 }
             }
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad >= 50 AND PE_Vedtaksdata_Kravhode_KravGjelder <> "f_bh_bo_utl") THEN      INCLUDE ENDIF
-            showIf((uforegrad.greaterThanOrEqual(50) and kravGjelder.notEqualTo("f_bh_bo_utl"))){
+            showIf((uforegrad.greaterThanOrEqual(50) and !bosattUtland)){
                 title1 {
                     text (
                         bokmal { + "Honnørkort" },
