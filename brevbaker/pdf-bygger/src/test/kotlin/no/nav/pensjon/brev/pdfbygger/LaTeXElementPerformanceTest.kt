@@ -29,6 +29,8 @@ private const val ELEMENT_COUNT = 100
 class LaTeXElementPerformanceTest {
 
     val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
+
 
 
     private data class TimingResult(val elementType: ElementType, val time: Duration, val count: Int)
