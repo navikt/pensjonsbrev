@@ -343,7 +343,6 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     nynorsk { +"Det er også viktig å vite:" }
                 )
                 list {
-                    ""
                     item {
                         text(
                             bokmal { +"AFP, uføretrygd og alderspensjon gir forskjellige muligheter til å ha inntekt ved siden av. Du finner informasjon på www.nav.no" },
