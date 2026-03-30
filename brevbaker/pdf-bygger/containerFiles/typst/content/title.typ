@@ -6,6 +6,6 @@
   withSpacing("title", title)
 }
 
-#let title1(iTitle) = { letterTitle(13pt)[= #iTitle]}
-#let title2(iTitle) = { letterTitle(12pt)[== #iTitle]}
-#let title3(iTitle) = { letterTitle(11pt)[=== #iTitle]}
+#let title1(iTitle) = { letterTitle(13pt)[== #iTitle]}
+#let title2(iTitle) = { letterTitle(12pt)[=== #iTitle]}
+#let title3(iTitle) = { letterTitle(11pt)[==== #iTitle]}

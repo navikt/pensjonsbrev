@@ -1,19 +1,19 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.TypstCompilerService
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.pensjon.brev.pdfbygger.LaTeXElementPerformanceTest.ElementType.*
-import org.junit.jupiter.api.Tag
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.LangBokmal
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.junit.jupiter.api.Tag
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.measureTime
@@ -28,10 +28,7 @@ private const val ELEMENT_COUNT = 100
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LaTeXElementPerformanceTest {
 
-    val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    //private val laTeXCompilerService = LaTeXCompilerService("http://localhost:8081") // brukes for lokal testing av tex endringer
-
-
+    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
 
     private data class TimingResult(val elementType: ElementType, val time: Duration, val count: Int)
 
@@ -150,7 +147,7 @@ class LaTeXElementPerformanceTest {
             brevtype = brevtype,
             outlineInit = outlineInit,
             title = title ?: testName,
-            pdfByggerService = laTeXCompilerService
+            pdfByggerService = pdfCompileService
         )
     }
 

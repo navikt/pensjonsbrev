@@ -39,7 +39,7 @@ ENV XDG_DATA_HOME=/tmp/.local/share
 
 # Viktig å kopiere filer før vi installerer fontconfig, for den starter umiddelbart å bygge cachen
 COPY containerFiles/fonts /usr/share/fonts
-RUN apt update && apt install -y --no-install-recommends tzdata perl-tk fontconfig && rm -rf /var/lib/apt/lists/*
+RUN apt update && apt install -y --no-install-recommends tzdata perl-tk fontconfig fonts-noto-core && rm -rf /var/lib/apt/lists/*
 #To update TeXLive/XeLaTeX version, run the github workflow and replace the --from argument to newest release
 COPY --from=ghcr.io/navikt/pensjonsbrev/pensjon-latex:2025-09-08-11_43 /app /app
 COPY containerFiles/latex /app/pensjonsbrev_latex
