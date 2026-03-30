@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.kap19
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.uforeTrygdTil_ATT
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
@@ -45,12 +46,13 @@ val forbeholdTilBeregningeneAfpTIlUforeTrygd =
                 nynorsk { +"Vi tar ikkje omsyn til opptening frå eventuell inntekt som du vil ha samstundes med alderspensjon eller uføretrygd." }
             )
         }
-
-        paragraph {
-            text(
-                bokmal { +"Innvilget uføretrygd gir opptjening til alderspensjon etter kapittel 19 i Folketrygdloven, og er bare medregnet i tilfelle den får stor betydning for beregningen. I denne saken har vi sett bort fra uføreopptjeningen fordi den får liten eller ingen betydning for alderspensjonen." },
-                nynorsk { +"Innvilga uføretrygd gir opptening til alderspensjon etter kapittel 19 i Folketrygdlova, og er berre medrekna i tilfelle den får stor verknad for berekninga. I denne saka har vi sett bort frå uføreoppteninga fordi den får liten eller ingen verknad for alderspensjonen." }
-            )
+        showIf(kap19) {
+            paragraph {
+                text(
+                    bokmal { +"Innvilget uføretrygd gir opptjening til alderspensjon etter kapittel 19 i Folketrygdloven, og er bare medregnet i tilfelle den får stor betydning for beregningen. I denne saken har vi sett bort fra uføreopptjeningen fordi den får liten eller ingen betydning for alderspensjonen." },
+                    nynorsk { +"Innvilga uføretrygd gir opptening til alderspensjon etter kapittel 19 i Folketrygdlova, og er berre medrekna i tilfelle den får stor verknad for berekninga. I denne saka har vi sett bort frå uføreoppteninga fordi den får liten eller ingen verknad for alderspensjonen." }
+                )
+            }
         }
         showIf(uforeTrygdTil_ATT) {
             paragraph {

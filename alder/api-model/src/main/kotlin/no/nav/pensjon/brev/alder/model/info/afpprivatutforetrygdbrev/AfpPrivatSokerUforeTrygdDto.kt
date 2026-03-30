@@ -21,5 +21,6 @@ data class AfpPrivatSokerUforeTrygdDto (
     ) : FagsystemBrevdata
 }
 data class AFpPrivatSokerUforeTrygdVedleggDto (
-    val uforeTrygdTil_ATT: Boolean
+    val uforeTrygdTil_ATT: Boolean,
+    val kap19: Boolean,
 ) : VedleggData
