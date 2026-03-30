@@ -46,3 +46,4 @@ build
 node_modules/
 build/
 .DS_Store
+/gradle-user-home/

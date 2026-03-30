@@ -8,6 +8,9 @@ class LanguageSettings internal constructor(val settings: Map<String, Element.Ou
     fun writeLanguageSettings(language: Language, writeSetting: (name: String, value: String) -> Unit): Unit =
         settings.keys.forEach { name -> writeSetting(name, getSetting(language, name)) }
 
+    fun languageSettings(language: Language): Map<String, String> =
+        settings.mapValues { (_, v) -> v.text(language) }
+
     fun getSetting(language: Language, setting: String): String =
         settings[setting]?.text(language)
             ?: throw MissingLanguageSettingException(setting)
