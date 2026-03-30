@@ -1,6 +1,6 @@
 import { Bleed, BodyShort, Box, Skeleton, Table, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
@@ -71,6 +71,7 @@ function SamhandlerResultRow({
   onSelect: () => void;
 }) {
   const [open, setOpen] = useState(false);
+  const clickedByMouse = useRef(false);
 
   const selectWithTracking = (method: SelectionMethod) => {
     onSelect();
@@ -88,7 +89,6 @@ function SamhandlerResultRow({
       <Table.DataCell
         onClick={(e) => {
           e.stopPropagation();
-          selectWithTracking("radio");
         }}
       >
         <span className="aksel-radio aksel-radio--small">
@@ -98,7 +98,13 @@ function SamhandlerResultRow({
             className="aksel-radio__input"
             data-cy="velg-samhandler"
             name="samhandler-valg"
-            onChange={() => selectWithTracking("keyboard")}
+            onChange={() => {
+              selectWithTracking(clickedByMouse.current ? "radio" : "keyboard");
+              clickedByMouse.current = false;
+            }}
+            onClick={() => {
+              clickedByMouse.current = true;
+            }}
             type="radio"
             value={samhandler.idTSSEkstern}
           />
