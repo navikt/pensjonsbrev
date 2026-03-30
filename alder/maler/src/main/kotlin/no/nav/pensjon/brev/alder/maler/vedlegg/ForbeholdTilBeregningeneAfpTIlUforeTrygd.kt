@@ -57,8 +57,8 @@ val forbeholdTilBeregningeneAfpTIlUforeTrygd =
         showIf(uforeTrygdTil_ATT) {
             paragraph {
                 text(
-                    bokmal { +"Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå. Slettes om UT er lagt til attestering." },
-                    nynorsk { +"Vi har ikkje vurdert om du har rett til å få innvilga uføretrygd då søknaden om uføretrygd ikkje er ferdig behandla enno. Slettes om UT er lagt til attestering." }
+                    bokmal { +"Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå." },
+                    nynorsk { +"Vi har ikkje vurdert om du har rett til å få innvilga uføretrygd då søknaden om uføretrygd ikkje er ferdig behandla enno." }
                 )
 
             }
