@@ -195,6 +195,7 @@ const BrevmalBrevbaker = (props: {
               <HStack align="center" justify="space-between">
                 <Label size="small">Mottaker</Label>
                 <Button
+                  data-cy="toggle-endre-mottaker-modal"
                   icon={<PencilIcon />}
                   iconPosition="right"
                   onClick={() => setModalÅpen(true)}

@@ -2,9 +2,8 @@ describe("Endrer på mottaker", () => {
   beforeEach(() => {
     cy.setupSakStubs();
 
-    cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
-      expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
-      request.reply({ fixture: "hentSamhandlerAdresse.json" });
+    cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", {
+      fixture: "hentSamhandlerAdresse.json",
     }).as("hentSamhandlerAdresse");
 
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
@@ -37,11 +36,6 @@ describe("Endrer på mottaker", () => {
       request.reply({ fixture: "finnSamhandler.json" });
     }).as("finnSamhandler");
 
-    cy.intercept("POST", "/bff/skribenten-backend/hentSamhandlerAdresse", (request) => {
-      expect(request.body).to.deep.equal({ idTSSEkstern: "80000781720" });
-      request.reply({ fixture: "hentSamhandlerAdresse.json" });
-    }).as("hentSamhandlerAdresse");
-
     cy.intercept("POST", "/bff/skribenten-backend/sak/123456/bestillBrev/exstream", (request) => {
       expect(request.body).to.deep.equal({
         brevkode: "PE_IY_05_300",
@@ -70,18 +64,18 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("endre-mottaker-identtype-select").select("Norsk orgnr");
     cy.get('[name="finnSamhandler.direkteOppslag.id"]').type("direkte-oppslag-id");
     cy.getDataCy("endre-mottaker-søk-button").click();
-    cy.getDataCy("velg-samhandler").first().click();
 
-    //asserter oppsummering viser riktig info
-    cy.contains("Advokat 1 As").should("be.visible");
+    //velger første samhandler ved å klikke på navnet (selekterer og utvider raden)
+    cy.getDataCy("endre-mottaker-modal").contains("Advokat 1 As").first().click();
+
+    //asserter at samhandleradresse vises i utvidet rad
     cy.contains("Postboks 603 Sentrum").should("be.visible");
     cy.contains("4003").should("be.visible");
     cy.contains("Stavanger").should("be.visible");
     cy.contains("Nor").should("be.visible");
-    cy.getDataCy("bekreft-ny-mottaker").click();
+    cy.getDataCy("lagre-samhandler").click();
 
     //asserter at vi har byttet til samhandler
-
     cy.location("pathname")
       .should("eq", "/saksnummer/123456/brevvelger")
       .location("search")
@@ -128,15 +122,16 @@ describe("Endrer på mottaker", () => {
     cy.get('[name="finnSamhandler.organisasjonsnavn.navn"]').type("navnet på samhandler");
 
     cy.getDataCy("endre-mottaker-søk-button").click();
-    cy.getDataCy("velg-samhandler").first().click();
 
-    //asserter oppsummering viser riktig info
-    cy.contains("Advokat 1 As").should("be.visible");
+    //velger første samhandler ved å klikke på navnet (selekterer og utvider raden)
+    cy.getDataCy("endre-mottaker-modal").contains("Advokat 1 As").first().click();
+
+    //asserter at samhandleradresse vises i utvidet rad
     cy.contains("Postboks 603 Sentrum").should("be.visible");
     cy.contains("4003").should("be.visible");
     cy.contains("Stavanger").should("be.visible");
     cy.contains("Nor").should("be.visible");
-    cy.getDataCy("bekreft-ny-mottaker").click();
+    cy.getDataCy("lagre-samhandler").click();
 
     //asserter at vi har byttet til samhandler
     cy.location("pathname")
@@ -181,19 +176,20 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
     //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
-    cy.contains("Fornavn").click().type("Fornavnet");
+    cy.get('[name="finnSamhandler.personnavn.fornavn"]').click().type("Fornavnet");
     cy.get('[name="finnSamhandler.personnavn.etternavn"]').type("Etternavnet");
 
     cy.getDataCy("endre-mottaker-søk-button").click();
-    cy.getDataCy("velg-samhandler").first().click();
 
-    //asserter oppsummering viser riktig info
-    cy.contains("Advokat 1 As").should("be.visible");
+    //velger første samhandler ved å klikke på navnet (selekterer og utvider raden)
+    cy.getDataCy("endre-mottaker-modal").contains("Advokat 1 As").first().click();
+
+    //asserter at samhandleradresse vises i utvidet rad
     cy.contains("Postboks 603 Sentrum").should("be.visible");
     cy.contains("4003").should("be.visible");
     cy.contains("Stavanger").should("be.visible");
     cy.contains("Nor").should("be.visible");
-    cy.getDataCy("bekreft-ny-mottaker").click();
+    cy.getDataCy("lagre-samhandler").click();
 
     //asserter at vi har byttet til samhandler
     cy.location("pathname")
@@ -229,16 +225,14 @@ describe("Endrer på mottaker", () => {
     //søker opp og velger brevet vi vil ha
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
-    cy.contains("Endre").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");
     cy.contains("Adresselinje 1").click().type("Adresselinjen 1");
     cy.contains("Postnummer").click().type("0000");
     cy.contains("Poststed").click().type("Poststedet");
     cy.getDataCy("land-combobox").click().type("Sver{enter}");
-    cy.contains("Lagre og lukk").click();
-
-    cy.contains("Fornavn Etternavnsen").should("be.visible");
+    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
     cy.contains("Adresselinjen").should("be.visible");
     cy.contains("0000").should("not.exist");
     cy.contains("Poststedet").should("not.exist");
@@ -278,7 +272,7 @@ describe("Endrer på mottaker", () => {
 
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
-    cy.contains("Endre").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
     cy.contains("Legg til manuelt").click();
     cy.contains("Navn").click().type("Fornavn Etternavnsen");
     cy.contains("Avbryt").click();

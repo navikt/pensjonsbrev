@@ -254,7 +254,15 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           </BodyShort>
           {!erLaast && (
             <Box asChild borderRadius="4">
-              <Button icon={<PencilIcon />} onClick={åpneModal} size="xsmall" type="button" variant="tertiary" />
+              <Button
+                aria-label="Endre mottaker"
+                data-cy="toggle-endre-mottaker-modal"
+                icon={<PencilIcon />}
+                onClick={åpneModal}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
             </Box>
           )}
         </HStack>

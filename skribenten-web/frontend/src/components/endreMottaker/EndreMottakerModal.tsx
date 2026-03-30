@@ -246,6 +246,7 @@ const ModalTabs = (properties: {
                 Avbryt
               </Button>
               <Button
+                data-cy="lagre-samhandler"
                 disabled={!selectedSamhandler}
                 loading={properties.isPending ?? false}
                 onClick={() => {
