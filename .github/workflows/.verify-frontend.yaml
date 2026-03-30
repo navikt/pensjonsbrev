@@ -19,10 +19,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: "24"
           registry-url: https://npm.pkg.github.com/
@@ -51,10 +51,10 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: "24"
           cache: "npm"
@@ -82,7 +82,7 @@ jobs:
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec # v7.1.2
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -91,7 +91,7 @@ jobs:
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec # v7.1.2
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -101,7 +101,7 @@ jobs:
           start: 'npm run preview -- --port 5173'
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots
