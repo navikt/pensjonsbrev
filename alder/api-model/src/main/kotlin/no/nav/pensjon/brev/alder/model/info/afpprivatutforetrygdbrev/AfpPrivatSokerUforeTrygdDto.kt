@@ -19,8 +19,7 @@ data class AfpPrivatSokerUforeTrygdDto (
     data class PesysData(
         val vedleggDto: AFpPrivatSokerUforeTrygdVedleggDto
     ) : FagsystemBrevdata
-
-    data class AFpPrivatSokerUforeTrygdVedleggDto (
-        val uforeTrygdTil_ATT: Boolean
-    ) : VedleggData
 }
+data class AFpPrivatSokerUforeTrygdVedleggDto (
+    val uforeTrygdTil_ATT: Boolean
+) : VedleggData

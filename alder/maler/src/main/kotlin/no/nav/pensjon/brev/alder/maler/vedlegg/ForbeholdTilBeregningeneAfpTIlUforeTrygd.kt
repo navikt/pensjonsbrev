@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
-import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.uforeTrygdTil_ATT
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.uforeTrygdTil_ATT
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val forbeholdTilBeregningeneAfpTIlUforeTrygd =
-    createAttachment<LangBokmalNynorsk, AfpPrivatSokerUforeTrygdDto.AFpPrivatSokerUforeTrygdVedleggDto>(
+    createAttachment<LangBokmalNynorsk, AFpPrivatSokerUforeTrygdVedleggDto>(
         title = {
             text(
                 bokmal { +"Forbehold" },
