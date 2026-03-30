@@ -31,9 +31,9 @@ const AdresseVisning = (props: AdresseVisningProps) => {
         </HStack>
       )}
       <BodyShort size="small">{props.navn}</BodyShort>
-      {props.adresselinjer.map((linje) =>
+      {props.adresselinjer.map((linje, index) =>
         linje ? (
-          <BodyShort key={linje} size="small">
+          <BodyShort key={`${index}-${linje}`} size="small">
             {linje}
           </BodyShort>
         ) : null,

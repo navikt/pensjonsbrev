@@ -117,7 +117,7 @@ export const EndreMottakerModal = (properties: {
             ? "Vil du avbryte endring av mottaker?"
             : "Endre mottaker",
       }}
-      onClose={properties.onClose}
+      onClose={onAvbrytClick}
       open={properties.åpen}
       /*
       ved å ha modalen som en portal vil ikke browseren klage på at vi kommer til å ha en form inni en annen form.
@@ -152,6 +152,7 @@ export const EndreMottakerModal = (properties: {
                 manuellAdresseValues={form.getValues("manuellAdresse")}
                 onAvbrytClick={onAvbrytClick}
                 onBekreftNyMottaker={properties.onBekreftNyMottaker}
+                onClose={properties.onClose}
                 onFinnSamhandlerSubmit={finnSamhandlerMutation}
                 resetOnBekreftState={properties.resetOnBekreftState}
                 skalKunOppdatereSamhandler={properties.skalKunOppdatereSamhandler}
@@ -175,6 +176,7 @@ const ModalTabs = (properties: {
   };
   control: Control<CombinedFormData>;
   onAvbrytClick: () => void;
+  onClose: () => void;
   onFinnSamhandlerSubmit: UseMutationResult<FinnSamhandlerResponseDto, Error, FinnSamhandlerRequestDto, unknown>;
   onBekreftNyMottaker: (id: string | Adresse) => void;
   resetOnBekreftState: () => void;
@@ -242,7 +244,7 @@ const ModalTabs = (properties: {
 
           {properties.tab.tab === "samhandler" && (
             <HStack justify="space-between">
-              <Button onClick={properties.onAvbrytClick} size="small" type="button" variant="tertiary">
+              <Button onClick={properties.onClose} size="small" type="button" variant="tertiary">
                 Avbryt
               </Button>
               <Button
