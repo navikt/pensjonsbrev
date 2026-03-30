@@ -5,7 +5,7 @@ import { useState } from "react";
 import { getBrev } from "~/api/brev-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import type { Adresse } from "~/types/apiTypes";
-import type { BrevInfo, Mottaker } from "~/types/brev";
+import type { BrevInfo, BrevResponse, Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 export function useEndreMottaker(saksId: string, brevId: number) {
@@ -15,10 +15,14 @@ export function useEndreMottaker(saksId: string, brevId: number) {
   const mottakerMutation = useMutation<BrevInfo, AxiosError, Mottaker>({
     mutationFn: (mottaker) => endreMottaker(saksId, brevId, { mottaker }),
     onSuccess: (response) => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
+      queryClient.setQueryData(
+        hentAlleBrevInfoForSak.queryKey(saksId),
+        (currentBrevInfo: BrevInfo[] | undefined = []) =>
+          currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
-      queryClient.setQueryData(getBrev.queryKey(brevId), response);
+      queryClient.setQueryData(getBrev.queryKey(brevId), (current: BrevResponse | undefined) =>
+        current ? { ...current, info: response } : current,
+      );
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
       setModalÅpen(false);
     },
@@ -27,8 +31,13 @@ export function useEndreMottaker(saksId: string, brevId: number) {
   const fjernMottakerMutation = useMutation<void, AxiosError>({
     mutationFn: () => fjernOverstyrtMottaker({ saksId, brevId }),
     onSuccess: () => {
-      queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(saksId), (currentBrevInfo: BrevInfo[]) =>
-        currentBrevInfo.map((brevInfo) => (brevInfo.id === brevId ? { ...brevInfo, mottaker: null } : brevInfo)),
+      queryClient.setQueryData(
+        hentAlleBrevInfoForSak.queryKey(saksId),
+        (currentBrevInfo: BrevInfo[] | undefined = []) =>
+          currentBrevInfo.map((brevInfo) => (brevInfo.id === brevId ? { ...brevInfo, mottaker: null } : brevInfo)),
+      );
+      queryClient.setQueryData(getBrev.queryKey(brevId), (current: BrevResponse | undefined) =>
+        current ? { ...current, info: { ...current.info, mottaker: null } } : current,
       );
       queryClient.invalidateQueries({ queryKey: hentPdfForBrev.queryKey(brevId) });
     },

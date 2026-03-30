@@ -178,7 +178,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
-        <Button size="small">Lagre og lukk</Button>
+        <Button size="small">Fortsett</Button>
       </HStack>
     </VStack>
   );
