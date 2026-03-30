@@ -1,4 +1,4 @@
-import { BodyShort, Skeleton, Table, Tag, VStack } from "@navikt/ds-react";
+import { Bleed, BodyShort, Box, Skeleton, Table, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 
@@ -26,26 +26,36 @@ export function SamhandlerSearchResults({
         {samhandlere.length} treff
       </BodyShort>
       {samhandlere.length > 0 && (
-        <Table size="small">
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell />
-              <Table.ColumnHeader>Navn</Table.ColumnHeader>
-              <Table.HeaderCell />
-              <Table.HeaderCell />
-            </Table.Row>
-          </Table.Header>
-          <Table.Body>
-            {samhandlere.map((samhandler) => (
-              <SamhandlerResultRow
-                key={samhandler.idTSSEkstern}
-                onSelect={() => onSelectedChange(samhandler.idTSSEkstern)}
-                samhandler={samhandler}
-                selected={selectedId === samhandler.idTSSEkstern}
-              />
-            ))}
-          </Table.Body>
-        </Table>
+        <Bleed
+          css={{
+            maxHeight: "500px",
+            overflowY: "auto",
+          }}
+          marginInline="space-12"
+        >
+          <Box marginInline="space-12">
+            <Table size="small">
+              <Table.Header css={{ position: "sticky" }}>
+                <Table.Row>
+                  <Table.HeaderCell />
+                  <Table.ColumnHeader>Navn</Table.ColumnHeader>
+                  <Table.HeaderCell />
+                  <Table.HeaderCell />
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {samhandlere.map((samhandler) => (
+                  <SamhandlerResultRow
+                    key={samhandler.idTSSEkstern}
+                    onSelect={() => onSelectedChange(samhandler.idTSSEkstern)}
+                    samhandler={samhandler}
+                    selected={selectedId === samhandler.idTSSEkstern}
+                  />
+                ))}
+              </Table.Body>
+            </Table>
+          </Box>
+        </Bleed>
       )}
     </VStack>
   );
@@ -70,6 +80,7 @@ function SamhandlerResultRow({
   return (
     <Table.ExpandableRow
       content={<SamhandlerAdresseDetaljer idTSSEkstern={samhandler.idTSSEkstern} />}
+      css={{ cursor: "pointer" }}
       onOpenChange={setOpen}
       open={open}
       togglePlacement="right"
