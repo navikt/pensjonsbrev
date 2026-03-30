@@ -4,5 +4,5 @@ import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSo
 
 fun createAfpPrivatSokerUforeTrygdDto() = AfpPrivatSokerUforeTrygdDto(
     saksbehandlerValg = AfpPrivatSokerUforeTrygdDto.SaksBehandlerValg(harSoktUforeTrygd = false),
-    pesysData = AfpPrivatSokerUforeTrygdDto.PesysData(uforeTrygdTil_ATT = false),
+    pesysData = AfpPrivatSokerUforeTrygdDto.PesysData(AfpPrivatSokerUforeTrygdDto.AFpPrivatSokerUforeTrygdVedleggDto(true)),
 )
