@@ -30,6 +30,12 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD
 
+    override val kategori = Brevkategori.INFORMASJONSBREV
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
+
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT, Sakstype.AFP, Sakstype.UFOREP)
+
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
@@ -334,7 +340,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     bokmal { +"Det er også viktig å vite:" },
                     nynorsk { +"Det er også viktig å vite:" }
                 )
-                list {""
+                list {
+                    ""
                     item {
                         text(
                             bokmal { +"AFP, uføretrygd og alderspensjon gir forskjellige muligheter til å ha inntekt ved siden av. Du finner informasjon på www.nav.no" },
@@ -420,10 +427,4 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
         }
         includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd)
     }
-
-    override val kategori = Brevkategori.INFORMASJONSBREV
-
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.ALDER)
 }
