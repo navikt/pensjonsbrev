@@ -55,16 +55,31 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
         }
 
         outline {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
 
-                    },
-                    nynorsk {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav. "
-                    },
-                )
+                        },
+                        nynorsk {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav. "
+                        },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du har i dag AFP i privat sektor og vurderer å søke om uføretrygd fra Na" },
+                        nynorsk { +"Du har i dag AFP i privat sektor og vurderer å søkje uføretrygd frå Nav" }
+                    )
+                }
+            }
+            paragraph { text(
+                bokmal { +"Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:" },
+                nynorsk { +"Du kan ikkje ha AFP samstundes med uføretrygd, sjå AFP-tilskottsloven § 8. Du må derfor velje mellom: " }
+            ) }
+            paragraph {
                 list {
                     item {
                         text(
@@ -426,6 +441,6 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
-        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd,pesysData.vedleggDto)
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd, pesysData.vedleggDto)
     }
 }
