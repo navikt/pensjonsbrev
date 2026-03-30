@@ -76,11 +76,11 @@ class PensjonLatexITest {
     @Test
     fun `all supported characters render in a single PDF`() {
         val allSupported = (1..Char.MAX_VALUE.code)
-            .filter { code -> !Char(code).isSurrogate() }
+            .filter { code -> !Char(code).isSurrogate() && !CHARACTER_BLOCKLIST.contains(code) }
 
         // Split into lines of 64 characters for readability in the PDF
         val lines = allSupported.chunked(64) { chunk ->
-            chunk.joinToString("") { Char(it).toString() }
+            chunk.joinToString(" ") { Char(it).toString() }
         }
 
         val markup = letterMarkup {

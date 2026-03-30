@@ -149,8 +149,8 @@ internal val CHARACTER_BLOCKLIST: HashSet<Int> = hashSetOf<Int>().apply {
     // --- Khmer ---
     addAll(0x17DE..0x17DF); addAll(0x17EA..0x17EF); addAll(0x17FA..0x17FF)
 
-    // --- Mongolian ---
-    addAll(0x181A..0x181F); addAll(0x1879..0x187F); addAll(0x18AB..0x18AF)
+    // --- Mongolian (entire block — no Noto Mongolian font available) ---
+    addAll(0x1800..0x18AF)
 
     // --- Unified Canadian Aboriginal Syllabics Extended ---
     addAll(0x18F6..0x18FF)
@@ -234,8 +234,21 @@ internal val CHARACTER_BLOCKLIST: HashSet<Int> = hashSetOf<Int>().apply {
     addAll(0x2D97..0x2D9F); add(0x2DA7); add(0x2DAF); add(0x2DB7); add(0x2DBF); add(0x2DC7); add(0x2DCF); add(0x2DD7)
     add(0x2DDF)
 
-    // --- Supplemental Punctuation ---
-    addAll(0x2E53..0xA4CF)
+    // --- Supplemental Punctuation (tail of block, unassigned) ---
+    addAll(0x2E53..0x2E7F)
+
+    // --- CJK Radicals Supplement, Kangxi Radicals, Ideographic Description Characters ---
+    // --- CJK Symbols/Punctuation, Hiragana, Katakana, Bopomofo, Hangul Compat Jamo ---
+    // --- Kanbun, Bopomofo Ext, CJK Strokes, Katakana Phonetic Ext ---
+    // --- Enclosed CJK Letters, CJK Compatibility ---
+    // --- CJK Unified Ideographs Extension A ---
+    // --- Yijing Hexagram Symbols ---
+    // --- CJK Unified Ideographs ---
+    // (all require fonts-noto-cjk which is not installed)
+    addAll(0x2E80..0x9FFF)
+
+    // --- Yi Syllables, Yi Radicals (no Noto Yi font available) ---
+    addAll(0xA000..0xA4CF)
 
     // --- Vai ---
     addAll(0xA62C..0xA63F)
