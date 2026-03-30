@@ -6,7 +6,6 @@ import no.nav.brev.brevbaker.*
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
-import no.nav.pensjon.brev.pdfbygger.typst.CHARACTER_BLOCKLIST
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.languages
@@ -76,7 +75,7 @@ class PensjonLatexITest {
     @Test
     fun `all supported characters render in a single PDF`() {
         val allSupported = (1..Char.MAX_VALUE.code)
-            .filter { code -> !Char(code).isSurrogate() && !CHARACTER_BLOCKLIST.contains(code) }
+            .filter { code -> !Char(code).isSurrogate() } // surrogate's er UTF-16 som vi ikke serialiserer uansett.
 
         // Split into lines of 64 characters for readability in the PDF
         val lines = allSupported.chunked(64) { chunk ->
@@ -188,7 +187,6 @@ class PensjonLatexITest {
     private fun isValidCodePoint(code: Int): Boolean {
         if (Char(code).isSurrogate()) return false
         if (code == 0) return false
-        if (CHARACTER_BLOCKLIST.contains(code)) return false
         return true
     }
 

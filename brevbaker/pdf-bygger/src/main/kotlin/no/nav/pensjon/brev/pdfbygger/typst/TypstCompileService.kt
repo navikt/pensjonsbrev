@@ -27,6 +27,9 @@ class TypstCompileService(
         "typst", "compile",
         "--root", workingDir.toString(),
         "--pdf-standard", "ua-1",
+        "--ignore-system-fonts",
+        "--font-path", "/usr/share/fonts/truetype/sourcesans3",
+        "--font-path", "/usr/share/fonts/truetype/noto",
         "letter.typ",
         // Output PDF to stdout instead of writing to a file
         "-",
