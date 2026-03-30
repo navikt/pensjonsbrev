@@ -44,7 +44,7 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Vi stanser derfor uføretrygden din midlertidig. Dette fremkommer av folketrygdloven §12-10 tredje ledd." },
+                    bokmal { + "Vi stanser derfor uføretrygden din midlertidig. Dette fremkommer av folketrygdloven § 12-10 tredje ledd." },
                 )
             }
             paragraph {

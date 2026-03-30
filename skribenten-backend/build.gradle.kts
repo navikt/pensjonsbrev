@@ -107,5 +107,6 @@ dependencies {
     }
     testImplementation(libs.ktor.client.mock)
     testImplementation(libs.testcontainers.postgresql)
+    testImplementation(libs.jackson.yaml)
 
 }

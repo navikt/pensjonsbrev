@@ -30,24 +30,24 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
     ) {
         title {
             text(
-                bokmal { + "Varsel om lavere utbetaling av uføretrygd" },
+                bokmal { + "Varsel om endring av uføretrygd" },
             )
         }
         outline {
             paragraph {
                 text(
-                    bokmal { + "Fra 1. juli 2026 vil du få en lavere utbetaling av uføretrygd fordi stortinget har vedtatt at minstesatsen endres. Din nye årlige beregnede uføretrygd før skatt vil være 2,329 G."},
+                    bokmal { + "Fra 1. juli 2026 vil du få en endring i uføretrygden fordi Stortinget har vedtatt at minstesatsen endres."},
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Grunnbeløpet (G) justeres 1. mai hvert år. I vedtaksbrevet du vil få fra oss, kommer det mer informasjon og beregninger om hvordan dette vil påvirke uføretrygden din."},
+                    bokmal { + "Grunnbeløpet (G) justeres 1. mai hvert år. Du vil få et vedtak fra oss etter justeringen av grunnbeløpet. Da kan vi lage riktige beregninger av hvordan endringen påvirker uføretrygden din."},
                 )
             }
 
             title1 {
                 text(
-                    bokmal { + "Derfor får du lavere utbetaling av uføretrygd" },
+                    bokmal { + "Derfor får du endring i uføretrygden" },
                 )
             }
             paragraph {
@@ -57,7 +57,12 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Denne lovendringen gjelder for deg som mottar uføretrygd som er en omregnet uførepensjon med virkning fra 1. januar 2015. Det fører til at minstesatsen for gifte og samboere nå blir lik for alle." },
+                    bokmal { + "Lovendringen gjelder for deg som fikk uførepensjonen din omregnet til uføretrygd i 2015. Endringen fører til at alle gifte og samboende nå får lik minstesats." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { + "Se folketrygdlovens § 12-13 andre ledd andre punktum." },
                 )
             }
 
@@ -68,18 +73,37 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "I vedtaksbrevet du vil få fra oss, får du mer informasjon og beregninger av hvordan dette påvirker din uføretrygd." },
+                    bokmal { + "I vedtaksbrevet du vil få fra oss, kommer det mer informasjon og beregninger av hvordan dette påvirker uføretrygden din." },
                 )
             }
             paragraph {
-                text(
-                    bokmal { + "Når du får en lavere utbetaling vil det også føre til en lavere reduksjonsprosent." },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { + "Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en lavere utbetaling av uføretrygd føre til en høyere utbetaling av barnetillegget. " },
-                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"Endringen kan føre til at du får en endret reduksjonsprosent(kompensasjonsgrad)." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Har du barnetillegg, kan denne endringen påvirke utbetalingen av barnetillegget ditt. Uføretrygd regnes med som inntekt når vi beregner størrelsen på barnetillegget ditt. Derfor kan en endring av uføretrygd føre til en endring av barnetillegget." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Har du en egenopptjening som er høyere enn 2,329 G, vil vi bruke denne i beregningen av uføretrygden din." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Denne endringen vil også gjelde for deg som får avkortet uføretrygd på grunn av redusert trygdetid." },
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Denne endringen påvirker også deg som har gradert uføretrygd." },
+                        )
+                    }
+                }
             }
 
             title1 {
@@ -89,18 +113,12 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Dette er kun et varsel. Mener du vi har feil opplysninger om saken din, kan du melde fra til oss før vi fatter et vedtak. Fristen for å komme med tilbakemeldinger er 2 uker fra du får dette brevet. Du kan skrive til oss på $KONTAKT_URL eller ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE. " },
+                    bokmal { + "Dette er kun et varsel. Mener du vi har feil opplysninger om saken din, kan du melde fra til oss før vi fatter et vedtak. Fristen for å komme med tilbakemeldinger er 2 uker fra du får dette brevet. Du kan skrive til oss på $KONTAKT_URL eller ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE." },
                 )
             }
 
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)
-
-            title1 {
-                text(
-                    bokmal { + "Dette er endringene i loven:" },
-                )
-            }
         }
     }
 }

@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.model.Dto
 
 class SendBrevPolicy(private val ferdigRedigertPolicy: FerdigRedigertPolicy) {
 
-    fun kanSende(brev: Brevredigering, document: Dto.Document): Outcome<Unit, BrevredigeringError> {
+    suspend fun kanSende(brev: Brevredigering, document: Dto.Document): Outcome<Unit, BrevredigeringError> {
         ferdigRedigertPolicy.erFerdigRedigert(brev).onError { return failure(it) }
 
         if (!brev.laastForRedigering) {

@@ -81,7 +81,7 @@
 }
 
 /* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
-.PARAGRAPH:has(+ .PARAGRAPH > ul) {
+.PARAGRAPH:has(+ .PARAGRAPH > ul:first-child) {
   margin-bottom: 0;
 }
 

@@ -3,15 +3,12 @@ package no.nav.pensjon.brev.ufore.maler.info
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.LoependeInntektsAvkortningSelectors.forventetInntektAar
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.LoependeInntektsAvkortningSelectors.inntektsgrenseAar
-import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.loependeInntektsAvkortning
+import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDtoSelectors.belopsgrense
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
@@ -27,10 +24,6 @@ object InfoEndretUforetrygdPgaInntekt : AutobrevTemplate<InfoEndretUTPgaInntektD
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
-
-        val forventetInntekt = loependeInntektsAvkortning.forventetInntektAar
-        val inntektsgrense = loependeInntektsAvkortning.inntektsgrenseAar
-        val belopsgrense = if (forventetInntekt.greaterThan(inntektsgrense).equals(true)) forventetInntekt else inntektsgrense
 
         title {
             text(

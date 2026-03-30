@@ -24,6 +24,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 //PE_GP_04_030 Vedtak opphør av gjenlevendepensjon
+//Brevgruppe 3
 
 @TemplateModelHelpers
 object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonDto> {
@@ -38,7 +39,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - opphør av gjenlevendepensjon",
+            displayTitle = "Vedtak - opphør av ytelse til gjenlevendepensjon",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )

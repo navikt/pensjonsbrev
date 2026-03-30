@@ -80,14 +80,16 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                 TBU034V_036V(pe)
             )
         }
-        includePhrase(TBU037V_1(pe))
-        includePhrase(TBU037V_2(pe))
-        includePhrase(TBU038V_1(pe))
-        includePhrase(TBU038V_2(pe))
-        includePhrase(TBU037V_3(pe))
-        includePhrase(TBU037V_4(pe))
-        includePhrase(TBU038V_3(pe))
-        includePhrase(TBU038V_4(pe))
+        showIf(!pe.ut_uforetidspunkt_foer_17()) {
+            includePhrase(TBU037V_1(pe))
+            includePhrase(TBU037V_2(pe))
+            includePhrase(TBU038V_1(pe))
+            includePhrase(TBU038V_2(pe))
+            includePhrase(TBU037V_3(pe))
+            includePhrase(TBU037V_4(pe))
+            includePhrase(TBU038V_3(pe))
+            includePhrase(TBU038V_4(pe))
+        }
 
         showIf(pe.ut_trygdetid()) {
             includePhrase(TBU039V_TBU044V_1(pe))
@@ -134,7 +136,10 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             }
         }
 
-        showIf(pe.ut_trygdetid() and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid() and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())) {
+        showIf(pe.ut_trygdetid()
+                and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
+                and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
+                and not (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))) {
             includePhrase(TBU047V)
         }
 

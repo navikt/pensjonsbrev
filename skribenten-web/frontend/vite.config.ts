@@ -30,6 +30,20 @@ export default defineConfig(({ command }) => ({
       "~": fileURLToPath(new URL("src", import.meta.url)),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 700,
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          if (!id.includes("node_modules")) return;
+          if (id.includes("react-pdf") || id.includes("pdfjs-dist")) return "pdf";
+          if (id.includes("@navikt/ds-react") || id.includes("@navikt/aksel-icons")) return "navikt-ds";
+          if (id.includes("@tanstack/react-router") || id.includes("@tanstack/react-query")) return "tanstack";
+          return "vendor";
+        },
+      },
+    },
+  },
   server: {
     origin: "http://localhost:5173",
     cors: true,
