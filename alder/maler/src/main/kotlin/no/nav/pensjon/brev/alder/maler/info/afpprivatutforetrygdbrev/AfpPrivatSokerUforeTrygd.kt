@@ -59,11 +59,11 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav."
 
                         },
                         nynorsk {
-                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav. "
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav."
                         },
                     )
                 }
