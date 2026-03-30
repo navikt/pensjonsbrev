@@ -4,7 +4,6 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.TypstCompilerService
@@ -38,8 +37,7 @@ import java.nio.file.Path
 @Execution(ExecutionMode.CONCURRENT)
 class TypstEscapingVisualITest {
 
-    //private val pdfByggerService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
-    private val pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfByggerService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
 
     /**
      * The ultimate escape test string - contains ALL characters that might need escaping:

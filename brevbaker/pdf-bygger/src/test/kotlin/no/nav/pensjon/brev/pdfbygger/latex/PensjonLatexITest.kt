@@ -2,19 +2,17 @@ package no.nav.pensjon.brev.pdfbygger.latex
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.LaTeXCompilerService
-import no.nav.brev.brevbaker.PDFByggerTestContainer
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.createTemplate
-import no.nav.brev.brevbaker.renderTestPDF
+import no.nav.brev.brevbaker.*
+import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.pdfbygger.letterMarkup
+import no.nav.pensjon.brev.pdfbygger.typst.CHARACTER_BLOCKLIST
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -23,19 +21,13 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
-import org.opentest4j.AssertionFailedError
-import org.slf4j.LoggerFactory
-
-private const val FIND_FAILING_CHARACTERS = false
 
 @OptIn(InterneDataklasser::class)
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(ExecutionMode.CONCURRENT)
 class PensjonLatexITest {
-    private val logger = LoggerFactory.getLogger(PensjonLatexITest::class.java)
-
-    private val laTeXCompilerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
 
     @Test
     fun canRender() {
@@ -54,12 +46,12 @@ class PensjonLatexITest {
                     text(bokmal { +"Argumentet etNavn er: " }) }
             }
         }
-        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = pdfCompileService)
     }
 
     @Test
     fun `Ping pdf builder`() {
-        runBlocking { laTeXCompilerService.ping() }
+        runBlocking { pdfCompileService.ping() }
     }
 
     @Test
@@ -76,96 +68,170 @@ class PensjonLatexITest {
             title { text(bokmal { +"En fin tittel med masse LaTeX kommando tegn \$%&\\^_{}~" }) }
             outline {}
         }
-        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_escape_xmp_title", pdfByggerService = laTeXCompilerService)
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_escape_xmp_title", pdfByggerService = pdfCompileService)
 
     }
 
-    // To figure out which character makes the compilation fail, set the FIND_FAILING_CHARACTERS to true.
-    // FIND_FAILING_CHARACTERS is disabled by default to not take up too much time in case of universally failing compilation.
-    @ParameterizedTest
-    @MethodSource("allCharacterRanges")
-    fun `try different characters to attempt escaping LaTeX`(fromRange: Int, toRange: Int) {
-        //allCharacterRanges
-        val invalidCharacters = ArrayList<Int>()
 
-        // split in multiple parts so that it doesn't time out the letter compilation
+    @Test
+    fun `all supported characters render in a single PDF`() {
+        val allSupported = (1..Char.MAX_VALUE.code)
+            .filter { code -> !Char(code).isSurrogate() && !CHARACTER_BLOCKLIST.contains(code) }
 
-        isValidCharacters(fromRange, toRange, invalidCharacters)
+        // Split into lines of 64 characters for readability in the PDF
+        val lines = allSupported.chunked(64) { chunk ->
+            chunk.joinToString(" ") { Char(it).toString() }
+        }
 
-        if (invalidCharacters.isNotEmpty()) {
-            throw AssertionFailedError(
-                """
-                    Escaped characters managed to crash the letter compilation:
-                    ${invalidCharacters.joinToString()}}
-                """.trimIndent()
+        val markup = letterMarkup {
+            title { text("Character support smoke test") }
+            outline {
+                lines.forEach { line ->
+                    paragraph { text(line) }
+                }
+            }
+        }
+
+        val result = runBlocking {
+            pdfCompileService.producePDF(
+                PDFRequest(
+                    letterMarkup = markup,
+                    attachments = emptyList(),
+                    language = LanguageCode.BOKMAL,
+                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                ),
+                shouldRetry = false,
             )
         }
-        assertThat(invalidCharacters).isEmpty()
+
+        writeTestPDF("all_supported_characters_smoke_test", result.bytes)
+        println("Smoke test passed: rendered ${allSupported.size} characters in a single PDF.")
     }
 
-    private fun isValidCharacters(begin: Int, end: Int, invalidCharacters: ArrayList<Int>) {
-        if (testCharacters(begin, end)) {
-            //All characters are valid
-            return
-        } else if (FIND_FAILING_CHARACTERS) {
-            if (begin - end == 0) {
-                //Failed at single character
-                invalidCharacters.add(begin)
-                return
+    @ParameterizedTest
+    @MethodSource("allCharacterRanges")
+    fun `try different characters to attempt escaping`(fromRange: Int, toRange: Int) {
+        val unsupportedCodePoints = ArrayList<Int>()
+
+        findUnsupportedCharacters(fromRange, toRange, unsupportedCodePoints)
+
+        val summary = buildString {
+            appendLine()
+            appendLine("=== CHARACTER ESCAPE TEST SUMMARY ===")
+            appendLine("Range tested: $fromRange..$toRange")
+            if (unsupportedCodePoints.isEmpty()) {
+                appendLine("All characters in range rendered successfully.")
+            } else {
+                appendLine("Found ${unsupportedCodePoints.size} unsupported character(s):")
+                // Group consecutive code points into ranges for compact output
+                val ranges = mutableListOf<IntRange>()
+                for (code in unsupportedCodePoints.sorted()) {
+                    val last = ranges.lastOrNull()
+                    if (last != null && code == last.last + 1) {
+                        ranges[ranges.lastIndex] = last.first..code
+                    } else {
+                        ranges.add(code..code)
+                    }
+                }
+                ranges.forEach { range ->
+                    if (range.first == range.last) {
+                        val hex = "U+${range.first.toString(16).uppercase().padStart(4, '0')}"
+                        val display = describeChar(range.first)
+                        appendLine("    - $hex (code=${range.first}) $display")
+                    } else {
+                        val hexFirst = "U+${range.first.toString(16).uppercase().padStart(4, '0')}"
+                        val hexLast = "U+${range.last.toString(16).uppercase().padStart(4, '0')}"
+                        appendLine("    - $hexFirst..$hexLast (code=${range.first}..${range.last}, ${range.last - range.first + 1} chars)")
+                    }
+                }
             }
-            // there is some invalid character in the range
-            val separationPoint = begin + ((end - begin) / 2)
-            isValidCharacters(begin, separationPoint, invalidCharacters)
-            isValidCharacters(separationPoint + 1, end, invalidCharacters)
-            return
+            appendLine()
+            appendLine("=== END SUMMARY ===")
+        }
+        println(summary)
+    }
+
+    private fun describeChar(code: Int): String {
+        val char = Char(code)
+        return when {
+            char.isISOControl() -> "<control>"
+            char.isWhitespace() -> "<whitespace>"
+            !char.isDefined() -> "<undefined>"
+            else -> "'$char'"
         }
     }
 
-    private fun testCharacters(startChar: Int, endChar: Int): Boolean {
-        try {
-            val testTemplate = createTemplate(
-                letterDataType = EmptyAutobrevdata::class,
-                languages = languages(Bokmal),
-                letterMetadata = LetterMetadata(
-                    displayTitle = "En fin display tittel",
-                    distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                    brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-                )
-            ) {
-                title { text(bokmal { +"En fin tittel" }) }
+    private fun findUnsupportedCharacters(begin: Int, end: Int, unsupportedCodePoints: ArrayList<Int>) {
+        val work = ArrayDeque<Pair<Int, Int>>()
+        work.addLast(begin to end)
+
+        while (work.isNotEmpty()) {
+            val (lo, hi) = work.removeLast()
+            val validCodePoints = (lo..hi).filter { isValidCodePoint(it) }
+            if (validCodePoints.isEmpty()) continue
+
+            if (testCharacters(validCodePoints)) continue
+
+            if (validCodePoints.size == 1) {
+                unsupportedCodePoints.add(validCodePoints.single())
+                continue
+            }
+
+            val mid = lo + (hi - lo) / 2
+            work.addLast(mid + 1 to hi)
+            work.addLast(lo to mid)
+        }
+    }
+
+    // Surrogates and null cannot arrive via JSON/HTTP, so skip them.
+    // Characters in CHARACTER_BLOCKLIST are already stripped by the escape logic, so skip those too.
+    private fun isValidCodePoint(code: Int): Boolean {
+        if (Char(code).isSurrogate()) return false
+        if (code == 0) return false
+        if (CHARACTER_BLOCKLIST.contains(code)) return false
+        return true
+    }
+
+    private fun testCharacters(codePoints: List<Int>): Boolean {
+        val testString = codePoints.joinToString(" ") { Char(it).toString() }
+        return try {
+            val markup = letterMarkup {
+                title { text("En fin tittel") }
                 outline {
                     paragraph {
-                        text(bokmal { +addChars(startChar, endChar) + "test" })
+                        text(testString + "test")
                     }
                 }
             }
 
-            LetterImpl(testTemplate, EmptyAutobrevdata, Bokmal, FellesFactory.felles)
-                .renderTestPDF("LATEX_ESCAPE_TEST_$startChar-$endChar", pdfByggerService = laTeXCompilerService)
+            runBlocking {
+                pdfCompileService.producePDF(
+                    PDFRequest(
+                        letterMarkup = markup,
+                        attachments = emptyList(),
+                        language = LanguageCode.BOKMAL,
+                        brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
+                    ),
+                    shouldRetry = false,
+                )
+            }
 
-            return true
-        } catch (e: Throwable) {
-            if (!FIND_FAILING_CHARACTERS) throw e
-            else logger.error("Failed printing character in range $startChar - $endChar with message: ${e.message}")
-            return false
+            true
+        } catch (_: Throwable) {
+            false
         }
     }
 
-    private fun addChars(from: Int, to: Int): String {
-        val stringBuilder = StringBuilder()
-        for (i in from..to) {
-            stringBuilder.append(Char(i)).append(" ")
-        }
-        return stringBuilder.toString()
-    }
 
     companion object {
         @JvmStatic
         fun allCharacterRanges(): List<Arguments> {
-            val parts = 4
-            val partSize = Char.MAX_VALUE.code / parts
-            return List(parts){
-                Arguments.of((it * partSize), (((it + 1) * partSize + it).coerceAtMost(Char.MAX_VALUE.code)))
+            val parts = 16
+            val partSize = (Char.MAX_VALUE.code + 1) / parts
+            return List(parts) {
+                val start = it * partSize
+                val end = ((it + 1) * partSize - 1).coerceAtMost(Char.MAX_VALUE.code)
+                Arguments.of(start, end)
             }
         }
     }

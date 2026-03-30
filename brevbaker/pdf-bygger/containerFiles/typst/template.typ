@@ -5,22 +5,15 @@
 
 
 #let mainTitle(lettertitle) = {
-  title[
-    #pad(
-      text(
-        size: 16pt,
-        weight: "bold",
-        lettertitle,
-        tracking: 0.3pt
-      ),
-    )
-  ]
+  show heading: set text(size: 16pt, weight: "bold", tracking: 0.3pt)
+  show heading: set block(above: 0pt, below: 0pt)
+  [= #lettertitle]
 }
 
 
 #let logo = {
   pad(
-    image("NAV_logo.svg", height: 16pt),
+    image("NAV_logo.svg", height: 16pt, alt: "Nav logo"),
     bottom: 32pt
   )
 }
@@ -29,7 +22,8 @@
 #let template(lettertitle: [], doc) = {
   // generelt oppsett for brevet
   set text(
-    font:"Source Sans 3",
+    font: "Source Sans 3",
+    fallback: true, // Falls back to Noto fonts for unsupported glyphs (fonts.conf restricts to Source Sans 3 + Noto only)
     size: 11pt,
   )
 

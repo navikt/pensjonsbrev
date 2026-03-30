@@ -8,7 +8,6 @@ class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 interface PDFByggerService {
-    // TODO: Når circuit breaker-mønsteret er implementert i PEN bør vi kunne ta bort shouldRetry herifra
     suspend fun producePDF(pdfRequest: PDFRequest, path: String = PATH, shouldRetry: Boolean): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: Int, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {

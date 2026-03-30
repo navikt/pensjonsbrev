@@ -1,6 +1,7 @@
 #import "spacing.typ": getSpacing
 
 #let lastElementType = state("lastElementType", "start")
+#let lastHeadingLevel = state("lastHeadingLevel", 1)
 
 // Set to true to show visible borders around content blocks for debugging
 // DO NOT SET TO TRUE IN PROD
@@ -34,6 +35,7 @@
   sectionCounter.step()
   counter(page).update(1)
   lastElementType.update("start")
+  lastHeadingLevel.update(1)
   [#metadata("section-start")#label("section-start-" + str(sectionNumber))]
 }
 

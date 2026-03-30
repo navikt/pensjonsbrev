@@ -7,10 +7,10 @@ import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
 
-    private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
+    // Sett miljøvariabel BRUK_LOKAL_PDF_BYGGER=true for å kjøre testene lokalt mot din nyest bygde pdf-bygger.
+    private val BRUK_LOKAL_CONTAINER = System.getenv("BRUK_LOKAL_PDF_BYGGER")?.toBoolean() == true
 
-    // Overstyr denne hvis du vil kjøre testene lokalt mot din nyest bygde pdf-bygger
-    private const val BRUK_LOKAL_CONTAINER = false
+    private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
 
     private const val PORT = 8080
 

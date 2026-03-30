@@ -7,13 +7,14 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
 import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
-import java.io.File
 import java.io.IOException
 import java.nio.file.Files
 import java.nio.file.Path
+import java.util.concurrent.CompletableFuture
 import kotlin.io.path.createTempDirectory
 import kotlin.io.path.exists
 import kotlin.io.path.listDirectoryEntries
+
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
 
@@ -25,7 +26,10 @@ class TypstCompileService(
     private fun typstCommand(workingDir: Path) = listOf(
         "typst", "compile",
         "--root", workingDir.toString(),
-        "letter.typ"
+        "--pdf-standard", "ua-1",
+        "letter.typ",
+        // Output PDF to stdout instead of writing to a file
+        "-",
     )
 
     suspend fun createLetter(typstFiles: List<DocumentFile>): PDFCompilationResponse {
@@ -36,22 +40,17 @@ class TypstCompileService(
 
             // Write generated files (input.typ, letter.typ)
             typstFiles.forEach {
-                tmpDir.resolve(it.fileName).toFile().apply {
-                    createNewFile()
-                    writeText(it.content)
-                }
+                tmpDir.resolve(it.fileName).toFile().writeText(it.content)
             }
 
             when (val result: Execution = executeCompileProcess(tmpDir)) {
-                is Execution.Success -> {
-                    result.pdf.toFile().readBytes()
-                        .let { PDFCompilationResponse.Success(PDFCompilationOutput(it)) }
-                }
+                is Execution.Success ->
+                    PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
 
                 is Execution.Failure.Compilation ->
                     PDFCompilationResponse.Failure.Client(
                         reason = "PDF compilation failed",
-                        output = result.output,
+                        output = null,
                         error = result.error
                     )
 
@@ -75,34 +74,29 @@ class TypstCompileService(
         }
     }
 
-    private suspend fun executeCompileProcess(
-        workingDir: Path,
-        typstFileName: String = "letter",
-        output: Path = workingDir.resolve("process.out"),
-        error: Path = workingDir.resolve("process.err"),
-    ): Execution {
+    private suspend fun executeCompileProcess(workingDir: Path): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
                 process = ProcessBuilder(typstCommand(workingDir))
                     .directory(workingDir.toFile())
-                    .redirectOutput(ProcessBuilder.Redirect.appendTo(output.toFile()))
-                    .redirectError(ProcessBuilder.Redirect.appendTo(error.toFile()))
                     .start()
+
+                // Read stdout (PDF bytes) and stderr (error messages) concurrently
+                // to avoid deadlock when either buffer fills up
+                val stdoutFuture = CompletableFuture.supplyAsync { process.inputStream.readAllBytes() }
+                val stderrContent = String(process.errorStream.readAllBytes())
+                val pdfBytes = stdoutFuture.await()
 
                 process.onExit().await()
 
                 if (process.exitValue() == 0) {
-                    val errors = error.toFile().readText()
-                    if (errors.isNotBlank()) {
-                        logger.warn("PDF-generering gikk bra, men ga følgende typst feil: $errors")
+                    if (stderrContent.isNotBlank()) {
+                        logger.warn("PDF-generering gikk bra, men ga følgende typst feil: $stderrContent")
                     }
-                    Execution.Success(pdf = workingDir.resolve("${File(typstFileName).nameWithoutExtension}.pdf"))
+                    Execution.Success(pdfBytes = pdfBytes)
                 } else {
-                    Execution.Failure.Compilation(
-                        output = output.toFile().readText(),
-                        error = error.toFile().readText()
-                    )
+                    Execution.Failure.Compilation(error = stderrContent)
                 }
             } catch (e: IOException) {
                 Execution.Failure.Execution(e)
@@ -113,9 +107,9 @@ class TypstCompileService(
     }
 
     private sealed class Execution {
-        data class Success(val pdf: Path) : Execution()
+        class Success(val pdfBytes: ByteArray) : Execution()
         sealed class Failure : Execution() {
-            data class Compilation(val output: String, val error: String) : Failure()
+            data class Compilation(val error: String) : Failure()
             data class Execution(val cause: Throwable) : Failure()
         }
     }

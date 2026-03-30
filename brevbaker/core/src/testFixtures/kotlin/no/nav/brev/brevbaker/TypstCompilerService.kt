@@ -15,7 +15,7 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.PDFRequest
 
-class TypstCompilerService(private val pdfByggerUrl: String) : PDFByggerService {
+class TypstCompilerService(private val pdfByggerUrl: String, private val logWarning: (String) -> Unit = ::println) : PDFByggerService {
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -23,8 +23,7 @@ class TypstCompilerService(private val pdfByggerUrl: String) : PDFByggerService 
         }
         HttpResponseValidator {
             validateResponse {
-                validateResponse(it.status.value,
-                    { msg -> println(msg) }) { it.body<String>() }
+                validateResponse(it.status.value, logWarning) { it.body<String>() }
             }
         }
         install(ContentEncoding) {
