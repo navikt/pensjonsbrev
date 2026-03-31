@@ -99,7 +99,7 @@ jobs:
         uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
-          install: true
+          install: false
           browser: chrome
           component: true
 
@@ -108,7 +108,7 @@ jobs:
         uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
-          install: true
+          install: false
           browser: chrome
           component: false
           build: npm run build
