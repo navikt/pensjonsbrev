@@ -36,7 +36,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
 
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT, Sakstype.AFP, Sakstype.UFOREP)
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT)
 
 
     override val template = createTemplate(
