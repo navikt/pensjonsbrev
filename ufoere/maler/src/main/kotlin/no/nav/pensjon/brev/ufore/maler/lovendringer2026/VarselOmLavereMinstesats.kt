@@ -73,11 +73,17 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
                     nynorsk { + "Sjå folketrygdlova § 12-13 andre ledd andre punktum." },
                 )
             }
+            paragraph {
+                text(
+                    bokmal { + "I vedtaksbrevet du vil få fra oss, kommer det mer informasjon og beregninger av hvordan dette påvirker uføretrygden din." },
+                    nynorsk { +"I vedtaksbrevet du vil få frå oss, kjem det meir informasjon og utrekningar av korleis dette påverkar uføretrygda di." },
+                )
+            }
 
             title1 {
                 text(
-                    bokmal { + "Slik påvirkes du av lovendringen" },
-                    nynorsk { + "Slik vert du påverka av lovendringa" },
+                    bokmal { + "Slik kan lovendringen påvirke deg  " },
+                    nynorsk { + "Slik kan lovendringa påverke deg" },
                 )
             }
             paragraph {
