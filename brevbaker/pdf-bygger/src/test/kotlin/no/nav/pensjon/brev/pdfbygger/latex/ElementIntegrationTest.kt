@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
-import no.nav.brev.brevbaker.LaTeXCompilerService
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
 import no.nav.brev.brevbaker.TypstCompilerService

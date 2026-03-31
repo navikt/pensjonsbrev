@@ -33,4 +33,4 @@ interface PDFByggerService {
     }
 }
 
-private const val PATH = "/produserBrev"
+private const val PATH = "/produserBrev?typst=true"

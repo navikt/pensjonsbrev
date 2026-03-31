@@ -36,15 +36,12 @@ class TypstCompilerService(private val pdfByggerUrl: String, private val logWarn
     }
 
     override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput =
-            httpClient.post("$pdfByggerUrl/$PATH") { // TODO use the path. This is for testing
+            httpClient.post("$pdfByggerUrl/$path") { // TODO use the path. This is for testing
                 contentType(ContentType.Application.Json)
                 setBody(objectmapper.writeValueAsBytes(pdfRequest))
             }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 
-    companion object {
-        const val PATH = "/produserBrev?typst=true"
-    }
 }
 

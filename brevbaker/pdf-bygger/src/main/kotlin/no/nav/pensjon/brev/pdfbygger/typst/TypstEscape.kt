@@ -341,6 +341,10 @@ internal val CHARACTER_BLOCKLIST: HashSet<Int> = hashSetOf<Int>().apply {
  * - `]` - content block end
  *
  * All these characters are escaped with a backslash prefix.
+ *
+ * In addition, `//` starts a line comment even inside content blocks used as function arguments.
+ * It is broken up by inserting `#h(0pt)` (a zero-width space) between the two slashes, which
+ * has no visual effect on the rendered output.
  */
 internal fun String.typstEscape(): String =
     this.map {
@@ -362,7 +366,7 @@ internal fun String.typstEscape(): String =
                 else -> it.toString()
             }
         }
-    }.joinToString(separator = "")
+    }.joinToString(separator = "").replace("//", "/#h(0pt)/")
 
 /**
  * Escapes a string for use inside Typst string literals (inside "..." quotes).

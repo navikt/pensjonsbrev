@@ -144,7 +144,7 @@ abstract class BrevmodulTest(
             }
     }
 
-    @Tag(TestTags.MANUAL_TEST)
+    @Tag(TestTags.INTEGRATION_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filtrerPdf")
     fun <T : BrevbakerBrevdata> testPdf(
@@ -159,7 +159,7 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
+        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = TypstCompilerService(PDFByggerTestContainer.mappedUrl()))
     }
 
     @ParameterizedTest(name = "{1}, {3}", allowZeroInvocations = true)

@@ -47,8 +47,9 @@ class TypstEscapingVisualITest {
      * - Unicode/international: æ ø å Æ Ø Å ü ö ä ß é è ê ë ñ
      * - Math/currency: + - = × ÷ ± ∞ € £ ¥ $ ¢ ©
      * - Injection attempts: ]#[ #import #eval #set #show
+     * - Line comments: // (must not be treated as a comment inside content blocks)
      */
-    private val ALL_THE_SYMBOLS = """Test: \ # * _ ` $ < > @ [ ] & % ^ ~ { } | / ? ! ; : ' " æøåÆØÅ üöäß éèêëñ +-=×÷±∞ €£¥$¢© ]#[attack] #import #eval("x") #set text(red) #show """
+    private val ALL_THE_SYMBOLS = """Test: \ # * _ ` $ < > @ [ ] & % ^ ~ { } | / // ? ! ; : ' " æøåÆØÅ üöäß éèêëñ +-=×÷±∞ €£¥$¢© ]#[attack] #import #eval("x") #set text(red) #show """
 
     private fun renderTestPdf(testName: String, pdfRequest: PDFRequest) {
         runBlocking {

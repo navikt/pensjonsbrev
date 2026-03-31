@@ -79,7 +79,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
         })
     }
 
-    val pdfBygger = pdfByggerService ?: LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    val pdfBygger = pdfByggerService ?: TypstCompilerService(PDFByggerTestContainer.mappedUrl())
 
     Letter2Markup.render(this)
         .let {
