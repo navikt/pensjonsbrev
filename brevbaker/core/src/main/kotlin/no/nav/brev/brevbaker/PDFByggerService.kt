@@ -8,7 +8,9 @@ class LatexTimeoutException(msg: String, cause: Throwable? = null) : Exception(m
 class LatexInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 interface PDFByggerService {
-    suspend fun producePDF(pdfRequest: PDFRequest, path: String = PATH, shouldRetry: Boolean): PDFCompilationOutput
+    enum class TypstFeatureToggle { REDIGERBAR, AUTO }
+
+    suspend fun producePDF(pdfRequest: PDFRequest, path: String = PATH, shouldRetry: Boolean, typstFeatureToggle: TypstFeatureToggle? = null): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: Int, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {
         when (statusCode) {
@@ -33,4 +35,4 @@ interface PDFByggerService {
     }
 }
 
-private const val PATH = "/produserBrev?typst=true"
+private const val PATH = "/produserBrev"

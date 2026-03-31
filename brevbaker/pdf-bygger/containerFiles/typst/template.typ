@@ -5,17 +5,14 @@
 
 
 #let mainTitle(lettertitle) = {
-  show heading: set text(size: 16pt, weight: "bold", tracking: 0.3pt)
-  show heading: set block(above: 0pt, below: 0pt)
+  show heading: set text(size: 16pt, weight: "bold", tracking: 0.32pt)
+  show heading: set block(above: 53pt, below: 0pt)
   [= #lettertitle]
 }
 
 
 #let logo = {
-  pad(
-    image("NAV_logo.svg", height: 16pt, alt: "Nav logo"),
-    bottom: 32pt
-  )
+  image("NAV_logo.svg", height: 16pt, alt: "Nav logo")
 }
 
 

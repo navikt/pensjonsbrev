@@ -2,7 +2,7 @@
 // Format: "from-to": space (vertical space to add above the element)
 #let spacingMatrix = (
   // From "start" (beginning of document/section)
-  "start-title": 28pt,
+  "start-title": 30pt,
   "start-paragraph": 33pt,
   "start-list": 17.5pt,
   "start-table": 28pt,

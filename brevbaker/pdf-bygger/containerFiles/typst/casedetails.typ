@@ -3,11 +3,11 @@
 #let casedetails = {
   let annenMottaker = input.annenMottakerNavn != none
   set text(size: 11pt)
-  pad(
+  block(
     grid(
       columns: 2,
       column-gutter: 16mm,
-      row-gutter: 9pt,
+      row-gutter: 8.6pt,
       ..if annenMottaker {(
         [#languageSettings.annenmottakerprefix],
         [#input.annenMottakerNavn],
@@ -17,9 +17,9 @@
       )},
       [#input.gjelderNavn],
       [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
-      [#languageSettings.saksnummerprefix], 
+      [#languageSettings.saksnummerprefix],
       [#input.saksnummer #h(1fr) #input.dokumentDato],
     ),
-    bottom: 32pt,
+    above: 56.5pt,
   )
 }

@@ -4,18 +4,17 @@
 
 // Case details for attachments (simplified version without "annenMottaker")
 #let attachmentCaseDetails = {
-  set text(size: 12pt)
-  pad(
+  set text(size: 11pt)
+  block(
     grid(
       columns: 2,
-      rows: 3,
       column-gutter: 16mm,
-      row-gutter: 10pt,
+      row-gutter: 8.6pt,
       [#languageSettings.vedlegggjeldernavnprefix], [#input.gjelderNavn],
       [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
       [#languageSettings.saksnummerprefix], [#input.saksnummer #h(1fr) #input.dokumentDato],
     ),
-    bottom: 6pt,
+    above: 57.5pt,
   )
 }
 
@@ -27,13 +26,9 @@
   logo
 
   if showCaseDetails {
-    // With case details (similar to LaTeX includesakinfo)
-    v(37pt)
     attachmentCaseDetails
     mainTitle(title)
   } else {
-    // Without case details
-    v(28pt)
     mainTitle(title)
   }
 }

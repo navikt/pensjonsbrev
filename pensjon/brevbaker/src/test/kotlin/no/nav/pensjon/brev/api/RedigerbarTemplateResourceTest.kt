@@ -26,7 +26,8 @@ class RedigerbarTemplateResourceTest {
         override suspend fun producePDF(
             pdfRequest: PDFRequest,
             path: String,
-            shouldRetry: Boolean
+            shouldRetry: Boolean,
+            typstFeatureToggle: PDFByggerService.TypstFeatureToggle?
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 

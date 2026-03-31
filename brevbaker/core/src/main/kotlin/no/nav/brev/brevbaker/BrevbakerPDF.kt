@@ -13,6 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, private val pdfVedleggAppender: PDFVedleggAppender) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev).let {
+            val erRedigerbartBrev = redigertBrev == null
             pdfByggerService.producePDF(
                 PDFRequest(
                     letterMarkup = it.letterMarkup,
@@ -21,7 +22,8 @@ internal class BrevbakerPDF(private val pdfByggerService: PDFByggerService, priv
                     brevtype = letter.template.letterMetadata.brevtype,
                     pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
                 ),
-                shouldRetry = redigertBrev == null
+                shouldRetry = erRedigerbartBrev,
+                typstFeatureToggle = if(erRedigerbartBrev) PDFByggerService.TypstFeatureToggle.REDIGERBAR else PDFByggerService.TypstFeatureToggle.AUTO
             )
         }.let { pdf ->
             pdfVedleggAppender.leggPaaVedlegg(

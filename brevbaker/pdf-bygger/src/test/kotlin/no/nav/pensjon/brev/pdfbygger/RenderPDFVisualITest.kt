@@ -29,6 +29,7 @@ import org.junit.jupiter.params.provider.MethodSource
 class RenderPDFVisualITest {
 
     private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    //private val pdfCompileService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
 
     private fun render(
         overrideName: String? = null,

@@ -29,7 +29,8 @@ class TemplateResourceTest {
         override suspend fun producePDF(
             pdfRequest: PDFRequest,
             path: String,
-            shouldRetry: Boolean
+            shouldRetry: Boolean,
+            typstFeatureToggle: PDFByggerService.TypstFeatureToggle?
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
     private val autobrev = AutobrevTemplateResource("autobrev", Testmaler.hentAutobrevmaler(), fakePDFBygger)

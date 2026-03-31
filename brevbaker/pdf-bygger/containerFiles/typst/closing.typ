@@ -3,13 +3,13 @@
 
 #let attachments = {
   if(input.attachments != none and input.attachments.len() > 0){
-    text(size: 11pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
-    set list(body-indent: 15pt)
-    pad(
+    text(size: 12pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
+    set list(indent: 6.5pt, body-indent: 5pt)
+    block(
       input.attachments.map((a)=>{
         [- #a]
       }).join(),
-      bottom: 10pt
+      above: 12.8pt
     )
   }
 }
@@ -56,7 +56,7 @@
   block(
     attachments,
     breakable: false,
-    above: 40pt
+    above: 59pt
   )
   section-end(1)
 }
