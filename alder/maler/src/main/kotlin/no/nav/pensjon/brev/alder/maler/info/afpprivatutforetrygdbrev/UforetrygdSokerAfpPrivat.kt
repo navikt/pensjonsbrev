@@ -28,7 +28,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT
 
-    override val sakstyper = setOf(Sakstype.UFOREP, Sakstype.AFP_PRIVAT, Sakstype.AFP)
+    override val sakstyper = setOf(Sakstype.AFP_PRIVAT)
 
     override val kategori = Brevkategori.INFORMASJONSBREV
 
@@ -320,8 +320,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold.:" },
-                    nynorsk { +"Sjå vedlegg om atterhald." }
+                    bokmal { +"Se vedlegg om forbehold:" },
+                    nynorsk { +"Sjå vedlegg om atterhald:" }
                 )
             }
             paragraph {
@@ -400,7 +400,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                             newline()
                             text(
                                 bokmal { +"Nav familie- og pensjonsytelser" },
-                                nynorsk { +"Nav familie- og pensjonsytelser, Postboks 6600 Etterstad 0607 OSLO" }
+                                nynorsk { +"Nav familie- og pensjonsytelser" }
                             )
                             newline()
                             text(
