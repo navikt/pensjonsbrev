@@ -15,7 +15,7 @@ import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
@@ -28,12 +28,13 @@ import {
   getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import {
+  type EditedLetter,
   ElementTags,
   FontType,
   ITEM_LIST,
   LITERAL,
+  type LiteralValue,
   NEW_LINE,
   TABLE,
   TITLE_INDEX,

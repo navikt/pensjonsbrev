@@ -1,10 +1,16 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
-import type { AnyBlock, Content, ItemList, TextContent } from "~/types/brevbakerTypes";
-import { ITEM_LIST, TITLE_INDEX } from "~/types/brevbakerTypes";
+import {
+  type AnyBlock,
+  type Content,
+  ITEM_LIST,
+  type ItemList,
+  type TextContent,
+  TITLE_INDEX,
+} from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import {
   addElements,

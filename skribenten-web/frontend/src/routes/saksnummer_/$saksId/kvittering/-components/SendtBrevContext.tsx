@@ -1,7 +1,7 @@
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { createContext, useContext, useState } from "react";
 
-import type { BestillBrevError, BestillBrevResponse, BrevInfo } from "~/types/brev";
+import { type BestillBrevError, type BestillBrevResponse, type BrevInfo } from "~/types/brev";
 
 export interface BrevResult {
   status: "success" | "error";

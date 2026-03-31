@@ -2,8 +2,7 @@ import { css } from "@emotion/react";
 import { Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-import type { MalType } from "~/api/brevbaker-api-endpoints";
-import { getBrevkoder } from "~/api/brevbaker-api-endpoints";
+import { getBrevkoder, type MalType } from "~/api/brevbaker-api-endpoints";
 
 export const Route = createFileRoute("/templates")({
   loader: async ({ context }) => {

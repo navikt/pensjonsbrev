@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { LiteralValue, TextContent } from "~/types/brevbakerTypes";
+import { type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select } from "../utils";
 

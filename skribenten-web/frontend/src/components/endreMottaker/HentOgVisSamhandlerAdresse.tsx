@@ -1,11 +1,11 @@
 import { Skeleton, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 
 import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SamhandlerTypeCode } from "~/types/apiTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type SamhandlerTypeCode } from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 import { SAMHANDLER_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";

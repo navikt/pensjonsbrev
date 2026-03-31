@@ -1,4 +1,4 @@
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
 import brev from "../../fixtures/bekreftelsePåFlyktningstatus/brev.json";
 import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";

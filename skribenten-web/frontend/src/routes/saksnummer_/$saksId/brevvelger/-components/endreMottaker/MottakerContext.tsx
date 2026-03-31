@@ -1,7 +1,7 @@
 import { createContext, useContext, useState } from "react";
 
-import type { Mottaker } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type Mottaker } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 
 const MottakerContext = createContext<{
   mottaker: Nullable<Mottaker>;

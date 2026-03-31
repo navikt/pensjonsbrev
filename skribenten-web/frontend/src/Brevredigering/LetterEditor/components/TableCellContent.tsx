@@ -1,9 +1,8 @@
 import { EditableText } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
-import type { LiteralValue, TextContent } from "~/types/brevbakerTypes";
-import { LITERAL, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import { LITERAL, type LiteralValue, NEW_LINE, type TextContent, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { TableCellIndex } from "../model/state";
+import { type TableCellIndex } from "../model/state";
 
 type TableCellContentProps = {
   content: TextContent;

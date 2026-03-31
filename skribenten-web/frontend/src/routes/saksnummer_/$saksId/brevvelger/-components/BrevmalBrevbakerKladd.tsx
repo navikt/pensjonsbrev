@@ -10,14 +10,13 @@ import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMott
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
+import { type LetterMetadata } from "~/types/apiTypes";
+import { type BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
-import type { SubmitTemplateOptions } from "../route";
-import { Route } from "../route";
+import { Route, type SubmitTemplateOptions } from "../route";
 
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;

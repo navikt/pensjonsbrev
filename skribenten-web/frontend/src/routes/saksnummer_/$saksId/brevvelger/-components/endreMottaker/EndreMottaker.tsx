@@ -3,8 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import type { Adresse } from "~/types/apiTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type Adresse } from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 
 import { Route } from "../../route";
 
