@@ -54,14 +54,28 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
+
       - uses: actions/setup-node@v6
         with:
           node-version-file: ".tool-versions"
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
+
+      - name: Cache Cypress binary
+        if: ${{ inputs.cypress }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
+
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+
+      - name: Install Cypress binary
+        if: ${{ inputs.cypress }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx cypress install
 
       - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/frontend
