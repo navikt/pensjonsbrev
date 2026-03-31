@@ -59,7 +59,6 @@ describe("Endrer på mottaker", () => {
     //velger direkte oppslag, og fyller ut resten av form
     cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
     cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
-    //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
     cy.getDataCy("endre-mottaker-identtype-select").select("Norsk orgnr");
     cy.get('[name="finnSamhandler.direkteOppslag.id"]').type("direkte-oppslag-id");
@@ -117,7 +116,6 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("endre-mottaker-søketype-select").select("Organisasjonsnavn");
     cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
     cy.getDataCy("endre-mottaker-organisasjonsnavn-innOgUtland").should("have.value", "ALLE");
-    //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
     cy.get('[name="finnSamhandler.organisasjonsnavn.navn"]').type("navnet på samhandler");
 
@@ -174,7 +172,6 @@ describe("Endrer på mottaker", () => {
     //velger personnavn, og fyller ut resten av form
     cy.getDataCy("endre-mottaker-søketype-select").select("Personnavn");
     cy.getDataCy("endre-mottaker-søk-button").should("be.visible");
-    //TODO - vil vi trigge et søk for å sjekke at validerings feil vises?
     cy.contains("Samhandlertype").click().type("adv{enter}");
     cy.get('[name="finnSamhandler.personnavn.fornavn"]').click().type("Fornavnet");
     cy.get('[name="finnSamhandler.personnavn.etternavn"]').type("Etternavnet");
@@ -208,6 +205,102 @@ describe("Endrer på mottaker", () => {
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     );
     cy.getDataCy("order-letter-success-message");
+  });
+
+  it("viser valideringsfeil for direkte oppslag med tomme felter", () => {
+    cy.getDataCy("brevmal-search").click().type("brev fra nav");
+    cy.getDataCy("brevmal-button").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+
+    cy.getDataCy("endre-mottaker-søketype-select").select("Direkte oppslag");
+    cy.getDataCy("endre-mottaker-søk-button").click();
+
+    //samhandlertype, identtype og id er påkrevd
+    cy.getDataCy("endre-mottaker-modal").find(".aksel-error-message").should("have.length.at.least", 2);
+    cy.getDataCy("endre-mottaker-modal").contains("Feltet må fylles ut").should("be.visible");
+  });
+
+  it("viser valideringsfeil for organisasjonsnavn med tomme felter", () => {
+    cy.getDataCy("brevmal-search").click().type("brev fra nav");
+    cy.getDataCy("brevmal-button").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+
+    cy.getDataCy("endre-mottaker-søketype-select").select("Organisasjonsnavn");
+    cy.getDataCy("endre-mottaker-søk-button").click();
+
+    //samhandlertype og navn er påkrevd
+    cy.getDataCy("endre-mottaker-modal").find(".aksel-error-message").should("have.length.at.least", 1);
+    cy.getDataCy("endre-mottaker-modal").contains("Feltet må fylles ut").should("be.visible");
+  });
+
+  it("viser valideringsfeil for personnavn med tomme felter", () => {
+    cy.getDataCy("brevmal-search").click().type("brev fra nav");
+    cy.getDataCy("brevmal-button").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+
+    cy.getDataCy("endre-mottaker-søketype-select").select("Personnavn");
+    cy.getDataCy("endre-mottaker-søk-button").click();
+
+    //samhandlertype, fornavn og etternavn er påkrevd
+    cy.getDataCy("endre-mottaker-modal").find(".aksel-error-message").should("have.length.at.least", 2);
+    cy.getDataCy("endre-mottaker-modal").contains("Feltet må fylles ut").should("be.visible");
+  });
+
+  it("viser valideringsfeil for manuell adresse med norsk adresse", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
+    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+    cy.contains("Legg til manuelt").click();
+
+    //submitter med tomme felter — navn er obligatorisk
+    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Obligatorisk").should("be.visible");
+
+    //fyller ut navn, setter ugyldig postnummer
+    cy.contains("Navn").click().type("Test Testesen");
+    cy.contains("Postnummer").click().type("abc");
+    cy.contains("Poststed").click().type("Stedet");
+    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Postnummer må være 4 siffer").should("be.visible");
+  });
+
+  it("viser valideringsfeil for manuell adresse med utenlandsk adresse", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    });
+    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
+
+    cy.visit("/saksnummer/123456/brevvelger", {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+
+    cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
+    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+    cy.contains("Legg til manuelt").click();
+
+    //bytter til utenlandsk adresse — postnr/poststed skal skjules
+    cy.getDataCy("land-combobox").click().type("Sver{enter}");
+    cy.contains("Postnummer").should("not.exist");
+    cy.contains("Poststed").should("not.exist");
+
+    //fyller ut navn men lar adresselinje 1 stå tom
+    cy.contains("Navn").click().type("Test Testesen");
+    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Adresselinje 1 må fylles ut").should("be.visible");
   });
 
   it("kan legge inn manuell adresse for brevbaker brev", () => {
