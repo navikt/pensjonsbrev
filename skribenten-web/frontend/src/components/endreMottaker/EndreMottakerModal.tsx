@@ -117,7 +117,14 @@ export const EndreMottakerModal = (properties: {
             ? "Vil du avbryte endring av mottaker?"
             : "Endre mottaker",
       }}
-      onClose={onAvbrytClick}
+      onBeforeClose={() => {
+        if (form.formState.dirtyFields.manuellAdresse) {
+          setVilAvbryte(true);
+          return false;
+        }
+        return true;
+      }}
+      onClose={properties.onClose}
       open={properties.åpen}
       /*
       ved å ha modalen som en portal vil ikke browseren klage på at vi kommer til å ha en form inni en annen form.

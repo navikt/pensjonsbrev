@@ -18,6 +18,12 @@ describe("Endrer på mottaker", () => {
       request.reply({ fixture: "bestillBrevExstream.json" });
     }).as("Brev fra nav - exstream");
 
+    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
+      fixture: "modelSpecification.json",
+    }).as("modelSpecification");
+
+    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
+
     cy.visit("/saksnummer/123456/brevvelger", {
       onBeforeLoad(window) {
         cy.stub(window, "open").as("window-open");
@@ -247,17 +253,6 @@ describe("Endrer på mottaker", () => {
   });
 
   it("viser valideringsfeil for manuell adresse med norsk adresse", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecification.json",
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
-
-    cy.visit("/saksnummer/123456/brevvelger", {
-      onBeforeLoad(window) {
-        cy.stub(window, "open").as("window-open");
-      },
-    });
-
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
     cy.getDataCy("toggle-endre-mottaker-modal").click();
@@ -276,17 +271,6 @@ describe("Endrer på mottaker", () => {
   });
 
   it("viser valideringsfeil for manuell adresse med utenlandsk adresse", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecification.json",
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
-
-    cy.visit("/saksnummer/123456/brevvelger", {
-      onBeforeLoad(window) {
-        cy.stub(window, "open").as("window-open");
-      },
-    });
-
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
     cy.getDataCy("toggle-endre-mottaker-modal").click();
@@ -304,17 +288,6 @@ describe("Endrer på mottaker", () => {
   });
 
   it("kan legge inn manuell adresse for brevbaker brev", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecification.json",
-    });
-    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
-
-    cy.visit("/saksnummer/123456/brevvelger", {
-      onBeforeLoad(window) {
-        cy.stub(window, "open").as("window-open");
-      },
-    });
-
     //søker opp og velger brevet vi vil ha
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
@@ -357,12 +330,6 @@ describe("Endrer på mottaker", () => {
     cy.getDataCy("endre-mottaker-modal").should("not.exist");
   });
   it("må bekrefte avbrytelse dersom det finnes endringer for manuellAdresse", () => {
-    cy.intercept("GET", "/bff/skribenten-backend/brevmal/INFORMASJON_OM_SAKSBEHANDLINGSTID/modelSpecification", {
-      fixture: "modelSpecification.json",
-    }).as("modelSpecification");
-
-    cy.intercept("GET", "/bff/skribenten-backend/land", { fixture: "land.json" });
-
     cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
     cy.contains("Informasjon om saksbehandlingstid").click();
     cy.getDataCy("toggle-endre-mottaker-modal").click();
@@ -377,6 +344,28 @@ describe("Endrer på mottaker", () => {
     cy.contains("Nei, ikke avbryt").click();
     //velger å bekrefte avbrytelse
     cy.contains("Avbryt").click();
+    cy.contains("Ja, avbryt").click();
+    cy.getDataCy("endre-mottaker-modal").should("not.exist");
+  });
+
+  it("ESC-tasten gir bekreftelsesdialog dersom det finnes endringer for manuellAdresse", () => {
+    cy.getDataCy("brevmal-search").click().type("Informasjon om saksbehandlingstid");
+    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.getDataCy("toggle-endre-mottaker-modal").click();
+    cy.contains("Legg til manuelt").click();
+    cy.contains("Navn").click().type("Fornavn Etternavnsen");
+
+    //trigger("cancel") tilsvarer å taste ESC, men cy.press(Cypress.Keybaord.Keys.ESC) gir ingen respons
+    //alternativet er å installere cypress-real-events-> cy.get('body').realPress('Escape')
+    cy.get("dialog").trigger("cancel");
+
+    //får opp bekreftelse, akkurat som ved klikk på Avbryt
+    cy.contains("Vil du avbryte endring av mottaker?").should("be.visible");
+    cy.contains("Infoen du har skrevet inn blir ikke lagret. Du kan ikke angre denne handlingen.").should("be.visible");
+    //kan navigere seg tilbake til form
+    cy.contains("Nei, ikke avbryt").click();
+    //velger å bekrefte avbrytelse via ESC igjen
+    cy.get("dialog").trigger("cancel");
     cy.contains("Ja, avbryt").click();
     cy.getDataCy("endre-mottaker-modal").should("not.exist");
   });
