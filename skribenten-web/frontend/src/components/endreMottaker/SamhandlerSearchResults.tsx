@@ -9,7 +9,7 @@ import { type Nullable } from "~/types/Nullable";
 import { humanizeName } from "~/utils/stringUtils";
 import { trackEvent } from "~/utils/umami";
 
-type SelectionMethod = "radio" | "row-click" | "keyboard";
+type SelectionMethod = "radio-klikk" | "rad-klikk" | "tastatur";
 
 export function SamhandlerSearchResults({
   samhandlere,
@@ -99,10 +99,10 @@ function SamhandlerResultRow({
             data-cy="velg-samhandler"
             name="samhandler-valg"
             onChange={() => {
-              selectWithTracking(clickedByMouse.current ? "radio" : "keyboard");
+              selectWithTracking(clickedByMouse.current ? "radio-klikk" : "tastatur");
               clickedByMouse.current = false;
             }}
-            onClick={() => {
+            onMouseDown={() => {
               clickedByMouse.current = true;
             }}
             type="radio"
@@ -112,7 +112,7 @@ function SamhandlerResultRow({
       </Table.DataCell>
       <Table.DataCell
         onClick={() => {
-          selectWithTracking("row-click");
+          if (!selected) selectWithTracking("rad-klikk");
           if (!open) setOpen(true);
         }}
       >
@@ -120,7 +120,7 @@ function SamhandlerResultRow({
       </Table.DataCell>
       <Table.DataCell
         onClick={() => {
-          selectWithTracking("row-click");
+          if (!selected) selectWithTracking("rad-klikk");
           if (!open) setOpen(true);
         }}
       >
