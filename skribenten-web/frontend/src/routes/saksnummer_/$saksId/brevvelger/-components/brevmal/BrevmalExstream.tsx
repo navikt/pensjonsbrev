@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Spacer, TextField, VStack } from "@navikt/ds-react";
+import { Spacer, TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 import type { AxiosError } from "axios";
 import { useEffect, useRef } from "react";
@@ -8,7 +8,6 @@ import type { z } from "zod";
 
 import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
-import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
 import type { LetterMetadata, OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
 import type { Nullable } from "~/types/Nullable";
 
@@ -97,12 +96,7 @@ export default function BrevmalForExstream({
           )}
         >
           {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
-          {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && (
-            <VStack gap="space-8">
-              <HentOgVisAdresse sakId={saksId} samhandlerId={idTSSEkstern} showMottakerTitle />
-              <EndreMottaker />
-            </VStack>
-          )}
+          {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && <EndreMottaker saksId={saksId} />}
 
           <SelectEnhet />
           {letterTemplate.redigerbarBrevtittel && (

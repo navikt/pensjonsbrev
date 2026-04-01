@@ -51,7 +51,10 @@
         "useBlockStatements": "off",
         "useConst": "error",
         "useExplicitLengthCheck": "error",
-        "useImportType": "error",
+        "useImportType": {
+          "level": "error",
+          "options": { "style": "auto" }
+        },
         "useSelfClosingElements": "error",
         "useThrowNewError": "error"
       },
@@ -79,6 +82,26 @@
   "assist": {
     "actions": {
       "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL:",
+              ":BLANK_LINE:",
+              ":BUN:",
+              ":BLANK_LINE:",
+              ":NODE:",
+              ":BLANK_LINE:",
+              ":PACKAGE_WITH_PROTOCOL:",
+              ":BLANK_LINE:",
+              ":PACKAGE:",
+              ":BLANK_LINE:",
+              ":ALIAS:",
+              ":BLANK_LINE:",
+              ":PATH:"
+            ]
+          }
+        },
         "useSortedAttributes": {
           "level": "on",
           "options": {

@@ -56,7 +56,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
     );
   }
 
-  //hvis ingen spesifikk brev er valgt, og noen står klar til å sendes, vis knapp for å sende
+  //hvis ingen spesifikke brev er valgt, og noen er klar til å sendes, vis knapp for å sende
   if (!properties.valgtBrevId && properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b))) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">

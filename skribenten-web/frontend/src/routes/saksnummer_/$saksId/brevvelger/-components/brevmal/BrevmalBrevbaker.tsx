@@ -1,4 +1,5 @@
-import { BodyShort, Button, HStack, Modal, Spacer, VStack } from "@navikt/ds-react";
+import { PencilIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, HStack, Label, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -192,33 +193,48 @@ const BrevmalBrevbaker = (props: {
         <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
           <VStack flexGrow="1" gap="space-32">
             <VStack gap="space-8">
-              <VStack>
-                <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
-
-                {modalÅpen && (
-                  <EndreMottakerModal
-                    error={null}
-                    isPending={null}
-                    onBekreftNyMottaker={(mottaker) => {
-                      form.setValue("mottaker", mapEndreMottakerValueTilMottaker(mottaker));
-                      setModalÅpen(false);
-                    }}
-                    onClose={() => setModalÅpen(false)}
-                    resetOnBekreftState={() => form.setValue("mottaker", null)}
-                    åpen={modalÅpen}
-                  />
-                )}
-              </VStack>
-              <HStack>
-                <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
-                  Endre mottaker
+              <HStack align="center" justify="space-between">
+                <Label size="small">Mottaker</Label>
+                <Button
+                  data-cy="toggle-endre-mottaker-modal"
+                  icon={<PencilIcon />}
+                  iconPosition="right"
+                  onClick={() => setModalÅpen(true)}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Endre
                 </Button>
-                {mottaker !== null && (
-                  <Button onClick={() => form.setValue("mottaker", null)} size="small" type="button" variant="tertiary">
+              </HStack>
+
+              <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle={false} />
+              {modalÅpen && (
+                <EndreMottakerModal
+                  error={null}
+                  isPending={null}
+                  onBekreftNyMottaker={(mottaker) => {
+                    form.setValue("mottaker", mapEndreMottakerValueTilMottaker(mottaker));
+                    setModalÅpen(false);
+                  }}
+                  onClose={() => setModalÅpen(false)}
+                  resetOnBekreftState={() => form.setValue("mottaker", null)}
+                  åpen={modalÅpen}
+                />
+              )}
+              {mottaker !== null && (
+                <HStack>
+                  <Button
+                    css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
+                    onClick={() => form.setValue("mottaker", null)}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  >
                     Tilbakestill mottaker
                   </Button>
-                )}
-              </HStack>
+                </HStack>
+              )}
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
