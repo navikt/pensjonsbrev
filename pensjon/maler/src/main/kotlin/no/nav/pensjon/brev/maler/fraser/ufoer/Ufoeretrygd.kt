@@ -11,11 +11,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.B
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_OVER_18
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.IKKE_MOTTATT_DOK
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.MINDRE_ETT_AR_BT_FLT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fodselsdato
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.begrunnelse
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
@@ -388,8 +388,8 @@ object Ufoeretrygd {
                 }
                 paragraph {
                     text(
-                        bokmal { +"Søknaden er avslått for barn født " + barnetillegg.fodselsdato.format() + "." },
-                        nynorsk { +"Søknaden er avslått for barn fødd " + barnetillegg.fodselsdato.format() + "." },
+                        bokmal { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
+                        nynorsk { +"Søknaden er avslått for " + barnetillegg.format(BarnetilleggFormatter) + "." },
                     )
                 }
                 title2 {
