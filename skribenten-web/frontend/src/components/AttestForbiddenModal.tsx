@@ -1,7 +1,7 @@
 import { BodyShort, Button, Heading, Modal } from "@navikt/ds-react";
 import { useEffect } from "react";
 
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { trackEvent } from "~/utils/umami";
 
 function AttestForbiddenModal({ reason, onClose }: { reason: AttestForbiddenReason; onClose: () => void }) {

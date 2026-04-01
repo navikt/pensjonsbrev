@@ -1,6 +1,6 @@
 import { BodyLong, Button, Modal } from "@navikt/ds-react";
 
-import type { ReservasjonResponse } from "~/types/brev";
+import { type ReservasjonResponse } from "~/types/brev";
 
 const ReservertBrevError = ({
   reservasjon,

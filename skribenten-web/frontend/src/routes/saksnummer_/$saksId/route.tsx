@@ -13,7 +13,7 @@ import {
   getSakContext,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakContextDto } from "~/types/apiTypes";
+import { type SakContextDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { humanizeName } from "~/utils/stringUtils";
 

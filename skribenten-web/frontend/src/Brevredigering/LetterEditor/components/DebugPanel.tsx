@@ -1,16 +1,15 @@
 import { Global } from "@emotion/react";
 import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
-import type { AkselColor } from "@navikt/ds-react/esm/types";
+import { type AkselColor } from "@navikt/ds-react/esm/types";
 import type React from "react";
-import type { Dispatch } from "react";
-import { useEffect, useState } from "react";
+import { type Dispatch, useEffect, useState } from "react";
 
 import { isItemContentIndex, isNew, text as textOf } from "~/Brevredigering/LetterEditor/actions/common";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
-import type { Focus, LetterEditorState, SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus, type LetterEditorState, type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { AnyBlock, Content, Item } from "~/types/brevbakerTypes";
+import { type AnyBlock, type Content, type Item } from "~/types/brevbakerTypes";
 
 export function DebugPanel() {
   const { freeze, editorState } = useEditor();

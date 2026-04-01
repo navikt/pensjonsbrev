@@ -1,19 +1,18 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spacer, TextField, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
-import type { z } from "zod";
+import { type z } from "zod";
 
 import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
 import HentOgVisAdresse from "~/components/endreMottaker/HentOgVisAdresse";
-import type { LetterMetadata, OrderExstreamLetterRequest, SpraakKode } from "~/types/apiTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type LetterMetadata, type OrderExstreamLetterRequest, type SpraakKode } from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 
-import type { SubmitTemplateOptions } from "../../route";
-import { Route } from "../../route";
+import { Route, type SubmitTemplateOptions } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";

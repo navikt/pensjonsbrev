@@ -11,7 +11,7 @@ import {
 import Actions from "../actions";
 import { newParagraph } from "../actions/common";
 import { LetterEditor } from "../LetterEditor";
-import type { LetterEditorState } from "../model/state";
+import { type LetterEditorState } from "../model/state";
 import { getRange } from "../services/caretUtils";
 
 const EditorWithState = () => {

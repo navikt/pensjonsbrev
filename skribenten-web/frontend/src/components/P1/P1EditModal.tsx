@@ -9,8 +9,8 @@ import { type FieldErrors, FormProvider, useForm } from "react-hook-form";
 import { getBrev, getP1Override, saveP1Override } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { useLandDataP1 } from "~/hooks/useLandData";
-import type { P1Redigerbar } from "~/types/p1";
-import type { P1RedigerbarForm } from "~/types/p1FormTypes";
+import { type P1Redigerbar } from "~/types/p1";
+import { type P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { ApiError } from "../ApiError";
 import { P1AvslagTab } from "./P1AvslagTab";

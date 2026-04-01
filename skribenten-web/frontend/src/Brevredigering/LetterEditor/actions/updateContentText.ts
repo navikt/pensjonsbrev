@@ -1,9 +1,9 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
 import { type LiteralValue, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex } from "../model/utils";
 import { cleanseText, isTable } from "./common";
 

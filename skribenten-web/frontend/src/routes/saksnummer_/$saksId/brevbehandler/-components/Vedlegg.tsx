@@ -19,8 +19,7 @@ import { Controller, useForm } from "react-hook-form";
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import type { AlltidValgbartVedlegg } from "~/types/brev";
-import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {

@@ -11,7 +11,7 @@ import {
   getFieldDefaultValue,
   isFieldNullableOrBoolean,
 } from "~/Brevredigering/ModelEditor/components/utils";
-import type { FieldType } from "~/types/brevbakerTypes";
+import { type FieldType } from "~/types/brevbakerTypes";
 
 export const FieldEditor = ({
   prependedName,
