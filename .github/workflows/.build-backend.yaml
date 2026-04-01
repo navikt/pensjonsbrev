@@ -89,7 +89,7 @@ jobs:
           salsa: false
       - name: "Upload jar"
         if: ${{ inputs.uploadJar }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{inputs.target}}-jar
           path: ${{ inputs.path }}/build/install/${{ inputs.target }}/lib
