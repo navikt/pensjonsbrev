@@ -62,16 +62,16 @@ jobs:
       packages: "write"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Download jar
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: pdf-bygger-jar
           path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
@@ -106,10 +106,10 @@ jobs:
     outputs:
       latex: ${{ steps.changes.outputs.latex }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
         id: changes
         with:
           filters: |
@@ -127,13 +127,13 @@ jobs:
       pull-requests: write
       packages: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@0723195856401067f7a2779048b490ace7a47d7c # v5.0.2
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
@@ -145,14 +145,14 @@ jobs:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
+        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da # v1.9.1
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
         if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
@@ -168,15 +168,15 @@ jobs:
       pull-requests: write
     steps:
       - name: Download visuals
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
       - name: Convert visual-test pdfs
-        uses: routsi/ImageMagick-action@v1.1.1
+        uses: routsi/ImageMagick-action@bc9b6081e53f682096b9ad5407f1a01ea9b5b7b8 # v1.1.1
         with:
           command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version: "24"
       - run: npm install --save-dev @percy/cli
@@ -189,7 +189,7 @@ jobs:
         env:
           PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
       - name: Comment percy review link
-        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
+        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
         if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
         with:
           issue-number: ${{ github.event.number }}
@@ -224,7 +224,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - uses: ./.github/pr
