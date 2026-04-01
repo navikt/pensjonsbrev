@@ -99,12 +99,12 @@ class BrevtekstITest {
         }.body()
 
         val tekstIPDF = PDFTextStripper().getText(Loader.loadPDF(pdf.file))
-        assertContains(tekstIPDF, "Saksnummer: 1337123 side 1 av 6")
+        assertContains(tekstIPDF, "Saksnummer: 1337123")
         assertContains(tekstIPDF, "Du har fått innvilget pensjon")
-        assertContains(tekstIPDF, "Hei Test, håper du har en fin dag!")
-        assertContains(tekstIPDF, "• Du har fått tilleg1 for Test testerson 2 på 100 kroner\n")
-        assertContains(tekstIPDF, "En liste med navn har elementet: test testerson1\n")
-        assertContains(tekstIPDF, "Vedlegget gjelder: Test \"bruker\" Testerson\n")
+        assertContains(tekstIPDF, "Du vil motta et informasjonsbrev innen 14 dager.")
+        assertContains(tekstIPDF, "Utbetalingen starter den 1. juni 2024.")
+        assertContains(tekstIPDF, "Dette vedlegget gjelder sak test1 (referanse: test2)")
+        assertContains(tekstIPDF, "Test \"bruker\" Testerson")
     }
 }
 

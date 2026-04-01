@@ -4,13 +4,19 @@
 
 // Case details for attachments (simplified version without "annenMottaker")
 #let attachmentCaseDetails = {
+  let annenMottaker = input.annenMottakerNavn != none
   set text(size: 11pt)
   block(
     grid(
       columns: 2,
       column-gutter: 16mm,
       row-gutter: 8.6pt,
-      [#languageSettings.vedlegggjeldernavnprefix], [#input.gjelderNavn],
+      if(annenMottaker){ // TODO sjekk med karoline om dette er riktig.
+        [#languageSettings.vedlegggjeldernavnprefix]
+      } else {
+        [#languageSettings.navnprefix]
+      },
+      [#input.gjelderNavn],
       [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
       [#languageSettings.saksnummerprefix], [#input.saksnummer #h(1fr) #input.dokumentDato],
     ),
