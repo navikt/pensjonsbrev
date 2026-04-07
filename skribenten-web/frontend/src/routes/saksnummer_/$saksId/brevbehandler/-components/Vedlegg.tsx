@@ -225,13 +225,22 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                   hideLegend
                   legend="Velg vedlegg"
                   onChange={(selectedKodes: string[]) => {
-                    const selectedVedlegg = vedleggKoder.filter((v) => selectedKodes.includes(v.kode));
+                    const selectedVedlegg = vedleggKoder.filter(
+                      (v) => selectedKodes.includes(v.kode) && v.tilgjengeligForSpraak,
+                    );
                     field.onChange(selectedVedlegg);
                   }}
                   value={field.value.map((v) => v.kode)}
                 >
                   {vedleggKoder.map((vedlegg) => (
-                    <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
+                    <Checkbox
+                      description={
+                        !vedlegg.tilgjengeligForSpraak ? "Vedlegget støtter ikke språket valgt for brevet" : undefined
+                      }
+                      disabled={!vedlegg.tilgjengeligForSpraak}
+                      key={vedlegg.kode}
+                      value={vedlegg.kode}
+                    >
                       {vedlegg.visningstekst}
                     </Checkbox>
                   ))}

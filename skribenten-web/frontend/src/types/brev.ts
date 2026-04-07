@@ -152,3 +152,8 @@ export interface AlltidValgbartVedlegg {
   kode: string;
   visningstekst: string;
 }
+
+export interface AlltidValgbartVedleggV2 extends AlltidValgbartVedlegg {
+  spraak: string[];
+  tilgjengeligForSpraak: boolean;
+}
