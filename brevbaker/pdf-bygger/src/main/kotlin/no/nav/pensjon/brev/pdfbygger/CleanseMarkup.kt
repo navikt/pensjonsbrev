@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger.latex
+package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup

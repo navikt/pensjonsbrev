@@ -50,7 +50,8 @@ object Pesysbrevkoder {
         UT_OMREGNING_ENSLIG_AUTO,
         UT_OPPHOER_BT_AUTO,
         UT_UNG_UFOER_20_AAR_AUTO,
-        UT_VARSEL_SAKSBEHANDLINGSTID_AUTO;
+        UT_VARSEL_SAKSBEHANDLINGSTID_AUTO,
+        UT_VEDTAK_LAVERE_MINSTESATS_2026;
 
         override fun kode(): String = this.name
     }
