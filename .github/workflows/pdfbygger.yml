@@ -152,7 +152,7 @@ jobs:
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
         if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
