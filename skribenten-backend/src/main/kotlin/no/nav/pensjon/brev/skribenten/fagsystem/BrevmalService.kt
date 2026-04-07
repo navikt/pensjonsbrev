@@ -26,6 +26,13 @@ import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
 
+data class AlltidValgbartVedleggMedTilgjengelighet(
+    val kode: String,
+    val visningstekst: String,
+    val spraak: Set<LanguageCode>,
+    val tilgjengeligForSpraak: Boolean,
+)
+
 class BrevmalService(
     private val brevbakerService: BrevbakerService,
     private val penClient: PenClient,
@@ -66,11 +73,18 @@ class BrevmalService(
     suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
         brevbakerService.getAlltidValgbareVedlegg(brevId)
 
-    suspend fun getAlltidValgbareVedleggV2(brevId: BrevId): Map<AlltidValgbartVedleggKode, Boolean> {
+    suspend fun getAlltidValgbareVedleggV2(brevId: BrevId): List<AlltidValgbartVedleggMedTilgjengelighet> {
         val spraakIBrevet = transaction {
             BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
         }
-        return brevbakerService.getAlltidValgbareVedlegg(brevId).map { it to (it.spraak?.contains(spraakIBrevet) ?: false) }.toMap()
+        return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
+            AlltidValgbartVedleggMedTilgjengelighet(
+                kode = it.kode,
+                visningstekst = it.visningstekst,
+                spraak = it.spraak,
+                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
+            )
+        }
     }
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
