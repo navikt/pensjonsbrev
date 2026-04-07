@@ -537,7 +537,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "Vedtaket er gjort etter EØS-avtalen artikkel 7 i forordning 883/2004 og folketrygdlova § 12-2." },
                     )
                 }
-            //}
+            }
 
             //PE_Vedtaksdata_Kravhode_KravArsakType = "omgj_etter_klage"
             showIf(kravarsak.equalTo("omgj_etter_klage")){
