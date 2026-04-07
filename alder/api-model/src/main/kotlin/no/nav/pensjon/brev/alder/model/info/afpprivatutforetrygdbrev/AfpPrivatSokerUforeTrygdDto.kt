@@ -12,7 +12,7 @@ data class AfpPrivatSokerUforeTrygdDto (
 ) : RedigerbarBrevdata<AfpPrivatSokerUforeTrygdDto.SaksBehandlerValg, AfpPrivatSokerUforeTrygdDto.PesysData> {
 
     data class SaksBehandlerValg(
-        @DisplayText("Bruker har søkt UforeTrygd")
+        @DisplayText("Bruker har søkt UføreTrygd")
         val harSoktUforeTrygd: Boolean,
     ) : SaksbehandlerValgBrevdata
 
