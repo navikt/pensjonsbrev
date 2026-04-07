@@ -13,7 +13,7 @@ data class AfpPrivatSokerUforeTrygdDto (
 
     data class SaksBehandlerValg(
         @DisplayText("Bruker har søkt UføreTrygd")
-        val harSoktUforeTrygd: Boolean,
+        val harSoktUforeTrygd: Boolean = true,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
