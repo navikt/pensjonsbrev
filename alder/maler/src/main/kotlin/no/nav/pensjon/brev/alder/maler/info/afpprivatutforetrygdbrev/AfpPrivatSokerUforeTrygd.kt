@@ -75,10 +75,12 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     )
                 }
             }
-            paragraph { text(
-                bokmal { +"Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:" },
-                nynorsk { +"Du kan ikkje ha AFP samstundes med uføretrygd, sjå AFP-tilskottsloven § 8. Du må derfor velje mellom:" }
-            ) }
+            paragraph {
+                text(
+                    bokmal { +"Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:" },
+                    nynorsk { +"Du kan ikkje ha AFP samstundes med uføretrygd, sjå AFP-tilskottsloven § 8. Du må derfor velje mellom:" }
+                )
+            }
             paragraph {
                 list {
                     item {
@@ -220,7 +222,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            title2 {
+            title3 {
                 text(
                     bokmal { +"Uføretrygd fra Nav og alderspensjon" },
                     nynorsk { +"Uføretrygd frå Nav og alderspensjon" }
@@ -274,8 +276,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +"Alderspensjon 100%" },
-                                nynorsk { +"Alderspensjon 100%" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" }
                             )
                         }
                         column(alignment = RIGHT) {
@@ -378,7 +380,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            showIf(saksbehandlerValg.harSoktUforeTrygd.not()) {
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
                 title2 {
                     text(
                         bokmal { +"Dette må du gjøre" },
