@@ -66,7 +66,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Download jar
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: pdf-bygger-jar
           path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
@@ -168,7 +168,7 @@ jobs:
       pull-requests: write
     steps:
       - name: Download visuals
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
