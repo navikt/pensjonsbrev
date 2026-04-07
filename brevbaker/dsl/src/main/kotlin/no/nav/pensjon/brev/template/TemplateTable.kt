@@ -50,12 +50,11 @@ class TableHeaderScope<Lang : LanguageSupport, LetterData : Any> internal constr
     fun column(
         columnSpan: Int = 1,
         alignment: Element.OutlineContent.ParagraphContent.Table.ColumnAlignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT,
-        init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit,
+        init: TextOnlyScope<Lang, LetterData>.() -> Unit,
     ) {
-
         children.add(
             Element.OutlineContent.ParagraphContent.Table.ColumnSpec(
-                Element.OutlineContent.ParagraphContent.Table.Cell(PlainTextOnlyScope<Lang, LetterData>().apply(init).elements),
+                Element.OutlineContent.ParagraphContent.Table.Cell(TextOnlyScope<Lang, LetterData>().apply(init).elements),
                 alignment,
                 columnSpan
             )
