@@ -1,7 +1,7 @@
 #import "state.typ": withSpacing, lastHeadingLevel
 
 // Font sizes for each heading depth level (depth 2, 3, 4)
-#let titleSizes = (13pt, 12pt, 11pt)
+#let titleSizes = (14pt, 12pt, 11pt)
 
 // Render a heading at the correct consecutive level for PDF/UA-1 compliance.
 // The actual heading depth is clamped to at most lastHeadingLevel + 1

@@ -2,46 +2,46 @@
 // Format: "from-to": space (vertical space to add above the element)
 #let spacingMatrix = (
   // From "start" (beginning of document/section)
-  "start-title": 30pt,
-  "start-paragraph": 33pt,
-  "start-list": 17.5pt,
-  "start-table": 28pt,
-  "start-form": 23pt,
+  "start-title": 26pt,
+  "start-paragraph": 26pt,
+  "start-list": 26pt,
+  "start-table": 26pt,
+  "start-form": 26pt,
 
   // From "title"
-  "title-title": 5pt,
-  "title-paragraph": 12pt,
-  "title-list": 10.5pt,
-  "title-table": 11pt,
-  "title-form": 12pt,
+  "title-title": 10pt,
+  "title-paragraph": 10pt,
+  "title-list": 10pt,
+  "title-table": 10pt,
+  "title-form": 10pt,
 
   // From "paragraph"
-  "paragraph-title": 29pt,
-  "paragraph-paragraph": 25pt,
-  "paragraph-list": 9pt,
-  "paragraph-table": 18pt,
-  "paragraph-form": 16pt,
+  "paragraph-title": 28pt,
+  "paragraph-paragraph": 16pt,
+  "paragraph-list": 11pt,
+  "paragraph-table": 16pt,
+  "paragraph-form": 22pt, // TODO håkon fix. Det er ett ekstra linjeskift her av en eller annen grunn.
 
   // From "list"
-  "list-title": 23pt,
-  "list-paragraph": 26.5pt,
-  "list-list": 26pt,
-  "list-table": 20pt,
-  "list-form": 25pt,
+  "list-title": 28pt,
+  "list-paragraph": 16pt,
+  "list-list": 16pt,
+  "list-table": 22pt,
+  "list-form": 22pt,
 
   // From "table"
-  "table-title": 26pt,
-  "table-paragraph": 27pt,
-  "table-list": 18pt,
-  "table-table": 25pt,
+  "table-title": 28pt,
+  "table-paragraph": 16pt,
+  "table-list": 16pt,
+  "table-table": 22pt,
   "table-form": 16pt,
 
   // From "form"
-  "form-title": 26pt,
-  "form-paragraph": 25pt,
-  "form-list": 26pt,
+  "form-title": 28pt,
+  "form-paragraph": 22pt,
+  "form-list": 16pt,
   "form-table": 16pt,
-  "form-form": 28pt,
+  "form-form": 22pt,
 )
 
 // Get spacing for transitioning from previous element to current element

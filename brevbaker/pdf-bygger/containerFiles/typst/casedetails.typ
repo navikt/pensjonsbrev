@@ -6,8 +6,8 @@
   block(
     grid(
       columns: 2,
-      column-gutter: 16mm,
-      row-gutter: 8.6pt,
+      column-gutter: 24pt,
+      row-gutter: 8pt,
       ..if annenMottaker {(
         [#languageSettings.annenmottakerprefix],
         [#input.annenMottakerNavn],
@@ -20,6 +20,6 @@
       [#languageSettings.saksnummerprefix],
       [#input.saksnummer #h(1fr) #input.dokumentDato],
     ),
-    above: 56.5pt,
+    above: 48pt,
   )
 }

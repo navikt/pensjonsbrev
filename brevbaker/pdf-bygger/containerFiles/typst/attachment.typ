@@ -32,6 +32,7 @@
   logo
 
   if showCaseDetails {
+  // TODO legg til samme case details.
     attachmentCaseDetails
     mainTitle(title)
   } else {

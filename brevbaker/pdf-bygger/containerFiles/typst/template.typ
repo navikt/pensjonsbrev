@@ -5,8 +5,8 @@
 
 
 #let mainTitle(lettertitle) = {
-  show heading: set text(size: 16pt, weight: "bold", tracking: 0.32pt)
-  show heading: set block(above: 53pt, below: 0pt)
+  show heading: set text(size: 17pt, weight: "bold", tracking: 0.32pt)
+  show heading: set block(above: 48pt, below: 0pt)
   [= #lettertitle]
 }
 
@@ -24,7 +24,6 @@
     size: 11pt,
   )
 
-  show link: it => it.body // disable automatic hyperlinking.
   set par(
     leading: 8.7pt,  // Line spacing within paragraphs
     spacing: 24pt, // Space between paragraphs

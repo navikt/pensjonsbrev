@@ -65,7 +65,7 @@
   // Build styled header cells
   let styled-header-cells = header-cells.map(cell =>
     table.cell(
-      inset: (x: 7.8pt, y: 11.3pt),
+      inset: (x: 8pt, y: 10pt),
       fill: columnheadercolor,
       stroke: (bottom: 0.9pt + headersepcolor, top: none, left: none, right: none)
     )[#text(weight: "semibold", cell)]
@@ -77,7 +77,7 @@
     align: column-align,
     column-gutter: 0pt,
     row-gutter: 0pt,
-    inset: (x: 7.6pt, y: 7.2pt),
+    inset: (x: 8pt, y: 6pt),
     stroke: (x, y) => (
       left: none,
       right: none,

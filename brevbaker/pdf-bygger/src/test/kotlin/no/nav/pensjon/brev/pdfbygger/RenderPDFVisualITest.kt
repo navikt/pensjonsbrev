@@ -28,8 +28,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @Execution(ExecutionMode.CONCURRENT)
 class RenderPDFVisualITest {
 
-    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
-    //private val pdfCompileService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
+    //private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfCompileService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
 
     private fun render(
         overrideName: String? = null,
@@ -352,6 +352,18 @@ class RenderPDFVisualITest {
         }
     }
 
+    @Test
+    fun `small text then bullet list`(){
+        render {
+            paragraph {
+                text(
+                    bokmal { + "Dette er en liste:"}
+                )
+                testList()
+            }
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("allElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
@@ -392,7 +404,7 @@ class RenderPDFVisualITest {
                 paragraph {
                     formText(Size.FILL, {
                         text(bokmal { +"Underskrift:" })
-                    })
+                    }, false)
                 }
             }
         }

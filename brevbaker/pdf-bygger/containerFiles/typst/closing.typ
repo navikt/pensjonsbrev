@@ -36,12 +36,13 @@
     } else { // autobrev
       block(above: 8.8pt)[
         #input.avsenderEnhet
-        #v(2.5pt)
-        #if input.erVedtaksbrev {
-          languageSettings.closingautomatisktextvedtaksbrev
-        } else {
-          languageSettings.closingautomatisktextinfobrev
-        }
+        #block(
+          if input.erVedtaksbrev {
+            languageSettings.closingautomatisktextvedtaksbrev
+          } else {
+            languageSettings.closingautomatisktextinfobrev
+          }, above: 22pt
+        )
       ]
     }
   ]
@@ -51,12 +52,12 @@
   block(
     closingGreeting,
     breakable: false,
-    above: 47.8pt
+    above: 44pt
   )
   block(
     attachments,
     breakable: false,
-    above: 59pt
+    above: 44pt
   )
   section-end(1)
 }
