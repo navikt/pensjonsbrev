@@ -9,7 +9,6 @@ import no.nav.pensjon.brev.template.Language
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 
-
 @Tag(TestTags.MANUAL_TEST)
 class InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandTest {
 
