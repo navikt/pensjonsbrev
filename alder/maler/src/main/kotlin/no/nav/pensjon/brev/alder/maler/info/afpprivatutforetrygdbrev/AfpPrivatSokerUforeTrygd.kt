@@ -36,7 +36,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
 
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT, Sakstype.AFP, Sakstype.UFOREP)
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT)
 
 
     override val template = createTemplate(
@@ -348,8 +348,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold.:" },
-                    nynorsk { +"Sjå vedlegg om atterhald." }
+                    bokmal { +"Se vedlegg om forbehold:" },
+                    nynorsk { +"Sjå vedlegg om atterhald:" }
                 )
             }
             paragraph {
@@ -406,7 +406,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                             newline()
                             text(
                                 bokmal { +"Nav familie- og pensjonsytelser" },
-                                nynorsk { +"Nav familie- og pensjonsytelser, Postboks 6600 Etterstad 0607 OSLO" }
+                                nynorsk { +"Nav familie- og pensjonsytelser" }
                             )
                             newline()
                             text(
