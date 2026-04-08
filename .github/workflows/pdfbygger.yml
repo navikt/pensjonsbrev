@@ -173,6 +173,9 @@ jobs:
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
       - name: Convert visual-test pdfs
         uses: routsi/ImageMagick-action@v1.1.1
         with:
