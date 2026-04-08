@@ -1,10 +1,9 @@
 import { css } from "@emotion/react";
-import type { SortState } from "@navikt/ds-react";
-import { BodyShort, Button, Table, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, type SortState, Table, VStack } from "@navikt/ds-react";
 import { sortBy } from "lodash";
 import { useState } from "react";
 
-import type { Samhandler } from "~/types/apiTypes";
+import { type Samhandler } from "~/types/apiTypes";
 import { humanizeName } from "~/utils/stringUtils";
 
 export function SamhandlerSearchResults({

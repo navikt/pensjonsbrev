@@ -1,8 +1,7 @@
-import type { Draft } from "immer";
-import { produceWithPatches } from "immer";
+import { type Draft, produceWithPatches } from "immer";
 
 import { addToHistory } from "../history";
-import type { LetterEditorState } from "../model/state";
+import { type LetterEditorState } from "../model/state";
 
 /**
  * An {@link Action} is a function that accepts a value T and returns a modified copy of the value.

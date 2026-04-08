@@ -1,11 +1,11 @@
-import type {
-  FieldType,
-  ObjectTypeSpecification,
-  ObjectTypeSpecifications,
-  TArray,
-  TEnum,
-  TObject,
-  TScalar,
+import {
+  type FieldType,
+  type ObjectTypeSpecification,
+  type ObjectTypeSpecifications,
+  type TArray,
+  type TEnum,
+  type TObject,
+  type TScalar,
 } from "~/types/brevbakerTypes";
 
 export type ScalarValue = number | string | boolean;

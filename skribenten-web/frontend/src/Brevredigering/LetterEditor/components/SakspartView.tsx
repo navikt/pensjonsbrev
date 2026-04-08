@@ -2,7 +2,7 @@ import { HGrid } from "@navikt/ds-react";
 import { intlFormat } from "date-fns";
 
 import { SpraakKode } from "~/types/apiTypes";
-import type { Sakspart } from "~/types/brevbakerTypes";
+import { type Sakspart } from "~/types/brevbakerTypes";
 
 export const SakspartView = ({ sakspart, spraak }: { sakspart: Sakspart; spraak: SpraakKode }) => {
   const dokumentDato = Date.parse(sakspart.dokumentDato);

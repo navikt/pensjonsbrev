@@ -15,7 +15,7 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { partition } from "lodash";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -23,7 +23,7 @@ import { z } from "zod";
 
 import { hentAlleBrevInfoForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevError, BestillBrevResponse, BrevInfo } from "~/types/brev";
+import { type BestillBrevError, type BestillBrevResponse, type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 

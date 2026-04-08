@@ -1,5 +1,5 @@
 import DOMPurify from "dompurify";
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
 import {
   addElements,
@@ -25,24 +25,26 @@ import {
 import { splitRecipe } from "~/Brevredigering/LetterEditor/actions/split";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
-import type {
-  Focus,
-  ItemContentIndex,
-  LetterEditorState,
-  LiteralIndex,
-  TableCellIndex,
+import {
+  type Focus,
+  type ItemContentIndex,
+  type LetterEditorState,
+  type LiteralIndex,
+  type TableCellIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
-import type {
-  AnyBlock,
-  Table as BrevbakerTable,
-  Cell,
-  ColumnSpec,
-  Content,
-  LiteralValue,
-  Row,
-  TextContent,
+import {
+  type AnyBlock,
+  type Table as BrevbakerTable,
+  type Cell,
+  type ColumnSpec,
+  type Content,
+  FontType,
+  type LiteralValue,
+  type Row,
+  TABLE,
+  type TextContent,
+  TITLE_INDEX,
 } from "~/types/brevbakerTypes";
-import { FontType, TABLE, TITLE_INDEX } from "~/types/brevbakerTypes";
 
 import { isEmptyBlock, isItemList, isLiteral, isParagraph, isTableCellIndex, isTextContent } from "../model/utils";
 

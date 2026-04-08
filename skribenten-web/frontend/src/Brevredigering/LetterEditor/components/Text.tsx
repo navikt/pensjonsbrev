@@ -1,6 +1,5 @@
-import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
-import type { NewLine, VariableValue } from "~/types/brevbakerTypes";
-import { FontType, NEW_LINE, VARIABLE } from "~/types/brevbakerTypes";
+import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { FontType, NEW_LINE, type NewLine, VARIABLE, type VariableValue } from "~/types/brevbakerTypes";
 
 import { isBlockContentIndex, isItemContentIndex } from "../actions/common";
 import { useEditor } from "../LetterEditor";

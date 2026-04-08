@@ -1,25 +1,31 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type {
-  AnyBlock,
-  Cell,
-  Content,
-  Header,
-  Identifiable,
-  Item,
-  ItemList,
-  LiteralValue,
-  NewLine,
-  ParagraphBlock,
-  Row,
-  Table,
-  TextContent,
-  VariableValue,
+import {
+  type AnyBlock,
+  type Cell,
+  type Content,
+  ElementTags,
+  type Header,
+  type Identifiable,
+  ITEM_LIST,
+  type Item,
+  type ItemList,
+  LITERAL,
+  type LiteralValue,
+  NEW_LINE,
+  type NewLine,
+  PARAGRAPH,
+  type ParagraphBlock,
+  type Row,
+  TABLE,
+  type Table,
+  type TextContent,
+  VARIABLE,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import { ElementTags, ITEM_LIST, LITERAL, NEW_LINE, PARAGRAPH, TABLE, VARIABLE } from "~/types/brevbakerTypes";
 
-import type { ContentGroup, Focus, LiteralIndex, TableCellIndex } from "./state";
+import { type ContentGroup, type Focus, type LiteralIndex, type TableCellIndex } from "./state";
 
 export const SOFT_HYPHEN = "\u00ad";
 export const ZERO_WIDTH_SPACE = "\u200B";

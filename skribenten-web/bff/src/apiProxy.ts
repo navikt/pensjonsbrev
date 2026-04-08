@@ -1,5 +1,5 @@
 import { getToken, requestOboToken } from "@navikt/oasis";
-import type { Express, NextFunction, Request, Response, Router } from "express";
+import { type Express, type NextFunction, type Request, type Response, type Router } from "express";
 import { createProxyMiddleware } from "http-proxy-middleware";
 
 import config from "./config.js";

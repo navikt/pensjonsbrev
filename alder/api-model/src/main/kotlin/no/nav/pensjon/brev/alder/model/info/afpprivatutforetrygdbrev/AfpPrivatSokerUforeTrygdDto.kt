@@ -12,8 +12,8 @@ data class AfpPrivatSokerUforeTrygdDto (
 ) : RedigerbarBrevdata<AfpPrivatSokerUforeTrygdDto.SaksBehandlerValg, AfpPrivatSokerUforeTrygdDto.PesysData> {
 
     data class SaksBehandlerValg(
-        @DisplayText("Bruker har søkt UforeTrygd")
-        val harSoktUforeTrygd: Boolean,
+        @DisplayText("Bruker har søkt UføreTrygd")
+        val harSoktUforeTrygd: Boolean = true,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

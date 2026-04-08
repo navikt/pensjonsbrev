@@ -1,12 +1,12 @@
 import { Box, Button, TextField, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useForm } from "react-hook-form";
 
 import { getSakContext } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakContextDto } from "~/types/apiTypes";
+import { type SakContextDto } from "~/types/apiTypes";
 
 type RootSearch = { enhetsId: string | undefined };
 

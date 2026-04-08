@@ -1,5 +1,5 @@
 import { getToken, validateToken } from "@navikt/oasis";
-import type { NextFunction, Request, Response } from "express";
+import { type NextFunction, type Request, type Response } from "express";
 
 export const verifyToken = async (request: Request, response: Response, next: NextFunction): Promise<void> => {
   const token = getToken(request);

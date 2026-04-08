@@ -1,12 +1,12 @@
 import { ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { sendBrev } from "~/api/sak-api-endpoints";
 import { useSendtBrev } from "~/routes/saksnummer_/$saksId/kvittering/-components/SendtBrevContext";
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
 import KvittertBrevContent from "./KvittertBrevContent";
 import KvittertBrevHeader from "./KvittertBrevHeader";

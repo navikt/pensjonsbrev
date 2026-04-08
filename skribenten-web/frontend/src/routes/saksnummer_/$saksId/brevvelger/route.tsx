@@ -1,4 +1,4 @@
-import type { CSSObject } from "@emotion/react";
+import { type CSSObject } from "@emotion/react";
 import {
   Accordion,
   Alert,
@@ -14,8 +14,7 @@ import {
   Spacer,
   VStack,
 } from "@navikt/ds-react";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
@@ -27,10 +26,9 @@ import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
-import type { LetterMetadata } from "~/types/apiTypes";
-import { BrevSystem } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
+import { type BrevInfo } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 import { trackEvent } from "~/utils/umami";

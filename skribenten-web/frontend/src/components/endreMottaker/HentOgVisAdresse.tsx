@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getKontaktAdresse, hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
-import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
+import { type Adresse, type KontaktAdresseResponse } from "~/types/apiTypes";
 import { humanizeName } from "~/utils/stringUtils";
 
 import { erAdresseKontaktAdresse } from "./EndreMottakerUtils";

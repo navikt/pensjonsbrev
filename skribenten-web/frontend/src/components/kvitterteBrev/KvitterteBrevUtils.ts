@@ -1,6 +1,5 @@
-import type { BestillBrevResponse, BrevInfo } from "~/types/brev";
-import { Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 
 export interface KvittertBrev {
   apiStatus: "error" | "success";

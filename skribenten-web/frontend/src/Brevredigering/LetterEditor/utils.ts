@@ -1,11 +1,10 @@
-import type { Dispatch, SetStateAction } from "react";
-import { useCallback } from "react";
+import { type Dispatch, type SetStateAction, useCallback } from "react";
 
 import { FontType } from "~/types/brevbakerTypes";
 
 import Actions from "./actions";
 import { applyAction } from "./lib/actions";
-import type { LetterEditorState } from "./model/state";
+import { type LetterEditorState } from "./model/state";
 
 export enum Typography {
   PARAGRAPH = "PARAGRAPH",
