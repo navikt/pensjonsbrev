@@ -7,7 +7,6 @@
   pagebreak(to: "odd", weak: false)
   section-start(sectionNumber)
 
-  // Show the NAV logo
   logo
   if showCaseDetails {
     casedetails
