@@ -31,21 +31,6 @@ public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
 	public static fun values ()[Lno/nav/brev/brevbaker/HttpStatusCodes;
 }
 
-public final class no/nav/brev/brevbaker/LatexCompileException : java/lang/Exception {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public final class no/nav/brev/brevbaker/LatexInvalidException : java/lang/Exception {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
-public final class no/nav/brev/brevbaker/LatexTimeoutException : java/lang/Exception {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
-	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
-}
-
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
 	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;ZLno/nav/brev/brevbaker/PDFByggerService$TypstFeatureToggle;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;Ljava/lang/String;ZLno/nav/brev/brevbaker/PDFByggerService$TypstFeatureToggle;Lkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
@@ -63,6 +48,21 @@ public final class no/nav/brev/brevbaker/PDFByggerService$TypstFeatureToggle : j
 	public static fun getEntries ()Lkotlin/enums/EnumEntries;
 	public static fun valueOf (Ljava/lang/String;)Lno/nav/brev/brevbaker/PDFByggerService$TypstFeatureToggle;
 	public static fun values ()[Lno/nav/brev/brevbaker/PDFByggerService$TypstFeatureToggle;
+}
+
+public final class no/nav/brev/brevbaker/PDFCompileException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class no/nav/brev/brevbaker/PDFInvalidException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+}
+
+public final class no/nav/brev/brevbaker/PDFTimeoutException : java/lang/Exception {
+	public fun <init> (Ljava/lang/String;Ljava/lang/Throwable;)V
+	public synthetic fun <init> (Ljava/lang/String;Ljava/lang/Throwable;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
 }
 
 public abstract interface class no/nav/brev/brevbaker/PDFVedleggAppender {

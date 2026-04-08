@@ -325,58 +325,15 @@ internal val CHARACTER_BLOCKLIST: HashSet<Int> = hashSetOf<Int>().apply {
 }
 
 /**
- * Escapes a string for use in Typst content mode (inside [...] content blocks).
- *
- * In Typst content mode, the following characters have special meaning and need escaping:
- * - `\` - escape character (must be escaped first)
- * - `#` - starts code/function calls
- * - `*` - bold markup
- * - `_` - emphasis/italic markup
- * - `` ` `` - raw/code markup
- * - `$` - math mode
- * - `<` - label start
- * - `>` - label end
- * - `@` - reference/citation
- * - `[` - content block start
- * - `]` - content block end
- *
- * All these characters are escaped with a backslash prefix.
- *
- * In addition, `//` starts a line comment even inside content blocks used as function arguments.
- * It is broken up by inserting `#h(0pt)` (a zero-width space) between the two slashes, which
- * has no visual effect on the rendered output.
- */
-internal fun String.typstEscape(): String =
-    this.map {
-        if (CHARACTER_BLOCKLIST.contains(it.code)) {
-            ""
-        } else {
-            when (it) {
-                '\\' -> "\\\\"
-                '#' -> "\\#"
-                '*' -> "\\*"
-                '_' -> "\\_"
-                '`' -> "\\`"
-                '.' -> "\\."
-                '$' -> "\\$"
-                '<' -> "\\<"
-                '>' -> "\\>"
-                '@' -> "\\@"
-                '[' -> "\\["
-                ']' -> "\\]"
-                else -> it.toString()
-            }
-        }
-    }.joinToString(separator = "").replace("//", "/#h(0pt)/")
-
-/**
  * Escapes a string for use inside Typst string literals (inside "..." quotes).
  *
- * In Typst string literals:
- * - `\` must be escaped as `\\`
- * - `"` must be escaped as `\"`
- * - Newlines should be escaped as `\n`
- * - Tabs should be escaped as `\t`
+ * Typst string escape sequences:
+ * - `\\` for a backslash
+ * - `\"` for a quote
+ * - `\n` for a newline
+ * - `\r` for a carriage return
+ * - `\t` for a tab
+ * - `\u{XXXX}` for a hexadecimal Unicode escape sequence
  */
 internal fun String.typstStringEscape(): String =
     this.map {

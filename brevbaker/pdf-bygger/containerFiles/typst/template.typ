@@ -20,7 +20,7 @@
   // generelt oppsett for brevet
   set text(
     font: "Source Sans 3",
-    fallback: true, // Falls back to Noto fonts for unsupported glyphs (fonts.conf restricts to Source Sans 3 + Noto only)
+    fallback: true, // Falls back to Noto fonts for unsupported glyphs
     size: 11pt,
   )
 

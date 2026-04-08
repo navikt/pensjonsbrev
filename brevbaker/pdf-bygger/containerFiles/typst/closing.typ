@@ -2,16 +2,14 @@
 #import "content/state.typ": section-end
 
 #let attachments = {
-  if(input.attachments != none and input.attachments.len() > 0){
-    text(size: 12pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
-    set list(indent: 6.5pt, body-indent: 5pt)
-    block(
-      input.attachments.map((a)=>{
-        [- #a]
-      }).join(),
-      above: 12.8pt
-    )
-  }
+  text(size: 12pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
+  set list(indent: 6.5pt, body-indent: 5pt)
+  block(
+    input.attachments.map((a)=>{
+      [- #a]
+    }).join(),
+    above: 12.8pt
+  )
 }
 
 #let closingGreeting = {
@@ -52,12 +50,16 @@
   block(
     closingGreeting,
     breakable: false,
-    above: 44pt
+    above: 44pt,
+    below: 0pt,
   )
-  block(
-    attachments,
-    breakable: false,
-    above: 44pt
-  )
+  if(input.attachments != none and input.attachments.len() > 0){
+    block(
+      attachments,
+      breakable: false,
+      above: 44pt,
+      below: 0pt,
+    )
+  }
   section-end(1)
 }

@@ -26,7 +26,7 @@ class TypstCompileService(
     private fun typstCommand(workingDir: Path) = listOf(
         "typst", "compile",
         "--root", workingDir.toString(),
-        "--pdf-standard", "ua-1",
+        "--pdf-standard", "a-3a",
         "--ignore-system-fonts",
         "--font-path", "/usr/share/fonts/truetype/sourcesans3",
         "--font-path", "/usr/share/fonts/truetype/noto",

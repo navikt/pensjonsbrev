@@ -10,6 +10,10 @@ object PDFByggerTestContainer {
     // Sett miljøvariabel BRUK_LOKAL_PDF_BYGGER=true for å kjøre testene lokalt mot din nyest bygde pdf-bygger.
     private val BRUK_LOKAL_PDF_BYGGER = System.getenv("BRUK_LOKAL_PDF_BYGGER")?.toBoolean() == true
 
+    // Sett miljøvariabel TESTCONTAINERS_REUSE_ENABLE=true for å gjenbruke pdf-bygger containeren mellom tester.
+    // Om du bruker denne lokalt, husk å stopp kjørende testcontainer for å oppdatere docker imaget.
+    private val REUSE_CONTAINER = System.getenv("TESTCONTAINERS_REUSE_ENABLE")?.toBoolean() == true
+
     private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
 
     private const val PORT = 8080
@@ -33,6 +37,7 @@ object PDFByggerTestContainer {
             )
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
+            .withReuse(REUSE_CONTAINER)
     }
 
     fun mappedUrl(): String {

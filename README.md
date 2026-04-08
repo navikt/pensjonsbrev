@@ -128,6 +128,38 @@ Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_
 4. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
    [Se dokumentasjon fra locust for mer info om bruk.](http://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
 
+## Miljøvariabler for integrasjonstester
+
+Følgende miljøvariabler kan settes for å styre oppførselen til `PDFByggerTestContainer` under kjøring av integrasjonstester:
+
+| Miljøvariabel                 | Standardverdi | Beskrivelse |
+|-------------------------------|---------------|-------------|
+| `BRUK_LOKAL_PDF_BYGGER`       | `false`       | Sett til `true` for å kjøre integrasjonstestene mot din lokalt bygde pdf-bygger (`pensjonsbrev-pdf-bygger:latest`) i stedet for å hente imaget fra GitHub Container Registry. |
+| `TESTCONTAINERS_REUSE_ENABLE` | `false`       | Sett til `true` for å gjenbruke pdf-bygger-containeren mellom kjøringer, noe som kan redusere oppstartstid ved lokal utvikling. Husk å stoppe den kjørende testcontaineren manuelt dersom du ønsker å oppdatere docker-imaget. |
+
+### Bygge nytt lokalt pdf-bygger image
+
+Bygg først jar-filen og deretter docker-imaget:
+
+```bash
+./gradlew :brevbaker:pdf-bygger:installDist
+docker build --tag pensjonsbrev-pdf-bygger:latest brevbaker/pdf-bygger
+```
+
+### Eksempel på lokal kjøring av integrasjonstester med lokal pdf-bygger
+
+```bash
+BRUK_LOKAL_PDF_BYGGER=true ./gradlew integrationTest
+```
+
+For å gjenbruke containeren mellom kjøringer:
+
+```bash
+BRUK_LOKAL_PDF_BYGGER=true TESTCONTAINERS_REUSE_ENABLE=true ./gradlew integrationTest
+```
+
+> **Merk:** Når du bruker `TESTCONTAINERS_REUSE_ENABLE=true` vil containeren fortsette å kjøre mellom test-kjøringer. Husk å stoppe den manuelt (f.eks. med `docker stop <container-id>`) dersom du har bygget et nytt pdf-bygger image og ønsker at testene skal bruke det oppdaterte imaget.
+
 ## Endring av obligatoriske felter i API-model
 
 Brevbakeren bruker pensjon-api-model, alder-api-model og ufoere-api-model for bestilling av brev.

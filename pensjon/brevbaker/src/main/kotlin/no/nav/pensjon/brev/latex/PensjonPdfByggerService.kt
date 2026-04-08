@@ -16,9 +16,9 @@ import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
-import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
+import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.pensjon.brev.BrevbakerFeatureToggles
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -106,8 +106,8 @@ class LaTeXCompilerService(
             }.body()
         }
     } catch (e: CancellationException) {
-        throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf", e)
-    } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
+        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
+    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
     suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

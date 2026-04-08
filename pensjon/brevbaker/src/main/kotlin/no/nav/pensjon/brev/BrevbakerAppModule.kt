@@ -16,9 +16,9 @@ import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.brev.brevbaker.LatexCompileException
-import no.nav.brev.brevbaker.LatexInvalidException
-import no.nav.brev.brevbaker.LatexTimeoutException
+import no.nav.brev.brevbaker.PDFCompileException
+import no.nav.brev.brevbaker.PDFInvalidException
+import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -69,19 +69,19 @@ fun Application.brevbakerModule(
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
-        exception<LatexTimeoutException> { call, cause ->
-            call.application.log.info("Latex compilation timed out", cause)
-            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
+        exception<PDFTimeoutException> { call, cause ->
+            call.application.log.info("PDF compilation timed out", cause)
+            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling pdf")
         }
-        exception<LatexCompileException> { call, cause ->
-            call.application.log.info("Latex compilation failed with internal server error", cause)
-            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed")
+        exception<PDFCompileException> { call, cause ->
+            call.application.log.info("PDF compilation failed with internal server error", cause)
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "PDF compilation failed")
         }
-        exception<LatexInvalidException> { call, cause ->
-            call.application.log.info("Latex compilation failed due to invalid latex", cause)
+        exception<PDFInvalidException> { call, cause ->
+            call.application.log.info("PDF compilation failed due to invalid content", cause)
             call.respond(
                 HttpStatusCode.InternalServerError,
-                cause.message ?: "Latex compilation failed due to invalid latex"
+                cause.message ?: "PDF compilation failed due to invalid content"
             )
         }
         exception<ParameterConversionException> { call, cause ->
