@@ -25,7 +25,7 @@ object LanguageSetting {
     }
 }
 
-val pensjonLatexSettings = languageSettings {
+val documentLanguageSettings = languageSettings {
     setting(LanguageSetting.Sakspart.navn) {
         Literal.create(
             Bokmal to "Navn:",
@@ -143,7 +143,7 @@ val pensjonLatexSettings = languageSettings {
     }
 }
 
-val pensjonHTMLSettings = languageSettings(pensjonLatexSettings) {
+val pensjonHTMLSettings = languageSettings(documentLanguageSettings) {
     setting(LanguageSetting.HTML.altTextLogo) {
         Literal.create(
             Bokmal to "Nav logo",

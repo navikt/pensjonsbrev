@@ -1,17 +1,14 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse
-import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.*
 
 
 data class TBU3234_Generated(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 		//[TBU3234NN, TBU3234EN, TBU3234]

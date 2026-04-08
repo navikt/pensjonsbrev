@@ -1,14 +1,14 @@
 import { useCallback, useMemo } from "react";
-import type { UseFormReturn } from "react-hook-form";
+import { type UseFormReturn } from "react-hook-form";
 
 import { countUnfilledFritekstPlaceholders } from "~/Brevredigering/LetterEditor/actions/common";
-import type { WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   extractRelevantSaksbehandlerValgFields,
   useModelSpecificationForm,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
-import type { SaksbehandlerValg } from "~/types/brev";
-import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
+import { type SaksbehandlerValg } from "~/types/brev";
+import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 
 interface UseBrevEditorWarningsParams<FormSchema extends { saksbehandlerValg: SaksbehandlerValg }> {
   brevkode: string;

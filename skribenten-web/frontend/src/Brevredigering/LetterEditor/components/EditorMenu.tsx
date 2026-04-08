@@ -12,8 +12,7 @@ import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
-import type { Typography } from "../utils";
-import { TypographyToText } from "../utils";
+import { type Typography, TypographyToText } from "../utils";
 import EditorFonts from "./EditorFonts";
 import EditorListButton from "./EditorListButton";
 import { EditorUndoRedo } from "./EditorUndoRedo";
@@ -58,22 +57,19 @@ type EditorMenuProps = {
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
   return (
-    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" minHeight="48px" width="100%">
-      <HStack align="center" gap="space-4" justify="space-between" paddingInline="space-8">
-        <HStack align="center" gap="space-8" margin-block="2">
-          <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-          <VerticalDivider />
-          <EditorFonts />
-          <VerticalDivider />
-          <EditorListButton listType={ListType.PUNKTLISTE} />
-          <EditorListButton listType={ListType.NUMMERERT_LISTE} />
-          <VerticalDivider />
-          <EditorTableTools />
-          <VerticalDivider />
-          <SelectTypography />
-        </HStack>
-
-        <HStack align="center" gap="space-16">
+    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
+      <HStack align="center" gap="space-8 space-16" paddingBlock="space-8" paddingInline="space-16">
+        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+        <VerticalDivider />
+        <EditorFonts />
+        <VerticalDivider />
+        <EditorListButton listType={ListType.PUNKTLISTE} />
+        <EditorListButton listType={ListType.NUMMERERT_LISTE} />
+        <VerticalDivider />
+        <EditorTableTools />
+        <VerticalDivider />
+        <SelectTypography />
+        <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8">
           <LagringStatus />
           <Button
             data-color="danger"

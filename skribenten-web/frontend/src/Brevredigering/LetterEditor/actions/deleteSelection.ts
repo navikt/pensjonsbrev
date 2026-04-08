@@ -1,4 +1,4 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
 import {
   addElements,
@@ -21,15 +21,14 @@ import {
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget, mergeRecipe } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
-import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
-import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
-import type {
-  Focus,
-  ItemContentIndex,
-  LetterEditorState,
-  LiteralIndex,
-  SelectionIndex,
-  TableCellIndex,
+import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
+import {
+  type Focus,
+  type ItemContentIndex,
+  type LetterEditorState,
+  type LiteralIndex,
+  type SelectionIndex,
+  type TableCellIndex,
 } from "~/Brevredigering/LetterEditor/model/state";
 import {
   isItemList,
@@ -39,7 +38,14 @@ import {
   isTextContent,
   isVariable,
 } from "~/Brevredigering/LetterEditor/model/utils";
-import type { AnyBlock, Content, EditedLetter, ItemList, Table, TextContent } from "~/types/brevbakerTypes";
+import {
+  type AnyBlock,
+  type Content,
+  type EditedLetter,
+  type ItemList,
+  type Table,
+  type TextContent,
+} from "~/types/brevbakerTypes";
 
 export const deleteSelection: Action<LetterEditorState, [selection: SelectionIndex]> =
   withPatches(deleteSelectionRecipe);

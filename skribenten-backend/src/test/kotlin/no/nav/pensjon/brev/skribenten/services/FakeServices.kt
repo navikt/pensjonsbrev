@@ -159,7 +159,7 @@ open class PenClientStub : PenClient {
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering> = notYetStubbed()
+    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>? = notYetStubbed()
     override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
 }
 
@@ -172,4 +172,8 @@ open class SafServiceStub : SafService {
 open class LegacyBrevServiceStub : LegacyBrevService {
     override suspend fun bestillOgRedigerExstreamBrev(gjelderPid: Pid, request: Api.BestillExstreamBrevRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
     override suspend fun bestillOgRedigerEblankett(gjelderPid: Pid, request: Api.BestillEblankettRequest, saksId: SaksId): Api.BestillOgRedigerBrevResponse = notYetStubbed()
+}
+
+open class PensjonPersonDataServiceStub : PensjonPersonDataService {
+    override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = null
 }

@@ -1,5 +1,5 @@
 import { Alert, Heading, Link, VStack } from "@navikt/ds-react";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import type React from "react";
 
 import { ApiError } from "~/components/ApiError";
@@ -11,7 +11,7 @@ const BrevmalFormWrapper = (props: {
 }) => {
   const { onSubmit, formRef, children } = props;
   return (
-    <VStack asChild gap="space-32">
+    <VStack asChild flexGrow="1" gap="space-32">
       <form onSubmit={onSubmit} ref={formRef}>
         {children}
       </form>

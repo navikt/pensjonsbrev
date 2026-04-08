@@ -33,13 +33,18 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesats
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndring
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OkningUforegrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
@@ -134,6 +139,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
+        VedtakOmLavereMinstesats,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -180,6 +186,10 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseUforetrygdMedEndring,
         OkningUforegrad,
         DelvisEksportAvUforetrygd,
+        InnvilgelseUforetrygdBosattNorgeEtterUtland,
+        OpphoerGjenlevendepensjon,
+        AvslagGjenlevendepensjonUtland,
+        AvslagGjenlevendepensjon,
     )
 
     override fun hentAutobrevmaler() = autobrev

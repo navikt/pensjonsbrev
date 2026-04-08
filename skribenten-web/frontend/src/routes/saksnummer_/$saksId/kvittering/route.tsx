@@ -3,8 +3,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 import { VerticalDivider } from "~/components/Divider";
 import KvitterteBrev from "~/components/kvitterteBrev/KvitterteBrev";
-import type { KvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
-import { toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
+import { type KvittertBrev, toKvittertBrev } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 
 import { useBrevInfoKlarTilAttestering } from "./-components/KlarTilAttesteringContext";
 import { useSendtBrev } from "./-components/SendtBrevContext";
@@ -47,7 +46,7 @@ function Kvittering() {
     <Box
       asChild
       background="default"
-      height="calc(var(--main-page-content-height) + 48px)"
+      height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
       marginInline="auto"
       width="fit-content"
     >

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import type { SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type SelectionIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 
 export function useSelectionDeleteHotkey(

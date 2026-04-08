@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.model
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
@@ -42,6 +43,8 @@ object Aldersbrevkoder {
 
     enum class Redigerbar : Redigerbart {
         INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET,
+        INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD,
+        INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT,
         PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG,
         PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS,
         PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND,
@@ -57,9 +60,9 @@ object Aldersbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
-        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger"),
-        UTTAKSSKJEMA("Uttaksskjema")
+    enum class AlltidValgbareVedlegg(override val visningstekst: String, override val spraak: Set<LanguageCode>) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
+        UTTAKSSKJEMA("Uttaksskjema", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH))
         ;
 
         override val kode = name

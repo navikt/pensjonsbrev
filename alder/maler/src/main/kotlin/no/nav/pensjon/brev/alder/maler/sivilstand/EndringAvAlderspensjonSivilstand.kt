@@ -343,9 +343,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // flyttetEPS
                         paragraph {
                             text(
-                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
-                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
-                                english { +"You and " + epsNavn + "no longer live together." },
+                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen. Vi har lagt til grunn at du nå lever enslig." },
+                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman. Vi har lagt til grunn at du nå lever einsleg." },
+                                english { +"You and " + epsNavn + "no longer live together. The decision is based on the assumption that you are now single." },
                             )
                         }
                     }.orShowIf(

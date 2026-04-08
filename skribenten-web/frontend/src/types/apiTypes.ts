@@ -1,7 +1,7 @@
-import type { Identtype, InnOgUtland, Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
+import { type Identtype, type InnOgUtland, type Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
 
-import type { ManueltAdressertTil } from "./brev";
-import type { Nullable } from "./Nullable";
+import { type ManueltAdressertTil } from "./brev";
+import { type Nullable } from "./Nullable";
 
 export type SakDto = {
   readonly saksId: number;
@@ -37,15 +37,6 @@ export type SakType =
   | "OMSORG"
   | "UFOREP";
 
-export type BrevkategoriCode =
-  | "BREV_MED_SKJEMA"
-  | "INFORMASJON"
-  | "INNHENTE_OPPL"
-  | "NOTAT"
-  | "OVRIG"
-  | "VARSEL"
-  | "VEDTAK";
-
 export type DokumentkategoriCode = "B" | "E_BLANKETT" | "IB" | "SED" | "VB";
 
 export type LetterMetadata = {
@@ -56,6 +47,7 @@ export type LetterMetadata = {
   brevkategori?: string;
   dokumentkategoriCode?: DokumentkategoriCode;
   redigerbarBrevtittel: boolean;
+  redigerbart: boolean;
 };
 
 export enum BrevSystem {

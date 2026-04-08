@@ -8,7 +8,7 @@ fun createOmregningUfoerepensjonTilUfoeretrygdDto() =
     OmregningUfoerepensjonTilUfoeretrygdDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = OmregningUfoerepensjonTilUfoeretrygdDto.PesysData(
-            pe = createPE(),
+            pe = createPEgruppe10(),
             maanedligUfoeretrygdFoerSkatt = Fixtures.createVedlegg()
         )
     )

@@ -1,4 +1,4 @@
-import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
+import { BodyShort, Heading, HStack, Loader, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -10,14 +10,13 @@ import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMott
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
+import { type LetterMetadata } from "~/types/apiTypes";
+import { type BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
-import type { SubmitTemplateOptions } from "../route";
-import { Route } from "../route";
+import { Route, type SubmitTemplateOptions } from "../route";
 
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
@@ -115,11 +114,18 @@ const Brevmal = (props: {
         )}
         <VStack align="start" gap="space-8">
           <Heading size="small">{props.brev.brevtittel}</Heading>
-          {props.letterMetadata ? (
-            <LetterTemplateTags letterTemplate={props.letterMetadata} />
-          ) : (
-            <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
-          )}
+          <HStack gap="space-8">
+            {props.letterMetadata ? (
+              <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            ) : (
+              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+            )}
+            {props.letterMetadata?.redigerbart && (
+              <Tag data-color="neutral" size="small" variant="moderate">
+                Redigerbar
+              </Tag>
+            )}
+          </HStack>
         </VStack>
       </VStack>
       <Divider />

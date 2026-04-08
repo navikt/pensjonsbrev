@@ -1,4 +1,4 @@
-import { BodyShort, Button, HStack, Modal, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, HStack, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -11,14 +11,13 @@ import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlterna
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
+import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 import { trackEvent } from "~/utils/umami";
 
-import type { SubmitTemplateOptions } from "../../route";
-import { Route } from "../../route";
+import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
@@ -41,7 +40,7 @@ const EksisterendeKladdModal = (props: {
   const { enhetsId, vedtaksId } = Route.useSearch();
   return (
     <Modal
-      header={{ heading: "Vil du bruke eksisterende kladd?" }}
+      header={{ closeButton: false, heading: "Vil du bruke eksisterende kladd?" }}
       onClose={props.onClose}
       open={props.åpen}
       portal
@@ -53,7 +52,7 @@ const EksisterendeKladdModal = (props: {
       <Modal.Footer>
         <HStack gap="space-16">
           <Button onClick={props.onFormSubmit} type="button" variant="secondary">
-            Lag nytt brev
+            Nei, lag nytt brev
           </Button>
           <Button
             onClick={() =>
@@ -174,7 +173,7 @@ const BrevmalBrevbaker = (props: {
   }, [setOnFormSubmitClick, harEksisterendeKladd, form]);
 
   return (
-    <VStack gap="space-16" height="100%">
+    <VStack flexGrow="1" gap="space-16">
       {åpnerNyttBrevOgHarKladd && (
         <EksisterendeKladdModal
           onClose={() => setÅpnerNyttBrevOgHarKladd(false)}
@@ -224,8 +223,10 @@ const BrevmalBrevbaker = (props: {
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />
             <BrevmalAlternativer brevkode={props.letterTemplate.id} onlyShowRequired />
           </VStack>
-          {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
         </BrevmalFormWrapper>
+
+        <Spacer />
+        {opprettBrevMutation.isError && <ApiError error={opprettBrevMutation.error} title="Bestilling feilet" />}
       </FormProvider>
     </VStack>
   );

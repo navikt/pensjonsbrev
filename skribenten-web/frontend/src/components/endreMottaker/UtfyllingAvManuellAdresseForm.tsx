@@ -12,13 +12,12 @@ import {
   UNSAFE_Combobox,
   VStack,
 } from "@navikt/ds-react";
-import type { Control } from "react-hook-form";
-import { Controller, useFormContext, useWatch } from "react-hook-form";
+import { type Control, Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { useLandData } from "~/hooks/useLandData";
 import { ManueltAdressertTil } from "~/types/brev";
 
-import type { CombinedFormData } from "./EndreMottakerUtils";
+import { type CombinedFormData } from "./EndreMottakerUtils";
 
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;

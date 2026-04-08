@@ -23,7 +23,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan endre valgte vedlegg`() {
         val brev = opprettBrev().resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1"), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2"))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess {
             assertThat(it.valgteVedlegg).isEqualTo(vedlegg)
         }
@@ -33,7 +33,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan fjerne valgte vedlegg`() {
         val brev = opprettBrev().resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1"), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2"))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
         assertThat(endreVedlegg(brev, vedlegg)).isSuccess {
             assertThat(it.valgteVedlegg).isEqualTo(vedlegg)
         }
@@ -47,7 +47,7 @@ class EndreValgteVedleggHandlerTest : BrevredigeringHandlerTestBase() {
     suspend fun `kan ikke endre vedlegg for brev som redigeres av andre`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 
-        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1"), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2"))
+        val vedlegg = listOf(AlltidValgbartVedleggBrevkode("kode1", "Visningstekst 1", setOf()), AlltidValgbartVedleggBrevkode("kode2", "Visningstekst 2", setOf()))
         assertThat(endreVedlegg(brev, vedlegg, saksbehandler2Principal)).isFailure<BrevreservasjonPolicy.ReservertAvAnnen, _, _>()
     }
 

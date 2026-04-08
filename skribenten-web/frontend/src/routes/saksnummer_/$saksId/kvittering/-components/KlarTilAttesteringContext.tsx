@@ -1,6 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
-import type { BrevInfo } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 
 const BrevInfoContext = createContext<{
   brevListKlarTilAttestering: BrevInfo[];

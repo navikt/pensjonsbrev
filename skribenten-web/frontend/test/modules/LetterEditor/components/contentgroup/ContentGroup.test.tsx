@@ -8,18 +8,16 @@
 
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { Mock } from "vitest";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, type Mock, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
-import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
+import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { ElementTags, type LiteralValue, PARAGRAPH, type ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 
@@ -524,5 +522,61 @@ describe("onFocusHandler", () => {
     const selection = globalThis.getSelection();
     expect(selection).not.toBeNull();
     expect(selection?.focusNode?.textContent).toBe("tredje literal");
+  });
+});
+
+describe("Word Joiner before punctuation-starting literals", () => {
+  const WORD_JOINER = "\u2060";
+
+  test("inserts Word Joiner before literals starting with punctuation", () => {
+    for (const text of [
+      ",tekst",
+      ".tekst",
+      ";tekst",
+      ":tekst",
+      "!tekst",
+      "?tekst",
+      "'tekst",
+      '"tekst',
+      "(tekst",
+      ")tekst",
+      "[tekst",
+      "]tekst",
+      "%",
+      "\u00B0C",
+      "\u2026",
+      "\u00ABtekst",
+      "\u00BB",
+      "\u201Dtekst",
+      "\u2019tekst",
+    ]) {
+      const state = letter(paragraph([variable("verdi"), literal({ text })]));
+      const { container } = setupComplex(state);
+      expect(container.textContent).toContain(WORD_JOINER);
+    }
+  });
+
+  test("does not insert Word Joiner before a literal starting with a letter", () => {
+    const state = letter(paragraph([variable("verdi"), literal({ text: " og noe mer tekst" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("does not insert Word Joiner before a literal starting with a digit", () => {
+    const state = letter(paragraph([variable("verdi"), literal({ text: "100 kr" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("does not insert Word Joiner before the first literal in a block (no preceding content)", () => {
+    const state = letter(paragraph([literal({ text: ",bare en literal" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).not.toContain(WORD_JOINER);
+  });
+
+  test("inserts Word Joiner before punctuation literal following another literal", () => {
+    const state = letter(paragraph([literal({ text: "første" }), literal({ text: ", andre" })]));
+    const { container } = setupComplex(state);
+    expect(container.textContent).toContain(WORD_JOINER);
   });
 });
