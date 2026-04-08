@@ -20,7 +20,7 @@
   "paragraph-paragraph": 16pt,
   "paragraph-list": 11pt,
   "paragraph-table": 16pt,
-  "paragraph-form": 22pt, // TODO håkon fix. Det er ett ekstra linjeskift her av en eller annen grunn.
+  "paragraph-form": 22pt,
 
   // From "list"
   "list-title": 28pt,

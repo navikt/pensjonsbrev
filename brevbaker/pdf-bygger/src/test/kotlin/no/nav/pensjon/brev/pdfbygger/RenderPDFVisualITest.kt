@@ -453,13 +453,10 @@ class RenderPDFVisualITest {
     }
 
     private fun OutlineOnlyScope<LangBokmal, *>.testTitle2() {
-        title1 { text(bokmal { +"dummy title 1 to get to level 2" }) }
         title2 { text(bokmal { +"Second title" }) }
     }
 
     private fun OutlineOnlyScope<LangBokmal, *>.testTitle3() {
-        title1 { text(bokmal { +"dummy title 1 to get to level 3" }) }
-        title2 { text(bokmal { +"dummy title 2 to get to level 3" }) }
         title3 { text(bokmal { +"Third title" }) }
     }
 

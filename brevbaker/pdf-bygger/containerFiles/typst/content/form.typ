@@ -13,7 +13,6 @@
 }
 
 #let formText(prompt, dots) = {
-  let formContent = [#prompt #dots]
-  withSpacing("form", formContent)
+  withSpacing("form", [#prompt #dots])
 }
 

@@ -132,10 +132,10 @@ Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_
 
 Følgende miljøvariabler kan settes for å styre oppførselen til `PDFByggerTestContainer` under kjøring av integrasjonstester:
 
-| Miljøvariabel                 | Standardverdi | Beskrivelse |
-|-------------------------------|---------------|-------------|
-| `BRUK_LOKAL_PDF_BYGGER`       | `false`       | Sett til `true` for å kjøre integrasjonstestene mot din lokalt bygde pdf-bygger (`pensjonsbrev-pdf-bygger:latest`) i stedet for å hente imaget fra GitHub Container Registry. |
-| `TESTCONTAINERS_REUSE_ENABLE` | `false`       | Sett til `true` for å gjenbruke pdf-bygger-containeren mellom kjøringer, noe som kan redusere oppstartstid ved lokal utvikling. Husk å stoppe den kjørende testcontaineren manuelt dersom du ønsker å oppdatere docker-imaget. |
+| Miljøvariabel                 | Beskrivelse |
+|-------------------------------|-------------|
+| `BRUK_LOKAL_PDF_BYGGER`       | Sett til `true` for å kjøre integrasjonstestene mot din lokalt bygde pdf-bygger (`pensjonsbrev-pdf-bygger:latest`) i stedet for å hente imaget fra GitHub Container Registry. |
+| `TESTCONTAINERS_REUSE_ENABLE` | Sett til `true` for å gjenbruke pdf-bygger-containeren mellom kjøringer, noe som kan redusere oppstartstid ved lokal utvikling. Husk å stoppe den kjørende testcontaineren manuelt dersom du ønsker å oppdatere docker-imaget. |
 
 ### Bygge nytt lokalt pdf-bygger image
 
@@ -143,7 +143,7 @@ Bygg først jar-filen og deretter docker-imaget:
 
 ```bash
 ./gradlew :brevbaker:pdf-bygger:installDist
-docker build --tag pensjonsbrev-pdf-bygger:latest brevbaker/pdf-bygger
+docker build brevbaker/pdf-bygger
 ```
 
 ### Eksempel på lokal kjøring av integrasjonstester med lokal pdf-bygger
@@ -152,7 +152,7 @@ docker build --tag pensjonsbrev-pdf-bygger:latest brevbaker/pdf-bygger
 BRUK_LOKAL_PDF_BYGGER=true ./gradlew integrationTest
 ```
 
-For å gjenbruke containeren mellom kjøringer:
+For å gjenbruke test-containeren mellom ulike tester og moduler:
 
 ```bash
 BRUK_LOKAL_PDF_BYGGER=true TESTCONTAINERS_REUSE_ENABLE=true ./gradlew integrationTest
