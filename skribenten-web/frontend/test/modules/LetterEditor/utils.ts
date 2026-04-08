@@ -13,6 +13,7 @@ import {
   ITEM_LIST,
   type Item,
   type ItemList,
+  ListType,
   type LiteralValue,
   NEW_LINE,
   type NewLine,
@@ -198,6 +199,7 @@ export function newLine(): NewLine {
 export function itemList(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
+  listType?: ListType;
   items: Item[];
   deletedItems?: number[];
 }): ItemList {
@@ -206,6 +208,7 @@ export function itemList(args: {
     id: id,
     parentId: args.parentId ?? null,
     type: ITEM_LIST,
+    listType: args.listType ?? ListType.PUNKTLISTE,
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
   };

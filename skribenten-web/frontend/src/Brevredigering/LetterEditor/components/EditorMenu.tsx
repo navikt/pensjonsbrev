@@ -7,13 +7,14 @@ import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { VerticalDivider } from "~/components/Divider";
 import EditorTableTools from "~/components/EditorTableTools";
+import { ListType } from "~/types/brevbakerTypes";
 import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
 import { type Typography, TypographyToText } from "../utils";
-import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
+import EditorListButton from "./EditorListButton";
 import { EditorUndoRedo } from "./EditorUndoRedo";
 
 const SelectTypography = () => {
@@ -62,7 +63,8 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
         <VerticalDivider />
         <EditorFonts />
         <VerticalDivider />
-        <EditorBulletList />
+        <EditorListButton listType={ListType.PUNKTLISTE} />
+        <EditorListButton listType={ListType.NUMMERERT_LISTE} />
         <VerticalDivider />
         <EditorTableTools />
         <VerticalDivider />
