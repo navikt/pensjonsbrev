@@ -46,7 +46,7 @@ jobs:
           java-version: ${{ env.JavaVersion }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@v6
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
 
@@ -75,7 +75,7 @@ jobs:
           output: sarif-results
 
       - name: filter-sarif
-        uses: advanced-security/filter-sarif@f3b8118a9349d88f7b1c0c488476411145b6270d
+        uses: advanced-security/filter-sarif@2da736ff05ef065cb2894ac6892e47b5eac2c3c0
         with:
           patterns: |
             -**/*test*.kt
@@ -118,7 +118,7 @@ jobs:
           output: sarif-results
 
       - name: filter-sarif
-        uses: advanced-security/filter-sarif@f3b8118a9349d88f7b1c0c488476411145b6270d
+        uses: advanced-security/filter-sarif@2da736ff05ef065cb2894ac6892e47b5eac2c3c0
         with:
           patterns: |
             -**/*.test.ts

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 
 import java.time.LocalDate
 
-data class BarnetilleggUTDto(val begrunnelse: BtBegrunnelseCode, val fodselsdato: LocalDate, val fom: LocalDate, val tom: LocalDate? = null)
+data class BarnetilleggUTDto(val antallBarn: Int, val begrunnelse: BtBegrunnelseCode, val fodselsdato: LocalDate, val fom: LocalDate, val tom: LocalDate? = null)
     enum class BtBegrunnelseCode {
         INNVILGET,
         BT_GITT_TIL_ANNEN,

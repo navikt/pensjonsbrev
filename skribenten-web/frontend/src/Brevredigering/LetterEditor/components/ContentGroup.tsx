@@ -1,5 +1,4 @@
-import type React from "react";
-import { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
@@ -29,6 +28,7 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
+  type Content,
   type EditedLetter,
   ElementTags,
   FontType,
@@ -52,6 +52,14 @@ import {
   nextTableFocus,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
+
+const WORD_JOINER = "\u2060";
+const NO_BREAK_PUNCTUATION = /^[.,;:!?'"()[\]{}°…«»%\u201D\u2019]/;
+
+function startsWithPunctuation(content: Content): boolean {
+  if (content.type !== LITERAL) return false;
+  return NO_BREAK_PUNCTUATION.test(textOf(content));
+}
 
 /**
  * When changing lines with ArrowUp/ArrowDown we sometimes "artificially click" the next line.
@@ -78,13 +86,22 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
   return (
     <>
       {contents.map((content, contentIndex) => {
+        const needsWordJoiner = contentIndex > 0 && startsWithPunctuation(content);
+
         switch (content.type) {
           case LITERAL: {
             const updatedLiteralIndex =
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
                 : { ...literalIndex, contentIndex: contentIndex };
-            return <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />;
+            return needsWordJoiner ? (
+              <React.Fragment key={contentIndex}>
+                {WORD_JOINER}
+                <EditableText content={content} literalIndex={updatedLiteralIndex} />
+              </React.Fragment>
+            ) : (
+              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
+            );
           }
           case NEW_LINE:
           case VARIABLE: {

@@ -1,6 +1,6 @@
 import { Global } from "@emotion/react";
 import { Accordion, BodyShort, Box, ExpansionCard, HStack, VStack } from "@navikt/ds-react";
-import { type AkselColor } from "@navikt/ds-react/esm/types";
+import { type AkselColor } from "@navikt/ds-react/types/theme";
 import type React from "react";
 import { type Dispatch, useEffect, useState } from "react";
 

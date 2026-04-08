@@ -6,7 +6,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.forbeholdTilBeregningeneAfpTIlUfo
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.PesysDataSelectors.vedleggDto
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.SaksBehandlerValgSelectors.harSoktUforeTrygd
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -30,6 +32,12 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
     override val kode = Aldersbrevkoder.Redigerbar.INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD
 
+    override val kategori = Brevkategori.INFORMASJONSBREV
+
+    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
+
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT)
+
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
@@ -47,16 +55,33 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
         }
 
         outline {
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav."
+
+                        },
+                        nynorsk {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav."
+                        },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du har i dag AFP i privat sektor og vurderer å søke om uføretrygd fra Nav." },
+                        nynorsk { +"Du har i dag AFP i privat sektor og vurderer å søkje uføretrygd frå Nav." }
+                    )
+                }
+            }
             paragraph {
                 text(
-                    bokmal {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
-
-                    },
-                    nynorsk {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav. "
-                    },
+                    bokmal { +"Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:" },
+                    nynorsk { +"Du kan ikkje ha AFP samstundes med uføretrygd, sjå AFP-tilskottsloven § 8. Du må derfor velje mellom:" }
                 )
+            }
+            paragraph {
                 list {
                     item {
                         text(
@@ -197,7 +222,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            title2 {
+            title3 {
                 text(
                     bokmal { +"Uføretrygd fra Nav og alderspensjon" },
                     nynorsk { +"Uføretrygd frå Nav og alderspensjon" }
@@ -251,8 +276,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +"Alderspensjon 100%" },
-                                nynorsk { +"Alderspensjon 100%" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" }
                             )
                         }
                         column(alignment = RIGHT) {
@@ -325,8 +350,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold.:" },
-                    nynorsk { +"Sjå vedlegg om atterhald." }
+                    bokmal { +"Se vedlegg om forbehold:" },
+                    nynorsk { +"Sjå vedlegg om atterhald:" }
                 )
             }
             paragraph {
@@ -334,7 +359,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     bokmal { +"Det er også viktig å vite:" },
                     nynorsk { +"Det er også viktig å vite:" }
                 )
-                list {""
+                list {
                     item {
                         text(
                             bokmal { +"AFP, uføretrygd og alderspensjon gir forskjellige muligheter til å ha inntekt ved siden av. Du finner informasjon på www.nav.no" },
@@ -355,7 +380,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            showIf(saksbehandlerValg.harSoktUforeTrygd.not()) {
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
                 title2 {
                     text(
                         bokmal { +"Dette må du gjøre" },
@@ -383,7 +408,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                             newline()
                             text(
                                 bokmal { +"Nav familie- og pensjonsytelser" },
-                                nynorsk { +"Nav familie- og pensjonsytelser, Postboks 6600 Etterstad 0607 OSLO" }
+                                nynorsk { +"Nav familie- og pensjonsytelser" }
                             )
                             newline()
                             text(
@@ -418,12 +443,6 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
-        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd)
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd, pesysData.vedleggDto)
     }
-
-    override val kategori = Brevkategori.INFORMASJONSBREV
-
-    override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
-
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.ALDER)
 }

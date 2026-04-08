@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 data class AfpPrivatSokerUforeTrygdDto (
@@ -11,11 +12,15 @@ data class AfpPrivatSokerUforeTrygdDto (
 ) : RedigerbarBrevdata<AfpPrivatSokerUforeTrygdDto.SaksBehandlerValg, AfpPrivatSokerUforeTrygdDto.PesysData> {
 
     data class SaksBehandlerValg(
-        @DisplayText("Bruker har søkt UforeTrygd")
-        val harSoktUforeTrygd: Boolean,
+        @DisplayText("Bruker har søkt UføreTrygd")
+        val harSoktUforeTrygd: Boolean = true,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
-        val uforeTrygdTil_ATT: Boolean
+        val vedleggDto: AFpPrivatSokerUforeTrygdVedleggDto
     ) : FagsystemBrevdata
 }
+data class AFpPrivatSokerUforeTrygdVedleggDto (
+    val uforeTrygdTil_ATT: Boolean,
+    val kap19: Boolean,
+) : VedleggData
