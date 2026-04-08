@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-import type { BrevResponse } from "~/types/brev";
-import type { Item } from "~/types/brevbakerTypes";
+import { type BrevResponse } from "~/types/brev";
+import { type Item } from "~/types/brevbakerTypes";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../../../cypress/utils/brevredigeringTestUtils";
 import Actions from "../actions";
 import { newItem, newItemList, newLiteral, newParagraph } from "../actions/common";
 import { LetterEditor } from "../LetterEditor";
-import type { LetterEditorState } from "../model/state";
+import { type LetterEditorState } from "../model/state";
 
 function EditorWithState({ brev }: { brev: BrevResponse }) {
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(brev));

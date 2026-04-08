@@ -1,5 +1,5 @@
 import { Alert, Heading, Link, VStack } from "@navikt/ds-react";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import type React from "react";
 
 import { ApiError } from "~/components/ApiError";

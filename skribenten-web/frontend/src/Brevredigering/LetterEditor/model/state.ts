@@ -1,7 +1,7 @@
-import type { BrevInfo } from "~/types/brev";
-import type { Content, EditedLetter } from "~/types/brevbakerTypes";
+import { type BrevInfo } from "~/types/brev";
+import { type Content, type EditedLetter } from "~/types/brevbakerTypes";
 
-import type { History } from "../history";
+import { type History } from "../history";
 
 export type ContentGroup = { content: Content[] };
 

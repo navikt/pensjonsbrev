@@ -59,7 +59,7 @@ jobs:
       - uses: actions/checkout@v6
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@v6
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
       - uses: actions/setup-java@v5
@@ -89,7 +89,7 @@ jobs:
           salsa: false
       - name: "Upload jar"
         if: ${{ inputs.uploadJar }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{inputs.target}}-jar
           path: ${{ inputs.path }}/build/install/${{ inputs.target }}/lib

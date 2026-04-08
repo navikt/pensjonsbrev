@@ -1,27 +1,28 @@
 // "When accessing a member from an await expression, the await expression has to be parenthesized, which is not readable."
 // For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
 
-import type { AxiosResponse } from "axios";
-import axios, { AxiosError } from "axios";
+// "When accessing a member from an await expression, the await expression has to be parenthesized, which is not readable."
+// For the purpose of this file it is convenient to be able to access the data property of axios response as a one-liners.
 
-import type {
-  Avtaleland,
-  BestillOgRedigerBrevResponse,
-  BrukerStatusDto,
-  Enhet,
-  FinnSamhandlerRequestDto,
-  FinnSamhandlerResponseDto,
-  HentSamhandlerAdresseResponseDto,
-  HentSamhandlerRequestDto,
-  HentsamhandlerResponseDto,
-  KontaktAdresseResponse,
-  OrderEblankettRequest,
-  OrderExstreamLetterRequest,
-  PreferredLanguage,
-  SakContextDto,
+import axios, { AxiosError, type AxiosResponse } from "axios";
+
+import {
+  type Avtaleland,
+  type BestillOgRedigerBrevResponse,
+  type BrukerStatusDto,
+  type Enhet,
+  type FinnSamhandlerRequestDto,
+  type FinnSamhandlerResponseDto,
+  type HentSamhandlerAdresseResponseDto,
+  type HentSamhandlerRequestDto,
+  type HentsamhandlerResponseDto,
+  type KontaktAdresseResponse,
+  type OrderEblankettRequest,
+  type OrderExstreamLetterRequest,
+  type PreferredLanguage,
+  type SakContextDto,
 } from "~/types/apiTypes";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
-import { parseAttest403 } from "~/utils/parseAttest403";
+import { type AttestForbiddenReason, parseAttest403 } from "~/utils/parseAttest403";
 
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 

@@ -29,6 +29,14 @@
   -webkit-user-select: text;
 }
 
+.editor-surface td [data-literal-index],
+.editor-surface th [data-literal-index] {
+  display: block;
+  width: 100%;
+  min-height: 1.4rem;
+  white-space: pre-wrap;
+}
+
 .editor-surface.is-drag-selecting [data-literal-index] {
   caret-color: transparent;
 }
@@ -88,12 +96,4 @@
 /* Det skal ikke være luft mellom avsnitt og etterfølgende liste */
 .PARAGRAPH > ul {
   margin-top: 0;
-}
-
-.editor-surface td [data-literal-index],
-.editor-surface th [data-literal-index] {
-  display: block;
-  width: 100%;
-  min-height: 1.4rem;
-  white-space: pre-wrap;
 }

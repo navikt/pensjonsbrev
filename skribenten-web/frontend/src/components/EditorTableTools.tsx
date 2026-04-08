@@ -6,7 +6,7 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import InsertTableDialog from "~/Brevredigering/LetterEditor/components/InsertTableDialog";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus } from "~/Brevredigering/LetterEditor/model/state";
 
 const EditorTableTools = () => {
   const { editorState, freeze, setEditorState } = useEditor();

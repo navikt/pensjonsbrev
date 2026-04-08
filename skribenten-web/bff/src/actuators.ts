@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import { type Express } from "express";
 
 export function setupActuators(server: Express) {
   server.get("/internal/health/liveness", (_request, response): void => {
