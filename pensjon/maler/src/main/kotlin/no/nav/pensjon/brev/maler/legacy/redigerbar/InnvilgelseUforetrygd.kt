@@ -14,6 +14,11 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_UTLAND
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -2212,7 +2217,22 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
-            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            showIf(bosattUtland) {
+                title1 {
+                    text(
+                        bokmal { + "Kontaktinformasjon" },
+                        nynorsk { + "Kontaktinformasjon" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { + "Du kan skrive til oss eller chatte med oss på $KONTAKT_URL. Du kan også ringe oss på $NAV_KONTAKTSENTER_TELEFON. Ringer du ikke fra Norge? Bruk $NAV_KONTAKTSENTER_UTLAND." },
+                        nynorsk { + "Du kan skrive til oss eller chatte med oss på $KONTAKT_URL. Du kan også ringe oss på $NAV_KONTAKTSENTER_TELEFON. Ringer du ikkje fra Noreg? Bruk $NAV_KONTAKTSENTER_UTLAND." },
+                    )
+                }
+            }.orShow {
+                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
+            }
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
