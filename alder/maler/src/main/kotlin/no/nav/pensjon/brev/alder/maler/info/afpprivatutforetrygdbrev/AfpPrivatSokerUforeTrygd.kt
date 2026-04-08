@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -49,8 +50,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     ) {
         title {
             text(
-                bokmal { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
-                nynorsk { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
+                bokmal { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
+                nynorsk { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
             )
         }
 
@@ -262,25 +263,25 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             paragraph {
                 table(
                     header = {
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 bokmal { +"" },
                                 nynorsk { +"" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
                                 bokmal { +"Uføretrygd " + fritekst("0") + "%" },
                                 nynorsk { +"Uføretrygd " + fritekst("0") + "%" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
-                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" },
-                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") +" *" },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + " *"}
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 bokmal { +"Sum pensjon" },
                                 nynorsk { +"Sum pensjon" }
@@ -347,6 +348,11 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
+            paragraph { text(
+                bokmal { +"* Alderspensjon blir 100% fra 67 år" },
+                nynorsk { +"* Alderspensjon blir 100% fra 67 år" },
+                fontType = FontType.BOLD
+            ) }
 
             paragraph {
                 text(
