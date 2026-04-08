@@ -220,8 +220,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
             title3 {
                 text(
-                    bokmal { +"Uføretrygd og alderspensjon" },
-                    nynorsk { +"Uføretrygd og alderspensjon " }
+                    bokmal { +"AFP og alderspensjon" },
+                    nynorsk { +"AFP og alderspensjon " }
                 )
             }
 
