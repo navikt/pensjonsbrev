@@ -276,8 +276,13 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" },
-                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") }
+                            )
+                            newline()
+                            text(
+                                bokmal { +"100% ved 67 år" },
+                                nynorsk { +"100% ved 67 år" }
                             )
                         }
                         column(alignment = RIGHT) {
