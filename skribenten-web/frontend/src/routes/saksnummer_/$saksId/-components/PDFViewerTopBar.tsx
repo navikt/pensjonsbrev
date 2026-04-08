@@ -1,4 +1,3 @@
-import { css, type SerializedStyles } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
@@ -119,38 +118,28 @@ const TopBarNavigation = (properties: {
     <HStack align="center" gap="space-8">
       <HStack align="center" gap="space-6">
         <BasicPDFViewerButton
-          cssOveride={css`
-            padding: 0;
-            height: 24px;
-            width: 24px;
-          `}
           disabled={properties.currentPageNumber === 1}
           icon={<ChevronUpIcon fontSize="24px" title="forrige side" />}
           onClick={goToPreviousPage}
+          size="sm"
         />
         <BasicPDFViewerButton
-          cssOveride={css`
-            padding: 0;
-            height: 24px;
-            width: 24px;
-          `}
           disabled={properties.currentPageNumber === properties.totalNumberOfPages}
           icon={<ChevronDownIcon fontSize="24px" title="neste side" />}
           onClick={goToNextPage}
+          size="sm"
         />
       </HStack>
       <HStack gap="space-4">
         <TextField
-          css={css`
-            input {
-              width: 27px;
-              height: 32px;
-              min-height: 32px;
-
-              /* sentrerer teksten i inputfeltet dersom feltet har et tegn, eller fler */
-              padding: 0 ${textFieldValue.length > 1 ? "4px" : "8px"};
-            }
-          `}
+          css={{
+            input: {
+              minHeight: "32px",
+              padding: "0",
+              textAlign: "center",
+              width: "3.2ch", //ca 29px, fits 3 digits
+            },
+          }}
           hideLabel
           label="Side"
           onChange={(event) => {
@@ -168,7 +157,7 @@ const TopBarNavigation = (properties: {
           value={textFieldValue}
         />
 
-        <BodyShort css={{ width: "27px", alignSelf: "center" }}>/ {properties.totalNumberOfPages}</BodyShort>
+        <BodyShort css={{ minWidth: "27px", alignSelf: "center" }}>/ {properties.totalNumberOfPages}</BodyShort>
       </HStack>
     </HStack>
   );
@@ -178,49 +167,42 @@ const TopBarZoom = (properties: { scale: number; setScale: (n: number) => void }
   return (
     <HStack gap="space-8">
       <BasicPDFViewerButton
-        cssOveride={css`
-          height: 32px;
-          width: 32px;
-        `}
         icon={<ZoomPlusIcon fontSize="20px" title="zoom-in" />}
         onClick={() => {
           if (properties.scale <= 1.5) {
             properties.setScale(properties.scale + 0.1);
           }
         }}
+        size="md"
       />
 
       <BasicPDFViewerButton
-        cssOveride={css`
-          height: 32px;
-          width: 32px;
-        `}
         icon={<ZoomMinusIcon fontSize="20px" title="zoom-ut" />}
         onClick={() => {
           if (properties.scale >= 1) {
             properties.setScale(properties.scale - 0.1);
           }
         }}
+        size="md"
       />
     </HStack>
   );
 };
 
+const sizeStyles = {
+  sm: { padding: 0, height: "24px", width: "24px" },
+  md: { padding: 0, height: "32px", width: "32px" },
+};
+
 const BasicPDFViewerButton = (properties: {
-  cssOveride?: SerializedStyles;
+  size?: keyof typeof sizeStyles;
   disabled?: boolean;
   onClick: () => void;
   icon: React.ReactNode;
 }) => {
   return (
     <Button
-      css={
-        properties.cssOveride ??
-        css`
-          padding: 0;
-          height: fit-content;
-        `
-      }
+      css={properties.size !== undefined ? sizeStyles[properties.size] : { padding: 0, height: "fit-content" }}
       data-color="neutral"
       disabled={properties.disabled}
       icon={properties.icon}
