@@ -1,18 +1,18 @@
-import type {
-  P1AvslaattPensjon,
-  P1InnvilgetPensjon,
-  P1Institusjon,
-  P1Person,
-  P1Redigerbar,
-  P1UtfyllendeInstitusjon,
+import {
+  type P1AvslaattPensjon,
+  type P1InnvilgetPensjon,
+  type P1Institusjon,
+  type P1Person,
+  type P1Redigerbar,
+  type P1UtfyllendeInstitusjon,
 } from "~/types/p1";
-import type {
-  P1AvslaattPensjonForm,
-  P1InnvilgetPensjonForm,
-  P1InstitusjonForm,
-  P1PersonForm,
-  P1RedigerbarForm,
-  P1UtfyllendeInstitusjonForm,
+import {
+  type P1AvslaattPensjonForm,
+  type P1InnvilgetPensjonForm,
+  type P1InstitusjonForm,
+  type P1PersonForm,
+  type P1RedigerbarForm,
+  type P1UtfyllendeInstitusjonForm,
 } from "~/types/p1FormTypes";
 
 import { emptyAvslaattRow, emptyInnvilgetRow } from "./emptyP1";

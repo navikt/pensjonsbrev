@@ -4,16 +4,16 @@
 import axios from "axios";
 
 import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
-import type {
-  AlltidValgbartVedlegg,
-  BestillBrevResponse,
-  BrevInfo,
-  BrevResponse,
-  DistribusjonstypeRequest,
-  OppdaterBrevRequest,
-  OppdaterKlarStatusRequest,
-  OppdaterMottakerRequest,
-  ValgteVedleggRequest,
+import {
+  type AlltidValgbartVedlegg,
+  type BestillBrevResponse,
+  type BrevInfo,
+  type BrevResponse,
+  type DistribusjonstypeRequest,
+  type OppdaterBrevRequest,
+  type OppdaterKlarStatusRequest,
+  type OppdaterMottakerRequest,
+  type ValgteVedleggRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";

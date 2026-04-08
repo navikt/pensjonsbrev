@@ -1,5 +1,5 @@
 import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 
 export const updateSignatur: Action<LetterEditorState, [of: "Saksbehandler" | "Attestant", signatur: string]> =
   withPatches((draft, of, signatur) => {

@@ -8,7 +8,7 @@ import {
 import { PARAGRAPH, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { LetterEditorState } from "../model/state";
+import { type LetterEditorState } from "../model/state";
 import { isTextContent } from "../model/utils";
 
 export const switchTypography: Action<

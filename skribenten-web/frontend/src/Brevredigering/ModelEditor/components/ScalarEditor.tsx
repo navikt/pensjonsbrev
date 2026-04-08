@@ -4,7 +4,7 @@ import { Controller, useFormContext, useWatch } from "react-hook-form";
 
 import { convertFieldToReadableLabel, getFieldDefaultValue } from "~/Brevredigering/ModelEditor/components/utils";
 import { FullWidthDatePickerWrapper } from "~/components/FullWidthDatePickerWrapper";
-import type { TScalar } from "~/types/brevbakerTypes";
+import { type TScalar } from "~/types/brevbakerTypes";
 import { formatDateWithoutTimezone, parseDate } from "~/utils/dateUtils";
 
 export const ScalarEditor = ({

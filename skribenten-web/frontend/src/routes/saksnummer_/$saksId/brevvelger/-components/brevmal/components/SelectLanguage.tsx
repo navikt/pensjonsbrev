@@ -1,7 +1,7 @@
 import { InlineMessage, Select, VStack } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
-import type { SpraakKode } from "~/types/apiTypes";
+import { type SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
 function SelectLanguage({

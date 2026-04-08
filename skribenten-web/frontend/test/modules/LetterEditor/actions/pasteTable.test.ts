@@ -2,9 +2,10 @@ import DOMPurify from "dompurify";
 import { describe, expect, it } from "vitest";
 
 import { paste } from "~/Brevredigering/LetterEditor/actions/paste";
-import type { LetterEditorState, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type LetterEditorState, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
-import type { Table } from "~/types/brevbakerTypes";
+import { type Table } from "~/types/brevbakerTypes";
+
 import { letter, literal, paragraph, select } from "../utils";
 
 function createClipboardWithHtml(htmlContent: string): DataTransfer {

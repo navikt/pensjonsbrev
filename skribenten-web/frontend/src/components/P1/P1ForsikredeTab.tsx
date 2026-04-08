@@ -2,7 +2,7 @@ import { PadlockLockedIcon } from "@navikt/aksel-icons";
 import { Heading, HStack, Table, TextField } from "@navikt/ds-react";
 import { useFormContext } from "react-hook-form";
 
-import type { P1RedigerbarForm } from "~/types/p1FormTypes";
+import { type P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { DateField } from "./P1DateField";
 

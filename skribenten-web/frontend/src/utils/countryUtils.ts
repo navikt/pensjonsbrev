@@ -1,4 +1,4 @@
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
 type Land = {
   kode: string;

@@ -1,4 +1,4 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -9,48 +9,46 @@ import {
   isTableCellIndex,
   isTextContent,
 } from "~/Brevredigering/LetterEditor/model/utils";
-import type { BrevResponse } from "~/types/brev";
-import type {
-  Cell,
-  ColumnSpec,
-  Content,
-  EditedLetter,
-  ElementTags,
-  Identifiable,
-  Item,
-  ItemList,
-  LiteralValue,
-  NewLine,
-  ParagraphBlock,
-  Row,
-  Table,
-  TextContent,
-  Title1Block,
-  Title2Block,
-  Title3Block,
-  VariableValue,
-} from "~/types/brevbakerTypes";
+import { type BrevResponse } from "~/types/brev";
 import {
+  type Cell,
+  type ColumnSpec,
+  type Content,
+  type EditedLetter,
+  type ElementTags,
   FontType,
+  type Identifiable,
   ITEM_LIST,
+  type Item,
+  type ItemList,
   LITERAL,
+  type LiteralValue,
   NEW_LINE,
+  type NewLine,
   PARAGRAPH,
+  type ParagraphBlock,
+  type Row,
   TABLE,
+  type Table,
+  type TextContent,
   TITLE1,
   TITLE2,
   TITLE3,
+  type Title1Block,
+  type Title2Block,
+  type Title3Block,
   VARIABLE,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
-import type {
-  BlockContentIndex,
-  Focus,
-  ItemContentIndex,
-  LetterEditorState,
-  LiteralIndex,
-  TableCellIndex,
+import {
+  type BlockContentIndex,
+  type Focus,
+  type ItemContentIndex,
+  type LetterEditorState,
+  type LiteralIndex,
+  type TableCellIndex,
 } from "../model/state";
 
 export function cleanseText(text: string): string {

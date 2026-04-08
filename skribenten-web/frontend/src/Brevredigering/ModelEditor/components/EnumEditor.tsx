@@ -1,7 +1,7 @@
 import { Radio, RadioGroup } from "@navikt/ds-react";
 import { Controller, useFormContext } from "react-hook-form";
 
-import type { TEnum } from "~/types/brevbakerTypes";
+import { type TEnum } from "~/types/brevbakerTypes";
 
 import { convertFieldToReadableLabel } from "./utils";
 

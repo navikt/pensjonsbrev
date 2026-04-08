@@ -1,6 +1,5 @@
 import { TextField } from "@navikt/ds-react";
-import type { ChangeEvent } from "react";
-import { useCallback } from "react";
+import { type ChangeEvent, useCallback } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";

@@ -1,10 +1,10 @@
 import { Radio, RadioGroup, Table, Textarea, TextField } from "@navikt/ds-react";
 import { memo } from "react";
-import type { Control, UseFormRegister } from "react-hook-form";
-import { Controller, useFormState } from "react-hook-form";
+import { type Control, Controller, type UseFormRegister, useFormState } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
-import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
+import { type LandOption, type P1RedigerbarForm } from "~/types/p1FormTypes";
+
 import { P1CountryField } from "./P1CountryField";
 import { ManagedDatePicker } from "./P1ManagedDatePicker";
 import { AVSLAGSBEGRUNNELSE_OPTIONS, PENSJONSTYPE_OPTIONS } from "./p1Constants";

@@ -1,7 +1,7 @@
 import { getToken } from "@navikt/oasis";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import type { Express } from "express";
+import { type Express } from "express";
 import { jwtDecode } from "jwt-decode";
 
 import config from "./config.js";

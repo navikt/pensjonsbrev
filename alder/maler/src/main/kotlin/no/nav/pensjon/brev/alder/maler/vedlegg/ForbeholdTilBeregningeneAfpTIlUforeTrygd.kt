@@ -1,9 +1,11 @@
 package no.nav.pensjon.brev.alder.maler.vedlegg
 
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDto
+import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.kap19
 import no.nav.pensjon.brev.alder.model.info.afpprivatutforetrygdbrev.AFpPrivatSokerUforeTrygdVedleggDtoSelectors.uforeTrygdTil_ATT
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
+import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -18,13 +20,6 @@ val forbeholdTilBeregningeneAfpTIlUforeTrygd =
         },
         includeSakspart = false,
     ) {
-
-        title2 {
-            text(
-                bokmal { +"Forbehold" },
-                nynorsk { +"Atterhald" }
-            )
-        }
         paragraph {
             text(
                 bokmal { +"Pensjonen din er beregnet på grunnlag av de opplysningene vi har om deg, i tillegg til de opplysningene du har oppgitt selv." },
@@ -45,18 +40,19 @@ val forbeholdTilBeregningeneAfpTIlUforeTrygd =
                 nynorsk { +"Vi tar ikkje omsyn til opptening frå eventuell inntekt som du vil ha samstundes med alderspensjon eller uføretrygd." }
             )
         }
-
-        paragraph {
-            text(
-                bokmal { +"Innvilget uføretrygd gir opptjening til alderspensjon etter kapittel 19 i Folketrygdloven, og er bare medregnet i tilfelle den får stor betydning for beregningen. I denne saken har vi sett bort fra uføreopptjeningen fordi den får liten eller ingen betydning for alderspensjonen." },
-                nynorsk { +"Innvilga uføretrygd gir opptening til alderspensjon etter kapittel 19 i Folketrygdlova, og er berre medrekna i tilfelle den får stor verknad for berekninga. I denne saka har vi sett bort frå uføreoppteninga fordi den får liten eller ingen verknad for alderspensjonen." }
-            )
-        }
-        showIf(uforeTrygdTil_ATT) {
+        showIf(kap19) {
             paragraph {
                 text(
-                    bokmal { +"Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå. Slettes om UT er lagt til attestering." },
-                    nynorsk { +"Vi har ikkje vurdert om du har rett til å få innvilga uføretrygd då søknaden om uføretrygd ikkje er ferdig behandla enno. Slettes om UT er lagt til attestering." }
+                    bokmal { +"Innvilget uføretrygd gir opptjening til alderspensjon etter kapittel 19 i Folketrygdloven, og er bare medregnet i tilfelle den får stor betydning for beregningen." },
+                    nynorsk { +"Innvilga uføretrygd gir opptening til alderspensjon etter kapittel 19 i Folketrygdlova, og er berre medrekna i tilfelle den får stor verknad for berekninga." }
+                )
+            }
+        }
+        showIf(uforeTrygdTil_ATT.not()) {
+            paragraph {
+                text(
+                    bokmal { +"Vi har ikke vurdert om du har rett til å få innvilget uføretrygd da søknaden om uføretrygd ikke er ferdig behandlet ennå." },
+                    nynorsk { +"Vi har ikkje vurdert om du har rett til å få innvilga uføretrygd då søknaden om uføretrygd ikkje er ferdig behandla enno." }
                 )
 
             }

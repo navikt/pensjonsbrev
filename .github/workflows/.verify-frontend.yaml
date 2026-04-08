@@ -24,7 +24,7 @@ jobs:
           persist-credentials: false
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: Install bff dependencies
@@ -54,14 +54,28 @@ jobs:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
+
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
+
+      - name: Cache Cypress binary
+        if: ${{ inputs.cypress }}
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830 # v4.3.0
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
+
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+
+      - name: Install Cypress binary
+        if: ${{ inputs.cypress }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx cypress install
 
       - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -101,7 +115,7 @@ jobs:
           start: 'npm run preview -- --port 5173'
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots

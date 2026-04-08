@@ -8,4 +8,4 @@ fun createAfpPrivatSokerUforeTrygdDto() = AfpPrivatSokerUforeTrygdDto(
         createAfpPrivatSokerUforeTrygdVedleggDto()
     ),
 )
-fun createAfpPrivatSokerUforeTrygdVedleggDto() = AFpPrivatSokerUforeTrygdVedleggDto(true)
+fun createAfpPrivatSokerUforeTrygdVedleggDto() = AFpPrivatSokerUforeTrygdVedleggDto(true,true)

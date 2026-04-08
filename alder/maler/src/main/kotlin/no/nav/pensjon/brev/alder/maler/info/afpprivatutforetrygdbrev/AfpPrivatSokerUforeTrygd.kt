@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -36,7 +37,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
     override val brevkontekst: TemplateDescription.Brevkontekst = TemplateDescription.Brevkontekst.ALLE
 
-    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT, Sakstype.AFP, Sakstype.UFOREP)
+    override val sakstyper: Set<ISakstype> = setOf(Sakstype.AFP_PRIVAT)
 
 
     override val template = createTemplate(
@@ -49,22 +50,39 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     ) {
         title {
             text(
-                bokmal { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
-                nynorsk { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
+                bokmal { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
+                nynorsk { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
             )
         }
 
         outline {
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav."
+
+                        },
+                        nynorsk {
+                            +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav."
+                        },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal { +"Du har i dag AFP i privat sektor og vurderer å søke om uføretrygd fra Nav." },
+                        nynorsk { +"Du har i dag AFP i privat sektor og vurderer å søkje uføretrygd frå Nav." }
+                    )
+                }
+            }
             paragraph {
                 text(
-                    bokmal {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd fra Nav. "
-
-                    },
-                    nynorsk {
-                        +"Du har i dag AFP i privat sektor, og har søkt om uføretrygd frå Nav. "
-                    },
+                    bokmal { +"Du kan ikke ha AFP samtidig med uføretrygd, se AFP-tilskottsloven § 8. Du må derfor velge mellom:" },
+                    nynorsk { +"Du kan ikkje ha AFP samstundes med uføretrygd, sjå AFP-tilskottsloven § 8. Du må derfor velje mellom:" }
                 )
+            }
+            paragraph {
                 list {
                     item {
                         text(
@@ -205,7 +223,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            title2 {
+            title3 {
                 text(
                     bokmal { +"Uføretrygd fra Nav og alderspensjon" },
                     nynorsk { +"Uføretrygd frå Nav og alderspensjon" }
@@ -245,25 +263,25 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             paragraph {
                 table(
                     header = {
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 bokmal { +"" },
                                 nynorsk { +"" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
                                 bokmal { +"Uføretrygd " + fritekst("0") + "%" },
                                 nynorsk { +"Uføretrygd " + fritekst("0") + "%" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
-                                bokmal { +"Alderspensjon 100%" },
-                                nynorsk { +"Alderspensjon 100%" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") +" *" },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + " *"}
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 bokmal { +"Sum pensjon" },
                                 nynorsk { +"Sum pensjon" }
@@ -330,11 +348,16 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
+            paragraph { text(
+                bokmal { +"* Alderspensjon blir 100% fra 67 år" },
+                nynorsk { +"* Alderspensjon blir 100% fra 67 år" },
+                fontType = FontType.BOLD
+            ) }
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold.:" },
-                    nynorsk { +"Sjå vedlegg om atterhald." }
+                    bokmal { +"Se vedlegg om forbehold:" },
+                    nynorsk { +"Sjå vedlegg om atterhald:" }
                 )
             }
             paragraph {
@@ -363,7 +386,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                     }
                 }
             }
-            showIf(saksbehandlerValg.harSoktUforeTrygd.not()) {
+            showIf(saksbehandlerValg.harSoktUforeTrygd) {
                 title2 {
                     text(
                         bokmal { +"Dette må du gjøre" },
@@ -391,7 +414,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                             newline()
                             text(
                                 bokmal { +"Nav familie- og pensjonsytelser" },
-                                nynorsk { +"Nav familie- og pensjonsytelser, Postboks 6600 Etterstad 0607 OSLO" }
+                                nynorsk { +"Nav familie- og pensjonsytelser" }
                             )
                             newline()
                             text(
@@ -426,6 +449,6 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
             }
 
         }
-        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd,pesysData.vedleggDto)
+        includeAttachment(forbeholdTilBeregningeneAfpTIlUforeTrygd, pesysData.vedleggDto)
     }
 }
