@@ -23,7 +23,6 @@ import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
-import no.nav.pensjon.brev.latex.PDFByggerServiceImpl
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.latex
+package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.callid.*
@@ -19,8 +19,6 @@ import kotlinx.io.IOException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
-import no.nav.pensjon.brev.BrevbakerFeatureToggles
-import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
