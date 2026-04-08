@@ -1,6 +1,6 @@
 import { formatISO } from "date-fns";
 
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
 import { nyBrevResponse } from "../../utils/brevredigeringTestUtils";
 

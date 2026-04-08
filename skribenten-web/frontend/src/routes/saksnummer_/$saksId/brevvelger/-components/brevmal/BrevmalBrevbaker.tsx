@@ -11,14 +11,13 @@ import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlterna
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
+import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 import { trackEvent } from "~/utils/umami";
 
-import type { SubmitTemplateOptions } from "../../route";
-import { Route } from "../../route";
+import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";

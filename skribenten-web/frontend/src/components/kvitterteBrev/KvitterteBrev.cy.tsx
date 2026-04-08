@@ -2,11 +2,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
 
 import { type BestillBrevResponse, type BrevInfo, Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
 import { nyBrevInfo } from "../../../cypress/utils/brevredigeringTestUtils";
 import KvitterteBrev from "./KvitterteBrev";
-import type { KvittertBrev } from "./KvitterteBrevUtils";
+import { type KvittertBrev } from "./KvitterteBrevUtils";
 
 const nyKvittertBrev = (args: {
   apiStatus?: "error" | "success";

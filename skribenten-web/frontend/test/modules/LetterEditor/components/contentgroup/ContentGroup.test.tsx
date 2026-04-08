@@ -8,18 +8,16 @@
 
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import type { Mock } from "vitest";
-import { afterEach, describe, expect, test, vi } from "vitest";
+import { afterEach, describe, expect, type Mock, test, vi } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { ContentGroup } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
-import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
-import { ElementTags, PARAGRAPH } from "~/types/brevbakerTypes";
+import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { ElementTags, type LiteralValue, PARAGRAPH, type ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, variable } from "../../utils";
 

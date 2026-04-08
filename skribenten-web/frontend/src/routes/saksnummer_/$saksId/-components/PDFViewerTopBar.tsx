@@ -1,5 +1,4 @@
-import type { SerializedStyles } from "@emotion/react";
-import { css } from "@emotion/react";
+import { css, type SerializedStyles } from "@emotion/react";
 import { ChevronDownIcon, ChevronUpIcon, ZoomMinusIcon, ZoomPlusIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, HStack, TextField } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
