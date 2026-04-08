@@ -1,10 +1,10 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 import { isEqual } from "lodash";
 
-import type { ItemList } from "~/types/brevbakerTypes";
+import { type ItemList } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isItemList, isTextContent } from "../model/utils";
 import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
 

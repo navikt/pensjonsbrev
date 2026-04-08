@@ -1,13 +1,13 @@
 import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import { Box, Button, HStack, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
-import type { BrevInfo, Mottaker } from "~/types/brev";
+import { type BrevInfo, type Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 import OppsummeringAvMottaker from "./OppsummeringAvMottaker";

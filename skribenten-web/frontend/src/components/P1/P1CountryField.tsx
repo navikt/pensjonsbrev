@@ -1,9 +1,8 @@
 import { UNSAFE_Combobox } from "@navikt/ds-react";
 import { useMemo } from "react";
-import type { Control, FieldPath, FieldValues } from "react-hook-form";
-import { Controller } from "react-hook-form";
+import { type Control, Controller, type FieldPath, type FieldValues } from "react-hook-form";
 
-import type { LandOption } from "~/types/p1FormTypes";
+import { type LandOption } from "~/types/p1FormTypes";
 
 interface P1CountryFieldProps<
   TFieldValues extends FieldValues = FieldValues,

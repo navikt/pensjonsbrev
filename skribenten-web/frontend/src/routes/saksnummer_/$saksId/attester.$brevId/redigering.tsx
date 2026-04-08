@@ -3,7 +3,7 @@ import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, Button, Heading, Hide, Label, Switch, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -25,8 +25,13 @@ import { UnderskriftTextField } from "~/components/ManagedLetterEditor/Underskri
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ReservertBrevError from "~/components/ReservertBrevError";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import {
+  type BrevResponse,
+  type OppdaterBrevRequest,
+  type ReservasjonResponse,
+  type SaksbehandlerValg,
+} from "~/types/brev";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
