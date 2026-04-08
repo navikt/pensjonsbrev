@@ -119,25 +119,25 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                 val fritekstAlderspensjon = fritekst("0")
                 table(
                     header = {
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 1) {
                             text(
                                 bokmal { +"" },
                                 nynorsk { +"" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
                                 bokmal { +"Uføretrygd " + `fritekstUføre` + "%" },
                                 nynorsk { +"Uføretrygd " + `fritekstUføre` + "%" }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
-                                bokmal { +"Alderspensjon " + fritekstAlderspensjon + "% ved 62 år 100% ved 67 år " },
-                                nynorsk { +"Alderspensjon " + fritekstAlderspensjon + " % ved 62 år 100% ved 67 år " }
+                                bokmal { +"Alderspensjon " + fritekstAlderspensjon + "% ved 62 år. 100% ved 67 år " },
+                                nynorsk { +"Alderspensjon " + fritekstAlderspensjon + " % ved 62 år. 100% ved 67 år " }
                             )
                         }
-                        column(alignment = RIGHT) {
+                        column(alignment = RIGHT, columnSpan = 2) {
                             text(
                                 bokmal { +"Sum pensjon" },
                                 nynorsk { +"Sum pensjon" }
