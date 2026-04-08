@@ -1,28 +1,7 @@
 #import "content/state.typ": section-start, section-end
 #import "template.typ": logo, mainTitle
 #import "input.typ": languageSettings, input
-
-// Case details for attachments (simplified version without "annenMottaker")
-#let attachmentCaseDetails = {
-  let annenMottaker = input.annenMottakerNavn != none
-  set text(size: 11pt)
-  block(
-    grid(
-      columns: 2,
-      column-gutter: 16mm,
-      row-gutter: 8.6pt,
-      if(annenMottaker){ // TODO sjekk med karoline om dette er riktig.
-        [#languageSettings.vedlegggjeldernavnprefix]
-      } else {
-        [#languageSettings.navnprefix]
-      },
-      [#input.gjelderNavn],
-      [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
-      [#languageSettings.saksnummerprefix], [#input.saksnummer #h(1fr) #input.dokumentDato],
-    ),
-    above: 57.5pt,
-  )
-}
+#import "casedetails.typ" : casedetails
 
 #let startAttachment(title, sectionNumber: int, showCaseDetails: bool) = {
   pagebreak(to: "odd", weak: false)
@@ -30,14 +9,11 @@
 
   // Show the NAV logo
   logo
-
   if showCaseDetails {
-  // TODO legg til samme case details.
-    attachmentCaseDetails
-    mainTitle(title)
-  } else {
-    mainTitle(title)
+    casedetails
   }
+
+  mainTitle(title)
 }
 
 #let endAttachment(sectionNumber: int) = {
