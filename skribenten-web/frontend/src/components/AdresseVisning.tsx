@@ -1,5 +1,5 @@
 import { BodyShort, HStack, Label, Tag, VStack } from "@navikt/ds-react";
-import type { AkselColorRole } from "@navikt/ds-tokens/types";
+import { type AkselColorRole } from "@navikt/ds-tokens/types";
 
 export type AdresseVisningTag = {
   label: string;

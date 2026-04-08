@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { getBrev } from "~/api/brev-queries";
 import { endreMottaker, fjernOverstyrtMottaker, hentAlleBrevInfoForSak, hentPdfForBrev } from "~/api/sak-api-endpoints";
-import type { Adresse } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse, Mottaker } from "~/types/brev";
+import { type Adresse } from "~/types/apiTypes";
+import { type BrevInfo, type BrevResponse, type Mottaker } from "~/types/brev";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
 
 export function useEndreMottaker(saksId: string, brevId: number) {
