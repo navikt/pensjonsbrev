@@ -49,8 +49,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
     ) {
         title {
             text(
-                bokmal { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
-                nynorsk { +"Du må velge mellom Afp i privat sektor og uføretrygd fra Nav" },
+                bokmal { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
+                nynorsk { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
             )
         }
 
@@ -276,8 +276,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         }
                         column(alignment = RIGHT) {
                             text(
-                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" },
-                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "100% ved 67 år" }
+                                bokmal { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "  100% ved 67 år" },
+                                nynorsk { +"Alderspensjon " + fritekst("0") + "% fra " + fritekst("dato") + "  100% ved 67 år" }
                             )
                         }
                         column(alignment = RIGHT) {
