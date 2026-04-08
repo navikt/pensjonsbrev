@@ -11,6 +11,7 @@ on:
       - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/klar-til-merge.yml"
+      - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/update-latex-image.yml"
       - ".vscode/settings.json"
       - "CODEOWNERS"
