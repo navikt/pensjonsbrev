@@ -1,6 +1,6 @@
 import "~/css/p1.css";
 
-import { zodResolver } from "@hookform/resolvers/zod/dist/zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Box, Button, Heading, HStack, Loader, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
