@@ -176,6 +176,8 @@ jobs:
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
+      - name: Install poppler-utils
+        run: sudo apt-get install -y poppler-utils
       - name: Convert visual-test pdfs to png
         run: |
           mkdir -p brevbaker/pdf-bygger/build/test_visual/mogrify_output
