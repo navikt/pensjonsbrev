@@ -171,7 +171,7 @@ jobs:
       id-token: write
     steps:
       # Checkout with an explicit ref so we get a named branch instead of a
-      # detached HEAD — reg-suit needs the branch name to find the correct baseline.
+      # detached HEAD — reg-notify-github-plugin needs the branch name to find the PR to comment on.
       # fetch-depth: 0 fetches the full history so reg-keygen-git-hash-plugin can
       # walk back through commits to find a previously published snapshot.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -205,7 +205,6 @@ jobs:
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          REG_SUIT_EXPECTED_KEY: ${{ github.event.pull_request.base.sha }}
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
