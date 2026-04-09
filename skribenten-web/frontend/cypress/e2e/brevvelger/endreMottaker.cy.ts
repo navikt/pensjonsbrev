@@ -299,6 +299,7 @@ describe("Endrer på mottaker", () => {
     cy.contains("Poststed").click().type("Poststedet");
     cy.getDataCy("land-combobox").click().type("Sver{enter}");
     cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
     cy.contains("0000").should("not.exist");
     cy.contains("Poststedet").should("not.exist");
