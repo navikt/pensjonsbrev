@@ -186,7 +186,9 @@ jobs:
         with:
           node-version-file: ".tool-versions"
       - name: Install reg-suit
-        run: npm install --no-save reg-suit @reg-suit/publish-gcs-plugin @reg-suit/keygen-github-actions-plugin @reg-suit/notify-github-plugin
+        run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-plugin
+      - name: List available reg-suit plugins
+        run: ls node_modules | grep reg
       - name: Authenticate to Google Cloud
         uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
         with:
