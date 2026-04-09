@@ -205,6 +205,7 @@ jobs:
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          REG_SUIT_EXPECTED_KEY: ${{ github.event.pull_request.base.sha }}
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
