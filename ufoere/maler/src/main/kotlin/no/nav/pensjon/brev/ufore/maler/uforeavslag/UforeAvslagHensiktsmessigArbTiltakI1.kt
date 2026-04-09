@@ -95,7 +95,7 @@ object UforeAvslagHensiktsmessigArbTiltakI1 : RedigerbarTemplate<UforeAvslagEnke
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova §§ 12-5 til 12-7." })
             }
 
-            includePhrase(Felles.HvaSkjerNa)
+            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
