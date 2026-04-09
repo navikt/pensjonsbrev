@@ -1,0 +1,20 @@
+{
+  "core": {
+    "workingDir": ".",
+    "actualDir": ".",
+    "threshold": 0
+  },
+  "plugins": {
+    "reg-keygen-git-hash-plugin": {},
+    "reg-publish-gcs-plugin": {
+      "bucketName": "no-nav-pensjonsbrev-reg-suit",
+      "pathPrefix": "pdf-visual"
+    },
+    "reg-notify-github-with-api-plugin": {
+      "owner": "navikt",
+      "repository": "pensjonsbrev",
+      "privateToken": "$GITHUB_TOKEN",
+      "prCommentBehavior": "create"
+    }
+  }
+}
