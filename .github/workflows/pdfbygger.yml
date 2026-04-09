@@ -187,7 +187,7 @@ jobs:
       - name: Convert visual-test pdfs to png
         run: |
           mkdir -p brevbaker/pdf-bygger/build/test_visual/png
-          find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 -singlefile "$1" brevbaker/pdf-bygger/build/test_visual/png/$(basename "$1" .pdf)' _ {}
+          find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 "$1" brevbaker/pdf-bygger/build/test_visual/png/$(basename "$1" .pdf)' _ {}
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
           node-version-file: ".tool-versions"
