@@ -10,7 +10,10 @@
       "bucketName": "no-nav-pensjonsbrev-reg-suit",
       "pathPrefix": "pdf-visual"
     },
-    "reg-notify-github-plugin": {
+    "reg-notify-github-with-api-plugin": {
+      "owner": "navikt",
+      "repository": "pensjonsbrev",
+      "privateToken": "$GITHUB_TOKEN",
       "prCommentBehavior": "create"
     }
   }
