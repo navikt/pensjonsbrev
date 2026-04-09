@@ -176,9 +176,13 @@ jobs:
         uses: routsi/ImageMagick-action@bc9b6081e53f682096b9ad5407f1a01ea9b5b7b8 # v1.1.1
         with:
           command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+          sparse-checkout: '.tool-versions'
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
       - run: npm install --save-dev @percy/cli
       - name: Publish visual-tests to percy
         run: |
