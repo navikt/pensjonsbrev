@@ -5,12 +5,12 @@
     "threshold": 0
   },
   "plugins": {
-    "reg-publish-gcs-plugin": {
+    "@reg-suit/publish-gcs-plugin": {
       "bucketName": "no-nav-pensjonsbrev-reg-suit",
       "pathPrefix": "pdf-visual"
     },
-    "reg-keygen-github-actions-plugin": {},
-    "reg-notify-github-plugin": {
+    "@reg-suit/keygen-github-actions-plugin": {},
+    "@reg-suit/notify-github-plugin": {
       "prCommentBehavior": "create"
     }
   }
