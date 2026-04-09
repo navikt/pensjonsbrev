@@ -187,15 +187,14 @@ jobs:
         with:
           node-version-file: ".tool-versions"
       - name: Install reg-suit
-        run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-plugin
-      - name: List available reg-suit plugins
-        run: ls node_modules | grep reg
+        run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-plugin reg-keygen-github-actions-plugin
       - name: Authenticate to Google Cloud
         uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit
-        run: npx reg-suit run --config .github/regconfig.json
+        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regconfig.json
+        working-directory: brevbaker/pdf-bygger/build/test_visual/mogrify_output
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
