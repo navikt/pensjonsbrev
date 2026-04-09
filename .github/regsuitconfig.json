@@ -13,8 +13,7 @@
     "reg-notify-github-with-api-plugin": {
       "owner": "navikt",
       "repository": "pensjonsbrev",
-      "privateToken": "$GITHUB_TOKEN",
-      "prCommentBehavior": "create"
+      "privateToken": "$GITHUB_TOKEN"
     }
   }
 }
