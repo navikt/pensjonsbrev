@@ -7,7 +7,7 @@ binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.21.0"
 commonVersion = "2.32.0"
-exposedVersion = "1.0.0"
+exposedVersion = "1.2.0"
 flywayVersion = "12.1.1"
 hikariVersion = "7.0.2"
 # TODO: Vi burde egentlig bruke samme versjon av Jackson, men jsr310 er publisert med 2.21.0, og resten med 2.21
