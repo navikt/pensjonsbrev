@@ -1,11 +1,20 @@
-import type { Draft } from "immer";
-import { produce } from "immer";
+import { type Draft, produce } from "immer";
 
-import type { Cell, ParagraphBlock, Row, Title1Block, Title2Block, Title3Block } from "~/types/brevbakerTypes";
-import { PARAGRAPH, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
+import {
+  type Cell,
+  PARAGRAPH,
+  type ParagraphBlock,
+  type Row,
+  TITLE1,
+  TITLE2,
+  TITLE3,
+  type Title1Block,
+  type Title2Block,
+  type Title3Block,
+} from "~/types/brevbakerTypes";
 
 import { addElements, isTable, newLiteral, newRow, removeElements } from "../actions/common";
-import type { Focus, LetterEditorState } from "../model/state";
+import { type Focus, type LetterEditorState } from "../model/state";
 import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
 

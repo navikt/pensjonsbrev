@@ -1,7 +1,7 @@
-import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
+import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 
-import type { SpraakKode } from "./apiTypes";
-import type { Nullable } from "./Nullable";
+import { type SpraakKode } from "./apiTypes";
+import { type Nullable } from "./Nullable";
 
 export type OpprettBrevRequest = {
   brevkode: string;

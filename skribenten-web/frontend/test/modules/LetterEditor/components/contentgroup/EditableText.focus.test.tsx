@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 
 import { EditableText } from "~/Brevredigering/LetterEditor/components/ContentGroup";
 import { EditorStateContext } from "~/Brevredigering/LetterEditor/LetterEditor";
-import type { CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { LiteralValue } from "~/types/brevbakerTypes";
+import { type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type LiteralValue } from "~/types/brevbakerTypes";
 
 import { letter, literal, paragraph } from "../../utils";
 

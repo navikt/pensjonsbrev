@@ -1,11 +1,11 @@
 import { ArrowLeftIcon, PencilIcon } from "@navikt/aksel-icons";
 import { Button, HStack, Table, VStack } from "@navikt/ds-react";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 
 import { ApiError } from "~/components/ApiError";
 import { useLandData } from "~/hooks/useLandData";
-import type { Adresse } from "~/types/apiTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type Adresse } from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 import { getCountryNameByKode } from "~/utils/countryUtils";
 import { humanizeName } from "~/utils/stringUtils";
 

@@ -1,6 +1,13 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
-import type { Content, ItemList, LiteralValue, NewLine, TextContent, VariableValue } from "~/types/brevbakerTypes";
+import {
+  type Content,
+  type ItemList,
+  type LiteralValue,
+  type NewLine,
+  type TextContent,
+  type VariableValue,
+} from "~/types/brevbakerTypes";
 
 export const handleSwitchContent = <T, U, V, W>(args: {
   content: Content;

@@ -2,7 +2,7 @@ import { ArrowLeftIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { Alert, BodyShort, Box, Button, Heading, HStack, Label, Modal, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useState } from "react";
 
 import { attesteringBrevKeys, getBrevAttestering } from "~/api/brev-queries";
@@ -13,7 +13,7 @@ import { CenteredLoader } from "~/components/CenteredLoader";
 import { distribusjonstypeTilText } from "~/components/kvitterteBrev/KvitterteBrevUtils";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import ThreeSectionLayout from "~/components/ThreeSectionLayout";
-import type { BestillBrevResponse, BrevResponse } from "~/types/brev";
+import { type BestillBrevResponse, type BrevResponse } from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 

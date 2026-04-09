@@ -1,4 +1,4 @@
-import type { BrevInfo } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 
 export const erBrevKlar = (brev: BrevInfo) => brev.status.type === "Klar";
 

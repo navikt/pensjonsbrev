@@ -141,7 +141,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
-            logger.error(cause.message, cause)
+            cleanSensitiveDataAndLog(cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
@@ -195,6 +195,19 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         Features.shutdown()
     }
 }
+
+// Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
+private fun cleanSensitiveDataAndLog(cause: Exception) {
+    if (cause is IllegalStateException && cause.messageHasEditedLetter()) {
+        logger.error("Unexpected value ***stripped sensitive Edit.Letter value*** of type no.nav.pensjon.brev.skribenten.letter.Edit.Letter", cause.cause)
+    } else {
+        logger.error(cause.message, cause)
+    }
+}
+
+private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
+    msg.startsWith("Unexpected value") && msg.endsWith("of type no.nav.pensjon.brev.skribenten.letter.Edit.Letter")
+} ?: false
 
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {

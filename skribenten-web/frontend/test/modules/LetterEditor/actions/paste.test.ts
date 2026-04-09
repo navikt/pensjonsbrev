@@ -9,8 +9,16 @@ import {
   newVariable,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Item, ItemList, LiteralValue, ParagraphBlock, VariableValue } from "~/types/brevbakerTypes";
-import { ElementTags, FontType, PARAGRAPH } from "~/types/brevbakerTypes";
+import {
+  ElementTags,
+  FontType,
+  type Item,
+  type ItemList,
+  type LiteralValue,
+  PARAGRAPH,
+  type ParagraphBlock,
+  type VariableValue,
+} from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 

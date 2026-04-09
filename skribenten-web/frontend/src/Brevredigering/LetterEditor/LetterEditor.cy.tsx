@@ -3,11 +3,11 @@ import "./editor.css";
 import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getRange } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { SpraakKode } from "~/types/apiTypes";
 import { type BrevResponse, Distribusjonstype } from "~/types/brev";
-import type { EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
+import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
 
 import exampleLetter1Json from "./example-letter-1.json";
 import { LetterEditor } from "./LetterEditor";

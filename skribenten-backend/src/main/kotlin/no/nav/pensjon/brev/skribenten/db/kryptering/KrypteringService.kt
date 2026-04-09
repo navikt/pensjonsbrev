@@ -80,7 +80,7 @@ object KrypteringService {
     }
 }
 
-@JvmInline
-value class EncryptedByteArray(val bytes: ByteArray) {
+// Endret fra value class fordi det ser ut til å være et problem med unboxing/boxing og caching i exposed for value classes
+class EncryptedByteArray(val bytes: ByteArray) {
     override fun toString() = bytes.toString()
 }

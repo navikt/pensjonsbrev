@@ -3,7 +3,7 @@ import { Box, Button, Heading, Table } from "@navikt/ds-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import { SOFT_HYPHEN } from "~/Brevredigering/LetterEditor/model/utils";
-import type { LandOption, P1RedigerbarForm } from "~/types/p1FormTypes";
+import { type LandOption, type P1RedigerbarForm } from "~/types/p1FormTypes";
 
 import { emptyInnvilgetRow } from "./emptyP1";
 import { P1InnvilgetTabRow } from "./P1InnvilgetTabRow";

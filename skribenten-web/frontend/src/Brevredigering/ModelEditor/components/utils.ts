@@ -49,7 +49,7 @@
  * @param field - The field type definition to check
  * @returns true if the field is nullable or a Boolean scalar type
  */
-import type { FieldType } from "~/types/brevbakerTypes";
+import { type FieldType } from "~/types/brevbakerTypes";
 
 export function convertFieldToReadableLabel(field: string) {
   const lastFragment = field.split(".").at(-1) ?? "";
