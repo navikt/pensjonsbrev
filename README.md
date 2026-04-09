@@ -242,14 +242,14 @@ done
 Først en gang for å lage bilder i image_new, så kan du kopiere bildene til image_old for å få ett sammenligningsgrunnlag.
 Deretter kan du kjøre scriptet på nytt og få vite hvor ulike de er, samt en diff mellom bildene i out mappen.
 
-Du vil også kunne se disse endringene i percey ved å lage en pull-request.
+Du vil også kunne se disse endringene med reg-suit ved å lage en pull-request.
 
 ## Oppdatere latex biblioteker
 
 Ved først bygge brevbaker/pdf-bygger/latex.Dockerfile, så sette "from" i brevbaker/pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
 Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pdf-bygger/Dockerfile.
 
-Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk percy eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
+Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk reg-suit eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
 
 # Kode generert av GitHub Copilot
 

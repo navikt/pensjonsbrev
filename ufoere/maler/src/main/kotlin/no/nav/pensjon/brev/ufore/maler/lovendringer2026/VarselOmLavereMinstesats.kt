@@ -87,12 +87,6 @@ object VarselOmLavereMinstesats : AutobrevTemplate<EmptyAutobrevdata> {
                 )
             }
             paragraph {
-                text(
-                    bokmal { + "I vedtaksbrevet du vil få fra oss, kommer det mer informasjon og beregninger av hvordan dette påvirker uføretrygden din." },
-                    nynorsk { + "I vedtaksbrevet du vil få frå oss, kjem det meir informasjon og utrekningar av korleis dette påverkar uføretrygda di." },
-                )
-            }
-            paragraph {
                 list {
                     item {
                         text(
