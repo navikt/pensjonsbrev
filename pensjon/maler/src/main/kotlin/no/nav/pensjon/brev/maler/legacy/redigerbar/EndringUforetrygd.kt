@@ -322,54 +322,54 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((not(ektefelletilleggInnvilget) and not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per måned før skatt." } ,
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per månad før skatt." },
                     )
                 }
             }
 
             showIf(((barnetilleggInnvilget) and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per månad før skatt." },
                     )
                 }
             }
 
             showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt." },
                     )
                 }
             }
 
             showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og attlevandetillegg per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og attlevandetillegg per månad før skatt." },
                     )
                 }
             }
 
             showIf((ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget) and not(barnetilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto().greaterThan(0))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per månad før skatt." },
                     )
                 }
             }
 
             showIf((ektefelletilleggInnvilget and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etnetto().greaterThan(0) and ((barnetilleggSerkullInnvilget and btSerkullNetto.greaterThan(0)) or (barnetilleggFellesInnvilget and btFellesNetto.greaterThan(0))) and not(gjenlevendetilleggInnvilget) and not(instoppholdanvendt))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per måned før skatt." },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per månad før skatt." },
                     )
                 }
             }
@@ -660,9 +660,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                 showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()) and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))) {
                     paragraph {
-                        text (
-                            bokmal { + "Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
-                            nynorsk { + "Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
+                        text(
+                            bokmal { +"Inntekten din på skadetidspunktet er lavere enn beregningsgrunnlaget ditt, og uføretrygden din vil derfor ikke bli beregnet etter særbestemmelser for yrkesskade eller yrkessykdom." },
+                            nynorsk { +"Inntekta di på skadetidspunktet er lågare enn berekningsgrunnlaget ditt, og uføretrygda di blir derfor ikkje berekna etter særreglar for yrkesskade eller yrkessjukdom." },
                         )
                     }
                 }
@@ -678,12 +678,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     }
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Du kan lese mer om dette i vedlegget " },
-                        nynorsk { + "Du kan lese meir om dette i vedlegget " },
+                    text(
+                        bokmal { +"Du kan lese mer om dette i vedlegget " },
+                        nynorsk { +"Du kan lese meir om dette i vedlegget " },
                     )
                     namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                    text(bokmal { + "." }, nynorsk { + "." })
+                    text(bokmal { +"." }, nynorsk { +"." })
                 }
 
                 showIf((barnetilleggInnvilget and pe.ut_virkningstidpunktstorreenn01012016())) {
@@ -824,8 +824,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf(pesysData.annen_forld_rett_bt) {
                     paragraph {
                         text(
-                            bokmal { + fritekst("slett det som ikke er aktuelt") },
-                            nynorsk { + fritekst("slett det som ikke er aktuelt") },
+                            bokmal { +fritekst("slett det som ikke er aktuelt") },
+                            nynorsk { +fritekst("slett det som ikke er aktuelt") },
                         )
                     }
                 }
@@ -875,7 +875,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf(pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_opph_ikke_avt_land) {
                     paragraph {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er " +txtBarnetBarnaOpphor + " bosatt i " + fritekst("bostedsland") + ".  Derfor har du ikke lenger rett til barnetillegg" },
+                            bokmal { +"Ifølge våre opplysninger er " + txtBarnetBarnaOpphor + " bosatt i " + fritekst("bostedsland") + ".  Derfor har du ikke lenger rett til barnetillegg" },
                             nynorsk { +"Ifølgje våre opplysningar er " + txtBarnetBarnaOpphor + " busett i " + fritekst("bostedsland") + ". Derfor har du ikkje lenger rett til barnetillegg." },
                         )
                     }
@@ -999,8 +999,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((instoppholdtype.equalTo("reduksjon_hs") and (instoppholdanvendt or pe.ut_forsorgeransvar_ingen_er_false() or fasteUtgifterInstopphold.notEqualTo(Kroner(0))))) {
                 paragraph {
                     text(
-                        bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn" + txtOgEllerEktefelle +" under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din." },
-                        nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" + txtOgEllerEktefelle + " mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di."},
+                        bokmal { +"Dersom du har faste og nødvendige utgifter til bolig, kan vi vurdere om uføretrygden din kan reduseres mindre. Du må sende inn dokumentasjon på dine utgifter til Nav. Forsørger du barn" + txtOgEllerEktefelle + " under innleggelsen på institusjonen, vil vi ikke redusere uføretrygden din." },
+                        nynorsk { +"Dersom du har faste og nødvendige utgifter til bustad, vil vi vurdere en lågare reduksjon av uføretrygda di. Du må sende inn dokumentasjon på utgiftene dine til Nav. Viss du forsørgjer barn" + txtOgEllerEktefelle + " mens du er lagd inn på institusjonen, reduserer vi ikkje uføretrygda di." },
                     )
                 }
             }
@@ -1017,8 +1017,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((pe.ut_forsorgeransvar_ingen_er_false() and instoppholdtype.equalTo("reduksjon_hs") and fasteUtgifterInstopphold.equalTo(0))) {
                 paragraph {
                     text(
-                        bokmal { +"Du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres."},
-                        nynorsk { +"Du forsørgjer barn " + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di derfor ikkje skal reduserast."},
+                        bokmal { +"Du forsørger barn" + txtOgEllerEktefelle + " under oppholdet ditt i institusjon. Vi har derfor kommet fram til at utbetalingen din ikke skal reduseres." },
+                        nynorsk { +"Du forsørgjer barn " + txtOgEllerEktefelle + " under opphaldet ditt på institusjon. Vi har derfor kome fram til at utbetalinga di derfor ikkje skal reduserast." },
                     )
                 }
             }
@@ -1052,9 +1052,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((instoppholdanvendt and instoppholdtype.equalTo("reduksjon_hs") and fasteUtgifterInstopphold.equalTo(0) and pe.ut_forsorgeransvar_ingen_er_true())) {
                 paragraph {
-                    text (
-                        bokmal { + "Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner."},
-                        nynorsk { + "Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
+                    text(
+                        bokmal { +"Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
+                        nynorsk { +"Du forsørgjer ikkje barn " + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
                     )
                 }
             }
@@ -1154,8 +1154,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "."},
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "."},
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
                     )
                 }
             }
@@ -1271,8 +1271,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "."},
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "."},
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
                     )
                 }
             }
@@ -1280,8 +1280,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "."},
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "."},
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
                     )
                 }
             }
@@ -1572,36 +1572,36 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((uforegradFraBeregning.equalTo(100) and utbetalingsgrad.equalTo(100) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 title1 {
-                    text (
-                        bokmal { + "Skal du kombinere uføretrygd og inntekt?" },
-                        nynorsk { + "Skal du kombinere uføretrygd og inntekt?" },
+                    text(
+                        bokmal { +"Skal du kombinere uføretrygd og inntekt?" },
+                        nynorsk { +"Skal du kombinere uføretrygd og inntekt?" },
                     )
                 }
             }
 
             showIf((((uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or (utbetalingsgrad.lessThan(uforegradFraBeregning))) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 title1 {
-                    text (
-                        bokmal { + "For deg som kombinerer uføretrygd og inntekt" },
-                        nynorsk { + "For deg som kombinerer uføretrygd og inntekt" },
+                    text(
+                        bokmal { +"For deg som kombinerer uføretrygd og inntekt" },
+                        nynorsk { +"For deg som kombinerer uføretrygd og inntekt" },
                     )
                 }
             }
 
             showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
-                        nynorsk { + "Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. Det lønner seg å jobbe fordi inntekt og uføretrygd alltid vil vere høgare enn uføretrygd åleine." },
+                    text(
+                        bokmal { +"Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
+                        nynorsk { +"Det er mogleg for deg å ha inntekt ved sida av uføretrygda di. Det lønner seg å jobbe fordi inntekt og uføretrygd alltid vil vere høgare enn uføretrygd åleine." },
                     )
                 }
             }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
-                        nynorsk { + "Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover inntektsgrensa. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
+                    text(
+                        bokmal { +"Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
+                        nynorsk { +"Utbetalinga av uføretrygda di er redusert fordi du har inntekt utover inntektsgrensa. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid er høgare enn uføretrygd åleine." },
                     )
                 }
             }
@@ -1628,27 +1628,27 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((grunnbelop.equalTo(belopsgrense) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + ". Dette er inntektsgrensen din." },
-                        nynorsk { + "Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + ". Dette er inntektsgrensa di." },
+                    text(
+                        bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + ". Dette er inntektsgrensen din." },
+                        nynorsk { +"Du kan ha ei årleg inntekt på grunnbeløpet i folketrygda mens du er i varig tilrettelagt arbeid utan at uføretrygda di blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + ". Dette er inntektsgrensa di." },
                     )
                 }
             }
 
             showIf((belopsgrense.notEqualTo(60000) and belopsgrense.notEqualTo(grunnbelop) and (uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or ((ieuInntekt).greaterThan(0) and uforegradFraBeregning.equalTo(100)) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
-                        nynorsk { + "Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
+                    text(
+                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 40 prosent av grunnbeløpet i folketrygda utan at uføretrygda di blir redusert. Inntektsgrensa di blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
                     )
                 }
             }
 
             showIf((belopsgrense.equalTo(60000) and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
-                        nynorsk { + "Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Inntektsgrensa di blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
+                    text(
+                        bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
+                        nynorsk { +"Vi har lagt til grunn at du framover skal ha ei inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha ei årleg inntekt på 60 000 kroner utan at uføretrygda di blir redusert. Inntektsgrensa di blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
                     )
                 }
             }
@@ -1680,9 +1680,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) 
-                    and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense()) 
-                    and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(
+                (utbetalingsgrad.lessThan(uforegradFraBeregning)
+                        and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense())
+                        and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))
+            ) {
                 includePhrase(TBU2361_Generated(pe))
             }
 
@@ -1716,44 +1718,45 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
-                    text (
-                        bokmal { + "Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din." },
-                        nynorsk { + "Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di." },
+                    text(
+                        bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din." },
+                        nynorsk { +"Blir uføretrygda di redusert på grunn av inntekt beheld du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt heile uføretrygda att dersom du tener mindre enn inntektsgrensa di." },
                     )
                 }
             }
 
             showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 title1 {
-                    text (
-                        bokmal { + "Du må melde fra om eventuell inntekt" },
-                        nynorsk { + "Du må melde frå om eventuell inntekt" },
+                    text(
+                        bokmal { +"Du må melde fra om eventuell inntekt" },
+                        nynorsk { +"Du må melde frå om eventuell inntekt" },
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
-                        nynorsk { + "Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
+                    text(
+                        bokmal { +"Dersom du er i jobb eller har planer om å jobbe, må du melde fra om eventuelle endringer i inntekten din. Det er viktig at du melder fra så tidlig som mulig, slik at du får riktig utbetaling av uføretrygd. Dette kan du gjøre under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn hvor mye du forventer å tjene i løpet av året. Du vil da kunne se hvor mye du vil få utbetalt i uføretrygd ved siden av inntekten din." },
+                        nynorsk { +"Dersom du er i jobb eller har planar om å jobbe, må du melde frå om eventuelle endringar i inntekta di. Det er viktig at du melder frå så tidleg som råd, slik at du får rett utbetaling av uføretrygd. Dette kan du gjere under menyvalet " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn kor mykje du forventar å tene i løpet av året. Du vil då kunne sjå kor mykje du kjem til å få betalt ut i uføretrygd ved sida av inntekta di." },
                     )
-                }            }
+                }
+            }
 
             showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 title1 {
-                    text (
-                        bokmal { + "Du må melde fra om endringer i inntekten" },
-                        nynorsk { + "Du må melde frå om endringar i inntekta" },
+                    text(
+                        bokmal { +"Du må melde fra om endringer i inntekten" },
+                        nynorsk { +"Du må melde frå om endringar i inntekta" },
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Du kan melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig." },
-                        nynorsk { + "Du kan melde frå om inntektsendringar under menyvalget " + quoted("uføretrygd") +" når du logger deg inn på $NAV_URL. Her kan du leggje inn endringar i den forventa årlege inntekta og sjå kva dette har å seie for utbetalinga av uføretrygda di. For at du skal få ei jamn utbetaling av uføretrygda er det viktig at du melder frå om inntektsendringar så tidleg som mogleg." },
+                    text(
+                        bokmal { +"Du kan melde fra om inntektsendringer under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du legge inn endringer i den forventede årlige inntekten, og se hva dette betyr for utbetalingen av uføretrygden din. For at du skal få en jevn utbetaling av uføretrygden, er det viktig at du melder fra om inntektsendringer så tidlig som mulig." },
+                        nynorsk { +"Du kan melde frå om inntektsendringar under menyvalget " + quoted("uføretrygd") + " når du logger deg inn på $NAV_URL. Her kan du leggje inn endringar i den forventa årlege inntekta og sjå kva dette har å seie for utbetalinga av uføretrygda di. For at du skal få ei jamn utbetaling av uføretrygda er det viktig at du melder frå om inntektsendringar så tidleg som mogleg." },
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekten er justert opp til dagens verdi." },
-                        nynorsk { + "Vi gjer merksam på at det ikkje blir utbetalt uføretrygd når inntekta di utgjer meir enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekta er justert opp til dagens verdi." },
+                    text(
+                        bokmal { +"Vi gjør oppmerksom på at det ikke utbetales uføretrygd når inntekten din utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør, det vil si " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekten er justert opp til dagens verdi." },
+                        nynorsk { +"Vi gjer merksam på at det ikkje blir utbetalt uføretrygd når inntekta di utgjer meir enn 80 prosent av inntekta du hadde før du blei ufør, det vil seie " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektstak().format() + " per år. Inntekta er justert opp til dagens verdi." },
                     )
                 }
             }
@@ -1765,8 +1768,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(((barnetilleggInnvilget) and pe.vedtaksdata_kravhode_sokerbt())) {
                 title1 {
                     text(
-                        bokmal { + "Slik påvirker inntekt barnetillegget ditt " },
-                        nynorsk { + "Slik verkar inntekt inn på barnetillegget ditt" },
+                        bokmal { +"Slik påvirker inntekt barnetillegget ditt " },
+                        nynorsk { +"Slik verkar inntekt inn på barnetillegget ditt" },
                     )
                 }
             }
@@ -1784,8 +1787,12 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(not((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) 
-                    and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))) {
+            showIf(
+                not(
+                    (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0)
+                            and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0))
+                )
+            ) {
 
                 showIf(((not(barnetilleggFellesInnvilget) and barnetilleggSerkullInnvilget))) {
                     includePhrase(TBU2338_Generated(pe))
@@ -2086,9 +2093,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                 showIf(((barnetilleggSerkullInnvilget and btSerkullNetto0 and btSerkullJusteringsbelopPerAr0) and (barnetilleggFellesInnvilget and btFellesNetto0 and btFellesJusteringsbelopPerAr0))) {
                     paragraph {
-                        text (
-                            bokmal { + "Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
-                            nynorsk { + "Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntektene er over grensa for å få utbetalt barnetillegg." },
+                        text(
+                            bokmal { +"Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre, blir ikke utbetalt fordi de samlede inntektene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene, blir heller ikke utbetalt fordi inntekten din alene er høyere enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntektene er over grensen for å få utbetalt barnetillegg." },
+                            nynorsk { +"Barnetillegget for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine, blir ikkje utbetalt fordi dei samla inntektene er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format() + ". Barnetillegget for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra, blir heller ikkje utbetalt fordi inntekta di åleine er høgare enn " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format() + ". Inntektene er over grensa for å få utbetalt barnetillegg." },
                         )
                     }
                 }
@@ -2096,11 +2103,11 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf((barnetilleggInnvilget)) {
                     paragraph {
                         text(
-                            bokmal { + "Du kan lese mer om beregningen av barnetillegg i vedlegget " },
-                            nynorsk { + "Du kan lese meir om berekninga av barnetillegg i vedlegget " },
+                            bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
+                            nynorsk { +"Du kan lese meir om berekninga av barnetillegg i vedlegget " },
                         )
                         namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
-                        text(bokmal { + "." }, nynorsk { + "." })
+                        text(bokmal { +"." }, nynorsk { +"." })
                     }
                 }
             }
@@ -2111,8 +2118,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     includePhrase(TBU5005_Generated)
                     paragraph {
                         text(
-                            bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
-                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
+                            bokmal { +"Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjelder også hvis barnet du forsørger skal oppholde seg i et annet land." },
+                            nynorsk { +"Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til barnetillegg. Dette gjeld også om barnet du forsørgjer skal opphalde seg i eit anna land. " },
                         )
                     }
                 }
@@ -2120,9 +2127,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((ektefelletilleggInnvilget and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 title1 {
-                    text (
-                        bokmal { + "For deg som mottar ektefelletillegg" },
-                        nynorsk { + "For deg som får ektefelletillegg" },
+                    text(
+                        bokmal { +"For deg som mottar ektefelletillegg" },
+                        nynorsk { +"For deg som får ektefelletillegg" },
                     )
                 }
                 paragraph {
@@ -2171,15 +2178,15 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((pe.vedtaksdata_beregningsdata_beregningantallperioder().greaterThan(1) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and utbetalingsgrad.equalTo(uforegradFraBeregning) and onsketvirkningsdato.lessThan(pe.vedtakfattetdato_minus_1mnd()))) {
                 title1 {
-                    text (
-                        bokmal { + "Tilbakekreving av uføretrygd" },
-                        nynorsk { + "Tilbakekrevjing av uføretrygd" },
+                    text(
+                        bokmal { +"Tilbakekreving av uføretrygd" },
+                        nynorsk { +"Tilbakekrevjing av uføretrygd" },
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Fordi uføretrygden din er redusert tilbake i tid, betyr dette at du har fått utbetalt for mye i uføretrygd. Du får eget brev med varsel om eventuell tilbakekreving av det feilutbetalte beløpet." },
-                        nynorsk { + "Fordi uføretrygda di er redusert tilbake i tid, betyr dette at du har fått utbetalt for mykje i uføretrygd. Du får eit eiga brev med varsel om ei eventuell tilbakekrevjing av det feilutbetalte beløpet." },
+                    text(
+                        bokmal { +"Fordi uføretrygden din er redusert tilbake i tid, betyr dette at du har fått utbetalt for mye i uføretrygd. Du får eget brev med varsel om eventuell tilbakekreving av det feilutbetalte beløpet." },
+                        nynorsk { +"Fordi uføretrygda di er redusert tilbake i tid, betyr dette at du har fått utbetalt for mykje i uføretrygd. Du får eit eiga brev med varsel om ei eventuell tilbakekrevjing av det feilutbetalte beløpet." },
                     )
                 }
             }
