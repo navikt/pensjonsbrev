@@ -39,7 +39,6 @@ permissions:
   contents: read
   packages: read
   id-token: write
-  pull-requests: write
 
 jobs:
   buildPdfbygger:
@@ -103,7 +102,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      brevmal-design: ${{ steps.changes.outputs.brevmal-design }}
+      brevmal-design: ${{ steps.changes.outputs['brevmal-design'] }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -185,7 +184,9 @@ jobs:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
       - name: Install poppler-utils
-        run: sudo apt-get install -y poppler-utils
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
       - name: Convert visual-test pdfs to png
         run: |
           mkdir -p brevbaker/pdf-bygger/build/test_visual/png
@@ -200,7 +201,7 @@ jobs:
         with:
           team: pensjonsbrev
       - name: Run reg-suit
-        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regconfig.json
+        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
