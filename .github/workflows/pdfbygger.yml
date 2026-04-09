@@ -27,9 +27,7 @@ on:
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
-  # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
-    - cron: "0 5 1,15 * *"
     - cron: '1 0 * * 6' # Kjører bygget rett etter cleanup har kjørt, for å sikre at vi har et main-tagga image
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
@@ -104,7 +102,7 @@ jobs:
     permissions:
       contents: read
     outputs:
-      latex: ${{ steps.changes.outputs.latex }}
+      templates: ${{ steps.changes.outputs.templates }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
@@ -113,9 +111,12 @@ jobs:
         id: changes
         with:
           filters: |
-            latex:
+            templates:
               - 'brevbaker/pdf-bygger/containerFiles/latex/**'
+              - 'brevbaker/pdf-bygger/containerFiles/typst/**'
               - 'brevbaker/pdf-bygger/Dockerfile'
+              - '.github/regconfig.json'
+              - '.github/workflows/pdfbygger.yml'
 
   runIntegrationTests:
     name: "Integration tests"
@@ -151,7 +152,7 @@ jobs:
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+        if: ${{ needs.changes.outputs.templates == 'true' || (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: visuals
@@ -160,40 +161,36 @@ jobs:
   analyzeImages:
     name: "Analyze images"
     needs: [runIntegrationTests, changes]
-    runs-on: ubuntu-latest-16-cores
-    if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+    runs-on: ubuntu-latest
+    if: ${{ needs.changes.outputs.templates == 'true' || (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) }}
     permissions:
       statuses: write
       checks: write
       pull-requests: write
     steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Download visuals
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
-      - name: Convert visual-test pdfs
-        uses: routsi/ImageMagick-action@bc9b6081e53f682096b9ad5407f1a01ea9b5b7b8 # v1.1.1
-        with:
-          command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
+      - name: Convert visual-test pdfs to png
+        run: |
+          mkdir -p brevbaker/pdf-bygger/build/test_visual/mogrify_output
+          find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 -singlefile "$1" brevbaker/pdf-bygger/build/test_visual/mogrify_output/$(basename "$1" .pdf)' _ {}
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
-      - run: npm install --save-dev @percy/cli
-      - name: Publish visual-tests to percy
-        run: |
-          npx percy upload brevbaker/pdf-bygger/build/test_visual/ > percy.log
-          cat percy.log
-          URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
-          if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-      - name: Comment percy review link
-        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9 # v5.0.0
-        if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
+          node-version-file: ".tool-versions"
+      - name: Install reg-suit
+        run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-keygen-github-actions-plugin reg-notify-github-plugin
+      - name: Authenticate to Google Cloud
+        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
         with:
-          issue-number: ${{ github.event.number }}
-          body-path: percy-build-url
+          team: pensjonsbrev
+      - name: Run reg-suit
+        run: npx reg-suit run --config .github/regconfig.json
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"

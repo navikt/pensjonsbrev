@@ -1,0 +1,17 @@
+{
+  "core": {
+    "workingDir": "brevbaker/pdf-bygger/build/test_visual/mogrify_output",
+    "actualDir": ".",
+    "threshold": 0
+  },
+  "plugins": {
+    "reg-publish-gcs-plugin": {
+      "bucketName": "no-nav-pensjonsbrev-reg-suit",
+      "pathPrefix": "pdf-visual"
+    },
+    "reg-keygen-github-actions-plugin": {},
+    "reg-notify-github-plugin": {
+      "prCommentBehavior": "create"
+    }
+  }
+}
