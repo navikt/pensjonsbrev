@@ -375,9 +375,9 @@ object Ufoeretrygd {
         }
     }
 
-    data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto>>) :
-        OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+    data class AvslagBarnetillegg<T : RedigerbarTemplate<*>> (val barnetilleggAvslatt: Expression<List<no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto>>) :
+        OutlinePhraseRedigerbar<LangBokmalNynorsk, T>() {
+        override fun OutlineOnlyScopeRedigerbar<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
                 title1 {
@@ -446,8 +446,8 @@ object Ufoeretrygd {
                         )
                     }.orShowIf(barnetillegg.begrunnelse.equalTo(ANNET)) {
                         text(
-                            bokmal { +Fritekst("Avslagstekst for perioden") },
-                            nynorsk { +Fritekst("Avslagstekst for perioden") },
+                            bokmal { +fritekst("Avslagstekst for perioden") },
+                            nynorsk { +fritekst("Avslagstekst for perioden") },
                         )
                     }
                 }
