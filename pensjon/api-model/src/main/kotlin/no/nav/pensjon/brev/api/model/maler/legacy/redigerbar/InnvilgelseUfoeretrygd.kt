@@ -16,6 +16,8 @@ data class InnvilgelseUfoeretrygdDto(
     ) : RedigerbarBrevdata<InnvilgelseUfoeretrygdDto.Saksbehandlervalg, InnvilgelseUfoeretrygdDto.PesysData> {
 
     data class Saksbehandlervalg(
+        @DisplayText("Info om rett til barnetillegg")
+        val barnetilleggInfo: Boolean,
         @DisplayText("Refusjon")
         val refusjon: Boolean,
     ) : SaksbehandlerValgBrevdata
