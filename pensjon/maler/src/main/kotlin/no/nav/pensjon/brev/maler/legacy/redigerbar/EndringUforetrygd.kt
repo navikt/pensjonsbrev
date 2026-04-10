@@ -129,7 +129,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
             val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
-            showIf((pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("sok_uu") and pe.vedtaksdata_kravhode_kravgjelder().notEqualTo("sok_ys") and kravarsak.notEqualTo("endring_ifu") and kravarsak.notEqualTo("endret_inntekt") and kravarsak.notEqualTo("barn_endret_inntekt") and kravarsak.notEqualTo("eps_endret_inntekt") and kravarsak.notEqualTo("begge_for_end_inn") and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold") and kravarsak.notEqualTo("omgj_etter_klage") and kravarsak.notEqualTo("omgj_etter_anke") and not(gjenlevendetilleggInnvilget))) {
+            showIf(gjenlevendetilleggInnvilget.not() and
+                        pe.vedtaksdata_kravhode_kravgjelder().notEqualToAny("sok_uu", "sok_ys") and
+                        kravarsak.notEqualToAny("endring_ifu", "endret_inntekt", "barn_endret_inntekt", "eps_endret_inntekt", "begge_for_end_inn", "soknad_bt", "instopphold", "omgj_etter_klage", "omgj_etter_anke")) {
                 paragraph {
                     text(
                         bokmal { +"Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
@@ -167,7 +169,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((kravarsak.equalTo("omgj_etter_klage") or kravarsak.equalTo("omgj_etter_anke")))) {
+            showIf(kravarsak.equalToAny("omgj_etter_klage", "omgj_etter_anke")) {
                 paragraph {
                     text(
                         bokmal { +"Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + " fordi du har fått medhold i klagen din." },
@@ -176,7 +178,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and (kravarsak.equalTo("endret_inntekt") or kravarsak.equalTo("barn_endret_inntekt") or kravarsak.equalTo("eps_endret_inntekt") or kravarsak.equalTo("begge_for_end_inn")))) {
+            showIf((barnetilleggInnvilget and kravarsak.equalToAny("endret_inntekt", "barn_endret_inntekt", "eps_endret_inntekt", "begge_for_end_inn"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har endret barnetillegget i uføretrygden din fordi du har meldt fra om inntektsendring." },
@@ -212,7 +214,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).equalTo((uforegradFraVilkar)) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
+            showIf((yrkesskadegradFraVilkar.equalTo(uforegradFraVilkar) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at hele uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
@@ -221,7 +223,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).lessThan(uforegradFraBeregning) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
+            showIf((yrkesskadegradFraVilkar.lessThan(uforegradFraBeregning) and pe.vedtaksdata_kravhode_kravgjelder().equalTo("sok_ys"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har innvilget søknaden din om uføretrygd etter særbestemmelsene for yrkesskade eller yrkessykdom som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har kommet fram til at " + yrkesskadegradFraBeregning.format() + " prosent av uførheten din skyldes en godkjent yrkesskade eller yrkessykdom, og uføretrygden din er endret fra " + onsketvirkningsdato.format() + "." },
@@ -243,7 +245,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((gjenlevendetilleggInnvilget and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(gjenlevendetilleggInnvilget and kravarsak.notEqualToAny("soknad_bt", "instopphold")) {
                 paragraph {
                     text(
                         bokmal { +"Vi har innvilget deg gjenlevenderettigheter i uføretrygden din. Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
@@ -292,7 +294,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         bokmal { +"Vi har mottatt opplysninger om at du er under straffegjennomføring. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
                         nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
                     )
-
+                    //TODO masse forenklinger i uttrykk i instopphold, som feks showif under vs showif over
                     showIf((instoppholdtype.equalTo("reduksjon_fo") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and (barnetilleggInnvilget))) {
                         text(
                             bokmal { +" Fra og med måneden etter at du er under straffegjennomføring vil du bli vurdert med sivilstand som enslig. Det betyr at barnetillegget kun vil bli beregnet ut fra den samlede inntekten din fra samme tidspunkt." },
@@ -483,7 +485,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "instopphold" AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_EktefelleGarantiTillegg_EGTinnvilget = false) THEN      INCLUDE ENDIF
             // TODO: Finner ingen mapping av dette for exstream brev, tar en antagelse på at EktefelleGarantiTillegg_EGTinnvilget alltid vil være false
-            showIf((mottarMinsteytelse and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((mottarMinsteytelse and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
 
                 paragraph {
                     text(
@@ -533,7 +535,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).equalTo(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(((yrkesskadegradFraVilkar).equalTo(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
 
                 paragraph {
                     text(
@@ -565,7 +567,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).equalTo(uforegradFraBeregning) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(((yrkesskadegradFraVilkar).equalTo(uforegradFraBeregning) and not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd etter regler for yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert at hele din nedsatte inntektsevne skyldes den godkjente yrkesskaden eller yrkessykdommen." },
@@ -605,7 +607,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).lessThan(uforegradFraBeregning) and (yrkesskadegradFraVilkar).greaterThan(0) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(((yrkesskadegradFraVilkar).lessThan(uforegradFraBeregning) and (yrkesskadegradFraVilkar).greaterThan(0) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd etter regler for yrkesskade eller yrkessykdom. Vi har ut fra sakens opplysninger vurdert om yrkesskaden eller yrkessykdommen din er årsak til uførheten din." },
@@ -630,7 +632,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((yrkesskadegradFraVilkar).lessThan(uforegradFraBeregning) and (yrkesskadegradFraVilkar).greaterThan(0) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(((yrkesskadegradFraVilkar).lessThan(uforegradFraBeregning) and (yrkesskadegradFraVilkar).greaterThan(0) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest()) and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))) {
                     paragraph {
                         text(
@@ -696,7 +698,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((gjenlevendetilleggInnvilget and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((gjenlevendetilleggInnvilget and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget gjenlevendetillegg i uføretrygden fordi du er gjenlevende ektefelle/samboer. Tillegget er beregnet etter ditt eget og den avdødes beregningsgrunnlag. " },
@@ -726,7 +728,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((gjenlevendetilleggInnvilget and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((gjenlevendetilleggInnvilget and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Avdøde må også ha vært medlem i folketrygden, eller mottatt pensjon fra folketrygden, de siste " + fritekst("tre/fem årene") + " før dødsfallet." },
@@ -753,7 +755,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((kravarsak.notEqualTo("sivilstandsendring") and pesysData.opphortEktefelletillegg and kravarsak.notEqualTo("sokand_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf(pesysData.opphortEktefelletillegg and kravarsak.notEqualToAny("sivilstandsendring", "soknad_bt", "instopphold")) {
                 paragraph {
                     showIf(not(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)) {
                         text(
@@ -937,7 +939,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((not(barnetilleggFellesInnvilget) and barnetilleggSerkullInnvilget and (kravarsak.equalTo("endret_inntekt") or kravarsak.equalTo("barn_endret_inntekt") or kravarsak.equalTo("annen_for_end_in") or kravarsak.equalTo("begge_for_end_in")))) {
+            showIf((not(barnetilleggFellesInnvilget) and barnetilleggSerkullInnvilget and (kravarsak.equalToAny("endret_inntekt", "barn_endret_inntekt", "annen_for_end_in", "begge_for_end_in")))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har mottatt opplysninger om at inntekten din er endret. Barnetillegget er derfor beregnet på nytt." },
@@ -946,7 +948,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((barnetilleggFellesInnvilget and (kravarsak.equalTo("endret_inntekt") or kravarsak.equalTo("barn_endret_inntekt") or kravarsak.equalTo("annen_for_end_in") or kravarsak.equalTo("begge_for_end_in") or kravarsak.equalTo("eps_endret_inntekt")))) {
+            showIf((barnetilleggFellesInnvilget and kravarsak.equalToAny("endret_inntekt", "barn_endret_inntekt", "annen_for_end_in", "begge_for_end_in", "eps_endret_inntekt"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har mottatt opplysninger om at inntekten deres er endret. Barnetillegget er derfor beregnet på nytt." },
@@ -1151,7 +1153,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
+            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.notEqualToAny("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1160,7 +1162,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.notEqualToAny("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1187,7 +1189,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.notEqualToAny("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1196,7 +1198,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.notEqualToAny("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1570,7 +1572,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((uforegradFraBeregning.equalTo(100) and utbetalingsgrad.equalTo(100) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((uforegradFraBeregning.equalTo(100) and utbetalingsgrad.equalTo(100) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 title1 {
                     text(
                         bokmal { +"Skal du kombinere uføretrygd og inntekt?" },
@@ -1579,7 +1581,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((((uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or (utbetalingsgrad.lessThan(uforegradFraBeregning))) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((((uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or (utbetalingsgrad.lessThan(uforegradFraBeregning))) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 title1 {
                     text(
                         bokmal { +"For deg som kombinerer uføretrygd og inntekt" },
@@ -1588,7 +1590,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du har mulighet til å ha inntekt ved siden av uføretrygden din. Det lønner seg å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
@@ -1597,7 +1599,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Utbetalingen av uføretrygden din er redusert fordi du har inntekt utover inntektsgrensen. Det lønner seg likevel å jobbe, fordi inntekt og uføretrygd alltid vil være høyere enn uføretrygd alene." },
@@ -1606,7 +1608,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
             //TODO: en del felles nedover som not bt and not inst
-            showIf((uforegradFraBeregning.equalTo(100) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((uforegradFraBeregning.equalTo(100) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 showIf((belopsgrense.notEqualTo(grunnbelop) and belopsgrense.notEqualTo(60000) and ieuInntekt.equalTo(0))) {
                     paragraph {
                         text(
@@ -1626,7 +1628,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((grunnbelop.equalTo(belopsgrense) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((grunnbelop.equalTo(belopsgrense) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Du kan ha en årlig inntekt på folketrygdens grunnbeløp fordi du er i varig tilrettelagt arbeid, uten at uføretrygden din blir redusert. I dag er dette " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense().format() + ". Dette er inntektsgrensen din." },
@@ -1635,7 +1637,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((belopsgrense.notEqualTo(60000) and belopsgrense.notEqualTo(grunnbelop) and (uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or ((ieuInntekt).greaterThan(0) and uforegradFraBeregning.equalTo(100)) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((belopsgrense.notEqualTo(60000) and belopsgrense.notEqualTo(grunnbelop) and (uforegradFraBeregning.lessThan(100) and uforegradFraBeregning.greaterThan(0)) or ((ieuInntekt).greaterThan(0) and uforegradFraBeregning.equalTo(100)) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_oieu().format() + " per år. Du kan i tillegg ha en årlig inntekt på 40 prosent av folketrygdens grunnbeløp, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
@@ -1644,7 +1646,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((belopsgrense.equalTo(60000) and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((belopsgrense.equalTo(60000) and uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi har lagt til grunn at du framover skal ha en inntekt på " + pe.ut_inntektsgrense_faktisk_minus_60000().format() + " per år. Du kan i tillegg ha en årlig inntekt på 60 000 kroner, uten at uføretrygden din blir redusert. Inntektsgrensen din blir derfor " + pe.ut_inntektsgrense_faktisk().format() + "." },
@@ -1653,7 +1655,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad." },
@@ -1683,20 +1685,20 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(
                 (utbetalingsgrad.lessThan(uforegradFraBeregning)
                         and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_forventetinntekt().greaterThan(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_inntektsgrense())
-                        and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))
+                        and kravarsak.notEqualToAny("soknad_bt", "instopphold"))
             ) {
                 includePhrase(TBU2361_Generated(pe))
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 includePhrase(TBU2362_Generated)
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_belopokt() and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 includePhrase(TBU2363_Generated)
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Ut fra den årlige inntekten din vil uføretrygden utgjøre " + pe.ut_nettoakk_pluss_nettorestar().format() + " kroner." },
@@ -1716,7 +1718,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 paragraph {
                     text(
                         bokmal { +"Blir uføretrygden din redusert på grunn av inntekt beholder du likevel uføregraden din på " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad().format() + " prosent. Du får utbetalt hele uføretrygden igjen dersom du tjener mindre enn inntektsgrensen din." },
@@ -1725,7 +1727,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.equalTo(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 title1 {
                     text(
                         bokmal { +"Du må melde fra om eventuell inntekt" },
@@ -1740,7 +1742,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 title1 {
                     text(
                         bokmal { +"Du må melde fra om endringer i inntekten" },
@@ -1761,7 +1763,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 includePhrase(TBU2280_Generated(pe))
             }
 
@@ -1776,7 +1778,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) AND PE_Vedtaksdata_Kravhode_SokerBT = true AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT <> 0 ) THEN      INCLUDE ENDIF
             showIf(
-                ((barnetilleggInnvilget) and pe.vedtaksdata_kravhode_sokerbt() and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))) and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()
+                ((barnetilleggInnvilget) and pe.vedtaksdata_kravhode_sokerbt() and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))) and kravarsak.notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()
                     .greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().notEqualTo(0))
             ) {
                 paragraph {
@@ -2125,7 +2127,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((ektefelletilleggInnvilget and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((ektefelletilleggInnvilget and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 title1 {
                     text(
                         bokmal { +"For deg som mottar ektefelletillegg" },
@@ -2157,7 +2159,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((pe.vedtaksdata_harLopendealderspensjon() and kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
+            showIf((pe.vedtaksdata_harLopendealderspensjon() and kravarsak.notEqualToAny("soknad_bt", "instopphold"))) {
                 includePhrase(Ufoeretrygd.KombinereUforetrygdAldersPensjon)
             }
 
