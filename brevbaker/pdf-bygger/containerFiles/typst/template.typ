@@ -1,7 +1,6 @@
 #import "casedetails.typ" : casedetails
-#import "input.typ": input, languageSettings
-#import "content/state.typ": section-start
 #import "footer.typ": footer
+#import "content/state.typ": section-start
 
 
 #let mainTitle(lettertitle) = {
@@ -16,7 +15,7 @@
 }
 
 
-#let template(lettertitle: [], doc) = {
+#let template(lettertitle: [], input: (:), languageSettings: (:), doc) = {
   // generelt oppsett for brevet
   set text(
     font: "Source Sans 3",
@@ -34,7 +33,7 @@
       y: 64pt,
       bottom: 74pt,
     ),
-    footer: footer,
+    footer: footer(input, languageSettings),
     footer-descent: 30% + 4pt,
   )
   set document(
@@ -45,7 +44,7 @@
 
   // første side
   logo
-  casedetails
+  casedetails(input, languageSettings)
   mainTitle(lettertitle)
 
   // innholdet i brevet

@@ -1,5 +1,4 @@
 
-#import "../input.typ": languageSettings
 #import "state.typ": withSpacing
 
 #let columnheadercolor = rgb("#E4EEFF")
@@ -9,7 +8,7 @@
 #let row2color = rgb("#FFFFFF")
 #let row1color = rgb("#F5F6F7")
 
-#let letter-table(column-align: (), ..table-args) = {
+#let letter-table(languageSettings, column-align: (), ..table-args) = {
   let tableContent = context {
   let columns = table-args.named().at("columns", default: ())
   let column-amount = columns.len()

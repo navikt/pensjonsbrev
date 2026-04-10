@@ -1,19 +1,13 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.future.await
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
-import no.nav.pensjon.brev.template.render.DocumentFile
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.nio.file.Files
 import java.nio.file.Path
-import java.util.concurrent.CompletableFuture
-import kotlin.io.path.createTempDirectory
-import kotlin.io.path.exists
-import kotlin.io.path.listDirectoryEntries
 
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
@@ -23,77 +17,60 @@ class TypstCompileService(
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    private fun typstCommand(workingDir: Path) = listOf(
+    private fun typstCommand() = listOf(
         "typst", "compile",
-        "--root", workingDir.toString(),
+        "--root", templateDir.toString(),
         "--pdf-standard", "a-3a",
         "--ignore-system-fonts",
         "--font-path", "/usr/share/fonts/truetype/sourcesans3",
         "--font-path", "/usr/share/fonts/truetype/noto",
-        "letter.typ",
-        // Output PDF to stdout instead of writing to a file
+        // Read input from stdin
+        "-",
+        // Output PDF to stdout
         "-",
     )
 
-    suspend fun createLetter(typstFiles: List<DocumentFile>): PDFCompilationResponse {
-        val tmpDir = createTempDirectory(Path.of("/tmp"))
+    suspend fun createLetter(letterContent: String): PDFCompilationResponse {
+        return when (val result: Execution = executeCompileProcess(letterContent)) {
+            is Execution.Success ->
+                PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
 
-        return try {
-            symlinkTemplateFiles(templateDir, tmpDir)
+            is Execution.Failure.Compilation ->
+                PDFCompilationResponse.Failure.Client(
+                    reason = "PDF compilation failed",
+                    output = null,
+                    error = result.error
+                )
 
-            // Write generated files (input.typ, letter.typ)
-            typstFiles.forEach {
-                tmpDir.resolve(it.fileName).toFile().writeText(it.content)
+            is Execution.Failure.Execution -> {
+                logger.error("typst command failed", result.cause)
+                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: ${typstCommand()}")
             }
-
-            when (val result: Execution = executeCompileProcess(tmpDir)) {
-                is Execution.Success ->
-                    PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
-
-                is Execution.Failure.Compilation ->
-                    PDFCompilationResponse.Failure.Client(
-                        reason = "PDF compilation failed",
-                        output = null,
-                        error = result.error
-                    )
-
-                is Execution.Failure.Execution -> {
-                    logger.error("typst command failed", result.cause)
-                    PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: ${typstCommand(tmpDir)}")
-                }
-            }
-        } finally {
-            tmpDir.toFile().deleteRecursively()
         }
     }
 
-    private fun symlinkTemplateFiles(source: Path, destination: Path) {
-        if (!source.exists()) {
-            throw IllegalStateException("Template directory does not exist: $source")
-        }
-
-        source.listDirectoryEntries().forEach { entry ->
-            Files.createSymbolicLink(destination.resolve(entry.fileName), entry)
-        }
-    }
-
-    private suspend fun executeCompileProcess(workingDir: Path): Execution {
+    private suspend fun executeCompileProcess(stdinContent: String): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
-                process = ProcessBuilder(typstCommand(workingDir))
-                    .directory(workingDir.toFile())
+                process = ProcessBuilder(typstCommand())
+                    .directory(templateDir.toFile())
                     .start()
+
+                // Write letter content to stdin
+                process.outputStream.use { it.write(stdinContent.toByteArray()) }
 
                 // Read stdout (PDF bytes) and stderr (error messages) concurrently
                 // to avoid deadlock when either buffer fills up
-                val stdoutFuture = CompletableFuture.supplyAsync { process.inputStream.readAllBytes() }
+                val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
                 val stderrContent = String(process.errorStream.readAllBytes())
-                val pdfBytes = stdoutFuture.await()
+                val pdfBytes = stdoutDeferred.await()
 
-                process.onExit().await()
+                // Both streams fully drained means the process has already exited;
+                // waitFor() returns immediately without scheduling async work.
+                val exitCode = process.waitFor()
 
-                if (process.exitValue() == 0) {
+                if (exitCode == 0) {
                     if (stderrContent.isNotBlank()) {
                         logger.warn("PDF-generering gikk bra, men ga følgende typst feil: $stderrContent")
                     }

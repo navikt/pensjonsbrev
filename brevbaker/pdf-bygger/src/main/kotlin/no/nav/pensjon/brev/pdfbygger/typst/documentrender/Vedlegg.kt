@@ -21,6 +21,8 @@ internal fun TypstCodeScope.renderAttachment(attachment: LetterMarkup.Attachment
     appendCodeFunction("startAttachment") {
         args {
             rawArg("\"${title.typstStringEscape()}\"")
+            rawArg("input")
+            rawArg("languageSettings")
             namedArg("sectionNumber", sectionNumber)
             namedArg("showCaseDetails", attachment.includeSakspart)
         }

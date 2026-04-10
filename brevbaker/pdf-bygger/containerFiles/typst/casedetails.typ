@@ -1,6 +1,4 @@
-#import "input.typ": languageSettings, input
-
-#let casedetails = {
+#let casedetails(input, languageSettings) = {
   let annenMottaker = input.annenMottakerNavn != none
   set text(size: 11pt)
   block(

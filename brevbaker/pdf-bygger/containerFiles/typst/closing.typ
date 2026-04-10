@@ -1,7 +1,6 @@
-#import "input.typ": input, languageSettings
 #import "content/state.typ": section-end
 
-#let attachments = {
+#let attachments(input, languageSettings) = {
   text(size: 12pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
   set list(indent: 6.5pt, body-indent: 5pt)
   block(
@@ -12,7 +11,7 @@
   )
 }
 
-#let closingGreeting = {
+#let closingGreeting(input, languageSettings) = {
   let signertAvSaksbehandler = input.signerendeSaksbehandler != none
   let signertAvAttestant = input.signerendeAttestant != none
   [
@@ -46,16 +45,16 @@
   ]
 }
 
-#let closing = {
+#let closing(input, languageSettings) = {
   block(
-    closingGreeting,
+    closingGreeting(input, languageSettings),
     breakable: false,
     above: 44pt,
     below: 0pt,
   )
   if(input.attachments != none and input.attachments.len() > 0){
     block(
-      attachments,
+      attachments(input, languageSettings),
       breakable: false,
       above: 44pt,
       below: 0pt,
