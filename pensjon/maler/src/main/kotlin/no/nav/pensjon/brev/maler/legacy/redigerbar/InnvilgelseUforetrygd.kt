@@ -87,10 +87,10 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
             val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-            val txtParagraf_22_12_eller_22_13 = if (virkningbegrunnelseStdbegr_22_12_1_5.equals(true)) "22-13" else "22-12"
-            val txtOvergangsregler2016Bokmal = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsregler for barnetillegg i uføretrygden" else ""
-            val txtOvergangsregler2016Nynorsk = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsreglar for barnetillegg i uføretrygda" else ""
-            val txtOgEllerEktefelle = if (ektefelletilleggInnvilget.equals(true)) " og/eller ektefelle" else ""
+            val txtParagraf_22_12_eller_22_13 = ifElse (virkningbegrunnelseStdbegr_22_12_1_5,"22-13", "22-12")
+            val txtOvergangsregler2016Bokmal = ifElse (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016"), " og forskrift om overgangsregler for barnetillegg i uføretrygden", "")
+            val txtOvergangsregler2016Nynorsk = ifElse (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016")," og forskrift om overgangsreglar for barnetillegg i uføretrygda", "")
+            val txtOgEllerEktefelle = ifElse (ektefelletilleggInnvilget, " og/eller ektefelle", "")
 
             val ungUforResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()
             val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
@@ -110,8 +110,9 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             val kravGjelder = pe.vedtaksdata_kravhode_kravgjelder()
             val bosattUtland = kravGjelder.equalTo("f_bh_bo_utl")
             val oppfyltvedsammenlegging = pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
-            val txtEllerEtAvtaleland = if (bosattUtland.equals(true) and oppfyltvedsammenlegging.equals(true)) " eller et avtaleland" else ""
-            val txtLovbestemmelseUtland = if (bosattUtland.equals(true)) " " + fritekst("sett inn rett trygdeavtale") + " og EØS-avtalens bestemmelser om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45" else ""
+            val txtEllerEtAvtaleland = ifElse(bosattUtland and oppfyltvedsammenlegging, " eller et avtaleland", "")
+            val trygdeavtale = fritekst("sett inn rett trygdeavtale")
+            val txtEosAvtale = " og EØS-avtalens bestemmelser om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45"
 
             val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
             val ifuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
@@ -500,19 +501,33 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget)) and ((yrkesskadeResultat).equalTo("ikke_oppfylt") or (yrkesskadeResultat).equalTo("oppfylt")) and (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")) and not(gjenlevendetilleggInnvilget)){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((not(btSerkullInnvilget) and not(btFellesInnvilget)) and (yrkesskadeResultat).equalTo("ikke_vurdert") and not(gjenlevendetilleggInnvilget) and (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
@@ -522,10 +537,17 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     (instoppholdType.notEqualTo("reduksjon_hs")
                             and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
@@ -533,37 +555,65 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     ((yrkesskadeResultat).equalTo("ikke_oppfylt") or (yrkesskadeResultat).equalTo("oppfylt")) and
             (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btSerkullInnvilget) and not(btFellesInnvilget) and (yrkesskadeResultat).equalTo("ikke_vurdert") and gjenlevendetilleggInnvilget and (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((not(btSerkullInnvilget) and not(btFellesInnvilget)) and ((yrkesskadeResultat).equalTo("ikke_oppfylt") or (yrkesskadeResultat).equalTo("oppfylt")) and gjenlevendetilleggInnvilget and (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btSerkullInnvilget or btFellesInnvilget) and (yrkesskadeResultat).equalTo("ikke_vurdert") and gjenlevendetilleggInnvilget and (instoppholdType.notEqualTo("reduksjon_hs") and instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
@@ -572,154 +622,273 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     gjenlevendetilleggInnvilget and (instoppholdType.notEqualTo("reduksjon_hs") and
                     instoppholdType.notEqualTo("reduksjon_fo")))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and not(gjenlevendetilleggInnvilget) and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_hs"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf((not(btFellesInnvilget) and not(btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                            nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.equalTo(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
             showIf(((btFellesInnvilget or btSerkullInnvilget) and gjenlevendetilleggInnvilget and beregnetYrkesskadegrad.greaterThan(0) and instoppholdType.equalTo("reduksjon_fo"))){
                 paragraph {
-                    text (
-                        bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + txtLovbestemmelseUtland + "." },
-                        nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + txtLovbestemmelseUtland + "." },
-                    )
+                    showIf(bosattUtland) {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + " " + trygdeavtale + txtEosAvtale + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + " " + trygdeavtale + txtEosAvtale + "." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
+                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 12-2 til 12-17, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
+                        )
+                    }
                 }
             }
 
@@ -2003,7 +2172,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
-            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
+            includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(not(bosattUtland)))
             includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
         }
 
