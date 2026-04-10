@@ -42,7 +42,7 @@ const OppsummeringAvValgtMottaker = (properties: {
           <BackButton icon={<ArrowLeftIcon />} onClick={properties.onTilbake.fn} text="Tilbake til søk" />
         </HStack>
       )}
-      <HStack gap="space-16" justify="end">
+      <HStack gap="space-16" justify="space-between">
         <Button onClick={properties.onAvbryt} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>

@@ -52,7 +52,7 @@ const hentTagOgTittelForHeader = (args: {
       if (args.context === "attestering") {
         const tag = (
           <Tag data-color="meta-purple" size="small" variant="moderate">
-            Klar til attestering
+            Klar for attestering
           </Tag>
         );
         return { tag, tittel: args.brevInfo.brevtittel };
