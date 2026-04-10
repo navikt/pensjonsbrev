@@ -14,9 +14,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_UTLAND
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
@@ -1405,8 +1406,23 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
                 paragraph {
                     text (
-                        bokmal { + "Adresse: \nNav Arbeid og ytelser Oslo\nPostboks 6600 Etterstad,\nNO-0607 Oslo" },
-                        nynorsk { + "Adresse: \nNav Arbeid og ytelser Oslo\nPostboks 6600 Etterstad,\nNO-0607 Oslo" }
+                        bokmal { + "Adresse:" },
+                        nynorsk { + "Adresse:" },
+                    )
+                    newline()
+                    text (
+                        bokmal { + "Nav Arbeid og ytelser Oslo" },
+                        nynorsk { + "Nav Arbeid og ytelser Oslo" },
+                    )
+                    newline()
+                    text (
+                        bokmal { + "Postboks 6600 Etterstad," },
+                        nynorsk { + "Postboks 6600 Etterstad," },
+                    )
+                    newline()
+                    text (
+                        bokmal { + "NO-0607 Oslo" },
+                        nynorsk { + "NO-0607 Oslo" },
                     )
                 }
             }
@@ -1988,16 +2004,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
             includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("nor") or pe.grunnlag_persongrunnlagsliste_personbostedsland().equalTo("")))
-            showIf(bosattUtland) {
-                title1 {
-                    text(
-                        bokmal { + "Ringer du ikke fra Norge? Bruk $NAV_KONTAKTSENTER_UTLAND." },
-                        nynorsk { + "Ringer du ikke fra Norge? Bruk $NAV_KONTAKTSENTER_UTLAND." },
-                    )
-                }
-            }.orShow {
-                includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
-            }
+            includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
