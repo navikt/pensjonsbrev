@@ -246,6 +246,11 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
             return (
               <VStack gap="space-8">
+                {someUnavailable && (
+                  <LocalAlert status="announcement">
+                    <LocalAlert.Header>Noen skjemaer er ikke tilgjengelig på språket i brevet.</LocalAlert.Header>
+                  </LocalAlert>
+                )}
                 {noneAvailable ? (
                   <VStack gap="space-4">
                     <LocalAlert status="warning">
@@ -292,24 +297,19 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                   />
                 )}
                 {someUnavailable && (
-                  <>
-                    <LocalAlert status="announcement">
-                      <LocalAlert.Header>Noen skjemaer er ikke tilgjengelig på språket i brevet.</LocalAlert.Header>
-                    </LocalAlert>
-                    <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
-                      <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
-                      {ikkeIkketilgjengelige.map((vedlegg) => (
-                        <Checkbox
-                          description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
-                          disabled
-                          key={vedlegg.kode}
-                          value={vedlegg.kode}
-                        >
-                          {vedlegg.visningstekst}
-                        </Checkbox>
-                      ))}
-                    </CheckboxGroup>
-                  </>
+                  <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
+                    <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
+                    {ikkeIkketilgjengelige.map((vedlegg) => (
+                      <Checkbox
+                        description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
+                        disabled
+                        key={vedlegg.kode}
+                        value={vedlegg.kode}
+                      >
+                        {vedlegg.visningstekst}
+                      </Checkbox>
+                    ))}
+                  </CheckboxGroup>
                 )}
                 {noneAvailable && ikkeIkketilgjengelige.length > 0 && (
                   <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
