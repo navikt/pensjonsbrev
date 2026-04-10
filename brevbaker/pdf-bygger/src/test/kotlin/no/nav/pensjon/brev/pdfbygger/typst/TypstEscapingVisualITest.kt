@@ -4,9 +4,8 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.TypstCompilerService
+import no.nav.brev.brevbaker.PdfByggerTestService
 import no.nav.brev.brevbaker.writeTestPDF
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.pdfbygger.attachment
@@ -37,7 +36,7 @@ import java.nio.file.Path
 @Execution(ExecutionMode.CONCURRENT)
 class TypstEscapingVisualITest {
 
-    private val pdfByggerService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfByggerService = PdfByggerTestService()
 
     /**
      * The ultimate escape test string - contains ALL characters that might need escaping:
@@ -53,7 +52,7 @@ class TypstEscapingVisualITest {
 
     private fun renderTestPdf(testName: String, pdfRequest: PDFRequest) {
         runBlocking {
-            val result = pdfByggerService.producePDF(pdfRequest, shouldRetry = false)
+            val result = pdfByggerService.producePDF(pdfRequest, shouldRetry = false, useTypst = true)
             writeTestPDF(testName, result.bytes, Path.of("build/test_visual/pdf"))
         }
     }

@@ -8,9 +8,7 @@ class PDFTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg
 class PDFInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 interface PDFByggerService {
-    enum class TypstFeatureToggle { REDIGERBAR, AUTO }
-
-    suspend fun producePDF(pdfRequest: PDFRequest, path: String = PATH, shouldRetry: Boolean, typstFeatureToggle: TypstFeatureToggle? = null): PDFCompilationOutput
+    suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean = false): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: Int, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {
         when (statusCode) {
@@ -35,4 +33,3 @@ interface PDFByggerService {
     }
 }
 
-private const val PATH = "/produserBrev"

@@ -16,7 +16,7 @@ import java.time.format.FormatStyle
 
 object TypstDocumentRenderer {
 
-    internal fun render(pdfRequest: PDFRequest): String = render(
+    internal fun render(pdfRequest: PDFRequest): (Appendable) -> Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
         language = pdfRequest.language.toLanguage(),
@@ -30,10 +30,10 @@ object TypstDocumentRenderer {
         language: Language,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFTittel>,
-    ): String = StringBuilder().also {
-        TypstCodeScope(it).appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
-        TypstCodeScope(it).renderLetterTemplate(letter, attachments)
-    }.toString()
+    ): (Appendable) -> Unit = { writer ->
+        TypstCodeScope(writer).appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
+        TypstCodeScope(writer).renderLetterTemplate(letter, attachments)
+    }
 
     /**
      * Prepend language settings and input data dictionaries into the letter content (stdin).

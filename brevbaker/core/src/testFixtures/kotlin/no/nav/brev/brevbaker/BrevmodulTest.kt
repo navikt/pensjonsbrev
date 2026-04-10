@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
@@ -144,7 +146,7 @@ abstract class BrevmodulTest(
             }
     }
 
-    @Tag(TestTags.INTEGRATION_TEST)
+    @Tag(TestTags.MANUAL_TEST)
     @ParameterizedTest(name = "{1}, {3}")
     @MethodSource("filtrerPdf")
     fun <T : BrevbakerBrevdata> testPdf(
@@ -159,7 +161,34 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = TypstCompilerService(PDFByggerTestContainer.mappedUrl()))
+        letter.renderTestPDF(
+            filnavn(brevkode, spraak),
+            pdfByggerService = PdfByggerTestService(),
+            useTypst = false
+        )
+    }
+
+    @Tag(TestTags.INTEGRATION_TEST)
+    @ParameterizedTest(name = "{1}, {3}")
+    @MethodSource("alleMalene")
+    fun <T : BrevbakerBrevdata> testTypstPdf(
+        template: LetterTemplate<LanguageSupport, T>,
+        brevkode: Brevkode<*>,
+        fixtures: T,
+        spraak: Language,
+    ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
+            return
+        }
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+
+        letter.renderTestPDF(
+            filnavn(brevkode, spraak),
+            path = Path.of("build", "test_pdf_typst"),
+            pdfByggerService = PdfByggerTestService(),
+            useTypst = true
+        )
     }
 
     @ParameterizedTest(name = "{1}, {3}", allowZeroInvocations = true)

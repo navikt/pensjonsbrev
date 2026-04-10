@@ -70,7 +70,8 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
-    pdfVedleggAppender: PDFVedleggAppender? = null
+    pdfVedleggAppender: PDFVedleggAppender? = null,
+    useTypst: Boolean = true,
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -79,7 +80,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
         })
     }
 
-    val pdfBygger = pdfByggerService ?: TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    val pdfBygger = pdfByggerService ?: PdfByggerTestService()
 
     Letter2Markup.render(this)
         .let {
@@ -92,7 +93,8 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
                         template.letterMetadata.brevtype,
                         Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
                     ),
-                    shouldRetry = false
+                    shouldRetry = false,
+                    useTypst = useTypst,
                 )
             }
         }

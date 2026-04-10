@@ -15,7 +15,7 @@ import io.ktor.http.isSuccess
 import io.ktor.serialization.jackson.jackson
 import no.nav.pensjon.brev.PDFRequest
 
-class TypstCompilerService(private val pdfByggerUrl: String, private val logWarning: (String) -> Unit = ::println) : PDFByggerService {
+class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestContainer.mappedUrl(), private val logWarning: (String) -> Unit = ::println) : PDFByggerService {
     private val objectmapper = jacksonObjectMapper()
     private val httpClient = HttpClient(CIO) {
         install(ContentNegotiation) {
@@ -35,14 +35,14 @@ class TypstCompilerService(private val pdfByggerUrl: String, private val logWarn
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean, typstFeatureToggle: PDFByggerService.TypstFeatureToggle?): PDFCompilationOutput =
-            httpClient.post("$pdfByggerUrl/$PATH") { // TODO use the path parameter it is default in typstCompilerService. This defaults to typst for all tests
-                contentType(ContentType.Application.Json)
-                setBody(objectmapper.writeValueAsBytes(pdfRequest))
-            }.body()
+    override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput =
+        httpClient.post("$pdfByggerUrl/produserBrev") {
+            url {
+                if (useTypst) parameters.append("typst", "true")
+            }
+            contentType(ContentType.Application.Json)
+            setBody(objectmapper.writeValueAsBytes(pdfRequest))
+        }.body()
 
     suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }
-
-private const val PATH = "/produserBrev?typst=true"
-

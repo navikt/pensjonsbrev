@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(ExecutionMode.CONCURRENT)
 class PensjonLatexITest {
-    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfCompileService = PdfByggerTestService()
 
     @Test
     fun canRender() {
@@ -100,6 +100,7 @@ class PensjonLatexITest {
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
                 shouldRetry = false,
+                useTypst = true
             )
         }
 
@@ -211,6 +212,7 @@ class PensjonLatexITest {
                         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                     ),
                     shouldRetry = false,
+                    useTypst = true,
                 )
             }
 

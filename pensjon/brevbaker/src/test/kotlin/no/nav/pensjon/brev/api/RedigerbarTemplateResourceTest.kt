@@ -25,9 +25,8 @@ class RedigerbarTemplateResourceTest {
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(
             pdfRequest: PDFRequest,
-            path: String,
             shouldRetry: Boolean,
-            typstFeatureToggle: PDFByggerService.TypstFeatureToggle?
+            useTypst: Boolean,
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 

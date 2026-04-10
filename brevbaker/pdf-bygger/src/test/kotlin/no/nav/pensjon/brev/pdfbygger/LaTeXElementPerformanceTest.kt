@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.TypstCompilerService
+import no.nav.brev.brevbaker.PdfByggerTestService
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.pensjon.brev.pdfbygger.LaTeXElementPerformanceTest.ElementType.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -28,7 +27,7 @@ private const val ELEMENT_COUNT = 100
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class LaTeXElementPerformanceTest {
 
-    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfCompileService = PdfByggerTestService()
 
     private data class TimingResult(val elementType: ElementType, val time: Duration, val count: Int)
 

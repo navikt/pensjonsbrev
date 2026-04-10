@@ -19,7 +19,6 @@ import kotlinx.io.IOException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
-import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
@@ -27,7 +26,7 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class PDFByggerServiceImpl(
+class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
     maxRetries: Int = 30,
     private val timeout: Duration = 300.seconds,
@@ -80,17 +79,13 @@ class PDFByggerServiceImpl(
             }
         }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean, typstFeatureToggle: PDFByggerService.TypstFeatureToggle?): PDFCompilationOutput = try {
+    override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput = try {
         withTimeoutOrNull(timeout) {
             val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
-            val toggle = when(typstFeatureToggle) {
-                PDFByggerService.TypstFeatureToggle.REDIGERBAR -> BrevbakerFeatureToggles.typstRedigerbareBrev
-                PDFByggerService.TypstFeatureToggle.AUTO -> BrevbakerFeatureToggles.typstAutobrev
-                null -> null
-            }
-
-            val resolvedPath = if (toggle?.let { FeatureToggleSingleton.isEnabled(it.toggle) }?: false) "produserBrev?typst=true" else "produserBrev"
-            httpClient.post("$pdfByggerUrl/$resolvedPath") {
+            httpClient.post("$pdfByggerUrl/produserBrev") {
+                url {
+                    if (useTypst) parameters.append("typst", "true")
+                }
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client

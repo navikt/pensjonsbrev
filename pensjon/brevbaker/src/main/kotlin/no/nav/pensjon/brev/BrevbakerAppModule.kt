@@ -120,7 +120,7 @@ fun Application.brevbakerModule(
     } else null
 
 
-    val pdfbyggerService = PDFByggerServiceImpl(
+    val pdfbyggerService = PensjonPdfByggerService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )

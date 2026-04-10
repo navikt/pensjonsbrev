@@ -37,8 +37,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.ResourceLock
 
 @Tag(TestTags.INTEGRATION_TEST)
+@ResourceLock("FeatureToggleHandler")
 class BrevtekstITest {
 
 

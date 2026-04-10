@@ -1,8 +1,7 @@
 package no.nav.pensjon.brev.pdfbygger.latex
 
-import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.TypstCompilerService
+import no.nav.brev.brevbaker.PdfByggerTestService
 import no.nav.brev.brevbaker.outlineTestTemplate
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
@@ -18,7 +17,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 @Execution(ExecutionMode.CONCURRENT)
 class ElementIntegrationTest {
 
-    private val pdfCompileService = TypstCompilerService(PDFByggerTestContainer.mappedUrl())
+    private val pdfCompileService = PdfByggerTestService()
 
     @Test
     fun `tom title1`() {
