@@ -362,11 +362,13 @@ object Ufoeretrygd {
 
     object KombinereUforetrygdAldersPensjon : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            paragraph {
+            title1 {
                 text (
                     bokmal { + "For deg som kombinerer uføretrygd og alderspensjon" },
                     nynorsk { + "For deg som kombinerer uføretrygd og alderspensjon" },
                 )
+            }
+            paragraph {
                 text (
                     bokmal { + "Du mottar alderspensjon fra folketrygden. Hvis du kombinerer uføretrygd og alderspensjon kan disse til sammen ikke utgjøre mer enn 100 prosent." },
                     nynorsk { + "Du mottar alderspensjon frå folketrygda. Viss du kombinerer uføretrygd og alderspensjon, kan den totale prosenten ikkje vere høgare enn 100 prosent." },
