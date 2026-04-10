@@ -1415,8 +1415,10 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun ifNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun ifNull-okHpgYs (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;
 	public static final fun isNotAnyOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun isNotOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun not (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notOperator (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

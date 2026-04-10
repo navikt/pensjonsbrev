@@ -92,6 +92,30 @@ class BaseTest {
         assertTrue(expr.isNull().eval(ExpressionScope(2, FellesFactory.felles, Language.Nynorsk)))
     }
 
+    @Test
+    fun `isOneOf string positive match`() {
+        val expr = "tekst".expr().isOneOf("tekst")
+        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isOneOf string positive match with multiple values`() {
+        val expr = "tekst".expr().isOneOf("tekst", "tekst2")
+        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isOneOf string negative match`() {
+        val expr = "tekst".expr().isOneOf("tekst2")
+        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
     @Nested
     inner class EqualTo{
         val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
