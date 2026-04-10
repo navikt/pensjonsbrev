@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
-import no.nav.pensjon.brev.maler.adhoc.AdhocGjenlevendEtter1970
 import no.nav.pensjon.brev.maler.adhoc.AdhocInformasjonHvilendeRett4Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocMidlertidigOpphoerHvilenderett10Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdEtterbetalingDagpenger
@@ -33,6 +32,7 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesats
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
@@ -96,7 +96,6 @@ object ProductionTemplates : AllTemplates {
         AdHocVarselUgyldiggjoringFullmaktsgiver,
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
-        AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdEtterbetalingDagpenger,
@@ -138,6 +137,7 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
+        VedtakOmLavereMinstesats,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(

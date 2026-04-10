@@ -3,8 +3,7 @@ import { Alert, BodyShort, Box, CopyButton, Heading, HGrid, HStack, VStack } fro
 import { AxiosError } from "axios";
 import { useEffect } from "react";
 
-import type { FailureType } from "~/types/apiTypes";
-import { FAILURE_TYPES } from "~/types/apiTypes";
+import { FAILURE_TYPES, type FailureType } from "~/types/apiTypes";
 import { logError } from "~/utils/logger";
 
 interface FunctionalErrorPayload {

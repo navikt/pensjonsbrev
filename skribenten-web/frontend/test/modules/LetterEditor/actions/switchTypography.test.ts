@@ -1,9 +1,15 @@
 import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { ParagraphBlock, Title1Block, Title2Block } from "~/types/brevbakerTypes";
-import { PARAGRAPH, TITLE1, TITLE2 } from "~/types/brevbakerTypes";
+import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import {
+  PARAGRAPH,
+  type ParagraphBlock,
+  TITLE1,
+  TITLE2,
+  type Title1Block,
+  type Title2Block,
+} from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, title1, title2, variable } from "../utils";
 

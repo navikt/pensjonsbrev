@@ -1,5 +1,5 @@
-import type { Adresse } from "../types/apiTypes";
-import type { Mottaker } from "../types/brev";
+import { type Adresse } from "../types/apiTypes";
+import { type Mottaker } from "../types/brev";
 
 export const mapEndreMottakerValueTilMottaker = (v: string | Adresse): Mottaker => {
   if (typeof v === "string") {

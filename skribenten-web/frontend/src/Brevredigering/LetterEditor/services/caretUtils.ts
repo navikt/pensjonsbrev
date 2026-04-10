@@ -1,7 +1,7 @@
 import { inRange, minBy } from "lodash";
 
 import { isBlockContentIndex, isItemContentIndex } from "~/Brevredigering/LetterEditor/actions/common";
-import type { LiteralIndex, SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
+import { type LiteralIndex, type SelectionIndex as SelectionFocus } from "~/Brevredigering/LetterEditor/model/state";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
 
 type Coordinates = {

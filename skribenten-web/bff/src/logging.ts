@@ -1,4 +1,4 @@
-import type { Express } from "express";
+import { type Express } from "express";
 import morgan from "morgan";
 
 export function setupLogging(server: Express) {

@@ -2,8 +2,7 @@ import { expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
-import { NEW_LINE } from "~/types/brevbakerTypes";
+import { type LiteralValue, NEW_LINE, type ParagraphBlock, type TextContent } from "~/types/brevbakerTypes";
 
 import { letter, literal, paragraph, select, title1, title2 } from "../utils";
 

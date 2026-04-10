@@ -1,7 +1,7 @@
-import type { Identtype, InnOgUtland, Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
+import { type Identtype, type InnOgUtland, type Søketype } from "~/components/endreMottaker/EndreMottakerUtils";
 
-import type { ManueltAdressertTil } from "./brev";
-import type { Nullable } from "./Nullable";
+import { type ManueltAdressertTil } from "./brev";
+import { type Nullable } from "./Nullable";
 
 export type SakDto = {
   readonly saksId: number;

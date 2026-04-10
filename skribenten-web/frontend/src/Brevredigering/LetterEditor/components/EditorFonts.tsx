@@ -1,5 +1,5 @@
 import { BodyShort, Button } from "@navikt/ds-react";
-import type { ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { FontType } from "~/types/brevbakerTypes";

@@ -1,5 +1,5 @@
 import { newColSpec, newRow } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Table } from "~/types/brevbakerTypes";
+import { type Table } from "~/types/brevbakerTypes";
 
 /**
  * Create a new table with the specified number of rows and columns.

@@ -2,19 +2,24 @@ import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
 import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 
-import type { MalType } from "~/api/brevbaker-api-endpoints";
-import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
-import type {
-  Attachment,
-  Conditional,
-  ContentOrControlStructure,
-  Element,
-  ElseIf,
-  Expression,
-  ForEach,
-  TemplateDocumentation,
+import {
+  getBrevkoder,
+  getTemplateDescription,
+  getTemplateDocumentation,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
+import {
+  type Attachment,
+  type Conditional,
+  type ContentOrControlStructure,
+  ContentOrControlStructureType,
+  type Element,
+  ElementType,
+  type ElseIf,
+  type Expression,
+  type ForEach,
+  type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
-import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({

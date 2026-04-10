@@ -4,9 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 import { hentPdfForJournalpost } from "~/api/sak-api-endpoints";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type { BrevInfo } from "~/types/brev";
-import { Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";

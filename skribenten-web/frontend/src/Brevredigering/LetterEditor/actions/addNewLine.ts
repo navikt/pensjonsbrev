@@ -5,9 +5,8 @@ import {
   splitLiteralAtOffset,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Action } from "~/Brevredigering/LetterEditor/lib/actions";
-import { withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus, LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type Action, withPatches } from "~/Brevredigering/LetterEditor/lib/actions";
+import { type Focus, type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { isParagraph, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import { LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
 

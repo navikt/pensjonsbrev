@@ -11,8 +11,7 @@ import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
-import type { Typography } from "../utils";
-import { TypographyToText } from "../utils";
+import { type Typography, TypographyToText } from "../utils";
 import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
 import { EditorUndoRedo } from "./EditorUndoRedo";

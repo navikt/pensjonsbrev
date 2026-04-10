@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.RenderService
+import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacadeFactory
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.common.Outcome
@@ -22,7 +23,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
-import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse.Data
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Service
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.*
@@ -109,14 +110,7 @@ abstract class BrevredigeringHandlerTestBase {
     protected val penService = FakePenClient()
     protected val samhandlerService = FakeSamhandlerService(mapOf("samhandler1" to "Sam Handler AS"))
 
-    protected val brevredigeringFacade = BrevredigeringFacadeFactory.create(
-        brevService = BrevService(penService, LegacyBrevServiceStub()),
-        brevdataService = BrevdataService(penService, samhandlerService),
-        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
-        navansattService = navAnsattService,
-        p1Service = FakeP1Service(),
-        renderService = RenderService(brevbakerService),
-    )
+    protected val brevredigeringFacade = createFacade()
 
     protected companion object Fixtures {
         init {
@@ -185,7 +179,7 @@ abstract class BrevredigeringHandlerTestBase {
 
         val stagetPDF = "nesten en pdf".encodeToByteArray()
 
-        val brevdataResponseData = Data(
+        val brevdataResponseData = BrevdataResponse.Data(
             felles = BrevbakerFelles(
                 dokumentDato = LocalDate.now(),
                 saksnummer = sak1.saksId.toString(),
@@ -220,7 +214,17 @@ abstract class BrevredigeringHandlerTestBase {
             )
     }
 
+    protected fun createFacade(p1Service: P1Service = FakeP1Service()): BrevredigeringFacade = BrevredigeringFacadeFactory.create(
+        brevService = BrevService(penService, LegacyBrevServiceStub()),
+        brevdataService = BrevdataService(penService, samhandlerService),
+        brevmalService = BrevmalService(brevbakerService, penService, FakeBrevmetadataService()),
+        navansattService = navAnsattService,
+        p1Service = p1Service,
+        renderService = RenderService(brevbakerService),
+    )
+
     protected suspend fun opprettBrev(
+        facade: BrevredigeringFacade = brevredigeringFacade,
         principal: UserPrincipal = saksbehandler1Principal,
         reserverForRedigering: Boolean = false,
         mottaker: Dto.Mottaker? = null,
@@ -230,7 +234,7 @@ abstract class BrevredigeringHandlerTestBase {
         sak: Pen.SakSelection = sak1,
         avsenderEnhetsId: EnhetId = PRINCIPAL_NAVENHET_ID,
     ): Outcome<Dto.Brevredigering, BrevredigeringError> = withPrincipal(principal) {
-        brevredigeringFacade.opprettBrev(
+        facade.opprettBrev(
             OpprettBrevHandlerImpl.Request(
                 saksId = sak.saksId,
                 vedtaksId = vedtaksId,
@@ -333,9 +337,13 @@ abstract class BrevredigeringHandlerTestBase {
         result
     }
 
-    protected suspend fun hentEllerOpprettPdf(brev: Dto.Brevredigering, principal: UserPrincipal = saksbehandler1Principal): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
+    protected suspend fun hentEllerOpprettPdf(
+        brev: Dto.Brevredigering,
+        principal: UserPrincipal = saksbehandler1Principal,
+        facade: BrevredigeringFacade = brevredigeringFacade,
+    ): Outcome<Dto.HentDocumentResult, BrevredigeringError>? =
         withPrincipal(principal) {
-            brevredigeringFacade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
+            facade.hentPDF(HentEllerOpprettPdfHandler.Request(brevId = brev.info.id))
         }
 
     protected suspend fun endreDistribusjonstype(
