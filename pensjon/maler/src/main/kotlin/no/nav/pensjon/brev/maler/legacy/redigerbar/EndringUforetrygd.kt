@@ -234,8 +234,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(kravarsak.equalTo("endring_ifu")) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense." },
-                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense." },
+                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense. " },
+                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense. " },
                     )
                     text(
                         bokmal { +"Den nye inntektsgrensen din har økt til " + pe.ut_inntektsgrense_faktisk().format() + " kroner fra " + onsketvirkningsdato.format() + "." },
