@@ -68,8 +68,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om endring av uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om endring av uføretrygd " },
+                bokmal { +"Nav har endret uføretrygden din" },
+                nynorsk { +"Nav har endra uføretrygda di" },
             )
         }
         outline {
