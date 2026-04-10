@@ -23,7 +23,6 @@ internal class BrevbakerPDF(
             val erRedigerbartBrev = redigertBrev != null
             val toggle = if (erRedigerbartBrev) typstToggleRedigerbar else typstToggleAuto
             val useTypst = toggle?.let { FeatureToggleSingleton.isEnabled(it) } ?: false
-            println("useTypst=$useTypst (toggle=$toggle, erRedigerbartBrev=$erRedigerbartBrev)")
             pdfByggerService.producePDF(
                 PDFRequest(
                     letterMarkup = markup.letterMarkup,
