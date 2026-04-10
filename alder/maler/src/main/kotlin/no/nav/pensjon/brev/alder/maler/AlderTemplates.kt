@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtOpprydding
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendEtter1970
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
@@ -59,6 +60,7 @@ object AlderTemplates : AllTemplates {
             AdhocAlderspensjonFraFolketrygden2,
             AdhocAlderspensjonGjtOpprydding,
             AdhocAlderspensjonGjtVarselBrev,
+            AdhocGjenlevendEtter1970,
             AdhocSkjermingstilleggFeilBeroertBruker,
             AdhocSkjermingstilleggFeilMottaker,
             AdhocTidligereUfoereGradertAP,
