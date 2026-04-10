@@ -20,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
-    override val kode = Aldersbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEV_ETTER_1970
+    override val kode = Aldersbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
