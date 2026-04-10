@@ -433,7 +433,7 @@ describe("Brevbehandler", () => {
     cy.location("pathname").should("eq", "/saksnummer/123456/kvittering").location("search").should("eq", "");
   });
 
-  it("brev som har uendret fritekstfelter kan ikke gjøres klar til sending", () => {
+  it("brev som har uendret fritekstfelter kan ikke gjøres klar for sending", () => {
     const nyBrevInfo2 = nyBrevInfo({});
 
     cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", (request) => {

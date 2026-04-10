@@ -19,7 +19,8 @@ export type UmamiEventName =
   | "tid brukt i editor"
   | "tid brukt i brevvelger"
   | "tid brukt i brevbehandler"
-  | "tid brukt i attestering";
+  | "tid brukt i attestering"
+  | "samhandler valgt";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;

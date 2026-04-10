@@ -33,7 +33,7 @@ const BrevvelgerFooter = (props: {
           variant="tertiary"
         >
           {harBrevKlarTilSending
-            ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+            ? `Du har ${props.antallBrevKlarTilSending} brev klar for sending. Gå til brevbehandler`
             : "Gå til brevbehandler"}
         </Button>
         {props.onSubmitClick && (
