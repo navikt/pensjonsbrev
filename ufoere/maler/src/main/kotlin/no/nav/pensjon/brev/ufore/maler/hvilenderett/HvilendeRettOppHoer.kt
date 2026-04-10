@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object HvilendeRettOppHoer : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
     override val kode = UT_S_HVILENDE_RETT_OPPHOER
-    override val kategori = Brevkategori.ETTEROPPGJOER
+    override val kategori = Brevkategori.INFORMASJONSBREV
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
