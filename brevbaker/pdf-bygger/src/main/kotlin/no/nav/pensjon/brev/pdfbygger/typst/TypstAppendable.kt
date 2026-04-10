@@ -14,10 +14,10 @@ internal annotation class TypstDslMarker
 internal class TypstMarkupScope(internal val output: Appendable) {
 
     /**
-     * Append user-facing text. Always escapes special Typst characters.
+     * Append user-facing text. Uses Typst's #str() function to safely render the string
      */
     fun appendContent(s: String) {
-        output.append(s.typstEscape())
+        output.append("#str(\"${s.typstStringEscape()}\")")
     }
 
     /**
@@ -29,7 +29,7 @@ internal class TypstMarkupScope(internal val output: Appendable) {
 
     /**
      * Append inline Typst code within a content block. Never escapes.
-     * Use for Typst syntax like `#emph[`, `]`, `#linebreak()`.
+     * Use for Typst syntax like `#emph[``]`, `#linebreak()`.
      */
     fun appendCode(s: String) {
         output.append(s)

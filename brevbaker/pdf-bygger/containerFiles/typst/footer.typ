@@ -1,8 +1,7 @@
-#import "input.typ": languageSettings, input
 #import "content/state.typ": sectionCounter
 
 
-#let footer = context {
+#let footer(input, languageSettings) = context {
   let currentPageNumber = counter(page).get().first()
 
   let currentSection = sectionCounter.at(here()).first()

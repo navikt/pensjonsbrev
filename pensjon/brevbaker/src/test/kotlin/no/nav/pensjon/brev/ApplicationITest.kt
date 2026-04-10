@@ -18,7 +18,9 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.parallel.ResourceLock
 
+@ResourceLock("FeatureToggleHandler")
 class ApplicationITest {
     @Test
     fun `ping running brevbaker`() {

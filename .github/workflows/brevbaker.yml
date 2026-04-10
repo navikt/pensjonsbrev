@@ -100,6 +100,7 @@ jobs:
           ./gradlew :pensjon:brevbaker:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
+          "TESTCONTAINERS_REUSE_ENABLE": "true"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da # v1.9.1
