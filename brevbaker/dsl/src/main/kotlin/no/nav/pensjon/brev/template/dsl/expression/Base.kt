@@ -33,7 +33,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
     BinaryOperation.EnumInList<Enum<T>>().invoke(this, enums.asList().expr())
 
 fun StringExpression.isOneOf(vararg others: String): Expression<Boolean> =
-    others.map { equalTo(it) }.reduce { acc, expr -> acc.or(expr) }
+    BinaryOperation.IsOneOf<String>().invoke(this, others.asList().expr())
 
 fun StringExpression.isNotAnyOf(vararg others: String): Expression<Boolean> =
     this.isOneOf(*others).not()
