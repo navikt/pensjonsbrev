@@ -25,6 +25,15 @@ infix fun <T : Comparable<T>> Expression<T?>.equalTo(other: T?): Expression<Bool
 infix fun <T : Comparable<T>> Expression<T?>.equalTo(other: Expression<T?>): Expression<Boolean> =
     BinaryOperation.Equal<T?>().invoke(this, other)
 
+@JvmName("equalToAnyComparable")
+fun <T : Comparable<T>> Expression<T?>.equalToAny(vararg others: T): Expression<Boolean> =
+    others.map { equalTo(it) }.reduce { acc, expr -> acc.or(expr) }
+
+
+@JvmName("notEqualToAnyComparable")
+fun <T : Comparable<T>> Expression<T?>.notEqualToAny(vararg others: T): Expression<Boolean> =
+    this.equalToAny(*others).not()
+
 // Language
 @JvmName("equalToLanguage")
 infix fun Expression<Language?>.equalTo(other: Expression<Language?>): Expression<Boolean> =
