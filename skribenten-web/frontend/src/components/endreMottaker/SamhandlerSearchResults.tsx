@@ -193,7 +193,15 @@ function AdresseDetaljer({ adresse }: { adresse: Adresse }) {
 
   return (
     <Table size="small">
-      <Table.Body>
+      <Table.Body
+        css={{
+          "tr:last-of-type": {
+            "th,td": {
+              borderBottom: "none",
+            },
+          },
+        }}
+      >
         {rows.map(
           (row) =>
             row.value && (
