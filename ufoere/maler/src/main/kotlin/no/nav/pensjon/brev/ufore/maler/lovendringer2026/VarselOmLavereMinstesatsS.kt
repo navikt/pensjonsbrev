@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
-    override val featureToggle = FeatureToggles.varsellavereminstesats
+    override val featureToggle = FeatureToggles.varsellavereminstesats.toggle
 
     override val kode = UT_S_VARSEL_LAVERE_MINSTESATS_2026
     override val kategori = Brevkategori.ETTEROPPGJOER
