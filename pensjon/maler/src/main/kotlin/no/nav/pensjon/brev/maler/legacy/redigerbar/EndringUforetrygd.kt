@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -67,8 +68,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om endring av uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om endring av uføretrygd " },
+                bokmal { +"Nav har endret uføretrygden din" },
+                nynorsk { +"Nav har endra uføretrygda di" },
             )
         }
         outline {
@@ -233,8 +234,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(kravarsak.equalTo("endring_ifu")) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense." },
-                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense." },
+                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense. " },
+                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense. " },
                     )
                     text(
                         bokmal { +"Den nye inntektsgrensen din har økt til " + pe.ut_inntektsgrense_faktisk().format() + " kroner fra " + onsketvirkningsdato.format() + "." },
@@ -2202,6 +2203,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.orienteringOmRettigheterUfoere)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore)
     }
 }
