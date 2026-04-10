@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_LAVERE_MINSTESATS_2026
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
+import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.ufore.maler.fraser.Constants.NAV_KONTAKTSENTER_TELEFON_UFORE
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
@@ -19,6 +20,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+
+    override val featureToggle = FeatureToggles.varsellavereminstesats
 
     override val kode = UT_S_VARSEL_LAVERE_MINSTESATS_2026
     override val kategori = Brevkategori.ETTEROPPGJOER
