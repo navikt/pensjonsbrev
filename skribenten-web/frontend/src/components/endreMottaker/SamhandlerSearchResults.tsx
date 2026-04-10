@@ -1,5 +1,6 @@
-import { Bleed, BodyShort, Box, Skeleton, Table, Tag, VStack } from "@navikt/ds-react";
+import { Bleed, BodyShort, Box, Skeleton, type SortState, Table, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
+import { sortBy } from "lodash";
 import { useRef, useState } from "react";
 
 import { hentSamhandlerAdresse } from "~/api/skribenten-api-endpoints";
@@ -20,6 +21,23 @@ export function SamhandlerSearchResults({
   selectedId: Nullable<string>;
   onSelectedChange: (idTSSEkstern: string) => void;
 }) {
+  const [sort, setSort] = useState<SortState>({
+    orderBy: "navn",
+    direction: "ascending",
+  });
+
+  const handleSort = (sortKey: string | undefined) => {
+    if (sortKey) {
+      setSort({
+        orderBy: sortKey,
+        direction: sort.orderBy === sortKey && sort.direction === "ascending" ? "descending" : "ascending",
+      });
+    }
+  };
+
+  const sortedAscending = sort.orderBy ? sortBy(samhandlere, sort.orderBy) : samhandlere;
+  const sortedSamhandlere = sort.direction === "descending" ? [...sortedAscending].reverse() : sortedAscending;
+
   return (
     <VStack gap="space-8">
       <BodyShort size="small" weight="semibold">
@@ -34,17 +52,28 @@ export function SamhandlerSearchResults({
           marginInline="space-12"
         >
           <Box marginInline="space-12">
-            <Table size="small">
+            <Table onSortChange={handleSort} size="small" sort={sort}>
               <Table.Header css={{ position: "sticky" }}>
                 <Table.Row>
                   <Table.HeaderCell />
-                  <Table.ColumnHeader>Navn</Table.ColumnHeader>
+                  <Table.ColumnHeader
+                    css={{
+                      '&[aria-sort="ascending"] button, &[aria-sort="descending"] button': {
+                        backgroundColor: "transparent",
+                        color: "var(--ax-text-subtle)",
+                      },
+                    }}
+                    sortable
+                    sortKey="navn"
+                  >
+                    Navn
+                  </Table.ColumnHeader>
                   <Table.HeaderCell />
                   <Table.HeaderCell />
                 </Table.Row>
               </Table.Header>
               <Table.Body>
-                {samhandlere.map((samhandler) => (
+                {sortedSamhandlere.map((samhandler) => (
                   <SamhandlerResultRow
                     key={samhandler.idTSSEkstern}
                     onSelect={() => onSelectedChange(samhandler.idTSSEkstern)}
