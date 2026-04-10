@@ -51,7 +51,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
         title {
             text(
                 bokmal { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
-                nynorsk { +"Du må velge mellom AFP i privat sektor og uføretrygd fra Nav" },
+                nynorsk { +"Du må velje mellom AFP i privat sektor og uføretrygd fra Nav" },
             )
         }
 
@@ -356,8 +356,8 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold:" },
-                    nynorsk { +"Sjå vedlegg om atterhald:" }
+                    bokmal { +"Se vedlegg om forbehold." },
+                    nynorsk { +"Sjå vedlegg om atterhald." }
                 )
             }
             paragraph {
@@ -409,7 +409,7 @@ object AfpPrivatSokerUforeTrygd : RedigerbarTemplate<AfpPrivatSokerUforeTrygdDto
                         item {
                             text(
                                 bokmal { +"Du kan også sende brev merket med fødselsnummeret ditt til:" },
-                                nynorsk { +"Du kan også sende brev merket med fødselsnummeret ditt til:" }
+                                nynorsk { +"Du kan også sende brev merka med fødselsnummeret ditt til:" }
                             )
                             newline()
                             text(
