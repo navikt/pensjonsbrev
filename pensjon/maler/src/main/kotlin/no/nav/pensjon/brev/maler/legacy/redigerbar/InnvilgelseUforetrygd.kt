@@ -2172,7 +2172,9 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Ufoeretrygd.Skattekort)
+            showIf(not(bosattUtland)) {
+                includePhrase(Ufoeretrygd.Skattekort)
+            }
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(not(bosattUtland)))
             includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
         }
