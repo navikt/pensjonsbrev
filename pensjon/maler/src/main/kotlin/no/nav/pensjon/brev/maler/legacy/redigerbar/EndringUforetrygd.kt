@@ -20,7 +20,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
@@ -141,7 +140,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and kravarsak.equalTo("soknad_bt"))) {
+            showIf(barnetilleggInnvilget and kravarsak.equalTo("soknad_bt")) {
                 paragraph {
                     text(
                         bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
@@ -296,7 +295,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         nynorsk { +"Vi har fått opplysningar om at du er under straffegjennomføring. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
                     )
                     //TODO masse forenklinger i uttrykk i instopphold, som feks showif under vs showif over
-                    showIf((instoppholdtype.equalTo("reduksjon_fo") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and (barnetilleggInnvilget))) {
+                    showIf((instoppholdtype.equalTo("reduksjon_fo") and not(instoppholdanvendt) and pe.ut_forsorgeransvar_ingen_er_false() and kravarsak.equalTo("instopphold") and barnetilleggInnvilget)) {
                         text(
                             bokmal { +" Fra og med måneden etter at du er under straffegjennomføring vil du bli vurdert med sivilstand som enslig. Det betyr at barnetillegget kun vil bli beregnet ut fra den samlede inntekten din fra samme tidspunkt." },
                             nynorsk { +" Frå og med månaden etter at du er under straffegjennomføringa vil du bli vurdert med ein sivilstand som einsleg. Det betyr at barnetillegget berre blir berekna ut frå den samla inntekta di frå same tidspunkt." },
@@ -332,7 +331,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
+            showIf((barnetilleggInnvilget and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
                     text(
                         bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt." },
@@ -350,7 +349,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and utbetalingsgrad.equalTo(uforegradFraBeregning) and not(instoppholdanvendt))) {
                 paragraph {
                     text(
                         bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
@@ -377,7 +376,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and (not(barnetilleggInnvilget)) and not(gjenlevendetilleggInnvilget) and not(ektefelletilleggInnvilget) and not(instoppholdanvendt))) {
+            showIf((utbetalingsgrad.lessThan(uforegradFraBeregning) and not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and not(ektefelletilleggInnvilget) and not(instoppholdanvendt))) {
                 paragraph {
                     text(
                         bokmal { +"Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningufore_total().format() + " kroner i uføretrygd per måned før skatt. Fordi du har inntekt ved siden av uføretrygden, vil utbetalingen din bli redusert til " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner per måned før skatt." },
@@ -924,18 +923,17 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf(not(pesysData.opphortBarnetillegg)) {
                 paragraph {
-                    showIf((barnetilleggInnvilget)) {
+                    showIf(barnetilleggInnvilget) {
                         text(
                             bokmal { +"Barnetillegg kan gis så lenge du forsørger barn. Det gis som et tillegg til uføretrygden din og opphører når barnet fyller 18 år. " },
                             nynorsk { +"Barnetillegg kan bli gitt så lenge du forsørgjer barn. Det blir gitt som eit tillegg til uføretrygda di og blir stansa når barnet ditt fyller 18 år. " },
                         )
-                    }
-
-                    showIf(((barnetilleggInnvilget) and kravarsak.equalTo("soknad_bt"))) {
-                        text(
-                            bokmal { +"Du er innvilget barnetillegg fordi du forsørger barn." },
-                            nynorsk { +"Du er innvilga barnetillegg fordi du forsørgjer barn." },
-                        )
+                        showIf(kravarsak.equalTo("soknad_bt")) {
+                            text(
+                                bokmal { +"Du er innvilget barnetillegg fordi du forsørger barn." },
+                                nynorsk { +"Du er innvilga barnetillegg fordi du forsørgjer barn." },
+                            )
+                        }
                     }
                 }
             }
@@ -1154,7 +1152,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1163,7 +1161,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1190,7 +1188,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1199,7 +1197,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1271,7 +1269,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1280,7 +1278,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1307,7 +1305,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1316,7 +1314,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1325,7 +1323,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((not(barnetilleggInnvilget)) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
@@ -1334,7 +1332,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((not(barnetilleggInnvilget)) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
@@ -1343,7 +1341,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og" + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1352,7 +1350,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1361,7 +1359,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((not(barnetilleggInnvilget)) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
@@ -1370,7 +1368,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((not(barnetilleggInnvilget)) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
@@ -1379,7 +1377,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1388,7 +1386,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
+            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
@@ -1761,7 +1759,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 includePhrase(TBU2280_Generated(pe))
             }
 
-            showIf(((barnetilleggInnvilget) and pe.vedtaksdata_kravhode_sokerbt())) {
+            showIf((barnetilleggInnvilget and pe.vedtaksdata_kravhode_sokerbt())) {
                 title1 {
                     text(
                         bokmal { +"Slik påvirker inntekt barnetillegget ditt " },
@@ -1772,7 +1770,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             //IF(  (PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true  OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true) AND PE_Vedtaksdata_Kravhode_SokerBT = true AND ((PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopGammelBTFB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggFellesYK_BelopNyBTFB) OR (PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopGammelBTSB <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Belopsendring_BarnetilleggSerkullYK_BelopNyBTSB)) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT <> 0 ) THEN      INCLUDE ENDIF
             showIf(
-                ((barnetilleggInnvilget) and pe.vedtaksdata_kravhode_sokerbt() and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))) and kravarsak.notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()
+                (barnetilleggInnvilget and pe.vedtaksdata_kravhode_sokerbt() and ((pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopgammelbtfb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggfellesyk_belopnybtfb())) or (pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopgammelbtsb().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_belopsendring_barnetilleggserkullyk_belopnybtsb()))) and kravarsak.notEqualTo("soknad_bt") and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt()
                     .greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().notEqualTo(0))
             ) {
                 paragraph {
@@ -1798,7 +1796,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     includePhrase(TBU2339_Generated(pe))
                 }
 
-                showIf((barnetilleggInnvilget)) {
+                showIf(barnetilleggInnvilget) {
                     paragraph {
                         text(
                             bokmal { +"Endringer i inntekten din" },
@@ -2096,7 +2094,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     }
                 }
 
-                showIf((barnetilleggInnvilget)) {
+                showIf(barnetilleggInnvilget) {
                     paragraph {
                         text(
                             bokmal { +"Du kan lese mer om beregningen av barnetillegg i vedlegget " },
@@ -2108,7 +2106,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((barnetilleggInnvilget)) {
+            showIf(barnetilleggInnvilget) {
 
                 showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))) {
                     includePhrase(TBU5005_Generated)
