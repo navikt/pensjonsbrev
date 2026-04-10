@@ -116,6 +116,22 @@ class BaseTest {
         assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
     }
 
+    @Test
+    fun `isNotAnyOf string positive match with multiple values`() {
+        val expr = "tekst".expr().isNotAnyOf("tekst1", "tekst2", "tekst3")
+        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+
+        assertTrue(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
+    @Test
+    fun `isNotAnyOf string negative match`() {
+        val expr = "tekst".expr().isNotAnyOf("tekst")
+        val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)
+
+        assertFalse(expr.eval(ExpressionScope(3, scope.felles, scope.language)))
+    }
+
     @Nested
     inner class EqualTo{
         val scope = ExpressionScope(2, FellesFactory.felles, Language.Bokmal)

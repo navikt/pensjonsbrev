@@ -35,7 +35,7 @@ fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression
 fun StringExpression.isOneOf(vararg others: String): Expression<Boolean> =
     others.map { equalTo(it) }.reduce { acc, expr -> acc.or(expr) }
 
-fun StringExpression.isNotOneOf(vararg others: String): Expression<Boolean> =
+fun StringExpression.isNotAnyOf(vararg others: String): Expression<Boolean> =
     this.isOneOf(*others).not()
 
 fun <T : Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> =
