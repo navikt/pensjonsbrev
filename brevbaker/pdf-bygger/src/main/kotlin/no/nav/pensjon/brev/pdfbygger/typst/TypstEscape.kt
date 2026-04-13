@@ -5,7 +5,7 @@ package no.nav.pensjon.brev.pdfbygger.typst
  * Use this to safely pass pre-escaped content without risk of double-escaping.
  */
 @JvmInline
-internal value class EscapedTypstContent(val value: String)
+value class EscapedTypstContent(val value: String)
 
 /**
  * Characters that should be stripped from output.

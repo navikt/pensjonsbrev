@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
+import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
@@ -16,12 +17,13 @@ import java.time.format.FormatStyle
 
 object TypstDocumentRenderer {
 
-    internal fun render(pdfRequest: PDFRequest): (Appendable) -> Unit = render(
+    internal fun render(pdfRequest: PDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
+        typstWriter = typstWriter,
     )
 
     private fun render(
@@ -30,9 +32,10 @@ object TypstDocumentRenderer {
         language: Language,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFTittel>,
-    ): (Appendable) -> Unit = { writer ->
-        TypstCodeScope(writer).appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
-        TypstCodeScope(writer).renderLetterTemplate(letter, attachments)
+        typstWriter: TypstFileWriter,
+    ): Unit = typstWriter.codeScope {
+        appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
+        renderLetterTemplate(letter, attachments)
     }
 
     /**
