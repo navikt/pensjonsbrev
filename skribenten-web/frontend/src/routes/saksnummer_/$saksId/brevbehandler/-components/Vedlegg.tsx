@@ -247,14 +247,44 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
             return (
               <VStack gap="space-8">
                 {someUnavailable && (
-                  <LocalAlert status="announcement">
-                    <LocalAlert.Header>Noen skjemaer er ikke tilgjengelig på språket i brevet.</LocalAlert.Header>
+                  <LocalAlert
+                    css={css`
+                      .aksel-base-alert__icon {
+                        margin-top: 0;
+                      }
+                    `}
+                    status="announcement"
+                  >
+                    <LocalAlert.Header
+                      css={css`
+                        align-items: center;
+                        padding-top: var(--ax-space-6);
+                        padding-bottom: var(--ax-space-6);
+                      `}
+                    >
+                      Noen skjemaer er ikke tilgjengelig på språket i brevet.
+                    </LocalAlert.Header>
                   </LocalAlert>
                 )}
                 {noneAvailable ? (
                   <VStack gap="space-4">
-                    <LocalAlert status="warning">
-                      <LocalAlert.Header>Ingen skjemaer er tilgjengelig basert på språket i brevet.</LocalAlert.Header>
+                    <LocalAlert
+                      css={css`
+                        .aksel-base-alert__icon {
+                          margin-top: 0;
+                        }
+                      `}
+                      status="warning"
+                    >
+                      <LocalAlert.Header
+                        css={css`
+                          align-items: center;
+                          padding-top: var(--ax-space-6);
+                          padding-bottom: var(--ax-space-6);
+                        `}
+                      >
+                        Ingen skjemaer er tilgjengelig basert på språket i brevet.
+                      </LocalAlert.Header>
                     </LocalAlert>
                   </VStack>
                 ) : (
@@ -301,9 +331,15 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
                     {ikkeIkketilgjengelige.map((vedlegg) => (
                       <Checkbox
+                        css={css`
+                          label,
+                          p {
+                            color: var(--ax-text-neutral-subtle) !important;
+                          }
+                        `}
                         description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
-                        disabled
                         key={vedlegg.kode}
+                        readOnly
                         value={vedlegg.kode}
                       >
                         {vedlegg.visningstekst}
@@ -315,6 +351,12 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                   <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
                     {ikkeIkketilgjengelige.map((vedlegg) => (
                       <Checkbox
+                        css={css`
+                          label,
+                          p {
+                            color: var(--ax-text-neutral-subtle) 
+                          }
+                        `}
                         description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
                         disabled
                         key={vedlegg.kode}
