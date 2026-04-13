@@ -332,9 +332,13 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     {utilgjengelige.map((vedlegg) => (
                       <Checkbox
                         css={css`
-                          label,
-                          p {
-                            color: var(--ax-text-neutral-subtle) !important;
+                          .aksel-checkbox__input {
+                            pointer-events: none;
+                          }
+
+                          .aksel-checkbox__label,
+                          .aksel-checkbox__description {
+                            color: var(--ax-text-neutral-subtle);
                           }
                         `}
                         description={vedlegg.spraak
@@ -354,16 +358,20 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     {utilgjengelige.map((vedlegg) => (
                       <Checkbox
                         css={css`
-                          label,
-                          p {
-                            color: var(--ax-text-neutral-subtle) 
+                          .aksel-checkbox__input {
+                            pointer-events: none;
+                          }
+
+                          .aksel-checkbox__label,
+                          .aksel-checkbox__description {
+                            color: var(--ax-text-neutral-subtle);
                           }
                         `}
                         description={vedlegg.spraak
                           .map((spraakKode) => BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode)
                           .join(", ")}
-                        disabled
                         key={vedlegg.kode}
+                        readOnly
                         value={vedlegg.kode}
                       >
                         {vedlegg.visningstekst}
