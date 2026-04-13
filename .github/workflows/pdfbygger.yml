@@ -151,7 +151,7 @@ jobs:
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
-        if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')) }}
+        if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: visuals
