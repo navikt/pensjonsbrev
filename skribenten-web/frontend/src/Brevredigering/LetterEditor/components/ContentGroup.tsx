@@ -187,6 +187,7 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
+  const pasteViaKeyboardRef = useRef(false);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
@@ -453,6 +454,13 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
+    const pasteMetode = pasteViaKeyboardRef.current
+      ? "tastatursnarvei"
+      : event.nativeEvent.isTrusted
+        ? "kontekstmeny"
+        : "annet";
+    pasteViaKeyboardRef.current = false;
+
     const offset = getCursorOffset();
     if (offset >= 0) {
       const pastedText = event.clipboardData.getData("text/plain");
@@ -462,6 +470,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
+          pasteMetode,
         });
       }
 
@@ -489,6 +498,11 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
     const isUndo = (isMac ? e.metaKey : e.ctrlKey) && e.key === "z" && !e.shiftKey;
     const isRedo = (isMac ? e.metaKey : e.ctrlKey) && (e.key === "y" || (e.key === "z" && e.shiftKey));
+    const isPasteShortcut = ((isMac ? e.metaKey : e.ctrlKey) && e.key === "v") || (e.shiftKey && e.key === "Insert");
+
+    if (isPasteShortcut) {
+      pasteViaKeyboardRef.current = true;
+    }
 
     if (isUndo) {
       e.preventDefault();
