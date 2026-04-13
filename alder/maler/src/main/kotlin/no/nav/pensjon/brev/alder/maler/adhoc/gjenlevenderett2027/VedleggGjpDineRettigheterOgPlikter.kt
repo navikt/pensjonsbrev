@@ -1,10 +1,10 @@
-package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
+package no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
-import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.FULLMAKT_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
