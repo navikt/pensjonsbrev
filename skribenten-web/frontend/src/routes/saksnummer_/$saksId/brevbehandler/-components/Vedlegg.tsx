@@ -87,7 +87,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const fjernVedleggMutation = useMutation({
     mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
       oppdaterVedlegg(props.saksId, props.brev.id, {
-        valgteVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
+        valgteVedlegg: savedVedlegg.filter((lagretVedlegg) => lagretVedlegg.kode !== vedleggToRemove.kode),
       }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
@@ -239,14 +239,14 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
             const brevSpraakBackend = SPRAAKKODE_TO_BACKEND[props.brev.spraak] ?? props.brev.spraak;
             const brevSpraakTekst = BACKEND_SPRAAK_TO_TEXT[brevSpraakBackend] ?? brevSpraakBackend;
 
-            const tilgjengelige = vedleggKoder.filter((v) => v.tilgjengeligForSpraak);
-            const ikkeIkketilgjengelige = vedleggKoder.filter((v) => !v.tilgjengeligForSpraak);
-            const noneAvailable = tilgjengelige.length === 0;
-            const someUnavailable = ikkeIkketilgjengelige.length > 0 && tilgjengelige.length > 0;
+            const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
+            const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
+            const ingenTilgjengelige = tilgjengelige.length === 0;
+            const noenErUtilgjengelige = utilgjengelige.length > 0 && tilgjengelige.length > 0;
 
             return (
               <VStack gap="space-8">
-                {someUnavailable && (
+                {noenErUtilgjengelige && (
                   <LocalAlert
                     css={css`
                       .aksel-base-alert__icon {
@@ -266,7 +266,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     </LocalAlert.Header>
                   </LocalAlert>
                 )}
-                {noneAvailable ? (
+                {ingenTilgjengelige ? (
                   <VStack gap="space-4">
                     <LocalAlert
                       css={css`
@@ -297,23 +297,23 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                         legend="Velg vedlegg"
                         onChange={(selectedKodes: string[]) => {
                           const selectedVedlegg = vedleggKoder.filter(
-                            (v) => selectedKodes.includes(v.kode) && v.tilgjengeligForSpraak,
+                            (vedlegg) => selectedKodes.includes(vedlegg.kode) && vedlegg.tilgjengeligForSpraak,
                           );
                           field.onChange(selectedVedlegg);
                         }}
-                        value={field.value.map((v) => v.kode)}
+                        value={field.value.map((valgtVedlegg) => valgtVedlegg.kode)}
                       >
                         {tilgjengelige.map((vedlegg) => (
                           <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
                             <VStack gap="space-1">
                               <span>{vedlegg.visningstekst}</span>
                               <BodyShort as="span" size="small">
-                                {vedlegg.spraak.map((s, i) => {
-                                  const isCurrentLanguage = s === brevSpraakBackend;
-                                  const tekst = BACKEND_SPRAAK_TO_TEXT[s] ?? s;
+                                {vedlegg.spraak.map((spraakKode, index) => {
+                                  const isCurrentLanguage = spraakKode === brevSpraakBackend;
+                                  const tekst = BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode;
                                   return (
-                                    <Fragment key={s}>
-                                      {i > 0 && ", "}
+                                    <Fragment key={spraakKode}>
+                                      {index > 0 && ", "}
                                       {isCurrentLanguage ? <strong>{tekst}</strong> : tekst}
                                     </Fragment>
                                   );
@@ -326,10 +326,10 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     )}
                   />
                 )}
-                {someUnavailable && (
+                {noenErUtilgjengelige && (
                   <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
                     <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
-                    {ikkeIkketilgjengelige.map((vedlegg) => (
+                    {utilgjengelige.map((vedlegg) => (
                       <Checkbox
                         css={css`
                           label,
@@ -337,7 +337,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                             color: var(--ax-text-neutral-subtle) !important;
                           }
                         `}
-                        description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
+                        description={vedlegg.spraak
+                          .map((spraakKode) => BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode)
+                          .join(", ")}
                         key={vedlegg.kode}
                         readOnly
                         value={vedlegg.kode}
@@ -347,9 +349,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     ))}
                   </CheckboxGroup>
                 )}
-                {noneAvailable && ikkeIkketilgjengelige.length > 0 && (
+                {ingenTilgjengelige && utilgjengelige.length > 0 && (
                   <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
-                    {ikkeIkketilgjengelige.map((vedlegg) => (
+                    {utilgjengelige.map((vedlegg) => (
                       <Checkbox
                         css={css`
                           label,
@@ -357,7 +359,9 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                             color: var(--ax-text-neutral-subtle) 
                           }
                         `}
-                        description={vedlegg.spraak.map((s) => BACKEND_SPRAAK_TO_TEXT[s] ?? s).join(", ")}
+                        description={vedlegg.spraak
+                          .map((spraakKode) => BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode)
+                          .join(", ")}
                         disabled
                         key={vedlegg.kode}
                         value={vedlegg.kode}
@@ -367,7 +371,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
                     ))}
                   </CheckboxGroup>
                 )}
-                {noneAvailable && (
+                {ingenTilgjengelige && (
                   <ReadMore header="Hvorfor kan jeg ikke legge til skjema på et annet språk/målform?">
                     Brevet er skrevet på et annet språk enn det skjemaet støtter. Å kombinere språk eller målform,
                     eksempelvis bokmål og nynorsk, er ikke anbefalt, ifølge Språkloven.
