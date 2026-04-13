@@ -151,13 +151,13 @@ allowedOrigins = listOf("*")
 @PostMapping("/api/vedtak")
 fun create(@RequestBody @Valid request: CreateVedtakRequest): ResponseEntity<VedtakDTO>
 
-// ✅ Limit Jackson to known types
-objectMapper.apply {
-    activateDefaultTyping(
-        polymorphicTypeValidator,
-        ObjectMapper.DefaultTyping.NON_FINAL
-    )
-}
+// ✅ Use explicit polymorphism for known types only
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes(
+    JsonSubTypes.Type(value = SoknadRequest::class, name = "soknad"),
+    JsonSubTypes.Type(value = KlageRequest::class, name = "klage")
+)
+sealed interface Request
 ```
 
 ### A09: Logging & Monitoring
