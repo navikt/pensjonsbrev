@@ -6,7 +6,8 @@
   },
   "plugins": {
     "reg-simple-keygen-plugin": {
-      "expectedKey": "main"
+      "expectedKey": "main",
+      "actualKey": "${ACTUAL_KEY}"
     },
     "reg-publish-gcs-plugin": {
       "bucketName": "no-nav-pensjonsbrev-reg-suit",
