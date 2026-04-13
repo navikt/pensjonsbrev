@@ -27,7 +27,7 @@ class InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandTest {
         LetterTestImpl(
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland.template,
             Fixtures.create<InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto>(),
-            Language.Bokmal,
+            Language.English,
             Fixtures.felles
         ).renderTestPDF("GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND")
     }

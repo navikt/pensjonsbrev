@@ -7,8 +7,12 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepens
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.navKontaktsenterPensjon
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenGjenlevendepensjon
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -43,6 +47,7 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
+        //PE_GP_04_035_overskrift
         title {
             text(
                 bokmal { +"Gjenlevendepensjon - melding om vedtak" },
@@ -51,6 +56,7 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             )
         }
         outline {
+            //PE_GP_04_025_tabell1
             paragraph {
                 text(
                     bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt " + pesysData.kravMottattDato.format() },
@@ -74,9 +80,9 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             }
             paragraph {
                 text(
-                    bokmal { +"Opplysningene fra " +fritekst("land") + " medfører ingen endring i pensjonen." },
-                    nynorsk { +"Opplysningane frå " +fritekst("land") + " fører ikkje til endringar i pensjonen." },
-                    english { +"The information from " +fritekst("land") + " does not result in any changes to your pension." }
+                    bokmal { +"Opplysningene fra " + fritekst("land") + " medfører ingen endring i pensjonen." },
+                    nynorsk { +"Opplysningane frå " + fritekst("land") + " fører ikkje til endringar i pensjonen." },
+                    english { +"The information from " + fritekst("land") + " does not result in any changes to your pension." }
                 )
             }
             paragraph {
@@ -86,10 +92,48 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
                     english { +"For details about your pension, as well as information regarding your rights and duties as a pensioner, please refer to our earlier decision letter." }
                 )
             }
-            includePhrase(TBU2212_Generated(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
-            includePhrase(Felles.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon))
+            //PE_GP_04_025_dine_rettigheter
+            title1 {
+                text(
+                    bokmal { +"Dine rettigheter" },
+                    nynorsk { +"" },
+                    english { +"Your rights" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven paragraf 18." },
+                    nynorsk { +"Du har som hovudregel rett til å sjå dokumenta i saka etter reglane i forvaltningslova paragraf 18." },
+                    english { +"In general, you are entitled to see all the documents in the case, pursuant to section 18 of the Public Administration Act." },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener at vedtaket ikke er i samsvar med det du har søkt om, kan du klage på vedtaket etter bestemmelsene i folketrygdloven paragraf 21-12. "
+                        +"Fristen for å klage er seks uker fra du mottar dette brevet."
+                    },
+                    nynorsk {
+                        +"Dersom du meiner at vedtaket ikkje er i samsvar med det du har søkt om, kan du klage på vedtaket etter reglane i folketrygdlova paragraf 21‑12. "
+                        +"Fristen for å klage er seks veker frå du får dette brevet."
+                    },
+                    english {
+                        +"If you believe that the decision is not in accordance with what you applied for, you can appeal the decision, pursuant to the provisions in section 21-12 of the National Insurance Act. "
+                        +"The time limit for filing an appeal is six weeks from the date you received this letter."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Se vår nettside $NAV_URL, eller ta kontakt med Nav dersom du ønsker mer informasjon." },
+                    nynorsk { +"Sjå nettsida vår $NAV_URL, eller ta kontakt med Nav dersom du ønskjer meir informasjon." },
+                    english {
+                        +"Please contact Nav at +47 $navKontaktsenterPensjon if you would like more information. "
+                        +"Remember that you can find more information about the regulations at $NAV_URL."
+                    },
+                )
+            }
         }
-        includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon)
+        includeAttachment(vedleggFolketrygdenGjenlevendepensjon)
     }
 }
