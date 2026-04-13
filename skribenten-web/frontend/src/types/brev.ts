@@ -1,6 +1,7 @@
 import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
 
 import type { SpraakKode } from "./apiTypes";
+import type { LanguageCode } from "./brevbakerTypes";
 import type { Nullable } from "./Nullable";
 
 export type OpprettBrevRequest = {
@@ -154,6 +155,6 @@ export interface AlltidValgbartVedlegg {
 }
 
 export interface AlltidValgbartVedleggV2 extends AlltidValgbartVedlegg {
-  spraak: string[];
+  spraak: LanguageCode[];
   tilgjengeligForSpraak: boolean;
 }

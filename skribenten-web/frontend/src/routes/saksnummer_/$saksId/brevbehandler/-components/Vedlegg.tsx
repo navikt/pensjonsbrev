@@ -17,26 +17,16 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
+import type { UseFormReturn } from "react-hook-form";
 import { Controller, useForm } from "react-hook-form";
 
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import type { AlltidValgbartVedlegg } from "~/types/brev";
+import type { AlltidValgbartVedlegg, AlltidValgbartVedleggV2 } from "~/types/brev";
 import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { LANGUAGE_CODE_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
-
-const BACKEND_SPRAAK_TO_TEXT: Record<string, string> = {
-  BOKMAL: "Bokmål",
-  NYNORSK: "Nynorsk",
-  ENGLISH: "Engelsk",
-};
-
-const SPRAAKKODE_TO_BACKEND: Record<string, string> = {
-  NB: "BOKMAL",
-  NN: "NYNORSK",
-  EN: "ENGLISH",
-};
 
 type VedleggFormData = {
   valgteVedlegg: AlltidValgbartVedlegg[];
@@ -231,163 +221,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
         open={isModalOpen}
       >
         <Modal.Body>
-          {(() => {
-            if (!vedleggKoder || vedleggKoder.length === 0) {
-              return <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>;
-            }
-
-            const brevSpraakBackend = SPRAAKKODE_TO_BACKEND[props.brev.spraak] ?? props.brev.spraak;
-            const brevSpraakTekst = BACKEND_SPRAAK_TO_TEXT[brevSpraakBackend] ?? brevSpraakBackend;
-
-            const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
-            const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
-            const ingenTilgjengelige = tilgjengelige.length === 0;
-            const noenErUtilgjengelige = utilgjengelige.length > 0 && tilgjengelige.length > 0;
-
-            return (
-              <VStack gap="space-8">
-                {noenErUtilgjengelige && (
-                  <LocalAlert
-                    css={css`
-                      .aksel-base-alert__icon {
-                        margin-top: 0;
-                      }
-                    `}
-                    status="announcement"
-                  >
-                    <LocalAlert.Header
-                      css={css`
-                        align-items: center;
-                        padding-top: var(--ax-space-6);
-                        padding-bottom: var(--ax-space-6);
-                      `}
-                    >
-                      Noen skjemaer er ikke tilgjengelig på språket i brevet.
-                    </LocalAlert.Header>
-                  </LocalAlert>
-                )}
-                {ingenTilgjengelige ? (
-                  <VStack gap="space-4">
-                    <LocalAlert
-                      css={css`
-                        .aksel-base-alert__icon {
-                          margin-top: 0;
-                        }
-                      `}
-                      status="warning"
-                    >
-                      <LocalAlert.Header
-                        css={css`
-                          align-items: center;
-                          padding-top: var(--ax-space-6);
-                          padding-bottom: var(--ax-space-6);
-                        `}
-                      >
-                        Ingen skjemaer er tilgjengelig basert på språket i brevet.
-                      </LocalAlert.Header>
-                    </LocalAlert>
-                  </VStack>
-                ) : (
-                  <Controller
-                    control={form.control}
-                    name="valgteVedlegg"
-                    render={({ field }) => (
-                      <CheckboxGroup
-                        hideLegend
-                        legend="Velg vedlegg"
-                        onChange={(selectedKodes: string[]) => {
-                          const selectedVedlegg = vedleggKoder.filter(
-                            (vedlegg) => selectedKodes.includes(vedlegg.kode) && vedlegg.tilgjengeligForSpraak,
-                          );
-                          field.onChange(selectedVedlegg);
-                        }}
-                        value={field.value.map((valgtVedlegg) => valgtVedlegg.kode)}
-                      >
-                        {tilgjengelige.map((vedlegg) => (
-                          <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
-                            <VStack gap="space-1">
-                              <span>{vedlegg.visningstekst}</span>
-                              <BodyShort as="span" size="small">
-                                {vedlegg.spraak.map((spraakKode, index) => {
-                                  const isCurrentLanguage = spraakKode === brevSpraakBackend;
-                                  const tekst = BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode;
-                                  return (
-                                    <Fragment key={spraakKode}>
-                                      {index > 0 && ", "}
-                                      {isCurrentLanguage ? <strong>{tekst}</strong> : tekst}
-                                    </Fragment>
-                                  );
-                                })}
-                              </BodyShort>
-                            </VStack>
-                          </Checkbox>
-                        ))}
-                      </CheckboxGroup>
-                    )}
-                  />
-                )}
-                {noenErUtilgjengelige && (
-                  <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
-                    <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
-                    {utilgjengelige.map((vedlegg) => (
-                      <Checkbox
-                        css={css`
-                          .aksel-checkbox__input {
-                            pointer-events: none;
-                          }
-
-                          .aksel-checkbox__label,
-                          .aksel-checkbox__description {
-                            color: var(--ax-text-neutral-subtle);
-                          }
-                        `}
-                        description={vedlegg.spraak
-                          .map((spraakKode) => BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode)
-                          .join(", ")}
-                        key={vedlegg.kode}
-                        readOnly
-                        value={vedlegg.kode}
-                      >
-                        {vedlegg.visningstekst}
-                      </Checkbox>
-                    ))}
-                  </CheckboxGroup>
-                )}
-                {ingenTilgjengelige && utilgjengelige.length > 0 && (
-                  <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
-                    {utilgjengelige.map((vedlegg) => (
-                      <Checkbox
-                        css={css`
-                          .aksel-checkbox__input {
-                            pointer-events: none;
-                          }
-
-                          .aksel-checkbox__label,
-                          .aksel-checkbox__description {
-                            color: var(--ax-text-neutral-subtle);
-                          }
-                        `}
-                        description={vedlegg.spraak
-                          .map((spraakKode) => BACKEND_SPRAAK_TO_TEXT[spraakKode] ?? spraakKode)
-                          .join(", ")}
-                        key={vedlegg.kode}
-                        readOnly
-                        value={vedlegg.kode}
-                      >
-                        {vedlegg.visningstekst}
-                      </Checkbox>
-                    ))}
-                  </CheckboxGroup>
-                )}
-                {ingenTilgjengelige && (
-                  <ReadMore header="Hvorfor kan jeg ikke legge til skjema på et annet språk/målform?">
-                    Brevet er skrevet på et annet språk enn det skjemaet støtter. Å kombinere språk eller målform,
-                    eksempelvis bokmål og nynorsk, er ikke anbefalt, ifølge Språkloven.
-                  </ReadMore>
-                )}
-              </VStack>
-            );
-          })()}
+          <VedleggModalInnhold brevSpraak={props.brev.spraak} form={form} vedleggKoder={vedleggKoder} />
           {leggTilVedleggMutation.isError && (
             <Alert size="small" variant="error">
               {getErrorMessage(leggTilVedleggMutation.error)}
@@ -405,6 +239,172 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           </HStack>
         </Modal.Footer>
       </Modal>
+    </VStack>
+  );
+};
+
+type VedleggModalInnholdProps = {
+  vedleggKoder: AlltidValgbartVedleggV2[] | undefined;
+  brevSpraak: string;
+  form: UseFormReturn<VedleggFormData>;
+};
+
+const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
+  const { vedleggKoder, form } = props;
+
+  if (!vedleggKoder || vedleggKoder.length === 0) {
+    return <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>;
+  }
+
+  const brevSpraakBackend = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak] ?? props.brevSpraak;
+  const brevSpraakTekst = LANGUAGE_CODE_TO_TEXT[brevSpraakBackend] ?? brevSpraakBackend;
+
+  const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
+  const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
+  const ingenTilgjengelige = tilgjengelige.length === 0;
+  const noenErUtilgjengelige = utilgjengelige.length > 0 && tilgjengelige.length > 0;
+
+  return (
+    <VStack gap="space-8">
+      {noenErUtilgjengelige && (
+        <LocalAlert
+          css={css`
+            .aksel-base-alert__icon {
+              margin-top: 0;
+            }
+          `}
+          status="announcement"
+        >
+          <LocalAlert.Header
+            css={css`
+              align-items: center;
+              padding-top: var(--ax-space-6);
+              padding-bottom: var(--ax-space-6);
+            `}
+          >
+            Noen skjemaer er ikke tilgjengelig på språket i brevet.
+          </LocalAlert.Header>
+        </LocalAlert>
+      )}
+      {ingenTilgjengelige ? (
+        <VStack gap="space-4">
+          <LocalAlert
+            css={css`
+              .aksel-base-alert__icon {
+                margin-top: 0;
+              }
+            `}
+            status="warning"
+          >
+            <LocalAlert.Header
+              css={css`
+                align-items: center;
+                padding-top: var(--ax-space-6);
+                padding-bottom: var(--ax-space-6);
+              `}
+            >
+              Ingen skjemaer er tilgjengelig basert på språket i brevet.
+            </LocalAlert.Header>
+          </LocalAlert>
+        </VStack>
+      ) : (
+        <Controller
+          control={form.control}
+          name="valgteVedlegg"
+          render={({ field }) => (
+            <CheckboxGroup
+              hideLegend
+              legend="Velg vedlegg"
+              onChange={(selectedKodes: string[]) => {
+                const selectedVedlegg = vedleggKoder.filter(
+                  (vedlegg) => selectedKodes.includes(vedlegg.kode) && vedlegg.tilgjengeligForSpraak,
+                );
+                field.onChange(selectedVedlegg);
+              }}
+              value={field.value.map((valgtVedlegg) => valgtVedlegg.kode)}
+            >
+              {tilgjengelige.map((vedlegg) => (
+                <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
+                  <VStack gap="space-1">
+                    <span>{vedlegg.visningstekst}</span>
+                    <BodyShort as="span" size="small">
+                      {vedlegg.spraak.map((spraakKode, index) => {
+                        const isCurrentLanguage = spraakKode === brevSpraakBackend;
+                        const tekst = LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode;
+                        return (
+                          <Fragment key={spraakKode}>
+                            {index > 0 && ", "}
+                            {isCurrentLanguage ? <strong>{tekst}</strong> : tekst}
+                          </Fragment>
+                        );
+                      })}
+                    </BodyShort>
+                  </VStack>
+                </Checkbox>
+              ))}
+            </CheckboxGroup>
+          )}
+        />
+      )}
+      {noenErUtilgjengelige && (
+        <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
+          <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
+          {utilgjengelige.map((vedlegg) => (
+            <Checkbox
+              css={css`
+                .aksel-checkbox__input {
+                  pointer-events: none;
+                }
+
+                .aksel-checkbox__label,
+                .aksel-checkbox__description {
+                  color: var(--ax-text-neutral-subtle);
+                }
+              `}
+              description={vedlegg.spraak
+                .map((spraakKode) => LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode)
+                .join(", ")}
+              key={vedlegg.kode}
+              readOnly
+              value={vedlegg.kode}
+            >
+              {vedlegg.visningstekst}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+      )}
+      {ingenTilgjengelige && utilgjengelige.length > 0 && (
+        <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
+          {utilgjengelige.map((vedlegg) => (
+            <Checkbox
+              css={css`
+                .aksel-checkbox__input {
+                  pointer-events: none;
+                }
+
+                .aksel-checkbox__label,
+                .aksel-checkbox__description {
+                  color: var(--ax-text-neutral-subtle);
+                }
+              `}
+              description={vedlegg.spraak
+                .map((spraakKode) => LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode)
+                .join(", ")}
+              key={vedlegg.kode}
+              readOnly
+              value={vedlegg.kode}
+            >
+              {vedlegg.visningstekst}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+      )}
+      {ingenTilgjengelige && (
+        <ReadMore header="Hvorfor kan jeg ikke legge til skjema på et annet språk/målform?">
+          Brevet er skrevet på et annet språk enn det skjemaet støtter. Å kombinere språk eller målform, eksempelvis
+          bokmål og nynorsk, er ikke anbefalt, ifølge Språkloven.
+        </ReadMore>
+      )}
     </VStack>
   );
 };

@@ -1,5 +1,6 @@
 import type { AdresseType, SakType } from "./apiTypes";
 import { SamhandlerTypeCode, SpraakKode } from "./apiTypes";
+import type { LanguageCode } from "./brevbakerTypes";
 
 export const SPRAAK_ENUM_TO_TEXT = {
   [SpraakKode.Bokmaal]: "Bokmål",
@@ -7,6 +8,18 @@ export const SPRAAK_ENUM_TO_TEXT = {
   [SpraakKode.Engelsk]: "Engelsk",
   [SpraakKode.Fransk]: "Fransk",
   [SpraakKode.NordSamisk]: "Nordsamisk",
+};
+
+export const LANGUAGE_CODE_TO_TEXT: Record<LanguageCode, string> = {
+  BOKMAL: "Bokmål",
+  NYNORSK: "Nynorsk",
+  ENGLISH: "Engelsk",
+};
+
+export const SPRAAKKODE_TO_LANGUAGE_CODE: Record<string, LanguageCode> = {
+  NB: "BOKMAL",
+  NN: "NYNORSK",
+  EN: "ENGLISH",
 };
 
 export const SAK_TYPE_TO_TEXT: Record<SakType, string> = {
