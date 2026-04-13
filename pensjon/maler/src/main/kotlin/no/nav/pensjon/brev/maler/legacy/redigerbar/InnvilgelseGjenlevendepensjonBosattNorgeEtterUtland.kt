@@ -7,13 +7,9 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepens
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.navKontaktsenterPensjon
-import no.nav.pensjon.brev.maler.fraser.common.Felles
-import no.nav.pensjon.brev.maler.fraser.generated.TBU2212_Generated
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenGjenlevendepensjon
-import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageGjenlevendepensjon
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -32,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto> {
 
-    override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjonUtland.toggle
+    override val featureToggle = FeatureToggles.brevmalInnvilgelseGjenlevendepensjonBosattNorgeEtterUtland.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND
     override val kategori = Brevkategori.SLUTTBEHANDLING
