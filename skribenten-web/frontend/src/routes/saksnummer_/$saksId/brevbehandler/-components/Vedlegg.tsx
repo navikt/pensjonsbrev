@@ -23,6 +23,7 @@ import { Controller, useForm } from "react-hook-form";
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
+import type { SpraakKode } from "~/types/apiTypes";
 import type { AlltidValgbartVedlegg, AlltidValgbartVedleggV2 } from "~/types/brev";
 import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
@@ -245,7 +246,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 
 type VedleggModalInnholdProps = {
   vedleggKoder: AlltidValgbartVedleggV2[] | undefined;
-  brevSpraak: string;
+  brevSpraak: SpraakKode;
   form: UseFormReturn<VedleggFormData>;
 };
 
@@ -256,8 +257,8 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
     return <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>;
   }
 
-  const brevSpraakBackend = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak] ?? props.brevSpraak;
-  const brevSpraakTekst = LANGUAGE_CODE_TO_TEXT[brevSpraakBackend] ?? brevSpraakBackend;
+  const brevLanguageCode = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak];
+  const brevSpraakTekst = brevLanguageCode ? LANGUAGE_CODE_TO_TEXT[brevLanguageCode] : props.brevSpraak;
 
   const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
   const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
@@ -329,7 +330,7 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
                     <span>{vedlegg.visningstekst}</span>
                     <BodyShort as="span" size="small">
                       {vedlegg.spraak.map((spraakKode, index) => {
-                        const isCurrentLanguage = spraakKode === brevSpraakBackend;
+                        const isCurrentLanguage = spraakKode === brevLanguageCode;
                         const tekst = LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode;
                         return (
                           <Fragment key={spraakKode}>
@@ -346,35 +347,9 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
           )}
         />
       )}
-      {noenErUtilgjengelige && (
+      {utilgjengelige.length > 0 && (
         <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
-          <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>
-          {utilgjengelige.map((vedlegg) => (
-            <Checkbox
-              css={css`
-                .aksel-checkbox__input {
-                  pointer-events: none;
-                }
-
-                .aksel-checkbox__label,
-                .aksel-checkbox__description {
-                  color: var(--ax-text-neutral-subtle);
-                }
-              `}
-              description={vedlegg.spraak
-                .map((spraakKode) => LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode)
-                .join(", ")}
-              key={vedlegg.kode}
-              readOnly
-              value={vedlegg.kode}
-            >
-              {vedlegg.visningstekst}
-            </Checkbox>
-          ))}
-        </CheckboxGroup>
-      )}
-      {ingenTilgjengelige && utilgjengelige.length > 0 && (
-        <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
+          {noenErUtilgjengelige && <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>}
           {utilgjengelige.map((vedlegg) => (
             <Checkbox
               css={css`

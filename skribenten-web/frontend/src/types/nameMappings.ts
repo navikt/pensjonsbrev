@@ -16,10 +16,10 @@ export const LANGUAGE_CODE_TO_TEXT: Record<LanguageCode, string> = {
   ENGLISH: "Engelsk",
 };
 
-export const SPRAAKKODE_TO_LANGUAGE_CODE: Record<string, LanguageCode> = {
-  NB: "BOKMAL",
-  NN: "NYNORSK",
-  EN: "ENGLISH",
+export const SPRAAKKODE_TO_LANGUAGE_CODE: Partial<Record<SpraakKode, LanguageCode>> = {
+  [SpraakKode.Bokmaal]: "BOKMAL",
+  [SpraakKode.Nynorsk]: "NYNORSK",
+  [SpraakKode.Engelsk]: "ENGLISH",
 };
 
 export const SAK_TYPE_TO_TEXT: Record<SakType, string> = {
