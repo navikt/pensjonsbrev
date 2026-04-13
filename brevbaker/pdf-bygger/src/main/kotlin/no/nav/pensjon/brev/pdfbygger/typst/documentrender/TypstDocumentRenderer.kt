@@ -62,7 +62,7 @@ object TypstDocumentRenderer {
                 "dokumentDato" to letter.sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerNavn,
-                "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn,
+                "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV },
                 "erVedtaksbrev" to (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV),
                 "attachments" to buildAttachmentTitleList(attachments, pdfVedlegg),
             )
