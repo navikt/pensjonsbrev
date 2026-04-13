@@ -52,6 +52,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
           render={({ field }) => (
             <Checkbox
               {...field}
+              checked={field.value === ManueltAdressertTil.ANNEN}
               description="Brevet skal til en annen mottaker enn bruker"
               onChange={(event) =>
                 field.onChange(event.target.checked ? ManueltAdressertTil.ANNEN : ManueltAdressertTil.BRUKER)
