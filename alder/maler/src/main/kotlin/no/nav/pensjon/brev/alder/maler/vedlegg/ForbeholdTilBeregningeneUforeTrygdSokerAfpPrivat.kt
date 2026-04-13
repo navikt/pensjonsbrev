@@ -16,13 +16,6 @@ val forbeholdTilBeregningeneUforeTrygdSokerAfpPrivat = createAttachment<LangBokm
     },
     includeSakspart = false,
 ) {
-
-    title2 {
-        text(
-        bokmal { +"Forbehold til beregningene" },
-        nynorsk { +"Atterhald til utrekningane" }
-        )
-    }
     paragraph { text(
         bokmal { +"Pensjonen din er beregnet på grunnlag av de opplysningene vi har om deg, i tillegg til de opplysningene du har oppgitt selv." },
         nynorsk { +"Pensjonen din er rekna ut på grunnlag av dei opplysningane vi har om deg, i tillegg til dei opplysningane du sjølv har oppgitt." }

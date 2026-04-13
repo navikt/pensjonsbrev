@@ -215,6 +215,10 @@ abstract class BinaryOperation<in In1, in In2, out Out>(val doc: Documentation? 
         override fun apply(first: In1, second: In2): Pair<In1, In2> = first to second
     }
 
+    class IsOneOf<T> internal constructor(): BinaryOperation<T, List<T>, Boolean>(), StableHash by StableHash.of("BinaryOperation.IsOneOf") {
+        override fun apply(first: T, second: List<T>): Boolean = second.contains(first)
+    }
+
     class Flip<In1, In2, Out> internal constructor(val operation: BinaryOperation<In2, In1, Out>) : BinaryOperation<In1, In2, Out>() {
         override fun apply(first: In1, second: In2): Out = operation.apply(second, first)
         override fun stableHashCode(): Int = hashCode()

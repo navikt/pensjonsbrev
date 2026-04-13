@@ -352,7 +352,7 @@ fun createVilkar() =
         hensiktsmessigbehandlingbegrunnelse = "stdbegr_12_5_2_i_3",
         hensiktsmessigbehandlingresultat = "oppfylt",
         nedsattinntektsevnebegrunnelse = "stdbegr_12_7_2_i_2",
-        nedsattinntektsevneresultat = "ikke_oppfylt",
+        nedsattinntektsevneresultat = "oppfylt",
         sykdomskadelytebegrunnelse = "stdbegr_12_5_2_i_3",
         sykdomskadelyteresultat = "ikke_oppfylt",
         unguforbegrunnelse = "stdbegr_12_13_1_i_3",
@@ -362,7 +362,7 @@ fun createVilkar() =
             minst20arbotid = false
         ),
         medlemskapforutettertrygdeavtaler = MedlemskapForUTetterTrygdeavtaler(
-            oppfyltvedsammenlegging = false
+            oppfyltvedsammenlegging = true
         ),
         yrkesskadebegrunnelse = "stdbegr_12_17_1_o_1",
         yrkesskaderesultat = "ikke_oppfylt",
@@ -389,8 +389,8 @@ fun createBeregningsVilkar() =
         uforetidspunkt = vilkaarligDato.minusYears(5),
         virkningstidpunkt = LocalDate.of(2020, 2, 12),
         yrkesskadegrad = 29,
-        virkningbegrunnelse = "virkningbegrunnelse",
-        uforetidspunktbegrunnelse = "uforetidspunktbegrunnelse",
+        virkningbegrunnelse = "stdbegr_22_12_1_1",
+        uforetidspunktbegrunnelse = "stdbegr_12_7_1_1",
     )
 
 fun createTrygdetid() =
@@ -420,7 +420,7 @@ fun createKravhode() =
         boddarbeidutland = true,
         brukerkonvertertup = false,
         kravarsaktype = "endring_ifu",
-        kravgjelder = "kravgjelder",
+        kravgjelder = "f_bh_bo_utl",
         boddarbeidutlandavdod = false,
         vurderetrygdeavtale = false,
         onsketvirkningsdato = LocalDate.of(2020, 1, 1),

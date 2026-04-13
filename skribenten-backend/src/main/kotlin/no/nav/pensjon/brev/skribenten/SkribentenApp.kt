@@ -34,6 +34,7 @@ import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
@@ -197,16 +198,23 @@ fun Application.skribentenApp(skribentenConfig: Config) {
 }
 
 // Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
+// Meldt inn til exposed: https://youtrack.jetbrains.com/issue/EXPOSED-1012
 private fun cleanSensitiveDataAndLog(cause: Exception) {
     if (cause is IllegalStateException && cause.messageHasEditedLetter()) {
-        logger.error("Unexpected value ***stripped sensitive Edit.Letter value*** of type no.nav.pensjon.brev.skribenten.letter.Edit.Letter", cause.cause)
+        val cleansedException = IllegalStateException(
+            "Unexpected value ***stripped sensitive Edit.Letter value*** of type ${Edit.Letter::class.qualifiedName}",
+            cause.cause
+        ).apply {
+            stackTrace = cause.stackTrace
+        }
+        logger.error(cleansedException.message, cleansedException)
     } else {
         logger.error(cause.message, cause)
     }
 }
 
 private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
-    msg.startsWith("Unexpected value") && msg.endsWith("of type no.nav.pensjon.brev.skribenten.letter.Edit.Letter")
+    msg.startsWith("Unexpected value") && msg.endsWith("of type ${Edit.Letter::class.qualifiedName}")
 } ?: false
 
 fun Application.skribentenContenNegotiation() {

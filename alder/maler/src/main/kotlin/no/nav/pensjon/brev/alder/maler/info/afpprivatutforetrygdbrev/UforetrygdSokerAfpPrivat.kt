@@ -45,7 +45,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
         title {
             text(
                 bokmal { +"Du må velge mellom uføretrygd og AFP i privat sektor" },
-                nynorsk { +"Du må vel mellom uføretrygd og AFP i privat sektor" },
+                nynorsk { +"Du må velje mellom uføretrygd og AFP i privat sektor" },
             )
         }
 
@@ -71,7 +71,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                     item {
                         text(
                             bokmal { +"Uføretrygd fra Nav og eventuelt alderspensjon" },
-                            nynorsk { +"Uføretrygd fra Nav og eventuelt alderspensjon" },
+                            nynorsk { +"Uføretrygd frå Nav og eventuelt alderspensjon" },
                         )
                     }
                 }
@@ -97,7 +97,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
             paragraph {
                 text(
                     bokmal { +"Du kan ha alderspensjon fra Nav ved siden av uføretrygden du har i dag. Alderspensjonen din kan du ta ut delvis i gradene 20, 40, 50, 60, 80 og 100 prosent, og summen av uføretrygd og alderspensjon kan ikke være over 100 prosent til sammen. Den delen av alderspensjonen du ikke tar ut før 67 år, blir spart opp og gir høyere utbetaling senere." },
-                    nynorsk { +"Du kan ha alderspensjon frå Nav saman med uføretrygda du har i dag. Alderspensjonen din kan du ta ut delvis i gradane 20, 40, 50, 60, 80 og 100 prosent. Summen av uføretrygd og alderspensjon kan ikkje vere over 100 prosent til saman. Den delen av alderspensjonen du ikkje tar ut før 67 år, blir spart opp og gjev høgare utbetaling seinare." }
+                    nynorsk { +"Du kan ha alderspensjon frå Nav saman med uføretrygda du har i dag. Alderspensjonen din kan du ta ut delvis i gradane 20, 40, 50, 60, 80 og 100 prosent. Summen av uføretrygd og alderspensjon kan ikkje vere over 100 prosent til saman. Den delen av alderspensjonen du ikkje tar ut før 67 år, blir spart opp og gir høgare utbetaling seinare." }
                 )
             }
             paragraph {
@@ -320,8 +320,8 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
 
             paragraph {
                 text(
-                    bokmal { +"Se vedlegg om forbehold:" },
-                    nynorsk { +"Sjå vedlegg om atterhald:" }
+                    bokmal { +"Se vedlegg om forbehold." },
+                    nynorsk { +"Sjå vedlegg om atterhald." }
                 )
             }
             paragraph {
@@ -345,7 +345,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                     item {
                         text(
                             bokmal { +"Uføretrygd fra Nav kan ha innvirkning på rettigheter til uføreforsikringer. Ta kontakt med dine tjenestepensjonsordninger eller forsikringsselskap for avklaring." },
-                            nynorsk { +"Uføretrygd frå Nav kan ha verknad på rettigheiter til uføreforsikringar. Ta kontakt med dine tenestepensjonsordningar eller forsikringsselskap for avklaring." }
+                            nynorsk { +"Uføretrygd frå Nav kan ha verknad på rettar til uføreforsikringar. Ta kontakt med dine tenestepensjonsordningar eller forsikringsselskap for avklaring." }
                         )
                     }
                 }
@@ -395,7 +395,7 @@ object UforetrygdSokerAfpPrivat : RedigerbarTemplate<UforeTrygdSokerAfpPrivatDto
                         item {
                             text(
                                 bokmal { +"Du kan også sende brev merket med fødselsnummeret ditt til:" },
-                                nynorsk { +"Du kan også sende brev merket med fødselsnummeret ditt til:" }
+                                nynorsk { +"Du kan også sende brev merka med fødselsnummeret ditt til:" }
                             )
                             newline()
                             text(
