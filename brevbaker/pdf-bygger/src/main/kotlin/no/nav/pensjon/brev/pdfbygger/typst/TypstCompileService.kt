@@ -30,8 +30,8 @@ class TypstCompileService(
         "-",
     )
 
-    suspend fun createLetter(writeContent: (Appendable) -> Unit): PDFCompilationResponse {
-        return when (val result: Execution = executeCompileProcess(writeContent)) {
+    suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+        return when (val result: Execution = executeCompileProcess(writeLetter)) {
             is Execution.Success ->
                 PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
 
@@ -49,7 +49,7 @@ class TypstCompileService(
         }
     }
 
-    private suspend fun executeCompileProcess(writeStdin: (Appendable) -> Unit): Execution {
+    private suspend fun executeCompileProcess(writeLetter: (TypstFileWriter) -> Unit): Execution {
         return withContext(Dispatchers.IO) {
             var process: Process? = null
             try {
@@ -58,7 +58,7 @@ class TypstCompileService(
                     .start()
 
                 // Write letter content directly to stdin
-                process.outputStream.writer(Charsets.UTF_8).use { writeStdin(it) }
+                process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
                 // Read stdout (PDF bytes) and stderr (error messages) concurrently
                 // to avoid deadlock when either buffer fills up
