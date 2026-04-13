@@ -32,6 +32,12 @@ fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> =
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> =
     BinaryOperation.EnumInList<Enum<T>>().invoke(this, enums.asList().expr())
 
+fun StringExpression.isOneOf(vararg others: String): Expression<Boolean> =
+    BinaryOperation.IsOneOf<String>().invoke(this, others.asList().expr())
+
+fun StringExpression.isNotAnyOf(vararg others: String): Expression<Boolean> =
+    this.isOneOf(*others).not()
+
 fun <T : Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> =
     BinaryOperation.GetElementOrNull<T>().invoke(this, index.expr())
 

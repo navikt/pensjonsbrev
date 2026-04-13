@@ -191,6 +191,12 @@ public final class no/nav/pensjon/brev/template/BinaryOperation$IntPlus : no/nav
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/BinaryOperation$IsOneOf : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
+	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
+	public fun apply (Ljava/lang/Object;Ljava/util/List;)Ljava/lang/Boolean;
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/BinaryOperation$LessThan : no/nav/pensjon/brev/template/BinaryOperation, no/nav/pensjon/brev/template/StableHash {
 	public fun apply (Ljava/lang/Comparable;Ljava/lang/Comparable;)Ljava/lang/Boolean;
 	public synthetic fun apply (Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;
@@ -1415,8 +1421,10 @@ public final class no/nav/pensjon/brev/template/dsl/expression/BaseKt {
 	public static final fun ifNull (Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun ifNull-okHpgYs (Lno/nav/pensjon/brev/template/Expression;Ljava/lang/String;)Lno/nav/pensjon/brev/template/BrevdataEllerFritekst;
 	public static final fun isNotAnyOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun isNotAnyOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/Enum;)Lno/nav/pensjon/brev/template/Expression;
+	public static final fun isOneOf (Lno/nav/pensjon/brev/template/Expression;[Ljava/lang/String;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun not (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notNull (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 	public static final fun notOperator (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

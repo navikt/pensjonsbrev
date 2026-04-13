@@ -31,6 +31,7 @@ import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
+import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
@@ -67,8 +68,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
     ) {
         title {
             text(
-                bokmal { +"Nav har innvilget søknaden din om endring av uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om endring av uføretrygd " },
+                bokmal { +"Nav har endret uføretrygden din" },
+                nynorsk { +"Nav har endra uføretrygda di" },
             )
         }
         outline {
@@ -233,8 +234,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(kravarsak.equalTo("endring_ifu")) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense." },
-                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense." },
+                        bokmal { +"Vi har innvilget søknaden din om endring av inntektsgrense. " },
+                        nynorsk { +"Vi har innvilga søknaden din om endring av inntektsgrense. " },
                     )
                     text(
                         bokmal { +"Den nye inntektsgrensen din har økt til " + pe.ut_inntektsgrense_faktisk().format() + " kroner fra " + onsketvirkningsdato.format() + "." },
@@ -1656,20 +1657,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf((kravarsak.notEqualTo("soknad_bt") and kravarsak.notEqualTo("instopphold"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad." },
+                        bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad. " },
                         nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi kompensasjonsgrad. " },
                     )
                     text(
-                        bokmal { +"For deg utgjør kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner trekkes fra uføretrygden din." },
-                        nynorsk { +"For deg utgjer kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner blir trekt frå uføretrygda di." },
+                        bokmal { +"For deg utgjør kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner trekkes fra uføretrygden din. " },
+                        nynorsk { +"For deg utgjer kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner blir trekt frå uføretrygda di. " },
                     )
-
-                    showIf(gjenlevendetilleggInnvilget) {
-                        text(
-                            bokmal { +" " },
-                            nynorsk { +" " },
-                        )
-                    }
 
                     showIf(gjenlevendetilleggInnvilget) {
                         text(
@@ -2202,6 +2196,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, pesysData.orienteringOmRettigheterUfoere)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore)
     }
 }
