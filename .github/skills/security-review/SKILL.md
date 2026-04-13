@@ -187,6 +187,8 @@ private val ALLOWED_TYPES = setOf("application/pdf", "image/png", "image/jpeg")
 
 ## Dependency Management
 
+### Kotlin
+
 ```kotlin
 // build.gradle.kts — pin versions, use BOM
 dependencyManagement {
@@ -194,10 +196,20 @@ dependencyManagement {
         mavenBom("org.springframework.boot:spring-boot-dependencies:3.4.1")
     }
 }
+```
 
-// Check vulnerable dependencies
-// ./gradlew dependencyCheckAnalyze
-// trivy repo .
+```bash
+# Check outdated/vulnerable dependencies
+./gradlew dependencyUpdates
+./gradlew dependencyCheckAnalyze   # OWASP check
+trivy repo .
+```
+
+### Node/TypeScript
+
+```bash
+npm audit
+npm audit fix
 ```
 
 ## Expanded Checklist
@@ -212,18 +224,6 @@ dependencyManagement {
 - [ ] File upload validates type, size, and content
 - [ ] Dependencies are up to date and vulnerability-scanned
 - [ ] No `dangerouslySetInnerHTML` without sanitization
-
-## Dependency Management
-
-```bash
-# Kotlin – check for outdated/vulnerable dependencies
-./gradlew dependencyUpdates
-./gradlew dependencyCheckAnalyze   # OWASP check
-
-# Node/TypeScript
-npm audit
-npm audit fix
-```
 
 ## Security Checklist
 
