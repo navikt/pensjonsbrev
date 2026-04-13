@@ -58,7 +58,7 @@ class TypstCompileService(
                     .start()
 
                 // Write letter content directly to stdin
-                process.outputStream.use { writeLetter(TypstFileWriter(it)) }
+                process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
                 // Read stdout (PDF bytes) and stderr (error messages) concurrently
                 // to avoid deadlock when either buffer fills up

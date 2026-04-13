@@ -1,15 +1,14 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
-import java.io.OutputStream
-import java.io.PrintWriter
+import java.io.OutputStreamWriter
 
 @DslMarker
 annotation class TypstDslMarker
 
 @TypstDslMarker
-class TypstFileWriter(private val output: OutputStream) {
+class TypstFileWriter(private val output: OutputStreamWriter) {
     fun codeScope(codeBuilder: TypstCodeScope.() -> Unit) {
-        TypstCodeScope(PrintWriter(output)).apply(codeBuilder)
+        TypstCodeScope(output).apply(codeBuilder)
     }
 }
 
