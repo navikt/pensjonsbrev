@@ -10,27 +10,32 @@ const bokmaalBrev = nyBrevInfo({
 
 const alleTilgjengelige: AlltidValgbartVedleggV2[] = [
   {
-    kode: "V1",
+    kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
     visningstekst: "Skjema for bankopplysninger",
     spraak: ["BOKMAL", "NYNORSK"],
     tilgjengeligForSpraak: true,
   },
-  { kode: "V2", visningstekst: "Uttaksskjema", spraak: ["BOKMAL", "ENGLISH"], tilgjengeligForSpraak: true },
+  { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["BOKMAL", "ENGLISH"], tilgjengeligForSpraak: true },
 ];
 
 const noenUtilgjengelige: AlltidValgbartVedleggV2[] = [
   {
-    kode: "V1",
+    kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
     visningstekst: "Skjema for bankopplysninger",
     spraak: ["BOKMAL", "NYNORSK"],
     tilgjengeligForSpraak: true,
   },
-  { kode: "V2", visningstekst: "Uttaksskjema", spraak: ["ENGLISH"], tilgjengeligForSpraak: false },
+  { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["ENGLISH"], tilgjengeligForSpraak: false },
 ];
 
 const ingenTilgjengelige: AlltidValgbartVedleggV2[] = [
-  { kode: "V1", visningstekst: "Skjema for bankopplysninger", spraak: ["ENGLISH"], tilgjengeligForSpraak: false },
-  { kode: "V2", visningstekst: "Uttaksskjema", spraak: ["ENGLISH", "NYNORSK"], tilgjengeligForSpraak: false },
+  {
+    kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
+    visningstekst: "Skjema for bankopplysninger",
+    spraak: ["ENGLISH"],
+    tilgjengeligForSpraak: false,
+  },
+  { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["ENGLISH", "NYNORSK"], tilgjengeligForSpraak: false },
 ];
 
 const setupBrevbehandler = (vedlegg: AlltidValgbartVedleggV2[]) => {
@@ -42,7 +47,9 @@ const setupBrevbehandler = (vedlegg: AlltidValgbartVedleggV2[]) => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=false", {
     body: nyBrevResponse({ info: bokmaalBrev }),
   });
-  cy.intercept("GET", /\/brev\/\d+\/v2\/alltidValgbareVedlegg/, { body: vedlegg }).as("getVedlegg");
+  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/v2/alltidValgbareVedlegg", { body: vedlegg }).as(
+    "getVedlegg",
+  );
   cy.visit("/saksnummer/123456/brevbehandler");
   cy.get(`[aria-label="${bokmaalBrev.brevtittel}"] button[aria-expanded]`).click();
   cy.wait("@getVedlegg");
