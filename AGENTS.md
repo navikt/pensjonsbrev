@@ -164,7 +164,7 @@ See README "Endring av obligatoriske felter i API-model" section.
 
 ## Feature Toggles
 
-**Unleash** integration for feature flags. Define in using an enum (per template module) for type safety and easy access:
+**Unleash** integration for feature flags. Define using an enum (per template module) for type safety and easy access:
 ```kotlin
 enum class FeatureToggles(private val key: String) {
     myFeature("myFeature");
