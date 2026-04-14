@@ -70,7 +70,7 @@ val vedleggFolketrygdenGjenlevendepensjon =
         title1 {
             text(
                 bokmal { +"Hjelp fra andre - forvaltningsloven § 12" },
-                nynorsk { +"Hjelp frå andre - forvalningslova § 12" },
+                nynorsk { +"Hjelp frå andre - forvaltningslova § 12" },
                 english { +"Assistance from others - Section 12 of the Public Administration Act" }
             )
         }
