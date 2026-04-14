@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027
+package no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Language.*

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAldersovergangEps62AarAutoDtoSelectors.ytelse
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAldersovergangEps62AarAutoDto
@@ -102,7 +102,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     text(bokmal { +"Hvis du ikke sender inn opplysninger, forutsetter vi at ektefellen/partneren/samboeren din har full trygdetid i Norge." })
                 }
 
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
         }
 }

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DITT_NAV
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
@@ -280,7 +280,7 @@ object VedtakOmregningAFPTilEnsligPensjonistAuto :
                     )
                 }
 
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
             includeAttachment(
                 vedleggOrienteringOmRettigheterOgPlikter,
