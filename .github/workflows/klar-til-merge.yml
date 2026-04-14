@@ -9,6 +9,7 @@ on:
       - ".githooks/pre-commit"
       - ".github/dependabot.yml"
       - ".github/regsuitconfig.json"
+      - ".github/skills/**/*.md"
       - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/klar-til-merge.yml"
