@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.antallBarnOpphor
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_innt_over_1g
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_over_18
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.mindre_ett_ar_bt_flt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
@@ -84,7 +85,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val uforegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
             val uforegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()
             val yrkesskadegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
-            val yrkesskadegradFraBeregning0 = yrkesskadegradFraBeregning.equalTo(0)
             val yrkesskadegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
 
             val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
@@ -121,9 +121,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             val instoppholdanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()
             val fasteUtgifterInstopphold = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter()
 
-            val txtParagraf_22_12_eller_22_13 = if (virkningbegrunnelseStdbegr_22_12_1_5.equals(true)) "22-13" else "22-12"
-            val txtOvergangsregler2016Bokmal = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsregler for barnetillegg i uføretrygden" else ""
-            val txtOvergangsregler2016Nynorsk = if (pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().equalTo("overgangsregler_2016").equals(true)) " og forskrift om overgangsreglar for barnetillegg i uføretrygda" else ""
             val txtBarnetBarnaOpphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna" else "barnet"
             val txtBarnetBarnaOpphorForsorgaForsorgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
             val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
@@ -1142,75 +1139,16 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            //TODO: gjøre noe med paragrafene, kan vi gjenbruke logikk fra vedtaksbrev minstesats?
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
+            paragraph {
+                showIf(kravarsak.notEqualTo("endring_ifu")) {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14 og " + txtParagraf_22_12_eller_22_13 + "." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(true)) +"."},
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) +"."},
                     )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and not(pesysData.opphortBarnetillegg))) {
-                paragraph {
+                }.orShow {
                     text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.notEqualTo("endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and kravarsak.isNotAnyOf("soknad_bt", "endring_ifu") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf(kravarsak.equalTo("soknad_bt")) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-15 og 12-16 og " + txtParagraf_22_12_eller_22_13 + " og forskrift om overgangsregler for barnetillegg i uføretrygden." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-15 og 12-16 og " + txtParagraf_22_12_eller_22_13 + " og forskrift om overgangsreglar for barnetillegg i uføretrygda." },
+                        bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(false)) +" og forskrift om uføretrygd fra folketrygden § 2-3."},
+                        nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(false)) +" og forskrift om uføretrygd frå folketrygda § 2-3."},
                     )
                 }
             }
@@ -1241,159 +1179,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 //                    )
 //                }
 //            }
-
-            showIf((kravarsak.equalTo("endring_ifu") and ifuBegrunnelse.equalTo("stdbegr_12_8_2_9") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14 og forskrift om uføretrygd fra folketrygden § 2-3." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14 og forskrift om uføretrygd frå folketrygda § 2-3." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and not(gjenlevendetilleggInnvilget) and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-17, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17 til 12-19 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-19 og" + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_hs"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-19 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((not(barnetilleggInnvilget) and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-14, 12-17, 12-18 og 12-20 og " + txtParagraf_22_12_eller_22_13 + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning0 and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-16, 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
-
-            showIf((barnetilleggInnvilget and gjenlevendetilleggInnvilget and yrkesskadegradFraBeregning.greaterThan(0) and instoppholdtype.equalTo("reduksjon_fo"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-8 til 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Bokmal + "." },
-                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-8 til 12-18, 12-20 og " + txtParagraf_22_12_eller_22_13 + txtOvergangsregler2016Nynorsk + "." },
-                    )
-                }
-            }
 
             title1 {
                 text(

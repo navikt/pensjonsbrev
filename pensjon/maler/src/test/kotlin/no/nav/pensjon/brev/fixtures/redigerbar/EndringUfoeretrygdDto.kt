@@ -47,5 +47,6 @@ fun createEndringUfoeretrygdDto() =
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fodselsdato = LocalDate.of(1991, Month.MAY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fodselsdato = LocalDate.of(1992, Month.JUNE, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
+            hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "12-15", "12-16")
         ),
     )
