@@ -4,6 +4,7 @@ import { type AkselColorRole } from "@navikt/ds-tokens/types";
 export type AdresseVisningTag = {
   label: string;
   color: AkselColorRole;
+  variant?: "strong" | "moderate" | "outline";
 };
 
 type AdresseVisningProps = {
@@ -32,7 +33,7 @@ const AdresseVisning = (props: AdresseVisningProps) => {
       {props.tags && props.tags.length > 0 && (
         <HStack marginBlock="space-4 space-0">
           {props.tags.map((tag) => (
-            <Tag data-color={tag.color} key={tag.label} size="xsmall" variant="strong">
+            <Tag data-color={tag.color} key={tag.label} size="xsmall" variant={tag.variant || "strong"}>
               {tag.label}
             </Tag>
           ))}

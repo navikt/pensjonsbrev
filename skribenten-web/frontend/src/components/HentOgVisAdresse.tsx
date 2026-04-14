@@ -85,20 +85,34 @@ const HentOgVisAdresse = (properties: { sakId: string; samhandlerId?: string; sh
   );
 };
 
+const ResolvedKontaktAdresse = (properties: {
+  saksId: string;
+  adresse: KontaktAdresseResponse;
+  withTitle?: boolean;
+}) => {
+  const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: properties.saksId });
+
+  return (
+    <AdresseVisning
+      adresselinjer={properties.adresse.adresselinjer.map(humanizeName)}
+      navn={sakGjelderNavn ?? ""}
+      tags={mapKontaktAdresseTags(properties.adresse)}
+      withTitle={properties.withTitle}
+    />
+  );
+};
+
 const ResolvedAdresse = (properties: {
   saksId: string;
   adresse: Adresse | KontaktAdresseResponse;
   erSamhandler: boolean;
   withTitle?: boolean;
 }) => {
-  const sakGjelderNavn = useSakGjelderNavnFormatert({ saksId: properties.saksId });
-
   if (erAdresseKontaktAdresse(properties.adresse)) {
     return (
-      <AdresseVisning
-        adresselinjer={properties.adresse.adresselinjer.map(humanizeName)}
-        navn={sakGjelderNavn ?? ""}
-        tags={mapKontaktAdresseTags(properties.adresse)}
+      <ResolvedKontaktAdresse
+        adresse={properties.adresse}
+        saksId={properties.saksId}
         withTitle={properties.withTitle}
       />
     );

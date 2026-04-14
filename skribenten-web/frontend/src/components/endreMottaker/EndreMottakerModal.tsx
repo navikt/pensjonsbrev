@@ -245,7 +245,7 @@ const ModalTabs = (properties: {
             size="small"
             type="button"
           >
-            Lagre
+            Lagre og lukk
           </Button>
         </HStack>
       )}

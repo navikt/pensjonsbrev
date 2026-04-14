@@ -1,19 +1,19 @@
-import { type AkselColorRole } from "@navikt/ds-tokens/types";
-
 import { type AdresseVisningTag } from "~/components/AdresseVisning";
 
 import { type Adresse, type KontaktAdresseResponse } from "../types/apiTypes";
 import { type Mottaker } from "../types/brev";
 
 // Shared tag constants for recipient display
-export const MOTTAKER_TAG_BRUKER = { label: "Bruker", color: "info" as AkselColorRole } satisfies AdresseVisningTag;
+export const MOTTAKER_TAG_BRUKER = { label: "Bruker", color: "info", variant: "outline" } satisfies AdresseVisningTag;
 export const MOTTAKER_TAG_VERGE = {
   label: "Verge",
-  color: "brand-magenta" as AkselColorRole,
+  color: "warning",
+  variant: "outline",
 } satisfies AdresseVisningTag;
 export const MOTTAKER_TAG_SAMHANDLER = {
   label: "Samhandler",
-  color: "warning" as AkselColorRole,
+  color: "neutral",
+  variant: "outline",
 } satisfies AdresseVisningTag;
 
 // Type guards for distinguishing address response types
