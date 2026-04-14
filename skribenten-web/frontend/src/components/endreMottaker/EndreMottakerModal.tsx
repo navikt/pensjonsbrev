@@ -21,7 +21,6 @@ import {
   type ManuellAdresseUtfyllingFormData,
   Søketype,
 } from "./EndreMottakerUtils";
-import OppsummeringAvValgtMottaker from "./OppsummeringAvValgtMottaker";
 import SøkOgVelgSamhandlerForm from "./SøkOgVelgSamhandlerForm";
 import UtfyllingAvManuellAdresseForm from "./UtfyllingAvManuellAdresseForm";
 
@@ -142,7 +141,7 @@ export const EndreMottakerModal = (properties: {
                 onFinnsamhandlerSubmit(values.finnSamhandler);
               } else if (tab === "manuellAdresse") {
                 properties.resetOnBekreftState();
-                setTab("oppsummering");
+                properties.onBekreftNyMottaker({ ...values.manuellAdresse.adresse });
               }
               form.reset(values);
             })(event);
@@ -156,7 +155,6 @@ export const EndreMottakerModal = (properties: {
                 control={form.control}
                 error={properties.error}
                 isPending={properties.isPending}
-                manuellAdresseValues={form.getValues("manuellAdresse")}
                 onAvbrytClick={onAvbrytClick}
                 onBekreftNyMottaker={properties.onBekreftNyMottaker}
                 onClose={properties.onClose}
@@ -189,92 +187,71 @@ const ModalTabs = (properties: {
   resetOnBekreftState: () => void;
   error: Nullable<AxiosError>;
   isPending: Nullable<boolean>;
-  manuellAdresseValues: Nullable<ManuellAdresseUtfyllingFormData>;
   skalKunOppdatereSamhandler?: boolean;
 }) => {
   const [selectedSamhandler, setSelectedSamhandler] = useState<Nullable<string>>(null);
 
   return (
-    <div>
-      {properties.tab.tab === "oppsummering" && properties.manuellAdresseValues ? (
-        <OppsummeringAvValgtMottaker
-          adresse={{ ...properties.manuellAdresseValues.adresse }}
-          error={properties.error}
-          isPending={properties.isPending}
-          onAvbryt={properties.onAvbrytClick}
-          onBekreft={() => properties.onBekreftNyMottaker({ ...properties.manuellAdresseValues!.adresse })}
-          onTilbake={{
-            fn: () => properties.tab.setTab("manuellAdresse"),
-            plassering: "top",
-          }}
-          samhandlerType={null}
-        />
-      ) : (
-        <VStack gap="space-16">
-          <Tabs
-            onChange={(s) => {
-              setSelectedSamhandler(null);
-              properties.tab.setTab(s as EndreMottakerModalTabs);
+    <VStack gap="space-16">
+      <Tabs
+        onChange={(s) => {
+          setSelectedSamhandler(null);
+          properties.tab.setTab(s as EndreMottakerModalTabs);
+        }}
+        size="small"
+        value={properties.tab.tab}
+      >
+        <Tabs.List>
+          <Tabs.Tab label="Finn samhandler" value="samhandler" />
+          {properties.skalKunOppdatereSamhandler ? null : <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />}
+        </Tabs.List>
+        <Box marginBlock="space-16 space-0">
+          <Tabs.Panel value="samhandler">
+            <SøkOgVelgSamhandlerForm
+              control={properties.control}
+              onFinnSamhandlerSubmit={properties.onFinnSamhandlerSubmit}
+              onSelectedChange={(id) => {
+                properties.resetOnBekreftState();
+                setSelectedSamhandler(id);
+              }}
+              selectedSamhandler={selectedSamhandler}
+            />
+          </Tabs.Panel>
+          <Tabs.Panel value="manuellAdresse">
+            <UtfyllingAvManuellAdresseForm
+              control={properties.control}
+              error={properties.error}
+              isPending={properties.isPending}
+              onCloseIntent={properties.onAvbrytClick}
+            />
+          </Tabs.Panel>
+        </Box>
+      </Tabs>
+
+      {properties.tab.tab === "samhandler" && (
+        <HStack justify="space-between">
+          <Button onClick={properties.onClose} size="small" type="button" variant="tertiary">
+            Avbryt
+          </Button>
+          <Button
+            data-cy="lagre-samhandler"
+            disabled={!selectedSamhandler}
+            loading={properties.isPending ?? false}
+            onClick={() => {
+              if (selectedSamhandler) {
+                properties.onBekreftNyMottaker(selectedSamhandler);
+              }
             }}
             size="small"
-            value={properties.tab.tab === "oppsummering" ? "samhandler" : properties.tab.tab}
+            type="button"
           >
-            <Tabs.List>
-              <Tabs.Tab label="Finn samhandler" value="samhandler" />
-              {properties.skalKunOppdatereSamhandler ? null : (
-                <Tabs.Tab label="Legg til manuelt" value="manuellAdresse" />
-              )}
-            </Tabs.List>
-            <Box marginBlock="space-16 space-0">
-              <Tabs.Panel value="samhandler">
-                <SøkOgVelgSamhandlerForm
-                  control={properties.control}
-                  onFinnSamhandlerSubmit={properties.onFinnSamhandlerSubmit}
-                  onSelectedChange={(id) => {
-                    properties.resetOnBekreftState();
-                    setSelectedSamhandler(id);
-                  }}
-                  selectedSamhandler={selectedSamhandler}
-                />
-              </Tabs.Panel>
-              <Tabs.Panel value="manuellAdresse">
-                <UtfyllingAvManuellAdresseForm
-                  control={properties.control}
-                  onCloseIntent={properties.onAvbrytClick}
-                  onSubmit={() => {
-                    properties.tab.setTab("oppsummering");
-                  }}
-                />
-              </Tabs.Panel>
-            </Box>
-          </Tabs>
-
-          {properties.tab.tab === "samhandler" && (
-            <HStack justify="space-between">
-              <Button onClick={properties.onClose} size="small" type="button" variant="tertiary">
-                Avbryt
-              </Button>
-              <Button
-                data-cy="lagre-samhandler"
-                disabled={!selectedSamhandler}
-                loading={properties.isPending ?? false}
-                onClick={() => {
-                  if (selectedSamhandler) {
-                    properties.onBekreftNyMottaker(selectedSamhandler);
-                  }
-                }}
-                size="small"
-                type="button"
-              >
-                Lagre
-              </Button>
-            </HStack>
-          )}
-          {properties.error && properties.tab.tab === "samhandler" && (
-            <ApiError error={properties.error} title="En feil skjedde" />
-          )}
-        </VStack>
+            Lagre
+          </Button>
+        </HStack>
       )}
-    </div>
+      {properties.error && properties.tab.tab === "samhandler" && (
+        <ApiError error={properties.error} title="En feil skjedde" />
+      )}
+    </VStack>
   );
 };

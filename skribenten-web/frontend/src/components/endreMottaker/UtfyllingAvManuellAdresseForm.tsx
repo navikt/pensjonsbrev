@@ -12,17 +12,21 @@ import {
   UNSAFE_Combobox,
   VStack,
 } from "@navikt/ds-react";
+import { type AxiosError } from "axios";
 import { type Control, Controller, useFormContext, useWatch } from "react-hook-form";
 
+import { ApiError } from "~/components/ApiError";
 import { useLandData } from "~/hooks/useLandData";
 import { ManueltAdressertTil } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 
 import { type CombinedFormData } from "./EndreMottakerUtils";
 
 const UtfyllingAvManuellAdresseForm = (properties: {
   control: Control<CombinedFormData>;
-  onSubmit: () => void;
   onCloseIntent: () => void;
+  error: Nullable<AxiosError>;
+  isPending: Nullable<boolean>;
 }) => {
   const { data: landData, isLoading, isError, isSuccess } = useLandData();
   const { resetField } = useFormContext<CombinedFormData>();
@@ -179,8 +183,11 @@ const UtfyllingAvManuellAdresseForm = (properties: {
         <Button onClick={properties.onCloseIntent} size="small" type="button" variant="tertiary">
           Avbryt
         </Button>
-        <Button size="small">Fortsett</Button>
+        <Button loading={properties.isPending ?? false} size="small">
+          Lagre og lukk
+        </Button>
       </HStack>
+      {properties.error && <ApiError error={properties.error} title="En feil skjedde" />}
     </VStack>
   );
 };

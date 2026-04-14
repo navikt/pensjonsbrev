@@ -272,7 +272,7 @@ export const combinedFormSchema = z.object({
 
 export type CombinedFormData = z.infer<typeof combinedFormSchema>;
 
-export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
+export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse") => {
   return z.object({
     finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : finnSamhandlerTabNotSelectedSchema,
     manuellAdresse:
@@ -282,4 +282,4 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
   });
 };
 
-export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
+export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse";

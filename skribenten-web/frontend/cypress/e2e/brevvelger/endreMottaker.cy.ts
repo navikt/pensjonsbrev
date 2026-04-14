@@ -259,14 +259,14 @@ describe("Endrer på mottaker", () => {
     cy.contains("Legg til manuelt").click();
 
     //submitter med tomme felter — navn er obligatorisk
-    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Lagre og lukk").click();
     cy.getDataCy("endre-mottaker-modal").contains("Obligatorisk").should("be.visible");
 
     //fyller ut navn, setter ugyldig postnummer
     cy.contains("Navn").click().type("Test Testesen");
     cy.contains("Postnummer").click().type("abc");
     cy.contains("Poststed").click().type("Stedet");
-    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Lagre og lukk").click();
     cy.getDataCy("endre-mottaker-modal").contains("Postnummer må være 4 siffer").should("be.visible");
   });
 
@@ -283,7 +283,7 @@ describe("Endrer på mottaker", () => {
 
     //fyller ut navn men lar adresselinje 1 stå tom
     cy.contains("Navn").click().type("Test Testesen");
-    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Lagre og lukk").click();
     cy.getDataCy("endre-mottaker-modal").contains("Adresselinje 1 må fylles ut").should("be.visible");
   });
 
@@ -298,13 +298,7 @@ describe("Endrer på mottaker", () => {
     cy.contains("Postnummer").click().type("0000");
     cy.contains("Poststed").click().type("Poststedet");
     cy.getDataCy("land-combobox").click().type("Sver{enter}");
-    cy.getDataCy("endre-mottaker-modal").contains("Fortsett").click();
-    cy.contains("Fornavn Etternavnsen").should("be.visible");
-    cy.contains("Adresselinjen").should("be.visible");
-    cy.contains("0000").should("not.exist");
-    cy.contains("Poststedet").should("not.exist");
-    cy.get("td:contains('Sverige')").should("be.visible");
-    cy.getDataCy("bekreft-ny-mottaker").click();
+    cy.getDataCy("endre-mottaker-modal").contains("Lagre og lukk").click();
 
     cy.contains("Fornavn Etternavnsen").should("be.visible");
     cy.contains("Adresselinjen").should("be.visible");
