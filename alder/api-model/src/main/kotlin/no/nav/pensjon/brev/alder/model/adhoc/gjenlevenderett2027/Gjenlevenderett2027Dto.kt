@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.api.model.maler.adhoc.gjenlevenderett2027
+package no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 

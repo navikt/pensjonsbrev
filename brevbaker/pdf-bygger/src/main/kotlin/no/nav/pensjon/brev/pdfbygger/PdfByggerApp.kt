@@ -128,8 +128,9 @@ private fun Application.setUp() {
             val result = activityCounter.count {
                 val request = call.receive<PDFRequest>()
                 if (useTypst) {
-                    TypstDocumentRenderer.render(request)
-                        .let { typstCompileService.createLetter(it.files) }
+                    typstCompileService.createLetter {
+                        TypstDocumentRenderer.render(request, it)
+                    }
                 } else {
                     LatexDocumentRenderer.render(request)
                         .let { blockingLatexService.producePDF(it.files) }

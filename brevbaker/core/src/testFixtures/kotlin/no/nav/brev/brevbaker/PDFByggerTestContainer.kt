@@ -7,10 +7,14 @@ import org.testcontainers.utility.DockerImageName
 
 object PDFByggerTestContainer {
 
-    private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
+    // Sett miljøvariabel BRUK_LOKAL_PDF_BYGGER=true for å kjøre testene lokalt mot din nyest bygde pdf-bygger.
+    private val BRUK_LOKAL_PDF_BYGGER = System.getenv("BRUK_LOKAL_PDF_BYGGER")?.toBoolean() == true
 
-    // Overstyr denne hvis du vil kjøre testene lokalt mot din nyest bygde pdf-bygger
-    private const val BRUK_LOKAL_CONTAINER = false
+    // Sett miljøvariabel TESTCONTAINERS_REUSE_ENABLE=true for å gjenbruke pdf-bygger containeren mellom tester.
+    // Om du bruker denne lokalt, husk å stopp kjørende testcontainer for å oppdatere docker imaget.
+    private val REUSE_CONTAINER = System.getenv("TESTCONTAINERS_REUSE_ENABLE")?.toBoolean() == true
+
+    private val pdfContainer: GenericContainer<*> = konfigurerPdfbyggerContainer()
 
     private const val PORT = 8080
 
@@ -19,10 +23,10 @@ object PDFByggerTestContainer {
         val envImageName = System.getenv("PDF_BYGGER_IMAGE")?.takeIf { it.isNotBlank() }
         val fullImageName = when {
             envImageName != null -> envImageName
-            BRUK_LOKAL_CONTAINER -> "pensjonsbrev-pdf-bygger:latest"
+            BRUK_LOKAL_PDF_BYGGER -> "pensjonsbrev-pdf-bygger:latest"
             else -> "ghcr.io/navikt/pensjonsbrev/pdf-bygger:main"
         }
-        val pullPolicy = if (envImageName == null && BRUK_LOKAL_CONTAINER) PullPolicy.defaultPolicy() else PullPolicy.alwaysPull()
+        val pullPolicy = if (envImageName == null && BRUK_LOKAL_PDF_BYGGER) PullPolicy.defaultPolicy() else PullPolicy.alwaysPull()
         return GenericContainer(DockerImageName.parse(fullImageName))
             .withImagePullPolicy(pullPolicy)
             .withExposedPorts(PORT)
@@ -33,6 +37,7 @@ object PDFByggerTestContainer {
             )
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
+            .withReuse(REUSE_CONTAINER)
     }
 
     fun mappedUrl(): String {

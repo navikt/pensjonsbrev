@@ -5,7 +5,10 @@
     "threshold": 0
   },
   "plugins": {
-    "reg-keygen-git-hash-plugin": {},
+    "reg-simple-keygen-plugin": {
+      "expectedKey": "main",
+      "actualKey": "${ACTUAL_KEY}"
+    },
     "reg-publish-gcs-plugin": {
       "bucketName": "no-nav-pensjonsbrev-reg-suit",
       "pathPrefix": "pdf-visual"

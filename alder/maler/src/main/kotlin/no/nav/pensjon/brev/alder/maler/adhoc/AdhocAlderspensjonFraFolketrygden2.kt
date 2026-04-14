@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.adhoc
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.Constants
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -115,7 +115,7 @@ object AdhocAlderspensjonFraFolketrygden2 : AutobrevTemplate<EmptyAutobrevdata> 
                     english { +"If you have changes in your family situation or you plan to live abroad, this may influence your benefits. You are obliged to notify Nav as soon as you are aware of any of these changes. You can find out what you are required to report at ${Constants.PENSJON_ENDRING_URL}." },
                 )
             }
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.alder)
 
         }
     }
