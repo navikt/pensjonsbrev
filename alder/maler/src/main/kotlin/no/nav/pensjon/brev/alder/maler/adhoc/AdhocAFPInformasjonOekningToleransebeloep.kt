@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.adhoc
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
 import no.nav.pensjon.brev.alder.maler.felles.Constants
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -93,7 +93,7 @@ object AdhocAFPInformasjonOekningToleransebeloep : AutobrevTemplate<EmptyAutobre
                 )
             }
 
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.alder)
         }
     }
 }

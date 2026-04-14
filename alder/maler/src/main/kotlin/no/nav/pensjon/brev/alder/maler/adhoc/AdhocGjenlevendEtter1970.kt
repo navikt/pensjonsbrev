@@ -1,24 +1,26 @@
-package no.nav.pensjon.brev.maler.adhoc
+package no.nav.pensjon.brev.alder.maler.adhoc
 
+import no.nav.pensjon.brev.alder.maler.felles.Constants.ARBEID_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.HELSE_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
+import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
+import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.maler.adhoc.vedlegg.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
-import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.common.Constants.ARBEID_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.HELSE_URL
-import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-
+@TemplateModelHelpers
 object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
-    override val kode = Pesysbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
+    override val kode = Aldersbrevkoder.AutoBrev.PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk, English),
         letterMetadata = LetterMetadata(
@@ -48,15 +50,15 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
                             + "Det betyr at du fortsatt får gjenlevendepensjon i tre år regnet fra 1. januar 2024." },
                     nynorsk { + "Tidlegare har vi informert deg om at attlevandepensjonen din frå folketrygda blir tidsavgrensa. "
                             + "Det betyr at du framleis får attlevandepensjon i tre år rekna frå 1. januar 2024." },
-                    english { + "As we have previously informed you, your survivor’s pension through the National Insurance Act will be time limited. "
-                            + "This means you will still receive the pension for three more years as of 1 January 2024." }
+                    english { + "As we have previously informed you, your survivor's pension through the National Insurance Act will be time limited. "
+                            + "This means you will still receive the pension for three more years as of 1 January 2024." }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Retten din til gjenlevendepensjon vil opphøre fra og med 1. januar 2027. Siste mulige utbetaling blir i desember 2026." },
                     nynorsk { + "Retten din til attlevandepensjon blir stansa frå og med 1. januar 2027. Siste moglege utbetaling blir i desember 2026." },
-                    english { + "Your entitlement to survivor’s pension terminates 1 January 2027. The last payment will be in December 2026." }
+                    english { + "Your entitlement to survivor's pension terminates 1 January 2027. The last payment will be in December 2026." }
                 )
             }
             paragraph {
@@ -80,7 +82,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
                     nynorsk { + "Du kan søkje om å få pensjonen din forlenga med inntil to år. "
                             + "For å få utvida stønadsperioden må du vere under nødvendig utdanning eller ha behov for hjelp til å få jobb frå 1. januar 2027." },
                     english { + "You can apply to have your pension extended by up to two years. "
-                            + "You can qualify for an extended benefit period, if you are still undertaking a necessary education or require help to find employment as of 1 January 2027." }
+                            + "You can qualify for an extended benefit period, if you are still undertaking a necessary education or require help to find employment as of 1 January 2027." }
                 )
             }
             title1 {
@@ -185,9 +187,9 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
                     english { + "You are obligated to notify Nav as soon as you are aware of any of these changes." }
                 )
             }
-            includePhrase(Felles.RettTilAAKlage)
-            includePhrase(Felles.RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-            includePhrase(Felles.HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL, Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON))
+            includePhrase(RettTilAAKlage)
+            includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+            includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }

@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
 import no.nav.pensjon.brev.alder.maler.avslag.gradsendring.fraser.AvslagHjemler
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.aarOgMaanederFormattert
@@ -268,7 +268,7 @@ data class AvslagUttakFoerNormertPensjonsalderFelles(
         }
         includePhrase(RettTilAAKlage)
         includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-        includePhrase(HarDuSpoersmaalAlder)
+        includePhrase(HarDuSpoersmaal.alder)
 
     }
 }

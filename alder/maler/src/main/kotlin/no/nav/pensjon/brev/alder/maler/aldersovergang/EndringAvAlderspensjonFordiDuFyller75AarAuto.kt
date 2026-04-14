@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
 import no.nav.pensjon.brev.alder.maler.felles.*
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.opplysningerbruktiberegningen.vedleggOpplysningerBruktIBeregningenAlder
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOrienteringOmRettigheterOgPlikter
@@ -99,7 +100,7 @@ object EndringAvAlderspensjonFordiDuFyller75AarAuto :
                 includePhrase(MeldFraOmEndringer2)
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggOrienteringOmRettigheterOgPlikter))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
             includeAttachmentIfNotNull(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)
             includeAttachmentIfNotNull(vedleggMaanedligPensjonFoerSkatt, maanedligPensjonFoerSkattDto)
