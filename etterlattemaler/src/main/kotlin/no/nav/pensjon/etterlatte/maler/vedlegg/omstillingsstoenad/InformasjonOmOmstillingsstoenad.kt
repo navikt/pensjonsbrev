@@ -536,15 +536,15 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         paragraph {
             text(
                 bokmal {
-                    +"Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge." +
+                    +"Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge. " +
                             "Du må avtale med Skatteetaten hvert år for å få riktig skattetrekk på utbetalingen av omstillingsstønaden din."
                 },
                 nynorsk {
-                    +"Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg." +
+                    +"Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg. " +
                             "Du må kvart år avtale med Skatteetaten for å få rett skattetrekk på utbetalinga av omstillingsstønaden din."
                 },
                 english {
-                    +"The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway." +
+                    +"The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway. " +
                             "You must contact the Norwegian Tax Administration each year to ensure the correct tax withholding on your adjustment allowance payment."
                 }
             )
