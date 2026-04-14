@@ -350,21 +350,11 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
           {noenErUtilgjengelige && <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>}
           {utilgjengelige.map((vedlegg) => (
             <Checkbox
-              css={css`
-                .aksel-checkbox__input {
-                  pointer-events: none;
-                }
-
-                .aksel-checkbox__label,
-                .aksel-checkbox__description {
-                  color: var(--ax-text-neutral-subtle);
-                }
-              `}
               description={vedlegg.spraak
                 .map((spraakKode) => LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode)
                 .join(", ")}
+              disabled
               key={vedlegg.kode}
-              readOnly
               value={vedlegg.kode}
             >
               {vedlegg.visningstekst}
