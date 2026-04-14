@@ -150,7 +150,7 @@ When changing required fields in published API models (e.g., `brevbaker:api-mode
 2. Update consumers to send both fields (Brevbaker ignores unknown fields, so this is safe)
 3. Remove the old field from API model and publish new version
 4. Update Brevbaker to use new field only (Brevbaker requires new field, and ignores the old unknown field, so this is safe)
-5. Update consumers to use new field only 
+5. Update consumers to use new field only
 
 See README "Endring av obligatoriske felter i API-model" section.
 
