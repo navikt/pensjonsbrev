@@ -24,7 +24,7 @@ import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-e
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { type SpraakKode } from "~/types/apiTypes";
 import { type AlltidValgbartVedlegg, type AlltidValgbartVedleggV2, type BrevInfo, P1_BREVKODE } from "~/types/brev";
-import { LANGUAGE_CODE_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
+import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {
@@ -256,7 +256,7 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
   }
 
   const brevSpraakKode = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak];
-  const brevSpraakTekst = brevSpraakKode ? LANGUAGE_CODE_TO_TEXT[brevSpraakKode] : props.brevSpraak;
+  const brevSpraakTekst = SPRAAK_ENUM_TO_TEXT[props.brevSpraak] ?? props.brevSpraak;
 
   const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
   const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
