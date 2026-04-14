@@ -84,7 +84,7 @@ class BrevmalService(
                 spraak = it.spraak,
                 tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
             )
-        }
+        }.sortedBy { it.visningstekst }
     }
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
