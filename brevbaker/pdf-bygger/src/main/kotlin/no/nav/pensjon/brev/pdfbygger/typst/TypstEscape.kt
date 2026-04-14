@@ -335,9 +335,29 @@ internal val CHARACTER_BLOCKLIST: List<IntRange> = buildList {
  * - `\t` for a tab
  * - `\u{XXXX}` for a hexadecimal Unicode escape sequence
  */
+private fun Int.isBlocklisted(): Boolean =
+    CHARACTER_BLOCKLIST.binarySearch { range ->
+        when {
+            this > range.last -> -1
+            this < range.first -> 1
+            else -> 0
+        }
+    } >= 0
+
+/**
+ * Escapes a string for use inside Typst string literals (inside "..." quotes).
+ *
+ * Typst string escape sequences:
+ * - `\\` for a backslash
+ * - `\"` for a quote
+ * - `\n` for a newline
+ * - `\r` for a carriage return
+ * - `\t` for a tab
+ * - `\u{XXXX}` for a hexadecimal Unicode escape sequence
+ */
 internal fun String.typstStringEscape(): String =
     this.map {
-        if (CHARACTER_BLOCKLIST.any { range -> it.code in range }) {
+        if (it.code.isBlocklisted()) {
             ""
         } else {
             when (it) {
