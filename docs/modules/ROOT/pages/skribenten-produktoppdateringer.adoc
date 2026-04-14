@@ -2,6 +2,28 @@
 
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
+== Mars 2026
+
+=== Nye ting vi har laget
+* Lenke til dokumentasjonssiden er nå tilgjengelig direkte i Skribenten https://github.com/navikt/pensjonsbrev/commit/5650c521b[#2953]
+* Vi har lagt inn Umami for måling av generell oppførsel i Skribenten. https://github.com/navikt/pensjonsbrev/commit/cbfa064bc[#2883]
+
+=== Ting vi har forbedret
+* Designoppdatering av brevbehandler, kvittering og brevvelger https://github.com/navikt/pensjonsbrev/commit/4fcee4a95[#2841] https://github.com/navikt/pensjonsbrev/commit/9d1cf1a89[#2879] https://github.com/navikt/pensjonsbrev/commit/073eb2fe3[#2845]
+
+=== Ting vi har fikset
+* Signatur legges ikke automatisk til når noen med attestant-rolle åpner et brev som er satt til "Klar for attestering". Dette er for å unngå at feil signatur legges inn i brevet hvis den første personen som åpner brevet ikke er den som skal attestere det. https://github.com/navikt/pensjonsbrev/commit/b804355[#2895]
+
+=== Ting vi jobber med
+* Nummererte lister er på vei i Skribenten
+* Forbedret pdf-generering og henting til forhåndsvisning av brev i Skribenten
+* Legg til førsteside på brev som skal sendes i forbindelse med innhenting av opplysninger
+* Vi skal dypdykke litt i klipp og lim for å forstå utfordringene som oppstår der og se om det finnes gode løsninger for å bevare formatering ved innliming
+
+=== Kjente problemer og behov vi tenker på
+* Avbryt-knappen i endre mottaker fungerer ikke når søketype er satt
+* Autolagring kan i enkelte tilfeller henge seg litt opp hvis fanen har vært åpen lenge
+
 == Februar 2026
 Februar ble en travel måned! Vi fikk ut en del nytt, og fikset en rekke småting underveis :-)
 
