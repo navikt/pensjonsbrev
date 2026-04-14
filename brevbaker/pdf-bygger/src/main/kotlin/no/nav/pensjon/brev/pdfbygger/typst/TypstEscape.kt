@@ -322,22 +322,6 @@ internal val CHARACTER_BLOCKLIST: List<IntRange> = buildList {
 
     // --- Arabic Presentation Forms-B ---
     add(0xFE75..0xFE75); add(0xFEFD..0xFFFF)
-    // Ranges must remain sorted by first value for binary search in isBlocklisted() to work correctly.
-}
-
-private fun Int.isBlocklisted(): Boolean {
-    var lo = 0
-    var hi = CHARACTER_BLOCKLIST.size - 1
-    while (lo <= hi) {
-        val mid = (lo + hi) ushr 1
-        val range = CHARACTER_BLOCKLIST[mid]
-        when {
-            this < range.first -> hi = mid - 1
-            this > range.last -> lo = mid + 1
-            else -> return true
-        }
-    }
-    return false
 }
 
 /**
@@ -353,7 +337,7 @@ private fun Int.isBlocklisted(): Boolean {
  */
 internal fun String.typstStringEscape(): String =
     this.map {
-        if (it.code.isBlocklisted()) {
+        if (CHARACTER_BLOCKLIST.any { range -> it.code in range }) {
             ""
         } else {
             when (it) {
