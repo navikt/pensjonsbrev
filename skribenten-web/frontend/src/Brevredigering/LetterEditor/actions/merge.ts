@@ -1,4 +1,4 @@
-import type { Draft, WritableDraft } from "immer";
+import { type Draft, type WritableDraft } from "immer";
 
 import {
   addElements,
@@ -9,19 +9,23 @@ import {
   removeElements,
   text,
 } from "~/Brevredigering/LetterEditor/actions/common";
-import type {
-  AnyBlock,
-  ItemList,
-  LiteralValue,
-  ParagraphBlock,
-  Title1Block,
-  Title2Block,
-  Title3Block,
+import {
+  type AnyBlock,
+  ITEM_LIST,
+  type ItemList,
+  LITERAL,
+  type LiteralValue,
+  NEW_LINE,
+  type ParagraphBlock,
+  TITLE_INDEX,
+  type Title1Block,
+  type Title2Block,
+  type Title3Block,
+  VARIABLE,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, LITERAL, NEW_LINE, TITLE_INDEX, VARIABLE } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { Focus, ItemContentIndex, LetterEditorState, LiteralIndex } from "../model/state";
+import { type Focus, type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isLiteral, isTextContent } from "../model/utils";
 
 export enum MergeTarget {

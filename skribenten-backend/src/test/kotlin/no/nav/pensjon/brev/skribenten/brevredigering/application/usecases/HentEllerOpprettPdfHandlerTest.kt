@@ -4,14 +4,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.Testbrevkoder
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.DocumentEntity
 import no.nav.pensjon.brev.skribenten.copy
 import no.nav.pensjon.brev.skribenten.db.DocumentTable
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.isSuccess
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.Api
+import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brev.skribenten.services.PenClientStub
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.assertj.core.api.Assertions.assertThat
@@ -192,6 +197,23 @@ class HentEllerOpprettPdfHandlerTest : BrevredigeringHandlerTestBase() {
         stagePdf("min andre pdf".encodeToByteArray())
         assertThat(hentEllerOpprettPdf(brev)).isSuccess {
             assertThat(it.document.pdf).isEqualTo("min første pdf".encodeToByteArray())
+        }
+    }
+
+    @Test
+    suspend fun `kan hente pdf for p1`() {
+        val p1Service = P1ServiceImpl(penClient = object : PenClientStub() {
+            override suspend fun hentP1VedleggData(saksId: SaksId, spraak: LanguageCode) = Api.GeneriskBrevdata().apply {
+                put("noeData", true)
+            }
+        })
+        brevbakerService.redigerbareMaler[Testbrevkoder.P1] = informasjonsbrev
+
+        val facade = createFacade(p1Service = p1Service)
+        val brev = opprettBrev(facade = facade, brevkode = Testbrevkoder.P1).resultOrFail()
+
+        assertThat(hentEllerOpprettPdf(brev, facade = facade)).isSuccess {
+            assertThat(it.document.pdf).isEqualTo(stagetPDF)
         }
     }
 }

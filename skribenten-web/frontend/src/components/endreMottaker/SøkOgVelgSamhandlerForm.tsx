@@ -1,14 +1,12 @@
 import { Alert, Button, HStack, Select, TextField, VStack } from "@navikt/ds-react";
-import type { UseMutationResult } from "@tanstack/react-query";
-import type { Control } from "react-hook-form";
-import { Controller, useWatch } from "react-hook-form";
+import { type UseMutationResult } from "@tanstack/react-query";
+import { type Control, Controller, useWatch } from "react-hook-form";
 
 import { ApiError } from "~/components/ApiError";
 import { SamhandlerTypeSelect } from "~/components/select/SamhandlerSelect";
-import type { FinnSamhandlerRequestDto, FinnSamhandlerResponseDto } from "~/types/apiTypes";
+import { type FinnSamhandlerRequestDto, type FinnSamhandlerResponseDto } from "~/types/apiTypes";
 
-import type { CombinedFormData } from "./EndreMottakerUtils";
-import { Identtype, InnOgUtland, identtypeToText, Søketype } from "./EndreMottakerUtils";
+import { type CombinedFormData, Identtype, InnOgUtland, identtypeToText, Søketype } from "./EndreMottakerUtils";
 import { SamhandlerSearchResults } from "./SamhandlerSearchResults";
 
 const SøkOgVelgSamhandlerForm = (properties: {

@@ -221,8 +221,8 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                         row {
                             cell {
                                 text(
-                                    bokmal { + "Dekning av boutgifter ved inst.opphold" },
-                                    nynorsk { + "Dekning av boutgifter ved inst.opphald" },
+                                    bokmal { + "Dekning av boutgifter ved institusjonsopphold" },
+                                    nynorsk { + "Dekning av boutgifter ved institusjonsopphald" },
                                     english { + "Deducted amount for fixed and necessary housing expenses" },
                                 )
                             }

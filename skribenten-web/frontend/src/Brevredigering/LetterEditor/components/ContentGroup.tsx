@@ -14,7 +14,7 @@ import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Focus, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import {
   areAnyContentEditableSiblingsPlacedHigher,
   areAnyContentEditableSiblingsPlacedLower,
@@ -27,12 +27,14 @@ import {
   getCursorOffsetOrRange,
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
-import type { Content, EditedLetter, LiteralValue } from "~/types/brevbakerTypes";
 import {
+  type Content,
+  type EditedLetter,
   ElementTags,
   FontType,
   ITEM_LIST,
   LITERAL,
+  type LiteralValue,
   NEW_LINE,
   TABLE,
   TITLE_INDEX,
@@ -185,6 +187,8 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
+  const pasteViaKeyboardRef = useRef(false);
+  const pasteViaContextMenuRef = useRef(false);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
@@ -451,6 +455,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
+    const limInnMetode = pasteViaKeyboardRef.current
+      ? "tastatursnarvei"
+      : pasteViaContextMenuRef.current
+        ? "kontekstmeny"
+        : "annet";
+    pasteViaKeyboardRef.current = false;
+    pasteViaContextMenuRef.current = false;
+
     const offset = getCursorOffset();
     if (offset >= 0) {
       const pastedText = event.clipboardData.getData("text/plain");
@@ -460,6 +472,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
+          limInnMetode,
         });
       }
 
@@ -478,7 +491,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     );
   };
 
+  const handleOnContextMenu = () => {
+    pasteViaContextMenuRef.current = true;
+  };
+
+  const handleOnKeyUp = () => {
+    pasteViaKeyboardRef.current = false;
+  };
+
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+    pasteViaContextMenuRef.current = false;
     const selection = globalThis.getSelection();
     const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
 
@@ -487,6 +509,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
     const isUndo = (isMac ? e.metaKey : e.ctrlKey) && e.key === "z" && !e.shiftKey;
     const isRedo = (isMac ? e.metaKey : e.ctrlKey) && (e.key === "y" || (e.key === "z" && e.shiftKey));
+    const isPasteShortcut =
+      ((isMac ? e.metaKey : e.ctrlKey) && e.key.toLowerCase() === "v") || (e.shiftKey && e.key === "Insert");
+
+    if (isPasteShortcut) {
+      pasteViaKeyboardRef.current = true;
+    }
 
     if (isUndo) {
       e.preventDefault();
@@ -555,6 +583,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
+    pasteViaContextMenuRef.current = false;
     if (!erFritekst) return;
 
     // Tøm markering for å restarte dra-og-marker
@@ -638,10 +667,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }}
       data-literal-index={JSON.stringify(literalIndex)}
       onClick={handleOnClick}
+      onContextMenu={handleOnContextMenu}
       onDoubleClick={handleOnDoubleClick}
       onFocus={handleOnFocus}
       onInput={handleOnInput}
       onKeyDown={handleOnKeyDown}
+      onKeyUp={handleOnKeyUp}
       onMouseDown={handleOnMouseDown}
       onPaste={handleOnPaste}
       ref={contentEditableReference}

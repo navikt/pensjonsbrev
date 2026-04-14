@@ -2,8 +2,7 @@ import "./editor.css";
 
 import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import type { Dispatch, SetStateAction } from "react";
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -11,12 +10,13 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
+
 import Actions from "./actions";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import type { LetterEditorState } from "./model/state";
+import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 export const LetterEditor = ({

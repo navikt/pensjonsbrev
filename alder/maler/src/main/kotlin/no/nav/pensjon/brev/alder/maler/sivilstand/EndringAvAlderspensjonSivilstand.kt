@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.FeilutbetalingAP
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -678,7 +678,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 includePhrase(MeldeFraOmEndringer)
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
             includeAttachment(
                 vedleggOrienteringOmRettigheterOgPlikter,

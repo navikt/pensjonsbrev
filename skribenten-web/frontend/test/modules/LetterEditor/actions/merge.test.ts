@@ -3,16 +3,16 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
-import type {
-  AnyBlock,
-  Item,
-  ItemList,
-  LiteralValue,
-  ParagraphBlock,
-  TextContent,
-  VariableValue,
+import {
+  type AnyBlock,
+  type Item,
+  type ItemList,
+  LITERAL,
+  type LiteralValue,
+  type ParagraphBlock,
+  type TextContent,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import { LITERAL } from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, newLine, paragraph, select, variable, withDeleted } from "../utils";
 

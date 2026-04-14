@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.aldersovergang
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.InfoAlderspensjonOvergang67AarAutoDtoSelectors.kronebelop2G
@@ -64,7 +64,7 @@ object InfoAldersovergang67AarAuto : AutobrevTemplate<InfoAlderspensjonOvergang6
                 includePhrase(InfoArbeidsinntekt)
                 includePhrase(InfoBoddArbeidetUtlandet)
                 includePhrase(InfoPensjonFraAndreAP)
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
         }
 }

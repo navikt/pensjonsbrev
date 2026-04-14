@@ -2,7 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Item, ItemList, LiteralValue, ParagraphBlock } from "~/types/brevbakerTypes";
+import { type Item, type ItemList, type LiteralValue, type ParagraphBlock } from "~/types/brevbakerTypes";
 
 import { item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 

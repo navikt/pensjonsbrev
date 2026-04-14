@@ -19,12 +19,12 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
       - name: Install bff dependencies
@@ -51,17 +51,31 @@ jobs:
       contents: read
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: actions/setup-node@v6
+
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
         with:
-          node-version: "24"
+          node-version-file: ".tool-versions"
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
+
+      - name: Cache Cypress binary
+        if: ${{ inputs.cypress }}
+        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
+        with:
+          path: ~/.cache/Cypress
+          key: cypress-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
+
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+
+      - name: Install Cypress binary
+        if: ${{ inputs.cypress }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx cypress install
 
       - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -82,7 +96,7 @@ jobs:
 
       - name: Cypress run component tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -91,7 +105,7 @@ jobs:
 
       - name: Cypress run e2e tests
         if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@84d178e4bbce871e23f2ffa3085898cde0e4f0ec
+        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
         with:
           working-directory: ${{ inputs.workingDir }}/frontend
           install: false
@@ -101,7 +115,7 @@ jobs:
           start: 'npm run preview -- --port 5173'
 
       - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         if: ${{ failure() && inputs.cypress}}
         with:
           name: cypress-screenshots

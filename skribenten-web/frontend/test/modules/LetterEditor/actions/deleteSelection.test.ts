@@ -2,8 +2,7 @@ import { expect } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";
-import type { Cell, ItemList, LiteralValue, Row, Table } from "~/types/brevbakerTypes";
-import { LITERAL } from "~/types/brevbakerTypes";
+import { type Cell, type ItemList, LITERAL, type LiteralValue, type Row, type Table } from "~/types/brevbakerTypes";
 
 import { cell, item, itemList, letter, literal, paragraph, row, select, table, title1, variable } from "../utils";
 

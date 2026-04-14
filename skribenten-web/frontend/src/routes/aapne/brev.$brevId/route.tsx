@@ -1,14 +1,14 @@
 import { Alert, Heading, VStack } from "@navikt/ds-react";
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 
 import { getUserInfo } from "~/api/bff-endpoints";
 import { getBrevInfo } from "~/api/brev-queries";
 import { ApiError } from "~/components/ApiError";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
 import { queryClient } from "~/routes/__root";
-import type { BrevInfo } from "~/types/brev";
-import type { AttestForbiddenReason } from "~/utils/parseAttest403";
+import { type BrevInfo } from "~/types/brev";
+import { type AttestForbiddenReason } from "~/utils/parseAttest403";
 import { trackEvent } from "~/utils/umami";
 
 export const Route = createFileRoute("/aapne/brev/$brevId")({

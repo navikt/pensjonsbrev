@@ -1,6 +1,5 @@
-import type { AdresseType, SakType } from "./apiTypes";
-import { SamhandlerTypeCode, SpraakKode } from "./apiTypes";
-import type { LanguageCode } from "./brevbakerTypes";
+import { type AdresseType, type SakType, SamhandlerTypeCode, SpraakKode } from "./apiTypes";
+import { type LanguageCode } from "./brevbakerTypes";
 
 export const SPRAAK_ENUM_TO_TEXT = {
   [SpraakKode.Bokmaal]: "Bokmål",

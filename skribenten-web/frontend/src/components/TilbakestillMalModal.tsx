@@ -2,7 +2,7 @@ import { BodyLong, Button, HStack, Modal } from "@navikt/ds-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { getBrev, tilbakestillBrev } from "~/api/brev-queries";
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
 const TilbakestillMalModal = (props: {
   brevId: number;

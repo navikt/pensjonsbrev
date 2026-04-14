@@ -1,5 +1,5 @@
 import { SpraakKode } from "~/types/apiTypes";
-import type { AlltidValgbartVedleggV2 } from "~/types/brev";
+import { type AlltidValgbartVedleggV2 } from "~/types/brev";
 
 import { nyBrevInfo, nyBrevResponse } from "../utils/brevredigeringTestUtils";
 

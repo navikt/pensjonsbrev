@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.adhoc
 import no.nav.pensjon.brev.alder.maler.felles.Constants.DIN_PENSJON_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDtoSelectors.uttaksgrad
@@ -94,7 +94,7 @@ object AdhocTidligereUfoereGradertAP : AutobrevTemplate<AdhocTidligereUfoereGrad
                 )
             }
 
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.alder)
         }
     }
 }

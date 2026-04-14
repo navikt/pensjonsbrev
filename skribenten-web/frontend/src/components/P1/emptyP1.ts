@@ -1,4 +1,4 @@
-import type { P1RedigerbarForm } from "~/types/p1FormTypes";
+import { type P1RedigerbarForm } from "~/types/p1FormTypes";
 
 export const emptyInnvilgetRow = (): P1RedigerbarForm["innvilgedePensjoner"][number] => ({
   institusjon: {

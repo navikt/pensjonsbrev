@@ -3,10 +3,10 @@ import "../editor.css";
 import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
 import { type BrevResponse, Distribusjonstype } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 
 import {
   nyBrevResponse,

@@ -13,7 +13,7 @@ import java.time.Month
 
 fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(refusjon = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -54,5 +54,6 @@ fun createInnvilgelseUfoeretrygdDto() =
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.BT_GITT_TIL_ANNEN, fodselsdato = LocalDate.of(1991, Month.MAY, 2), fom = LocalDate.of(1991, Month.JANUARY, 1), tom = LocalDate.of(1991, Month.MARCH, 31)),
                 BarnetilleggUTDto(antallBarn = 3, begrunnelse = BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND, fodselsdato = LocalDate.of(1992, Month.JUNE, 3), fom = LocalDate.of(1992, Month.JANUARY, 1)),
             ),
+            sisteTrygdetidsgrunnlag = InnvilgelseUfoeretrygdDto.Trygdetidsgrunnlag(fom = LocalDate.of(2020, Month.JANUARY, 1), tom = LocalDate.of(2020, Month.JUNE, 30)),
         ),
     )

@@ -1,20 +1,20 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
-import type {
-  Cell,
-  Content,
-  ItemList,
-  LiteralValue,
-  ParagraphBlock,
-  Row,
-  TextContent,
-  VariableValue,
+import {
+  type Cell,
+  type Content,
+  FontType,
+  type ItemList,
+  type LiteralValue,
+  type ParagraphBlock,
+  type Row,
+  type TextContent,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import { FontType } from "~/types/brevbakerTypes";
 import { handleSwitchContent, handleSwitchTextContent } from "~/utils/brevbakerUtils";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { LetterEditorState, LiteralIndex } from "../model/state";
+import { type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isItemList, isLiteral, isTableCellIndex, isTextContent } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
 import { fontTypeOf, isItemContentIndex, isTable, newLiteral } from "./common";

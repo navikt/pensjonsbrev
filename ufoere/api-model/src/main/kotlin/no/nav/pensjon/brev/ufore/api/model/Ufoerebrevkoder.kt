@@ -68,6 +68,7 @@ object Ufoerebrevkoder {
         UT_S_HVILENDE_RETT_OPPHOER,
         UT_S_HVILENDE_RETT_VARSEL_OPPHOER,
         UT_HONNORKORT,
+        UT_S_VARSEL_LAVERE_MINSTESATS_2026,
         ;
 
         override fun kode(): String = this.name

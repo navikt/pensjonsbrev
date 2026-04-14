@@ -3,7 +3,7 @@ import { expect } from "vitest";
 
 import { findAdjoiningContent, removeElements } from "~/Brevredigering/LetterEditor/actions/common";
 import { isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
-import type { Content, Identifiable, LiteralValue, TextContent } from "~/types/brevbakerTypes";
+import { type Content, type Identifiable, type LiteralValue, type TextContent } from "~/types/brevbakerTypes";
 
 import { itemList, literal } from "../utils";
 

@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
-import type { FieldType, LetterModelSpecification, PropertyUsage } from "~/types/brevbakerTypes";
+import { type FieldType, type LetterModelSpecification, type PropertyUsage } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
 import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";

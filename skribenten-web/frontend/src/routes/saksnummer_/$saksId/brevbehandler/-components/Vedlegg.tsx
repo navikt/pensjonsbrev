@@ -17,15 +17,13 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
-import type { UseFormReturn } from "react-hook-form";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, type UseFormReturn, useForm } from "react-hook-form";
 
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import type { SpraakKode } from "~/types/apiTypes";
-import type { AlltidValgbartVedlegg, AlltidValgbartVedleggV2 } from "~/types/brev";
-import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { type SpraakKode } from "~/types/apiTypes";
+import { type AlltidValgbartVedlegg, type AlltidValgbartVedleggV2, type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
