@@ -18,8 +18,7 @@ import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.Tabeller.DineInntekterTabell
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig2GTabell
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.Tabeller.Gjennomsnittlig3GTabell
-import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -168,7 +167,7 @@ object VedtakGjpForlengetArskull6270 : AutobrevTemplate<Gjenlevenderett2027Dto> 
                     nynorsk { + "Dersom du planlegg å flytte til eit anna land eller du får endra inntekt, familiesituasjon eller jobbsituasjon, kan det påverke gjenlevandepensjonen din. I slike tilfelle må du difor straks melde frå til Nav. " }
                 )
             }
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.gjenlevendepensjon)
         }
         includeAttachment(vedleggGjpDineRettigheterOgPlikter)
     }

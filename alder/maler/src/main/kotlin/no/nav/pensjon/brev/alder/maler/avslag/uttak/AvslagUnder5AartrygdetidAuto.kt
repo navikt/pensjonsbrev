@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.avslag.uttak
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SUPPLERENDE_STOENAD_URL
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
@@ -136,7 +136,7 @@ object AvslagUnder5AartrygdetidAuto : AutobrevTemplate<AvslagUnder5AarTrygdetidA
 
             includePhrase(RettTilAAKlage)
             includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(vedleggDineRettigheterOgMulighetTilAaKlage, dineRettigheterOgMulighetTilAaKlageDto)
     }

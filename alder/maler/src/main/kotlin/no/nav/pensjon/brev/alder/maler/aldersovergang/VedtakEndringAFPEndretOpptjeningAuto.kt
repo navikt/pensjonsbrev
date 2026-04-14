@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlage
@@ -198,7 +198,7 @@ object VedtakEndringAFPEndretOpptjeningAuto :
 
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
 
             includeAttachmentIfNotNull(

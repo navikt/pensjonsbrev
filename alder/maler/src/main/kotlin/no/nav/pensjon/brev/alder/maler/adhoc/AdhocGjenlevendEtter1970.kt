@@ -2,7 +2,7 @@ package no.nav.pensjon.brev.alder.maler.adhoc
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.ARBEID_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.HELSE_URL
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -189,7 +189,7 @@ object AdhocGjenlevendEtter1970 : AutobrevTemplate<EmptyAutobrevdata> {
             }
             includePhrase(RettTilAAKlage)
             includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-            includePhrase(HarDuSpoersmaalAlder)
+            includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
