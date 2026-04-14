@@ -63,7 +63,7 @@ class TypstCompileService(
                 // Read stdout (PDF bytes) and stderr (error messages) concurrently
                 // to avoid deadlock when either buffer fills up
                 val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
-                val stderrContent = String(process.errorStream.readAllBytes())
+                val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
                 val pdfBytes = stdoutDeferred.await()
 
                 // Both streams fully drained means the process has already exited;
