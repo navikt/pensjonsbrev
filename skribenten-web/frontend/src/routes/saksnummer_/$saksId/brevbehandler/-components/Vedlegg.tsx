@@ -257,8 +257,8 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
     return <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>;
   }
 
-  const brevLanguageCode = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak];
-  const brevSpraakTekst = brevLanguageCode ? LANGUAGE_CODE_TO_TEXT[brevLanguageCode] : props.brevSpraak;
+  const brevSpraakKode = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak];
+  const brevSpraakTekst = brevSpraakKode ? LANGUAGE_CODE_TO_TEXT[brevSpraakKode] : props.brevSpraak;
 
   const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
   const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
@@ -330,7 +330,7 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
                     <span>{vedlegg.visningstekst}</span>
                     <BodyShort as="span" size="small">
                       {vedlegg.spraak.map((spraakKode, index) => {
-                        const isCurrentLanguage = spraakKode === brevLanguageCode;
+                        const isCurrentLanguage = spraakKode === brevSpraakKode;
                         const tekst = LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode;
                         return (
                           <Fragment key={spraakKode}>
