@@ -500,6 +500,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+    pasteViaContextMenuRef.current = false;
     const selection = globalThis.getSelection();
     const hasRange = !!selection && selection.rangeCount > 0 && !selection.getRangeAt(0).collapsed;
 
@@ -582,6 +583,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
+    pasteViaContextMenuRef.current = false;
     if (!erFritekst) return;
 
     // Tøm markering for å restarte dra-og-marker
