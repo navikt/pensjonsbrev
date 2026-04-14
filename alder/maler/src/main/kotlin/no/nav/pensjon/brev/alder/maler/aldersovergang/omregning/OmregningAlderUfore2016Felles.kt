@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_PENSJONIST_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.SUPPLERENDE_STOENAD_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.UTBETALINGER_URL
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.bestemtForm
 import no.nav.pensjon.brev.alder.maler.felles.ubestemtForm
@@ -637,7 +637,7 @@ data class OmregningAlderUfore2016Felles(
         }
 
         includePhrase(RettTilAAKlage)
-        includePhrase(HarDuSpoersmaalAlder)
+        includePhrase(HarDuSpoersmaal.alder)
 
     }
 }

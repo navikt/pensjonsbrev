@@ -1,7 +1,16 @@
 package no.nav.pensjon.brev.pdfbygger.typst
 
+import java.io.OutputStreamWriter
+
 @DslMarker
-internal annotation class TypstDslMarker
+annotation class TypstDslMarker
+
+@TypstDslMarker
+class TypstFileWriter(private val output: OutputStreamWriter) {
+    fun codeScope(codeBuilder: TypstCodeScope.() -> Unit) {
+        TypstCodeScope(output).apply(codeBuilder)
+    }
+}
 
 /**
  * Scope for Typst markup/content mode (inside `[...]` content blocks).
@@ -11,13 +20,13 @@ internal annotation class TypstDslMarker
  * - [appendCode] to write inline Typst code like `#emph[`, `#linebreak()`
  */
 @TypstDslMarker
-internal class TypstMarkupScope(internal val output: Appendable) {
+class TypstMarkupScope(private val output: Appendable) {
 
     /**
-     * Append user-facing text. Always escapes special Typst characters.
+     * Append user-facing text. Uses Typst's #str() function to safely render the string
      */
     fun appendContent(s: String) {
-        output.append(s.typstEscape())
+        output.append("#str(\"${s.typstStringEscape()}\")")
     }
 
     /**
@@ -29,7 +38,7 @@ internal class TypstMarkupScope(internal val output: Appendable) {
 
     /**
      * Append inline Typst code within a content block. Never escapes.
-     * Use for Typst syntax like `#emph[`, `]`, `#linebreak()`.
+     * Use for Typst syntax like `#emph[``]`, `#linebreak()`.
      */
     fun appendCode(s: String) {
         output.append(s)
@@ -45,7 +54,7 @@ internal class TypstMarkupScope(internal val output: Appendable) {
  * - [appendDictionary] to write `#let name = (...)` dictionary definitions
  */
 @TypstDslMarker
-internal class TypstCodeScope(internal val output: Appendable) {
+class TypstCodeScope(private val output: Appendable) {
 
     /**
      * Append raw Typst code followed by a newline. Never escapes.
@@ -101,7 +110,7 @@ internal class TypstCodeScope(internal val output: Appendable) {
     }
 
     @TypstDslMarker
-    internal class FunctionCallBuilder(private val codeScope: TypstCodeScope) {
+    class FunctionCallBuilder(private val codeScope: TypstCodeScope) {
 
         /**
          * Append a trailing content block `[content]` (enters markup mode).
@@ -123,7 +132,7 @@ internal class TypstCodeScope(internal val output: Appendable) {
     }
 
     @TypstDslMarker
-    internal class ArgsBuilder(private val codeScope: TypstCodeScope) {
+    class ArgsBuilder(private val codeScope: TypstCodeScope) {
         private var first = true
 
         private fun separator() {

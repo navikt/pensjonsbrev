@@ -1,13 +1,11 @@
-#import "input.typ": languageSettings, input
-
-#let casedetails = {
+#let casedetails(input, languageSettings) = {
   let annenMottaker = input.annenMottakerNavn != none
   set text(size: 11pt)
-  pad(
+  block(
     grid(
       columns: 2,
-      column-gutter: 16mm,
-      row-gutter: 9pt,
+      column-gutter: 24pt,
+      row-gutter: 8pt,
       ..if annenMottaker {(
         [#languageSettings.annenmottakerprefix],
         [#input.annenMottakerNavn],
@@ -17,9 +15,9 @@
       )},
       [#input.gjelderNavn],
       [#languageSettings.foedselsnummerprefix], [#input.gjelderFoedselsnummer],
-      [#languageSettings.saksnummerprefix], 
+      [#languageSettings.saksnummerprefix],
       [#input.saksnummer #h(1fr) #input.dokumentDato],
     ),
-    bottom: 32pt,
+    above: 48pt,
   )
 }

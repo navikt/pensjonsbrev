@@ -3,7 +3,7 @@
 #let formChoice(prompt, ..choices) = {
   let formContent = [
     #prompt
-    #block(inset: (left: 1pt))[
+    #block(inset: (left: 1pt), above: 12pt)[
       #for choice in choices.pos() [
         ☐#h(5pt)#choice #linebreak()
       ]
@@ -13,7 +13,6 @@
 }
 
 #let formText(prompt, dots) = {
-  let formContent = [#prompt #dots]
-  withSpacing("form", formContent)
+  withSpacing("form", [#prompt #dots])
 }
 

@@ -16,14 +16,13 @@ import io.ktor.server.response.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import no.nav.brev.brevbaker.AllTemplates
-import no.nav.brev.brevbaker.LatexCompileException
-import no.nav.brev.brevbaker.LatexInvalidException
-import no.nav.brev.brevbaker.LatexTimeoutException
+import no.nav.brev.brevbaker.PDFCompileException
+import no.nav.brev.brevbaker.PDFInvalidException
+import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.pensjon.brev.Metrics.configureMetrics
 import no.nav.pensjon.brev.api.ParseLetterDataException
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.converters.LetterResponseFileConverter
-import no.nav.pensjon.brev.latex.LaTeXCompilerService
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.routing.brevRouting
 import no.nav.pensjon.brev.routing.useBrevkodeFromCallContext
@@ -69,19 +68,19 @@ fun Application.brevbakerModule(
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Unknown failure")
             }
         }
-        exception<LatexTimeoutException> { call, cause ->
-            call.application.log.info("Latex compilation timed out", cause)
-            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling latex")
+        exception<PDFTimeoutException> { call, cause ->
+            call.application.log.info("PDF compilation timed out", cause)
+            call.respond(HttpStatusCode.ServiceUnavailable, cause.message ?: "Timed out while compiling pdf")
         }
-        exception<LatexCompileException> { call, cause ->
-            call.application.log.info("Latex compilation failed with internal server error", cause)
-            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Latex compilation failed")
+        exception<PDFCompileException> { call, cause ->
+            call.application.log.info("PDF compilation failed with internal server error", cause)
+            call.respond(HttpStatusCode.InternalServerError, cause.message ?: "PDF compilation failed")
         }
-        exception<LatexInvalidException> { call, cause ->
-            call.application.log.info("Latex compilation failed due to invalid latex", cause)
+        exception<PDFInvalidException> { call, cause ->
+            call.application.log.info("PDF compilation failed due to invalid content", cause)
             call.respond(
                 HttpStatusCode.InternalServerError,
-                cause.message ?: "Latex compilation failed due to invalid latex"
+                cause.message ?: "PDF compilation failed due to invalid content"
             )
         }
         exception<ParameterConversionException> { call, cause ->
@@ -121,7 +120,7 @@ fun Application.brevbakerModule(
     } else null
 
 
-    val latexCompilerService = LaTeXCompilerService(
+    val pdfbyggerService = PensjonPdfByggerService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
         maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
@@ -129,7 +128,7 @@ fun Application.brevbakerModule(
     konfigurerUnleash(brevbakerConfig)
 
     configureMetrics()
-    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), latexCompilerService, templates)
+    brevRouting(jwtConfigs?.map { it.name }?.toTypedArray(), pdfbyggerService, templates)
 }
 
 private fun Application.konfigurerUnleash(brevbakerConfig: ApplicationConfig) {

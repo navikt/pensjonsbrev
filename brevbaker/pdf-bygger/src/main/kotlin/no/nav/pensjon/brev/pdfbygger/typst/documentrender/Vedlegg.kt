@@ -12,8 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
  * content blocks...
  * endAttachment(sectionNumber: N)
  *
- * This pattern avoids issues with Typst content/code block syntax and matches
- * the LaTeX approach with startvedlegg/sluttvedlegg.
+ * This pattern avoids issues with Typst content/code block syntax.
  */
 internal fun TypstCodeScope.renderAttachment(attachment: LetterMarkup.Attachment, sectionNumber: Int) {
     val title = attachment.title.renderToPlainString()
@@ -22,6 +21,8 @@ internal fun TypstCodeScope.renderAttachment(attachment: LetterMarkup.Attachment
     appendCodeFunction("startAttachment") {
         args {
             rawArg("\"${title.typstStringEscape()}\"")
+            rawArg("input")
+            rawArg("languageSettings")
             namedArg("sectionNumber", sectionNumber)
             namedArg("showCaseDetails", attachment.includeSakspart)
         }

@@ -1,55 +1,51 @@
 // Collision matrix for spacing between element types
-// Format: "from-to": (space, sticky)
-// - space: vertical space to add above the element
-// - sticky: if true, prevents page break between elements
+// Format: "from-to": space (vertical space to add above the element)
 #let spacingMatrix = (
   // From "start" (beginning of document/section)
-  "start-title": (28pt, false),
-  "start-paragraph": (33pt, false),
-  "start-list": (17.5pt, false),
-  "start-table": (28pt, false),
-  "start-form": (23pt, false),
+  "start-title": 26pt,
+  "start-paragraph": 26pt,
+  "start-list": 26pt,
+  "start-table": 26pt,
+  "start-form": 26pt,
 
   // From "title"
-  "title-title": (5pt, true),
-  "title-paragraph": (12pt, true),
-  "title-list": (10.5pt, true),
-  "title-table": (11pt, true),
-  "title-form": (12pt, true),
+  "title-title": 10pt,
+  "title-paragraph": 10pt,
+  "title-list": 10pt,
+  "title-table": 10pt,
+  "title-form": 10pt,
 
   // From "paragraph"
-  "paragraph-title": (29pt, false),
-  "paragraph-paragraph": (25pt, false),
-  "paragraph-list": (9pt, false),
-  "paragraph-table": (18pt, false),
-  "paragraph-form": (16pt, false),
+  "paragraph-title": 28pt,
+  "paragraph-paragraph": 16pt,
+  "paragraph-list": 11pt,
+  "paragraph-table": 16pt,
+  "paragraph-form": 22pt,
 
   // From "list"
-  "list-title": (23pt, false),
-  "list-paragraph": (26.5pt, false),
-  "list-list": (26pt, false),
-  "list-table": (20pt, false),
-  "list-form": (25pt, false),
+  "list-title": 28pt,
+  "list-paragraph": 16pt,
+  "list-list": 16pt,
+  "list-table": 22pt,
+  "list-form": 22pt,
 
   // From "table"
-  "table-title": (26pt, false),
-  "table-paragraph": (27pt, false),
-  "table-list": (18pt, false),
-  "table-table": (25pt, false),
-  "table-form": (16pt, false),
+  "table-title": 28pt,
+  "table-paragraph": 16pt,
+  "table-list": 16pt,
+  "table-table": 22pt,
+  "table-form": 16pt,
 
   // From "form"
-  "form-title": (26pt, false),
-  "form-paragraph": (25pt, false),
-  "form-list": (26pt, false),
-  "form-table": (16pt, false),
-  "form-form": (28pt, false),
+  "form-title": 28pt,
+  "form-paragraph": 22pt,
+  "form-list": 16pt,
+  "form-table": 16pt,
+  "form-form": 22pt,
 )
 
-// Get spacing info for transitioning from previous element to current element
-// Returns: (space, sticky)
+// Get spacing for transitioning from previous element to current element
 #let getSpacing(fromType, toType) = {
   let key = fromType + "-" + toType
   spacingMatrix.at(key)
 }
-

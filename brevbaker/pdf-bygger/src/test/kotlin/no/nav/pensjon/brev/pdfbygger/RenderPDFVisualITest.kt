@@ -1,21 +1,19 @@
 package no.nav.pensjon.brev.pdfbygger
 
-import no.nav.brev.brevbaker.FellesFactory
-import no.nav.brev.brevbaker.LaTeXCompilerService
-import no.nav.brev.brevbaker.PDFByggerTestContainer
-import no.nav.brev.brevbaker.TestTags
-import no.nav.brev.brevbaker.TypstCompilerService
+import no.nav.brev.brevbaker.*
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestPdfOutline
 import no.nav.brev.brevbaker.VedleggPDFTestUtils.renderTestVedleggPdf
-import no.nav.brev.brevbaker.copy
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.LangBokmal
-import no.nav.pensjon.brev.template.dsl.*
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
+import no.nav.pensjon.brev.template.dsl.choice
+import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -30,8 +28,8 @@ import org.junit.jupiter.params.provider.MethodSource
 @Execution(ExecutionMode.CONCURRENT)
 class RenderPDFVisualITest {
 
-    private val pdfCompileService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
-    //private val pdfCompileService = TypstCompilerService("http://localhost:8081") // brukes for lokal testing av mal-endringer
+    private val pdfCompileService = PdfByggerTestService()
+    //private val pdfCompileService = PdfByggerServiceImpl("http://localhost:8081") // brukes for lokal testing av mal-endringer
 
     private fun render(
         overrideName: String? = null,
@@ -354,6 +352,18 @@ class RenderPDFVisualITest {
         }
     }
 
+    @Test
+    fun `small text then bullet list`(){
+        render {
+            paragraph {
+                text(
+                    bokmal { + "Dette er en liste:"}
+                )
+                testList()
+            }
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("allElementCombinations")
     fun `Test unique content combinations`(elementA: ElementType, elementB: ElementType) {
@@ -394,7 +404,7 @@ class RenderPDFVisualITest {
                 paragraph {
                     formText(Size.FILL, {
                         text(bokmal { +"Underskrift:" })
-                    })
+                    }, false)
                 }
             }
         }
