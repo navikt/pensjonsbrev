@@ -164,7 +164,7 @@ val vedleggFolketrygdenGjenlevendepensjon =
         }
         title2 {
             text(
-                bokmal { +"Tilbakekreving - folketrgdloven § 22-15 flg." },
+                bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
                 nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." },
                 english { +"Recovery - Sections 22-15 ff of the National Insurance Act" },
             )
