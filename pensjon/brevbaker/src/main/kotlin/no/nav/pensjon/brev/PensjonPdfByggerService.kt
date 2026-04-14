@@ -1,34 +1,24 @@
-package no.nav.pensjon.brev.latex
+package no.nav.pensjon.brev
 
 import com.fasterxml.jackson.databind.SerializationFeature
-import io.ktor.callid.KtorCallIdContextElement
-import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.engine.cio.CIO
-import io.ktor.client.network.sockets.ConnectTimeoutException
-import io.ktor.client.plugins.HttpRequestRetry
-import io.ktor.client.plugins.HttpRequestTimeoutException
-import io.ktor.client.plugins.HttpResponseValidator
-import io.ktor.client.plugins.HttpSend
-import io.ktor.client.plugins.ServerResponseException
-import io.ktor.client.plugins.compression.ContentEncoding
-import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.get
-import io.ktor.client.request.header
-import io.ktor.client.request.post
-import io.ktor.client.request.setBody
-import io.ktor.client.utils.unwrapCancellationException
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
-import io.ktor.http.isSuccess
-import io.ktor.serialization.jackson.jackson
+import io.ktor.callid.*
+import io.ktor.client.*
+import io.ktor.client.call.*
+import io.ktor.client.engine.cio.*
+import io.ktor.client.network.sockets.*
+import io.ktor.client.plugins.*
+import io.ktor.client.plugins.compression.*
+import io.ktor.client.plugins.contentnegotiation.*
+import io.ktor.client.request.*
+import io.ktor.client.utils.*
+import io.ktor.http.*
+import io.ktor.serialization.jackson.*
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.io.IOException
-import no.nav.brev.brevbaker.LatexTimeoutException
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
-import no.nav.pensjon.brev.PDFRequest
+import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
 import kotlin.math.pow
@@ -36,7 +26,7 @@ import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 
-class LaTeXCompilerService(
+class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
     maxRetries: Int = 30,
     private val timeout: Duration = 300.seconds,
@@ -89,10 +79,13 @@ class LaTeXCompilerService(
             }
         }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean): PDFCompilationOutput = try {
+    override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput = try {
         withTimeoutOrNull(timeout) {
             val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
-            httpClient.post("$pdfByggerUrl/$path") {
+            httpClient.post("$pdfByggerUrl/produserBrev") {
+                url {
+                    if (useTypst) parameters.append("typst", "true")
+                }
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
@@ -106,8 +99,8 @@ class LaTeXCompilerService(
             }.body()
         }
     } catch (e: CancellationException) {
-        throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf", e)
-    } ?: throw LatexTimeoutException("Spent more than $timeout trying to compile latex to pdf")
+        throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
+    } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
     suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

@@ -1,20 +1,17 @@
-#import "input.typ": input, languageSettings
 #import "content/state.typ": section-end
 
-#let attachments = {
-  if(input.attachments != none and input.attachments.len() > 0){
-    text(size: 11pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
-    set list(body-indent: 15pt)
-    pad(
-      input.attachments.map((a)=>{
-        [- #a]
-      }).join(),
-      bottom: 10pt
-    )
-  }
+#let attachments(input, languageSettings) = {
+  text(size: 12pt, weight: "bold", tracking: 0.2pt)[#languageSettings.closingvedleggprefix]
+  set list(indent: 6.5pt, body-indent: 5pt)
+  block(
+    input.attachments.map((a)=>{
+      [- #a]
+    }).join(),
+    above: 12.8pt
+  )
 }
 
-#let closingGreeting = {
+#let closingGreeting(input, languageSettings) = {
   let signertAvSaksbehandler = input.signerendeSaksbehandler != none
   let signertAvAttestant = input.signerendeAttestant != none
   [
@@ -36,27 +33,32 @@
     } else { // autobrev
       block(above: 8.8pt)[
         #input.avsenderEnhet
-        #v(2.5pt)
-        #if input.erVedtaksbrev {
-          languageSettings.closingautomatisktextvedtaksbrev
-        } else {
-          languageSettings.closingautomatisktextinfobrev
-        }
+        #block(
+          if input.erVedtaksbrev {
+            languageSettings.closingautomatisktextvedtaksbrev
+          } else {
+            languageSettings.closingautomatisktextinfobrev
+          }, above: 22pt
+        )
       ]
     }
   ]
 }
 
-#let closing = {
+#let closing(input, languageSettings) = {
   block(
-    closingGreeting,
+    closingGreeting(input, languageSettings),
     breakable: false,
-    above: 47.8pt
+    above: 44pt,
+    below: 0pt,
   )
-  block(
-    attachments,
-    breakable: false,
-    above: 40pt
-  )
+  if(input.attachments != none and input.attachments.len() > 0){
+    block(
+      attachments(input, languageSettings),
+      breakable: false,
+      above: 44pt,
+      below: 0pt,
+    )
+  }
   section-end(1)
 }

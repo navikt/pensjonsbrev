@@ -34,7 +34,7 @@ class PDFVedleggTest {
         }
         val letter = LetterTestImpl(
             template,
-            createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto(),
+            createSamletMeldingOmPensjonsvedtakV2Dto(),
             spraak,
             FellesFactory.felles
         )
@@ -45,15 +45,6 @@ class PDFVedleggTest {
         )
     }
 }
-
-fun createSamletMeldingOmPensjonsvedtakV2UtenVedleggDto() =
-    SamletMeldingOmPensjonsvedtakV2Dto(
-        saksbehandlerValg = EmptySaksbehandlerValg,
-        pesysData = SamletMeldingOmPensjonsvedtakV2Dto.PesysData(
-            sakstype = Sakstype.ALDER,
-            p1Vedlegg = null
-        ),
-    )
 
 
 fun createSamletMeldingOmPensjonsvedtakV2Dto() =

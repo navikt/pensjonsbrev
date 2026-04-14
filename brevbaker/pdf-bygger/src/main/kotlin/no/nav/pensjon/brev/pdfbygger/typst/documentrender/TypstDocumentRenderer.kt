@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCodeScope
-import no.nav.pensjon.brev.pdfbygger.typst.TypstDocument
+import no.nav.pensjon.brev.pdfbygger.typst.TypstFileWriter
 import no.nav.pensjon.brev.pdfbygger.typst.typstStringEscape
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.dateFormatter
@@ -17,12 +17,13 @@ import java.time.format.FormatStyle
 
 object TypstDocumentRenderer {
 
-    internal fun render(pdfRequest: PDFRequest): TypstDocument = render(
+    internal fun render(pdfRequest: PDFRequest, typstWriter: TypstFileWriter): Unit = render(
         letter = pdfRequest.letterMarkup.clean(),
         attachments = pdfRequest.attachments.clean(),
         language = pdfRequest.language.toLanguage(),
         brevtype = pdfRequest.brevtype,
         pdfVedlegg = pdfRequest.pdfVedlegg,
+        typstWriter = typstWriter,
     )
 
     private fun render(
@@ -31,19 +32,14 @@ object TypstDocumentRenderer {
         language: Language,
         brevtype: LetterMetadata.Brevtype,
         pdfVedlegg: List<PDFTittel>,
-    ): TypstDocument {
-        return TypstDocument().apply {
-            newTypstFile("input.typ") {
-                appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
-            }
-            newTypstFile("letter.typ") {
-                renderLetterTemplate(letter, attachments)
-            }
-        }
+        typstWriter: TypstFileWriter,
+    ): Unit = typstWriter.codeScope {
+        appendInputData(letter, attachments, language, brevtype, pdfVedlegg)
+        renderLetterTemplate(letter, attachments)
     }
 
     /**
-     * Append the input.typ file with language settings and input data dictionary.
+     * Prepend language settings and input data dictionaries into the letter content (stdin).
      */
     private fun TypstCodeScope.appendInputData(
         letter: LetterMarkup,
@@ -66,7 +62,7 @@ object TypstDocumentRenderer {
                 "dokumentDato" to letter.sakspart.dokumentDato.format(dateFormatter(language, FormatStyle.LONG)),
                 "avsenderEnhet" to letter.signatur.navAvsenderEnhet,
                 "signerendeSaksbehandler" to letter.signatur.saksbehandlerNavn,
-                "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn,
+                "signerendeAttestant" to letter.signatur.attesterendeSaksbehandlerNavn?.takeIf { brevtype == LetterMetadata.Brevtype.VEDTAKSBREV },
                 "erVedtaksbrev" to (brevtype == LetterMetadata.Brevtype.VEDTAKSBREV),
                 "attachments" to buildAttachmentTitleList(attachments, pdfVedlegg),
             )
@@ -117,7 +113,9 @@ object TypstDocumentRenderer {
         // Template setup with letter title
         val letterTitle = letter.title.renderToPlainString()
         appendCodeln("""#show: template.with(""")
-        appendCodeln("""  lettertitle: "${letterTitle.typstStringEscape()}"""")
+        appendCodeln("""  lettertitle: "${letterTitle.typstStringEscape()}",""")
+        appendCodeln("""  input: input,""")
+        appendCodeln("""  languageSettings: languageSettings,""")
         appendCodeln(""")""")
         appendCodeln()
 
@@ -128,7 +126,7 @@ object TypstDocumentRenderer {
         renderBlocks(letter.blocks)
 
         // Closing section
-        appendCodeln("  closing")
+        appendCodeln("  closing(input, languageSettings)")
 
         // Render attachments
         attachments.forEachIndexed { index, attachment ->

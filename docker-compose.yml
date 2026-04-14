@@ -1,6 +1,7 @@
 #Used for local testing purposes
 services:
   pdf-bygger:
+    image: pensjonsbrev-pdf-bygger:latest
     build: ./brevbaker/pdf-bygger
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability

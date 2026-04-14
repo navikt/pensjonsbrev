@@ -25,6 +25,8 @@ internal fun TypstCodeScope.renderTable(table: Table) {
 
     appendCodeFunction("letter-table") {
         args {
+            rawArg("languageSettings")
+
             // Column specification - span defines relative width (e.g., 2fr is twice as wide as 1fr)
             namedArgRaw("columns", columnSpecToTypst(columnSpec))
 
