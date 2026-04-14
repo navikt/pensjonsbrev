@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepens
 import java.time.LocalDate
 
 
-fun createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlanDto() =
+fun createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() =
     InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto(
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto.PesysData(
