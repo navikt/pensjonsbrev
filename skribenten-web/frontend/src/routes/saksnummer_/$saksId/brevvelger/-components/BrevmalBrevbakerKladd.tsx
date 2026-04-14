@@ -79,6 +79,8 @@ const Brevmal = (props: {
     resetEndreMottaker,
     endreMottakerError,
     endreMottakerIsPending,
+    fjernMottaker,
+    fjernMottakerIsPending,
   } = useEndreMottaker(props.saksId, props.brev.id);
 
   useEffect(() => {
@@ -170,6 +172,21 @@ const Brevmal = (props: {
               </Button>
             </HStack>
             <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
+            {props.brev.mottaker !== null && (
+              <HStack>
+                <Button
+                  css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
+                  disabled={fjernMottakerIsPending}
+                  loading={fjernMottakerIsPending}
+                  onClick={fjernMottaker}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Tilbakestill mottaker
+                </Button>
+              </HStack>
+            )}
           </VStack>
         )}
         <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />
