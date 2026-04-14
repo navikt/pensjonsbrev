@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 
 import { addServeSpaHandler, serveViteMode } from "@navikt/vite-mode";
@@ -10,5 +11,17 @@ export function setupStaticRoutes(server: Express) {
   const spaFilePath = path.resolve("./public", "index.html");
 
   serveViteMode(server, { port: "5173" });
-  addServeSpaHandler(server, spaFilePath);
+
+  try {
+    const html = fs.readFileSync(spaFilePath, "utf-8");
+    const injected = html
+      .replace("{{UMAMI_HOST_URL}}", process.env.UMAMI_HOST_URL ?? "")
+      .replace("{{UMAMI_WEBSITE_ID}}", process.env.UMAMI_WEBSITE_ID ?? "");
+
+    server.get("*splat", (_req, res) => {
+      res.type("html").send(injected);
+    });
+  } catch {
+    addServeSpaHandler(server, spaFilePath);
+  }
 }

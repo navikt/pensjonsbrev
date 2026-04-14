@@ -3,8 +3,15 @@ import { describe, expect, test } from "vitest";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newLiteral } from "~/Brevredigering/LetterEditor/actions/common";
 import { isEmptyContent, ZERO_WIDTH_SPACE } from "~/Brevredigering/LetterEditor/model/utils";
-import type { Content, Item, ItemList, LiteralValue, ParagraphBlock, TextContent } from "~/types/brevbakerTypes";
-import { LITERAL } from "~/types/brevbakerTypes";
+import {
+  type Content,
+  type Item,
+  type ItemList,
+  LITERAL,
+  type LiteralValue,
+  type ParagraphBlock,
+  type TextContent,
+} from "~/types/brevbakerTypes";
 
 import { asNew, item, itemList, letter, literal, paragraph, select, variable } from "../utils";
 

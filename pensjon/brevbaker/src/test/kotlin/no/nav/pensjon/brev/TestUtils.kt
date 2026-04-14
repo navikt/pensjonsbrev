@@ -1,14 +1,22 @@
 package no.nav.pensjon.brev
 
-import io.ktor.client.*
-import io.ktor.client.plugins.*
-import io.ktor.client.plugins.contentnegotiation.*
-import io.ktor.http.*
-import io.ktor.serialization.jackson.*
-import io.ktor.server.config.*
-import io.ktor.server.testing.*
+import io.ktor.client.HttpClient
+import io.ktor.client.plugins.HttpRequestRetry
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.defaultRequest
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
+import io.ktor.serialization.jackson.jackson
+import io.ktor.server.config.ApplicationConfig
+import io.ktor.server.config.MapApplicationConfig
+import io.ktor.server.config.mergeWith
+import io.ktor.server.testing.ApplicationTestBuilder
+import io.ktor.server.testing.testApplication
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.template.brevbakerConfig
+
+fun testBrevbakerAppTypst(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
+    testBrevbakerApp(enableAllToggles = true, block = block)
 
 fun testBrevbakerApp(
     enableAllToggles: Boolean = false,
@@ -28,6 +36,9 @@ fun testBrevbakerApp(
     val client = createClient {
         install(ContentNegotiation) {
             jackson { brevbakerConfig() }
+        }
+        install(HttpRequestRetry) {
+            retryOnServerErrors(maxRetries = 2)
         }
         defaultRequest {
             contentType(ContentType.Application.Json)

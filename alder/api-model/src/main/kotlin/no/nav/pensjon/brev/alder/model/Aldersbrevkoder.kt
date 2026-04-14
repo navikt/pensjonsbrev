@@ -3,14 +3,28 @@ package no.nav.pensjon.brev.alder.model
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Automatisk
 import no.nav.pensjon.brev.api.model.maler.Brevkode.Redigerbart
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
+import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
+        GJP_VARSEL_FORLENGELSE_60_61,
+        GJP_VARSEL_FORLENGELSE_60_61_UTLAND,
+        GJP_VARSEL_FORLENGELSE_62_70,
+        GJP_VARSEL_FORLENGELSE_62_70_UTLAND,
+        GJP_VARSEL_OPPHOR_60_70,
+        GJP_VARSEL_OPPHOR_60_70_UTLAND,
+        GJP_VEDTAK_FORLENGELSE_60_61,
+        GJP_VEDTAK_FORLENGELSE_60_61_UTLAND,
+        GJP_VEDTAK_FORLENGELSE_62_70,
+        GJP_VEDTAK_FORLENGELSE_62_70_UTLAND,
+        GJP_VEDTAK_OPPHOR_60_70,
+        GJP_VEDTAK_OPPHOR_60_70_UTLAND,
         INFO_ADHOC_TIDLIGERE_UFOERE_GRADERT_AP_AUTO,
         INFO_EPS_60_AAR_AUTO,
         INFO_EPS_62_AAR_AUTO,
         INFO_FYLLER_67_AAR_SAERSKILT_SATS,
         PE_ADHOC_2024_FEIL_INFOBREV_AP_SENDT_BRUKER,
+        PE_ADHOC_2024_VEDTAK_GJENLEVENDETTER1970,
         PE_AFP_2024_INFO_TOLERANSEBELOP,
         PE_AP_2024_IKKEUTBET_FT_VARSEL_OPPH,
         PE_AP_2024_UTBET_FT_VARSEL_OPPH,
@@ -42,14 +56,16 @@ object Aldersbrevkoder {
 
     enum class Redigerbar : Redigerbart {
         INFO_BEKREFTELSE_UTSENDING_KRAV_TIL_UTLANDET,
-        PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG,
-        PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS,
-        PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND,
+        INFO_BRUKER_AFP_PRIVAT_SOKER_UFORETRYGD,
+        INFO_BRUKER_UFORETRYGD_SOKER_AFP_PRIVAT,
         PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER,
         PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_AP2016,
         PE_AP_AVSLAG_GRAD_FOER_NORM_PEN_ALDER_ETT_AAR,
         PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER,
         PE_AP_AVSLAG_UTTAK_FOER_NORM_PEN_ALDER_AP2016,
+        PE_AP_ENDRING_AV_ALDERSPENSJON_GARANTITILLEGG,
+        PE_AP_ENDRING_AV_ALDERSPENSJON_SAERSKILT_SATS,
+        PE_AP_ENDRING_AV_ALDERSPENSJON_SIVILSTAND,
         PE_AP_OMREGNING_ALDER_UFORE_2016,
         PE_AP_STANS_FLYTTING_MELLOM_LAND
         ;
@@ -57,9 +73,9 @@ object Aldersbrevkoder {
         override fun kode(): String = this.name
     }
 
-    enum class AlltidValgbareVedlegg(override val visningstekst: String) : AlltidValgbartVedleggKode {
-        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger"),
-        UTTAKSSKJEMA("Uttaksskjema")
+    enum class AlltidValgbareVedlegg(override val visningstekst: String, override val spraak: Set<LanguageCode>) : AlltidValgbartVedleggKode {
+        SKJEMA_FOR_BANKOPPLYSNINGER("Skjema for bankopplysninger", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH)),
+        UTTAKSSKJEMA("Uttaksskjema", setOf(LanguageCode.BOKMAL, LanguageCode.ENGLISH))
         ;
 
         override val kode = name

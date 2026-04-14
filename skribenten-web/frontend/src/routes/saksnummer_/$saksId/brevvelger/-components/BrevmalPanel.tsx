@@ -1,8 +1,8 @@
 import { VStack } from "@navikt/ds-react";
 
-import type { LetterMetadata } from "~/types/apiTypes";
+import { type LetterMetadata } from "~/types/apiTypes";
 
-import type { SubmitTemplateOptions } from "../route";
+import { type SubmitTemplateOptions } from "../route";
 import { BrevmalBrevbakerKladd } from "./BrevmalBrevbakerKladd";
 import { TemplateLoader } from "./TemplateLoader";
 
@@ -19,7 +19,7 @@ const BrevmalPanel = (props: {
   return (
     <>
       {visPanel && (
-        <VStack overflowY="auto" padding="space-24" width="385px">
+        <VStack overflowY="auto" padding="space-16" width="385px">
           {props.templateId ? (
             <TemplateLoader
               enhetsId={props.enhetsId}

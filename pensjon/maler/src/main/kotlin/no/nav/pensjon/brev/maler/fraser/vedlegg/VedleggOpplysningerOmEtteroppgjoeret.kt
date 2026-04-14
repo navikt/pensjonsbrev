@@ -249,9 +249,9 @@ data class OmBeregningAvBarnetillegg(
         }
         paragraph {
             text(
-                bokmal { + "Det er personinntekt som avgjør hvor mye du får i barnetillegg. Dette står i §12-2 i skatteloven. Personinntekter omfatter:" },
-                nynorsk { + "Det er personinntekta som avgjer kor mykje du får i barnetillegg. Dette står i §12-2 i skattelova. Personinntekter omfattar:" },
-                english { + "Personal income determines how much you receive in child supplement. This is stated in §12-2 of the Taxation Act. Personal income includes:" },
+                bokmal { + "Det er personinntekt som avgjør hvor mye du får i barnetillegg. Dette står i § 12-2 i skatteloven. Personinntekter omfatter:" },
+                nynorsk { + "Det er personinntekta som avgjer kor mykje du får i barnetillegg. Dette står i § 12-2 i skattelova. Personinntekter omfattar:" },
+                english { + "Personal income determines how much you receive in child supplement. This is stated in § 12-2 of the Taxation Act. Personal income includes:" },
             )
             list {
                 item {

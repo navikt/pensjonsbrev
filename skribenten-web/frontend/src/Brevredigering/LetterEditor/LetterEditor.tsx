@@ -2,8 +2,7 @@ import "./editor.css";
 
 import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import type { Dispatch, SetStateAction } from "react";
-import { createContext, useCallback, useContext, useState } from "react";
+import { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
 import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
@@ -11,12 +10,13 @@ import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
 import { useSelectionDeleteHotkey } from "~/hooks/useSelectionDeleteHotKey";
 import { TITLE_INDEX } from "~/types/brevbakerTypes";
+
 import Actions from "./actions";
 import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import type { LetterEditorState } from "./model/state";
+import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
 export const LetterEditor = ({
@@ -82,25 +82,17 @@ export const LetterEditor = ({
   }, [canRedo, setEditorState]);
 
   return (
-    <Box asChild overflowY="hidden">
-      <VStack align="center">
-        <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
-          {vilTilbakestilleMal && (
-            <TilbakestillMalModal
-              brevId={editorState.info.id}
-              onClose={() => setVilTilbakestilleMal(false)}
-              resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-              åpen={vilTilbakestilleMal}
-            />
-          )}
-          <EditorMenu
-            canRedo={canRedo}
-            canUndo={canUndo}
-            redo={redo}
-            setVilTilbakestilleMal={setVilTilbakestilleMal}
-            undo={undo}
-          />
-          <Box className="editor" css={freeze ? { cursor: "wait" } : {}} flexGrow="1" overflowY="auto">
+    <VStack overflowY="hidden">
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
+        <EditorMenu
+          canRedo={canRedo}
+          canUndo={canUndo}
+          redo={redo}
+          setVilTilbakestilleMal={setVilTilbakestilleMal}
+          undo={undo}
+        />
+        <VStack align="center" overflowY="auto">
+          <Box className="editor" css={freeze ? { cursor: "wait" } : {}} height="100%">
             <SakspartView sakspart={letter.sakspart} spraak={editorState.info.spraak} />
             <Heading
               className="letter-title"
@@ -139,10 +131,19 @@ export const LetterEditor = ({
             </div>
             <SignaturView signatur={letter.signatur} />
           </Box>
-          {showDebug && <DebugPanel />}
-        </EditorStateContext.Provider>
-      </VStack>
-    </Box>
+        </VStack>
+        {showDebug && <DebugPanel />}
+        {/* Åpner modal, tar ikke plass i DOM her */}
+        {vilTilbakestilleMal && (
+          <TilbakestillMalModal
+            brevId={editorState.info.id}
+            onClose={() => setVilTilbakestilleMal(false)}
+            resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
+            åpen={vilTilbakestilleMal}
+          />
+        )}
+      </EditorStateContext.Provider>
+    </VStack>
   );
 };
 

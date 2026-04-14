@@ -1,4 +1,4 @@
-import type { CSSObject } from "@emotion/react";
+import { type CSSObject } from "@emotion/react";
 import {
   Accordion,
   Alert,
@@ -6,14 +6,15 @@ import {
   BodyShort,
   Box,
   Button,
+  Chips,
   Heading,
   HStack,
   Label,
   Search,
+  Spacer,
   VStack,
 } from "@navikt/ds-react";
-import type { UseQueryResult } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
+import { type UseQueryResult, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import Fuse from "fuse.js";
 import { groupBy, partition, sortBy } from "lodash";
@@ -25,10 +26,9 @@ import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { getFavoritter, getSakContext } from "~/api/skribenten-api-endpoints";
 import { BrevbakerIcon, ExstreamIcon } from "~/assets/icons";
 import { ApiError } from "~/components/ApiError";
-import type { LetterMetadata } from "~/types/apiTypes";
-import { BrevSystem } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { BrevSystem, type LetterMetadata } from "~/types/apiTypes";
+import { type BrevInfo } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { erBrevKladdEllerUnderRedigering, erBrevKlar } from "~/utils/brevUtils";
 import { formatStringDate } from "~/utils/dateUtils";
 import { trackEvent } from "~/utils/umami";
@@ -86,7 +86,7 @@ export function BrevvelgerPage() {
   return (
     <Box asChild background="default">
       <VStack
-        height="calc(var(--main-page-content-height) + 48px)"
+        height="calc(var(--main-page-content-height) + var(--nav-bar-height))"
         marginInline={{ sm: "space-0", lg: "auto" }}
         width="fit-content"
       >
@@ -135,15 +135,8 @@ const BrevvelgerMainContent = (props: {
     <Box asChild flexGrow="1" overflowY="hidden">
       <HStack wrap={false}>
         {/* Brevmal-liste */}
-        <Box
-          asChild
-          borderColor="neutral-subtle"
-          borderWidth="0 1 0 0"
-          minWidth="640px"
-          paddingBlock="space-20 space-0"
-          paddingInline="space-24"
-        >
-          <VStack gap="space-24">
+        <Box asChild borderColor="neutral-subtle" borderWidth="0 1 0 0" minWidth="640px" padding="space-16">
+          <VStack gap="space-16" height="100%">
             <Heading level="1" size="small">
               Brevvelger
             </Heading>
@@ -191,6 +184,7 @@ function Brevmaler({
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
   const { templateId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
 
   const alleBrevmaler: LetterMetadata[] = useMemo(
@@ -198,17 +192,32 @@ function Brevmaler({
     [brevmalKoder, brevmetadata],
   );
 
+  const filteredBrevmaler = useMemo(() => {
+    let result = alleBrevmaler;
+    if (selectedFilters.includes("Skribenten")) {
+      result = result.filter((b) => b.brevsystem === BrevSystem.Brevbaker);
+    }
+    if (selectedFilters.includes("Vedtaksbrev")) {
+      result = result.filter((b) => b.dokumentkategoriCode === "VB");
+    }
+    return result;
+  }, [alleBrevmaler, selectedFilters]);
+
   const fuse = useMemo(() => {
     const fuseOptions = {
-      keys: ["name", "brevsystem", "brevkategori"],
-      threshold: 0.4, // lower => stricter, less fuzzy (default is 0.6)
+      keys: ["name", "brevsystemDisplay", "brevkategori"],
+      threshold: 0.3, // lower => stricter, less fuzzy (default is 0.6)
     };
-    return new Fuse(alleBrevmaler, fuseOptions);
-  }, [alleBrevmaler]);
+    const searchableBrevmaler = filteredBrevmaler.map((b) => ({
+      ...b,
+      brevsystemDisplay: b.brevsystem === BrevSystem.Brevbaker ? "Skribenten" : "Exstream",
+    }));
+    return new Fuse(searchableBrevmaler, fuseOptions);
+  }, [filteredBrevmaler]);
 
   const brevmalerMatchingSearchTerm =
     searchTerm.trim().length === 0
-      ? sortBy(alleBrevmaler, (template) => template.name)
+      ? sortBy(filteredBrevmaler, (template) => template.name)
       : fuse.search(searchTerm).map((result) => result.item);
 
   const matchingFavoritter = brevmalerMatchingSearchTerm.filter(({ id }) => favoritter.includes(id));
@@ -231,19 +240,44 @@ function Brevmaler({
     eblanketter.length > 0 ? ["E-blanketter"] : [],
   ].flat();
 
+  const filters = ["Skribenten", "Vedtaksbrev"];
   return (
-    <VStack gap="space-24" height="calc(100% - 51px)">
-      <Search
-        data-cy="brevmal-search"
-        hideLabel={false}
-        label="Søk etter brevmal"
-        onChange={(value) => setSearchTerm(value)}
-        size="small"
-        value={searchTerm}
-        variant="simple"
-      />
-      <Bleed asChild marginInline="space-24">
-        <Box asChild overflowY="auto" paddingInline="space-24">
+    <VStack gap="space-16" height="calc(100% - 27px)">
+      <Box width="334px">
+        <Search
+          autoFocus={true}
+          data-cy="brevmal-search"
+          hideLabel={false}
+          label="Søk etter brevmal"
+          onChange={(value) => setSearchTerm(value)}
+          placeholder="Søk"
+          size="small"
+          value={searchTerm}
+          variant="simple"
+        />
+      </Box>
+      <Box asChild paddingBlock="space-0 space-4">
+        <Chips size="small">
+          {filters.map((filter) => (
+            <Chips.Toggle
+              data-color="accent"
+              key={filter}
+              onClick={() =>
+                setSelectedFilters(
+                  selectedFilters.includes(filter)
+                    ? selectedFilters.filter((x) => x !== filter)
+                    : [...selectedFilters, filter],
+                )
+              }
+              selected={selectedFilters.includes(filter)}
+            >
+              {filter}
+            </Chips.Toggle>
+          ))}
+        </Chips>
+      </Box>
+      <Bleed asChild marginInline="space-16">
+        <Box asChild overflowY="auto" paddingInline="space-16">
           <Accordion
             css={{
               "> div > div": {
@@ -268,7 +302,7 @@ function Brevmaler({
                   defaultOpen={type === "Favoritter"}
                   key={type}
                   onOpenChange={() => handleOpenAccordionChange(type)}
-                  open={searchTerm.length > 0 ? true : openAccordions[type]}
+                  open={searchTerm.length > 0 || selectedFilters.length > 0 ? true : openAccordions[type]}
                 >
                   <Accordion.Header
                     css={{
@@ -287,17 +321,17 @@ function Brevmaler({
                       },
                     }}
                   >
-                    <VStack>
+                    <VStack gap="space-8" paddingBlock="space-8">
                       {brevmalerGroupedByType[type].map((template) => (
                         <BrevmalButton
                           extraStyles={
                             template.id === templateId
                               ? {
-                                  color: "var(--ax-text-accent-contrast)",
-                                  backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                                  backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                                 }
                               : undefined
                           }
+                          icon={<BrevSystemIcon brevsystem={template.brevsystem} />}
                           key={template.id}
                           onClick={() =>
                             navigate({
@@ -309,16 +343,7 @@ function Brevmaler({
                               }),
                             })
                           }
-                          title={
-                            <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
-                              <BrevSystemIcon brevsystem={template.brevsystem} />
-                              <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
-                                <BodyShort size="small" truncate>
-                                  {template.name}
-                                </BodyShort>
-                              </Box>
-                            </HStack>
-                          }
+                          title={template.name}
                         />
                       ))}
                     </VStack>
@@ -348,23 +373,21 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
             color: "var(--ax-text-neutral)",
           }}
         >
-          <HStack gap="space-8">
-            <Label size="small">Kladder</Label>
-          </HStack>
+          <Label size="small">Kladder</Label>
         </Accordion.Header>
         <Accordion.Content css={{ "> div:first-of-type": { overflowX: "hidden" } }}>
-          <VStack>
+          <VStack gap="space-8" paddingBlock="space-8" paddingInline="space-4">
             {kladder.map((brev) => (
               <BrevmalButton
                 description={`Opprettet ${formatStringDate(brev.opprettet)}`}
                 extraStyles={
                   brev.id === brevId
                     ? {
-                        color: "var(--ax-text-accent-contrast)",
-                        backgroundColor: "var(--ax-bg-accent-strong-hover)",
+                        backgroundColor: "var(--ax-bg-accent-moderate-pressed)",
                       }
                     : undefined
                 }
+                icon={<BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />}
                 key={brev.id}
                 onClick={() =>
                   navigate({
@@ -376,16 +399,7 @@ const Kladder = (props: { alleBrevPåSaken: BrevInfo[]; brevmetadata: Record<str
                     }),
                   })
                 }
-                title={
-                  <HStack flexGrow="1" gap="space-8" overflowX="hidden" wrap={false}>
-                    <BrevSystemIcon brevsystem={props.brevmetadata[brev.brevkode]?.brevsystem} />
-                    <Box asChild maxWidth="calc(100% - var(--ax-space-24)">
-                      <BodyShort size="small" truncate>
-                        {brev.brevtittel}
-                      </BodyShort>
-                    </Box>
-                  </HStack>
-                }
+                title={brev.brevtittel}
               />
             ))}
           </VStack>
@@ -413,23 +427,16 @@ const BrevSystemIcon = (props: { brevsystem?: BrevSystem }) => {
 
 const BrevmalButton = (props: {
   onClick: () => void;
-  title: React.ReactNode;
-  extraStyles?: CSSObject | undefined;
   description?: string;
+  extraStyles?: CSSObject | undefined;
+  icon: React.ReactNode;
+  title: React.ReactNode;
 }) => {
   return (
     <Button
       css={{
         color: "var(--ax-text-neutral)",
-        justifyContent: "flex-start",
-        padding: "var(--ax-space-8) var(--ax-space-12)",
-        borderRadius: 0,
-        span: {
-          fontWeight: "var(--ax-font-weight-regular)",
-          whiteSpace: "nowrap",
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-        },
+        padding: "var(--ax-space-4) var(--ax-space-8)",
         "> :first-of-type": {
           width: "100%",
         },
@@ -439,9 +446,19 @@ const BrevmalButton = (props: {
       onClick={props.onClick}
       variant="tertiary"
     >
-      <HStack gap="space-8" justify="space-between" wrap={false}>
-        {props.title}
-        {props.description && <BodyShort size="small">{props.description}</BodyShort>}
+      <HStack align="center" gap="space-8" wrap={false}>
+        <Box height="16px" width="16px">
+          {props.icon}
+        </Box>
+        <BodyShort size="small" truncate>
+          {props.title}
+        </BodyShort>
+        <Spacer />
+        {props.description && (
+          <BodyShort css={{ whiteSpace: "nowrap" }} size="small">
+            {props.description}
+          </BodyShort>
+        )}
       </HStack>
     </Button>
   );

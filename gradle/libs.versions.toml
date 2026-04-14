@@ -1,30 +1,30 @@
 [versions]
 kotlinVersion = "2.3.10"
 kotlinKspVersion = "2.3.6"
-ktorVersion = "3.4.0"
+ktorVersion = "3.4.1"
 assertJVersion = "3.27.7"
 binaryCompatibilityValidatorVersion = "0.18.1"
 classGraphVersion = "4.8.184"
 commonsCodecVersion = "1.21.0"
-commonVersion = "2.30.0"
-exposedVersion = "1.0.0"
-flywayVersion = "12.0.2"
+commonVersion = "2.32.0"
+exposedVersion = "1.2.0"
+flywayVersion = "12.1.1"
 hikariVersion = "7.0.2"
 # TODO: Vi burde egentlig bruke samme versjon av Jackson, men jsr310 er publisert med 2.21.0, og resten med 2.21
-jacksonJsr310Version = "2.21.1"
+jacksonJsr310Version = "2.21.2"
 jacksonVersion = "2.21"
 jupiterVersion = "6.0.3"
 kotlinxHtmlVersion = "0.12.0"
 kotlinxCoroutinesVersion = "1.10.2"
-ktlintVersion = "14.0.1"
+ktlintVersion = "14.2.0"
 logbackVersion = "1.5.32"
 logstashVersion = "9.0"
-micrometerVersion = "1.16.3"
-pdfboxVersion = "3.0.6"
+micrometerVersion = "1.16.4"
+pdfboxVersion = "3.0.7"
 postgresqlVersion = "42.7.10"
-testcontainersCoreVersion = "2.0.3"
-testcontainersPostgresqlVersion = "2.0.3"
-unleashVersion = "12.1.2"
+testcontainersCoreVersion = "2.0.4"
+testcontainersPostgresqlVersion = "2.0.4"
+unleashVersion = "12.2.0"
 valkeyVersion = "5.5.0"
 
 [plugins]
@@ -38,6 +38,7 @@ commons-codec = { module = "commons-codec:commons-codec", version.ref = "commons
 hikari-cp = { module = "com.zaxxer:HikariCP", version.ref = "hikariVersion" }
 io-github-classgraph = { module = "io.github.classgraph:classgraph", version.ref = "classGraphVersion" }
 jackson-annotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "jacksonVersion" }
+jackson-yaml = { module = "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml", version.ref = "jacksonJsr310Version" }
 jackson-datatype-jsr310 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jsr310", version.ref = "jacksonJsr310Version" }
 kotlinx-html = { module = "org.jetbrains.kotlinx:kotlinx-html-jvm", version.ref = "kotlinxHtmlVersion" }
 kotlinx-coroutines-slf4j = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j", version.ref = "kotlinxCoroutinesVersion" }

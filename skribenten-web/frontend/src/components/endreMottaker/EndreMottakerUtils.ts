@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
-import { SamhandlerTypeCode } from "~/types/apiTypes";
+import { type Adresse, type KontaktAdresseResponse, SamhandlerTypeCode } from "~/types/apiTypes";
 import { ManueltAdressertTil } from "~/types/brev";
 
 export enum Søketype {

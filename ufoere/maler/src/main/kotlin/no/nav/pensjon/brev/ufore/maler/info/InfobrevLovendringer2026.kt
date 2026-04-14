@@ -67,7 +67,7 @@ object InfobrevLovendringer2026 : AutobrevTemplate<EmptyAutobrevdata> {
                 }
             }
 
-            paragraph {
+            paragraph { // TODO dette hacket er ikke lengre nødvendig i det typst er på lufta istedenfor LaTeX. Tittelen henger alltid sammen med innholdet under.
                 text(bokmal { +"\u200B" }) // unicode zero width space, workaround for å tvinge fram linjeskift
             }
             title3 { text(bokmal { +"Du trenger ikke å gjøre noe" }) }

@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDt
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagInntektDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.ufore.maler.Brevkategori
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
+import no.nav.pensjon.brev.ufore.maler.uforeavslag.UforeAvslagInntektsevne50.redigerbarData
 import no.nav.pensjon.brev.ufore.maler.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VEDTAK
@@ -79,8 +80,8 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { +"Inntekten din før du blei ufør er fastsett til " + pesysData.inntektForUforhet.format(CurrencyFormat) + " kroner. " })
 
                 showIf(saksbehandlerValg.visVurderingIFU) {
-                    text(bokmal { +pesysData.vurderingIFU },
-                        nynorsk { +pesysData.vurderingIFU } )
+                    text(bokmal { +redigerbarData(pesysData.vurderingIFU) },
+                        nynorsk { +redigerbarData(pesysData.vurderingIFU) } )
                 }.orShow {
                     text(bokmal { +fritekst("Begrunnelse for fastsatt IFU.") },
                         nynorsk { +fritekst("Begrunnelse for fastsatt IFU.") } )
@@ -96,8 +97,8 @@ object UforegradAvslagInntektsevne : RedigerbarTemplate<UforeAvslagInntektDto> {
                 )
 
                 showIf(saksbehandlerValg.visVurderingIEU) {
-                    text(bokmal { +pesysData.vurderingIEU },
-                        nynorsk { +pesysData.vurderingIEU } )
+                    text(bokmal { +redigerbarData(pesysData.vurderingIEU) },
+                        nynorsk { +redigerbarData(pesysData.vurderingIEU) } )
                 }.orShow {
                     text(bokmal { +fritekst("Begrunnelse for fastsatt IEU.") },
                         nynorsk { +fritekst("Begrunnelse for fastsatt IEU.") } )

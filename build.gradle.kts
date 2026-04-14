@@ -75,16 +75,20 @@ subprojects {
     tasks {
         register<Test>("integrationTest") {
             outputs.doNotCacheIf("Output of this task is not cached") { true }
+            outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            forkEvery = 0 // for å dele test-container uten å spinne opp ny.
             useJUnitPlatform {
                 includeTags = setOf("integration-test")
             }
         }
         register<Test>("manualTest") {
             outputs.doNotCacheIf("Output of this task is not cached") { true }
+            outputs.upToDateWhen { false }
             group = LifecycleBasePlugin.VERIFICATION_GROUP
             systemProperties["junit.jupiter.execution.parallel.config.dynamic.factor"] = 0.5
+            forkEvery = 0 // for å dele test-container uten å spinne opp ny.
             useJUnitPlatform {
                 includeTags = setOf("manual-test")
             }

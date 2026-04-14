@@ -1,7 +1,7 @@
 import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -21,7 +21,12 @@ import {
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import {
+  type BrevResponse,
+  type OppdaterBrevRequest,
+  type ReservasjonResponse,
+  type SaksbehandlerValg,
+} from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
@@ -333,7 +338,13 @@ function RedigerBrev({
               </Box>
               <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
             </HGrid>
-            <Box asChild background="default" borderColor="neutral-subtle" borderWidth="1 0 0 0" height="48px">
+            <Box
+              asChild
+              background="default"
+              borderColor="neutral-subtle"
+              borderWidth="1 0 0 0"
+              height="var(--nav-bar-height)"
+            >
               <HStack justify="space-between" paddingBlock="space-8" paddingInline="space-16">
                 <Button
                   onClick={() =>

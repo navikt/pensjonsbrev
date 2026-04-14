@@ -40,8 +40,8 @@ object TBU5005_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 }
             }
             text(
-                bokmal { + "Dette går frem av folketrygdloven §12-15 som gjelder fra 1. juli 2020." },
-                nynorsk { + "Dette går fram av folketrygdlova §12-15 som gjeld frå 1. juli 2020." },
+                bokmal { + "Dette går frem av folketrygdloven § 12-15 som gjelder fra 1. juli 2020." },
+                nynorsk { + "Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020." },
                 english { + "This is in accordance with the regulations of § 12-15 of the National Insurance Act, which apply from 1 July 2020." },
             )
         }

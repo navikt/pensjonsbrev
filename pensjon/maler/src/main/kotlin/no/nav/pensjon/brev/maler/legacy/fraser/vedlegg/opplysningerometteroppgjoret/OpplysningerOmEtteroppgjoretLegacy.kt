@@ -1,11 +1,11 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype
-import no.nav.pensjon.brev.api.model.maler.legacy.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.Inntektsgrunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.belop
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.grunnikkereduksjon
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.inntekttype
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.uforetrygdetteroppgjor.InntektsgrunnlagSelectors.registerkilde
 import no.nav.pensjon.brev.maler.legacy.ut_inntekt_trukket_fra_personinntekt
 import no.nav.pensjon.brev.maler.legacy.ut_sum_inntekterbt_totalbeloput
 import no.nav.pensjon.brev.maler.legacy.ut_uforetrygdetteroppgjor_periodefom_year
@@ -381,7 +381,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
         }
     }
 
-    data class TabellTrukketFraInntekt(val pe: Expression<PE>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class TabellTrukketFraInntekt(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(
                 (pe.vedtaksbrev_vedtaksdata_etteroppgjorresultat_avviksbelop()
@@ -540,7 +540,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class TabellOversiktForskjellBetaling(
-        val pe: Expression<PE>,
+        val pe: Expression<PEgruppe10>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_Avviksbelop <> 0) THEN      INCLUDE ENDIF
@@ -801,7 +801,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class TabellBeloepFratrukketInntektAnnenForelder(
-        val pe: Expression<PE>,
+        val pe: Expression<PEgruppe10>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
@@ -927,7 +927,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class TabellInntekterEPS(
-        val pe: Expression<PE>,
+        val pe: Expression<PEgruppe10>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
@@ -1019,7 +1019,7 @@ object OpplysningerOmEtteroppgjoretLegacy {
     }
 
     data class TabellInntektenDin(
-        val pe: Expression<PE>
+        val pe: Expression<PEgruppe10>
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             //[Text 2, Text 3, Text 4]

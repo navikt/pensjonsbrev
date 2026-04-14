@@ -1,4 +1,4 @@
-import type { Patch } from "immer";
+import { type Patch } from "immer";
 
 export type PatchKind = "TEXT_UPDATE";
 

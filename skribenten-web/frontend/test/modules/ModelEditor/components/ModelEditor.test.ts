@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { extractRelevantSaksbehandlerValgFields } from "~/Brevredigering/ModelEditor/ModelEditor";
-import type { PropertyUsage } from "~/types/brevbakerTypes";
+import { type PropertyUsage } from "~/types/brevbakerTypes";
 
 describe("extractRelevantSaksbehandlerValgFields", () => {
   it("returns only properties matching the SaksbehandlerValg type", () => {

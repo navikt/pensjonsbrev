@@ -1,10 +1,9 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
-import type { Table } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
+import { PARAGRAPH, type Table } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { Focus, LetterEditorState } from "../model/state";
+import { type Focus, type LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {

@@ -12,8 +12,7 @@ import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
-import type { Typography } from "../utils";
-import { TypographyToText } from "../utils";
+import { type Typography, TypographyToText } from "../utils";
 import EditorFonts from "./EditorFonts";
 import EditorListButton from "./EditorListButton";
 import { EditorUndoRedo } from "./EditorUndoRedo";
@@ -74,6 +73,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
         </HStack>
 
         <HStack align="center" gap="space-16">
+          {/* <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8"> */}
           <LagringStatus />
           <Button
             data-color="danger"

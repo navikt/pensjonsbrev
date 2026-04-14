@@ -18,12 +18,15 @@ import no.nav.pensjon.brev.ufore.maler.info.Honnorkort
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesats
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesatsS
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 
 object UfoereTemplates : AllTemplates {
     override fun hentAutobrevmaler(): Set<AutobrevTemplate<AutobrevData>> = setOf(
         InfoEndretUforetrygdPgaInntekt,
-        InfobrevLovendringer2026
+        InfobrevLovendringer2026,
+        VarselOmLavereMinstesats,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -81,6 +84,7 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettVarselOpphoer,
         HvilendeRettMidlertidigOppHoer,
         Honnorkort,
+        VarselOmLavereMinstesatsS,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
