@@ -128,7 +128,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createInformasjonOmGjenlevenderet
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnhentingInformasjonFraBrukerDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonTrygdeavtaleDto
-import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlanDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOmsorgManuellDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOpplysningerOmAvdoedBruktIBeregningDto
@@ -236,7 +236,7 @@ object Fixtures : LetterDataFactory {
             AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsDto::class -> createVedtakOmLavereMinstesatsDto() as T
-            InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlanDto() as T
+            InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }

@@ -70,7 +70,7 @@ val vedleggFolketrygdenGjenlevendepensjon =
         title1 {
             text(
                 bokmal { +"Hjelp fra andre - forvaltningsloven § 12" },
-                nynorsk { +"Hjelp frå andre - forvalningslova § 12" },
+                nynorsk { +"Hjelp frå andre - forvaltningslova § 12" },
                 english { +"Assistance from others - Section 12 of the Public Administration Act" }
             )
         }
@@ -164,7 +164,7 @@ val vedleggFolketrygdenGjenlevendepensjon =
         }
         title2 {
             text(
-                bokmal { +"Tilbakekreving - folketrgdloven § 22-15 flg." },
+                bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
                 nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." },
                 english { +"Recovery - Sections 22-15 ff of the National Insurance Act" },
             )
@@ -178,7 +178,7 @@ val vedleggFolketrygdenGjenlevendepensjon =
         }
         title2 {
             text(
-                bokmal { +"Straffeansvar - folketygdloven § 25-12" },
+                bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
                 nynorsk { +"Straffeansvar - folketrygdlova § 25-12" },
                 english { +"Criminal liability - Section 25-12 of the National Insurance Act" },
             )

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 
 import no.nav.brev.brevbaker.LetterTestImpl
 import no.nav.brev.brevbaker.TestTags
+import no.nav.brev.brevbaker.renderTestHtml
 import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.Fixtures
 import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto
@@ -29,6 +30,6 @@ class InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandTest {
             Fixtures.create<InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto>(),
             Language.English,
             Fixtures.felles
-        ).renderTestPDF("GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND")
+        ).renderTestHtml("GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND")
     }
 }
