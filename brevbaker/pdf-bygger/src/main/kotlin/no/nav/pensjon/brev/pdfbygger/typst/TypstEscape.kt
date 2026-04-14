@@ -322,7 +322,8 @@ internal val CHARACTER_BLOCKLIST: List<IntRange> = buildList {
 
     // --- Arabic Presentation Forms-B ---
     add(0xFE75..0xFE75); add(0xFEFD..0xFFFF)
-}.sortedBy { it.first }
+    // Ranges must remain sorted by first value for binary search in isBlocklisted() to work correctly.
+}
 
 private fun Int.isBlocklisted(): Boolean {
     var lo = 0
