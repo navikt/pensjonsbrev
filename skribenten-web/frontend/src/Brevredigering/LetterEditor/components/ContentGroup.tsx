@@ -455,7 +455,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     // TODO: for debugging frem til vi er ferdig å teste liming
     logPastedClipboard(event.clipboardData);
 
-    const pasteMetode = pasteViaKeyboardRef.current
+    const limInnMetode = pasteViaKeyboardRef.current
       ? "tastatursnarvei"
       : pasteViaContextMenuRef.current
         ? "kontekstmeny"
@@ -472,7 +472,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           brevkode: editorState.info.brevkode,
           antallTegn: pasteLength,
           merEnn200: pasteLength > 200,
-          pasteMetode,
+          limInnMetode,
         });
       }
 
