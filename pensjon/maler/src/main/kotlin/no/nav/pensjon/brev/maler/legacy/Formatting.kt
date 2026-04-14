@@ -99,5 +99,5 @@ class HjemmelFormatter(private val avsluttMedOg: Boolean) : LocalizedFormatter<C
         }
     }
 
-    override fun stableHashCode(): Int = "HjemmelFormatter".hashCode()
+    override fun stableHashCode(): Int = "HjemmelFormatter($avsluttMedOg)".hashCode()
 }
