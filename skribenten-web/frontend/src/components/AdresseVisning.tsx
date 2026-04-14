@@ -21,15 +21,6 @@ const AdresseVisning = (props: AdresseVisningProps) => {
   return (
     <VStack>
       {props.withTitle && <Label size="small">Mottaker</Label>}
-      {props.tags && props.tags.length > 0 && (
-        <HStack>
-          {props.tags.map((tag) => (
-            <Tag data-color={tag.color} key={tag.label} size="xsmall" variant="strong">
-              {tag.label}
-            </Tag>
-          ))}
-        </HStack>
-      )}
       <BodyShort size="small">{props.navn}</BodyShort>
       {props.adresselinjer.map((linje, index) =>
         linje ? (
@@ -37,6 +28,15 @@ const AdresseVisning = (props: AdresseVisningProps) => {
             {linje}
           </BodyShort>
         ) : null,
+      )}
+      {props.tags && props.tags.length > 0 && (
+        <HStack marginBlock="space-4 space-0">
+          {props.tags.map((tag) => (
+            <Tag data-color={tag.color} key={tag.label} size="xsmall" variant="strong">
+              {tag.label}
+            </Tag>
+          ))}
+        </HStack>
       )}
     </VStack>
   );
