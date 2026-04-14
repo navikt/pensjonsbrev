@@ -42,7 +42,7 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 - **Expressions**: Use generated selectors (e.g., `UngUfoerAutoDtoSelectors.totaltUfoerePerMnd`) for type-safe field access
 - **String concatenation**: `+"Text " + expression.format() + " more"` (unary plus for literals)
 - **Conditionals**: `showIf(predicate) { }.orShowIf(other) { }.orShow { }` or inline `ifElse(pred, "yes", "no")`
-- **Phrases**: `OutlinePhrase`, `ParagraphPhrase`, `TextOnlyPhrase`, `PlainTextOnlyPhrase` for reusable content (see `maler/fraser/`)
+- **Phrases**: `OutlinePhrase`, `ParagraphPhrase`, `TextOnlyPhrase`, `PlainTextOnlyPhrase` for reusable content
 
 ## Project Structure & Build
 
@@ -100,8 +100,9 @@ npm login --registry=https://npm.pkg.github.com --auth-type=legacy
 
 ### Running Services
 ```bash
+./gradlew build
+
 # Brevbaker + PDF-bygger only:
-./gradlew :pensjon:brevbaker:build :brevbaker:pdf-bygger:build
 docker-compose up -d --build
 
 # Full stack (Skribenten):
@@ -145,11 +146,11 @@ Conversion: `letterMarkup.toEdit()` → edit → `editLetter.toMarkup()` → ren
 ## API Compatibility Strategy
 
 When changing required fields in published API models (e.g., `brevbaker:api-model-common`):
-1. Add new field alongside old field (both required)
-2. Deploy Brevbaker (ignores unknown fields)
-3. Update consumers to send both fields
-4. Update Brevbaker to use new field only
-5. Remove old field from consumers
+1. Add new field alongside old field (both required) and publish new version of API model
+2. Update consumers to send both fields (Brevbaker ignores unknown fields, so this is safe)
+3. Remove the old field from API model and publish new version
+4. Update Brevbaker to use new field only (Brevbaker requires new field, and ignores the old unknown field, so this is safe)
+5. Update consumers to use new field only 
 
 See README "Endring av obligatoriske felter i API-model" section.
 
@@ -163,7 +164,7 @@ See README "Endring av obligatoriske felter i API-model" section.
 
 ## Feature Toggles
 
-**Unleash** integration for feature flags. Define in `maler/FeatureToggles.kt`:
+**Unleash** integration for feature flags. Define in using an enum (per template module) for type safety and easy access:
 ```kotlin
 enum class FeatureToggles(private val key: String) {
     myFeature("myFeature");
