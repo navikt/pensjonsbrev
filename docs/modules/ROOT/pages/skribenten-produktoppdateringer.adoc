@@ -3,6 +3,7 @@
 Her publiserer Team Pensjonsbrev månedlige oppdateringer om hva som er nytt i Skribenten. Du finner informasjon om nye funksjoner, forbedringer og feilrettinger.
 
 == Mars 2026
+Vi har brukt mye tid på utseende denne måneden, også har vi fått ombord hele gjengen som saksbehandler uføretrygd! Det er stas :-) Vi begynner også å kunne måle mer av det som skjer i Skribenten på et generelt nivå, og det er veldig gøy!
 
 === Nye ting vi har laget
 * Lenke til dokumentasjonssiden er nå tilgjengelig direkte i Skribenten https://github.com/navikt/pensjonsbrev/commit/5650c521b[#2953]
