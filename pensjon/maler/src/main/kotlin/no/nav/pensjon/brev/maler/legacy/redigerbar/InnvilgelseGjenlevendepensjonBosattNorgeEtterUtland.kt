@@ -92,7 +92,7 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             title1 {
                 text(
                     bokmal { +"Dine rettigheter" },
-                    nynorsk { +"" },
+                    nynorsk { +"Dine rettar" },
                     english { +"Your rights" },
                 )
             }
