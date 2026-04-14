@@ -41,6 +41,7 @@ import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.ServiceException
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -179,6 +180,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
     }
     configureRouting(azureADConfig, skribentenConfig, cache)
     configureMetrics()
+    transaction {
+        exec("SELECT * FROM mottaker where id ='${azureADConfig.name}'")
+    }
 
     monitor.subscribe(ServerReady) {
         launch {
