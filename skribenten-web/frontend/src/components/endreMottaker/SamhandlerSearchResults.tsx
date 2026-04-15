@@ -113,6 +113,7 @@ function SamhandlerResultRow({
       css={{ cursor: "pointer" }}
       onOpenChange={setOpen}
       open={open}
+      selected={selected}
       togglePlacement="right"
     >
       <Table.DataCell
