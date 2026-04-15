@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
@@ -85,6 +86,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             val btSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
             val btFellesInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+            val btInnvilget = btSerkullInnvilget or btFellesInnvilget
             val btSerkullNetto0 = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().equalTo(0)
             val btFellesNetto0 = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().equalTo(0)
 
@@ -291,7 +293,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf((not(ektefelletilleggInnvilget) and not(btSerkullInnvilget) and not(btFellesInnvilget) and not(gjenlevendetilleggInnvilget) and not(instoppholdAnvendt))){
+            showIf((not(ektefelletilleggInnvilget) and not(btInnvilget) and not(gjenlevendetilleggInnvilget) and not(instoppholdAnvendt))){
                 paragraph {
                     text(
                         bokmal { +"Du får " + totalNettoUforeberegning.format() + " i uføretrygd per måned før skatt." },
@@ -300,7 +302,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf(((btSerkullInnvilget or btFellesInnvilget) and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and not(instoppholdAnvendt))){
+            showIf((btInnvilget and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and not(instoppholdAnvendt))){
                 paragraph {
                     text (
                         bokmal { + "Du får " + totalNettoUforeberegning.format() + " i uføretrygd og barnetillegg per måned før skatt." },
@@ -309,7 +311,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf((not(ektefelletilleggInnvilget) and not(btSerkullInnvilget) and not(btFellesInnvilget) and gjenlevendetilleggInnvilget and not(instoppholdAnvendt))){
+            showIf((not(ektefelletilleggInnvilget) and not(btInnvilget) and gjenlevendetilleggInnvilget and not(instoppholdAnvendt))){
                 paragraph {
                     text (
                         bokmal { + "Du får " + totalNettoUforeberegning.format() + " i uføretrygd og gjenlevendetillegg per måned før skatt." },
@@ -318,7 +320,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf(((btSerkullInnvilget or btFellesInnvilget) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and not(instoppholdAnvendt))){
+            showIf((btInnvilget and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and not(instoppholdAnvendt))){
                 paragraph {
                     text (
                         bokmal { + "Du får " + totalNettoUforeberegning.format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
@@ -1762,7 +1764,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf(((btSerkullInnvilget or btFellesInnvilget) and pe.vedtaksdata_kravhode_sokerbt())){
+            showIf((btInnvilget and pe.vedtaksdata_kravhode_sokerbt())){
                 title1 {
                     text(
                         bokmal { + "Slik påvirker inntekt barnetillegget ditt " },
@@ -1811,7 +1813,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     includePhrase(TBU2339_Generated(pe))
                 }
 
-                showIf((btSerkullInnvilget or btFellesInnvilget)){
+                showIf(btInnvilget){
                     paragraph {
                         showIf(btFellesInnvilget){
                             text (
@@ -2046,12 +2048,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     includePhrase(TBU2490_Generated(pe))
                 }
 
-                showIf((btSerkullInnvilget or btFellesInnvilget)){
+                showIf(btInnvilget){
                     includePhrase(TBU1288_Generated)
                 }
             }
 
-            showIf((btFellesInnvilget or btSerkullInnvilget)){
+            showIf(btInnvilget){
                 showIf((pe.ut_kravlinjekode_vedtakresultat_forekomst_bt_innv().greaterThan(0))){
                     includePhrase(TBU5005_Generated)
                     paragraph {
