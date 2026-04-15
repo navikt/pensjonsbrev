@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDtoSelectors.utland
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
@@ -11,9 +12,8 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Expression
 
-fun vedleggDineRettigheterOgPlikterUfore(utland: Expression<Boolean>) = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
+val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, DineRettigheterOgPlikterUforeDto>(
         title = {
             text(
                 bokmal { +"Dine rettigheter og plikter" },
