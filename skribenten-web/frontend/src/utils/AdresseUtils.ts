@@ -16,10 +16,6 @@ export const MOTTAKER_TAG_SAMHANDLER = {
   variant: "outline",
 } satisfies AdresseVisningTag;
 
-// Type guards for distinguishing address response types
-export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
-  "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
-
 export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
   "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
 
