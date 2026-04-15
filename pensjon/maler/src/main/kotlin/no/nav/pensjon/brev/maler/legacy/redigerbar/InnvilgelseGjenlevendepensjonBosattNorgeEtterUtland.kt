@@ -43,12 +43,12 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
     ) {
-        //PE_GP_04_035_overskrift
+        //PE_GP_04_025_overskrift
         title {
             text(
-                bokmal { +"Gjenlevendepensjon - melding om vedtak" },
-                nynorsk { +"Gjenlevendepensjon - melding om vedtak" },
-                english { +"Survivor's pension - notification of decision" }
+                bokmal { +"Gjenlevendepensjon - melding om endelig vedtak" },
+                nynorsk { +"Gjenlevandepensjon - melding om endeleg vedtak" },
+                english { +"Survivor's pension - notification of final decision" }
             )
         }
         outline {
@@ -56,7 +56,7 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
             paragraph {
                 text(
                     bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt " + pesysData.kravMottattDato.format() },
-                    nynorsk { +"Nav viser til søknaden din om attlevandepensjon motteken " + pesysData.kravMottattDato.format() },
+                    nynorsk { +"Nav viser til søknaden din om gjenlevandepensjon motteken " + pesysData.kravMottattDato.format() },
                     english { +"Nav refers to your application for a survivor's pension, received on " + pesysData.kravMottattDato.format() }
                 )
                 text(
