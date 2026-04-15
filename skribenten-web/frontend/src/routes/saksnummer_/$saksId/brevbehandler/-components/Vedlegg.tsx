@@ -266,43 +266,17 @@ const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
   return (
     <VStack gap="space-8">
       {noenErUtilgjengelige && (
-        <LocalAlert
-          css={css`
-            .aksel-base-alert__icon {
-              margin-top: 0;
-            }
-          `}
-          status="announcement"
-        >
-          <LocalAlert.Header
-            css={css`
-              align-items: center;
-              padding-top: var(--ax-space-6);
-              padding-bottom: var(--ax-space-6);
-            `}
-          >
-            Noen skjemaer er ikke tilgjengelig på språket i brevet.
+        <LocalAlert size="small" status="announcement">
+          <LocalAlert.Header>
+            <LocalAlert.Title>Noen skjemaer er ikke tilgjengelig på språket i brevet.</LocalAlert.Title>
           </LocalAlert.Header>
         </LocalAlert>
       )}
       {ingenTilgjengelige ? (
         <VStack gap="space-4">
-          <LocalAlert
-            css={css`
-              .aksel-base-alert__icon {
-                margin-top: 0;
-              }
-            `}
-            status="warning"
-          >
-            <LocalAlert.Header
-              css={css`
-                align-items: center;
-                padding-top: var(--ax-space-6);
-                padding-bottom: var(--ax-space-6);
-              `}
-            >
-              Ingen skjemaer er tilgjengelig basert på språket i brevet.
+          <LocalAlert size="small" status="warning">
+            <LocalAlert.Header>
+              <LocalAlert.Title>Ingen skjemaer er tilgjengelig basert på språket i brevet.</LocalAlert.Title>
             </LocalAlert.Header>
           </LocalAlert>
         </VStack>
