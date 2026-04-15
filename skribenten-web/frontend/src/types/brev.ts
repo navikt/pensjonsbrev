@@ -152,9 +152,6 @@ export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 export interface AlltidValgbartVedlegg {
   kode: string;
   visningstekst: string;
-}
-
-export interface AlltidValgbartVedleggV2 extends AlltidValgbartVedlegg {
   spraak: LanguageCode[];
   tilgjengeligForSpraak: boolean;
 }

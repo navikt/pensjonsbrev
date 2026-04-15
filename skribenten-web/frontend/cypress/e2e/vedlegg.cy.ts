@@ -1,5 +1,5 @@
 import { SpraakKode } from "~/types/apiTypes";
-import { type AlltidValgbartVedleggV2 } from "~/types/brev";
+import { type AlltidValgbartVedlegg } from "~/types/brev";
 
 import { nyBrevInfo, nyBrevResponse } from "../utils/brevredigeringTestUtils";
 
@@ -8,7 +8,7 @@ const bokmaalBrev = nyBrevInfo({
   status: { type: "Kladd" },
 });
 
-const alleTilgjengelige: AlltidValgbartVedleggV2[] = [
+const alleTilgjengelige: AlltidValgbartVedlegg[] = [
   {
     kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
     visningstekst: "Skjema for bankopplysninger",
@@ -18,7 +18,7 @@ const alleTilgjengelige: AlltidValgbartVedleggV2[] = [
   { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["BOKMAL", "ENGLISH"], tilgjengeligForSpraak: true },
 ];
 
-const noenUtilgjengelige: AlltidValgbartVedleggV2[] = [
+const noenUtilgjengelige: AlltidValgbartVedlegg[] = [
   {
     kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
     visningstekst: "Skjema for bankopplysninger",
@@ -28,7 +28,7 @@ const noenUtilgjengelige: AlltidValgbartVedleggV2[] = [
   { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["ENGLISH"], tilgjengeligForSpraak: false },
 ];
 
-const ingenTilgjengelige: AlltidValgbartVedleggV2[] = [
+const ingenTilgjengelige: AlltidValgbartVedlegg[] = [
   {
     kode: "SKJEMA_FOR_BANKOPPLYSNINGER",
     visningstekst: "Skjema for bankopplysninger",
@@ -38,7 +38,7 @@ const ingenTilgjengelige: AlltidValgbartVedleggV2[] = [
   { kode: "UTTAKSSKJEMA", visningstekst: "Uttaksskjema", spraak: ["ENGLISH", "NYNORSK"], tilgjengeligForSpraak: false },
 ];
 
-const setupBrevbehandler = (vedlegg: AlltidValgbartVedleggV2[]) => {
+const setupBrevbehandler = (vedlegg: AlltidValgbartVedlegg[]) => {
   cy.setupSakStubs();
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev", { body: [bokmaalBrev] });
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=true", {

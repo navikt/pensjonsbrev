@@ -5,7 +5,7 @@ import axios from "axios";
 
 import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
 import {
-  type AlltidValgbartVedleggV2,
+  type AlltidValgbartVedlegg,
   type BestillBrevResponse,
   type BrevInfo,
   type BrevResponse,
@@ -33,7 +33,7 @@ export const getBrevVedlegg = {
   queryKey: (saksId: string, brevId: number) => ["brevVedlegg", saksId, brevId] as const,
   queryFn: async (saksId: string, brevId: number) =>
     (
-      await axios.get<AlltidValgbartVedleggV2[]>(
+      await axios.get<AlltidValgbartVedlegg[]>(
         `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`,
       )
     ).data,

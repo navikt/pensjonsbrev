@@ -23,7 +23,7 @@ import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
 import { type SpraakKode } from "~/types/apiTypes";
-import { type AlltidValgbartVedlegg, type AlltidValgbartVedleggV2, type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
 import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
@@ -243,7 +243,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
 };
 
 type VedleggModalInnholdProps = {
-  vedleggKoder: AlltidValgbartVedleggV2[] | undefined;
+  vedleggKoder: AlltidValgbartVedlegg[] | undefined;
   brevSpraak: SpraakKode;
   form: UseFormReturn<VedleggFormData>;
 };
