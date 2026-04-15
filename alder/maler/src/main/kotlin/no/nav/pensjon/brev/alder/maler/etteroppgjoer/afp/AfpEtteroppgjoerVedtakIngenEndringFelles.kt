@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.afpAvvik
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.forventetPensjonsgivendeInntektBeregnet
-import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.iiap
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlag
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.inntektEtterOpphoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.opphoersDato
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttakOgOpphoer
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttaksPeriode
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttaksDato
-import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.UttakOgOpphoer
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.UttaksPeriode
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -31,7 +31,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
     val pensjonsgivendeInntekt: Expression<Double> = afpGrunnlag.safe { this.pensjonsgivendeInntekt }.ifNull(0.0)
     val inntektFoerUttak: Expression<Double> = afpGrunnlag.safe { this.inntektFoerUttak }.ifNull(0.0)
     val inntektEtterOpphoer: Expression<Double> = afpGrunnlag.safe { this.inntektEtterOpphoer }.ifNull(0.0)
-    val iiap: Expression<Double> = afpEtteroppgjoer.safe { iiap }.ifNull(0.0)
+    val inntektIAfpPerioden: Expression<Double> = afpEtteroppgjoer.safe { this.inntektIAfpPerioden }.ifNull(0.0)
     val forventetPensjonsgivendeInntektBeregnet: Expression<Double> = afpEtteroppgjoer.safe { this.forventetPensjonsgivendeInntektBeregnet }.ifNull(0.0)
     val afpAvvik: Expression<Double> = afpEtteroppgjoer.safe { afpAvvik }.ifNull(0.0)
 
@@ -347,7 +347,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             )
         }
 
-        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
+        showIf(afpGrunnlag.uttaksPeriode.equalTo(UttaksPeriode.UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
             paragraph {
                 text(
                     bokmal { +"Vi har lagt til grunn at hele denne inntekten er opptjent samtidig som du har mottatt AFP." },
@@ -356,7 +356,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             }
         }
 
-        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
+        showIf(afpGrunnlag.uttaksPeriode.equalTo(UttaksPeriode.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
             paragraph {
                 text(
                     bokmal { +"Fordi du har tatt ut AFP fra " + afpGrunnlag.uttaksDato.format() + " benytter vi en standardberegning for å beregne fordelingen av inntekten din før og etter AFP-uttaket. Denne beregningen kan endres dersom du kan dokumentere en annen fordeling av inntekten." },
@@ -366,13 +366,13 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
 
             paragraph {
                 text(
-                    bokmal { +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " kroner er opptjent før du tok ut AFP. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + iiap.format() + " kroner." },
-                    nynorsk { +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " kroner er opptente før du tok ut AFP. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + iiap.format() + " kroner." },
+                    bokmal { +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " kroner er opptjent før du tok ut AFP. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + " kroner." },
+                    nynorsk { +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " kroner er opptente før du tok ut AFP. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + " kroner." },
                 )
             }
         }
 
-        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_FOER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
+        showIf(afpGrunnlag.uttaksPeriode.equalTo(UttaksPeriode.UTTAK_FOER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
             ifNotNull(afpGrunnlag.opphoersDato) { opphoersDato ->
                 paragraph {
                     text(
@@ -383,14 +383,14 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
 
                 paragraph {
                     text(
-                        bokmal { +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " kroner er opptjent etter at du gikk over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + ".Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + iiap.format() + " kroner." },
-                        nynorsk { +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " kroner er opptente etter at du gjekk over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + ".Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + iiap.format() + " kroner." },
+                        bokmal { +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " kroner er opptjent etter at du gikk over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + ".Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + " kroner." },
+                        nynorsk { +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " kroner er opptente etter at du gjekk over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() + ".Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + " kroner." },
                     )
                 }
             }
         }
 
-        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
+        showIf(afpGrunnlag.uttaksPeriode.equalTo(UttaksPeriode.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
             paragraph {
                 text(
                     bokmal { +"Fordi du ikke har hatt rett til AFP hele året benytter vi en standardberegning for å beregne fordelingen av inntekten din i perioder med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom du kan dokumentere en annen fordeling av inntekten." },
@@ -400,8 +400,8 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
 
             paragraph {
                 text(
-                    bokmal { +"Vi har lagt til grunn at du tjente " + inntektFoerUttak.format() + " kroner før du tok ut AFP og " + inntektEtterOpphoer.format() + " kroner etter at du gikk over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + iiap.format() + " kroner." },
-                    nynorsk { +"Vi har lagt til grunn at du tente " + inntektFoerUttak.format() + " kroner før du tok ut AFP, og " + inntektEtterOpphoer.format() + " kroner etter at du gjekk over frå AFP til annan pensjon, eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + iiap.format() + " kroner." },
+                    bokmal { +"Vi har lagt til grunn at du tjente " + inntektFoerUttak.format() + " kroner før du tok ut AFP og " + inntektEtterOpphoer.format() + " kroner etter at du gikk over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i den perioden du har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + " kroner." },
+                    nynorsk { +"Vi har lagt til grunn at du tente " + inntektFoerUttak.format() + " kroner før du tok ut AFP, og " + inntektEtterOpphoer.format() + " kroner etter at du gjekk over frå AFP til annan pensjon, eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i den perioden du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + " kroner." },
                 )
             }
         }

@@ -27,7 +27,7 @@ data class AfpEtteroppgjoerVedtakDto(
 data class AfpEtteroppgjoer(
     val afpAvvik: Double?,
     val forventetPensjonsgivendeInntektBeregnet: Double?,
-    val iiap: Double?
+    val inntektIAfpPerioden: Double?
 )
 
 data class AfpGrunnlag(
@@ -36,10 +36,10 @@ data class AfpGrunnlag(
     val inntektEtterOpphoer: Double?,
     val inntektFoerUttak: Double?,
     val pensjonsgivendeInntekt: Double?,
-    val uttakOgOpphoer: UttakOgOpphoer
+    val uttaksPeriode: UttaksPeriode
 )
 
-enum class UttakOgOpphoer {
+enum class UttaksPeriode {
     UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL,
     UTTAK_FOER_FOERSTE_FEB_OPPHOER_FOER_31_DES,
     UTTAK_ETTER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL,
