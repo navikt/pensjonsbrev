@@ -548,9 +548,20 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
     }
 
-    if (e.key === "Backspace") {
-      if (handleBackspaceInTableCell(e, editorState, setEditorState)) return;
+    if (e.key === "Backspace" || e.key === "Delete") {
+      const tableDeleteResult = handleBackspaceInTableCell(e, editorState);
+      if (tableDeleteResult === "delete-row") {
+        applyAction(Actions.removeTableRow, setEditorState);
+        e.stopPropagation();
+        return;
+      }
+      if (tableDeleteResult && e.key === "Backspace") {
+        e.stopPropagation();
+        return;
+      }
+    }
 
+    if (e.key === "Backspace") {
       handleBackspace(e);
       e.stopPropagation();
       return;

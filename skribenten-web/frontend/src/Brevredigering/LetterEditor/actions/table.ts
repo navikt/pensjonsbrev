@@ -91,7 +91,14 @@ export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft)
     return;
   }
 
+  const deletedRowColumnCount = table.rows[rowIndex]?.cells.length ?? (table.header.colSpec.length || 1);
+
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
+
+  if (table.rows.length === 0) {
+    addElements([newRow(deletedRowColumnCount)], 0, table.rows, table.deletedRows);
+  }
+
   const clampedRow = Math.min(rowIndex, Math.max(0, table.rows.length - 1));
   draft.focus = {
     blockIndex,
