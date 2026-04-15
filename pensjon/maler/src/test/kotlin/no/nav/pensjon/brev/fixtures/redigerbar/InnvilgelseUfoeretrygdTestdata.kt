@@ -44,7 +44,6 @@ fun createInnvilgelseUfoeretrygdDto() =
                     )
                 )
             ),
-            createOrienteringOmRettigheterUfoereDto(),
             createDineRettigheterOgPlikterUforeDto(),
             nyeInnvilgedeBarnetillegg = listOf(
                 BarnetilleggUTDto(antallBarn = 1, begrunnelse = BtBegrunnelseCode.INNVILGET, fodselsdato = LocalDate.of(1990, Month.JANUARY, 1), fom = LocalDate.of(1990, Month.JANUARY, 1)),

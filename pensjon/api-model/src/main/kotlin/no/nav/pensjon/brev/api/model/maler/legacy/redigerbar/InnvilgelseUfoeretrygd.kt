@@ -27,7 +27,6 @@ data class InnvilgelseUfoeretrygdDto(
         val pe: PEgruppe10,
         val oifuVedVirkningstidspunkt: Kroner?,
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
-        val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
         val dineRettigheterOgPlikterUfore: DineRettigheterOgPlikterUforeDto,
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
