@@ -36,6 +36,12 @@ data class AfpGrunnlag(
     val inntektEtterOpphoer: Double?,
     val inntektFoerUttak: Double?,
     val pensjonsgivendeInntekt: Double?,
-    val uttakFoerFristen: Boolean,
-    val opphoerForFristen: Boolean,
+    val uttakOgOpphoer: UttakOgOpphoer
 )
+
+enum class UttakOgOpphoer {
+    UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL,
+    UTTAK_FOER_FOERSTE_FEB_OPPHOER_FOER_31_DES,
+    UTTAK_ETTER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL,
+    UTTAK_ETTER_FOERSTE_FEB_OPPHOER_FOER_31_DES,
+}

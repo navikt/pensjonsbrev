@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakD
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakIngenEndringDto
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlag
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.UttakOgOpphoer
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import java.time.LocalDate
 
@@ -31,7 +32,6 @@ private fun createAfpEtteroppgjoerVedtakDto() = AfpEtteroppgjoerVedtakDto(
         inntektEtterOpphoer = 10.0,
         inntektFoerUttak = 20.0,
         pensjonsgivendeInntekt = 10000.0,
-        uttakFoerFristen = false,
-        opphoerForFristen = true
+        uttakOgOpphoer = UttakOgOpphoer.UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL,
     )
 )

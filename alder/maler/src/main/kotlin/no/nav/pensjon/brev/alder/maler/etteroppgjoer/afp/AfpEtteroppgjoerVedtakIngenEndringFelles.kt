@@ -7,19 +7,18 @@ import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelecto
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlag
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.inntektEtterOpphoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.inntektFoerUttak
-import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.opphoerForFristen
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.opphoersDato
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.pensjonsgivendeInntekt
-import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttakFoerFristen
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttakOgOpphoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpGrunnlagSelectors.uttaksDato
+import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.UttakOgOpphoer
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -348,7 +347,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             )
         }
 
-        showIf(afpGrunnlag.uttakFoerFristen and not(afpGrunnlag.opphoerForFristen)) {
+        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_FOER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
             paragraph {
                 text(
                     bokmal { +"Vi har lagt til grunn at hele denne inntekten er opptjent samtidig som du har mottatt AFP." },
@@ -357,7 +356,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             }
         }
 
-        showIf(not(afpGrunnlag.uttakFoerFristen) and not(afpGrunnlag.opphoerForFristen)) {
+        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_ETTER_31_DES_ELLER_NULL)) {
             paragraph {
                 text(
                     bokmal { +"Fordi du har tatt ut AFP fra " + afpGrunnlag.uttaksDato.format() + " benytter vi en standardberegning for å beregne fordelingen av inntekten din før og etter AFP-uttaket. Denne beregningen kan endres dersom du kan dokumentere en annen fordeling av inntekten." },
@@ -373,7 +372,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             }
         }
 
-        showIf(afpGrunnlag.uttakFoerFristen and afpGrunnlag.opphoerForFristen) {
+        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_FOER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
             ifNotNull(afpGrunnlag.opphoersDato) { opphoersDato ->
                 paragraph {
                     text(
@@ -391,7 +390,7 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             }
         }
 
-        showIf(not(afpGrunnlag.uttakFoerFristen) and afpGrunnlag.opphoerForFristen) {
+        showIf(afpGrunnlag.uttakOgOpphoer.equalTo(UttakOgOpphoer.UTTAK_ETTER_FOERSTE_FEB_OPPHOER_FOER_31_DES)) {
             paragraph {
                 text(
                     bokmal { +"Fordi du ikke har hatt rett til AFP hele året benytter vi en standardberegning for å beregne fordelingen av inntekten din i perioder med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom du kan dokumentere en annen fordeling av inntekten." },
