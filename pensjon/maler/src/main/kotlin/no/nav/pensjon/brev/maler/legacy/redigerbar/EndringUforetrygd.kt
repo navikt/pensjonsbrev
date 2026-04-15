@@ -1153,33 +1153,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            // TODO Hør med fageksperter hva logikken her egentlig skal være mtp PE_UT_KravLinjeKode_Og_PaaFolgende_bt_ikkeInnv og PE_UT_KravLinjeKode_Og_PaaFolgende_ut_gjt_ikkeInnv
-//            //IF(  PE_UT_KravLinjeKode_Og_PaaFolgende_bt_ikkeInnv() AND ( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5" ) AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo" AND PE_UT_KravLinjeKode_Og_PaaFolgende_VedtakRes(PE_UT_KONST_KralinjeKode_bt, PE_UT_KONST_VilkarsVedtakResultat_opphor)  ) THEN      INCLUDE ENDIF
-//            showIf((pe.ut_kravlinjekode_og_paafolgende_bt_ikkeinnv() and (not(virkningbegrunnelseStdbegr_22_12_1_5)) and kravarsak.notEqualTo("soknad_bt") and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo") and pesysData.opphortBarnetillegg)) {
-//                //[TBU2350EN, TBU2350, TBU2350NN]
-//
-//                // 12-15 = barnetillegg
-//                paragraph {
-//                    text(
-//                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-15 og 22-12." },
-//                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-15 og 22-12." },
-//                    )
-//                }
-//            }
-//
-//            //IF( PE_UT_KravLinjeKode_Og_PaaFolgende_ut_gjt_ikkeInnv() AND ( FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_BeregningsVilkar_VirkningBegrunnelse) <> "stdbegr_22_12_1_5" ) AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_hs"  AND  PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_InstOppholdType <> "reduksjon_fo"  ) THEN      INCLUDE ENDIF
-//            showIf((pe.ut_kravlinjekode_og_paafolgende_ut_gjt_ikkeinnv() and (not(virkningbegrunnelseStdbegr_22_12_1_5)) and instoppholdtype.notEqualTo("reduksjon_hs") and instoppholdtype.notEqualTo("reduksjon_fo"))) {
-//                //[TBU2351EN, TBU2351, TBU2351NN]
-//
-//                // 12-18 = gjenlevendetillegg
-//                paragraph {
-//                    text(
-//                        bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 12-18 og 22-12." },
-//                        nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 12-18 og 22-12." },
-//                    )
-//                }
-//            }
-
             title1 {
                 text(
                     bokmal { +"Dette er virkningstidspunktet ditt" },
