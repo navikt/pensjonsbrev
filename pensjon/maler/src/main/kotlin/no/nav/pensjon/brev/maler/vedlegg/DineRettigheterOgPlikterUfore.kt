@@ -81,7 +81,7 @@ fun vedleggDineRettigheterOgPlikterUfore(utland: Expression<Boolean>) = createAt
                         )
                     }.orShow {
                         text(
-                            bokmal {  +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
+                            bokmal { +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
                             nynorsk { +"du skal opphalde deg utanfor Noreg lenger enn seks månader" }
                         )
                     }
