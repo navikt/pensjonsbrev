@@ -44,7 +44,7 @@ describe("P1 med forsidebrev", () => {
       request.reply(countriesSubset);
     }).as("getLand");
     // Intercept for Vedlegg component - returns empty array since P1 vedlegg is handled separately
-    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/v2/alltidValgbareVedlegg", (request) => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/alltidValgbareVedlegg", (request) => {
       request.reply([]);
     }).as("getVedlegg");
     cy.visit("/saksnummer/123456/brevbehandler");

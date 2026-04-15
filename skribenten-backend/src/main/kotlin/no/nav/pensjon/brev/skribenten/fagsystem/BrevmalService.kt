@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
@@ -26,7 +25,7 @@ import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
 
-data class AlltidValgbartVedleggMedTilgjengelighet(
+data class ValgbartVedlegg(
     val kode: String,
     val visningstekst: String,
     val spraak: Set<LanguageCode>,
@@ -70,15 +69,12 @@ class BrevmalService(
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
-        brevbakerService.getAlltidValgbareVedlegg(brevId)
-
-    suspend fun getAlltidValgbareVedleggV2(brevId: BrevId): List<AlltidValgbartVedleggMedTilgjengelighet> {
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
         val spraakIBrevet = transaction {
             BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
         }
         return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
-            AlltidValgbartVedleggMedTilgjengelighet(
+            ValgbartVedlegg(
                 kode = it.kode,
                 visningstekst = it.visningstekst,
                 spraak = it.spraak,

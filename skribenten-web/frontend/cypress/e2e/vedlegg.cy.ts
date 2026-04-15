@@ -47,7 +47,7 @@ const setupBrevbehandler = (vedlegg: AlltidValgbartVedleggV2[]) => {
   cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/1?reserver=false", {
     body: nyBrevResponse({ info: bokmaalBrev }),
   });
-  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/v2/alltidValgbareVedlegg", { body: vedlegg }).as(
+  cy.intercept("GET", "/bff/skribenten-backend/sak/123456/brev/*/alltidValgbareVedlegg", { body: vedlegg }).as(
     "getVedlegg",
   );
   cy.visit("/saksnummer/123456/brevbehandler");

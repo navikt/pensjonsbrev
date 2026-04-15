@@ -34,7 +34,7 @@ export const getBrevVedlegg = {
   queryFn: async (saksId: string, brevId: number) =>
     (
       await axios.get<AlltidValgbartVedleggV2[]>(
-        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/v2/alltidValgbareVedlegg`,
+        `${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/alltidValgbareVedlegg`,
       )
     ).data,
 };
