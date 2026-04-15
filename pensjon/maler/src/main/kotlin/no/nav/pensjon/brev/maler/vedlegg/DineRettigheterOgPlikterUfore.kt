@@ -11,8 +11,9 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
+import no.nav.pensjon.brev.template.Expression
 
-val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
+fun vedleggDineRettigheterOgPlikterUfore(utland: Expression<Boolean>) = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
         title = {
             text(
                 bokmal { +"Dine rettigheter og plikter" },
@@ -73,10 +74,17 @@ val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, E
                     )
                 }
                 item {
-                    text(
-                        bokmal { +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
-                        nynorsk { +"du skal opphalde deg utanfor Noreg lenger enn seks månader" }
-                    )
+                    showIf(utland) {
+                        text(
+                            bokmal { +"du skal oppholde deg utenfor bostedslandet ditt" },
+                            nynorsk { +"du skal opphalde deg utanfor bustadlandet ditt" }
+                        )
+                    }.orShow {
+                        text(
+                            bokmal {  +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
+                            nynorsk { +"du skal opphalde deg utanfor Noreg lenger enn seks månader" }
+                        )
+                    }
                 }
                 item {
                     text(
