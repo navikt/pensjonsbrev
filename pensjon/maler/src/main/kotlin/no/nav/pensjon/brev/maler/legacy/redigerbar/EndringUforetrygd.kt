@@ -17,6 +17,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.mindre_ett_ar_bt_flt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphoersbegrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortBarnetillegg
@@ -138,32 +140,37 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(barnetilleggInnvilget and kravarsak.equalTo("soknad_bt")) {
+            showIf((pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty())){
                 paragraph {
-                    text(
-                        bokmal { +"Vi har innvilget søknaden din om barnetillegg som vi mottok " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endret uføretrygden din fra " + onsketvirkningsdato.format() + "." },
-                        nynorsk { +"Vi har innvilga søknaden din om barnetillegg som vi fekk " + pe.vedtaksdata_kravhode_kravmottatdato().format() + ". Vi har endra uføretrygda di frå " + onsketvirkningsdato.format() + "." },
+                    text (
+                        bokmal { + "Du er innvilget barnetillegg i uføretrygden din for" },
+                        nynorsk { + "Du er innvilga barnetillegg i uføretrygda di for" },
                     )
+                    includePhrase(Felles.TextOrList(pesysData.nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
-                    showIf(
-                        (barnetilleggFellesInnvilget and (((barnetilleggSerkullInnvilget and btSerkullNetto0) and (barnetilleggFellesInnvilget and btFellesNetto0)) or (barnetilleggSerkullInnvilget and btSerkullNetto
-                            .equalTo(0) and not(barnetilleggFellesInnvilget)) or (barnetilleggFellesInnvilget and btFellesNetto0 and not(barnetilleggSerkullInnvilget))))
-                    ) {
+                    showIf(barnetilleggFellesInnvilget and btFellesNetto0 and (not(barnetilleggSerkullInnvilget) or btSerkullNetto0)){
                         text(
                             bokmal { +" Tillegget blir ikke utbetalt fordi inntekten til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er over grensen for å få utbetalt barnetillegg." },
                             nynorsk { +" Tillegget blir ikkje utbetalt, fordi inntekta til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er over grensa for å få utbetalt barnetillegg." },
                         )
                     }
 
-                    showIf(
-                        ((barnetilleggSerkullInnvilget and not(barnetilleggFellesInnvilget)) and (((barnetilleggSerkullInnvilget and btSerkullNetto0) and (barnetilleggFellesInnvilget and btFellesNetto0)) or (barnetilleggSerkullInnvilget and btSerkullNetto
-                            .equalTo(0) and not(barnetilleggFellesInnvilget)) or (barnetilleggFellesInnvilget and btFellesNetto0 and not(barnetilleggSerkullInnvilget))))
-                    ) {
+                    showIf((barnetilleggSerkullInnvilget and btSerkullNetto0 and not(barnetilleggFellesInnvilget))){
                         text(
                             bokmal { +" Tillegget blir ikke utbetalt fordi inntekten din er over grensen for å få utbetalt barnetillegg." },
                             nynorsk { +"Tillegget blir ikkje utbetalt fordi inntekta di er over grensa for å få utbetalt barnetillegg." }
                         )
                     }
+                }
+            }
+
+            showIf(pesysData.nyeAvslagBarnetillegg.isNotEmpty()) {
+                paragraph {
+                    text(
+                        bokmal { +"Vi har avslått barnetillegg i uføretrygden din for" },
+                        nynorsk { +"Vi har avslått barnetillegg i uføretrygda di for" },
+                    )
+                    includePhrase(Felles.TextOrList(pesysData.nyeAvslagBarnetillegg.map(BarnetilleggFormatter), 0))
                 }
             }
 
@@ -1564,8 +1571,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                         showIf(barnetilleggFellesInnvilget) {
                             text(
-                                bokmal { +" og til ektefellen, partneren eller samboeren din " },
-                                nynorsk { +" og til ektefella, partnaren eller sambuaren din " },
+                                bokmal { +" og til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
+                                nynorsk { +" og til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                             )
                         }
 
@@ -1579,14 +1586,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf(barnetilleggFellesInnvilget) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til ektefellen, partneren eller samboeren din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
-                            nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekta til ektefella, partnaren eller sambuaren din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
+                            bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
+                            nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
                         )
 
                         showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0))) {
                             text(
-                                bokmal { +"Folketrygdens grunnbeløp på inntil " + grunnbelop.format() + " kroner er holdt utenfor inntekten til ektefellen, partneren eller samboeren din. " },
-                                nynorsk { +"Grunnbeløpet i folketrygda på inntil " + grunnbelop.format() + " kroner er halde utanfor inntekta til ektefella, partnaren eller sambuaren din. " }
+                                bokmal { +"Folketrygdens grunnbeløp på inntil " + grunnbelop.format() + " kroner er holdt utenfor inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". " },
+                                nynorsk { +"Grunnbeløpet i folketrygda på inntil " + grunnbelop.format() + " kroner er halde utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. " }
                             )
                         }
 
@@ -1707,8 +1714,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                         showIf((pe.ut_tbu1286_del1() and not(btFellesNetto0) and btFellesJusteringsbelopPerAr0)) {
                             text(
-                                bokmal { +"inntektene til deg og ektefellen, partneren eller samboeren din " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
-                                nynorsk { +"inntektene til deg og ektefella, partnaren eller sambuaren din " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
+                                bokmal { +"inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
+                                nynorsk { +"inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
                             )
                         }
 
@@ -1943,6 +1950,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     )
                 }
             }
+
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage)
