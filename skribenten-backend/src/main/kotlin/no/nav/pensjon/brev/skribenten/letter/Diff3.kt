@@ -17,22 +17,32 @@ fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): List<EditO
     MyersDiff(old.toList(), new.toList()).shortestEditScript()
 
 sealed class EditOperation<T : Any> {
-    abstract val value : T
+    abstract val value: T
+    abstract val position: Int
 
-    data class Insert<T : Any>(val insert: T) : EditOperation<T>() {
+    data class Insert<T : Any>(val insert: T, override val position: Int) : EditOperation<T>() {
         override val value get() = insert
     }
-    data class Delete<T : Any>(val delete: T) : EditOperation<T>() {
+    data class Delete<T : Any>(val delete: T, override val position: Int) : EditOperation<T>() {
         override val value get() = delete
     }
 }
 
 private class Vectors private constructor(private val negativeOffset: Int, private val array: IntArray) {
-    constructor(n: Int, m: Int, initialVector: Int) : this(m + n, IntArray((m + n) * 2 + 1).also { it[1 + n + m] = initialVector })
+    constructor(n: Int, m: Int, initialVector: Int) : this(
+        negativeOffset = calculateOffset(n, m),
+        array = IntArray(calculateSize(n, m)).also { it[1 + n + m] = initialVector }
+    )
 
     operator fun get(i: Int) = array[i + negativeOffset]
     operator fun set(i: Int, v: Int) {
         array[i + negativeOffset] = v
+    }
+
+    companion object {
+        // Vectors need space for diagonals from -(n+m) to +(n+m)
+        private fun calculateSize(n: Int, m: Int) = (m + n) * 2 + 1
+        private fun calculateOffset(n: Int, m: Int) = n + m
     }
 }
 private data class Path(val from: Coords, val to: Coords)
@@ -43,9 +53,9 @@ private data class Coords(val x: Int, val y: Int) {
 }
 private data class MiddleSnake(val d: Int, val from: Coords, val to: Coords)
 
-private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
-    val n get() = first.size
-    val m get() = second.size
+private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val firstOffset: Int = 0, val secondOffset: Int = 0) {
+    val n get() = old.size
+    val m get() = new.size
     val size = n + m
     val delta = n - m
     val deltaIsOdd = (delta % 2) != 0
@@ -53,18 +63,18 @@ private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
     val endCoords get() = Coords(n, m)
 
     init {
-        require(first is RandomAccess) { "first er ikke RandomAccess (ArrayList)" }
-        require(second is RandomAccess) { "second er ikke RandomAccess (ArrayList)" }
+        require(old is RandomAccess) { "first er ikke RandomAccess (ArrayList)" }
+        require(new is RandomAccess) { "second er ikke RandomAccess (ArrayList)" }
     }
 
     fun slice(from: Coords, to: Coords): MyersDiff<T> =
-        MyersDiff(first.slice(from.x..<to.x), second.slice(from.y..<to.y))
+        MyersDiff(old.slice(from.x..<to.x), new.slice(from.y..<to.y), firstOffset + from.x, secondOffset + from.y)
 
     fun shortestEditScript(): List<EditOperation<T>> {
         return if (n > 0 && m > 0) {
             val snake = findMiddleSnake()
 
-            if (snake.d > 1 || (snake.from != snake.to)) {
+            if (snake.d > 1 || snake.from != snake.to) {
                 slice(from = origin, to = snake.from).shortestEditScript() +
                         slice(from = snake.to, to = endCoords).shortestEditScript()
             } else if (m > n) {
@@ -73,9 +83,9 @@ private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
                 slice(from = Coords(x = m, y = m), to = Coords(x = n, y = m)).shortestEditScript()
             }
         } else if (n > 0) {
-            first.map { Delete(it) }
+            old.mapIndexed { i, it -> Delete(it, firstOffset + i) }
         } else {
-            second.map { Insert(it) }
+            new.mapIndexed { i, it -> Insert(it, secondOffset + i) }
         }
     }
 
@@ -121,15 +131,17 @@ private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
         }
         val fromY = fromX - k
 
+        return Path(from = Coords(fromX, fromY), to = extendSnake(Coords(fromX, fromY)))
+    }
 
-        var x = fromX
-        var y = fromY
-        while (x < n && y < m && first[x] == second[y]) {
+    private fun extendSnake(start: Coords): Coords {
+        var x = start.x
+        var y = start.y
+        while (x < n && y < m && old[x] == new[y]) {
             x++
             y++
         }
-
-        return Path(from = Coords(x = fromX, y = fromY), to = Coords(x = x, y = y))
+        return Coords(x = x, y = y)
     }
 
     // Searches backwards for a d-path, and optimizing for y (i.e. equal or insertions)
@@ -158,7 +170,7 @@ private class MyersDiff<T : Any>(val first: List<T>, val second: List<T>) {
 
         var x = fromX
         var y = fromY
-        while (x > 0 && y > 0 && first[x - 1] == second[y - 1]) {
+        while (x > 0 && y > 0 && old[x - 1] == new[y - 1]) {
             x--
             y--
         }
