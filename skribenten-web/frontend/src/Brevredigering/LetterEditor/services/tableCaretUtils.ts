@@ -4,7 +4,6 @@ import {
   type Cell,
   PARAGRAPH,
   type ParagraphBlock,
-  type Row,
   TITLE1,
   TITLE2,
   TITLE3,
@@ -243,9 +242,15 @@ export function isCellEmpty(cell: Cell): boolean {
   return isEmptyContentList(cell.text);
 }
 
-export function rowIsEmpty(row: Row): boolean {
-  return row.cells.every(isCellEmpty);
-}
+export const TableCellDeleteShortcutResult = {
+  NOT_HANDLED: "NOT_HANDLED",
+  HANDLED: "HANDLED",
+  DELETE_ROW: "DELETE_ROW",
+} as const;
+
+export type TableCellDeleteShortcutResult =
+  (typeof TableCellDeleteShortcutResult)[keyof typeof TableCellDeleteShortcutResult];
+
 /**
  * Handles table-cell delete shortcuts.
  *
@@ -254,18 +259,18 @@ export function rowIsEmpty(row: Row): boolean {
  * - Shift+Backspace and Shift+Delete in body cells signal row deletion,
  *   regardless of whether the row is empty.
  */
-export function handleBackspaceInTableCell(
+export function handleTableCellDeleteShortcut(
   event: React.KeyboardEvent,
   editorState: LetterEditorState,
-): boolean | "delete-row" {
-  if (event.key !== "Backspace" && event.key !== "Delete") return false;
-  if (!isTableCellIndex(editorState.focus)) return false;
+): TableCellDeleteShortcutResult {
+  if (event.key !== "Backspace" && event.key !== "Delete") return TableCellDeleteShortcutResult.NOT_HANDLED;
+  if (!isTableCellIndex(editorState.focus)) return TableCellDeleteShortcutResult.NOT_HANDLED;
 
   const f = editorState.focus;
   const block = editorState.redigertBrev.blocks[f.blockIndex];
   const contentAtFocus = block.content[f.contentIndex];
 
-  if (!isTable(contentAtFocus)) return false;
+  if (!isTable(contentAtFocus)) return TableCellDeleteShortcutResult.NOT_HANDLED;
 
   const table = contentAtFocus;
 
@@ -281,19 +286,19 @@ export function handleBackspaceInTableCell(
   };
 
   const cell = getFocusedCell();
-  if (!cell) return false;
+  if (!cell) return TableCellDeleteShortcutResult.NOT_HANDLED;
 
   if (event.shiftKey) {
     if (f.rowIndex === -1) {
-      return false;
+      return TableCellDeleteShortcutResult.NOT_HANDLED;
     }
 
     event.preventDefault();
-    return "delete-row";
+    return TableCellDeleteShortcutResult.DELETE_ROW;
   }
 
   if (event.key !== "Backspace") {
-    return false;
+    return TableCellDeleteShortcutResult.NOT_HANDLED;
   }
 
   const cursorOffset = getCursorOffset();
@@ -303,8 +308,8 @@ export function handleBackspaceInTableCell(
 
   if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
     event.preventDefault();
-    return true;
+    return TableCellDeleteShortcutResult.HANDLED;
   }
 
-  return false;
+  return TableCellDeleteShortcutResult.NOT_HANDLED;
 }

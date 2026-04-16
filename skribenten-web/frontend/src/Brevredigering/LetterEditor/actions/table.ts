@@ -92,7 +92,7 @@ export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft)
   }
 
   const deletedRowColumnCount =
-    table.rows[rowIndex]?.cells.length ?? (table.header.colSpec.length > 0 ? table.header.colSpec.length : 1);
+    table.header.colSpec.length > 0 ? table.header.colSpec.length : (table.rows[rowIndex]?.cells.length ?? 1);
 
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
 
