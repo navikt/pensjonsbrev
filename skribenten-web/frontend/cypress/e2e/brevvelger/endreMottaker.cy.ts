@@ -305,7 +305,7 @@ describe("Endrer på mottaker", () => {
     cy.get("body").should("not.contain", "0000");
     cy.get("body").should("not.contain", "Poststedet");
     cy.contains("Sverige").should("be.visible");
-    cy.contains("Tilbakestill mottaker").should("be.visible");
+    cy.contains("Tilbakestill").should("be.visible");
   });
 
   it("kan ikke legge inn manuell adresse for exstream brev", () => {

@@ -1,4 +1,4 @@
-import { PencilIcon } from "@navikt/aksel-icons";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
 import { BodyShort, Button, HStack, Label, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
@@ -192,8 +192,21 @@ const BrevmalBrevbaker = (props: {
         <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
           <VStack flexGrow="1" gap="space-32">
             <VStack gap="space-8">
-              <HStack align="center" justify="space-between">
+              <HStack align="center">
                 <Label size="small">Mottaker</Label>
+                <Spacer />
+                {mottaker !== null && (
+                  <Button
+                    icon={<ArrowCirclepathReverseIcon />}
+                    iconPosition="right"
+                    onClick={() => form.setValue("mottaker", null)}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  >
+                    Tilbakestill
+                  </Button>
+                )}
                 <Button
                   data-cy="toggle-endre-mottaker-modal"
                   icon={<PencilIcon />}
@@ -220,19 +233,6 @@ const BrevmalBrevbaker = (props: {
                   resetOnBekreftState={() => form.setValue("mottaker", null)}
                   åpen={modalÅpen}
                 />
-              )}
-              {mottaker !== null && (
-                <HStack>
-                  <Button
-                    css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
-                    onClick={() => form.setValue("mottaker", null)}
-                    size="xsmall"
-                    type="button"
-                    variant="tertiary"
-                  >
-                    Tilbakestill mottaker
-                  </Button>
-                </HStack>
               )}
             </VStack>
             <SelectEnhet />

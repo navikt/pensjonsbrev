@@ -1,5 +1,5 @@
-import { PencilIcon } from "@navikt/aksel-icons";
-import { BodyShort, Button, Heading, HStack, Label, Loader, Tag, VStack } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, Heading, HStack, Label, Loader, Spacer, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -158,8 +158,23 @@ const Brevmal = (props: {
                 åpen={modalÅpen}
               />
             )}
-            <HStack align="center" justify="space-between">
+            <HStack align="center">
               <Label size="small">Mottaker</Label>
+              <Spacer />
+              {props.brev.mottaker !== null && (
+                <Button
+                  disabled={fjernMottakerIsPending}
+                  icon={<ArrowCirclepathReverseIcon />}
+                  iconPosition="right"
+                  loading={fjernMottakerIsPending}
+                  onClick={fjernMottaker}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Tilbakestill
+                </Button>
+              )}
               <Button
                 icon={<PencilIcon />}
                 iconPosition="right"
@@ -172,21 +187,6 @@ const Brevmal = (props: {
               </Button>
             </HStack>
             <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
-            {props.brev.mottaker !== null && (
-              <HStack>
-                <Button
-                  css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
-                  disabled={fjernMottakerIsPending}
-                  loading={fjernMottakerIsPending}
-                  onClick={fjernMottaker}
-                  size="xsmall"
-                  type="button"
-                  variant="tertiary"
-                >
-                  Tilbakestill mottaker
-                </Button>
-              </HStack>
-            )}
           </VStack>
         )}
         <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />

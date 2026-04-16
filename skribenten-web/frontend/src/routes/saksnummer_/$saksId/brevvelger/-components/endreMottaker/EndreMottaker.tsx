@@ -1,5 +1,5 @@
-import { PencilIcon } from "@navikt/aksel-icons";
-import { Button, HStack, Label, VStack } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
+import { Button, HStack, Label, Spacer, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -52,8 +52,26 @@ const EndreMottaker = (properties: {
           åpen={modalÅpen}
         />
       )}
-      <HStack align="center" justify="space-between">
+      <HStack align="center">
         <Label size="small">Mottaker</Label>
+        <Spacer />
+        {idTSSEkstern && (
+          <Button
+            icon={<ArrowCirclepathReverseIcon />}
+            iconPosition="right"
+            onClick={() =>
+              navigate({
+                search: (s) => ({ ...s, idTSSEkstern: undefined }),
+                replace: true,
+              })
+            }
+            size="xsmall"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbakestill
+          </Button>
+        )}
         <Button
           data-cy="toggle-endre-mottaker-modal"
           icon={<PencilIcon />}
@@ -67,24 +85,6 @@ const EndreMottaker = (properties: {
         </Button>
       </HStack>
       <OppsummeringAvMottaker mottaker={mottaker} saksId={properties.saksId} withTitle={false} />
-      {idTSSEkstern && (
-        <HStack>
-          <Button
-            css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
-            onClick={() =>
-              navigate({
-                search: (s) => ({ ...s, idTSSEkstern: undefined }),
-                replace: true,
-              })
-            }
-            size="xsmall"
-            type="button"
-            variant="tertiary"
-          >
-            Tilbakestill mottaker
-          </Button>
-        </HStack>
-      )}
     </VStack>
   );
 };
