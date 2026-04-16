@@ -7,20 +7,22 @@ declare global {
 }
 
 export type UmamiEventName =
-  | "brev opprettet"
-  | "brev attestert"
-  | "brev sendt"
-  | "brev klar status endret"
-  | "brev distribusjonstype endret"
-  | "tekst limt inn"
-  | "pesys omdirigering"
-  | "pesys feil"
   | "attestering blokkert"
-  | "tid brukt i editor"
-  | "tid brukt i brevvelger"
-  | "tid brukt i brevbehandler"
+  | "brev attestert"
+  | "brev distribusjonstype endret"
+  | "brev klar status endret"
+  | "brev opprettet"
+  | "brev sendt"
+  | "endre mottaker klikket"
+  | "pesys feil"
+  | "pesys omdirigering"
+  | "samhandler valgt"
+  | "tekst limt inn"
   | "tid brukt i attestering"
-  | "samhandler valgt";
+  | "tid brukt i brevbehandler"
+  | "tid brukt i brevvelger"
+  | "tid brukt i editor"
+  | "tilbakestill mottaker klikket";
 
 export interface UmamiEventData {
   [key: string]: string | number | boolean | undefined;

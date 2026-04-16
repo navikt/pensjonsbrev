@@ -8,6 +8,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
 import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
+import { trackEvent } from "~/utils/umami";
 
 import { Route } from "../../route";
 
@@ -59,12 +60,13 @@ const EndreMottaker = (properties: {
           <Button
             icon={<ArrowCirclepathReverseIcon />}
             iconPosition="right"
-            onClick={() =>
+            onClick={() => {
+              trackEvent("tilbakestill mottaker klikket", { kontekst: "exstream mal", saksId: properties.saksId });
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
-              })
-            }
+              });
+            }}
             size="xsmall"
             type="button"
             variant="tertiary"
@@ -76,7 +78,10 @@ const EndreMottaker = (properties: {
           data-cy="toggle-endre-mottaker-modal"
           icon={<PencilIcon />}
           iconPosition="right"
-          onClick={() => setModalÅpen(true)}
+          onClick={() => {
+            trackEvent("endre mottaker klikket", { kontekst: "exstream mal", saksId: properties.saksId });
+            setModalÅpen(true);
+          }}
           size="xsmall"
           type="button"
           variant="tertiary"

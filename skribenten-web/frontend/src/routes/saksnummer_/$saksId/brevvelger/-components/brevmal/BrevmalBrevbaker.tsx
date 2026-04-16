@@ -199,7 +199,10 @@ const BrevmalBrevbaker = (props: {
                   <Button
                     icon={<ArrowCirclepathReverseIcon />}
                     iconPosition="right"
-                    onClick={() => form.setValue("mottaker", null)}
+                    onClick={() => {
+                      trackEvent("tilbakestill mottaker klikket", { kontekst: "brevbaker mal", saksId: props.saksId });
+                      form.setValue("mottaker", null);
+                    }}
                     size="xsmall"
                     type="button"
                     variant="tertiary"
@@ -211,7 +214,10 @@ const BrevmalBrevbaker = (props: {
                   data-cy="toggle-endre-mottaker-modal"
                   icon={<PencilIcon />}
                   iconPosition="right"
-                  onClick={() => setModalÅpen(true)}
+                  onClick={() => {
+                    trackEvent("endre mottaker klikket", { kontekst: "brevbaker mal", saksId: props.saksId });
+                    setModalÅpen(true);
+                  }}
                   size="xsmall"
                   type="button"
                   variant="tertiary"

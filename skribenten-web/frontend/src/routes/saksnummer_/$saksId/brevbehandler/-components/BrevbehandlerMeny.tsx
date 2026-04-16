@@ -258,7 +258,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 aria-label="Endre mottaker"
                 data-cy="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
-                onClick={åpneModal}
+                onClick={() => {
+                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+                  åpneModal();
+                }}
                 size="xsmall"
                 type="button"
                 variant="tertiary"
@@ -273,7 +276,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           <Button
             css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
             loading={fjernMottakerIsPending}
-            onClick={fjernMottaker}
+            onClick={() => {
+              trackEvent("tilbakestill mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+              fjernMottaker();
+            }}
             size="xsmall"
             type="button"
             variant="tertiary"
