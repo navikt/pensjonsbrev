@@ -50,7 +50,6 @@ import {
   handleTableCellDeleteShortcut,
   isAtLastTableCell,
   nextTableFocus,
-  TableCellDeleteShortcutResult,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -551,12 +550,12 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (e.key === "Backspace" || e.key === "Delete") {
       const tableDeleteResult = handleTableCellDeleteShortcut(e, editorState);
-      if (tableDeleteResult === TableCellDeleteShortcutResult.DELETE_ROW) {
+      if (tableDeleteResult === "DELETE_ROW") {
         applyAction(Actions.removeTableRow, setEditorState);
         e.stopPropagation();
         return;
       }
-      if (tableDeleteResult === TableCellDeleteShortcutResult.HANDLED && e.key === "Backspace") {
+      if (tableDeleteResult === "BLOCK_DEFAULT" && e.key === "Backspace") {
         e.stopPropagation();
         return;
       }

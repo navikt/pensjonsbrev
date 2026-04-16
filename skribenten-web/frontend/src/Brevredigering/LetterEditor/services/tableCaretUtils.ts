@@ -242,14 +242,7 @@ export function isCellEmpty(cell: Cell): boolean {
   return isEmptyContentList(cell.text);
 }
 
-export const TableCellDeleteShortcutResult = {
-  NOT_HANDLED: "NOT_HANDLED",
-  HANDLED: "HANDLED",
-  DELETE_ROW: "DELETE_ROW",
-} as const;
-
-export type TableCellDeleteShortcutResult =
-  (typeof TableCellDeleteShortcutResult)[keyof typeof TableCellDeleteShortcutResult];
+export type TableCellDeleteShortcutAction = "IGNORE" | "BLOCK_DEFAULT" | "DELETE_ROW";
 
 /**
  * Handles table-cell delete shortcuts.
@@ -262,15 +255,15 @@ export type TableCellDeleteShortcutResult =
 export function handleTableCellDeleteShortcut(
   event: React.KeyboardEvent,
   editorState: LetterEditorState,
-): TableCellDeleteShortcutResult {
-  if (event.key !== "Backspace" && event.key !== "Delete") return TableCellDeleteShortcutResult.NOT_HANDLED;
-  if (!isTableCellIndex(editorState.focus)) return TableCellDeleteShortcutResult.NOT_HANDLED;
+): TableCellDeleteShortcutAction {
+  if (event.key !== "Backspace" && event.key !== "Delete") return "IGNORE";
+  if (!isTableCellIndex(editorState.focus)) return "IGNORE";
 
   const f = editorState.focus;
   const block = editorState.redigertBrev.blocks[f.blockIndex];
   const contentAtFocus = block.content[f.contentIndex];
 
-  if (!isTable(contentAtFocus)) return TableCellDeleteShortcutResult.NOT_HANDLED;
+  if (!isTable(contentAtFocus)) return "IGNORE";
 
   const table = contentAtFocus;
 
@@ -286,19 +279,19 @@ export function handleTableCellDeleteShortcut(
   };
 
   const cell = getFocusedCell();
-  if (!cell) return TableCellDeleteShortcutResult.NOT_HANDLED;
+  if (!cell) return "IGNORE";
 
   if (event.shiftKey) {
     if (f.rowIndex === -1) {
-      return TableCellDeleteShortcutResult.NOT_HANDLED;
+      return "IGNORE";
     }
 
     event.preventDefault();
-    return TableCellDeleteShortcutResult.DELETE_ROW;
+    return "DELETE_ROW";
   }
 
   if (event.key !== "Backspace") {
-    return TableCellDeleteShortcutResult.NOT_HANDLED;
+    return "IGNORE";
   }
 
   const cursorOffset = getCursorOffset();
@@ -308,8 +301,8 @@ export function handleTableCellDeleteShortcut(
 
   if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
     event.preventDefault();
-    return TableCellDeleteShortcutResult.HANDLED;
+    return "BLOCK_DEFAULT";
   }
 
-  return TableCellDeleteShortcutResult.NOT_HANDLED;
+  return "IGNORE";
 }
