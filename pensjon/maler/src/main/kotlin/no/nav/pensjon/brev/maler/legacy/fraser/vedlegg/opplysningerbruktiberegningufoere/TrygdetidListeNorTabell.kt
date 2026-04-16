@@ -4,14 +4,14 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidfom
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagSelectors.trygdetidtom
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.text
 
-data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List<Trygdetidsgrunnlag>>): OutlinePhrase<LangBokmalNynorskEnglish>(){
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List<Trygdetidsgrunnlag>>): OutlinePhrase<LangBokmalNynorsk>(){
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(
                 header = {
@@ -19,14 +19,12 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                         text(
                             bokmal { + "Fra og med" },
                             nynorsk { + "Frå og med" },
-                            english { + "From (and including)" },
                         )
                     }
                     column {
                         text(
                             bokmal { + "Til og med" },
                             nynorsk { + "Til og med" },
-                            english { + "To (and including)" },
                         )
                     }
                 }
@@ -38,7 +36,6 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
-                                    english { + it.format() },
                                 )
                             }
                         }
@@ -47,7 +44,6 @@ data class TrygdetidListeNorTabell(val trygdetidsGrunnlagsListe: Expression<List
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
-                                    english { + it.format() },
                                 )
                             }
                         }
