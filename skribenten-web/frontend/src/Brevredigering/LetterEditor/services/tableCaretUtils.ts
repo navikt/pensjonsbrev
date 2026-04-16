@@ -229,7 +229,7 @@ export function addRow(
       draft.focus = {
         ...f,
         rowIndex: isLastRow ? table.rows.length - 1 : currentRowIndex + 1,
-        cellIndex: currentColIndex,
+        cellIndex: isLastRow ? 0 : currentColIndex,
         cellContentIndex: 0,
         cursorPosition: 0,
       };
