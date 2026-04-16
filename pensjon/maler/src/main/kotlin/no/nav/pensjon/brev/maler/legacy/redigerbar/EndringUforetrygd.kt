@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.antallBarnOpphor
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_innt_over_1g
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_over_18
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.mindre_ett_ar_bt_flt
@@ -66,6 +67,59 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         )
     ) {
+        val pe = pesysData.pe
+
+        val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
+        val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
+
+        val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
+        val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
+        val virkningstidspunktBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()
+        val virkningbegrunnelseStdbegr_22_12_1_5 = virkningstidspunktBegrunnelse.equalTo("stdbegr_22_12_1_5")
+        val uforegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
+        val uforegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()
+        val yrkesskadegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
+        val yrkesskadegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
+
+        val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
+        val mottarMinsteytelse = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()
+        val belopsgrense = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
+        val grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
+
+        val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
+        val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
+
+        val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
+        val ieuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse()
+        val ieuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
+        val oifuKroner = pesysData.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
+        val oifuMerEnnIfu = oifuKroner.greaterThan(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt())
+
+        val barnetilleggSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
+        val barnetilleggFellesInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
+        val barnetilleggInnvilget = barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget
+        val btSerkullNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
+        val btSerkullNetto0 = btSerkullNetto.equalTo(0)
+        val btFellesNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
+        val btFellesNetto0 = btFellesNetto.equalTo(0)
+        val btFellesJusteringsbelopPerAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
+        val btFellesJusteringsbelopPerAr0 = btFellesJusteringsbelopPerAr.equalTo(0)
+        val btSerkullJusteringsbelopPerAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
+        val btSerkullJusteringsbelopPerAr0 = btSerkullJusteringsbelopPerAr.equalTo(0)
+        val btFellesFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag()
+        val btFellesFradrag0 = btFellesFradrag.equalTo(0)
+        val btSerkullFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag()
+        val btSerkullFradrag0 = btSerkullFradrag.equalTo(0)
+
+        val instoppholdtype = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
+        val instoppholdanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()
+        val fasteUtgifterInstopphold = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter()
+
+        val txtBarnetBarnaOpphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna" else "barnet"
+        val txtBarnetBarnaOpphorForsorgaForsorgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
+        val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
+        val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
+
         title {
             text(
                 bokmal { +"Nav har endret uføretrygden din" },
@@ -73,59 +127,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             )
         }
         outline {
-            val pe = pesysData.pe
-
-            val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
-            val onsketvirkningsdato = pe.vedtaksdata_kravhode_onsketvirkningsdato().ifNull(LocalDate.now())
-
-            val uforetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunkt().ifNull(LocalDate.now())
-            val skadetidspunkt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt().ifNull(LocalDate.now())
-            val virkningstidspunktBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_virkningbegrunnelse()
-            val virkningbegrunnelseStdbegr_22_12_1_5 = virkningstidspunktBegrunnelse.equalTo("stdbegr_22_12_1_5")
-            val uforegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad()
-            val uforegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforegrad()
-            val yrkesskadegradFraBeregning = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_yrkesskadegrad()
-            val yrkesskadegradFraVilkar = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
-
-            val utbetalingsgrad = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_utbetalingsgrad()
-            val mottarMinsteytelse = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()
-            val belopsgrense = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense()
-            val grunnbelop = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()
-
-            val ektefelletilleggInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget()
-            val gjenlevendetilleggInnvilget = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_gjenlevendetillegg_gtinnvilget()
-
-            val ifuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
-            val ieuBegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieubegrunnelse()
-            val ieuInntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
-            val oifuKroner = pesysData.oifuVedVirkningstidspunkt.ifNull(Kroner(0))
-            val oifuMerEnnIfu = oifuKroner.greaterThan(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt())
-
-            val barnetilleggSerkullInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinnvilget()
-            val barnetilleggFellesInnvilget = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget()
-            val barnetilleggInnvilget = barnetilleggSerkullInnvilget or barnetilleggFellesInnvilget
-            val btSerkullNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
-            val btSerkullNetto0 = btSerkullNetto.equalTo(0)
-            val btFellesNetto = pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-            val btFellesNetto0 = btFellesNetto.equalTo(0)
-            val btFellesJusteringsbelopPerAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar()
-            val btFellesJusteringsbelopPerAr0 = btFellesJusteringsbelopPerAr.equalTo(0)
-            val btSerkullJusteringsbelopPerAr = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar()
-            val btSerkullJusteringsbelopPerAr0 = btSerkullJusteringsbelopPerAr.equalTo(0)
-            val btFellesFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag()
-            val btFellesFradrag0 = btFellesFradrag.equalTo(0)
-            val btSerkullFradrag = pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbfradrag()
-            val btSerkullFradrag0 = btSerkullFradrag.equalTo(0)
-
-            val instoppholdtype = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
-            val instoppholdanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()
-            val fasteUtgifterInstopphold = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter()
-
-            val txtBarnetBarnaOpphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna" else "barnet"
-            val txtBarnetBarnaOpphorForsorgaForsorgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
-            val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
-            val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
-
             showIf(gjenlevendetilleggInnvilget.not() and
                         pe.vedtaksdata_kravhode_kravgjelder().isNotAnyOf("sok_uu", "sok_ys") and
                         kravarsak.isNotAnyOf("endring_ifu", "endret_inntekt", "barn_endret_inntekt", "eps_endret_inntekt", "begge_for_end_inn", "soknad_bt", "instopphold", "omgj_etter_klage", "omgj_etter_anke")) {
@@ -1954,6 +1955,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, pesysData.maanedligUfoeretrygdFoerSkatt)
         includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pesysData.pe, pesysData.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfore)
+        includeAttachment(vedleggDineRettigheterOgPlikterUfore, pesysData.dineRettigheterOgPlikterUfore)
     }
 }
