@@ -52,10 +52,6 @@ function createEditorState() {
 }
 
 describe("remove table row shortcut", () => {
-  beforeEach(() => {
-    cy.viewport(800, 1000);
-  });
-
   it("deletes a filled row with Shift+Backspace and preserves the table when deleting the last row", () => {
     const state = createEditorState();
     cy.mount(<EditorWithState editorState={state} />);
