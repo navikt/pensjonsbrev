@@ -53,14 +53,14 @@ private data class Coords(val x: Int, val y: Int) {
 }
 private data class MiddleSnake(val d: Int, val from: Coords, val to: Coords)
 
-private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val firstOffset: Int = 0, val secondOffset: Int = 0) {
-    val n get() = old.size
-    val m get() = new.size
-    val size = n + m
-    val delta = n - m
-    val deltaIsOdd = (delta % 2) != 0
-    val halfway = size / 2 + (if (deltaIsOdd) 1 else 0)
-    val endCoords get() = Coords(n, m)
+private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val oldOffset: Int = 0, val newOffset: Int = 0) {
+    private val n get() = old.size
+    private val m get() = new.size
+    private val size = n + m
+    private val delta = n - m
+    private val deltaIsOdd = (delta % 2) != 0
+    private val halfway = size / 2 + (if (deltaIsOdd) 1 else 0)
+    private val endCoords get() = Coords(n, m)
 
     init {
         require(old is RandomAccess) { "first er ikke RandomAccess (ArrayList)" }
@@ -68,7 +68,7 @@ private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val firstOf
     }
 
     fun slice(from: Coords, to: Coords): MyersDiff<T> =
-        MyersDiff(old.slice(from.x..<to.x), new.slice(from.y..<to.y), firstOffset + from.x, secondOffset + from.y)
+        MyersDiff(old.slice(from.x..<to.x), new.slice(from.y..<to.y), oldOffset + from.x, newOffset + from.y)
 
     fun shortestEditScript(): List<EditOperation<T>> {
         return if (n > 0 && m > 0) {
@@ -83,9 +83,9 @@ private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val firstOf
                 slice(from = Coords(x = m, y = m), to = Coords(x = n, y = m)).shortestEditScript()
             }
         } else if (n > 0) {
-            old.mapIndexed { i, it -> Delete(it, firstOffset + i) }
+            old.mapIndexed { i, it -> Delete(it, oldOffset + i) }
         } else {
-            new.mapIndexed { i, it -> Insert(it, secondOffset + i) }
+            new.mapIndexed { i, it -> Insert(it, newOffset + i) }
         }
     }
 
