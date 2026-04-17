@@ -83,18 +83,45 @@ data class TBU080V_TBU027V(
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016,9,1)) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024,7,1)) and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse() or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())))){
                 //[TBU080V-TBU027V]
 
-                paragraph {
-
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
-                    showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())){
-                        text (
-                            bokmal { + "Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Bor du sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,329 ganger folketrygdens grunnbeløp. Hvis du får barn med samboeren din, skal uføretrygden utgjøre 2,329 ganger folketrygdens grunnbeløp fra måneden etter at barnet er født.Bor du sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene og har uføretrygd beregnet ut fra uførepensjon per 31. desember 2014, utgjør minste årlige ytelse 2,379 ganger folketrygdens grunnbeløp. Er du enslig, utgjør minste årlige ytelse 2,529 ganger folketrygdens grunnbeløp. " },
-                            nynorsk { + "Du er sikra minsteyting fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Bur du saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene, utgjer minste årlege yting 2,329 gonger grunnbeløpet i folketrygda. Dersom du får barn med sambuaren din, skal uføretrygda utgjere 2,329 gonger folketrygdas grunnbeløp frå månaden etter at barnet er født.Bur du saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene og har uføretrygd berekna ut frå uførepensjon per 31. desember 2014, utgjer minste årlege yting 2,379 gonger grunnbeløpet i folketrygda. Er du einsleg, utgjer minste årlege yting 2,529 gonger grunnbeløpet. " },
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du er sikret minsteytelse, fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Din sivilstatus påvirker minstesatsen. " },
+                            nynorsk { +"Du er sikra minsteyting, fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Din sivilstatus påverkar minstesatsen. " },
                         )
+                        list {
+                            item {
+                                text(
+                                    bokmal { + "Personer som lever sammen med ektefelle, partner eller samboer har en ordinær minstesats lik 2,329 ganger folketrygdens grunnbeløp (G). " },
+                                    nynorsk { + "Personar som lever saman med ektefelle, partnar eller sambuar har ein ordinær minstesats lik 2,329 gonger grunnbeløpet i folketrygda (G). " },
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { + "For enslige personer er høy minstesats 2,529 ganger folketrygdens grunnbeløp (G). " },
+                                    nynorsk { + "For einslege personar er høg minstesats 2,529 gonger grunnbeløpet i folketrygda (G). " },
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { + "Hvis du har vært samboer i minst 12 av de siste 18 månedene, skal du ha ordinær minstesats 2,329 (G). " },
+                                    nynorsk { + "Om du har vore sambuar i minst 12 av dei siste 18 månadene, skal du ha ordinær minstesats 2,329 (G). " },
+                                )
+                            }
+                            item {
+                                text(
+                                    bokmal { + "Hvis du får barn med samboeren din, skal du ha ordinær minstesats 2,329 (G) fra måneden etter barnet er født. " },
+                                    nynorsk { + "Om du får barn med sambuaren din, skal du ha ordinær minstesats 2,329 (G) frå månaden etter barnet er født. " },
+                                )
+                            }
+                        }
                     }
+                }
 
-                    //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true AND PE_UT_VilkarGjelderPersonAlder < 20 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
-                    showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())){
+                //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true AND PE_UT_VilkarGjelderPersonAlder < 20 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
+                showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse())){
+                    paragraph {
                         text (
                             bokmal { + "Er du innvilget rettighet som ung ufør og lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene, utgjør minste årlige ytelse 2,709 ganger folketrygdens grunnbeløp fra fylte 20 år. Er du enslig og innvilget rettighet som ung ufør, utgjør minste årlige ytelse 2,959 ganger folketrygdens grunnbeløp fra fylte 20 år." },
                             nynorsk { + "Er du innvilga rett som ung ufør og lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene, utgjer minste årlege yting 2,709 gonger grunnbeløpet i folketrygda frå fylte 20 år. Er du einsleg og innvilga rett som ung ufør, utgjer minste årlege yting 2,959 gonger grunnbeløpet i folketrygda frå fylte 20 år." },
