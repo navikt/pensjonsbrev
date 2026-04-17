@@ -264,6 +264,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
+            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
