@@ -1,14 +1,15 @@
 package no.nav.pensjon.brev.fixtures.redigerbar
 
 import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsData
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDto
 import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-fun createVedtakOmLavereMinstesatsDto() =
-    VedtakOmLavereMinstesatsDto(
+fun createVedtakOmLavereMinstesatsData() =
+    VedtakOmLavereMinstesatsData(
         nettoUforetrygdUtenTillegg = Kroner(26000),
         nettoBarnetillegg = Kroner(4000),
         nettoGjenlevendetillegg = Kroner(2000),
@@ -28,4 +29,9 @@ fun createVedtakOmLavereMinstesatsDto() =
         pe = createPEgruppe10(),
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto()
+    )
+
+fun createVedtakOmLavereMinstesatsDto() =
+    VedtakOmLavereMinstesatsDto(
+        vedtakData = createVedtakOmLavereMinstesatsData(),
     )
