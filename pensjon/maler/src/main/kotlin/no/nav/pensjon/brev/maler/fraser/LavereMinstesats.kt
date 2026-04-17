@@ -1,67 +1,48 @@
-package no.nav.pensjon.brev.maler.legacy
+package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.avkortetPgaRedusertTrygdetid
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.egenopptjentUforetrygd
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringNettoBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringNettoGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringNettoUforetrygdUtenTillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.endringReduksjonsprosent
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.harGradertUfoeretrygd
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.harMinstesats
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.hjemmeltekst
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.nettoBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.nettoGjenlevendetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.nettoUforetrygdUtenTillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.nyMinstesats
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.orienteringOmRettigheterUfoere
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.reduksjonsprosent
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.tidligereMinstesats
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDtoSelectors.tillegg
-import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
-import no.nav.pensjon.brev.maler.vedlegg.vedleggMaanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.OutlinePhrase
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.plus
-import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-@TemplateModelHelpers
-object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> {
+object LavereMinstesats {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_LAVERE_MINSTESATS_2026
+    data class Brevdata(
+        val nettoUforetrygdUtenTillegg: Expression<Kroner>,
+        val nettoBarnetillegg: Expression<Kroner?>,
+        val nettoGjenlevendetillegg: Expression<Kroner?>,
+        val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
+        val endringNettoBarnetillegg: Expression<Boolean>,
+        val endringNettoGjenlevendetillegg: Expression<Boolean>,
+        val endringReduksjonsprosent: Expression<Boolean>,
+        val reduksjonsprosent: Expression<Double>,
+        val harMinstesats: Expression<Boolean>,
+        val tidligereMinstesats: Expression<Kroner>,
+        val nyMinstesats: Expression<Kroner>,
+        val tillegg: Expression<Collection<Tillegg>>,
+        val egenopptjentUforetrygd: Expression<Kroner>,
+        val avkortetPgaRedusertTrygdetid: Expression<Boolean>,
+        val harGradertUfoeretrygd: Expression<Boolean>,
+        val hjemmeltekst: Expression<String>,
+    )
 
-    override val template = createTemplate(
-        languages = languages(Language.Bokmal, Language.Nynorsk),
-        letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - endring av minstesats fom 1. juli 2026",
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
-        )
-    ) {
-        title {
-            text(
-                bokmal { +"Vedtaksbrev - Nav endrer uføretrygden din" },
-                nynorsk { +"Vedtaksbrev - Nav endrar uføretrygda di" },
-            )
-        }
-        outline {
-            val sumUtOgTillegg = nettoUforetrygdUtenTillegg + nettoBarnetillegg.ifNull(Kroner(0)) + nettoGjenlevendetillegg.ifNull(Kroner(0))
+    data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val sumUtOgTillegg = data.nettoUforetrygdUtenTillegg + data.nettoBarnetillegg.ifNull(Kroner(0)) + data.nettoGjenlevendetillegg.ifNull(Kroner(0))
 
             title1 {
                 text(
@@ -74,7 +55,7 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     column { text(bokmal { +"Endring" }, nynorsk { +"Endring" }) }
                     column(alignment = RIGHT) {}
                 }) {
-                    showIf(this.endringNettoUforetrygdUtenTillegg) {
+                    showIf(data.endringNettoUforetrygdUtenTillegg) {
                         row {
                             cell {
                                 text(
@@ -84,12 +65,12 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                             }
                             cell {
                                 text(
-                                    bokmal { +nettoUforetrygdUtenTillegg.format() },
-                                    nynorsk { +nettoUforetrygdUtenTillegg.format() },
+                                    bokmal { +data.nettoUforetrygdUtenTillegg.format() },
+                                    nynorsk { +data.nettoUforetrygdUtenTillegg.format() },
                                 )
                             }
                         }
-                        showIf(this.endringNettoBarnetillegg) {
+                        showIf(data.endringNettoBarnetillegg) {
                             row {
                                 cell {
                                     text(
@@ -99,13 +80,13 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                                 }
                                 cell {
                                     text(
-                                        bokmal { +nettoBarnetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                        bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                        nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
                                     )
                                 }
                             }
                         }
-                        showIf(this.endringNettoGjenlevendetillegg) {
+                        showIf(data.endringNettoGjenlevendetillegg) {
                             row {
                                 cell {
                                     text(
@@ -115,13 +96,13 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                                 }
                                 cell {
                                     text(
-                                        bokmal { +nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                        bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                        nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
                                     )
                                 }
                             }
                         }
-                        showIf(this.endringReduksjonsprosent) {
+                        showIf(data.endringReduksjonsprosent) {
                             row {
                                 cell {
                                     text(
@@ -131,13 +112,13 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                                 }
                                 cell {
                                     text(
-                                        bokmal { +reduksjonsprosent.format() + " prosent" },
-                                        nynorsk { +reduksjonsprosent.format() + " prosent" },
+                                        bokmal { +data.reduksjonsprosent.format() + " prosent" },
+                                        nynorsk { +data.reduksjonsprosent.format() + " prosent" },
                                     )
                                 }
                             }
                         }
-                        showIf(this.harMinstesats) {
+                        showIf(data.harMinstesats) {
                             row {
                                 cell {
                                     text(
@@ -159,11 +140,11 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
             paragraph {
                 text(
                     bokmal {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + tillegg.format(UTOgTilleggMapper)
+                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
                         +" per måned før skatt fra 1. juli 2026."
                     },
                     nynorsk {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + tillegg.format(UTOgTilleggMapper)
+                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
                         +" per månad før skatt frå 1. juli 2026."
                     },
                 )
@@ -200,8 +181,8 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
             }
             paragraph {
                 text(
-                    bokmal { +"Fra 1. juli 2026 endres minstesatsen for gifte/samboende fra 2,379 G (" + tidligereMinstesats.format() + ") til 2,329 G (" + nyMinstesats.format() + ")." },
-                    nynorsk { +"Frå 1. juli 2026 vert minstesatsen for gifte/sambuande endra frå 2,379 G (" + tidligereMinstesats.format() + ") til 2,329 G (" + nyMinstesats.format() + ")." },
+                    bokmal { +"Fra 1. juli 2026 endres minstesatsen for gifte/samboende fra 2,379 G (" + data.tidligereMinstesats.format() + ") til 2,329 G (" + data.nyMinstesats.format() + ")." },
+                    nynorsk { +"Frå 1. juli 2026 vert minstesatsen for gifte/sambuande endra frå 2,379 G (" + data.tidligereMinstesats.format() + ") til 2,329 G (" + data.nyMinstesats.format() + ")." },
                 )
             }
             paragraph {
@@ -216,15 +197,15 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     nynorsk { +"I 2015 vart uførepensjon endra til uføretrygd. For deg som allereie var uføretrygda, førte det til at ytinga di vart rekna om etter dei nye reglane." },
                 )
             }
-            showIf(!harMinstesats) {
+            showIf(!data.harMinstesats) {
                 paragraph {
                     text(
-                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Dette gir deg en høyere uføretrygd. Din egenopptjening er kroner " + egenopptjentUforetrygd.format() + ". " },
-                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Dette gir deg ei høgare uføretrygd. Eigenoppteninga di er kroner " + egenopptjentUforetrygd.format() + ". " },
+                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Dette gir deg en høyere uføretrygd. Din egenopptjening er kroner " + data.egenopptjentUforetrygd.format() + ". " },
+                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Dette gir deg ei høgare uføretrygd. Eigenoppteninga di er kroner " + data.egenopptjentUforetrygd.format() + ". " },
                     )
                 }
             }
-            showIf(avkortetPgaRedusertTrygdetid) {
+            showIf(data.avkortetPgaRedusertTrygdetid) {
                 paragraph {
                     text(
                         bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. Derfor er minstesatsen din lavere enn 2,329 G." },
@@ -232,7 +213,7 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     )
                 }
             }
-            showIf(harGradertUfoeretrygd) {
+            showIf(data.harGradertUfoeretrygd) {
                 paragraph {
                     text(
                         bokmal { +"Denne endringen påvirker også deg som har gradert uføretrygd." },
@@ -240,7 +221,7 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     )
                 }
             }
-            showIf(endringNettoBarnetillegg) {
+            showIf(data.endringNettoBarnetillegg) {
                 title1 {
                     text(
                         bokmal { +"Endring i barnetillegg" },
@@ -251,16 +232,16 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     text(
                         bokmal {
                             +"Regelverksendringene fører til at du får en endret utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. " +
-                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
                         },
                         nynorsk {
                             +"Regelverksendringane fører til at du får ei endra utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. " +
-                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
                         },
                     )
                 }
             }
-            showIf(endringNettoGjenlevendetillegg) {
+            showIf(data.endringNettoGjenlevendetillegg) {
                 title1 {
                     text(
                         bokmal { +"Endring i gjenlevendetillegg" },
@@ -271,19 +252,19 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
                     text(
                         bokmal {
                             +"Regelverksendringene fører til at gjenlevendetillegg i uføretrygden din endres. Ny beregning av gjenlevendetillegget (før skatt) er " +
-                                    nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
+                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
                         },
                         nynorsk {
                             +"Regelverksendringane fører til at gjenlevendetillegg i uføretrygda di vert endra. Ny berekning av gjenlevendetillegget (før skatt) er " +
-                                    nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
+                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
                         },
                     )
                 }
             }
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + hjemmeltekst + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + hjemmeltekst + "." },
+                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
                 )
             }
 
@@ -310,8 +291,5 @@ object VedtakOmLavereMinstesats : AutobrevTemplate<VedtakOmLavereMinstesatsDto> 
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
-        includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, this.maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, this.pe, this.pe.inkluderopplysningerbruktiberegningen())
-        includeAttachment(vedleggDineRettigheterOgPlikterUfoere, this.orienteringOmRettigheterUfoere)
     }
 }
