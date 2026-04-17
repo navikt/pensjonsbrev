@@ -47,7 +47,7 @@ import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   exitTable,
-  handleBackspaceInTableCell,
+  handleTableCellDeleteShortcut,
   isAtLastTableCell,
   nextTableFocus,
 } from "../services/tableCaretUtils";
@@ -548,9 +548,20 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
     }
 
-    if (e.key === "Backspace") {
-      if (handleBackspaceInTableCell(e, editorState, setEditorState)) return;
+    if (e.key === "Backspace" || e.key === "Delete") {
+      const tableDeleteResult = handleTableCellDeleteShortcut(e, editorState);
+      if (tableDeleteResult === "DELETE_ROW") {
+        applyAction(Actions.removeTableRow, setEditorState);
+        e.stopPropagation();
+        return;
+      }
+      if (tableDeleteResult === "BLOCK_DEFAULT" && e.key === "Backspace") {
+        e.stopPropagation();
+        return;
+      }
+    }
 
+    if (e.key === "Backspace") {
       handleBackspace(e);
       e.stopPropagation();
       return;

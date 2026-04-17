@@ -4,7 +4,6 @@ import {
   type Cell,
   PARAGRAPH,
   type ParagraphBlock,
-  type Row,
   TITLE1,
   TITLE2,
   TITLE3,
@@ -13,7 +12,7 @@ import {
   type Title3Block,
 } from "~/types/brevbakerTypes";
 
-import { addElements, isTable, newLiteral, newRow, removeElements } from "../actions/common";
+import { addElements, isTable, newLiteral, newRow } from "../actions/common";
 import { type Focus, type LetterEditorState } from "../model/state";
 import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
@@ -229,7 +228,7 @@ export function addRow(
       draft.focus = {
         ...f,
         rowIndex: isLastRow ? table.rows.length - 1 : currentRowIndex + 1,
-        cellIndex: currentColIndex,
+        cellIndex: isLastRow ? 0 : currentColIndex,
         cellContentIndex: 0,
         cursorPosition: 0,
       };
@@ -243,34 +242,28 @@ export function isCellEmpty(cell: Cell): boolean {
   return isEmptyContentList(cell.text);
 }
 
-export function rowIsEmpty(row: Row): boolean {
-  return row.cells.every(isCellEmpty);
-}
+export type TableCellDeleteShortcutAction = "IGNORE" | "BLOCK_DEFAULT" | "DELETE_ROW";
+
 /**
- * Handles **Shift + Backspace** inside a table cell.
+ * Handles table-cell delete shortcuts.
  *
- * • When the caret is at the very beginning (offset 0 or 1) of *any* cell in a
- *   row **and the entire row is empty**, the row is deleted.
- * • If it was the last remaining row, the whole table is replaced by a blank
- *   paragraph.
- *
- * Returns **true** when the key event is consumed; otherwise **false** so the
- * browser performs its normal action.
+ * - Plain Backspace at the start of a cell is blocked so the caret does not
+ *   merge content out of the table.
+ * - Shift+Backspace and Shift+Delete in body cells signal row deletion,
+ *   regardless of whether the row is empty.
  */
-export function handleBackspaceInTableCell(
+export function handleTableCellDeleteShortcut(
   event: React.KeyboardEvent,
   editorState: LetterEditorState,
-  updateEditorState: (updater: (prev: LetterEditorState) => LetterEditorState) => void,
-): boolean {
-  // We only care about Backspace (plain or with Shift)
-  if (event.key !== "Backspace") return false;
-  if (!isTableCellIndex(editorState.focus)) return false;
+): TableCellDeleteShortcutAction {
+  if (event.key !== "Backspace" && event.key !== "Delete") return "IGNORE";
+  if (!isTableCellIndex(editorState.focus)) return "IGNORE";
 
   const f = editorState.focus;
   const block = editorState.redigertBrev.blocks[f.blockIndex];
   const contentAtFocus = block.content[f.contentIndex];
 
-  if (!isTable(contentAtFocus)) return false;
+  if (!isTable(contentAtFocus)) return "IGNORE";
 
   const table = contentAtFocus;
 
@@ -286,92 +279,30 @@ export function handleBackspaceInTableCell(
   };
 
   const cell = getFocusedCell();
-  if (!cell) return false;
+  if (!cell) return "IGNORE";
+
+  if (event.shiftKey) {
+    if (f.rowIndex === -1) {
+      return "IGNORE";
+    }
+
+    event.preventDefault();
+    return "DELETE_ROW";
+  }
+
+  if (event.key !== "Backspace") {
+    return "IGNORE";
+  }
 
   const cursorOffset = getCursorOffset();
-  const atStartOfThisTextNode = cursorOffset === 0;
   const isFirstTextInCell = f.cellContentIndex === 0;
   const cellIsEmpty = isCellEmpty(cell);
+  const atStartOfThisTextNode = cursorOffset === 0 || (cursorOffset === 1 && cellIsEmpty);
 
-  if (!event.shiftKey) {
-    // Prevent "merge with previous" when:
-    // - Caret is at the very start of the *first* text node in the cell, or
-    // - The cell is effectively empty (including zero-width space)
-    //
-    // In these cases, block the merge and do nothing (so one doesn't exit the table by mistake).
-    // Otherwise, allow normal character deletion inside the cell.
-    if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
-      event.preventDefault();
-      return true;
-    }
-    // All other cases: let browser handle (delete character within cell text)
-    return false;
+  if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
+    event.preventDefault();
+    return "BLOCK_DEFAULT";
   }
 
-  if (f.rowIndex === -1) {
-    // In header cell: row deletion not allowed, let browser handle as normal
-    return false;
-  }
-
-  const currentRow = table.rows[f.rowIndex];
-  if (!currentRow) return false;
-
-  if (!(atStartOfThisTextNode && rowIsEmpty(currentRow))) return false;
-
-  event.preventDefault();
-
-  updateEditorState((prevState) =>
-    produce(prevState, (draft) => {
-      const df = draft.focus;
-      if (!isTableCellIndex(df)) return;
-
-      const dBlock = draft.redigertBrev.blocks[df.blockIndex];
-      const dContent = dBlock.content[df.contentIndex];
-      if (!isTable(dContent)) return;
-      const dTable = dContent;
-
-      removeElements(df.rowIndex, 1, {
-        content: dTable.rows,
-        deletedContent: dTable.deletedRows,
-        id: dTable.id,
-      });
-
-      if (dTable.rows.length === 0) {
-        // Replace the whole table with a blank paragraph literal
-        const paragraphDraft = draft.redigertBrev.blocks[df.blockIndex] as Draft<ParagraphBlock>;
-
-        removeElements(df.contentIndex, 1, {
-          content: paragraphDraft.content,
-          deletedContent: paragraphDraft.deletedContent,
-          id: paragraphDraft.id,
-        });
-
-        addElements(
-          [newLiteral({ editedText: "" })],
-          df.contentIndex,
-          paragraphDraft.content,
-          paragraphDraft.deletedContent,
-        );
-
-        draft.focus = { blockIndex: df.blockIndex, contentIndex: df.contentIndex, cursorPosition: 0 };
-      } else {
-        const newRowIndex = Math.min(df.rowIndex, dTable.rows.length - 1);
-        const newRow = dTable.rows[newRowIndex];
-        const newColIndex = Math.min(df.cellIndex, newRow.cells.length - 1);
-
-        draft.focus = {
-          blockIndex: df.blockIndex,
-          contentIndex: df.contentIndex,
-          rowIndex: newRowIndex,
-          cellIndex: newColIndex,
-          cellContentIndex: 0,
-          cursorPosition: 0,
-        };
-      }
-
-      draft.saveStatus = "DIRTY";
-    }),
-  );
-
-  return true;
+  return "IGNORE";
 }
