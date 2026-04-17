@@ -56,7 +56,7 @@ object AvslagGjenlevendepensjonUtland : RedigerbarTemplate<AvslagGjenlevendepens
                 text(
                     bokmal { +"Nav viser til din søknad om gjenlevendepensjon mottatt " + pesysData.kravMottattDato.format() + ". Søknaden din er avslått." },
                     nynorsk { +"Nav viser til søknaden din om attlevandepensjon motteken " + pesysData.kravMottattDato.format() + ". Søknaden din er avslått." },
-                    english { +"Nav makes reference to your application for a survivor's pension, received on " + pesysData.kravMottattDato.format() + ". Your application has been denied." }
+                    english { +"Nav refers to your application for a survivor's pension, received on " + pesysData.kravMottattDato.format() + ". Your application has been denied." }
                 )
             }
             paragraph {
