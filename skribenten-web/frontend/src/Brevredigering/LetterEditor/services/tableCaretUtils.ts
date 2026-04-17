@@ -242,7 +242,7 @@ export function isCellEmpty(cell: Cell): boolean {
   return isEmptyContentList(cell.text);
 }
 
-export type TableCellDeleteShortcutAction = "IGNORE" | "BLOCK_DEFAULT" | "DELETE_ROW";
+export type TableCellDeleteShortcutAction = "IGNORE" | "BLOCK_DEFAULT" | "DELETE_ROW" | "DELETE_TABLE";
 
 /**
  * Handles table-cell delete shortcuts.
@@ -286,7 +286,13 @@ export function handleTableCellDeleteShortcut(
       return "IGNORE";
     }
 
-    event.preventDefault();
+    const isOnlyRow = table.rows.length === 1;
+    const allCellsEmpty = isOnlyRow && table.rows[0].cells.every((c) => isCellEmpty(c));
+
+    if (allCellsEmpty) {
+      return "DELETE_TABLE";
+    }
+
     return "DELETE_ROW";
   }
 
@@ -300,7 +306,6 @@ export function handleTableCellDeleteShortcut(
   const atStartOfThisTextNode = cursorOffset === 0 || (cursorOffset === 1 && cellIsEmpty);
 
   if ((isFirstTextInCell && atStartOfThisTextNode) || cellIsEmpty) {
-    event.preventDefault();
     return "BLOCK_DEFAULT";
   }
 

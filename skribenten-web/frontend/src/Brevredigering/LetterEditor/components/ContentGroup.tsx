@@ -550,12 +550,20 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
 
     if (e.key === "Backspace" || e.key === "Delete") {
       const tableDeleteResult = handleTableCellDeleteShortcut(e, editorState);
+      if (tableDeleteResult === "DELETE_TABLE") {
+        e.preventDefault();
+        applyAction(Actions.removeTable, setEditorState);
+        e.stopPropagation();
+        return;
+      }
       if (tableDeleteResult === "DELETE_ROW") {
+        e.preventDefault();
         applyAction(Actions.removeTableRow, setEditorState);
         e.stopPropagation();
         return;
       }
-      if (tableDeleteResult === "BLOCK_DEFAULT" && e.key === "Backspace") {
+      if (tableDeleteResult === "BLOCK_DEFAULT") {
+        e.preventDefault();
         e.stopPropagation();
         return;
       }
