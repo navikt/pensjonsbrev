@@ -1,23 +1,30 @@
-import { Button, HStack } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
+import { Button, HStack, Label, Spacer, VStack } from "@navikt/ds-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
+import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
+import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
+import { trackEvent } from "~/utils/umami";
 
 import { Route } from "../../route";
 
 const EndreMottaker = (properties: {
   //kan være undefined fordi vi ikke kan gjøre noe manuellAdresse enda
   onManuellAdresseBekreft?: (a: Nullable<Adresse>) => void;
+  saksId: string;
 }) => {
   const [modalÅpen, setModalÅpen] = useState<boolean>(false);
   const navigate = useNavigate({ from: Route.fullPath });
   const { idTSSEkstern } = Route.useSearch();
 
+  const mottaker: Nullable<Mottaker> = idTSSEkstern ? { type: "Samhandler", tssId: idTSSEkstern, navn: null } : null;
+
   return (
-    <div>
+    <VStack gap="space-8">
       {modalÅpen && (
         <EndreMottakerModal
           error={null}
@@ -46,33 +53,44 @@ const EndreMottaker = (properties: {
           åpen={modalÅpen}
         />
       )}
-      <HStack>
-        <Button
-          data-cy="toggle-endre-mottaker-modal"
-          onClick={() => setModalÅpen(true)}
-          size="small"
-          type="button"
-          variant="secondary"
-        >
-          Endre mottaker
-        </Button>
+      <HStack align="center">
+        <Label size="small">Mottaker</Label>
+        <Spacer />
         {idTSSEkstern && (
           <Button
-            onClick={() =>
+            icon={<ArrowCirclepathReverseIcon />}
+            iconPosition="right"
+            onClick={() => {
+              trackEvent("tilbakestill mottaker klikket", { kontekst: "exstream mal", saksId: properties.saksId });
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,
-              })
-            }
-            size="small"
+              });
+            }}
+            size="xsmall"
             type="button"
             variant="tertiary"
           >
-            Tilbakestill mottaker
+            Tilbakestill
           </Button>
         )}
+        <Button
+          data-cy="toggle-endre-mottaker-modal"
+          icon={<PencilIcon />}
+          iconPosition="right"
+          onClick={() => {
+            trackEvent("endre mottaker klikket", { kontekst: "exstream mal", saksId: properties.saksId });
+            setModalÅpen(true);
+          }}
+          size="xsmall"
+          type="button"
+          variant="tertiary"
+        >
+          Endre
+        </Button>
       </HStack>
-    </div>
+      <OppsummeringAvMottaker mottaker={mottaker} saksId={properties.saksId} withTitle={false} />
+    </VStack>
   );
 };
 
