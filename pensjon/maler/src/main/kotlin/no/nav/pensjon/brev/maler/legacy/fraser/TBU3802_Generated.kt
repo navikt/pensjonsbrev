@@ -81,7 +81,7 @@ data class TBU3802_Generated(
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND NOT(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0)) THEN      INCLUDE ENDIF
 			showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))){
 				text (
-					bokmal { + "og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din " },
+					bokmal { + "og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
 					nynorsk { + "og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
 				)
 			}
