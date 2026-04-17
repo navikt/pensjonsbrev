@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.EndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDto
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDto
@@ -139,7 +139,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVarselTilbakekrevingAvFeilu
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjonInstitusjonsoppholdDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringVedFlyttingMellomLandDto
-import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsRedigerbarDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
@@ -233,7 +233,7 @@ object Fixtures : LetterDataFactory {
             OpphoerGjenlevendepensjonDto::class -> createOpphoerGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
-            VedtakOmLavereMinstesatsDto::class -> createVedtakOmLavereMinstesatsDto() as T
+            VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
