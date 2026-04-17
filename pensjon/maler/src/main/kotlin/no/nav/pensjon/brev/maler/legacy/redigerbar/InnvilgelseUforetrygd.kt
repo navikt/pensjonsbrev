@@ -1756,7 +1756,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     }
                 }
             }
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg<InnvilgelseUforetrygd>(pesysData.nyeAvslagBarnetillegg))
 
             showIf((uforegrad.greaterThanOrEqual(50) and !bosattUtland)){
                 title1 {
