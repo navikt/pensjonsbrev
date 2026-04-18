@@ -367,10 +367,85 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+      if (isTable(content)) {
+        if (f.rowIndex > 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: f.rowIndex - 1, cursorPosition: 0 },
+          }));
+          return;
+        }
+        if (f.rowIndex === 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: -1, cursorPosition: 0 },
+          }));
+          return;
+        }
+        if (f.rowIndex === -1) {
+          event.preventDefault();
+          setEditorState(exitTable("backward"));
+          return;
+        }
+      }
+    }
+
+    if (!isTableCellIndex(f)) {
+      const blocks = editorState.redigertBrev.blocks;
+      const block = blocks[f.blockIndex];
+      const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
+
+      if (isTable(prevContent)) {
+        const lastRowIndex = prevContent.rows.length - 1;
+        event.preventDefault();
+        setEditorState((prev) => ({
+          ...prev,
+          focus: {
+            blockIndex: f.blockIndex,
+            contentIndex: f.contentIndex - 1,
+            rowIndex: lastRowIndex,
+            cellIndex: 0,
+            cellContentIndex: 0,
+            cursorPosition: 0,
+          },
+        }));
+        return;
+      }
+
+      if (f.contentIndex === 0 && f.blockIndex > 0) {
+        const prevBlock = blocks[f.blockIndex - 1];
+        const lastContent = prevBlock.content[prevBlock.content.length - 1];
+        if (isTable(lastContent)) {
+          const lastRowIndex = lastContent.rows.length - 1;
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex - 1,
+              contentIndex: prevBlock.content.length - 1,
+              rowIndex: lastRowIndex,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
     }
 
@@ -390,10 +465,83 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+      if (isTable(content)) {
+        if (f.rowIndex === -1 && content.rows.length > 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: 0, cursorPosition: 0 },
+          }));
+          return;
+        }
+        if (f.rowIndex >= 0 && f.rowIndex < content.rows.length - 1) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: f.rowIndex + 1, cursorPosition: 0 },
+          }));
+          return;
+        }
+        if (f.rowIndex >= content.rows.length - 1) {
+          event.preventDefault();
+          setEditorState(exitTable("forward"));
+          return;
+        }
+      }
+    }
+
+    if (!isTableCellIndex(f)) {
+      const blocks = editorState.redigertBrev.blocks;
+      const block = blocks[f.blockIndex];
+      const nextContent = block.content[f.contentIndex + 1];
+
+      if (isTable(nextContent)) {
+        event.preventDefault();
+        setEditorState((prev) => ({
+          ...prev,
+          focus: {
+            blockIndex: f.blockIndex,
+            contentIndex: f.contentIndex + 1,
+            rowIndex: -1,
+            cellIndex: 0,
+            cellContentIndex: 0,
+            cursorPosition: 0,
+          },
+        }));
+        return;
+      }
+
+      if (f.contentIndex >= block.content.length - 1 && f.blockIndex + 1 < blocks.length) {
+        const nextBlock = blocks[f.blockIndex + 1];
+        const firstContent = nextBlock.content[0];
+        if (isTable(firstContent)) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex + 1,
+              contentIndex: 0,
+              rowIndex: -1,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
     }
 
