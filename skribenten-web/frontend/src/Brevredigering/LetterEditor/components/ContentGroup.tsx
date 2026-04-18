@@ -599,6 +599,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (e.key === "ArrowUp") {
       handleArrowUp(e);
     }
+    if (e.altKey && e.shiftKey && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+      if (isTableCellIndex(editorState.focus)) {
+        e.preventDefault();
+        e.stopPropagation();
+        applyAction(Actions.moveTableRow, setEditorState, e.key === "ArrowUp" ? "up" : "down");
+        return;
+      }
+    }
   };
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
