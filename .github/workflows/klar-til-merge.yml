@@ -18,8 +18,7 @@ on:
       - ".vscode/settings.json"
       - "CODEOWNERS"
       - "fetch-secrets.sh"
-      - "LICENCE.md"
-      - "README.md"
+      - "*.md"
       - ".tool-versions"
 
 jobs:

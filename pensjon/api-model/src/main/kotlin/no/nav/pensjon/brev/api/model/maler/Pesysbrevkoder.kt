@@ -91,6 +91,7 @@ object Pesysbrevkoder {
         GP_OPPHOER_GJENLEVENDEPENSJON,
         GP_AVSLAG_GJENLEVENDEPENSJON,
         GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND,
+        UT_VEDTAK_OM_LAVERE_MINSTESATS_2026,
         UP_AVSLAG_UFOEREPENSJON;
 
         override fun kode(): String = this.name

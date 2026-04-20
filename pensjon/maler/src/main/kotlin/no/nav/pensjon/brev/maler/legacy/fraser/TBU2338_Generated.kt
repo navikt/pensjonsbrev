@@ -36,7 +36,7 @@ data class TBU2338_Generated(
 			// Bokmål var egentlig: sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
 			showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"))){
 				text (
-					bokmal { + "Inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din har ikke betydning for størrelsen på barnetillegget." },
+					bokmal { + "Inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " har ikke betydning for størrelsen på barnetillegget." },
 					nynorsk { + "Inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din har ikkje noko å seie for storleiken på barnetillegget. " },
 					english { + "The income of your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + " does not affect the size of your child supplement." },
 				)
