@@ -32,10 +32,14 @@ object HvilendeRettOppHoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
                 bokmal { + "Uføretrygden din opphører" },
             )
         }
+        val forsteHvilendeAr = senesteHvilendeAr.minus(9).format()
+        val nestSisteHvilendeAr = senesteHvilendeAr.minus(1).format()
+        val sisteHvilendeAr = senesteHvilendeAr.format()
+        val opphorAr = senesteHvilendeAr.plus(1).format()
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi opphører uføretrygden din fra 1.1." + senesteHvilendeAr.plus(1).format() + " fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1." + senesteHvilendeAr.plus(1).format() + " hvis du ikke har fått utbetaling av uføretrygd i " + senesteHvilendeAr.minus(1).format() + " og " + senesteHvilendeAr.format() + "." },
+                    bokmal { + "Vi opphører uføretrygden din fra 1.1." + opphorAr + " fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1." + opphorAr + " hvis du ikke har fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + "." },
                 )
             }
             title1 {
@@ -50,7 +54,7 @@ object HvilendeRettOppHoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + senesteHvilendeAr.minus(9).format() + " og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + forsteHvilendeAr + " og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
                 )
             }
             paragraph {

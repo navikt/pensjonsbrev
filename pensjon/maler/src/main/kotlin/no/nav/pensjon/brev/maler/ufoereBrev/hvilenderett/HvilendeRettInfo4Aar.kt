@@ -30,10 +30,11 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<HvilendeRettUforetrygdDto> {
                 bokmal { + "Informasjon om hvilende rett til uføretrygd" },
             )
         }
+        val forsteHvilendeAr = senesteHvilendeAr.minus(3).format()
         outline {
             paragraph {
                 text(
-                    bokmal { + "Du har siden " + senesteHvilendeAr.minus(3).format() + " ikke fått utbetaling av uføretrygd fordi inntekten din har vært over 80 prosent av oppjustert inntekt før du ble ufør. Du har derfor fått innvilget en hvilende rett." },
+                    bokmal { + "Du har siden " + forsteHvilendeAr + " ikke fått utbetaling av uføretrygd fordi inntekten din har vært over 80 prosent av oppjustert inntekt før du ble ufør. Du har derfor fått innvilget en hvilende rett." },
                 )
             }
             paragraph {
@@ -48,7 +49,7 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<HvilendeRettUforetrygdDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + senesteHvilendeAr.minus(3).format() + ". Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette." },
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + forsteHvilendeAr + ". Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette." },
                 )
             }
             paragraph {

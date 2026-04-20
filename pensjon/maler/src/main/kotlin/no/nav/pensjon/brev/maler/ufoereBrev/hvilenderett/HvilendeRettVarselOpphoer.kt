@@ -31,16 +31,20 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
                 bokmal { + "Varsel om opphør av uføretrygden etter 10 år med hvilende rett" },
             )
         }
+        val forsteHvilendeAr = senesteHvilendeAr.minus(7).format()
+        val forsteKontrollAr = senesteHvilendeAr.plus(1).format()
+        val andreKontrollAr = senesteHvilendeAr.plus(2).format()
+        val opphorAr = senesteHvilendeAr.plus(3).format()
         outline {
             paragraph {
                 text(
-                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1." + senesteHvilendeAr.plus(3).format() + " hvis du ikke har rett " +
-                            "til utbetaling av uføretrygd i " + senesteHvilendeAr.plus(1).format() + " og " + senesteHvilendeAr.plus(2).format() + "." }
+                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1." + opphorAr + " hvis du ikke har rett " +
+                            "til utbetaling av uføretrygd i " + forsteKontrollAr + " og " + andreKontrollAr + "." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har siden " + senesteHvilendeAr.minus(7).format() + " ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
+                    bokmal { + "Du har siden " + forsteHvilendeAr + " ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
                             "av oppjustert inntekt før uførhet. Du har derfor hatt innvilget en hvilende rett." }
                 )
             }
@@ -59,14 +63,14 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + senesteHvilendeAr.minus(7).format() + ". Har du heller ikke rett til utbetaling " +
-                            "av uføretrygd i " + senesteHvilendeAr.plus(1).format() + " og " + senesteHvilendeAr.plus(2).format() + ", vil retten til uføretrygd opphøre fra 1.1." + senesteHvilendeAr.plus(3).format() + ". " +
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + forsteHvilendeAr + ". Har du heller ikke rett til utbetaling " +
+                            "av uføretrygd i " + forsteKontrollAr + " og " + andreKontrollAr + ", vil retten til uføretrygd opphøre fra 1.1." + opphorAr + ". " +
                             "Ved opphør av uføretrygden, vil du få eget vedtak om dette." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i " + senesteHvilendeAr.plus(1).format() + " eller " + senesteHvilendeAr.plus(2).format() + ", " +
+                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i " + forsteKontrollAr + " eller " + andreKontrollAr + ", " +
                             "vil du igjen ha rett til utbetaling av uføretrygd. Du vil da opparbeide deg retten til en ny periode med hvilende rett." },
                 )
             }

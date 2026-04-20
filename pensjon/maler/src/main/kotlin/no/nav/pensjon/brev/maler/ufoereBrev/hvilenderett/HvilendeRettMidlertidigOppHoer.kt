@@ -32,6 +32,9 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<HvilendeRettUforetrygdD
                 bokmal { + "Vedtak om midlertidig stans av uføretrygd etter 10 år med hvilende rett" },
             )
         }
+        val nestSisteHvilendeAr = senesteHvilendeAr.minus(1).format()
+        val sisteHvilendeAr = senesteHvilendeAr.format()
+        val opphorAr = senesteHvilendeAr.plus(1).format()
         outline {
             paragraph {
                 text(
@@ -40,14 +43,12 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<HvilendeRettUforetrygdD
             }
             paragraph {
                 text(
-                    bokmal { + "Du har tidligere fått tilsendt brev der vi opplyser at uføretrygden din stanser fra 1.1." + senesteHvilendeAr.plus(1).format() + " hvis du ikke har " +
-                            "fått utbetaling av uføretrygd i " + senesteHvilendeAr.minus(1).format() + " og "+ senesteHvilendeAr.format() + ". Det utbetales ikke uføretrygd når den pensjonsgivende inntekten utgjør mer enn " +
-                            "80 prosent av inntekten du hadde før du ble ufør. Dette står i folketrygdloven § 12-14 tredje ledd." },
+                    bokmal { + "Du har tidligere fått tilsendt brev der vi opplyser at uføretrygden din stanser fra 1.1." + opphorAr + " hvis du ikke har fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + ". Det utbetales ikke uføretrygd når den pensjonsgivende inntekten utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør. Dette står i folketrygdloven § 12-14 tredje ledd." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke fått utbetaling av uføretrygd i " + senesteHvilendeAr.minus(1).format() + " og " + senesteHvilendeAr.format() + " og har hatt 10 sammenhengende år uten utbetaling av uføretrygd. Du har dermed nådd den maksimale grensen for hvor lenge du kan ha hvilende rett til uføretrygd." },
+                    bokmal { + "Du har ikke fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + " og har hatt 10 sammenhengende år uten utbetaling av uføretrygd. Du har dermed nådd den maksimale grensen for hvor lenge du kan ha hvilende rett til uføretrygd." },
                 )
             }
             paragraph {
@@ -57,7 +58,7 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<HvilendeRettUforetrygdD
             }
             paragraph {
                 text(
-                    bokmal { + "Når etteroppgjøret for " + senesteHvilendeAr.format() + " er klart må vi vurdere om du skal få et endelig vedtak om stans av uføretrygden din. Vi stanser uføretrygden din midlertidig allerede nå for å unngå feilutbetaling av uføretrygd, og for å være sikker på at det stemmer at du ikke har rett til uføretrygd i " + senesteHvilendeAr.format() + "." },
+                    bokmal { + "Når etteroppgjøret for " + sisteHvilendeAr + " er klart må vi vurdere om du skal få et endelig vedtak om stans av uføretrygden din. Vi stanser uføretrygden din midlertidig allerede nå for å unngå feilutbetaling av uføretrygd, og for å være sikker på at det stemmer at du ikke har rett til uføretrygd i " + sisteHvilendeAr + "." },
                 )
             }
             paragraph {
