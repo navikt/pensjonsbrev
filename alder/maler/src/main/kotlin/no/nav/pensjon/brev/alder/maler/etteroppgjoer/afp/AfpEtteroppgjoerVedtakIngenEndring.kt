@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakDtoSelectors.afpEtteroppgjoer
@@ -49,7 +50,9 @@ object AfpEtteroppgjoerVedtakIngenEndring : RedigerbarTemplate<AfpEtteroppgjoerV
                 )
             )
         }
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
+
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK

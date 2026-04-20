@@ -1,5 +1,9 @@
 package no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp
 
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
+import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
+import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.afpAvvik
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerSelectors.forventetPensjonsgivendeInntektBeregnet
@@ -427,7 +431,6 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             )
         }
 
-
         paragraph {
             text(
                 bokmal { +"Du har plikt til å melde fra om endringer som har betydning for størrelsen på pensjonen din." },
@@ -449,53 +452,8 @@ data class AfpEtteroppgjoerVedtakIngenEndringFelles(
             )
         }
 
-        title2 {
-            text(
-                bokmal { +"Du har rett til å klage" },
-                nynorsk { +"Du har rett til å klage" },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"Du kan som nevnt sende inn dokumentasjon på inntekter som du mener skal holdes utenfor etteroppgjøret. NAV vil foreta et nytt etteroppgjør dersom du har sendt ny dokumentasjon for inntekt innen fristen på fire uker. Du vil da motta et nytt vedtak." },
-                nynorsk { +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast utanfor etteroppgjeret. NAV vil gjennomføre eit nytt etteroppgjer dersom du har sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få eit nytt vedtak." },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du anledning til å klage på vedtaket. Fristen for å klage er seks uker fra du mottar dette brevet." },
-                nynorsk { +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får dette brevet." },
-            )
-        }
-
-        title2 {
-            text(
-                bokmal { +"Du har rett til innsyn" },
-                nynorsk { +"Du har rett til innsyn" },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"Du har rett til å se dokumentene i saken din." },
-                nynorsk { +"Du har rett til å sjå dokumenta i saka di." },
-            )
-        }
-
-        title2 {
-            text(
-                bokmal { +"Har du spørsmål?" },
-                nynorsk { +"Har du spørsmål?" },
-            )
-        }
-
-        paragraph {
-            text(
-                bokmal { +"Du finner mer informasjon på nav.no/afp-offentlig#etteroppgjor. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikke finner svar på nav.no kan du ringe oss på telefon 55 55 33 34, hverdager 09.00-15.00. Vennlig hilsen" + innsenderEnhet },
-                nynorsk { +"Du finn meir informasjon på nav.no/afp-etteroppgjor. På nav.no/kontakt kan du chatte eller skrive til oss. Hvis du ikkje finn svar på nav.no kan du ringe oss på telefon 55 55 33 34, kvardagar 09.00-15.00. Venleg helsing" + innsenderEnhet },
-            )
-        }
+        includePhrase(RettTilAAKlage)
+        includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
+        includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
 }

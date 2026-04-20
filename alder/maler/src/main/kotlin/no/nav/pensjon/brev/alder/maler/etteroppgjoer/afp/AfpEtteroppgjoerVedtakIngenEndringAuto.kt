@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp
 
+import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakDtoSelectors.afpEtteroppgjoer
 import no.nav.pensjon.brev.alder.model.etteroppgjoer.afp.AfpEtteroppgjoerVedtakDtoSelectors.afpGrunnlag
@@ -48,5 +49,7 @@ object AfpEtteroppgjoerVedtakIngenEndringAuto : AutobrevTemplate<AfpEtteroppgjoe
                 )
             )
         }
+
+        includeAttachment(dineRettigheterOgMulighetTilAaKlagePensjonStatisk)
     }
 }
