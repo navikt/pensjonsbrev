@@ -46,8 +46,8 @@ import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
+  determineTableCellDeleteAction,
   exitTable,
-  handleTableCellDeleteShortcut,
   isAtLastTableCell,
   nextTableFocus,
 } from "../services/tableCaretUtils";
@@ -549,20 +549,20 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (e.key === "Backspace" || e.key === "Delete") {
-      const tableDeleteResult = handleTableCellDeleteShortcut(e, editorState);
-      if (tableDeleteResult === "DELETE_TABLE") {
+      const tableDeleteAction = determineTableCellDeleteAction(e, editorState);
+      if (tableDeleteAction === "DELETE_TABLE") {
         e.preventDefault();
         applyAction(Actions.removeTable, setEditorState);
         e.stopPropagation();
         return;
       }
-      if (tableDeleteResult === "DELETE_ROW") {
+      if (tableDeleteAction === "DELETE_ROW") {
         e.preventDefault();
         applyAction(Actions.removeTableRow, setEditorState);
         e.stopPropagation();
         return;
       }
-      if (tableDeleteResult === "BLOCK_DEFAULT") {
+      if (tableDeleteAction === "BLOCK_DEFAULT") {
         e.preventDefault();
         e.stopPropagation();
         return;

@@ -123,10 +123,17 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
         title {
-            text(
-                bokmal { +"Nav har endret uføretrygden din" },
-                nynorsk { +"Nav har endra uføretrygda di" },
-            )
+            showIf(kravarsak.equalTo("soknad_bt") and pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty()) {
+                text(
+                    bokmal { +"Nav har innvilget søknaden din om barnetillegg" },
+                    nynorsk { +"Nav har innvilga søknaden din om barnetillegg" },
+                )
+            }.orShow {
+                text(
+                    bokmal { +"Nav har endret uføretrygden din" },
+                    nynorsk { +"Nav har endra uføretrygda di" },
+                )
+            }
         }
         outline {
             showIf(gjenlevendetilleggInnvilget.not() and
