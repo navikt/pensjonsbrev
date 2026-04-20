@@ -1,16 +1,21 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDtoSelectors.senesteHvilendeAr
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.minus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
+@TemplateModelHelpers
+object HvilendeRettInfo4Aar : AutobrevTemplate<HvilendeRettUforetrygdDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_INFO_4_AAR
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -28,7 +33,7 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
         outline {
             paragraph {
                 text(
-                    bokmal { + "Du har siden 2021 ikke fått utbetaling av uføretrygd fordi inntekten din har vært over 80 prosent av oppjustert inntekt før du ble ufør. Du har derfor fått innvilget en hvilende rett." },
+                    bokmal { + "Du har siden " + senesteHvilendeAr.minus(3).format() + " ikke fått utbetaling av uføretrygd fordi inntekten din har vært over 80 prosent av oppjustert inntekt før du ble ufør. Du har derfor fått innvilget en hvilende rett." },
                 )
             }
             paragraph {
@@ -43,7 +48,7 @@ object HvilendeRettInfo4Aar : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2021. Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette." },
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + senesteHvilendeAr.minus(3).format() + ". Du kan derfor ha en hvilende rett til uføretrygd i ytterligere fem år før uføretrygden opphøres. Ved opphør av uføretrygden vil du få et eget varsel og vedtak om dette." },
                 )
             }
             paragraph {
