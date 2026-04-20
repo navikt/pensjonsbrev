@@ -8,6 +8,7 @@ import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { type Adresse } from "~/types/apiTypes";
 import { type Mottaker } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
 import { Route } from "../../route";
@@ -60,8 +61,11 @@ const EndreMottaker = (properties: {
           <Button
             icon={<ArrowCirclepathReverseIcon />}
             iconPosition="right"
-            onClick={() => {
-              trackEvent("tilbakestill mottaker klikket", { kontekst: "exstream mal", saksId: properties.saksId });
+            onClick={async () => {
+              trackEvent("tilbakestill mottaker klikket", {
+                kontekst: "exstream mal",
+                saksId: await truncatedSha256Hash(properties.saksId),
+              });
               navigate({
                 search: (s) => ({ ...s, idTSSEkstern: undefined }),
                 replace: true,

@@ -16,6 +16,7 @@ import { type LetterMetadata } from "~/types/apiTypes";
 import { type BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
@@ -168,8 +169,11 @@ const Brevmal = (props: {
                   icon={<ArrowCirclepathReverseIcon />}
                   iconPosition="right"
                   loading={fjernMottakerIsPending}
-                  onClick={() => {
-                    trackEvent("tilbakestill mottaker klikket", { kontekst: "kladd", saksId: props.saksId });
+                  onClick={async () => {
+                    trackEvent("tilbakestill mottaker klikket", {
+                      kontekst: "kladd",
+                      saksId: await truncatedSha256Hash(props.saksId),
+                    });
                     fjernMottaker();
                   }}
                   size="xsmall"

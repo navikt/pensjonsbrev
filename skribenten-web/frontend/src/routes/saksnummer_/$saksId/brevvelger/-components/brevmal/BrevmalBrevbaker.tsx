@@ -16,6 +16,7 @@ import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
 import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
@@ -199,8 +200,11 @@ const BrevmalBrevbaker = (props: {
                   <Button
                     icon={<ArrowCirclepathReverseIcon />}
                     iconPosition="right"
-                    onClick={() => {
-                      trackEvent("tilbakestill mottaker klikket", { kontekst: "brevbaker mal", saksId: props.saksId });
+                    onClick={async () => {
+                      trackEvent("tilbakestill mottaker klikket", {
+                        kontekst: "brevbaker mal",
+                        saksId: await truncatedSha256Hash(props.saksId),
+                      });
                       form.setValue("mottaker", null);
                     }}
                     size="xsmall"

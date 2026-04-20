@@ -31,6 +31,7 @@ import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
@@ -276,8 +277,11 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
           <Button
             css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
             loading={fjernMottakerIsPending}
-            onClick={() => {
-              trackEvent("tilbakestill mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+            onClick={async () => {
+              trackEvent("tilbakestill mottaker klikket", {
+                kontekst: "brevbehandler",
+                saksId: await truncatedSha256Hash(props.saksId),
+              });
               fjernMottaker();
             }}
             size="xsmall"
