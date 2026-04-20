@@ -1,7 +1,7 @@
 /// <reference types="vitest/config" />
 import { fileURLToPath, URL } from "node:url";
 
-import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -11,7 +11,7 @@ export default defineConfig({
     react({
       jsxImportSource: "@emotion/react",
     }),
-    TanStackRouterVite(),
+    tanstackRouter(),
   ],
   resolve: {
     alias: {
