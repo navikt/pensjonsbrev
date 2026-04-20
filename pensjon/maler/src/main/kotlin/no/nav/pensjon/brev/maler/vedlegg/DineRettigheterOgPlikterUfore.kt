@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
+import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDtoSelectors.utland
 import no.nav.pensjon.brev.maler.fraser.common.Constants.FULLMAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
@@ -12,7 +13,7 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 
-val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, EmptyVedleggData>(
+val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, DineRettigheterOgPlikterUforeDto>(
         title = {
             text(
                 bokmal { +"Dine rettigheter og plikter" },
@@ -73,10 +74,17 @@ val vedleggDineRettigheterOgPlikterUfore = createAttachment<LangBokmalNynorsk, E
                     )
                 }
                 item {
-                    text(
-                        bokmal { +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
-                        nynorsk { +"du skal opphalde deg utanfor Noreg lenger enn seks månader" }
-                    )
+                    showIf(utland) {
+                        text(
+                            bokmal { +"du skal oppholde deg utenfor bostedslandet ditt" },
+                            nynorsk { +"du skal opphalde deg utanfor bustadlandet ditt" }
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"du skal oppholde deg utenfor Norge lengre enn seks måneder" },
+                            nynorsk { +"du skal opphalde deg utanfor Noreg lenger enn seks månader" }
+                        )
+                    }
                 }
                 item {
                     text(

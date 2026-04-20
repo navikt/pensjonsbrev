@@ -28,7 +28,7 @@ class EndringUfoeretrygdTest {
         LetterTestImpl(
             EndringUforetrygd.template,
             Fixtures.create<EndringUfoeretrygdDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.fellesAuto
         ).renderTestHtml("UT_ENDRING_UFOERETRYGD")
     }

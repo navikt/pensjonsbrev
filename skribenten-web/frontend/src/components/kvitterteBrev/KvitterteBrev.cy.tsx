@@ -113,15 +113,15 @@ describe("<KvitterteBrev />", () => {
     cy.contains("Åpne PDF").should("be.visible");
     cy.contains("Lokalprint – arkivert").closest("section").find("button[aria-expanded]").click();
 
-    cy.contains("Klar til attestering").should("be.visible");
-    cy.contains("Klar til attestering").closest("section").find("button[aria-expanded]").click();
+    cy.contains("Klar for attestering").should("be.visible");
+    cy.contains("Klar for attestering").closest("section").find("button[aria-expanded]").click();
     //ser ut som at .contains cacher elementet som vi får, så vi henter disse med .get
     cy.get('p:contains("Mottaker")').eq(1).should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
     cy.get('p:contains("Distribusjon")').eq(1).should("be.visible");
     cy.get('p:contains("Sentral print")').should("be.visible");
     cy.get('p:contains("Tydelig Bakke")').eq(1).should("be.visible");
-    cy.contains("Klar til attestering").closest("section").find("button[aria-expanded]").click();
+    cy.contains("Klar for attestering").closest("section").find("button[aria-expanded]").click();
 
     cy.contains("Sendt til mottaker").should("be.visible");
     cy.contains("Sendt til mottaker").closest("section").find("button[aria-expanded]").click();
@@ -150,7 +150,7 @@ describe("<KvitterteBrev />", () => {
     cy.get(".aksel-expansioncard").eq(1).contains("Kunne ikke sende brev");
     cy.get(".aksel-expansioncard").eq(2).contains("Kunne ikke sende brev");
     cy.get(".aksel-expansioncard").eq(3).contains("Lokalprint – arkivert");
-    cy.get(".aksel-expansioncard").eq(4).contains("Klar til attestering");
+    cy.get(".aksel-expansioncard").eq(4).contains("Klar for attestering");
     cy.get(".aksel-expansioncard").eq(5).contains("Sendt til mottaker");
   });
 });

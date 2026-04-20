@@ -18,3 +18,9 @@ spec:
         target:
           type: AverageValue
           averageValue: "2" #PDF_BYGGER_LATEX_PARALLELISM / 2
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 50
