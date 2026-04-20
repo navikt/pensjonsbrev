@@ -252,7 +252,7 @@ export type TableCellDeleteShortcutAction = "IGNORE" | "BLOCK_DEFAULT" | "DELETE
  * - Shift+Backspace and Shift+Delete in body cells signal row deletion,
  *   regardless of whether the row is empty.
  */
-export function handleTableCellDeleteShortcut(
+export function determineTableCellDeleteAction(
   event: React.KeyboardEvent,
   editorState: LetterEditorState,
 ): TableCellDeleteShortcutAction {
