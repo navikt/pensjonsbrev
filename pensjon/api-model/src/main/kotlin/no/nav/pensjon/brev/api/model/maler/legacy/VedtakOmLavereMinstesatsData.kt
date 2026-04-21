@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.api.model.maler.legacy
 
-import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-data class VedtakOmLavereMinstesatsDto(
+data class VedtakOmLavereMinstesatsData(
     val nettoUforetrygdUtenTillegg: Kroner,
     val nettoBarnetillegg: Kroner?,
     val nettoGjenlevendetillegg: Kroner?,
@@ -23,10 +22,9 @@ data class VedtakOmLavereMinstesatsDto(
     val endringNettoGjenlevendetillegg: Boolean,
     val endringReduksjonsprosent: Boolean,
     val hjemmeltekst: String,
-    //for vedlegg
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
-    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
-): AutobrevData
+    val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
+)
 
 enum class Tillegg(val bokmal: String, val nynorsk: String) { BT("Barnetillegg", "Barnetillegg"), GJT("Gjenlevendetillegg", "Gjenlevandetillegg") }

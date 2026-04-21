@@ -46,8 +46,8 @@ import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
+  determineTableCellDeleteAction,
   exitTable,
-  handleBackspaceInTableCell,
   isAtLastTableCell,
   nextTableFocus,
 } from "../services/tableCaretUtils";
@@ -548,9 +548,28 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       }
     }
 
-    if (e.key === "Backspace") {
-      if (handleBackspaceInTableCell(e, editorState, setEditorState)) return;
+    if (e.key === "Backspace" || e.key === "Delete") {
+      const tableDeleteAction = determineTableCellDeleteAction(e, editorState);
+      if (tableDeleteAction === "DELETE_TABLE") {
+        e.preventDefault();
+        applyAction(Actions.removeTable, setEditorState);
+        e.stopPropagation();
+        return;
+      }
+      if (tableDeleteAction === "DELETE_ROW") {
+        e.preventDefault();
+        applyAction(Actions.removeTableRow, setEditorState);
+        e.stopPropagation();
+        return;
+      }
+      if (tableDeleteAction === "BLOCK_DEFAULT") {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+    }
 
+    if (e.key === "Backspace") {
       handleBackspace(e);
       e.stopPropagation();
       return;

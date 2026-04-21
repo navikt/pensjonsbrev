@@ -29,6 +29,7 @@ import { queryFold } from "~/utils/tanstackUtils";
 
 import { useBrevInfoKlarTilAttestering } from "../../kvittering/-components/KlarTilAttesteringContext";
 import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
+import { sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -56,7 +57,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
     );
   }
 
-  //hvis ingen spesifikk brev er valgt, og noen står klar til å sendes, vis knapp for å sende
+  //hvis ingen spesifikke brev er valgt, og noen er klar for å sendes, vis knapp for å sende
   if (!properties.valgtBrevId && properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b))) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
@@ -165,7 +166,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   const [brevAttestering, brevSending] = useMemo(() => {
-    const alle = alleBrevResult.data ?? [];
+    const alle = sortBrev(alleBrevResult.data ?? []);
     return partition(alle, (brev) => erBrevKlarTilAttestering(brev));
   }, [alleBrevResult.data]);
 
