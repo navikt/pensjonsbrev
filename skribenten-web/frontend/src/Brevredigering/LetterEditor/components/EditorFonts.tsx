@@ -1,4 +1,4 @@
-import { BodyShort, Button } from "@navikt/ds-react";
+import { BodyShort, Button, Tooltip } from "@navikt/ds-react";
 import { type ReactNode } from "react";
 
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
@@ -7,6 +7,7 @@ import { FontType } from "~/types/brevbakerTypes";
 import Actions from "../actions";
 import { getCurrentActiveFontTypeAtCursor } from "../actions/switchFontType";
 import { applyAction } from "../lib/actions";
+import { tooltipText } from "../utils";
 
 const EditorFonts = () => {
   const { editorState, freeze, setEditorState } = useEditor();
@@ -22,6 +23,7 @@ const EditorFonts = () => {
           applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
         }}
         text={<BodyShort weight="semibold">F</BodyShort>}
+        tooltip={tooltipText.bold}
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
@@ -35,6 +37,7 @@ const EditorFonts = () => {
             K
           </BodyShort>
         }
+        tooltip={tooltipText.italic}
       />
     </>
   );
@@ -47,19 +50,22 @@ const FontButton = (props: {
   onClick: () => void;
   text: ReactNode;
   disabled?: boolean;
-  "data-testid": string;
+  dataCy: string;
+  tooltip: string;
 }) => {
   return (
-    <Button
-      color="text-neutral"
-      data-testid={props["data-testid"]}
-      disabled={props.disabled}
-      onClick={props.onClick}
-      size="small"
-      type="button"
-      variant={props.active ? "primary-neutral" : "tertiary-neutral"}
-    >
-      {props.text}
-    </Button>
+    <Tooltip content={props.tooltip}>
+      <Button
+        color="text-neutral"
+        data-cy={props.dataCy}
+        disabled={props.disabled}
+        onClick={props.onClick}
+        size="small"
+        type="button"
+        variant={props.active ? "primary-neutral" : "tertiary-neutral"}
+      >
+        {props.text}
+      </Button>
+    </Tooltip>
   );
 };

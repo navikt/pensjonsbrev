@@ -39,6 +39,7 @@ import {
   type ColumnSpec,
   type Content,
   FontType,
+  ListType,
   type LiteralValue,
   type Row,
   TABLE,
@@ -440,12 +441,16 @@ function insertItem(draft: Draft<LetterEditorState>, element: ItemElement) {
     }
   } else if (!isItemContentIndex(draft.focus) && !isItemList(blockContent)) {
     // We're also validating that current blockContent isn't an ItemList, because then the focus should also have been an ItemContentIndex.
-    toggleItemListAndSplitAtCursor(draft, currentBlock);
+    toggleItemListAndSplitAtCursor(draft, currentBlock, element.listType);
     insertTextElement(draft, element.content);
   }
 }
 
-function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, currentBlock: Draft<AnyBlock>) {
+function toggleItemListAndSplitAtCursor(
+  draft: Draft<LetterEditorState>,
+  currentBlock: Draft<AnyBlock>,
+  listType?: ListType,
+) {
   let itemContent: TextContent[] = [];
 
   // Finn første indeks for all sammenhengende TextContent før der vi limer inn.
@@ -494,7 +499,7 @@ function toggleItemListAndSplitAtCursor(draft: Draft<LetterEditorState>, current
     };
   } else {
     addElements(
-      [newItemList({ items: [theItem] })],
+      [newItemList({ items: [theItem], listType })],
       draft.focus.contentIndex,
       currentBlock.content,
       currentBlock.deletedContent,
@@ -516,6 +521,7 @@ interface Text {
 interface ItemElement {
   type: "ITEM";
   content: Text[];
+  listType?: ListType;
 }
 
 interface ParagraphElement {
@@ -745,6 +751,12 @@ function traverse(element: Element, font: FontType): TraversedElement[] {
         // traverse children, merge neighbouring plain text, and flatten any nested paragraphs and items
         return traverseParagraphChildren(element, font);
       }
+    }
+
+    case "UL":
+    case "OL": {
+      const listType = element.tagName === "OL" ? ListType.NUMMERERT_LISTE : ListType.PUNKTLISTE;
+      return traverseChildren(element, font).map((child) => (child.type === "ITEM" ? { ...child, listType } : child));
     }
 
     case "LI": {

@@ -1,5 +1,5 @@
 import { BulletListIcon, NumberListIcon } from "@navikt/aksel-icons";
-import { Button } from "@navikt/ds-react";
+import { Button, Tooltip } from "@navikt/ds-react";
 
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { ListType } from "~/types/brevbakerTypes";
@@ -7,6 +7,7 @@ import { ListType } from "~/types/brevbakerTypes";
 import Actions from "../actions";
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
+import { tooltipText } from "../utils";
 
 type EditorListButtonProps = {
   listType: ListType;
@@ -26,22 +27,25 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
       <BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />
     );
   const dataCy = listType === ListType.NUMMERERT_LISTE ? "editor-number-list" : "editor-bullet-list";
+  const tooltip = listType === ListType.NUMMERERT_LISTE ? tooltipText.numberList : tooltipText.bulletList;
 
   return (
-    <Button
-      color="text-neutral"
-      data-cy={dataCy}
-      disabled={freeze || editorState.focus.blockIndex < 0}
-      icon={icon}
-      onClick={() => {
-        applyAction(action, setEditorState, editorState.focus);
-        //setter fokuset tilbake til editor etter valg
-        applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
-      }}
-      size="small"
-      type="button"
-      variant={focusedMatchesListType ? "primary-neutral" : "tertiary-neutral"}
-    />
+    <Tooltip content={tooltip}>
+      <Button
+        color="text-neutral"
+        data-cy={dataCy}
+        disabled={freeze || editorState.focus.blockIndex < 0}
+        icon={icon}
+        onClick={() => {
+          applyAction(action, setEditorState, editorState.focus);
+          //setter fokuset tilbake til editor etter valg
+          applyAction(Actions.cursorPosition, setEditorState, getCursorOffset());
+        }}
+        size="small"
+        type="button"
+        variant={focusedMatchesListType ? "primary-neutral" : "tertiary-neutral"}
+      />
+    </Tooltip>
   );
 };
 
