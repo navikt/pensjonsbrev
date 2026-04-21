@@ -42,7 +42,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
         title {
             text(
                 bokmal { +"Uførepensjon fra folketrygden - Melding om avslag" },
-                nynorsk { +"Uførepensjon frå folketrygda - melding om avslag" },
+                nynorsk { +"Uførepensjon frå folketrygda - melding om avslag" }
             )
         }
         outline {
@@ -55,20 +55,27 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Kravet er avslått, fordi vilkårene for å få uførepensjon ikke er oppfylt i ditt tilfelle." },
-                    nynorsk { +"Kravet er avslått, fordi vilkåra for å få uførepensjon ikkje er oppfylte i ditt tilfelle." },
+                    nynorsk { +"Kravet er avslått, fordi vilkåra for å få uførepensjon ikkje er oppfylte i ditt tilfelle." }
                 )
             }
             title1 {
                 text(
                     bokmal { +"Begrunnelse for vedtaket" },
-                    nynorsk { +"Grunngiving for vedtaket" },
+                    nynorsk { +"Grunngiving for vedtaket" }
                 )
             }
             paragraph {
                 text(
                     bokmal { + fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },
-                    nynorsk { +"" }
+                    nynorsk { + fritekst("Vedtaket er gjort etter folketrygdlova paragraf") }
                 )
+            }
+            paragraph {
+                text(
+                    bokmal { +"" },
+                    nynorsk { +"Vedtaket er gjort etter folketrygdlova paragraf:" }
+                )
+
             }
         }
 
