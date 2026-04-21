@@ -66,8 +66,8 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             }
             paragraph {
                 text(
-                    bokmal { + fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },
-                    nynorsk { + fritekst("Vedtaket er gjort etter folketrygdlova paragraf") }
+                    bokmal { +fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },
+                    nynorsk { +fritekst("Vedtaket er gjort etter folketrygdlova paragraf") }
                 )
             }
             paragraph {
@@ -79,7 +79,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                     item {
                         text(
                             bokmal { +"du må som hovedregel ha vært medlem av folketrygden (bodd i Norge) de siste tre årene før du ble ufør. I visse tilfeller kan det gjøres unntak fra denne regelen" },
-                            nynorsk { +"du må som hovudregel ha vore medlem i folketrygda (budd i Noreg) dei siste tre åra før du blei ufør. I vissehøve kan det gjerast unntak frå denne regelen" }
+                            nynorsk { +"du må som hovudregel ha vore medlem i folketrygda (budd i Noreg) dei siste tre åra før du blei ufør. I visse høve kan det gjerast unntak frå denne regelen" }
                         )
                     }
                     item {
@@ -110,8 +110,13 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             }
             paragraph {
                 text(
-                    bokmal { +"" },
+                    bokmal { +"Du fyller ikke vilkåret/vilkårene:" },
                     nynorsk { +"" },
+                )
+                newline()
+                text(
+                    bokmal { + fritekst("Fjern alternativ som ikke passer") },
+                    nynorsk { +"" }
                 )
             }
         }
