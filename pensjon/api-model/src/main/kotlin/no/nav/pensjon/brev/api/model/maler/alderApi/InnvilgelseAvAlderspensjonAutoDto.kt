@@ -26,6 +26,7 @@ data class InnvilgelseAvAlderspensjonAutoDto(
     val kravVirkDatoFom: LocalDate,
     val norgeBehandlendeLand: Boolean, // v3.Krav
     val regelverkType: AlderspensjonRegelverkType,
+    val fremtidigSamboer: Boolean,
     val orienteringOmRettigheterOgPlikterDto: OrienteringOmRettigheterOgPlikterDto,
     val maanedligPensjonFoerSkattDto: MaanedligPensjonFoerSkattDto?,
     val maanedligPensjonFoerSkattAP2025Dto: MaanedligPensjonFoerSkattAP2025Dto?,
