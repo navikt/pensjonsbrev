@@ -15,8 +15,11 @@ data class TBU080V_TBU027V(
 ): OutlinePhrase<LangBokmalNynorsk>(){
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
+        val bosattUtland = pe.pebrevkode().equalTo("f_bh_bo_utland") or (pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo("nor") and pe.grunnlag_persongrunnlagsliste_personbostedsland().notEqualTo(""))
+
         //IF(PE_pebrevkode <> "PE_UT_07_100" AND PE_pebrevkode <> "PE_UT_05_100" AND PE_pebrevkode <> "PE_UT_04_300" AND PE_pebrevkode <> "PE_UT_14_300" AND PE_pebrevkode <> "PE_UT_04_103" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "soknad_bt" AND PE_pebrevkode <> "PE_UT_04_108" AND PE_pebrevkode <> "PE_UT_04_109" AND PE_pebrevkode <> "PE_UT_07_200" AND PE_pebrevkode <> "PE_UT_06_300") THEN      INCLUDE ENDIF
-        showIf((pe.pebrevkode().notEqualTo("PE_UT_07_100") and pe.pebrevkode().notEqualTo("PE_UT_05_100") and pe.pebrevkode().notEqualTo("PE_UT_04_300") and pe.pebrevkode().notEqualTo("PE_UT_14_300") and pe.pebrevkode().notEqualTo("PE_UT_04_103") and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt") and pe.pebrevkode().notEqualTo("PE_UT_04_108") and pe.pebrevkode().notEqualTo("PE_UT_04_109") and pe.pebrevkode().notEqualTo("PE_UT_07_200") and pe.pebrevkode().notEqualTo("PE_UT_06_300"))) {
+        showIf(pe.pebrevkode().isNotAnyOf("PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_103", "PE_UT_04_108", "PE_UT_07_200", "PE_UT_06_300")
+                and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")) {
             showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) {
 
                 title1 {
@@ -172,11 +175,20 @@ data class TBU080V_TBU027V(
                 }
                 //[TBU080V-TBU027V]
 
-                paragraph {
-                    text(
-                        bokmal { +"For deg vil minsteytelse utgjøre " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Du må melde fra til Nav dersom sivilstanden din endrer seg, fordi dette kan medføre at uføretrygden endres." },
-                        nynorsk { +"For deg vil minsteyting utgjere " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda. Er uføregraden din under 100 prosent, vil misteytinga bli justert ut frå uføregraden. Vi justerer også minsteytinga ut frå trygdetida, dersom du har mindre enn 40 års trygdetid. Du må melde frå til Nav om sivilstanden din endrar seg, dette kan gjere at uføretrygda blir endra." },
-                    )
+                showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") and bosattUtland) {
+                    paragraph {
+                        text(
+                            bokmal { +"For deg vil minsteytelse utgjøre "+ pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp multiplisert med forholdstallet mellom norsk trygdetid og samlet EØS-trygdetid, " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format() + ". Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrer seg, kan det medføre at uføretrygden endres. " },
+                            nynorsk { +"For deg vil minsteyting utgjere "+ pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda multiplisert med forholdstallet mellom norsk trygdetid og samla EØS-trygdetid, " + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_tttellereos().format() + "/" + pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_ttnevnereos().format() + ". Er uføregraden din under 100 prosent, vil minsteytinga bli justert ut frå uføregraden. Vi justerer også minsteytinga ut frå trygdetida dersom du har mindre enn 40 års trygdetid. Dersom sivilstanden din endrar seg, kan det gjere at uføretrygda blir endra. " },
+                        )
+                    }
+                }.orShow {
+                    paragraph {
+                        text(
+                            bokmal { +"For deg vil minsteytelse utgjøre " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp. Er uføregraden din under 100 prosent, vil minsteytelsen bli justert ut fra uføregraden. Vi justerer også minsteytelsen ut fra trygdetid hvis du har mindre enn 40 års trygdetid. Du må melde fra til Nav dersom sivilstanden din endrer seg, fordi dette kan medføre at uføretrygden endres." },
+                            nynorsk { +"For deg vil minsteyting utgjere " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda. Er uføregraden din under 100 prosent, vil misteytinga bli justert ut frå uføregraden. Vi justerer også minsteytinga ut frå trygdetida, dersom du har mindre enn 40 års trygdetid. Du må melde frå til Nav om sivilstanden din endrar seg, dette kan gjere at uføretrygda blir endra." },
+                        )
+                    }
                 }
 
                 //IF(PE_Vedtaksdata_Kravhode_onsketVirkningsDato >= DateValue("01/07/2024") AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true AND PE_UT_VilkarGjelderPersonAlder < 20 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
@@ -261,7 +273,8 @@ data class TBU080V_TBU027V(
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = false) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") and not(pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()))) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos")
+                    and not(pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()))) {
                 //[TBU080V-TBU027V]
 
                 paragraph {
@@ -273,7 +286,8 @@ data class TBU080V_TBU027V(
             }
 
             //IF( PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true  AND   (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos"  OR  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "nordisk")  ) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging() and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")))) {
+            showIf((pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging()
+                    and (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos") or pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("nordisk")))) {
                 //[TBU080V-TBU027V]
 
                 paragraph {
@@ -285,7 +299,10 @@ data class TBU080V_TBU027V(
             }
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "eos" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "folketrygd" AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode <> "nordisk" AND PE_Vedtaksbrev_Vedtaksdata_VilkarsVedtak_Vilkar_MedlemskapForUTEtterTrygdeavtaler_OppfyltVedSammenlegging = true) THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk") and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())) {
+            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("eos")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd")
+                    and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("nordisk")
+                    and pe.vedtaksbrev_vedtaksdata_vilkarsvedtak_vilkar_medlemskapforutettertrygdeavtaler_oppfyltvedsammenlegging())) {
                 //[TBU080V-TBU027V]
 
                 paragraph {
