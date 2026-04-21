@@ -3,8 +3,6 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.pesysData
