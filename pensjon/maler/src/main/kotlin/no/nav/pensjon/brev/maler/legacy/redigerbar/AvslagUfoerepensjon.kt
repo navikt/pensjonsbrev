@@ -7,6 +7,10 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.FeatureToggles
+import no.nav.pensjon.brev.maler.fraser.common.Constants
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -111,15 +115,90 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Du fyller ikke vilkåret/vilkårene:" },
-                    nynorsk { +"" },
+                    nynorsk { +"Du fyller ikkje vilkåret/vilkåa:" },
                 )
                 newline()
                 text(
-                    bokmal { + fritekst("Fjern alternativ som ikke passer") },
-                    nynorsk { +"" }
+                    bokmal { + "<Fjern alternativ som ikke passer>" },
+                    nynorsk { +"<Fjern alternativ som ikke passer>" }
+                )
+                list {
+                    item {
+                        text(
+                            bokmal { +"om forutgående medlemskap" },
+                            nynorsk { +"om tidlegare medlemskap" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om å ha gjennomgått hensiktsmessig behandling" },
+                            nynorsk { +"om å ha gjennomgått formålstenleg behandling" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om å ha gjennomført individuelle og hensiktsmessige arbeidsrettede tiltak" },
+                            nynorsk { +"om å ha gjennomført individuelle og formålstenlege arbeidsretta tiltak" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om å ha en varig sykdom" },
+                            nynorsk { +"om å ha ein varig sjukdom" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om at sykdommen er hovedårsaken til den nedsatte inntektsevnen" },
+                            nynorsk { +"om at sjukdommen er hovudårsaka til den nedsette inntektsevna" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"om at inntektsevnen er varig nedsatt med minst 50 prosent" },
+                            nynorsk { +"om at inntektsevna er varig nedsett med minst 50 prosent" }
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { +fritekst("Oppgi konkret grunngiving") },
+                    nynorsk { +fritekst("Oppgi konkret grunngiving") }
+                )
+            }
+            title1 {
+                text(
+                    bokmal { +"Du kan klage på vedtaket" },
+                    nynorsk { +"Du kan klage på vedtaket" }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. "
+                        + "Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL" },
+                    nynorsk { +"Du kan klage på vedtaket innan seks veker frå du mottok det. Klagen må vere skriftleg og innehalde namn, fødselsnummer og adresse. "
+                    + "Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL."}
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Sammen med dette brevet sender vi deg også en orientering om klage- og ankebehandling." },
+                    nynorsk { +"Saman med dette brevet sender vi deg også ei orientering om klage- og ankebehandling." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Vi gjør oppmerksom på at du etter forvaltningsloven paragraf 18 har rett til å se sakens dokumenter." },
+                    nynorsk { +"Vi gjer merksam på at du etter forvaltningslova paragraf 18 har rett til å sjå saksdokumenta." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Husk at du kan finne mer generell informasjon om regelverket og rettighetene dine på $NAV_URL." },
+                    nynorsk { +"Hugs at du kan finne meir generell informasjon om regelverket og rettane dine på $NAV_URL." }
                 )
             }
         }
-
     }
 }
