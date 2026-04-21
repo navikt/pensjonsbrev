@@ -6,11 +6,10 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.pesysData
-import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalNynorsk
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -77,7 +76,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Det er i alt fem vilkår som må være oppfylt for at du kan få uførepensjon:" },
-                    nynorsk { +"Det er i alt fem vilkår som må vere oppfylte for at du kan få uførepensjon" }
+                    nynorsk { +"Det er i alt fem vilkår som må vere oppfylte for at du kan få uførepensjon:" }
                 )
                 list {
                     item {
@@ -115,7 +114,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Du fyller ikke vilkåret/vilkårene:" },
-                    nynorsk { +"Du fyller ikkje vilkåret/vilkåa:" },
+                    nynorsk { +"Du fyller ikkje vilkåret/vilkåra:" },
                 )
                 newline()
                 text(
@@ -176,7 +175,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. "
-                        + "Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL" },
+                        + "Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL." },
                     nynorsk { +"Du kan klage på vedtaket innan seks veker frå du mottok det. Klagen må vere skriftleg og innehalde namn, fødselsnummer og adresse. "
                     + "Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL."}
                 )
@@ -200,5 +199,6 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                 )
             }
         }
+        includeAttachment(vedleggFolketrygdenBokmalNynorsk)
     }
 }
