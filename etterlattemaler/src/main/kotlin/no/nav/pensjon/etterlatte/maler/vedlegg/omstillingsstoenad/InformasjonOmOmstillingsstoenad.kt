@@ -551,11 +551,6 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Skattemessig bosatt i Norge:" },
-                nynorsk { +"Skattemessig busett i Noreg:" },
-                english { +"Tax reident in Norway:" }
-            )
-            text(
                 bokmal {
                     +"Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
                             "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
