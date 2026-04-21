@@ -1,5 +1,5 @@
 import { ArrowCirclepathReverseIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, Button, HStack, Select } from "@navikt/ds-react";
+import { BodyShort, Box, Button, HStack, Select, Tooltip } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -12,7 +12,7 @@ import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
-import { type Typography, TypographyToText } from "../utils";
+import { type Typography, TypographyToText, tooltipText } from "../utils";
 import EditorFonts from "./EditorFonts";
 import EditorListButton from "./EditorListButton";
 import { EditorUndoRedo } from "./EditorUndoRedo";
@@ -75,15 +75,17 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
         <HStack align="center" gap="space-16">
           {/* <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8"> */}
           <LagringStatus />
-          <Button
-            data-color="danger"
-            data-cy="tilbakestill-mal-button"
-            icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
-            onClick={() => setVilTilbakestilleMal(true)}
-            size="small"
-            type="button"
-            variant="primary"
-          />
+          <Tooltip content={tooltipText.tilbakestill}>
+            <Button
+              data-color="danger"
+              data-cy="tilbakestill-mal-button"
+              icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
+              onClick={() => setVilTilbakestilleMal(true)}
+              size="small"
+              type="button"
+              variant="primary"
+            />
+          </Tooltip>
         </HStack>
       </HStack>
     </Box>

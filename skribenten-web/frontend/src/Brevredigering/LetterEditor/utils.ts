@@ -29,6 +29,17 @@ export const TypographyToText = isMac
       [Typography.PARAGRAPH]: "Normal (Alt+4)",
     } as const);
 
+export const tooltipText = {
+  bold: isMac ? "Fet (⌘+B)" : "Fet (Ctrl+F)",
+  italic: isMac ? "Kursiv (⌘+I)" : "Kursiv (Ctrl+I)",
+  bulletList: isMac ? "Punktliste (⌥+5)" : "Punktliste (Alt+5)",
+  numberList: isMac ? "Nummerert liste (⌥+6)" : "Nummerert liste (Alt+6)",
+  undo: isMac ? "Angre (⌘+Z)" : "Angre (Ctrl+Z)",
+  redo: isMac ? "Gjør om (⌘+⇧+Z)" : "Gjør om (Ctrl+Y)",
+  table: "Sett inn tabell",
+  tilbakestill: "Tilbakestill mal",
+} as const;
+
 export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateAction<LetterEditorState>>) => {
   return useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -45,6 +56,12 @@ export const useEditorKeyboardShortcuts = (setEditorState: Dispatch<SetStateActi
       } else if (event.altKey && event.code === "Digit4") {
         event.preventDefault();
         applyAction(Actions.switchTypography, setEditorState, Typography.PARAGRAPH);
+      } else if (event.altKey && event.code === "Digit5") {
+        event.preventDefault();
+        setEditorState((previous) => Actions.toggleBulletList(previous, previous.focus));
+      } else if (event.altKey && event.code === "Digit6") {
+        event.preventDefault();
+        setEditorState((previous) => Actions.toggleNumberList(previous, previous.focus));
       }
 
       // Word-hurtigtaster (norsk)
