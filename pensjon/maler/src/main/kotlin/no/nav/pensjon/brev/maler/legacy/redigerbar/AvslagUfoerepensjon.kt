@@ -72,10 +72,47 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             }
             paragraph {
                 text(
-                    bokmal { +"" },
-                    nynorsk { +"Vedtaket er gjort etter folketrygdlova paragraf:" }
+                    bokmal { +"Det er i alt fem vilkår som må være oppfylt for at du kan få uførepensjon:" },
+                    nynorsk { +"Det er i alt fem vilkår som må vere oppfylte for at du kan få uførepensjon" }
                 )
-
+                list {
+                    item {
+                        text(
+                            bokmal { +"du må som hovedregel ha vært medlem av folketrygden (bodd i Norge) de siste tre årene før du ble ufør. I visse tilfeller kan det gjøres unntak fra denne regelen" },
+                            nynorsk { +"du må som hovudregel ha vore medlem i folketrygda (budd i Noreg) dei siste tre åra før du blei ufør. I vissehøve kan det gjerast unntak frå denne regelen" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du må være mellom 18 og 67 år" },
+                            nynorsk { +"du må vere mellom 18 og 67 år" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du må ha gjennomgått hensiktsmessig behandling og individuelle og hensiktsmessige arbeidsrettede tiltak" },
+                            nynorsk { +"du må ha gjennomgått formalstenleg behandling og individuelle og formålstenlege arbeidsretta tiltak" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"du må ha varig sykdom, skade eller lyte, og den medisinske lidelsen må være hovedårsaken til nedsettelsen av arbeids- og inntektsevnen" },
+                            nynorsk { +"du må ha varig sjukdom, skade eller lyte, og den medisinske lidinga må vere hovudårsaka til at arbeidsevna eller inntektsevna di er nedsett" }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"inntekts- eller arbeidsevnen din må være varig nedsatt med minst halvparten" },
+                            nynorsk { +"inntekts- eller arbeidsevna di må vere varig nedsett med minst halvparten" }
+                        )
+                    }
+                }
+            }
+            paragraph {
+                text(
+                    bokmal { +"" },
+                    nynorsk { +"" },
+                )
             }
         }
 
