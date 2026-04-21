@@ -572,8 +572,8 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
             text(
                 bokmal {
                     +"Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad. " +
-                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
-                            "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge."
+                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, " +
+                            "kan du bli skatteberegnet som bosatt i Norge."
                 },
                 nynorsk {
                     +"Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
