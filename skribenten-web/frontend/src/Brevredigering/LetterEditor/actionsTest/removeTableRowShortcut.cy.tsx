@@ -87,4 +87,20 @@ describe("remove table row shortcut", () => {
     cy.contains("Rad 1 kolonne 1").should("exist");
     cy.contains("Rad 2 kolonne 1").should("exist");
   });
+
+  it("deletes the entire table when Shift+Backspace is used on the last empty row", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 1 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "Backspace", shiftKey: true });
+    cy.focused().trigger("keydown", { bubbles: true, key: "Backspace", shiftKey: true });
+
+    cy.get("[data-cy=letter-table]").should("exist");
+    cy.get("[data-cy=letter-table] tbody tr").should("have.length", 1);
+
+    cy.focused().trigger("keydown", { bubbles: true, key: "Backspace", shiftKey: true });
+
+    cy.get("[data-cy=letter-table]").should("not.exist");
+  });
 });

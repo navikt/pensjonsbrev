@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtlan
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndring
@@ -166,6 +167,7 @@ object ProductionTemplates : AllTemplates {
         AvslagGjenlevendepensjonUtland,
         AvslagGjenlevendepensjon,
         VedtakOmLavereMinstesatsRedigerbar,
+        InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
     )
 
     override fun hentAutobrevmaler() = autobrev

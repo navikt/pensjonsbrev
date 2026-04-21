@@ -134,9 +134,13 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
 
-  // Adjust focus to a valid position
-  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
-  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+  if (parentBlock.content.length === 0) {
+    addElements([newLiteral({ editedText: "" })], 0, parentBlock.content, parentBlock.deletedContent);
+    draft.focus = { blockIndex, contentIndex: 0, cursorPosition: 0 };
+  } else {
+    const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
+    draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+  }
 
   draft.saveStatus = "DIRTY";
 });
