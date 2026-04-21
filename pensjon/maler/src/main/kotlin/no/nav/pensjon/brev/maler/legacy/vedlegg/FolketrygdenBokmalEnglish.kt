@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
 
-val vedleggFolketrygdenGjenlevendepensjonBokmalEnglish =
+val vedleggFolketrygdenBokmalEnglish =
     createAttachment<LangBokmalEnglish, EmptyVedleggData>(
         title = {
             text(
