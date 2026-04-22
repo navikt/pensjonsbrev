@@ -5,5 +5,5 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 data class BarnetilleggSerkullYK(
     val belopgammelbtsb: Kroner?,
-    val belopnybtsb: Kroner,
+    val belopnybtsb: Kroner?,
 )

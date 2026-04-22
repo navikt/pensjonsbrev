@@ -114,7 +114,7 @@ fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
     val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
     return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
             (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb }) or
-                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb }))
+                    belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
 }
 
 fun FUNKSJON_FF_CheckIfFirstDayAndMonthOfYear(date: Expression<LocalDate?>): Expression<Boolean> =
