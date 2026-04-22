@@ -163,7 +163,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // innvilgetGjRettAPIngenEndr2_001
-            showIf(not(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt)) {
+            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and (brukerFoedtEtter1944.not() or virkDatoFomEtter2023.not())) {
                 paragraph {
                     text(
                         bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
@@ -210,6 +210,25 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                             nynorsk { + "Du får eit attlevandetillegg i alderspensjonen fordi du har pensjonsrettar etter " + pesysData.avdod.navn + "." },
                             english { + "You receive a survivor’s supplement in the retirement pension because you have pension rights after " + pesysData.avdod.navn + "." }
                         )
+                    }
+                    showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
+                        // nyBeregningAPØkning_001
+                        paragraph {
+                            text(
+                                bokmal { + "Dette fører til at pensjonen din øker." },
+                                nynorsk { + "Dette fører til at pensjonen din aukar." },
+                                english { + "This leads to an increase in your retirement pension." }
+                            )
+                        }
+                    }.orShow {
+                        // ingenEndringBelop_002
+                        paragraph {
+                            text(
+                                bokmal { + "Dette får derfor ingen betydning for utbetalingen din." },
+                                nynorsk { + "Dette får derfor ingen følgjer for utbetalinga di." },
+                                english { + "Therefore, this does not affect the amount you will receive." }
+                            )
+                        }
                     }
 
                     title1 {
@@ -358,26 +377,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                         bokmal { + "I tillegg har vi regnet om pensjonen din fordi du har blitt enslig pensjonist." },
                         nynorsk { + "I tillegg har vi rekna om pensjonen din fordi du har blitt einsleg pensjonist." },
                         english { + "We have also recalculated your pension because you have become a single pensioner." }
-                    )
-                }
-            }
-
-            showIf(pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)) {
-                // nyBeregningAPØkning_001
-                paragraph {
-                    text(
-                        bokmal { + "Dette fører til at pensjonen din øker." },
-                        nynorsk { + "Dette fører til at pensjonen din aukar." },
-                        english { + "This leads to an increase in your retirement pension." }
-                    )
-                }
-            }.orShow {
-                // ingenEndringBelop_002
-                paragraph {
-                    text(
-                        bokmal { + "Dette får derfor ingen betydning for utbetalingen din." },
-                        nynorsk { + "Dette får derfor ingen følgjer for utbetalinga di." },
-                        english { + "Therefore, this does not affect the amount you will receive." }
                     )
                 }
             }
