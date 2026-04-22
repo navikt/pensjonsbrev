@@ -44,122 +44,14 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 - **Conditionals**: `showIf(predicate) { }.orShowIf(other) { }.orShow { }` or inline `ifElse(pred, "yes", "no")`
 - **Phrases**: `OutlinePhrase`, `ParagraphPhrase`, `TextOnlyPhrase`, `PlainTextOnlyPhrase` for reusable content
 
-## Golden Paths
+## Task recipes (skills)
 
-These are the *officially blessed* recipes for common tasks. Follow them step-by-step. Each ends in a verifiable command. Deviations are allowed, but default to the path.
+Step-by-step recipes for common authoring tasks live under [`skills/`](skills/). Follow the linked skill before starting a task it covers.
 
-> Only one recipe is documented so far: **Add a new redigerbar brev**. More recipes will be added as they are validated against real tasks.
-
-### Add a new redigerbar (caseworker-editable) brev
-
-**When:** A caseworker needs to produce a letter and edit its text before sending.
-
-#### 0. Pick the right module
-
-Redigerbare brev live in several maler modules — pick the one matching the domain:
-
-| Module | Brevkode registry | Fixtures file (examples of current location) |
-|---|---|---|
-| `pensjon/maler` | `pensjon/api-model/.../maler/Pesysbrevkoder.kt` | `pensjon/maler/src/test/kotlin/no/nav/pensjon/brev/Fixtures.kt` |
-| `alder/maler` | `alder/api-model/.../model/Aldersbrevkoder.kt` | `alder/maler/src/test/kotlin/no/nav/pensjon/brev/alder/Fixtures.kt` |
-| `ufoere/maler` | `ufoere/api-model/.../Ufoerebrevkoder.kt` | `ufoere/maler/src/test/kotlin/no/nav/pensjon/brev/ufore/Fixtures.kt` |
-| `etterlattemaler` | domain-local registry under `etterlattemaler/…` | `etterlattemaler/src/test/kotlin/no/nav/pensjon/etterlatte/Fixtures.kt` |
-| `planlegge-pensjon-maler` | domain-local registry | `planlegge-pensjon-maler/src/test/kotlin/no/nav/pensjon/brev/planleggepensjon/Fixtures.kt` |
-
-New maler modules may appear — locate the module's brevkode registry (`*brevkoder*.kt`) and its Fixtures file before starting..
-
-#### 1. Package layout is domain-local
-
-Packages are organised by domain, not by a fixed `redigerbar/` subfolder. Mirror existing templates in the same module / domain area. Examples actually in use:
-
-- `ufoere/maler/src/main/kotlin/no/nav/pensjon/brev/ufore/maler/uforeavslag/UforeAvslagYrkesskadeGodkjent.kt`
-- `pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/redigerbar/VedtakEndringAvAlderspensjonInstitusjonsopphold.kt`
-- `pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/redigerbar/OpphoerGjenlevendepensjon.kt`
-
-Put the new template next to siblings it is conceptually related to.
-
-#### 2. Add the brevkode
-
-Add the constant to the module's brevkode registry (e.g. `Pesysbrevkoder.Redigerbar`, `Ufoerebrevkoder.Redigerbar`, `Aldersbrevkoder.Redigerbar`).
-
-Rules — **read these before picking a code**:
-
-- **Unique across all modules.** Enforced by `AllTemplatesTest."alle maler skal bruke en unik brevkode"` — CI fails on collisions.
-- **≤ 50 characters.** It is the letter's ID.
-- **Immutable once in production.** A brevkode in prod is a stable identifier external systems may reference — never rename, never reuse. If the letter is replaced, allocate a new code.
-
-#### 3. Add the Dto
-
-In the module's `api-model` (e.g. `pensjon/api-model`, `ufoere/api-model`, `alder/api-model`). Plain `data class`; required fields have **no defaults**. Nest a `SaksbehandlerValg` / `Saksbehandlervalg` class if the brev has caseworker choices. Mirror the naming the surrounding module already uses.
-
-#### 4. Add the template
-
-```kotlin
-@TemplateModelHelpers
-object X : RedigerbarTemplate<XDto> {
-    override val kode = <Module>brevkoder.Redigerbar.X   // the constant from step 2
-    override val kategori = Brevkategori.<...>           // module-local enum
-    override val brevkontekst = TemplateDescription.Brevkontekst.<...>
-    override val sakstyper = setOf(Sakstype.<...>)       // module-local Sakstype
-    override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),          // pick the actual subset — see step 5
-        letterMetadata = LetterMetadata(
-            displayTitle = "...",
-            distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
-            brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-        ),
-    ) {
-        title { text(bokmal { +"..." }, nynorsk { +"..." }) }
-        outline { paragraph { text(bokmal { +"..." }, nynorsk { +"..." }) } }
-    }
-}
-```
-
-`Brevkategori`, `Sakstype` and similar enums are **module-local** — use the ones imported by neighbouring templates in the same module, not `pensjon`'s versions by default.
-
-#### 5. Pick the language combination (type-safe)
-
-`languages(...)` is overloaded and its argument list *is the type contract* for every `text { }` block in the template:
-
-| Call | Type alias | Required DSL branches inside `text { }` |
-|---|---|---|
-| `languages(Bokmal)` | `LangBokmal` | `bokmal { }` |
-| `languages(Bokmal, Nynorsk)` | `LangBokmalNynorsk` | `bokmal { }`, `nynorsk { }` |
-| `languages(Bokmal, English)` | `LangBokmalEnglish` | `bokmal { }`, `english { }` |
-| `languages(Bokmal, Nynorsk, English)` | `LangBokmalNynorskEnglish` / `BaseLanguages` | all three |
-
-Pick the subset the brev actually supports — do not pad with placeholder translations. Missing or extra branches are compile errors, not runtime.
-
-#### 6. Wire the fixture
-
-If `XDto` introduces new nested types, extend the module's `Fixtures.kt` so `Fixtures.create<XDto>()` resolves via the reflection-based factory. Location varies per module — see the table in step 0. Use existing fixture helpers in the same file as your template (search neighbours for `Fixtures.create<`).
-
-#### 7. Add the integration test
-
-Templates are auto-discovered via each module's `ProductionTemplates`; no manual registration. Still write an integration test so the brev has fixture coverage and renders.
-
-Follow the integration-test pattern already used in the target module (search for `@Tag(TestTags.INTEGRATION_TEST)` and `renderTestPDF` / `renderTestHtml` inside that module's `src/test`). Integration tests spin up pdf-bygger via **Testcontainers** — Docker must be running, but you do not need `docker compose up` yourself.
-
-#### 8. Verify
-
-Run the module's integrationTest task — not `manualTest`. Integration tests start pdf-bygger via Testcontainers, so only a running Docker daemon is required.
-
-```bash
-# for the module you edited:
-./gradlew :pensjon:maler:integrationTest
-./gradlew :alder:maler:integrationTest
-./gradlew :ufoere:maler:integrationTest
-./gradlew :planlegge-pensjon-maler:integrationTest
-./gradlew :etterlattemaler:integrationTest
-```
-
-Also run the cross-module uniqueness / documentation test:
-
-```bash
-./gradlew :pensjon:brevbaker:test --tests "no.nav.pensjon.brev.AllTemplatesTest"
-```
-
-This enforces the unique-brevkode rule and renders the template-documentation snapshot for every language the brev declares.
+| Task | Skill |
+|---|---|
+| Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`skills/write-template.md`](skills/write-template.md) |
+| Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`skills/write-redigerbar-template.md`](skills/write-redigerbar-template.md) |
 
 ## Do NOT Edit By Hand
 
@@ -169,28 +61,10 @@ These files are generated or authoritative and must never be hand-edited by a hu
 - `**/*.api` files — regenerate via `./gradlew apiDump` and commit the diff.
 - `**/build/generated/**` — KSP output (e.g. `*DtoSelectors`). Change the annotated source and rebuild.
 - `build/`, `*/build/`, `gradle-user-home/` — all build output.
-- `package-lock.json`, `gradle.lockfile` — only touch as part of a deliberate dependency bump.
+- `package-lock.json`, `gradle.lockfile`
 - `secrets/`, `*.env`, anything produced by `fetch-secrets.sh` — never commit, never paste into AI prompts.
 
 If the agent finds itself about to write to one of these, stop and change the upstream source instead.
-
-## Pitfalls & Conventions (frequent AI mistakes)
-
-### Letter DSL (Kotlin)
-- **Literals need unary `+`**: `bokmal { +"Tekst" + expr.format() }` — a bare `"Tekst"` is a compile error inside `text { }`.
-- **Language parity is compile-time**: `languages(Bokmal, Nynorsk)` gives every `text { }` a `LangBokmalNynorsk` type — exactly a `bokmal { }` and a `nynorsk { }` branch are required, adding `english { }` is a compile error. Pick the actual subset the brev supports (see type aliases in `brevbaker/dsl/.../LanguageSupport.kt`: `LangBokmal`, `LangBokmalNynorsk`, `LangBokmalEnglish`, `LangBokmalNynorskEnglish`).
-- **Prefer `showIf(...).orShowIf(...).orShow { }`** over nested Kotlin `if`. Terminate chains with `orShow { }` unless the predicate is provably exhaustive.
-- **Use generated selectors** (e.g. `...DtoSelectors.pesysData.krav.virkDatoFom`) — never call `.toString()` on an `Expression`. Chain with `.format()`, `.equalTo(...)`, `.isOneOf(...)`, `.and(...)`, `.not()`, `.greaterThan(...)`, `.ifNull(...)`.
-- **`fritekst("...")` vs `+"..."`**: `fritekst` produces caseworker-editable text in Skribenten; `+"..."` is fixed. Pick deliberately — do not mix defaults in.
-- **Every new `Dto` field needs a fixture value.** `Fixtures.create<T>()` uses reflection and will fail without a registered value for new nested types.
-- **`@TemplateModelHelpers`** on the template object triggers KSP to generate selectors. Missing this annotation = no selectors = red editor.
-
-### Testing
-- **Test tags**: `@Tag(TestTags.INTEGRATION_TEST)` is the verification path for maler modules and runs via `./gradlew :<module>:integrationTest` (starts pdf-bygger via Testcontainers — requires a running Docker daemon). `@Tag(TestTags.MANUAL_TEST)` is for ad-hoc visual inspection only — **do not** rely on it as a Golden Path verification step.
-- Output paths: `build/test_html/` and `build/test_pdf/` — per module. Open them to inspect visual output.
-
-### API & Binary Compatibility
-- Any change to a public declaration in `brevbaker:api-model-common`, `brevbaker:dsl`, or `brevbaker:core` requires `./gradlew apiDump` and a committed `.api` diff. CI will fail otherwise.
 
 ## Project Structure & Build
 
