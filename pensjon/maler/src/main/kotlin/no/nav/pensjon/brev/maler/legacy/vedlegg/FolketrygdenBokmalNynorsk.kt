@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
@@ -85,47 +86,49 @@ val vedleggFolketrygdenBokmalNynorsk =
                 nynorsk { +"Økonomisk dekning" }
             )
         }
-        title2 {
-            text(
-                bokmal { +"Dekning av saksomkostninger - forvaltningsloven § 36" },
-                nynorsk { +"Dekning av sakskostnader - forvaltningslova § 36" }
-            )
-        }
         paragraph {
-            text(
-                bokmal {
-                    +"Dersom et vedtak blir endret til gunst for deg, kan du få dekket de nødvendige utgiftene du har hatt for å få endret vedtaket. " +
-                            "Krav om dekning av saksomkostninger må settes frem senest tre uker etter at melding om det nye vedtaket ble mottatt, jf. § 36 tredje ledd. " +
-                            "Krav om å få dekket sakskostnader skal sendes til Nav."
-                },
-                nynorsk {
-                    +"Dersom eit vedtak blir endra til gunst for deg, kan du få dekt dei nødvendige utgiftene du har hatt for å få endra vedtaket. " +
-                            "Du må setje fram krav om dekning av sakskostnader seinast tre veker etter at du mottok melding om det nye vedtaket, jfr. § 36 tredje ledd. " +
-                            "Krav om å få dekt sakskostnader skal sendast til Nav."
+            list {
+                item {
+                    text(
+                        bokmal { +"Dekning av saksomkostninger - forvaltningsloven § 36" },
+                        nynorsk { +"Dekning av sakskostnader - forvaltningslova § 36" }, BOLD
+                    )
+                    newline()
+                    text(
+                        bokmal {
+                            +"Dersom et vedtak blir endret til gunst for deg, kan du få dekket de nødvendige utgiftene du har hatt for å få endret vedtaket. " +
+                                    "Krav om dekning av saksomkostninger må settes frem senest tre uker etter at melding om det nye vedtaket ble mottatt, jf. § 36 tredje ledd. " +
+                                    "Krav om å få dekket sakskostnader skal sendes til Nav."
+                        },
+                        nynorsk {
+                            +"Dersom eit vedtak blir endra til gunst for deg, kan du få dekt dei nødvendige utgiftene du har hatt for å få endra vedtaket. " +
+                                    "Du må setje fram krav om dekning av sakskostnader seinast tre veker etter at du mottok melding om det nye vedtaket, jfr. § 36 tredje ledd. " +
+                                    "Krav om å få dekt sakskostnader skal sendast til Nav."
+                        }
+                    )
                 }
-            )
-        }
-        title2 {
-            text(
-                bokmal { +"Fri rettshjelp" },
-                nynorsk { +"Fri rettshjelp" }
-            )
-        }
-        paragraph {
-            text(
-                bokmal {
-                    +"Dersom du har behov for juridisk bistand i trygdesaken din, kan du på visse vilkår få utgiftene dekket etter reglene om fri rettshjelp. " +
-                            "Her gjelder det visse inntekts- og formuesgrenser. " +
-                            "Du kan få utgiftene dekket selv om vedtaket ikke blir endret til gunst for deg. " +
-                            "For nærmere informasjon om reglene om fri rettshjelp henvises det til fylkesmannen."
-                },
-                nynorsk {
-                    +"Dersom du har behov for juridisk hjelp i trygdesaka di, kan du på visse vilkår få utgiftene dekt etter reglane om fri rettshjelp. " +
-                            "Her gjeld det visse inntekts- og formuesgrenser. " +
-                            "Du kan få dekt utgiftene sjølv om vedtaket ikkje blir endra til gunst for deg. " +
-                            "For nærmare informasjon om reglane om fri rettshjelp kan du ta kontakt med fylkesmannen."
+                item {
+                    text(
+                        bokmal { +"Fri rettshjelp" },
+                        nynorsk { +"Fri rettshjelp" }, BOLD
+                    )
+                    newline()
+                    text(
+                        bokmal {
+                            +"Dersom du har behov for juridisk bistand i trygdesaken din, kan du på visse vilkår få utgiftene dekket etter reglene om fri rettshjelp. " +
+                                    "Her gjelder det visse inntekts- og formuesgrenser. " +
+                                    "Du kan få utgiftene dekket selv om vedtaket ikke blir endret til gunst for deg. " +
+                                    "For nærmere informasjon om reglene om fri rettshjelp henvises det til fylkesmannen."
+                        },
+                        nynorsk {
+                            +"Dersom du har behov for juridisk hjelp i trygdesaka di, kan du på visse vilkår få utgiftene dekt etter reglane om fri rettshjelp. " +
+                                    "Her gjeld det visse inntekts- og formuesgrenser. " +
+                                    "Du kan få dekt utgiftene sjølv om vedtaket ikkje blir endra til gunst for deg. " +
+                                    "For nærmare informasjon om reglane om fri rettshjelp kan du ta kontakt med fylkesmannen."
+                        }
+                    )
                 }
-            )
+            }
         }
         title1 {
             text(
