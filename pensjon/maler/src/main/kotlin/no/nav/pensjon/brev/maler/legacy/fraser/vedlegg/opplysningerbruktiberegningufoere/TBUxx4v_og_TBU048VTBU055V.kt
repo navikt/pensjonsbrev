@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.maler.legacy.pebrevkode
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforegrad
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -13,8 +13,8 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class TBUxx4v_og_TBU048V_TBU055V(
     val pe: Expression<PEgruppe10>,
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+): OutlinePhrase<LangBokmalNynorsk>(){
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
         //[TBUxx4 og TBU048V-TBU055V]
 
@@ -22,7 +22,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "Slik fastsetter vi inntekten din før du ble ufør" },
                 nynorsk { + "Slik fastset vi inntekta di før du blei ufør" },
-                english { + "This is how we establish your income prior to your disability" },
             )
         }
         //[TBUxx4 og TBU048V-TBU055V]
@@ -31,7 +30,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "Inntekten før du ble ufør har betydning for hvordan vi fastsetter uføregraden din, og eventuell justering av uføretrygd ut fra inntekt. Inntekten før du ble ufør har ingen sammenheng med hvordan vi beregner uføretrygden din." },
                 nynorsk { + "Inntekta di før du blei ufør har betydning for korleis vi fastset uføregraden din, og ei eventuell justering av uføretrygda ut frå inntekt. Inntekta di før du blei ufør har ingen samanheng med korleis vi bereknar uføretrygda di." },
-                english { + "We establish your grade of disability based on your income prior to disability. We also use your income prior to disability when adjusting your disability benefit based on income. Your income prior to disability is used to calculate the amount of disability benefit." },
             )
         }
         //[TBUxx4 og TBU048V-TBU055V]
@@ -40,7 +38,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "Når vi fastsetter inntekten din før du ble ufør tar vi utgangspunkt i den normale inntektssituasjonen din før du ble ufør. Dersom du ikke har arbeidet i full stilling, vil inntekten din bli regnet om til en årsinntekt i full stilling. Inntekt før du ble ufør fastsettes forskjellig for arbeidstakere, selvstendig næringsdrivende og personer uten inntekt." },
                 nynorsk { + "Når vi fastset inntekta di før du blei ufør tek vi utgangspunkt i den normale inntektssituasjonen din før du blei ufør. Dersom du ikkje har arbeidd i full stilling, vil inntekta di bli rekna om til ein årsinntekt i full stilling. Inntekt før du blei ufør blir fastsett forskjellig for arbeidstakare, sjølvstendig næringsdrivande og personar utan inntekt." },
-                english { + "When we establish you income prior to your disability, we base our calculations on your normal income prior to your date of disability. If you did not work full time, your pensionable income will be recalculated to its full-time equivalent. Your income prior to your disability will be established differently for employees, self-employed and persons without an income." },
             )
         }
         //[TBUxx4 og TBU048V-TBU055V]
@@ -49,7 +46,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "For deg som er arbeidstaker" },
                 nynorsk { + "For deg som er arbeidstakar" },
-                english { + "If you are employed" },
             )
         }
         //[TBUxx4 og TBU048V-TBU055V]
@@ -58,7 +54,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "Inntekten din før du ble ufør skal som hovedregel tilsvare de inntektsmulighetene du hadde eller kunne hatt før uføretidspunktet. I de fleste tilfeller vil vi bruke den pensjonsgivende inntekten du hadde året før du ble ufør eller sykepengegrunnlaget ditt." },
                 nynorsk { + "Inntekta di før du blei ufør skal som hovudregel tilsvare dei inntektsmoglegheitane du hadde eller kunne hatt før uføretidspunktet. I dei fleste tilfeller vil vi bruke den pensjonsgivande inntekta du hadde året før du blei ufør eller sjukepengegrunnlaget ditt." },
-                english { + "As a main rule, your income prior to disability equals your ability to have an income before the time of disability. We will in most cases use your pensionable income the year prior to your illness or the base of calculation for your sickness benefit." },
             )
         }
 
@@ -70,7 +65,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Hvis du er i arbeid kan vi fastsette inntekten din før du ble ufør ut fra din nåværende stillingsandel. Inntekten du har skal regnes om til en årsinntekt i full stilling. Årsinntekten blir deretter justert tilbake til uføretidspunktet ditt og vil tilsvare inntekten din før du ble ufør. Dette gjør vi for at du skal få riktig uføregrad." },
                     nynorsk { + "Dersom du er i arbeid kan vi fastsetje inntekta di før du blei ufør ut frå den nåværande stillingsdelen din. Inntekta skal reknas om til ei årsinntekt i full stilling. Årsinntekta blir deretter justert tilbake til uføretidspunktet ditt og vil tilsvare inntekta di før du blei ufør. Dette gjer vi for at du skal få riktig uføregrad." },
-                    english { + "We will in certain cases establish your income prior to disability on the basis of your employment fraction. Your pensionable income will be recalculated to its full-time equivalent. We will then readjust your yearly income to your date of disability. This will equal to your income prior to your date of disability. We do this to ensure that your grade of disability is correct." },
                 )
             }
         }
@@ -80,7 +74,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "For deg som er selvstendig næringsdrivende" },
                 nynorsk { + "For deg som er sjølvstendig næringsdrivande" },
-                english { + "If you are self-employed" },
             )
         }
         //[TBUxx4 og TBU048V-TBU055V]
@@ -89,7 +82,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
             text (
                 bokmal { + "Inntekten din før du ble ufør skal tilsvare de inntektsmulighetene du hadde før uføretidspunktet. Vi bruker gjennomsnittet av din pensjonsgivende inntekt for de tre siste årene før du ble ufør. Alle tre årene skal være med, selv om inntektene har variert mye.  Det kan gjøres unntak fra denne regelen, dersom sykdom eller skade har redusert inntektsmulighetene dine over flere år. " },
                 nynorsk { + "Inntekta di før du blei ufør skal svare til dei inntektsmoglegheitene du hadde før uføretidspunktet. Vi bruker gjennomsnittet av den pensjonsgivande inntekta di for dei tre siste åra før du blei ufør. Alle tre åra skal vere med, sjølv om inntektene har variert mykje.  Det kan gjerast unntak frå denne regelen, dersom sjukdom eller skade har redusert inntektsmoglegheitene dine over fleire år." },
-                english { + "Your income prior to disability should correspond to the income opportunities you had before the disability. We calculate your average income from the last three years before the disability. All three years will be included, regardless of any income variation. Exceptions to this rule can be made if illness or injury has reduced your income opportunities over several years." },
             )
         }
 
@@ -107,7 +99,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Minstenivå på inntekt før uførhet" },
                     nynorsk { + "Minstenivå på inntekt før du blei ufør" },
-                    english { + "The minimum level of income prior to date of disability" },
                 )
             }
         }
@@ -125,28 +116,24 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Inntekten din før du ble ufør skal ikke settes lavere enn:" },
                     nynorsk { + "Inntekta di før du blei ufør skal ikkje setjas lågare enn:" },
-                    english { + "Your income prior to your date of disability will not be set lower than:" },
                 )
                 list {
                     item {
                         text(
                             bokmal { + "3,3 ganger grunnbeløpet dersom du lever sammen med ektefelle/partner/samboer. Samboerforholdet ditt må ha vart i minst 12 av de siste 18 månedene." },
                             nynorsk { + "3,3 gonger grunnbeløpet dersom du lever saman med ektefelle/partner/sambuar. Sambuarforholdet ditt må ha vart i minst 12 av dei siste 18 månadene." },
-                            english { + "3.3 times the National Insurance basic amount for individuals living with a spouse or partner, or in a cohabitant relationship that has lasted no less than 12 of the last 18 months." },
                         )
                     }
                     item {
                         text(
                             bokmal { + "3,5 ganger grunnbeløpet dersom du er enslig." },
                             nynorsk { + "3,5 gonger grunnbeløpet dersom du er einsleg." },
-                            english { + "3.5 times the National Insurance basic amount if you are single." },
                         )
                     }
                     item {
                         text(
                             bokmal { + "4,5 ganger grunnbeløpet dersom du har rett til uføretrygd med rettighet som ung ufør." },
                             nynorsk { + "4,5 gonger grunnbeløpet dersom du har rett til uføretrygd med rett som ung ufør." },
-                            english { + "4.5 times the National Insurance basic amount if you are a young disabled individual." },
                         )
                     }
                 }
@@ -164,7 +151,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Endring av inntekt før du ble ufør" },
                     nynorsk { + "Endring av inntekt før du blei ufør" },
-                    english { + "Change of income before your disability" },
                 )
             }
 
@@ -172,7 +158,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "For å ha rett til å endre den fastsatte inntekten din før du ble ufør, må du ha hatt en varig inntektsøkning uten at stillingsandelen din har økt. Inntekt før uførhet kan bare endres dersom du mottar gradert uføretrygd." },
                     nynorsk { + "For å ha rett til å endre den fastsette inntekta di før du blei ufør, må du ha hatt ein varig inntektsaukning utan at stillingsdelen din har blitt auka. Inntekta før du blei ufør kan bare endras dersom du får gradert uføretrygd." },
-                    english { + "In order for you to have the right to amend your established income prior to your disability, you must have had a permanent increase in income without an increase in your percentage of full-time equivalent. Income prior to disability may only be amended if you are receiving a graduated disability benefit." },
                 )
             }
         }
@@ -185,7 +170,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Slik fastsetter vi inntekten din etter at du ble ufør" },
                     nynorsk { + "Slik fastset vi inntekta di etter at du blei ufør" },
-                    english { + "This is how we establish your income after your disability" },
                 )
             }
 
@@ -193,7 +177,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Når vi fastsetter inntekten din etter at du ble ufør, tar vi utgangspunkt i den framtidige pensjonsgivende inntekten din. Er det dokumentert at du har inntektsmuligheter som du ikke benytter, skal også disse tas med ved fastsettelsen av inntekten din etter at du ble ufør." },
                     nynorsk { + "Når vi fastset inntekta di etter at du blei ufør, tek vi utgangspunkt i den framtidige pensjonsgivande inntekta di. Er det dokumentert at du har inntektsmoglegheiter som du ikkje nyttar, skal også desse takast med når inntekta di etter at du blei ufør, skal fastsetjast." },
-                    english { + "When we establish your income after your disability, we base our calculations on your future pensionable income. If it has been documented that you have options for gainful employment that you are not taking advantage of, these will be included when your income after your disability is calculated." },
                 )
             }
 
@@ -201,7 +184,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Folketrygdens grunnbeløp endres hvert år, og inntekten din før og etter at du ble ufør blir justert ut fra dette." },
                     nynorsk { + "Grunnbeløpet i folketrygda blir endra kvart år, og inntekta di før og etter at du blei ufør, blir justert ut frå dette." },
-                    english { + "The National Insurance basic amount changes every year, and your income prior to and after your disability will be adjusted in accordance with this." },
                 )
             }
 
@@ -209,7 +191,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Slik fastsetter vi uføregraden din" },
                     nynorsk { + "Slik fastset vi uføregraden din" },
-                    english { + "This is how we establish your degree of disability" },
                 )
             }
 
@@ -217,7 +198,6 @@ data class TBUxx4v_og_TBU048V_TBU055V(
                 text (
                     bokmal { + "Uføregraden din fastsetter vi ved å sammenligne inntekten din før og etter at du ble ufør. Har du ikke inntektsevne, setter vi uføregraden til 100 prosent. Har du fortsatt inntektsevne, vil uføregraden tilsvare inntektsevnen din som du har tapt. Uføregraden din graderes i trinn på fem prosentpoeng. Vi vurderer alltid om uføregraden skal settes lavere enn 100 prosent." },
                     nynorsk { + "Uføregraden din fastset vi ved å samanlikne inntekta di før og etter at du blei ufør. Dersom du ikkje har inntektsevne, set vi uføregraden til 100 prosent. Har du framleis inntektsevne, tilsvarer uføregraden den inntektsevna di som du har tapt. Uføregraden din blir gradert i trinn på fem prosentpoeng. Vi vurderer alltid om uføregraden skal setjast lågare enn 100 prosent." },
-                    english { + "Your degree of disability is established by comparing your income before and after your disability. If you have no earning ability, your degree of disability will be fixed at 100 percent. If you still have some earning ability, your degree of disability will correspond to your loss of earning ability. Your degree of disability is graduated on a scale in increments of 5 percentage points. We always evaluate whether the degree of disability should be reduced from 100 percent." },
                 )
             }
         }
