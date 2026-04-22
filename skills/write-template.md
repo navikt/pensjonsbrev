@@ -22,9 +22,17 @@ New maler modules may appear — locate the module's `*brevkoder*.kt`, `Fixtures
 
 Packages inside a module are organised by domain, not by a fixed `redigerbar/` / `auto/` subfolder. Put the new template next to siblings it is conceptually related to.
 
-### Reserve a brevkode
+### Name the template and reserve a brevkode
 
-Add a constant to the module's brevkode registry — under `Redigerbar` for redigerbar brev, `AutoBrev` / `Automatisk` for autobrev. **Read these rules before picking a code:**
+The **template object name**, the **Dto class name**, and the **brevkode** should all reflect the *situation* the letter is used in — not the internal Exstream id, not the fagsystem field names, not the ticket number. Pick one situation-describing PascalCase base name and mirror it across all three:
+
+- Template object:   `VedtakEndringAvGjenlevendepensjonVedFlyttingTilUtland`
+- Dto class:         `VedtakEndringAvGjenlevendepensjonVedFlyttingTilUtlandDto`
+- Brevkode constant: `PE_GP_ENDRING_FLYTTING_MELLOM_LAND` (domain prefix + situation in SCREAMING_SNAKE_CASE)
+
+Mirror neighbouring templates in the same module for the prefix/casing style (`PE_AP_…` / `PE_GP_…` / `UT_…` / `GP_…` on the brevkode side; `Vedtak…` / `Avslag…` / `Innvilgelse…` / `Endring…` / `Opphoer…` / `Varsel…` / `Informasjon…` / `Bekreftelse…` on the Kotlin side). The prefix word on the Kotlin name should describe the letter's communicative act (vedtak, avslag, innvilgelse, varsel, informasjon, opphoer, endring, …); the rest should narrow it down to the specific situation.
+
+Add the brevkode constant to the module's brevkode registry — under `Redigerbar` for redigerbar brev, `AutoBrev` / `Automatisk` for autobrev. **Rules for picking the code:**
 
 - **Unique across all modules.** Enforced by `AllTemplatesTest."alle maler skal bruke en unik brevkode"` — CI fails on collisions.
 - **≤ 50 characters.** It is the letter's ID.
@@ -93,6 +101,86 @@ object X : AutobrevTemplate<XDto> {                        // or RedigerbarTempl
 ```
 
 `@TemplateModelHelpers` is non-optional — without it the KSP processor does not generate `XDtoSelectors`, and the DSL body is red.
+
+### Build after the first commit of a new Dto or template
+
+Two unresolved-reference symptoms look identical at the call site but have different causes and different fixes. Diagnose which one you have before chasing anything else.
+
+**Symptom A — selectors unresolved (`pesysData.…`, `saksbehandlerValg.…`, `it.field` after `ifNotNull`).**
+`XDtoSelectors` (and every nested `…Selectors` class) is produced by KSP at build time from `@TemplateModelHelpers`. They **do not exist until a Gradle build has run**, so the first time you author a template against a new Dto, the IDE marks every selector red. Fix:
+
+```bash
+./gradlew :<module>:maler:build   # regenerates selectors under build/generated/ksp/
+```
+
+The IDE usually picks the new files up on the next re-index; otherwise *File → Invalidate Caches*.
+
+**Symptom B — the Dto class itself is unresolved (`import …XDto` red, `RedigerbarTemplate<XDto>` shows `ERROR CLASS: Symbol not found`).**
+The maler module consumes its sibling `api-model` as a **published Maven artifact**, not a source dependency. A new Dto added under `<module>/api-model/src/…` is invisible to the maler module until you publish it locally and bump the consumer's version. See *Iterating on the Dto locally* below.
+
+Only after both symptoms are cleared do reported errors become trustworthy — do not chase selector-reference errors before then.
+
+### Nested-Dto selector paths
+
+For nested data classes inside the Dto, KSP mirrors the nesting in the generated selector object tree. E.g. for
+
+```kotlin
+data class XDto(val pesysData: PesysData) : RedigerbarBrevdata<…> {
+    data class PesysData(val beregning: Beregning)
+    data class Beregning(val brutto: Kroner, val komponent: Ytelseskomponent) {
+        data class Ytelseskomponent(val brutto: Kroner, val netto: Kroner)
+    }
+}
+```
+
+the imports chain through `…Selectors` for each level:
+
+```kotlin
+import …XDtoSelectors.PesysDataSelectors.beregning
+import …XDtoSelectors.PesysDataSelectors.BeregningSelectors.brutto
+import …XDtoSelectors.PesysDataSelectors.BeregningSelectors.YtelseskomponentSelectors.brutto
+```
+
+Each selector is an extension property on `Expression<ReceiverType>`, so two selectors with the same simple name but different receiver types (here `Expression<Beregning>.brutto` and `Expression<Ytelseskomponent>.brutto`) can be imported side-by-side — Kotlin resolves the call by receiver: `pesysData.beregning.brutto` picks the first, `ifNotNull(pesysData.beregning.komponent) { it.brutto }` picks the second.
+
+**Sibling nesting vs. field-reachability.** The generated `…Selectors` path tracks **where the inner class is declared**, not where it is first reached via a field. If `Beregning` is declared as a *sibling* of `PesysData` (both nested directly under `XDto`) but is only *referenced* through `PesysData.beregning`, the selector still lives at the top level:
+
+```kotlin
+data class XDto(val pesysData: PesysData) : RedigerbarBrevdata<…> {
+    data class PesysData(val beregning: Beregning)   // field on PesysData
+    data class Beregning(val brutto: Kroner)         // class nested on XDto, NOT on PesysData
+}
+```
+
+```kotlin
+// right — Beregning is a sibling of PesysData, so its selectors sit at the top:
+import …XDtoSelectors.BeregningSelectors.brutto
+
+// wrong — there is no PesysDataSelectors.BeregningSelectors:
+import …XDtoSelectors.PesysDataSelectors.BeregningSelectors.brutto
+```
+
+When the error is `Unresolved reference 'BeregningSelectors'` under `PesysDataSelectors`, check the Dto: if `Beregning` is declared at the outer level, move the import up one level. `build/generated/ksp/main/kotlin/…/XDtoSelectors.kt` is the authoritative tree.
+
+### Common imports — what's where
+
+The DSL is spread across several packages; a few paths trip people up on the first template:
+
+| Symbol | Import |
+|---|---|
+| `Kroner` | `no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner` (it is *not* a top-level class) |
+| `LetterMetadata`, `LetterMetadata.Distribusjonstype`, `…Brevtype` | `no.nav.pensjon.brevbaker.api.model.LetterMetadata` |
+| `Language.Bokmal` / `Nynorsk` / `English` | `no.nav.pensjon.brev.template.Language.…` |
+| `createTemplate`, `AutobrevTemplate`, `RedigerbarTemplate` | `no.nav.pensjon.brev.template.…` |
+| `languages`, `text` | `no.nav.pensjon.brev.template.dsl.…` |
+| `TemplateModelHelpers` | `no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers` |
+| `.format()`, `and`, `or`, `not`, `equalTo`, `notEqualTo`, `isOneOf`, `greaterThan`, `lessThan`, `ifNull`, `safe` | each is a separate star-less import from `no.nav.pensjon.brev.template.dsl.expression.…` |
+| `Expression<Kroner>.format()`, `Expression<Telefonnummer>.format()`, `Expression<Foedselsnummer>.format()` (no-arg overloads) | `no.nav.pensjon.brev.model.format` — **separate package from the generic `expression.format`.** Without this import the no-arg `.format()` call on a `Kroner` selector fails with *"No value passed for parameter 'formatter'"*. |
+| `Brevkategori` | `no.nav.pensjon.brev.model.Brevkategori` (module-local — pensjon has its own, alder has its own) |
+| `Sakstype`, `TemplateDescription.Brevkontekst` | `no.nav.pensjon.brev.api.model.…` |
+| `Pesysbrevkoder` / module brevkode registry | `no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder` (pensjon); other modules have their own registry |
+
+Import expression operators individually (`import …expression.and`, `import …expression.equalTo`, …) — there is no single star-import that pulls them all, and the IDE's quick-fix picker often guesses wrong when multiple classes (`Kroner`, `Language`) live in namespaces it has never seen before.
 
 ### `LetterMetadata` fields
 
@@ -165,6 +253,75 @@ Never call `.toString()` on an `Expression` — it throws at runtime. Use `.form
 
 Concatenate with `+`: `bokmal { +"Du får " + beloep.format() + " før skatt." }`.
 
+### Typed-value formatters carry their own unit — never append it by hand
+
+A few built-in formatters render the value **with the unit included**, localised per language. Appending a literal unit to a `.format()` call of these types double-prints and passes the compiler silently — you'll only see the defect in the rendered letter.
+
+| Type | `.format()` result (bokmål / nynorsk) | English | Import |
+|---|---|---|---|
+| `Expression<Kroner>` / `Expression<Kroner?>` | `"1 000 kroner"` | `"NOK 1 000"` | `no.nav.pensjon.brev.model.format` |
+| `Expression<Telefonnummer>` | `"22 00 00 00"` (no unit, but formatted with spaces) | same | `no.nav.pensjon.brev.model.format` |
+| `Expression<Foedselsnummer>` | `"DDMMYY XXXXX"` | same | `no.nav.pensjon.brev.model.format` |
+
+```kotlin
+// wrong — renders "Du får 1 000 kroner kroner før skatt."
+bokmal { +"Du får " + beloep.format() + " kroner før skatt." }
+
+// right — the formatter already emitted "kroner"
+bokmal { +"Du får " + beloep.format() + " før skatt." }
+```
+
+**For bare numbers** (e.g. inside a table cell where the column header carries the unit) use the denominator-off overload:
+
+```kotlin
+bokmal { + beloep.format(denominator = false) + " kr" }   // "1 000 kr"
+```
+
+**For table cells specifically, prefer the module's `KronerText` phrase** instead of re-deriving the per-language unit by hand:
+
+```kotlin
+cell { includePhrase(KronerText(beløp)) }
+```
+
+`KronerText` already uses `denominator = false` + `" kr"` / `"NOK "` and covers all three supported languages (see `fraser/common/TabellFormattering.kt` in the pensjon module, the alder module has its own copy). Use it unless you have a reason not to.
+
+**Related Dto design rule:** if a field represents money, type it as `Kroner` — not `Int` — so the selector's `.format()` carries the unit. Using `Int` means every call site must append `" kroner"` manually, which drifts as soon as a second language branch is added.
+
+### Tables — column alignment and width
+
+NAV letter standard:
+
+> Tekst er alltid venstrestilt for leseretning. Tall høyrestilles. I tabeller hvor kolonner blander tall og bokstaver bør det vurderes pr. tabell om innholdet skal venstrestilles eller høyrestilles.
+
+Default column alignment is `LEFT`. Set `alignment = ColumnAlignment.RIGHT` explicitly on number columns:
+
+```kotlin
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
+
+table(
+    header = {
+        column { text(bokmal { +"" }) }                                // label column — default LEFT
+        column(alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }) }   // number column — RIGHT
+    }
+) { … }
+```
+
+For columns that mix numbers and text, choose per-table — there is no correct default. Decide up front and document the choice in a comment; don't let it drift row by row.
+
+**Column width is controlled by `columnSpan`.** Every `column(...)` call takes a `columnSpan: Int` (default `1`) that sets its **relative** width — the total table width is the sum of all `columnSpan` values, and each column gets its share. Think of it as a weight, not pixels:
+
+```kotlin
+table(
+    header = {
+        column(columnSpan = 2) { text(bokmal { +"Beskrivelse" }) }                          // 2/5 of the table
+        column(columnSpan = 1, alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Antall" }) }      // 1/5
+        column(columnSpan = 2, alignment = ColumnAlignment.RIGHT) { text(bokmal { +"Beløp" }) }       // 2/5
+    }
+) { … }
+```
+
+Decide the ratios deliberately per table: wide text columns (descriptions, long labels, merknader that may wrap) should get a larger span; narrow numeric columns (år, antall, single-line Kroner values) can sit on `columnSpan = 1`. If cell content wraps awkwardly in the rendered PDF, tune spans up or down — re-render to verify, don't guess. `columnSpan = 0` reserves a column with no width (rare — used by `tabeller.adoc` for alignment scaffolding).
+
 **Neighbouring text blocks are concatenated.** Adjacent `text(...)` calls, adjacent `+`-chained fragments, and `showIf` blocks inline with surrounding text all render into a single continuous text run — no implicit space or line break is inserted. You are responsible for trailing/leading spaces and punctuation:
 
 ```kotlin
@@ -213,6 +370,39 @@ showIf(data.harBarnetillegg) {
 | `orIfNotNull(expr) { it -> ... }` | Else-if-not-null — binds the non-null value for the else branch. Chainable. |
 
 Do **not** confuse these with the expression-level `and` / `or` below; those combine boolean expressions *inside* a predicate, whereas `orShow` / `orShowIf` branch the conditional itself.
+
+### Factor shared predicates into an outer `showIf`
+
+When two or more adjacent `showIf` blocks share a common `and`-conjunct, lift that conjunct into an outer `showIf` and nest the specialised predicates inside. The rendered output is identical (nested `showIf` is logical AND), but each condition now appears exactly once, so editing the shared precondition later touches one line instead of several — and the reader sees the structure directly.
+
+```kotlin
+// wrong — `data.gate` is repeated in every branch
+showIf(data.gate and data.kategori.equalTo(Kategori.A)) { … }
+    .orShowIf(data.gate and data.kategori.equalTo(Kategori.B)) { … }
+    .orShowIf(data.gate and data.kategori.equalTo(Kategori.C)) { … }
+
+// right — outer `showIf` gates the whole block, inner chain picks the variant
+showIf(data.gate) {
+    showIf(data.kategori.equalTo(Kategori.A)) { … }
+        .orShowIf(data.kategori.equalTo(Kategori.B)) { … }
+        .orShowIf(data.kategori.equalTo(Kategori.C)) { … }
+}
+```
+
+The same refactor applies when two *separate* `showIf` blocks share an AND-tail but differ only by one atom:
+
+```kotlin
+// wrong — three conjuncts repeated verbatim
+showIf(data.a and not(data.flag) and not(data.b) and not(data.c)) { … variant 1 … }
+showIf(data.a and     data.flag  and not(data.b) and not(data.c)) { … variant 2 … }
+
+// right — lift the shared precondition, branch on the differing atom
+showIf(data.a and not(data.b) and not(data.c)) {
+    showIf(not(data.flag)) { … variant 1 … }.orShow { … variant 2 … }
+}
+```
+
+Do the factoring whenever the shared conjunct is syntactically identical in each branch. Don't try to be clever about *semantically* equivalent predicates that happen to be written differently — keep them unchanged; the factoring is a textual-dedup pattern.
 
 ### Predicate-building operators (on `Expression<...>`)
 
@@ -308,6 +498,9 @@ Once registered, the module's shared `BrevmodulTest` subclass (e.g. `ProductionT
 - Forgetting to register the template in the module's `AllTemplates` object.
 - **Silently editing user-supplied wording.** If the user handed over exact text for the letter, render it verbatim. Stop and ask before changing grammar, punctuation, or phrasing — see *Text sources* above.
 - **Re-authoring content that already exists as a standard phrase** — especially the end-of-letter trio (right-to-appeal, right-to-innsyn, "Har du spørsmål?"). If the closing content you are about to write matches one of these, use `includePhrase(...)`. See *Standard end-of-letter phrases exist* above.
+- **Appending `" kroner"` / `" kr"` / `" NOK"` after `Expression<Kroner>.format()`** — the default formatter already emits the unit per language, so the suffix doubles up. Use `.format(denominator = false)` or the module's `KronerText` phrase. See *Typed-value formatters carry their own unit* above.
+- **Typing a money field as `Int` instead of `Kroner` in the Dto** — forces every call site to append the unit manually and lose the per-language localisation. Use `Kroner` whenever the semantic is "amount of money".
+- **Tables without column alignment or with unconsidered column widths** — numbers must be right-aligned per the NAV letter standard (default is LEFT; set `alignment = ColumnAlignment.RIGHT` on number columns), and every column's `columnSpan` weight should be chosen deliberately so wide text columns get proportionally more width than narrow numeric ones. See *Tables — column alignment and width* above.
 
 ## Verify
 

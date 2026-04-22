@@ -6,6 +6,7 @@ Files in this directory are [Copilot prompt files](https://docs.github.com/en/co
 |---|---|---|
 | `write-letter.prompt.md` | `/write-letter` | Walks the skills in `skills/` to scaffold a new autobrev or redigerbar letter template. Asks for module, brevkode, kind and situation. |
 | `review-letter-template.prompt.md` | `/review-letter-template` | Reviews the open / selected template file against the skills' checklists. |
+| `convert-exstream-letter.prompt.md` | `/convert-exstream-letter` | Finishes the manual pass on a file produced by the Exstream-to-brevbaker converter: resolves `TODO` selectors, `SYS_TableRow` placeholders, `<FRITEKST>` markers, flattened tables. |
 
 Prompts are thin wrappers — the authoritative guidance lives in [`../../skills/`](../../skills/) and [`../../AGENTS.md`](../../AGENTS.md). Update the skills; prompts should only change when the invocation contract (inputs, mode) changes.
 

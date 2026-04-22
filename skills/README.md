@@ -18,8 +18,8 @@ Skills complement [`../AGENTS.md`](../AGENTS.md), which stays high-level. If a G
 |---|---|
 | [`write-template.md`](write-template.md) | Author a letter template (Dto design, DSL scopes, languages, conditionals, phrases, registration). Shared between autobrev and redigerbar. |
 | [`write-redigerbar-template.md`](write-redigerbar-template.md) | Deltas on top of `write-template.md` for `RedigerbarTemplate`: `Saksbehandlervalg`/fagsystem split, Skribenten-visible metadata (`kategori`, `brevkontekst`, `sakstyper`), and the `fritekst(...)` editable placeholder. |
+| [`convert-exstream-letter.md`](convert-exstream-letter.md) | Turn the output of the Exstream-to-brevbaker converter into a compilable, idiomatic legacy template. Covers `LegacySelectors` wiring, `SYS_TableRow`→`forEach`, `<FRITEKST>` conversion, table restoration, and simplification. |
 
-More skills will be added as Golden Paths are validated against real tasks.
 
 ## Using the skills from an AI assistant
 

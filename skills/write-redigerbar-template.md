@@ -54,6 +54,7 @@ data class XDto(
 ```kotlin
 @TemplateModelHelpers
 object X : RedigerbarTemplate<XDto> {
+    override val featureToggle = FeatureToggles.brevmalX.toggle            // required for every new redigerbar brev
     override val kode         = <Module>brevkoder.Redigerbar.X
     override val kategori     = Brevkategori.<...>                       // module-local
     override val brevkontekst = TemplateDescription.Brevkontekst.<...>   // see table below
@@ -68,6 +69,7 @@ object X : RedigerbarTemplate<XDto> {
 
 | Override | Purpose |
 |---|---|
+| `featureToggle` | Unleash toggle that gates the brev in Skribenten's brevvelger. See "Feature toggle" below — **redigerbar templates only**. |
 | `kategori` | The "folder" the brev appears under in Skribenten's brevvelger. |
 | `brevkontekst` | Where the brev is offered — see table below. Does **not** drive attestation (that's `LetterMetadata.brevtype`). |
 | `sakstyper` | Which sakstyper show the brev. Module-local. Shortcut sets exist (e.g. `Sakstype.pensjon`). |
@@ -88,7 +90,26 @@ After inferring, **stop and ask the user to confirm all three values before cont
 | `ALLE`   | yes | yes | Sak-brev that should *also* be reachable from vedtak context. |
 | `VEDTAK` | no  | yes | Brev that needs vedtak data — only makes sense from inside a vedtak. |
 
-## Caseworker-editable text: `fritekst("...")`
+## Feature toggle — required for every new redigerbar brev
+
+Every new redigerbar template must be gated behind an Unleash feature toggle. This is **only** the case for redigerbar brev — autobrev are not toggle-gated at the template level (they are instead controlled by whichever fagsystem calls brevbaker).
+
+Two steps per new brev:
+
+1. **Add a constant** to the module's `FeatureToggles` enum (`pensjon/maler/.../FeatureToggles.kt` in the pensjon module; other modules have their own). The `key` string is what Unleash sees — name it after the template object:
+   ```kotlin
+   enum class FeatureToggles(private val key: String) {
+       // ...existing entries...
+       brevmalX("brevmalX"),
+       ;
+       val toggle = FeatureToggle(key)
+   }
+   ```
+2. **Override `featureToggle`** on the template object (see skeleton above): `override val featureToggle = FeatureToggles.brevmalX.toggle`.
+
+Without the override the template builds and registers, but the brev will not appear in Skribenten's brevvelger until the toggle constant exists and is flipped on in Unleash — so forgetting it silently hides the brev from production caseworkers.
+
+
 
 `fritekst` is an extension declared on `RedigerbarTemplate` — only available inside redigerbar DSL bodies, not autobrev.
 
