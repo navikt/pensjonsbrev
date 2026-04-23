@@ -15,8 +15,6 @@ import io.ktor.server.testing.testApplication
 import no.nav.brev.brevbaker.PDFByggerTestContainer
 import no.nav.pensjon.brev.template.brevbakerConfig
 
-fun testBrevbakerAppTypst(block: suspend ApplicationTestBuilder.(client: HttpClient) -> Unit) =
-    testBrevbakerApp(enableAllToggles = true, block = block)
 
 fun testBrevbakerApp(
     enableAllToggles: Boolean = false,

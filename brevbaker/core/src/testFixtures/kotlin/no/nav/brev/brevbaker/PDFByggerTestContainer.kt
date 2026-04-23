@@ -30,12 +30,10 @@ object PDFByggerTestContainer {
         return GenericContainer(DockerImageName.parse(fullImageName))
             .withImagePullPolicy(pullPolicy)
             .withExposedPorts(PORT)
-            .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .withEnv(
                 "JAVA_TOOL_OPTIONS",
                 "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork"
             )
-            .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
             .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
             .withReuse(REUSE_CONTAINER)
     }

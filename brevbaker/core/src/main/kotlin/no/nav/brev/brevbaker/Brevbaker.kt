@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker
 
-import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.template.Letter
@@ -10,10 +9,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 class Brevbaker(
     pdfByggerService: PDFByggerService,
     pdfVedleggAppender: PDFVedleggAppender,
-    typstToggleAuto: FeatureToggle? = null,
-    typstToggleRedigerbar: FeatureToggle? = null,
 ) {
-    private val brevbakerPDF = BrevbakerPDF(pdfByggerService, pdfVedleggAppender, typstToggleAuto, typstToggleRedigerbar)
+    private val brevbakerPDF = BrevbakerPDF(pdfByggerService, pdfVedleggAppender)
 
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>): LetterResponse =
         brevbakerPDF.renderPDF(letter, null)

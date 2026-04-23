@@ -43,7 +43,7 @@ data class PreAuthorizedApp(val name: String, val clientId: String)
 
 fun AuthenticationConfig.brevbakerJwt(config: JwtConfig) =
     jwt(config.name) {
-        realm = "brevbaker-latex-$name"
+        realm = "brevbaker-$name"
         verifier(JwkProviderBuilder(URI(config.jwksUrl).toURL()).build(), config.issuer) {
             withAnyOfAudience(*config.audience.toTypedArray())
             withIssuer(config.issuer)

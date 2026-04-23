@@ -16,4 +16,4 @@ class PdfByggerLoadTest(FastHttpUser):
             'Content-Type': 'application/json',
             'X-Request-ID': str(uuid.uuid4())
         }
-        self.client.post('/produserBrev?typst=true', data=payload, headers=headers)
+        self.client.post('/produserBrev', data=payload, headers=headers)

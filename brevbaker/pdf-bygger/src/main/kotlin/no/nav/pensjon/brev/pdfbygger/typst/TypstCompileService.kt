@@ -22,7 +22,7 @@ class TypstCompileService(
         "--root", templateDir.toString(),
         "--pdf-standard", "a-3a",
         "--ignore-system-fonts",
-        "--font-path", "/usr/share/fonts/truetype/sourcesans3",
+        "--font-path", "/app/typst/fonts/truetype/sourcesans3",
         "--font-path", "/usr/share/fonts/truetype/noto",
         // Read input from stdin
         "-",

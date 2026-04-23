@@ -112,7 +112,6 @@ jobs:
         with:
           filters: |
             brevmal-design:
-              - 'brevbaker/pdf-bygger/containerFiles/latex/**'
               - 'brevbaker/pdf-bygger/containerFiles/typst/**'
               - 'brevbaker/pdf-bygger/Dockerfile'
               - '.github/regsuitconfig.json'
@@ -210,7 +209,7 @@ jobs:
     needs: [runIntegrationTests, buildPdfbygger]
     with:
       cluster: "dev-gcp"
-      resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
+      resource: "brevbaker/pdf-bygger/.nais/nais.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "brevbaker/pdf-bygger/.nais/dev.yaml"
 
@@ -221,7 +220,7 @@ jobs:
     needs: [runIntegrationTests, buildPdfbygger]
     with:
       cluster: "prod-gcp"
-      resource: "brevbaker/pdf-bygger/.nais/nais.yaml,brevbaker/pdf-bygger/.nais/hpa.yaml"
+      resource: "brevbaker/pdf-bygger/.nais/nais.yaml"
       image: ${{needs.buildPdfbygger.outputs.image}}
       vars: "brevbaker/pdf-bygger/.nais/prod.yaml"
       redeployProd: true

@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.pdfbygger.latex
+package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.runBlocking
 import no.nav.brev.InterneDataklasser
@@ -25,7 +25,7 @@ import org.junit.jupiter.params.provider.MethodSource
 @Tag(TestTags.INTEGRATION_TEST)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Execution(ExecutionMode.CONCURRENT)
-class PensjonLatexITest {
+class PensjonTypstITest {
     private val pdfCompileService = PdfByggerTestService()
 
     @Test
@@ -42,35 +42,18 @@ class PensjonLatexITest {
             title { text(bokmal { +"En fin tittel" }) }
             outline {
                 paragraph {
-                    text(bokmal { +"Argumentet etNavn er: " }) }
+                    text(bokmal { +"Argumentet etNavn er: " })
+                }
             }
         }
-        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_canRender", pdfByggerService = pdfCompileService)
+        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles)
+            .renderTestPDF("pensjonTypstITest_canRender", pdfByggerService = pdfCompileService)
     }
 
     @Test
     fun `Ping pdf builder`() {
         runBlocking { pdfCompileService.ping() }
     }
-
-    @Test
-    fun `title with latex code synthax should not fail compilation`(){
-        val template = createTemplate(
-            letterDataType = EmptyAutobrevdata::class,
-            languages = languages(Bokmal),
-            letterMetadata = LetterMetadata(
-                displayTitle = "En fin display tittel",
-                distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
-                brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
-            )
-        ) {
-            title { text(bokmal { +"En fin tittel med masse LaTeX kommando tegn \$%&\\^_{}~" }) }
-            outline {}
-        }
-        LetterImpl(template, EmptyAutobrevdata, Bokmal, FellesFactory.felles).renderTestPDF("pensjonLatexITest_escape_xmp_title", pdfByggerService = pdfCompileService)
-
-    }
-
 
     @Test
     fun `all supported characters render in a single PDF`() {
@@ -99,8 +82,6 @@ class PensjonLatexITest {
                     language = LanguageCode.BOKMAL,
                     brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                 ),
-                shouldRetry = false,
-                useTypst = true
             )
         }
 
@@ -123,7 +104,6 @@ class PensjonLatexITest {
                 appendLine("All characters in range rendered successfully.")
             } else {
                 appendLine("Found ${unsupportedCodePoints.size} unsupported character(s):")
-                // Group consecutive code points into ranges for compact output
                 val ranges = mutableListOf<IntRange>()
                 for (code in unsupportedCodePoints.sorted()) {
                     val last = ranges.lastOrNull()
@@ -184,7 +164,6 @@ class PensjonLatexITest {
     }
 
     // Surrogates and null cannot arrive via JSON/HTTP, so skip them.
-    // Characters in CHARACTER_BLOCKLIST are already stripped by the escape logic, so skip those too.
     private fun isValidCodePoint(code: Int): Boolean {
         if (Char(code).isSurrogate()) return false
         if (code == 0) return false
@@ -211,8 +190,6 @@ class PensjonLatexITest {
                         language = LanguageCode.BOKMAL,
                         brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
                     ),
-                    shouldRetry = false,
-                    useTypst = true,
                 )
             }
 
@@ -237,3 +214,4 @@ class PensjonLatexITest {
     }
 
 }
+
