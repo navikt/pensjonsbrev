@@ -136,29 +136,31 @@ val vedleggFolketrygdenBokmalNynorsk =
                 nynorsk { +"Feilutbetaling av stønad" }
             )
         }
-        title2 {
-            text(
-                bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
-                nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." }
-            )
-        }
         paragraph {
-            text(
-                bokmal { +"Dersom du mottar en stønad eller pensjon du ikke har krav på, kan det feilutbetalte beløpet kreves tilbake og trekkes i fremtidige ytelser." },
-                nynorsk { +"Dersom du får ein stønad eller ein pensjon du ikkje har krav på, kan beløpet som er utbetalt på feil grunnlag, bli kravd tilbake og trekt i framtidige ytingar." }
-            )
-        }
-        title2 {
-            text(
-                bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
-                nynorsk { +"Straffeansvar - folketrygdlova § 25-12" }
-            )
-        }
-        paragraph {
-            text(
-                bokmal { +"Dersom du gir uriktige opplysninger mot bedre vitende eller ikke gir nødvendige opplysninger, kan det medføre straffeansvar." },
-                nynorsk { +"Dersom du gir opplysningar som du veit var usanne eller du ikkje gir dei opplysningane som er nødvendige, kan det føre til straffeansvar." }
-            )
+            list {
+                item {
+                    text(
+                        bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
+                        nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." }, BOLD
+                    )
+                    newline()
+                    text(
+                        bokmal { +"Dersom du mottar en stønad eller pensjon du ikke har krav på, kan det feilutbetalte beløpet kreves tilbake og trekkes i fremtidige ytelser." },
+                        nynorsk { +"Dersom du får ein stønad eller ein pensjon du ikkje har krav på, kan beløpet som er utbetalt på feil grunnlag, bli kravd tilbake og trekt i framtidige ytingar." }
+                    )
+                }
+                item {
+                    text(
+                        bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
+                        nynorsk { +"Straffeansvar - folketrygdlova § 25-12" }, BOLD
+                    )
+                    newline()
+                    text(
+                        bokmal { +"Dersom du gir uriktige opplysninger mot bedre vitende eller ikke gir nødvendige opplysninger, kan det medføre straffeansvar." },
+                        nynorsk { +"Dersom du gir opplysningar som du veit var usanne eller du ikkje gir dei opplysningane som er nødvendige, kan det føre til straffeansvar." }
+                    )
+                }
+            }
         }
         title1 {
             text(

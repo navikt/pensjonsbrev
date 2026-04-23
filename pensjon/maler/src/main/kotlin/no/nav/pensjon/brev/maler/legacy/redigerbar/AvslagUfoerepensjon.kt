@@ -114,12 +114,12 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal { +"Du fyller ikke vilkåret/vilkårene:" },
-                    nynorsk { +"Du fyller ikkje vilkåret/vilkåra:" },
+                    nynorsk { +"Du fyller ikkje vilkåret/vilkåra:" }
                 )
                 newline()
                 text(
-                    bokmal { + "<Fjern alternativ som ikke passer>" },
-                    nynorsk { +"<Fjern alternativ som ikke passer>" }
+                    bokmal { + fritekst("Fjern alternativ som ikke passer") },
+                    nynorsk { + fritekst("Fjern alternativ som ikke passer") }
                 )
                 list {
                     item {
