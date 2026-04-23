@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
@@ -106,7 +107,7 @@ val vedleggFolketrygden =
                     text(
                         bokmal { +"Dekning av saksomkostninger - forvaltningsloven § 36" },
                         nynorsk { +"Dekning av sakskostnader - forvaltningslova § 36" },
-                        english { +"Cover for case costs - Section 36 of the Public Administration Act" }
+                        english { +"Cover for case costs - Section 36 of the Public Administration Act" }, BOLD
                     )
                     newline()
                     text(
@@ -131,7 +132,7 @@ val vedleggFolketrygden =
                     text(
                         bokmal { +"Fri rettshjelp" },
                         nynorsk { +"Fri rettshjelp" },
-                        english { +"Free legal aid" }
+                        english { +"Free legal aid" }, BOLD
                     )
                     newline()
                     text(
@@ -170,7 +171,7 @@ val vedleggFolketrygden =
                     text(
                         bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
                         nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." },
-                        english { +"Recovery - Sections 22-15 ff of the National Insurance Act" }
+                        english { +"Recovery - Sections 22-15 ff of the National Insurance Act" }, BOLD
                     )
                     newline()
                     text(
@@ -183,7 +184,7 @@ val vedleggFolketrygden =
                     text(
                         bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
                         nynorsk { +"Straffeansvar - folketrygdlova § 25-12" },
-                        english { +"Criminal liability - Section 25-12 of the National Insurance Act" }
+                        english { +"Criminal liability - Section 25-12 of the National Insurance Act" }, BOLD
                     )
                     newline()
                     text(
