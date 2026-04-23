@@ -117,7 +117,7 @@ const exampleLetter1 = {
         {
           id: 33,
           parentId: 3,
-          text: " teste om pil opp/ned funker mellom avsnitt [CP2-3]",
+          text: " teste om pil opp/ned traverserer avsnitt [CP2-3]",
           type: "LITERAL",
           fontType: "PLAIN",
           editedFontType: null,

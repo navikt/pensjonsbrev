@@ -11,7 +11,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 3 : undefined,
   outputDir: "./test/e2e-report",
   use: {
     baseURL: isUiMode ? "http://localhost:5173" : "http://localhost:4173",

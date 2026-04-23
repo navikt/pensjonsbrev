@@ -2,9 +2,8 @@ import "./editor.css";
 
 import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
+import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
-import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
@@ -18,6 +17,8 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
+
+const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
 
 export const LetterEditor = ({
   freeze,

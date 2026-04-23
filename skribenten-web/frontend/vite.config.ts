@@ -39,7 +39,6 @@ export default defineConfig(({ command }) => ({
           if (id.includes("react-pdf") || id.includes("pdfjs-dist")) return "pdf";
           if (id.includes("@navikt/ds-react") || id.includes("@navikt/aksel-icons")) return "navikt-ds";
           if (id.includes("@tanstack/react-router") || id.includes("@tanstack/react-query")) return "tanstack";
-          if (id.includes("~/Brevredigering/LetterEditor/components/DebugPanel")) return "debug";
 
           return "vendor";
         },

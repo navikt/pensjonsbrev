@@ -11,7 +11,7 @@ import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEdi
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { type AnyBlock, type Content, type Item } from "~/types/brevbakerTypes";
 
-export function DebugPanel() {
+export default function DebugPanel() {
   const { freeze, editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);

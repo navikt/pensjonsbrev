@@ -237,3 +237,80 @@ test.describe("Tabellsnarveier for sletting", () => {
     await expect(dataE2E(page, "letter-table")).toHaveCount(0);
   });
 });
+
+test.describe("Tabellsnarveier for flytting av rader", () => {
+  test.beforeEach(async ({ page }) => {
+    await setupSakStubs(page);
+
+    await page.route("**/bff/skribenten-backend/sak/123456/brev/1?reserver=true", (route) =>
+      route.fulfill({ json: brevMedUtfyltTabell }),
+    );
+
+    await page.route("**/bff/skribenten-backend/brev/1/reservasjon", (route) =>
+      route.fulfill({ path: "test/e2e/fixtures/brevreservasjon.json", contentType: "application/json" }),
+    );
+
+    await page.route("**/bff/skribenten-backend/brevmal/*/modelSpecification", (route) =>
+      route.fulfill({ path: "test/e2e/fixtures/modelSpecification.json", contentType: "application/json" }),
+    );
+
+    await page.route("**/bff/skribenten-backend/brev/1/redigertBrev?frigiReservasjon=*", async (route) => {
+      if (route.request().method() === "PUT") {
+        await route.fulfill({ status: 200, json: { ok: true } });
+      } else {
+        await route.fallback();
+      }
+    });
+
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(dataE2E(page, "letter-table")).toHaveCount(1);
+    await expect(page.getByText("Rad 1 kolonne 1")).toBeVisible();
+
+    await page.clock.install();
+  });
+
+  test("flytter en rad ned med Alt+Shift+ArrowDown", async ({ page }) => {
+    await page.getByText("Rad 1 kolonne 1").click();
+    await page.keyboard.press("Alt+Shift+ArrowDown");
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+  });
+
+  test("flytter en rad opp med Alt+Shift+ArrowUp", async ({ page }) => {
+    await page.getByText("Rad 2 kolonne 1").click();
+    await page.keyboard.press("Alt+Shift+ArrowUp");
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+  });
+
+  test("flytter ikke første rad opp", async ({ page }) => {
+    await page.getByText("Rad 1 kolonne 1").click();
+    await page.keyboard.press("Alt+Shift+ArrowUp");
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+  });
+
+  test("flytter ikke siste rad ned", async ({ page }) => {
+    await page.getByText("Rad 2 kolonne 1").click();
+    await page.keyboard.press("Alt+Shift+ArrowDown");
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+  });
+
+  test("undo gjenoppretter opprinnelig radrekkefølge", async ({ page }) => {
+    await page.getByText("Rad 1 kolonne 1").click();
+    await page.keyboard.press("Alt+Shift+ArrowDown");
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+
+    await page.keyboard.press(undoShortcut);
+
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+  });
+});
