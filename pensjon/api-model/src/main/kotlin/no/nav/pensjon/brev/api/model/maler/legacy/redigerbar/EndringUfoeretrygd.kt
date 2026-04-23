@@ -19,16 +19,8 @@ data class EndringUfoeretrygdDto(
         val oifuVedVirkningstidspunkt: Kroner?,
 
         val opphortEktefelletillegg: Boolean,
-        val opphortBarnetillegg: Boolean,
         val opphortGjenlevendetillegg: Boolean,
-
-        val bt_innt_over_1g: Boolean,
-        val bt_over_18: Boolean,
-        val annen_forld_rett_bt: Boolean,
-        val mindre_ett_ar_bt_flt: Boolean,
-        val opphoersbegrunnelse: Opphoersbegrunnelse,
-
-        val antallBarnOpphor: Int,
+        val opphoersbegrunnelseEktefelletillegg: Opphoersbegrunnelse,
 
         val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
         val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
@@ -36,6 +28,7 @@ data class EndringUfoeretrygdDto(
 
         val nyeInnvilgedeBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
         val nyeAvslagBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
+        val nyeOpphorteBarnetillegg: List<BarnetilleggUTDto> = emptyList(),
 
         val hjemler: Set<String>
     ) : FagsystemBrevdata
