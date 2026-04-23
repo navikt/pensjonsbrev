@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDto
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagUfoerepensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
@@ -27,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
 
-//override val featureToggle = FeatureToggles.brevmalAvslagUfoerepensjon.toggle
+    override val featureToggle = FeatureToggles.brevmalAvslagUfoerepensjon.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UP_AVSLAG_UFOEREPENSJON
     override val kategori = Brevkategori.UFOEREPENSJON
@@ -51,8 +52,16 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
         outline {
             paragraph {
                 text(
-                    bokmal { +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst("Oppgi vedtaksdato") + "." },
-                    nynorsk { +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst("Oppgi vedtaksdato") + "." }
+                    bokmal {
+                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst(
+                            "Oppgi vedtaksdato"
+                        ) + "."
+                    },
+                    nynorsk {
+                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst(
+                            "Oppgi vedtaksdato"
+                        ) + "."
+                    }
                 )
             }
             paragraph {
@@ -118,8 +127,8 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                 )
                 newline()
                 text(
-                    bokmal { + fritekst("Fjern alternativ som ikke passer") },
-                    nynorsk { + fritekst("Fjern alternativ som ikke passer") }
+                    bokmal { +fritekst("Fjern alternativ som ikke passer") },
+                    nynorsk { +fritekst("Fjern alternativ som ikke passer") }
                 )
                 list {
                     item {
@@ -174,10 +183,14 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan klage på vedtaket innen seks uker fra du mottok det. Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. "
-                        + "Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL." },
-                    nynorsk { +"Du kan klage på vedtaket innan seks veker frå du mottok det. Klagen må vere skriftleg og innehalde namn, fødselsnummer og adresse. "
-                    + "Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL."}
+                    bokmal {
+                        +"Du kan klage på vedtaket innen seks uker fra du mottok det. Klagen må være skriftlig og inneholde navn, fødselsnummer og adresse. "
+                        +"Bruk gjerne skjemaet som du finner på $KLAGE_URL. Trenger du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL."
+                    },
+                    nynorsk {
+                        +"Du kan klage på vedtaket innan seks veker frå du mottok det. Klagen må vere skriftleg og innehalde namn, fødselsnummer og adresse. "
+                        +"Bruk gjerne skjemaet som du finn på $KLAGE_URL. Treng du hjelp, er du velkommen til å ringe oss på telefon $KONTAKT_URL."
+                    }
                 )
             }
             paragraph {
