@@ -16,7 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.Vedtaks
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -24,12 +24,11 @@ import no.nav.pensjon.brev.template.dsl.text
 
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
-    createAttachment<LangBokmalNynorskEnglish, PEgruppe10>(
+    createAttachment<LangBokmalNynorsk, PEgruppe10>(
         title = {
             text(
                 bokmal { +"Opplysninger om beregningen" },
                 nynorsk { +"Opplysningar om utrekninga" },
-                english { +"Information about calculations" }
             )
         },
         includeSakspart = false,
@@ -40,13 +39,11 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             text(
                 bokmal { + "Opplysninger vi har brukt i beregningen fra " },
                 nynorsk { + "Opplysningar vi har brukt i berekninga frå " },
-                english { + "Data we have used in the calculations of " },
             )
             ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom()) { beregningVirkFom ->
                 text(
                     bokmal { + beregningVirkFom.format() },
                     nynorsk { + beregningVirkFom.format() },
-                    english { + beregningVirkFom.format() },
                 )
             }
         }
@@ -56,8 +53,6 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
                         pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
                 nynorsk { + " Folketrygdas grunnbeløp (G) nytta i berekninga er " +
                         pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
-                english { + " The national insurance basic amount (G) used in the calculation is "
-                        + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + "." },
             )
         }
 

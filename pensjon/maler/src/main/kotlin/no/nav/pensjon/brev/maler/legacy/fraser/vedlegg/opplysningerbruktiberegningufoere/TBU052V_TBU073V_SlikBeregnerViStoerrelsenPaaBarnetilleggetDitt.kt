@@ -6,7 +6,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.*
@@ -14,8 +14,8 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
     val pe: Expression<PEgruppe10>
-    ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         //IF(PE_UT_TBU069V() = true) THEN      INCLUDE ENDIF
         showIf(pe.ut_tbu069v()) {
             //[TBU052V-TBU073V]
@@ -24,7 +24,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Slik beregner vi størrelsen på barnetillegget" },
                     nynorsk { + "Slik bereknar vi storleiken på barnetillegget" },
-                    english { + "How we calculate the amount of child supplement" },
                 )
             }
         }
@@ -37,7 +36,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Størrelsen på barnetillegget er avhengig av samlet inntekt. " },
                     nynorsk { + "Storleiken på barnetillegget er avhengig av samla inntekt." },
-                    english { + "The amount of child supplement is dependent on your total income. " },
                 )
             }
         }
@@ -50,28 +48,24 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Barnetillegget kan bli redusert ut fra:" },
                     nynorsk { + "Barnetillegget kan bli redusert ut frå:" },
-                    english { + "Child supplement can be reduced based on:" },
                 )
                 list {
                     item {
                         text(
                             bokmal { + "uføretrygd" },
                             nynorsk { + "uføretrygd" },
-                            english { + "disability benefits" },
                         )
                     }
                     item {
                         text(
                             bokmal { + "arbeidsinntekt" },
                             nynorsk { + "arbeidsinntekt" },
-                            english { + "income from employment" },
                         )
                     }
                     item {
                         text(
                             bokmal { + "næringsinntekt" },
                             nynorsk { + "næringsinntekt" },
-                            english { + "income from self-employment" },
                         )
                     }
 
@@ -79,21 +73,18 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         text(
                             bokmal { + "inntekt fra utlandet" },
                             nynorsk { + "inntekt frå utlandet" },
-                            english { + "income from overseas" },
                         )
                     }
                     item {
                         text(
                             bokmal { + "ytelser/pensjon fra Norge" },
                             nynorsk { + "ytingar/pensjon frå Noreg" },
-                            english { + "payments/pensions from Norway" },
                         )
                     }
                     item {
                         text(
                             bokmal { + "pensjon fra utlandet" },
                             nynorsk { + "pensjon frå utlandet" },
-                            english { + "pensions from overseas" },
                         )
                     }
                 }
@@ -112,7 +103,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra den samlede inntekten til begge foreldrene." },
                     nynorsk { + "Vi fastset storleiken på barnetillegget ut frå den samla inntekta til begge foreldra." },
-                    english { + "We determine the amount of child supplement based on the total income of both parents." },
                 )
             }
         }
@@ -129,7 +119,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn er 4,6 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
                     nynorsk { + "Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn er 4,6 gonger grunnbeløpet i folketrygda, og det aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. " },
-                    english { + "The child supplement will be reduced if the total income is greater than the exemption amount. The exemption amount is 4.6 x the national insurance basic amount and it increases with 40 percent of the national insurance basic amount for each extra child. " },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
@@ -140,7 +129,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har." },
                         nynorsk { + "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har." },
-                        english { + "As your period of national insurance cover is less than 40 years, the exemption amount is reduced based on the period of national insurance that you have." },
                     )
                 }
             }
@@ -158,7 +146,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har rett til det høyeste tillegget. " },
                     nynorsk { + "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har rett til det høgaste tillegget. " },
-                    english { + "If both parents receive disability benefits, child supplement is paid to the parent who has the right to the highest supplement. " },
                 )
             }
         }
@@ -171,7 +158,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. " },
                     nynorsk { + "Vi fastset storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget." },
-                    english { + "We determine the amount of child supplement based on your income. The income of a  " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "who is not a parent of the child does not affect the size of the child supplement." },
                 )
             }
         }
@@ -184,7 +170,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn er 3,1 ganger folketrygdens grunnbeløp og det øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
                     nynorsk { + "Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn er 3,1 gonger grunnbeløpet i folketrygda, og det aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn." },
-                    english { + "The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount is 3.1 x the national insurance basic amount and it increases with 40 percent of the national insurance basic amount for each extra child. " },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_AnvendtTrygdetid < 40 AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) <> "oppfylt") THEN      INCLUDE ENDIF
@@ -195,7 +180,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpet redusert ut fra den trygdetiden du har." },
                         nynorsk { + "Sidan trygdetida di er kortare enn 40 år, blir fribeløpet redusert ut frå den trygdetida du har." },
-                        english { + "As your period of national insurance cover is less than 40 years, the exemption amount is reduced based on the period of national insurance that you have." },
                     )
                 }
             }
@@ -209,7 +193,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Dersom begge foreldrene mottar uføretrygd blir barnetillegget gitt til den som har den daglige omsorgen for barnet. Har foreldrene delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bor på samme folkeregistrerte adresse som barnet. " },
                     nynorsk { + "Dersom begge foreldra får uføretrygd, blir barnetillegget gitt til den som har den daglege omsorga for barnet. Har foreldra delt omsorg for barnet, blir barnetillegget gitt til den forelderen som bur på same folkeregistrerte adresse som barnet." },
-                    english { + "If both parents receive disability benefits, child supplement is paid to the parent who has the daily care of the child. If the parents have joint daily care of the child, the child supplement will be paid to the parent who lives at the same address, registered in the population register, as the child." },
                 )
             }
         }
@@ -222,7 +205,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi fastsetter størrelsen på barnetillegget ut fra inntekten til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. Barnetillegget blir redusert dersom den samlede inntekten er høyere enn fribeløpet. Fribeløpet for et barn som bor med begge foreldrene er 4,6 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
                     nynorsk { + "Vi fastset storleiken på barnetillegget ut frå inntekta til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din for " + pe.ut_barnet_barna_felles() + " som bur med begge foreldra sine. Barnetillegget blir redusert dersom den samla inntekta er høgare enn fribeløpet. Fribeløpet for eit barn som bur med begge foreldra, er 4,6 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. " },
-                    english { + "We determine the amount of the child supplement based on your and your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en() + "'s income for the " + pe.ut_barnet_barna_felles() + " that " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles = 1
@@ -230,7 +212,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "lives" },
                     )
                 }
 
@@ -239,13 +220,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "live" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " with both of their parents. The child supplement will be reduced if the total income is greater than the exemption amount. The exemption amount for a child that lives with both parents is 4.6 x the national insurance basic amount and it increases with 40 percent of the national insurance basic amount for each extra child." },
                 )
             }
         }
@@ -258,7 +237,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldre, fastsetter vi størrelsen på barnetillegget ut fra inntekten din. Inntekt til en ektefelle/partner/samboer som ikke er forelder til barnet, har ikke betydning for størrelsen på barnetillegget. Barnetillegget blir redusert dersom den samlede inntekten din er høyere enn fribeløpet. Fribeløpet for et barn som ikke bor sammen med begge foreldrene er 3,1 ganger folketrygdens grunnbeløp, og øker med 40 prosent av folketrygdens grunnbeløp for hvert ekstra barn. " },
                     nynorsk { + "For " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra, fastset vi storleiken på barnetillegget ut frå inntekta di. Inntekt til ein ektefelle/partnar/sambuar som ikkje er forelder til barnet, har ikkje betydning for storleiken på barnetillegget. Barnetillegget blir redusert dersom den samla inntekta di er høgare enn fribeløpet. Fribeløpet for eit barn som ikkje bur saman med begge foreldra, er 3,1 gonger grunnbeløpet i folketrygda, og aukar med 40 prosent av grunnbeløpet i folketrygda for kvart ekstra barn. " },
-                    english { + "For " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull = 1
@@ -266,13 +244,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "a " },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + pe.ut_barnet_barna_serkull() + " that " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_AntallBarnSerkull = 1
@@ -280,7 +256,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "does" },
                     )
                 }
 
@@ -289,13 +264,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "do" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " not live with both parents, we determine the amount of child supplement based on your income. The income of a spouse/partner/cohabiting partner who is not a parent of the child does not affect the size of the child supplement. The child supplement will be reduced if your total income is greater than the exemption amount. The exemption amount for a child that does not live with both parents is 3.1 x the national insurance basic amount and this increases by 40 percent of the national insurance basic amount for each extra child. " },
                 )
             }
         }
@@ -314,7 +287,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Siden trygdetiden din er kortere enn 40 år, blir fribeløpene redusert ut fra den trygdetiden du har." },
                     nynorsk { + "Sidan trygdetida di er kortare enn 40 år, blir fribeløpa reduserte ut frå den trygdetida du har." },
-                    english { + "As your period of national insurance cover is less than 40 years, the exemption amounts are reduced based on the period of national insurance that you have." },
                 )
             }
         }
@@ -331,7 +303,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "Har det vore ei endring i inntekta " },
-                        english { + "" },
                     )
                 }
 
@@ -351,7 +322,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
-                        english { + "" },
                     )
                 }
 
@@ -360,7 +330,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "di" },
-                        english { + "" },
                     )
                 }
 
@@ -380,7 +349,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "n" },
-                        english { + "" },
                     )
                 }
 
@@ -389,7 +357,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "," },
-                        english { + "" },
                     )
                 }
 
@@ -398,7 +365,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "Når inntekta di " },
-                        english { + "" },
                     )
                 }
 
@@ -415,7 +381,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
-                        english { + "" },
                     )
                 }
 
@@ -424,13 +389,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "endrar seg" + "," },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + " blir reduksjonen av barnetillegget vurdert på nytt. 50 prosent av inntekta som overstig fribeløpet " },
-                    english { + "" },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
@@ -438,7 +401,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "blir rekna om til et årleg beløp som svarer til " },
-                        english { + "" },
                     )
                 }
 
@@ -453,7 +415,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "er " },
-                        english { + "" },
                     )
                 }
 
@@ -463,7 +424,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         bokmal { + "" },
                         nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
-                        english { + "" },
                     )
                 }
 
@@ -473,13 +433,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         bokmal { + "" },
                         nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + " kroner. " },
-                    english { + "" },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
@@ -493,7 +451,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for heile året. " },
-                        english { + "" },
                     )
                 }
             }
@@ -511,7 +468,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -531,7 +487,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + " eller til din " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -540,7 +495,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -549,7 +503,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -566,7 +519,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -575,13 +527,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "endrer seg," },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + " blir reduksjonen av barnetillegget vurdert på nytt. 50 prosent av den inntekten som overstiger fribeløpet " },
                     nynorsk { + "" },
-                    english { + "" },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
@@ -589,7 +539,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "blir omregnet til et årlig beløp som tilsvarer " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -604,7 +553,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "er " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -614,7 +562,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -624,13 +571,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
                             .format(false) },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + " kroner. " },
                     nynorsk { + "" },
-                    english { + "" },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
@@ -644,7 +589,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Dette beløpet bruker vi til å redusere barnetillegget ditt for hele året. " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
             }
@@ -662,7 +606,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "If" },
 
                         )
                 }
@@ -672,13 +615,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "When" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " your " },
                 )
 
                 //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND (PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2") )) THEN      INCLUDE ENDIF
@@ -693,13 +634,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "or your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s " },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + "income has been changed, your child supplement will be recalculated. 50 percent of income that exceeds the exemption amount " },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_InntektPeriodisert = true OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_InntektPeriodisert = true) THEN      INCLUDE ENDIF
@@ -707,7 +646,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "is recalculated to an annual amount of " },
                     )
                 }
 
@@ -722,13 +660,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "is " },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + "NOK " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
@@ -736,8 +672,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(false) },
                     )
                 }
 
@@ -746,14 +680,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                            .format(false) },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + ". " },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr = 0 AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr = 0) THEN      INCLUDE ENDIF
@@ -767,7 +698,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "This amount will be used to reduce your child supplement during the calendar year." },
                     )
                 }
             }
@@ -789,7 +719,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor " },
                     nynorsk { + "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor  " },
-                    english { + "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been " },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0 OR PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
@@ -803,7 +732,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "lagt til" },
                         nynorsk { + "lagt til" },
-                        english { + "increased" },
                     )
                 }
 
@@ -818,13 +746,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "redusert" },
                         nynorsk { + "trekt frå" },
-                        english { + "reduced" },
                     )
                 }
                 text(
                     bokmal { + " " },
                     nynorsk { + " " },
-                    english { + " with " },
                 )
 
                 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true
@@ -832,7 +758,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() },
                         nynorsk { + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() },
-                        english { + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() },
                     )
                 }
 
@@ -841,13 +766,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() },
                         nynorsk { + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() },
-                        english { + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() },
                     )
                 }
                 text(
                     bokmal { + " i beløpet vi reduserer barnetillegget med for resten av året. " },
                     nynorsk { + " i beløpet vi reduserer barnetillegget med for resten av året. " },
-                    english { + ". " },
                 )
             }
         }
@@ -864,7 +787,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "Har det vore ei endring i inntekta " },
-                        english { + "" },
                     )
                 }
 
@@ -881,7 +803,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "til deg eller " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " " },
-                        english { + "" },
                     )
                 }
 
@@ -890,7 +811,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "di" },
-                        english { + "" },
                     )
                 }
 
@@ -907,7 +827,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "n" },
-                        english { + "" },
                     )
                 }
 
@@ -916,7 +835,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "," },
-                        english { + "" },
                     )
                 }
 
@@ -925,7 +843,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "Når inntekta di " },
-                        english { + "" },
                     )
                 }
 
@@ -942,7 +859,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "eller til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
-                        english { + "" },
                     )
                 }
 
@@ -951,13 +867,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "endrar seg," },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + " blir reduksjonen av barnetilleggene vurdert på nytt." },
-                    english { + "" },
                 )
             }
         }
@@ -974,7 +888,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Har det vært en endring i inntekten din" },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -994,7 +907,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + " eller til din" },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -1003,7 +915,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + " " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + "," },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -1012,7 +923,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Når inntekten din " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -1029,7 +939,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "eller til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
 
@@ -1038,13 +947,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "endrer seg," },
                         nynorsk { + "" },
-                        english { + "" },
                     )
                 }
                 text(
                     bokmal { + " blir reduksjonen av barnetilleggene vurdert på nytt. " },
                     nynorsk { + "" },
-                    english { + "" },
                 )
             }
         }
@@ -1061,7 +968,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "If" },
                     )
                 }
 
@@ -1070,13 +976,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "When" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " your " },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed ektefelle" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed registrert partner" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1-5" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 3-2" OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt = "bormed 1_5") THEN      INCLUDE ENDIF
@@ -1091,13 +995,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "or your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + "'s " },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + "income has been changed, your child supplement will be recalculated." },
                 )
             }
         }
@@ -1113,7 +1015,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "50 prosent av den inntekten som overstiger fribeløpet for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre " },
                     nynorsk { + "50 prosent av inntekta som overstig fribeløpet for " + pe.ut_barnet_barna_felles() + " som bur med begge foreldra " },
-                    english { + "50 percent of the income that exceeds the exemption amount for the " + pe.ut_barnet_barna_felles() + " that " },
                 )
 
 //PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_AntallBarnFelles = 1
@@ -1121,7 +1022,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "lives" },
                     )
                 }
 
@@ -1130,20 +1030,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "live" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " with both of their parents, " },
                 )
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_FribelopPeriodisert = true
                 showIf(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_fribelopperiodisert()) {
                     text(
                         bokmal { + "blir omregnet til et årlig beløp som tilsvarer " },
                         nynorsk { + "sine blir rekna om til et årleg beløp som svarer til " },
-                        english { + "is recalculated to an annual amount of" },
                     )
                 }
 
@@ -1152,15 +1049,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "er " },
                         nynorsk { + "er " },
-                        english { + "is" },
                     )
                 }
                 text(
                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                         .format() + ". " },
                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + ". " },
-                    english { + " " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                         .format() + ". " },
                 )
 
@@ -1172,7 +1066,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året." },
                         nynorsk { + "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året." },
-                        english { + "This amount will be used to reduce this child supplement during the calendar year." },
                     )
                 }
             }
@@ -1191,7 +1084,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor " },
                     nynorsk { + "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor " },
-                    english { + "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been " },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggFelles_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
@@ -1202,7 +1094,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "lagt til" },
                         nynorsk { + "lagt til" },
-                        english { + "increased" },
                     )
                 }
 
@@ -1214,7 +1105,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "trukket fra" },
                         nynorsk { + "trekt frå" },
-                        english { + "reduced" },
                     )
                 }
                 text(
@@ -1222,7 +1112,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         .format() + " i beløpet vi reduserer barnetillegget med for resten av året." },
                     nynorsk { + " " + pe.barnetilleggfelles_justeringsbelopperarutenminus()
                         .format() + " i beløpet vi reduserer barnetillegget med for resten av året." },
-                    english { + " with " + pe.barnetilleggfelles_justeringsbelopperarutenminus().format() + "." },
                 )
             }
         }
@@ -1235,26 +1124,22 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "For " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene " },
                     nynorsk { + "For " + pe.ut_barnet_barna_serkull() + " som ikkje bur med begge foreldra " },
-                    english { + "For " },
                 )
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)) {
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "a " },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + pe.ut_barnet_barna_serkull() + " that " },
                 )
 
                 showIf(pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_antallbarnserkull().equalTo(1)) {
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "does" },
                     )
                 }
 
@@ -1263,20 +1148,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "do" },
                     )
                 }
                 text(
                     bokmal { + "" },
                     nynorsk { + "" },
-                    english { + " not live with both parents " },
                 )
                 //PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_FribelopPeriodisert = false
                 showIf(not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_fribelopperiodisert())) {
                     text(
                         bokmal { + "er 50 prosent av den inntekten som overstiger fribeløpet " },
                         nynorsk { + "er 50 prosent av den inntekta som overstig fribeløpet " },
-                        english { + "50 percent of the income that exceeds the exemption amount " },
                     )
                 }
 
@@ -1285,7 +1167,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "blir 50 prosent av den inntekten som overstiger fribeløpet omregnet til et årlig beløp som tilsvarer " },
                         nynorsk { + "blir 50 prosent av den inntekta som overstig fribeløpet regna om til et årleg beløp som svarer til " },
-                        english { + "is recalculated to an annual amount of" },
 
                         )
                 }
@@ -1293,7 +1174,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "" },
                         nynorsk { + "" },
-                        english { + "is" },
                     )
                 }
 
@@ -1301,8 +1181,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
                         .format() + ". " },
                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
-                        .format() + ". " },
-                    english { + " " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar()
                         .format() + ". " },
                 )
 
@@ -1314,7 +1192,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "Dette beløpet bruker vi til å redusere dette barnetillegget for hele året. " },
                         nynorsk { + "Dette beløpet bruker vi til å redusere dette barnetillegget for heile året. " },
-                        english { + "This amount will be used to reduce this child supplement during the calendar year." },
                     )
                 }
             }
@@ -1333,7 +1210,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                 text(
                     bokmal { + "Vi tar hensyn til hvordan barnetillegget eventuelt har vært redusert tidligere, og vi har derfor " },
                     nynorsk { + "Vi tek omsyn til korleis eit barnetillegg eventuelt har vore redusert tidlegare, og har derfor " },
-                    english { + "We take into account how the child supplement has been reduced earlier this year. The amount with which your child supplement will be reduced for the rest of the year has therefore been " },
                 )
 
                 //IF(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_BarnetilleggSerkull_AvkortningsInformasjon_JusteringsbelopPerAr > 0) THEN      INCLUDE ENDIF
@@ -1344,7 +1220,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "lagt til" },
                         nynorsk { + "lagt til" },
-                        english { + "increased" },
                     )
                 }
 
@@ -1356,7 +1231,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text(
                         bokmal { + "trukket fra" },
                         nynorsk { + "trekt frå" },
-                        english { + "reduced" },
                     )
                 }
                 text(
@@ -1364,7 +1238,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         .format() + " i beløpet vi reduserer barnetillegget med for resten av året." },
                     nynorsk { + " " + pe.barnetilleggserkull_justeringsbelopperarutenminus()
                         .format() + " i beløpet vi reduserer barnetillegget med for resten av året." },
-                    english { + " with " + pe.barnetilleggserkull_justeringsbelopperarutenminus().format() + "." },
                 )
             }
         }
@@ -1379,7 +1252,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         text(
                             bokmal { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
                             nynorsk { + "Reduksjon av barnetillegg for fellesbarn før skatt " },
-                            english { + "Reduction of child supplement payment for joint children before tax," },
                         )
 
                         //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
@@ -1387,7 +1259,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text(
                                 bokmal { + "i år" },
                                 nynorsk { + "i år" },
-                                english { + " for this year" },
                             )
                         }
 
@@ -1396,7 +1267,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text(
                                 bokmal { + "for neste år" },
                                 nynorsk { + "for neste år" },
-                                english { + " for next year" },
                             )
                         }
                     }
@@ -1407,7 +1277,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text(
                                 bokmal { + "Årlig barnetillegg før reduksjon ut fra inntekt" },
                                 nynorsk { + "Årleg barnetillegg før reduksjon ut frå inntekt" },
-                                english { + "Yearly child supplement before income reduction  " },
                             )
                         }
                         cell {
@@ -1416,8 +1285,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     .format(false) + " kr" },
                                 nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
                                     .format(false) + " kr" },
-                                english { + "NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbruttoperar()
-                                    .format(false) },
                             )
                         }
                     }
@@ -1428,8 +1295,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     .format(false) + " kr" },
                                 nynorsk { + "Samla inntekt brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
                                     .format(false) + " kr" },
-                                english { + "Total income applied in calculation of reduction in child supplement for joint children are NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinntektbruktiavkortning()
-                                    .format(false) },
                             )
                         }
                         cell {
@@ -1455,8 +1320,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                         .format(false) + " kr" },
                                     nynorsk { + "Fribeløp brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
                                         .format(false) + " kr" },
-                                    english { + "Exemption amount applied in calculation of reduction in child supplement are NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop()
-                                        .format(false) },
                                 )
                             }
                             cell { }
@@ -1478,8 +1341,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                         .format(false) + " kr" },
                                     nynorsk { + "Inntekt over fribeløpet er " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
                                         .format(false) + " kr" },
-                                    english { + "Income exceeding the exemption amount NOK " + pe.ut_btfbinntektbruktiavkortningminusbtfbfribelop()
-                                        .format(false) },
                                 )
                             }
                             cell {}
@@ -1501,7 +1362,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
                                     nynorsk { + "- 50 prosent av inntekta som overstig fribeløpet" },
-                                    english { + "- 50 percent of income exceeding the allowance amount " },
                                     FontType.BOLD
                                 )
 
@@ -1510,7 +1370,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "(oppgitt som et årlig beløp)" },
                                         nynorsk { + "(oppgitt som eit årleg beløp)" },
-                                        english { + "(calculated to an annual amount)" },
                                         FontType.BOLD
                                     )
                                 }
@@ -1521,8 +1380,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                         .format(false) + " kr" },
                                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
                                         .format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_avkortingsbelopperar()
-                                        .format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -1545,7 +1402,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "-" },
                                         nynorsk { + "-" },
-                                        english { + "-" },
                                     )
                                 }
 
@@ -1557,13 +1413,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "+" },
                                         nynorsk { + "+" },
-                                        english { + "+" },
                                     )
                                 }
                                 text(
                                     bokmal { + " Beløp som er brukt for å justere reduksjonen av barnetillegget" },
                                     nynorsk { + " Beløp som er brukt for å justere reduksjonen av barnetillegget" },
-                                    english { + " Amount which is used to adjust the reduction of child supplement" },
                                 )
                             }
                             cell {
@@ -1571,8 +1425,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
                                         .format(false) + " kr" },
                                     nynorsk { + pe.barnetilleggfelles_justeringsbelopperarutenminus().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar_utenminus()
-                                        .format(false) },
                                 )
                             }
                         }
@@ -1590,7 +1442,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
                                     nynorsk { + "= Årleg barnetillegg etter reduksjon ut frå inntekt" },
-                                    english { + "= Calculation of the yearly reduction of the child supplement" },
                                     FontType.BOLD
                                 )
                             }
@@ -1598,7 +1449,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbnettoperar().format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -1620,7 +1470,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Utbetaling av barnetillegg per måned " },
                                     nynorsk { + "Utbetaling av barnetillegg per månad " },
-                                    english { + "Child supplement payment for the remaining months of the year" },
                                 )
                             }
                             cell {
@@ -1629,8 +1478,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                         .format(false) + " kr" },
                                     nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                                         .format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                                        .format(false) },
                                 )
                             }
                         }
@@ -1645,7 +1492,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
                                     nynorsk { + "Grensa for å få utbetalt barnetillegg" },
-                                    english { + "The income limit for receiving child supplement" },
                                     FontType.BOLD
                                 )
                             }
@@ -1653,7 +1499,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_inntektstak().format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -1677,8 +1522,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         .format() + " i måneden før skatt i barnetillegg" },
                     nynorsk { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
                         .format() + " i månaden før skatt i barnetillegg" },
-                    english { + "You will receive a monthly child supplement payment of NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto()
-                        .format(false) },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
@@ -1686,13 +1529,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + " for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre" },
                         nynorsk { + " for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine" },
-                        english { + " for the " + pe.ut_barnet_barna_felles() + " who live together with both parents" },
                     )
                 }
                 text (
                     bokmal { + ". " },
                     nynorsk { + "." },
-                    english { + "." },
                 )
             }
         }
@@ -1709,7 +1550,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "Du får ikke utbetalt barnetillegget " },
                         nynorsk { + "Du får ikkje utbetalt barnetillegget " },
-                        english { + "You will not receive a child supplement " },
                     )
                 }
 
@@ -1718,7 +1558,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "for " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre " },
                         nynorsk { + "for " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine " },
-                        english { + "for the " + pe.ut_barnet_barna_felles() + " who live together with both parents " },
                     )
                 }
 
@@ -1727,7 +1566,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. " },
                         nynorsk { + "fordi samla inntekt er over grensa for å få utbetalt barnetillegg. " },
-                        english { + "because your income is over the income limit for receiving a child supplement. " },
                     )
                 }
 
@@ -1739,7 +1577,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året. " },
                         nynorsk { + "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
-                        english { + "You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year." },
                     )
                 }
             }
@@ -1756,7 +1593,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text (
                                 bokmal { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
                                 nynorsk { + "Reduksjon av barnetillegg for særkullsbarn før skatt " },
-                                english { + "Reduction of child supplement payment for children from a previous relationship before tax, " },
                             )
 
                             //IF(FF_CheckIfFirstDayAndMonthOfYear(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_VilkarVirkningFOM(1)) = false) THEN      INCLUDE ENDIF
@@ -1764,7 +1600,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text (
                                     bokmal { + "i år" },
                                     nynorsk { + "i år" },
-                                    english { + "for this year" },
                                 )
                             }
 
@@ -1773,7 +1608,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text (
                                     bokmal { + "for neste år" },
                                     nynorsk { + "for neste år" },
-                                    english { + "for next year" },
                                 )
                             }
                         }
@@ -1788,7 +1622,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text(
                                 bokmal { + "Årlig barnetillegg før reduksjon ut fra inntekt" },
                                 nynorsk { + "Årleg barnetillegg før reduksjon ut frå inntekt" },
-                                english { + "Yearly child supplement before income reduction  " },
                                 FontType.BOLD
                             )
                         }
@@ -1796,7 +1629,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                             text(
                                 bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(false) + " kr" },
                                 nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(false) + " kr" },
-                                english { + "NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbbruttoperar().format(false) },
                                 FontType.BOLD
                             )
                         }
@@ -1808,8 +1640,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     .format(false) + " kr" },
                                 nynorsk { + "Samla inntekt brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
                                     .format(false) + " kr" },
-                                english { + "Total income applied in calculation of reduction in child supplement from a previous relationship NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning()
-                                    .format(false) },
                             )
                         }
                         cell { }
@@ -1827,7 +1657,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Fribeløp brukt i fastsettelsen av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) + " kr" },
                                     nynorsk { + "Fribeløp brukt i fastsetting av barnetillegget er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) + " kr" },
-                                    english { + "Exemption amount applied in calculation of reduction in child supplement are NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format(false) },
                                 )
                             }
                             cell { }
@@ -1843,7 +1672,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) + " kr" },
                                     nynorsk { + "Inntekt over fribeløpet er " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) + " kr" },
-                                    english { + "Income exceeding the exemption amount NOK " + pe.ut_btsbinntektbruktiavkortningminusbtsbfribelop().format(false) },
                                 )
                             }
                             cell { }
@@ -1862,7 +1690,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "- 50 prosent av inntekt som overstiger fribeløpet" },
                                     nynorsk { + "- 50 prosent av inntekta som overstig fribeløpet" },
-                                    english { + "- 50 percent of income exceeding the allowance amount " },
                                     FontType.BOLD
                                 )
 
@@ -1871,7 +1698,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "(oppgitt som et årlig beløp)" },
                                         nynorsk { + "(oppgitt som eit årleg beløp)" },
-                                        english { + "(calculated to an annual amount)" },
                                         FontType.BOLD
                                     )
                                 }
@@ -1880,7 +1706,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_avkortingsbelopperar().format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -1899,7 +1724,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "-" },
                                         nynorsk { + "-" },
-                                        english { + "-" },
                                     )
                                 }
 
@@ -1911,20 +1735,17 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                     text(
                                         bokmal { + "+" },
                                         nynorsk { + "+" },
-                                        english { + "+" },
                                     )
                                 }
                                 text(
                                     bokmal { + " Beløp som er brukt for å justere reduksjonen av barnetillegget" },
                                     nynorsk { + " Beløp som er brukt for å justere reduksjonen av barnetillegget" },
-                                    english { + " Amount which is used to adjust the reduction of child supplement" },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus().format(false) + " kr" },
                                     nynorsk { + pe.barnetilleggserkull_justeringsbelopperarutenminus().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar_utenminus().format(false) },
                                 )
                             }
                         }
@@ -1941,7 +1762,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "= Årlig barnetillegg etter reduksjon ut fra inntekt" },
                                     nynorsk { + "= Årleg barnetillegg etter reduksjon ut frå inntekt" },
-                                    english { + "= Calculation of the yearly reduction of the child supplement" },
                                     FontType.BOLD
                                 )
                             }
@@ -1949,7 +1769,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_btsbnettoperar().format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -1968,14 +1787,12 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Utbetaling av barnetillegg per måned " },
                                     nynorsk { + "Utbetaling av barnetillegg per månad " },
-                                    english { + "Child supplement payment for the remaining months of the year" },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format(false) },
                                 )
                             }
                         }
@@ -1991,7 +1808,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + "Grensen for å få utbetalt barnetillegg" },
                                     nynorsk { + "Grensa for å få utbetalt barnetillegg" },
-                                    english { + "The income limit for receiving child supplement " },
                                     FontType.BOLD
                                 )
                             }
@@ -1999,7 +1815,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                                 text(
                                     bokmal { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(false) + " kr" },
                                     nynorsk { + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(false) + " kr" },
-                                    english { + "NOK " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_inntektstak().format(false) },
                                     FontType.BOLD
                                 )
                             }
@@ -2023,7 +1838,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                         .format() + " i måneden før skatt i barnetillegg" },
                     nynorsk { + "Du vil få utbetalt " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto()
                         .format() + " i månaden før skatt i barnetillegg" },
-                    english { + "You will receive a monthly child supplement payment of " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().format() },
                 )
 
                 //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true AND PE_UT_Etteroppgjor_BT_Utbetalt() = true) THEN      INCLUDE ENDIF
@@ -2031,13 +1845,11 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + " for " + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre" },
                         nynorsk { + " for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra" },
-                        english { + " for the " + pe.ut_barnet_barna_serkull() + " who do not live together with both parents" },
                     )
                 }
                 text (
                     bokmal { + ". " },
                     nynorsk { + ". " },
-                    english { + "." },
                 )
             }
         }
@@ -2054,7 +1866,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "Du får ikke utbetalt barnetillegget " },
                         nynorsk { + "Du får ikkje utbetalt barnetillegget " },
-                        english { + "You will not receive a child supplement " },
                     )
                 }
 
@@ -2063,7 +1874,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "for " + pe.ut_barnet_barna_serkull() + " som ikke bor med begge sine foreldre " },
                         nynorsk { + "for " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra " },
-                        english { + "for the " + pe.ut_barnet_barna_serkull() + " who do not live together with both parents " },
                     )
                 }
 
@@ -2072,7 +1882,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "fordi samlet inntekt er over grensen for å få utbetalt barnetillegg. " },
                         nynorsk { + "fordi samla inntekt er over grensa for å få utbetalt barnetillegg. " },
-                        english { + "because your income is over the income limit for receiving a child supplement. " },
                     )
                 }
 
@@ -2084,7 +1893,6 @@ data class TBU052V_TBU073V_SlikBeregnerViStoerrelsenPaaBarnetilleggetDitt(
                     text (
                         bokmal { + "Du har allerede fått utbetalt det du har rett til i år, og får derfor ikke utbetalt barnetillegg for resten av året." },
                         nynorsk { + "Du har allereie fått utbetalt det du har rett til i år, og får derfor ikkje utbetalt barnetillegg for resten av året. " },
-                        english { + "You have already received what you are entitled to this year, therefore you will not receive any child supplement for the remainder of the year. " },
                     )
                 }
             }
