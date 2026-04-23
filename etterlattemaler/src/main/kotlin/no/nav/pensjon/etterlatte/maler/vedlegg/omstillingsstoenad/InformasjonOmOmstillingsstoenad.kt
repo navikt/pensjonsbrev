@@ -551,15 +551,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Skattemessig bosatt i Norge:" },
-                nynorsk { +"Skattemessig busett i Noreg:" },
-                english { +"Tax reident in Norway:" }
-            )
-            text(
                 bokmal {
                     +"Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
                             "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
-                            "kan du søke om skattemessig emigrasjon"
+                            "kan du søke om skattemessig emigrasjon."
                 },
                 nynorsk {
                     +"Viss du er skattemessig busett i Norge, skal du betale skatt for all inntekt og formue. " +
@@ -575,15 +570,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Ikke skattemessig bosatt i Norge:" },
-                nynorsk { +"Ikkje skattemessig busett i Noreg:" },
-                english { +"Non-tax resident in Norway:" }
-            )
-            text(
                 bokmal {
-                    +"Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
-                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
-                            "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge."
+                    +"Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad. " +
+                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, " +
+                            "kan du bli skatteberegnet som bosatt i Norge."
                 },
                 nynorsk {
                     +"Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
@@ -599,7 +589,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet" },
+                bokmal { +"Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet." },
                 nynorsk { +"Les meir på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} frå utlandet." },
                 english { +"Read more at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} or contact the Norwegian Tax Administration by phone at ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} from abroad." }
             )
