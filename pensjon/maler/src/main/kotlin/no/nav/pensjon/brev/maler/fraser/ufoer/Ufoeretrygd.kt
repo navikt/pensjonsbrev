@@ -482,19 +482,49 @@ object Ufoeretrygd {
 
     private object BegrunnelseFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
         override fun apply(first: BarnetilleggUTDto, second: Language): String {
-            val barnetBarna = if(first.antallBarn == 1) "barnet" else "barna"
+            val barnetBarna = if (first.antallBarn == 1) "barnet" else "barna"
             val barnetBarnaStor = barnetBarna.replaceFirstChar { it.uppercase() }
             return when (first.begrunnelse) {
-                ANNEN_FORLD_RETT_BT, OPPHOR_ANNEN_FORLD_RETT_BT -> if (second == Bokmal) "Når $barnetBarna blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. ${barnetBarnaStor}s andre forelder har rett til et høyere barnetillegg enn det du får." else "Når $barnetBarna vert forsørga av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til $barnetBarna har rett til eit høgare barnetillegg enn det du vil få."
-                BT_GITT_TIL_ANNEN, OPPHOR_BT_GITT_TIL_ANNEN -> if (second == Bokmal) "Når $barnetBarna blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som $barnetBarna." else "Når $barnetBarna vert forsørga av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som $barnetBarna. Du bur ikkje på same folkeregistrerte adresse som $barnetBarna."
-                MINDRE_ETT_AR_BT_FLT -> if (second == Bokmal) "Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." else "Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen."
-                BT_OVER_18, OPPHOR_BT_OVER_18 -> if (second == Bokmal) "$barnetBarnaStor har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." else "$barnetBarnaStor har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år."
-                BT_INNT_OVER_1G, OPPHOR_BT_INNT_OVER_1G -> if (second == Bokmal) "${barnetBarnaStor}s inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis $barnetBarna har inntekt over 1G." else "${barnetBarnaStor}s inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis $barnetBarna har inntekt over 1G."
-                BRK_FORSO_IKKE_BARN, IKKE_MOTTATT_DOK -> if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du forsørger $barnetBarna." else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du forsørger $barnetBarna."
-                OPPHOR_BRK_FORSO_IKKE_BARN, OPPHOR_IKKE_MOTTATT_DOK -> if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du fortsatt forsørger $barnetBarna." else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du framleis forsørger $barnetBarna."
-                BRUKER_FLYTTET_IKKE_AVT_LAND, OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND -> if (second == Bokmal) "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." else "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
-                BARN_FLYTTET_IKKE_AVT_LAND, OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND -> if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
-                BARN_OPPH_IKKE_AVT_LAND, OPPHOR_BARN_OPPH_IKKE_AVT_LAND -> if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes $barnetBarna ikke lenger som medlem i folketrygden." else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast $barnetBarna ikkje lenger som medlem i folketrygden."
+                ANNEN_FORLD_RETT_BT, OPPHOR_ANNEN_FORLD_RETT_BT ->
+                    if (second == Bokmal) "Når $barnetBarna blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. ${barnetBarnaStor}s andre forelder har rett til et høyere barnetillegg enn det du får."
+                    else "Når $barnetBarna vert forsørga av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til $barnetBarna har rett til eit høgare barnetillegg enn det du vil få."
+
+                BT_GITT_TIL_ANNEN, OPPHOR_BT_GITT_TIL_ANNEN ->
+                    if (second == Bokmal) "Når $barnetBarna blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som $barnetBarna."
+                    else "Når $barnetBarna vert forsørga av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som $barnetBarna. Du bur ikkje på same folkeregistrerte adresse som $barnetBarna."
+
+                MINDRE_ETT_AR_BT_FLT ->
+                    if (second == Bokmal) "Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen."
+                    else "Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen."
+
+                BT_OVER_18, OPPHOR_BT_OVER_18 ->
+                    if (second == Bokmal) "$barnetBarnaStor har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år."
+                    else "$barnetBarnaStor har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år."
+
+                BT_INNT_OVER_1G, OPPHOR_BT_INNT_OVER_1G ->
+                    if (second == Bokmal) "${barnetBarnaStor}s inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis " +
+                            "$barnetBarna har inntekt over 1G." else "${barnetBarnaStor}s inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis $barnetBarna har inntekt over 1G."
+
+                BRK_FORSO_IKKE_BARN, IKKE_MOTTATT_DOK ->
+                    if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du forsørger $barnetBarna."
+                    else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du forsørger $barnetBarna."
+
+                OPPHOR_BRK_FORSO_IKKE_BARN, OPPHOR_IKKE_MOTTATT_DOK ->
+                    if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du fortsatt forsørger $barnetBarna."
+                    else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du framleis forsørger $barnetBarna."
+
+                BRUKER_FLYTTET_IKKE_AVT_LAND, OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND ->
+                    if (second == Bokmal) "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden."
+                    else "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
+
+                BARN_FLYTTET_IKKE_AVT_LAND, OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND ->
+                    if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden."
+                    else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
+
+                BARN_OPPH_IKKE_AVT_LAND, OPPHOR_BARN_OPPH_IKKE_AVT_LAND ->
+                    if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes $barnetBarna ikke lenger som medlem i folketrygden."
+                    else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast $barnetBarna ikkje lenger som medlem i folketrygden."
+
                 else -> ""
             }
         }
