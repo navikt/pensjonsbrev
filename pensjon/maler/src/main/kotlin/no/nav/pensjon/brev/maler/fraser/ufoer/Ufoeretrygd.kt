@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNEN_FORLD_RETT_BT
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNET_AVSLAG
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_FLYTTET_IKKE_AVT_LAND
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BARN_OPPH_IKKE_AVT_LAND
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BRK_FORSO_IKKE_BARN
@@ -11,9 +10,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.B
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_INNT_OVER_1G
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.BT_OVER_18
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.MINDRE_ETT_AR_BT_FLT
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.antallBarn
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.begrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDtoSelectors.fom
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.ANNET_OPPHOR
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.IKKE_MOTTATT_DOK
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_ANNEN_FORLD_RETT_BT
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode.OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND
@@ -31,7 +30,6 @@ import no.nav.pensjon.brev.maler.legacy.BarnetilleggFormatter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -420,18 +418,7 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    showIf(barnetillegg.begrunnelse.notEqualTo(ANNET_AVSLAG)) {
-                        text(
-                            bokmal { +barnetillegg.format(BegrunnelseFormatter) },
-                            nynorsk { +barnetillegg.format(BegrunnelseFormatter) },
-                        )
-
-                    }.orShow {
-                        text(
-                            bokmal { +Fritekst("Avslagstekst for perioden") },
-                            nynorsk { +Fritekst("Avslagstekst for perioden") },
-                        )
-                    }
+                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
                     text(
                         bokmal { +" Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden. Du kan lese mer i folketrygdloven §§ 12-15 og 12-16." },
                         nynorsk { +" Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda. Du kan lese meir i folketrygdlova §§ 12-15 og 12-16." },
@@ -459,18 +446,7 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    showIf(barnetillegg.begrunnelse.notEqualTo(ANNET_OPPHOR)) {
-                        text(
-                            bokmal { +barnetillegg.format(BegrunnelseFormatter) },
-                            nynorsk { +barnetillegg.format(BegrunnelseFormatter) },
-                        )
-
-                    }.orShow {
-                        text(
-                            bokmal { +Fritekst("Opphørstekst") },
-                            nynorsk { +Fritekst("Opphørstekst") },
-                        )
-                    }
+                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
                     text(
                         bokmal { +" Vilkårene for barnetillegg er derfor ikke lenger oppfylt, og barnetillegget opphører fra " + barnetillegg.fom.format() + "." },
                         nynorsk { +" Vilkåra for barnetillegg er derfor ikkje lenger oppfylte, og barnetillegget opphøyrer frå " + barnetillegg.fom.format() + "." },
@@ -480,56 +456,78 @@ object Ufoeretrygd {
         }
     }
 
-    private object BegrunnelseFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
-        override fun apply(first: BarnetilleggUTDto, second: Language): String {
-            val barnetBarna = if (first.antallBarn == 1) "barnet" else "barna"
-            val barnetBarnaStor = barnetBarna.replaceFirstChar { it.uppercase() }
-            return when (first.begrunnelse) {
-                ANNEN_FORLD_RETT_BT, OPPHOR_ANNEN_FORLD_RETT_BT ->
-                    if (second == Bokmal) "Når $barnetBarna blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. ${barnetBarnaStor}s andre forelder har rett til et høyere barnetillegg enn det du får."
-                    else "Når $barnetBarna vert forsørga av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til $barnetBarna har rett til eit høgare barnetillegg enn det du vil få."
+    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : ParagraphPhrase<LangBokmalNynorsk>() {
+        override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val barnetBarna = barnetillegg.antallBarn.format(BarnetBarnaFormatter)
+            val barnetBarnaStor = barnetillegg.antallBarn.format(BarnetBarnaStorFormatter)
 
-                BT_GITT_TIL_ANNEN, OPPHOR_BT_GITT_TIL_ANNEN ->
-                    if (second == Bokmal) "Når $barnetBarna blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som $barnetBarna."
-                    else "Når $barnetBarna vert forsørga av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som $barnetBarna. Du bur ikkje på same folkeregistrerte adresse som $barnetBarna."
-
-                MINDRE_ETT_AR_BT_FLT ->
-                    if (second == Bokmal) "Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen."
-                    else "Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen."
-
-                BT_OVER_18, OPPHOR_BT_OVER_18 ->
-                    if (second == Bokmal) "$barnetBarnaStor har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år."
-                    else "$barnetBarnaStor har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år."
-
-                BT_INNT_OVER_1G, OPPHOR_BT_INNT_OVER_1G ->
-                    if (second == Bokmal) "${barnetBarnaStor}s inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis " +
-                            "$barnetBarna har inntekt over 1G." else "${barnetBarnaStor}s inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis $barnetBarna har inntekt over 1G."
-
-                BRK_FORSO_IKKE_BARN, IKKE_MOTTATT_DOK ->
-                    if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du forsørger $barnetBarna."
-                    else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du forsørger $barnetBarna."
-
-                OPPHOR_BRK_FORSO_IKKE_BARN, OPPHOR_IKKE_MOTTATT_DOK ->
-                    if (second == Bokmal) "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikke fått dokumentasjon som viser at du fortsatt forsørger $barnetBarna."
-                    else "For å ha rett til barnetillegg må du forsørge $barnetBarna. Vi har ikkje fått dokumentasjon som viser at du framleis forsørger $barnetBarna."
-
-                BRUKER_FLYTTET_IKKE_AVT_LAND, OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND ->
-                    if (second == Bokmal) "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden."
-                    else "For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
-
-                BARN_FLYTTET_IKKE_AVT_LAND, OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND ->
-                    if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden."
-                    else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. $barnetBarnaStor bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden."
-
-                BARN_OPPH_IKKE_AVT_LAND, OPPHOR_BARN_OPPH_IKKE_AVT_LAND ->
-                    if (second == Bokmal) "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes $barnetBarna ikke lenger som medlem i folketrygden."
-                    else "For å ha rett til barnetillegg må $barnetBarna være medlem i folketrygden. Fordi $barnetBarna har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast $barnetBarna ikkje lenger som medlem i folketrygden."
-
-                else -> ""
+            showIf(barnetillegg.begrunnelse.equalTo(ANNEN_FORLD_RETT_BT) or barnetillegg.begrunnelse.equalTo(OPPHOR_ANNEN_FORLD_RETT_BT)) {
+                text(
+                    bokmal { +"Når " + barnetBarna + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. " + barnetBarnaStor + "s andre forelder har rett til et høyere barnetillegg enn det du får." },
+                    nynorsk { +"Når " + barnetBarna + " vert forsørga av begge foreldra og begge mottar uføretrygd, skal barnetillegget givast til den som får det høgaste tillegget. Den andre forelderen til " + barnetBarna + " har rett til eit høgare barnetillegg enn det du vil få." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_GITT_TIL_ANNEN) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_GITT_TIL_ANNEN)) {
+                text(
+                    bokmal { +"Når " + barnetBarna + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som barnet. Du bor ikke på samme folkeregistrerte adresse som " + barnetBarna + "." },
+                    nynorsk { +"Når " + barnetBarna + " vert forsørga av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + barnetBarna + ". Du bur ikkje på same folkeregistrerte adresse som " + barnetBarna + "." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(MINDRE_ETT_AR_BT_FLT)) {
+                text(
+                    bokmal { +"Barnetillegg for fellesbarn kan flyttes mellom foreldrene når det har gått ett år siden tidligere overføring. Det er mindre enn ett år siden barnetillegget ble overført til den andre forelderen." },
+                    nynorsk { +"Barnetillegg for fellesbarn kan flyttast mellom foreldra når det har gått eitt år sidan tidlegare overføring. Det er mindre enn eitt år sidan barnetillegget blei overført til den andre forelderen." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_OVER_18) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_OVER_18)) {
+                text(
+                    bokmal { +barnetBarnaStor + " har fylt 18 år, og du kan derfor ikke få barnetillegg til uføretrygden. Barnetillegg gis bare for barn under 18 år." },
+                    nynorsk { +barnetBarnaStor + " har fylt 18 år, og du kan derfor ikkje få barnetillegg til uføretrygda. Barnetillegg vert berre gjeve for barn under 18 år." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BT_INNT_OVER_1G) or barnetillegg.begrunnelse.equalTo(OPPHOR_BT_INNT_OVER_1G)) {
+                text(
+                    bokmal { +barnetBarnaStor + "s inntekt er høyere enn 1G. Etter regelverket som gjaldt før 1. juli 2024, faller retten til barnetillegg bort hvis " + barnetBarna + " har inntekt over 1G." },
+                    nynorsk { +barnetBarnaStor + "s inntekt er høgare enn 1G. Etter regelverket som gjaldt før 1. juli 2024, fell retten til barnetillegg bort hvis " + barnetBarna + " har inntekt over 1G." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BRK_FORSO_IKKE_BARN) or barnetillegg.begrunnelse.equalTo(IKKE_MOTTATT_DOK)) {
+                text(
+                    bokmal { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikke fått dokumentasjon som viser at du forsørger " + barnetBarna + "." },
+                    nynorsk { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikkje fått dokumentasjon som viser at du forsørger " + barnetBarna + "." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(OPPHOR_BRK_FORSO_IKKE_BARN) or barnetillegg.begrunnelse.equalTo(OPPHOR_IKKE_MOTTATT_DOK)) {
+                text(
+                    bokmal { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikke fått dokumentasjon som viser at du fortsatt forsørger " + barnetBarna + "." },
+                    nynorsk { +"For å ha rett til barnetillegg må du forsørge " + barnetBarna + ". Vi har ikkje fått dokumentasjon som viser at du framleis forsørger " + barnetBarna + "." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BRUKER_FLYTTET_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BRUKER_FLYTTET_IKKE_AVT_LAND)) {
+                text(
+                    bokmal { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
+                    nynorsk { +"For å ha rett til barnetillegg må du være medlem i folketrygden. Du bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_FLYTTET_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BARN_FLYTTET_IKKE_AVT_LAND)) {
+                text(
+                    bokmal { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. " + barnetBarnaStor + " bor i et land som Norge ikke har trygdeavtale med, og er derfor ikke medlem i folketrygden." },
+                    nynorsk { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. " + barnetBarnaStor + " bur i eit land som Noreg ikkje har trygdeavtale med, og er derfor ikkje medlem i folketrygden." },
+                )
+            }.orShowIf(barnetillegg.begrunnelse.equalTo(BARN_OPPH_IKKE_AVT_LAND) or barnetillegg.begrunnelse.equalTo(OPPHOR_BARN_OPPH_IKKE_AVT_LAND)) {
+                text(
+                    bokmal { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. Fordi " + barnetBarna + " har oppholdt seg i mer enn 90 dager i et land som Norge ikke har trygdeavtale med, regnes " + barnetBarna + " ikke lenger som medlem i folketrygden." },
+                    nynorsk { +"For å ha rett til barnetillegg må " + barnetBarna + " være medlem i folketrygden. Fordi " + barnetBarna + " har opphalde seg i meir enn 90 dagar i eit land som Noreg ikkje har trygdeavtale med, reknast " + barnetBarna + " ikkje lenger som medlem i folketrygden." },
+                )
+            }.orShow {
+                text(
+                    bokmal { +Fritekst("Begrunnelse") },
+                    nynorsk { +Fritekst("Begrunnelse") },
+                )
             }
         }
+    }
 
-        override fun stableHashCode(): Int = "BegrunnelseFormatter".hashCode()
+    private object BarnetBarnaFormatter : LocalizedFormatter<Int>() {
+        override fun apply(first: Int, second: Language): String = if (first == 1) "barnet" else "barna"
+        override fun stableHashCode(): Int = "BarnetBarnaFormatter".hashCode()
+    }
+
+    private object BarnetBarnaStorFormatter : LocalizedFormatter<Int>() {
+        override fun apply(first: Int, second: Language): String = if (first == 1) "Barnet" else "Barna"
+        override fun stableHashCode(): Int = "BarnetBarnaStorFormatter".hashCode()
     }
 }
 
