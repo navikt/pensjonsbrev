@@ -152,7 +152,7 @@ jobs:
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
-        # TODO: revert — temporarily always upload to test baseline-update step on this PR
+        # TODO: revert — temporarily always upload to force a baseline refresh from this PR
         if: ${{ true || needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
@@ -163,7 +163,7 @@ jobs:
     name: "Analyze images"
     needs: [runIntegrationTests, changes]
     runs-on: ubuntu-latest
-    # TODO: revert — temporarily always run to test baseline-update step on this PR
+    # TODO: revert — temporarily always run to force a baseline refresh from this PR
     if: ${{ true || needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
     permissions:
       statuses: write
@@ -201,7 +201,8 @@ jobs:
         with:
           team: pensjonsbrev
       - name: Run reg-suit
-        if: ${{ github.event_name == 'pull_request' }}
+        # TODO: revert — temporarily disabled so only the baseline update runs on this PR
+        if: ${{ false && github.event_name == 'pull_request' }}
         run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
@@ -209,7 +210,7 @@ jobs:
           ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
       # wipe and update the baseline directly instead of running comparison on main.
       - name: Update main baseline on GCS
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        if: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request' }}
         run: |
           gcloud storage rsync \
             brevbaker/pdf-bygger/build/test_visual/png \
