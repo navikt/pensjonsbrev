@@ -1,10 +1,13 @@
 # syntax=docker/dockerfile:1
 # --- Stage 1: JRE Build ---
 FROM --platform=linux/amd64 eclipse-temurin:25 AS jre-build
-# localedata was only needed for LaTeX-side Norwegian date formatting.
-# Brevbaker renders dates before sending to pdf-bygger, so typst doesn't need locale data.
+
+# Module list derived from `jdeps --print-module-deps` against the installed
+# jdeps --multi-release 25 --ignore-missing-deps --print-module-deps --class-path 'brevbaker/pdf-bygger/build/install/pdf-bygger/lib/*' brevbaker/pdf-bygger/build/install/pdf-bygger/lib/pdf-bygger-*.jar
+
+#using jlink instead to not include modules we dont need. Saves a bunch of space.
 RUN $JAVA_HOME/bin/jlink \
-         --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management \
+         --add-modules java.base,java.desktop,java.instrument,java.logging,java.naming,java.sql,java.xml,jdk.crypto.ec,jdk.jdwp.agent,jdk.jfr,jdk.management,jdk.naming.dns,jdk.unsupported \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
