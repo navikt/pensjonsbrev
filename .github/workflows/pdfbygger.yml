@@ -208,12 +208,15 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
       # wipe and update the baseline directly instead of running comparison on main.
+      # TODO: revert — temporarily also runs on PRs (against a test prefix) to verify the step.
       - name: Update main baseline on GCS
-        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        if: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') || github.event_name == 'pull_request' }}
+        env:
+          DEST_PREFIX: ${{ (github.ref == 'refs/heads/main' && github.event_name == 'push') && 'main' || 'main-test-rsync' }}
         run: |
           gcloud storage rsync \
             brevbaker/pdf-bygger/build/test_visual/png \
-            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/${DEST_PREFIX} \
             --recursive \
             --delete-unmatched-destination-objects
 
