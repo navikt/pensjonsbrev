@@ -51,6 +51,7 @@ import {
   addRow,
   determineTableCellDeleteAction,
   exitTable,
+  getValidVerticalTableFocus,
   isAtLastTableCell,
   nextTableFocus,
 } from "../services/tableCaretUtils";
@@ -383,7 +384,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           event.preventDefault();
           setEditorState((prev) => ({
             ...prev,
-            focus: { ...f, rowIndex: f.rowIndex - 1, cursorPosition: 0 },
+            focus: getValidVerticalTableFocus(f, content, f.rowIndex - 1),
           }));
           return;
         }
@@ -392,7 +393,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           event.preventDefault();
           setEditorState((prev) => ({
             ...prev,
-            focus: { ...f, rowIndex: -1, cursorPosition: 0 },
+            focus: getValidVerticalTableFocus(f, content, -1),
           }));
           return;
         }
@@ -523,7 +524,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           event.preventDefault();
           setEditorState((prev) => ({
             ...prev,
-            focus: { ...f, rowIndex: 0, cursorPosition: 0 },
+            focus: getValidVerticalTableFocus(f, content, 0),
           }));
           return;
         }
@@ -532,16 +533,17 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
           event.preventDefault();
           setEditorState((prev) => ({
             ...prev,
-            focus: { ...f, rowIndex: f.rowIndex + 1, cursorPosition: 0 },
+            focus: getValidVerticalTableFocus(f, content, f.rowIndex + 1),
           }));
           return;
         }
 
         if (f.rowIndex >= content.rows.length - 1) {
           const nextContent = block.content[f.contentIndex + 1];
+
           // When ArrowDown exits a table and the next content is also a table,
           // insert an empty literal between them so the caret has a normal text
-          // position to land on. We update the nested editor state
+          // position to land on. We update the nested editor state:
           // add the literal, focus it, and mark the document as dirty.
           if (isTable(nextContent) && "deletedContent" in block) {
             event.preventDefault();

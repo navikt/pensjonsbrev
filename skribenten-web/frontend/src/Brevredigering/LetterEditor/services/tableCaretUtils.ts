@@ -2,8 +2,10 @@ import { type Draft, produce } from "immer";
 
 import {
   type Cell,
+  type Content,
   PARAGRAPH,
   type ParagraphBlock,
+  type TABLE,
   TITLE1,
   TITLE2,
   TITLE3,
@@ -66,6 +68,33 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
     ...currentFocus,
     rowIndex,
     cellIndex,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+export function getValidVerticalTableFocus(
+  currentFocus: Extract<Focus, { rowIndex: number; cellIndex: number; cellContentIndex: number }>,
+  table: Extract<Content, { type: typeof TABLE }>,
+  targetRowIndex: number,
+) {
+  const targetCellCount =
+    targetRowIndex === -1 ? (table.header?.colSpec?.length ?? 0) : (table.rows[targetRowIndex]?.cells?.length ?? 0);
+
+  if (targetCellCount <= 0) {
+    return {
+      ...currentFocus,
+      rowIndex: targetRowIndex,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+  }
+
+  return {
+    ...currentFocus,
+    rowIndex: targetRowIndex,
+    cellIndex: Math.min(currentFocus.cellIndex, targetCellCount - 1),
     cellContentIndex: 0,
     cursorPosition: 0,
   };
