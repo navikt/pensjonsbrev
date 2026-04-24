@@ -16,6 +16,9 @@ import no.nav.pensjon.brev.skribenten.letter.EditOperation.Insert
 fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): List<EditOperation<T>> =
     MyersDiff(old.toList(), new.toList()).shortestEditScript()
 
+fun <T : Any> shortestEditScript(old: List<T>, new: List<T>): List<EditOperation<T>> =
+    MyersDiff(old, new).shortestEditScript()
+
 sealed class EditOperation<T : Any> {
     abstract val value: T
     abstract val position: Int
@@ -151,7 +154,7 @@ private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val oldOffs
             vReverse[k] = path.to.y
 
             if (!deltaIsOdd && (k + delta) in -d..d) {
-                if (path.to.x <= vForward[k]) {
+                if (path.to.x <= vForward[k + delta]) {
                     // Since the path is found through a reverse search we have to flip from and to
                     return MiddleSnake(d = 2 * d, from = path.to, to = path.from)
                 }
