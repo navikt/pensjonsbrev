@@ -145,6 +145,28 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   draft.saveStatus = "DIRTY";
 });
 
+export type MoveDirection = "up" | "down";
+
+export const moveTableRow: Action<LetterEditorState, [direction: MoveDirection]> = withPatches((draft, direction) => {
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
+
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
+
+  if (rowIndex < 0) return;
+
+  const targetIndex = direction === "up" ? rowIndex - 1 : rowIndex + 1;
+  if (targetIndex < 0 || targetIndex >= table.rows.length) return;
+
+  const temp = table.rows[rowIndex];
+  table.rows[rowIndex] = table.rows[targetIndex];
+  table.rows[targetIndex] = temp;
+
+  draft.focus = { ...draft.focus, rowIndex: targetIndex };
+  draft.saveStatus = "DIRTY";
+});
+
 export const insertTableColumnLeft: Action<LetterEditorState, []> = withPatches((draft) => {
   if (!isTableCellIndex(draft.focus)) return;
   const { blockIndex, contentIndex, cellIndex: at } = draft.focus;

@@ -1,17 +1,23 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDtoSelectors.senesteHvilendeAr
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.minus
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
+@TemplateModelHelpers
+object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_MIDL_OPPHOER
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -26,6 +32,9 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
                 bokmal { + "Vedtak om midlertidig stans av uføretrygd etter 10 år med hvilende rett" },
             )
         }
+        val nestSisteHvilendeAr = senesteHvilendeAr.minus(1).format()
+        val sisteHvilendeAr = senesteHvilendeAr.format()
+        val opphorAr = senesteHvilendeAr.plus(1).format()
         outline {
             paragraph {
                 text(
@@ -34,12 +43,12 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har tidligere fått tilsendt brev der vi opplyser at uføretrygden din stanser fra 1.1.2026 hvis du ikke har fått utbetaling av uføretrygd i 2024 og 2025. Det utbetales ikke uføretrygd når den pensjonsgivende inntekten utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør. Dette står i folketrygdloven § 12-14 tredje ledd." },
+                    bokmal { + "Du har tidligere fått tilsendt brev der vi opplyser at uføretrygden din stanser fra 1.1." + opphorAr + " hvis du ikke har fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + ". Det utbetales ikke uføretrygd når den pensjonsgivende inntekten utgjør mer enn 80 prosent av inntekten du hadde før du ble ufør. Dette står i folketrygdloven § 12-14 tredje ledd." },
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke fått utbetaling av uføretrygd i 2024 og 2025 og har hatt 10 sammenhengende år uten utbetaling av uføretrygd. Du har dermed nådd den maksimale grensen for hvor lenge du kan ha hvilende rett til uføretrygd." },
+                    bokmal { + "Du har ikke fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + " og har hatt 10 sammenhengende år uten utbetaling av uføretrygd. Du har dermed nådd den maksimale grensen for hvor lenge du kan ha hvilende rett til uføretrygd." },
                 )
             }
             paragraph {
@@ -49,7 +58,7 @@ object HvilendeRettMidlertidigOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Når etteroppgjøret for 2025 er klart må vi vurdere om du skal få et endelig vedtak om stans av uføretrygden din. Vi stanser uføretrygden din midlertidig allerede nå for å unngå feilutbetaling av uføretrygd, og for å være sikker på at det stemmer at du ikke har rett til uføretrygd i 2025." },
+                    bokmal { + "Når etteroppgjøret for " + sisteHvilendeAr + " er klart må vi vurdere om du skal få et endelig vedtak om stans av uføretrygden din. Vi stanser uføretrygden din midlertidig allerede nå for å unngå feilutbetaling av uføretrygd, og for å være sikker på at det stemmer at du ikke har rett til uføretrygd i " + sisteHvilendeAr + "." },
                 )
             }
             paragraph {

@@ -1,17 +1,23 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDtoSelectors.senesteHvilendeAr
 import no.nav.pensjon.brev.maler.adhoc.vedlegg.vedleggDineRettigheterOgMulighetTilAaKlageUfoereStatisk
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.minus
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
+@TemplateModelHelpers
+object HvilendeRettOppHoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_OPPHOER
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -26,10 +32,14 @@ object HvilendeRettOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
                 bokmal { + "Uføretrygden din opphører" },
             )
         }
+        val forsteHvilendeAr = senesteHvilendeAr.minus(9).format()
+        val nestSisteHvilendeAr = senesteHvilendeAr.minus(1).format()
+        val sisteHvilendeAr = senesteHvilendeAr.format()
+        val opphorAr = senesteHvilendeAr.plus(1).format()
         outline {
             paragraph {
                 text(
-                    bokmal { + "Vi opphører uføretrygden din fra 1.1.2025 fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1.2025 hvis du ikke har fått utbetaling av uføretrygd i 2023 og 2024." },
+                    bokmal { + "Vi opphører uføretrygden din fra 1.1." + opphorAr + " fordi du har hatt sammenhengende 10 år med hvilende rett. I tidligere brev har vi opplyst at uføretrygden din stanser fra 1.1." + opphorAr + " hvis du ikke har fått utbetaling av uføretrygd i " + nestSisteHvilendeAr + " og " + sisteHvilendeAr + "." },
                 )
             }
             title1 {
@@ -44,7 +54,7 @@ object HvilendeRettOppHoer : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2015 og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + forsteHvilendeAr + " og du har hatt 10 år sammenhengende med hvilende rett. Derfor opphører uføretrygden din." },
                 )
             }
             paragraph {
