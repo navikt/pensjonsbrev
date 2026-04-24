@@ -76,6 +76,10 @@ class PensjonPdfByggerService(
     override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = try {
         withTimeoutOrNull(timeout) {
             httpClient.post("$pdfByggerUrl/produserBrev") {
+                // Bakoverkompatibilitet: pdf-bygger <= main ruter til LaTeX uten dette flagget.
+                // Ny pdf-bygger ignorerer parameteret og bruker alltid typst.
+                // Fjern dette etter at ny pdf-bygger er rullet ut til alle miljø.
+                url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
