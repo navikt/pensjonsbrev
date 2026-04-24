@@ -104,3 +104,65 @@ describe("remove table row shortcut", () => {
     cy.get("[data-cy=letter-table]").should("not.exist");
   });
 });
+
+describe("move table row shortcut", () => {
+  it("moves a row down with Alt+Shift+ArrowDown", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 1 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "ArrowDown", altKey: true, shiftKey: true });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 2 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 1 kolonne 1");
+  });
+
+  it("moves a row up with Alt+Shift+ArrowUp", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 2 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "ArrowUp", altKey: true, shiftKey: true });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 2 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 1 kolonne 1");
+  });
+
+  it("does not move the first row up", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 1 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "ArrowUp", altKey: true, shiftKey: true });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 1 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 2 kolonne 1");
+  });
+
+  it("does not move the last row down", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 2 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "ArrowDown", altKey: true, shiftKey: true });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 1 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 2 kolonne 1");
+  });
+
+  it("undo restores the original row order", () => {
+    const state = createEditorState();
+    cy.mount(<EditorWithState editorState={state} />);
+
+    cy.contains("Rad 1 kolonne 1").click();
+    cy.focused().trigger("keydown", { bubbles: true, key: "ArrowDown", altKey: true, shiftKey: true });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 2 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 1 kolonne 1");
+
+    cy.focused().trigger("keydown", { bubbles: true, ctrlKey: true, key: "z" });
+
+    cy.get("[data-cy=letter-table] tbody tr").eq(0).should("contain.text", "Rad 1 kolonne 1");
+    cy.get("[data-cy=letter-table] tbody tr").eq(1).should("contain.text", "Rad 2 kolonne 1");
+  });
+});
