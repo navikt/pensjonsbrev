@@ -1,11 +1,14 @@
+import { produce } from "immer";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
+  addElements,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
   isTable,
+  newLiteral,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -367,11 +370,128 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        if (f.rowIndex > 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: f.rowIndex - 1, cursorPosition: 0 },
+          }));
+          return;
+        }
+
+        if (f.rowIndex === 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: -1, cursorPosition: 0 },
+          }));
+          return;
+        }
+
+        if (f.rowIndex === -1) {
+          const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
+
+          if (isTable(prevContent) && "deletedContent" in block) {
+            event.preventDefault();
+            setEditorState((prev) =>
+              produce(prev, (draft) => {
+                const draftBlock = draft.redigertBrev.blocks[f.blockIndex];
+                if (!("deletedContent" in draftBlock)) return;
+
+                addElements(
+                  [newLiteral({ editedText: "" })],
+                  f.contentIndex,
+                  draftBlock.content,
+                  draftBlock.deletedContent,
+                );
+
+                draft.focus = {
+                  blockIndex: f.blockIndex,
+                  contentIndex: f.contentIndex,
+                  cursorPosition: 0,
+                };
+                draft.saveStatus = "DIRTY";
+              }),
+            );
+            return;
+          }
+
+          event.preventDefault();
+          setEditorState(exitTable("backward"));
+          return;
+        }
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
+    }
+
+    if (!isTableCellIndex(f)) {
+      const blocks = editorState.redigertBrev.blocks;
+      const block = blocks[f.blockIndex];
+      const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
+
+      const prevBlock = f.contentIndex === 0 && f.blockIndex > 0 ? blocks[f.blockIndex - 1] : undefined;
+      const lastContentInPrevBlock =
+        prevBlock && prevBlock.content.length > 0 ? prevBlock.content[prevBlock.content.length - 1] : undefined;
+
+      const hasAdjacentTable = isTable(prevContent) || (f.contentIndex === 0 && isTable(lastContentInPrevBlock));
+
+      if (hasAdjacentTable) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnFirstVisualLine = caretCoordinates.top <= elementRect.top + 1;
+
+        if (!isOnFirstVisualLine) {
+          return;
+        }
+
+        if (isTable(prevContent)) {
+          const lastRowIndex = prevContent.rows.length - 1;
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex,
+              contentIndex: f.contentIndex - 1,
+              rowIndex: lastRowIndex,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+
+        if (f.contentIndex === 0 && prevBlock && isTable(lastContentInPrevBlock)) {
+          const lastRowIndex = lastContentInPrevBlock.rows.length - 1;
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex - 1,
+              contentIndex: prevBlock.content.length - 1,
+              rowIndex: lastRowIndex,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+      }
     }
 
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
@@ -390,14 +510,136 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        if (f.rowIndex === -1 && content.rows.length > 0) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: 0, cursorPosition: 0 },
+          }));
+          return;
+        }
+
+        if (f.rowIndex >= 0 && f.rowIndex < content.rows.length - 1) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: { ...f, rowIndex: f.rowIndex + 1, cursorPosition: 0 },
+          }));
+          return;
+        }
+
+        if (f.rowIndex >= content.rows.length - 1) {
+          const nextContent = block.content[f.contentIndex + 1];
+          // When ArrowDown exits a table and the next content is also a table,
+          // insert an empty literal between them so the caret has a normal text
+          // position to land on. We update the nested editor state
+          // add the literal, focus it, and mark the document as dirty.
+          if (isTable(nextContent) && "deletedContent" in block) {
+            event.preventDefault();
+            setEditorState((prev) =>
+              produce(prev, (draft) => {
+                const draftBlock = draft.redigertBrev.blocks[f.blockIndex];
+                if (!("deletedContent" in draftBlock)) return;
+
+                addElements(
+                  [newLiteral({ editedText: "" })],
+                  f.contentIndex + 1,
+                  draftBlock.content,
+                  draftBlock.deletedContent,
+                );
+
+                draft.focus = {
+                  blockIndex: f.blockIndex,
+                  contentIndex: f.contentIndex + 1,
+                  cursorPosition: 0,
+                };
+                draft.saveStatus = "DIRTY";
+              }),
+            );
+            return;
+          }
+
+          event.preventDefault();
+          setEditorState(exitTable("forward"));
+          return;
+        }
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
     }
 
+    if (!isTableCellIndex(f)) {
+      const blocks = editorState.redigertBrev.blocks;
+      const block = blocks[f.blockIndex];
+      const nextContent = block.content[f.contentIndex + 1];
+
+      const nextBlock =
+        f.contentIndex >= block.content.length - 1 && f.blockIndex + 1 < blocks.length
+          ? blocks[f.blockIndex + 1]
+          : undefined;
+      const firstContentInNextBlock = nextBlock?.content[0];
+
+      const hasAdjacentTable =
+        isTable(nextContent) || (f.contentIndex >= block.content.length - 1 && isTable(firstContentInNextBlock));
+
+      if (hasAdjacentTable) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnLastVisualLine = caretCoordinates.bottom >= elementRect.bottom - 1;
+
+        if (!isOnLastVisualLine) {
+          return;
+        }
+
+        if (isTable(nextContent)) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex,
+              contentIndex: f.contentIndex + 1,
+              rowIndex: -1,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+
+        if (nextBlock && isTable(firstContentInNextBlock)) {
+          event.preventDefault();
+          setEditorState((prev) => ({
+            ...prev,
+            focus: {
+              blockIndex: f.blockIndex + 1,
+              contentIndex: 0,
+              rowIndex: -1,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            },
+          }));
+          return;
+        }
+      }
+    }
+
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
+
     if (shouldDoItOurselves) {
       const next = findOnLineBelow(element);
 
