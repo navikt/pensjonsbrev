@@ -152,7 +152,8 @@ jobs:
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
-        if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
+        # TODO: revert — temporarily always upload to test baseline-update step on this PR
+        if: ${{ true || needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
         uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: visuals
@@ -162,7 +163,8 @@ jobs:
     name: "Analyze images"
     needs: [runIntegrationTests, changes]
     runs-on: ubuntu-latest
-    if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
+    # TODO: revert — temporarily always run to test baseline-update step on this PR
+    if: ${{ true || needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
     permissions:
       statuses: write
       checks: write
@@ -188,20 +190,32 @@ jobs:
           mkdir -p brevbaker/pdf-bygger/build/test_visual/png
           find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 "$1" brevbaker/pdf-bygger/build/test_visual/png/$(basename "$1" .pdf)' _ {}
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           node-version-file: ".tool-versions"
       - name: Install reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
         uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
         run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          ACTUAL_KEY: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
+      # wipe and update the baseline directly instead of running comparison on main.
+      - name: Update main baseline on GCS
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: |
+          gcloud storage rsync \
+            brevbaker/pdf-bygger/build/test_visual/png \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main \
+            --recursive \
+            --delete-unmatched-destination-objects
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
