@@ -28,7 +28,7 @@ class AvslagUfoerepensjonTest {
         LetterTestImpl(
             AvslagUfoerepensjon.template,
             Fixtures.create<AvslagUfoerepensjonDto>(),
-            Language.Bokmal,
+            Language.Nynorsk,
             Fixtures.felles
         ).renderTestHtml("GP_AVSLAG_UFOERPENSJON")
     }
