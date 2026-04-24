@@ -66,22 +66,29 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         showIf(
             pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_108")
-                    and pe.pebrevkode().notEqualTo("PE_UT_04_109")
-                    and pe.pebrevkode().notEqualTo("PE_UT_07_200")
-                    and pe.pebrevkode().notEqualTo("PE_UT_06_300")
-        ) {
-            includePhrase(
-                TBU034V_036V(pe)
-            )
+                    and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300")) {
+            includePhrase(TBU034V_036V(pe))
         }
-        showIf(!pe.ut_uforetidspunkt_foer_17()) {
+
+        showIf(!pe.ut_uforetidspunkt_foer_17()
+                        and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
+                        and pe.pebrevkode().isNotAnyOf("PE_UT_04_108", "PE_UT_04_109", "PE_UT_07_200", "PE_UT_06_300", "PE_UT_07_100", "PE_UT_05_100", "PE_UT_04_300", "PE_UT_14_300", "PE_UT_04_500")
+                        and (pe.pebrevkode().notEqualTo("PE_UT_04_102") or pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("tilst_dod"))) {
+            title1 {
+                text(
+                    bokmal { +"Dette er inntektene vi har brukt i beregningen din" },
+                    nynorsk { +"Dette er inntektene vi har brukt i berekninga di" },
+                )
+            }
             includePhrase(TBU037V_1(pe))
             includePhrase(TBU037V_2(pe))
+
             includePhrase(TBU038V_1(pe))
             includePhrase(TBU038V_2(pe))
+
             includePhrase(TBU037V_3(pe))
             includePhrase(TBU037V_4(pe))
+
             includePhrase(TBU038V_3(pe))
             includePhrase(TBU038V_4(pe))
         }
@@ -134,7 +141,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         showIf(pe.ut_trygdetid()
                 and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
                 and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
-                and not (pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))) {
+                and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")) {
             includePhrase(TBU047V)
         }
 
