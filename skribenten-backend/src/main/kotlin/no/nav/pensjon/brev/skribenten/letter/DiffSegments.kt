@@ -2,29 +2,32 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
-fun createSplitDiffSegments(redigertBrev: Edit.Letter, rendret: LetterMarkup): Pair<List<DiffSegment>, List<DiffSegment>> =
-    rendret.toEdit().editables.toList().let { rendretEditables ->
-        val redigertBrevEditables = redigertBrev.editables.toList()
+fun createSplitDiffSegments(redigertBrev: Edit.Letter, rendret: LetterMarkup): Pair<List<DiffSegment>, List<DiffSegment>> {
+    val tokenizer = TextOnlyCharacterTokenizer()
+
+    return tokenizer.tokenize(rendret.toEdit()).toList().let { rendretEditables ->
+        val redigertBrevEditables = tokenizer.tokenize(redigertBrev).toList()
         val editScript = shortestEditScript(rendretEditables, redigertBrevEditables)
 
         Pair(
-            redigertBrevEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Insert<EditedLetterToken>>()),
-            rendretEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Delete<EditedLetterToken>>())
+            redigertBrevEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Insert<TextOnlyCharacterTokenizer.Token>>()),
+            rendretEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Delete<TextOnlyCharacterTokenizer.Token>>())
         )
     }
+}
 
 data class ContentIndex(val blockIndex: Int, val contentIndex: Int)
 
 data class DiffSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int)
 
-private fun List<EditedLetterToken>.generateDiffSegments(edits: List<EditOperation<EditedLetterToken>>): List<DiffSegment> = buildList {
+private fun List<TextOnlyCharacterTokenizer.Token>.generateDiffSegments(edits: List<EditOperation<TextOnlyCharacterTokenizer.Token>>): List<DiffSegment> = buildList {
     val editscript = EditscriptConsumer(this@generateDiffSegments, edits)
 
     var blockIndex = 0
     while (editscript.hasNext) {
         // Her slukes en edit operation, men det virker kun relevant å markere tekst inni selve blokken.
         val (current) = editscript.consume()
-        require(current is EditedLetterToken.Block) { "Found editable that is not a Block at the top level: $current" }
+        require(current is TextOnlyCharacterTokenizer.Token.Block) { "Found editable that is not a Block at the top level: $current" }
 
         addAll(consumeBlock(blockIndex++, editscript))
     }
@@ -32,21 +35,21 @@ private fun List<EditedLetterToken>.generateDiffSegments(edits: List<EditOperati
 
 private fun consumeBlock(
     blockIndex: Int,
-    editscript: EditscriptConsumer<EditedLetterToken>,
+    editscript: EditscriptConsumer<TextOnlyCharacterTokenizer.Token>,
 ): List<DiffSegment> = buildList {
     var contentIndex = 0
-    while (editscript.peekLetter() is EditedLetterToken.Content) {
+    while (editscript.peekLetter() is TextOnlyCharacterTokenizer.Token.Content) {
         val contentIndex = ContentIndex(blockIndex = blockIndex, contentIndex = contentIndex++)
 
         val (content) = editscript.consume()
-        require(content is EditedLetterToken.Content) { "Found editable that is not a Content: $content" }
-        require(editscript.consume().first is EditedLetterToken.ContentFont) { "Found editable that is not a ContentFont" }
+        require(content is TextOnlyCharacterTokenizer.Token.Content) { "Found editable that is not a Content: $content" }
+        require(editscript.consume().first is TextOnlyCharacterTokenizer.Token.ContentFont) { "Found editable that is not a ContentFont" }
 
         var currentDiff: DiffSegment? = null
         var offset = 0
-        while (editscript.peekLetter() is EditedLetterToken.ContentText) {
+        while (editscript.peekLetter() is TextOnlyCharacterTokenizer.Token.ContentText) {
             val (current, textEdit) = editscript.consume()
-            require(current is EditedLetterToken.ContentText)
+            require(current is TextOnlyCharacterTokenizer.Token.ContentText)
 
             if (textEdit != null) {
                 if (currentDiff == null) {
