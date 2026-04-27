@@ -44,6 +44,7 @@ class InnvilgelseUfoeretrygdTest {
             val beregningufore = beregningsdata.beregningufore!!
             val uforetrygdberegning = beregningufore.uforetrygdberegning!!
             val grunnlag = pe.vedtaksbrev.grunnlag
+            val vilkarsvedtaklist = vedtaksdata.vilkarsvedtaklist!!
 
             dto.copy(
                 pesysData = dto.pesysData.copy(
@@ -59,13 +60,27 @@ class InnvilgelseUfoeretrygdTest {
                                         )
                                     )
                                 ),
+                                vilkarsvedtaklist = vilkarsvedtaklist.copy(
+                                    vilkarsvedtak = vilkarsvedtaklist.vilkarsvedtak.mapIndexed { index, vv ->
+                                        if (index == 0) {
+                                            val vilkar = vv.vilkar!!
+                                            vv.copy(
+                                                vilkar = vilkar.copy(
+                                                    medlemskapforutettertrygdeavtaler = vilkar.medlemskapforutettertrygdeavtaler?.copy(
+                                                        oppfyltvedsammenlegging = false
+                                                    )
+                                                )
+                                            )
+                                        } else vv
+                                    }
+                                ),
                             ),
                             grunnlag = grunnlag.copy(
                                 persongrunnlagsliste = grunnlag.persongrunnlagsliste?.map { pg ->
                                     pg.copy(personbostedsland = "swe")
                                 }
                             )
-                        )
+                        ),
                     )
                 )
             )
@@ -76,6 +91,6 @@ class InnvilgelseUfoeretrygdTest {
             dto,
             Language.Bokmal,
             Fixtures.fellesAuto
-        ).renderTestHtml("UT_INNVILGELSE_UFOERTRYGD_EOS_MINSTEYTELSE")
+        ).renderTestPDF("UT_INNVILGELSE_UFOERTRYGD_EOS_MINSTEYTELSE")
     }
 }
