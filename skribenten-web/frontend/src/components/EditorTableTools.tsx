@@ -18,7 +18,7 @@ const EditorTableTools = () => {
       <HStack gap="space-8">
         <Button
           data-color="neutral"
-          data-e2e="toolbar-table-btn"
+          data-testid="toolbar-table-btn"
           disabled={freeze || editorState.focus.blockIndex < 0}
           icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
           onClick={() => {

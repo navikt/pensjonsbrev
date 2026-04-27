@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 const exampleLetter1 = {
   title: {
@@ -403,14 +403,14 @@ test.describe("Switch font type", () => {
         expect(selectedText).toBe("teste piltast");
 
         // Click bold button
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
 
         // Re-select and unbold
         await selectFullElement(page, "teste piltast");
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "400");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
@@ -446,14 +446,14 @@ test.describe("Switch font type", () => {
         expect(selectedText).toBe("teste piltast");
 
         // Italic on with toolbar
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-style", "normal");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "italic");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
 
         // Italic off with toolbar
         await selectFullElement(page, "teste piltast");
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-style", "normal");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-style", "normal");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-style", "normal");
@@ -488,7 +488,7 @@ test.describe("Switch font type", () => {
         expect(selectedText).toBe("teste piltast");
 
         // Bold on
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "700");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
@@ -498,7 +498,7 @@ test.describe("Switch font type", () => {
 
         // Switch to italic (removes bold, applies italic)
         await selectFullElement(page, "teste piltast");
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         await expect(page.getByText("Er laget for")).toHaveCSS("font-weight", "400");
         await expect(page.getByText("teste piltast")).toHaveCSS("font-weight", "400");
         await expect(page.getByText(afterSelectionText)).toHaveCSS("font-weight", "400");
@@ -609,8 +609,8 @@ test.describe("Switch font type", () => {
         const fullText = "Jeg er en literal, som blir fulgt opp av en annen literal, og til slutt, en siste literal";
         await expect(page.getByText(fullText)).toBeVisible();
         await page.getByText(fullText).click();
-        await dataE2E(page, "editor-bullet-list").click();
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("editor-bullet-list").click();
+        await page.getByTestId("fonttype-bold").click();
         await expect(page.getByText(fullText)).toBeVisible();
       });
 
@@ -626,7 +626,7 @@ test.describe("Switch font type", () => {
         await placeCaretBefore(page, longLiteralText, "variable.");
 
         // Click bold
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
 
         const mainText =
@@ -636,7 +636,7 @@ test.describe("Switch font type", () => {
 
         // Unbold by clicking on bold element and toggling
         await page.getByText("variable.").click();
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         await expect(page.getByText(mainText)).toHaveCSS("font-weight", "400");
         await expect(page.getByText("variable.")).toHaveCSS("font-weight", "400");
 
@@ -662,7 +662,7 @@ test.describe("Switch font type", () => {
         // Place caret right before "variable." in the third literal
         await placeCaretBefore(page, longLiteralText, "variable.");
 
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
 
         const mainText =
@@ -671,7 +671,7 @@ test.describe("Switch font type", () => {
         await expect(page.getByText("variable.")).toHaveCSS("font-style", "italic");
 
         await page.getByText("variable.").click();
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         await expect(page.getByText(mainText)).toHaveCSS("font-style", "normal");
         await expect(page.getByText("variable.")).toHaveCSS("font-style", "normal");
 
@@ -697,7 +697,7 @@ test.describe("Switch font type", () => {
         // Place caret right before "variable." in the third literal
         await placeCaretBefore(page, longLiteralText, "variable.");
 
-        await dataE2E(page, "fonttype-bold").click();
+        await page.getByTestId("fonttype-bold").click();
         expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(4);
 
         const mainText =
@@ -709,7 +709,7 @@ test.describe("Switch font type", () => {
 
         // Switch to italic
         await page.getByText("variable.").click();
-        await dataE2E(page, "fonttype-italic").click();
+        await page.getByTestId("fonttype-italic").click();
         await expect(page.getByText(mainText)).toHaveCSS("font-weight", "400");
         await expect(page.getByText("variable.")).toHaveCSS("font-weight", "400");
         await expect(page.getByText(mainText)).toHaveCSS("font-style", "normal");
@@ -750,11 +750,11 @@ test.describe("Switch font type", () => {
 
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
       await page.getByText("VARIABLE-MED-LITT-LENGDE").click();
-      await dataE2E(page, "fonttype-bold").click();
+      await page.getByTestId("fonttype-bold").click();
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
-      await dataE2E(page, "fonttype-bold").click();
+      await page.getByTestId("fonttype-bold").click();
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
@@ -770,11 +770,11 @@ test.describe("Switch font type", () => {
 
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-style", "normal");
       await page.getByText("VARIABLE-MED-LITT-LENGDE").click();
-      await dataE2E(page, "fonttype-italic").click();
+      await page.getByTestId("fonttype-italic").click();
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-style", "normal");
-      await dataE2E(page, "fonttype-italic").click();
+      await page.getByTestId("fonttype-italic").click();
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-style", "normal");
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
@@ -792,13 +792,13 @@ test.describe("Switch font type", () => {
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
 
       await page.getByText("VARIABLE-MED-LITT-LENGDE").click();
-      await dataE2E(page, "fonttype-bold").click();
+      await page.getByTestId("fonttype-bold").click();
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-style", "normal");
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
 
-      await dataE2E(page, "fonttype-italic").click();
+      await page.getByTestId("fonttype-italic").click();
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-style", "normal");
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
 
@@ -837,7 +837,7 @@ test.describe("Switch font type", () => {
         (node.parentElement as HTMLElement)?.focus();
       });
 
-      await dataE2E(page, "fonttype-bold").click();
+      await page.getByTestId("fonttype-bold").click();
 
       expect(await firstParagraph.evaluate((el) => el.childNodes.length)).toBe(3);
       await expect(page.getByText("VARIABLE-MED-LITT-LENGDE")).toHaveCSS("font-weight", "400");
@@ -957,8 +957,8 @@ test.describe("Switch font type", () => {
         await page.keyboard.press("ArrowLeft");
       }
 
-      await dataE2E(page, "editor-bullet-list").click();
-      await dataE2E(page, "fonttype-bold").click();
+      await page.getByTestId("editor-bullet-list").click();
+      await page.getByTestId("fonttype-bold").click();
       await expect(page.getByText(fullText)).toBeVisible();
     });
   });

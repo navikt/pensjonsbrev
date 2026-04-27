@@ -1,9 +1,9 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { dataCy, dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 async function expectOrderLetterSuccess(page: Page, expectedUrl: string) {
-  const successMessage = page.locator("[data-e2e=order-letter-success-message]");
+  const successMessage = page.getByTestId("order-letter-success-message");
   await expect(successMessage).toBeVisible();
   await expect(successMessage.getByRole("link", { name: "Klikk her for å prøve igjen" })).toHaveAttribute(
     "href",
@@ -72,47 +72,47 @@ test.describe("Endrer på mottaker", () => {
     });
 
     // Search and select the letter
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
 
     // Open change recipient modal, verify search button not visible
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
-    await expect(page.locator("[data-e2e=endre-mottaker-søk-button]")).not.toBeVisible();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await expect(page.getByTestId("endre-mottaker-søk-button")).not.toBeVisible();
 
     // Select direkte oppslag and fill form
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Direkte oppslag");
-    await expect(dataE2E(page, "endre-mottaker-søk-button")).toBeVisible();
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Direkte oppslag");
+    await expect(page.getByTestId("endre-mottaker-søk-button")).toBeVisible();
     await page.getByLabel("Samhandlertype").click();
     await page.locator(":focus").pressSequentially("adv");
     await page.keyboard.press("Enter");
-    await dataE2E(page, "endre-mottaker-identtype-select").selectOption("Norsk orgnr");
+    await page.getByTestId("endre-mottaker-identtype-select").selectOption("Norsk orgnr");
     await page.getByLabel("ID", { exact: true }).click();
     await page.locator(":focus").pressSequentially("direkte-oppslag-id");
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // Select first samhandler by clicking the name (selects and expands the row)
-    await dataE2E(page, "endre-mottaker-modal").getByText("Advokat 1 As").first().click();
+    await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
     // Assert address details shown in expanded row
     await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
     await expect(page.getByText("4003")).toBeVisible();
     await expect(page.getByText("Stavanger")).toBeVisible();
     await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
-    await dataCy(page, "lagre-samhandler").click();
+    await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
     expect(page.url()).toContain("templateId=PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
-    await dataE2E(page, "avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
-    await dataE2E(page, "brev-title-textfield").click();
-    await dataE2E(page, "brev-title-textfield").pressSequentially("Vedtak om bla bla");
-    await expect(dataE2E(page, "språk-velger-select")).toHaveValue("NB");
+    await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
+    await page.getByTestId("brev-title-textfield").click();
+    await page.getByTestId("brev-title-textfield").pressSequentially("Vedtak om bla bla");
+    await expect(page.getByTestId("språk-velger-select")).toHaveValue("NB");
 
     // Order letter
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await expectOrderLetterSuccess(
       page,
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -132,48 +132,48 @@ test.describe("Endrer på mottaker", () => {
     });
 
     // Search and select the letter
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
 
     // Open change recipient modal, verify search button not visible
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
-    await expect(page.locator("[data-e2e=endre-mottaker-søk-button]")).not.toBeVisible();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await expect(page.getByTestId("endre-mottaker-søk-button")).not.toBeVisible();
 
     // Select organisasjonsnavn and fill form
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Organisasjonsnavn");
-    await expect(dataE2E(page, "endre-mottaker-søk-button")).toBeVisible();
-    await expect(dataE2E(page, "endre-mottaker-organisasjonsnavn-innOgUtland")).toHaveValue("ALLE");
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Organisasjonsnavn");
+    await expect(page.getByTestId("endre-mottaker-søk-button")).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-organisasjonsnavn-innOgUtland")).toHaveValue("ALLE");
     await page.getByLabel("Samhandlertype").click();
     await page.locator(":focus").pressSequentially("adv");
     await page.keyboard.press("Enter");
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("navnet på samhandler");
 
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // Select first samhandler by clicking the name (selects and expands the row)
-    await dataE2E(page, "endre-mottaker-modal").getByText("Advokat 1 As").first().click();
+    await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
     // Assert address details shown in expanded row
     await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
     await expect(page.getByText("4003")).toBeVisible();
     await expect(page.getByText("Stavanger")).toBeVisible();
     await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
-    await dataCy(page, "lagre-samhandler").click();
+    await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
     expect(page.url()).toContain("templateId=PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
-    await dataE2E(page, "avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
-    await dataE2E(page, "brev-title-textfield").click();
-    await dataE2E(page, "brev-title-textfield").pressSequentially("Vedtak om bla bla");
-    await expect(dataE2E(page, "språk-velger-select")).toHaveValue("NB");
+    await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
+    await page.getByTestId("brev-title-textfield").click();
+    await page.getByTestId("brev-title-textfield").pressSequentially("Vedtak om bla bla");
+    await expect(page.getByTestId("språk-velger-select")).toHaveValue("NB");
 
     // Order letter
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await expectOrderLetterSuccess(
       page,
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -193,17 +193,17 @@ test.describe("Endrer på mottaker", () => {
     });
 
     // Search and select the letter
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
 
     // Open change recipient modal, verify search button not visible
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
-    await expect(page.locator("[data-e2e=endre-mottaker-søk-button]")).not.toBeVisible();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await expect(page.getByTestId("endre-mottaker-søk-button")).not.toBeVisible();
 
     // Select personnavn and fill form
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Personnavn");
-    await expect(dataE2E(page, "endre-mottaker-søk-button")).toBeVisible();
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Personnavn");
+    await expect(page.getByTestId("endre-mottaker-søk-button")).toBeVisible();
     await page.getByLabel("Samhandlertype").click();
     await page.locator(":focus").pressSequentially("adv");
     await page.keyboard.press("Enter");
@@ -212,30 +212,30 @@ test.describe("Endrer på mottaker", () => {
     await page.getByLabel("Etternavn").click();
     await page.locator(":focus").pressSequentially("Etternavnet");
 
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // Select first samhandler by clicking the name (selects and expands the row)
-    await dataE2E(page, "endre-mottaker-modal").getByText("Advokat 1 As").first().click();
+    await page.getByTestId("endre-mottaker-modal").getByText("Advokat 1 As").first().click();
 
     // Assert address details shown in expanded row
     await expect(page.getByText("Postboks 603 Sentrum")).toBeVisible();
     await expect(page.getByText("4003")).toBeVisible();
     await expect(page.getByText("Stavanger")).toBeVisible();
     await expect(page.getByRole("cell", { name: "Nor", exact: true })).toBeVisible();
-    await dataCy(page, "lagre-samhandler").click();
+    await page.getByTestId("lagre-samhandler").click();
 
     // Assert we have switched to samhandler
     await expect(page).toHaveURL(/\/saksnummer\/123456\/brevvelger/);
     expect(page.url()).toContain("templateId=PE_IY_05_300");
     expect(page.url()).toContain("idTSSEkstern=%2280000781720%22");
 
-    await dataE2E(page, "avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
-    await dataE2E(page, "brev-title-textfield").click();
-    await dataE2E(page, "brev-title-textfield").pressSequentially("Vedtak om bla bla");
-    await expect(dataE2E(page, "språk-velger-select")).toHaveValue("NB");
+    await page.getByTestId("avsenderenhet-select").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
+    await page.getByTestId("brev-title-textfield").click();
+    await page.getByTestId("brev-title-textfield").pressSequentially("Vedtak om bla bla");
+    await expect(page.getByTestId("språk-velger-select")).toHaveValue("NB");
 
     // Order letter
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await expectOrderLetterSuccess(
       page,
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
@@ -243,61 +243,61 @@ test.describe("Endrer på mottaker", () => {
   });
 
   test("viser valideringsfeil for direkte oppslag med tomme felter", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
 
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Direkte oppslag");
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Direkte oppslag");
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // samhandlertype, identtype og id er påkrevd
-    await expect(dataE2E(page, "endre-mottaker-modal").locator(".aksel-error-message")).toHaveCount(3, {
+    await expect(page.getByTestId("endre-mottaker-modal").locator(".aksel-error-message")).toHaveCount(3, {
       timeout: 5000,
     });
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
   });
 
   test("viser valideringsfeil for organisasjonsnavn med tomme felter", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
 
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Organisasjonsnavn");
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Organisasjonsnavn");
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // samhandlertype og navn er påkrevd
-    await expect(dataE2E(page, "endre-mottaker-modal").locator(".aksel-error-message").first()).toBeVisible();
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal").locator(".aksel-error-message").first()).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
   });
 
   test("viser valideringsfeil for personnavn med tomme felter", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
 
-    await dataE2E(page, "endre-mottaker-søketype-select").selectOption("Personnavn");
-    await dataE2E(page, "endre-mottaker-søk-button").click();
+    await page.getByTestId("endre-mottaker-søketype-select").selectOption("Personnavn");
+    await page.getByTestId("endre-mottaker-søk-button").click();
 
     // samhandlertype, fornavn og etternavn er påkrevd
-    await expect(dataE2E(page, "endre-mottaker-modal").locator(".aksel-error-message")).toHaveCount(3, {
+    await expect(page.getByTestId("endre-mottaker-modal").locator(".aksel-error-message")).toHaveCount(3, {
       timeout: 5000,
     });
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Feltet må fylles ut").first()).toBeVisible();
   });
 
   test("viser valideringsfeil for manuell adresse med norsk adresse", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
 
     // submit with empty fields — name is mandatory
-    await dataE2E(page, "endre-mottaker-modal").getByText("Lagre og lukk").click();
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Obligatorisk")).toBeVisible();
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Obligatorisk")).toBeVisible();
 
     // fill name, set invalid postal code
     await page.getByLabel("Navn", { exact: true }).click();
@@ -306,20 +306,20 @@ test.describe("Endrer på mottaker", () => {
     await page.locator(":focus").pressSequentially("abc");
     await page.getByLabel("Poststed").click();
     await page.locator(":focus").pressSequentially("Stedet");
-    await dataE2E(page, "endre-mottaker-modal").getByText("Lagre og lukk").click();
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Postnummer må være 4 siffer")).toBeVisible();
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Postnummer må være 4 siffer")).toBeVisible();
   });
 
   test("viser valideringsfeil for manuell adresse med utenlandsk adresse", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
 
     // Switch to foreign address — postal code/city should be hidden
-    await dataE2E(page, "land-combobox").click();
-    await dataE2E(page, "land-combobox").pressSequentially("Sver");
+    await page.getByTestId("land-combobox").click();
+    await page.getByTestId("land-combobox").pressSequentially("Sver");
     await page.keyboard.press("Enter");
     await expect(page.getByLabel("Postnummer")).not.toBeVisible();
     await expect(page.getByLabel("Poststed")).not.toBeVisible();
@@ -327,16 +327,16 @@ test.describe("Endrer på mottaker", () => {
     // Fill name but leave address line 1 empty
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Test Testesen");
-    await dataE2E(page, "endre-mottaker-modal").getByText("Lagre og lukk").click();
-    await expect(dataE2E(page, "endre-mottaker-modal").getByText("Adresselinje 1 må fylles ut")).toBeVisible();
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await expect(page.getByTestId("endre-mottaker-modal").getByText("Adresselinje 1 må fylles ut")).toBeVisible();
   });
 
   test("kan legge inn manuell adresse for brevbaker brev", async ({ page }) => {
     // Search and select the letter
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
@@ -346,10 +346,10 @@ test.describe("Endrer på mottaker", () => {
     await page.locator(":focus").pressSequentially("0000");
     await page.getByLabel("Poststed").click();
     await page.locator(":focus").pressSequentially("Poststedet");
-    await dataE2E(page, "land-combobox").click();
-    await dataE2E(page, "land-combobox").pressSequentially("Sver");
+    await page.getByTestId("land-combobox").click();
+    await page.getByTestId("land-combobox").pressSequentially("Sver");
     await page.keyboard.press("Enter");
-    await dataE2E(page, "endre-mottaker-modal").getByText("Lagre og lukk").click();
+    await page.getByTestId("endre-mottaker-modal").getByText("Lagre og lukk").click();
 
     await expect(page.getByText("Fornavn Etternavnsen")).toBeVisible();
     await expect(page.getByText("Adresselinjen")).toBeVisible();
@@ -360,29 +360,29 @@ test.describe("Endrer på mottaker", () => {
   });
 
   test("kan ikke legge inn manuell adresse for exstream brev", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
 
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await expect(page.getByText("Legg til manuelt")).not.toBeVisible();
   });
 
   test("kan avbryte uten bekreftelse dersom det ikke finnes endringer", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("brev fra nav");
-    await dataE2E(page, "brevmal-button").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
-    await expect(page.locator("[data-e2e=endre-mottaker-søk-button]")).not.toBeVisible();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("brev fra nav");
+    await page.getByTestId("brevmal-button").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
+    await expect(page.getByTestId("endre-mottaker-søk-button")).not.toBeVisible();
     await page.getByText("Avbryt").click();
-    await expect(dataE2E(page, "endre-mottaker-modal")).not.toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal")).not.toBeVisible();
   });
 
   test("må bekrefte avbrytelse dersom det finnes endringer for manuellAdresse", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
@@ -398,14 +398,14 @@ test.describe("Endrer på mottaker", () => {
     // Choose to confirm cancel
     await page.getByText("Avbryt").click();
     await page.getByText("Ja, avbryt").click();
-    await expect(dataE2E(page, "endre-mottaker-modal")).not.toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal")).not.toBeVisible();
   });
 
   test("ESC-tasten gir bekreftelsesdialog dersom det finnes endringer for manuellAdresse", async ({ page }) => {
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Informasjon om saksbehandlingstid");
     await page.getByText("Informasjon om saksbehandlingstid").click();
-    await dataCy(page, "toggle-endre-mottaker-modal").click();
+    await page.getByTestId("toggle-endre-mottaker-modal").click();
     await page.getByText("Legg til manuelt").click();
     await page.getByLabel("Navn", { exact: true }).click();
     await page.locator(":focus").pressSequentially("Fornavn Etternavnsen");
@@ -423,6 +423,6 @@ test.describe("Endrer på mottaker", () => {
     // Trigger ESC again and confirm
     await page.keyboard.press("Escape");
     await page.getByText("Ja, avbryt").click();
-    await expect(dataE2E(page, "endre-mottaker-modal")).not.toBeVisible();
+    await expect(page.getByTestId("endre-mottaker-modal")).not.toBeVisible();
   });
 });

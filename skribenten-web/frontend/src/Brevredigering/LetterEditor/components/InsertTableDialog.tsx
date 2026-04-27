@@ -17,7 +17,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
 
   return (
     <Modal
-      data-e2e="insert-table-modal"
+      data-testid="insert-table-modal"
       header={{ heading: "Sett inn tabell" }}
       onClose={onCancel}
       open={open}
@@ -31,16 +31,16 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
               updateValue: setColumnCount,
               label: "Antall kolonner:",
               id: "num-cols",
-              cyTag: "input-cols",
+              dataTestId: "input-cols",
             },
             {
               value: rowCount,
               updateValue: setRowCount,
               label: "Antall rader:",
               id: "num-rows",
-              cyTag: "input-rows",
+              dataTestId: "input-rows",
             },
-          ].map(({ value, updateValue, label, id, cyTag }) => (
+          ].map(({ value, updateValue, label, id, dataTestId }) => (
             <HStack align="center" gap="space-16" justify="space-between" key={id} paddingInline="space-40">
               <TextField
                 css={css`
@@ -57,7 +57,7 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
                     font-weight: var(--ax-font-weight-regular);
                   }
                 `}
-                data-e2e={cyTag}
+                data-testid={dataTestId}
                 id={id}
                 inputMode="numeric"
                 label={label}
@@ -80,11 +80,17 @@ function InsertTableDialog({ open, onCancel, onInsert }: InsertTableDialogProps)
       </Modal.Body>
       <Modal.Footer>
         <HStack gap="space-16">
-          <Button data-e2e="insert-table-cancel-btn" onClick={onCancel} size="small" type="button" variant="secondary">
+          <Button
+            data-testid="insert-table-cancel-btn"
+            onClick={onCancel}
+            size="small"
+            type="button"
+            variant="secondary"
+          >
             Avbryt
           </Button>
           <Button
-            data-e2e="insert-table-confirm-btn"
+            data-testid="insert-table-confirm-btn"
             disabled={numCols < 1 || numRows < 1}
             onClick={() => onInsert(Math.max(1, numCols), Math.max(1, numRows))}
             size="small"

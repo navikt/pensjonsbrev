@@ -16,7 +16,7 @@ const EditorFonts = () => {
     <>
       <FontButton
         active={activeFontType === FontType.BOLD}
-        dataE2E="fonttype-bold"
+        data-testid="fonttype-bold"
         disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           applyAction(Actions.switchFontType, setEditorState, FontType.BOLD);
@@ -25,7 +25,7 @@ const EditorFonts = () => {
       />
       <FontButton
         active={activeFontType === FontType.ITALIC}
-        dataE2E="fonttype-italic"
+        data-testid="fonttype-italic"
         disabled={freeze || editorState.focus.blockIndex < 0}
         onClick={() => {
           applyAction(Actions.switchFontType, setEditorState, FontType.ITALIC);
@@ -47,12 +47,12 @@ const FontButton = (props: {
   onClick: () => void;
   text: ReactNode;
   disabled?: boolean;
-  dataE2E: string;
+  "data-testid": string;
 }) => {
   return (
     <Button
       color="text-neutral"
-      data-e2e={props.dataE2E}
+      data-testid={props["data-testid"]}
       disabled={props.disabled}
       onClick={props.onClick}
       size="small"

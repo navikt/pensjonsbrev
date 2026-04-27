@@ -73,7 +73,7 @@ export default function Eblankett({
           )}
         >
           <TextField
-            data-e2e="mottaker-text-textfield"
+            data-testid="mottaker-text-textfield"
             {...methods.register("mottakerText")}
             autoComplete="off"
             error={methods.formState.errors.mottakerText?.message}

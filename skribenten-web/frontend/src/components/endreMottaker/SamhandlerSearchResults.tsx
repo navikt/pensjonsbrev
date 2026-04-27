@@ -126,7 +126,7 @@ function SamhandlerResultRow({
             aria-label={humanizeName(samhandler.navn)}
             checked={selected}
             className="aksel-radio__input"
-            data-cy="velg-samhandler"
+            data-testid="velg-samhandler"
             name="samhandler-valg"
             onChange={() => {
               selectWithTracking(clickedByMouse.current ? "radio-klikk" : "tastatur");

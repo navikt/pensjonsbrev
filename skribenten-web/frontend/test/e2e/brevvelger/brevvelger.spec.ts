@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 import sak from "../fixtures/sak.json" with { type: "json" };
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevvelger spec", () => {
   test.beforeEach(async ({ page }) => {
@@ -23,19 +23,19 @@ test.describe("Brevvelger spec", () => {
   test("Søk etter brevmal", async ({ page }) => {
     await page.goto("/saksnummer/123456/brevvelger");
 
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("Varsel tilbakekreving");
-    await expect(dataE2E(page, "category-item")).toContainText("Feilutbetaling");
-    await expect(dataE2E(page, "brevmal-button").filter({ hasText: "Varsel - tilbakekreving" })).toBeVisible();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("Varsel tilbakekreving");
+    await expect(page.getByTestId("category-item")).toContainText("Feilutbetaling");
+    await expect(page.getByTestId("brevmal-button").filter({ hasText: "Varsel - tilbakekreving" })).toBeVisible();
 
     await page.locator(":focus").fill("!");
-    await expect(dataE2E(page, "category-item")).toHaveCount(0);
-    await expect(dataE2E(page, "brevmal-button")).toHaveCount(0);
-    await expect(dataE2E(page, "ingen-treff-alert")).toBeVisible();
+    await expect(page.getByTestId("category-item")).toHaveCount(0);
+    await expect(page.getByTestId("brevmal-button")).toHaveCount(0);
+    await expect(page.getByTestId("ingen-treff-alert")).toBeVisible();
 
     await page.keyboard.press("Escape");
-    await expect(dataE2E(page, "category-item")).toHaveCount(9);
-    for (const item of await dataE2E(page, "category-item").all()) {
+    await expect(page.getByTestId("category-item")).toHaveCount(9);
+    for (const item of await page.getByTestId("category-item").all()) {
       await expect(item).not.toHaveClass(/aksel-accordion__item--open/);
     }
   });
@@ -68,7 +68,7 @@ test.describe("Brevvelger spec", () => {
       return route.fallback();
     });
 
-    await dataE2E(page, "add-favorite-button").click();
+    await page.getByTestId("add-favorite-button").click();
     expect(postBody).toBe("INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
     await expect(page.locator(".aksel-accordion__item").filter({ hasText: "Favoritter" })).toHaveCount(1);
@@ -89,7 +89,7 @@ test.describe("Brevvelger spec", () => {
       return route.fallback();
     });
 
-    await dataE2E(page, "remove-favorite-button").click();
+    await page.getByTestId("remove-favorite-button").click();
     expect(deleteBody).toBe("INFORMASJON_OM_SAKSBEHANDLINGSTID");
 
     await expect(page.locator(".aksel-accordion__item").filter({ hasText: "Favoritter" })).toHaveCount(0);
@@ -115,8 +115,8 @@ test.describe("Brevvelger spec", () => {
 
     await page.goto("/saksnummer/123456/brevvelger");
 
-    await dataE2E(page, "category-item").filter({ hasText: "Feilutbetaling" }).click();
-    await dataE2E(page, "brevmal-button").filter({ hasText: "Varsel - tilbakekreving" }).click();
+    await page.getByTestId("category-item").filter({ hasText: "Feilutbetaling" }).click();
+    await page.getByTestId("brevmal-button").filter({ hasText: "Varsel - tilbakekreving" }).click();
 
     await page.locator("select[name=spraak]").selectOption({ label: "Nynorsk" });
     await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
@@ -124,7 +124,7 @@ test.describe("Brevvelger spec", () => {
     const orderLetterResponsePromise = page.waitForResponse(
       (r) => r.url().includes("/bestillBrev/exstream") && r.request().method() === "POST",
     );
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await orderLetterResponsePromise;
 
     expect(requestBody).toMatchObject({
@@ -139,7 +139,7 @@ test.describe("Brevvelger spec", () => {
     expect(calls).toEqual([
       "mbdok://PE2@brevklient/dokument/453864183?token=1711014877285&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     ]);
-    await expect(dataE2E(page, "order-letter-success-message")).toBeVisible();
+    await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
   });
 
   test("Skriv notat", async ({ page }) => {
@@ -160,19 +160,19 @@ test.describe("Brevvelger spec", () => {
 
     await page.goto("/saksnummer/123456/brevvelger");
 
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("notat");
-    await dataE2E(page, "brevmal-button").click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("notat");
+    await page.getByTestId("brevmal-button").click();
 
-    await expect(dataE2E(page, "språk-velger-select")).not.toBeVisible();
+    await expect(page.getByTestId("språk-velger-select")).not.toBeVisible();
 
-    await dataE2E(page, "brev-title-textfield").click();
-    await dataE2E(page, "brev-title-textfield").pressSequentially("GGMU");
+    await page.getByTestId("brev-title-textfield").click();
+    await page.getByTestId("brev-title-textfield").pressSequentially("GGMU");
     await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
     const orderLetterResponsePromise = page.waitForResponse(
       (r) => r.url().includes("/bestillBrev/exstream") && r.request().method() === "POST",
     );
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await orderLetterResponsePromise;
 
     expect(requestBody).toMatchObject({
@@ -186,7 +186,7 @@ test.describe("Brevvelger spec", () => {
     expect(calls).toEqual([
       "mbdok://PE2@brevklient/dokument/453864212?token=1711023327721&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     ]);
-    await expect(dataE2E(page, "order-letter-success-message")).toBeVisible();
+    await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
   });
 
   test("Bestill E-blankett", async ({ page }) => {
@@ -207,11 +207,11 @@ test.describe("Brevvelger spec", () => {
 
     await page.goto("/saksnummer/123456/brevvelger");
 
-    await dataE2E(page, "brevmal-search").click();
-    await dataE2E(page, "brevmal-search").pressSequentially("E 001");
-    await dataE2E(page, "brevmal-button").filter({ hasText: "E 001" }).click();
+    await page.getByTestId("brevmal-search").click();
+    await page.getByTestId("brevmal-search").pressSequentially("E 001");
+    await page.getByTestId("brevmal-button").filter({ hasText: "E 001" }).click();
 
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await page.locator("select[name=enhetsId]").selectOption({ label: "Nav Arbeid og ytelser Innlandet" });
 
     await expect(
@@ -222,16 +222,18 @@ test.describe("Brevvelger spec", () => {
       page.locator("label").filter({ hasText: "Land" }).locator("..").locator(".aksel-error-message"),
     ).not.toBeVisible();
 
-    await expect(dataE2E(page, "mottaker-text-textfield").locator("..").locator(".aksel-error-message")).toBeVisible();
-    await dataE2E(page, "mottaker-text-textfield").pressSequentially("Haaland");
     await expect(
-      dataE2E(page, "mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
+      page.getByTestId("mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
+    ).toBeVisible();
+    await page.getByTestId("mottaker-text-textfield").pressSequentially("Haaland");
+    await expect(
+      page.getByTestId("mottaker-text-textfield").locator("..").locator(".aksel-error-message"),
     ).not.toBeVisible();
 
     const orderLetterResponsePromise = page.waitForResponse(
       (r) => r.url().includes("/bestillBrev/exstream/eblankett") && r.request().method() === "POST",
     );
-    await dataE2E(page, "order-letter").click();
+    await page.getByTestId("order-letter").click();
     await orderLetterResponsePromise;
 
     expect(requestBody).toMatchObject({
@@ -245,7 +247,7 @@ test.describe("Brevvelger spec", () => {
     expect(calls).toEqual([
       "mbdok://PE2@brevklient/dokument/453864284?token=1711101230605&server=https%3A%2F%2Fwasapp-q2.adeo.no%2Fbrevweb%2F",
     ]);
-    await expect(dataE2E(page, "order-letter-success-message")).toBeVisible();
+    await expect(page.getByTestId("order-letter-success-message")).toBeVisible();
   });
 
   test("enhetsId som url param gjenspeiles i form og inputs", async ({ page }) => {
@@ -256,7 +258,7 @@ test.describe("Brevvelger spec", () => {
     const enheterResponsePromise = page.waitForResponse((r) => r.url().includes("/me/enheter") && r.status() === 200);
     await page.goto('/saksnummer/123456/brevvelger?templateId=PE_IY_03_163&enhetsId="4815"');
     await enheterResponsePromise;
-    await expect(dataE2E(page, "avsenderenhet-select")).toHaveValue("4815");
+    await expect(page.getByTestId("avsenderenhet-select")).toHaveValue("4815");
   });
 
   test("valg av ikke-foretrukket språk viser advarsel (ikke feilmelding)", async ({ page }) => {
@@ -272,14 +274,14 @@ test.describe("Brevvelger spec", () => {
     await page.goto('/saksnummer/123456/brevvelger?templateId=PE_IY_03_163&enhetsId="4815"');
     await enheterResponsePromise;
 
-    await dataE2E(page, "språk-velger-select").selectOption({ label: "Bokmål" });
+    await page.getByTestId("språk-velger-select").selectOption({ label: "Bokmål" });
     const warning = page.getByText("Brukers foretrukne språk er engelsk.");
     await expect(warning).toBeVisible();
 
-    await dataE2E(page, "språk-velger-select").selectOption({ label: "Engelsk (foretrukket språk)" });
+    await page.getByTestId("språk-velger-select").selectOption({ label: "Engelsk (foretrukket språk)" });
     await expect(warning).not.toBeVisible();
 
-    await dataE2E(page, "språk-velger-select").selectOption({ label: "Bokmål" });
+    await page.getByTestId("språk-velger-select").selectOption({ label: "Bokmål" });
     await expect(warning).toBeVisible();
   });
 

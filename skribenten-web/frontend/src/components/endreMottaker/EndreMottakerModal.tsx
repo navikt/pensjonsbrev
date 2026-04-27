@@ -108,7 +108,7 @@ export const EndreMottakerModal = (properties: {
 
   return (
     <Modal
-      data-e2e="endre-mottaker-modal"
+      data-testid="endre-mottaker-modal"
       header={{
         closeButton: false,
         heading:
@@ -234,7 +234,7 @@ const ModalTabs = (properties: {
             Avbryt
           </Button>
           <Button
-            data-cy="lagre-samhandler"
+            data-testid="lagre-samhandler"
             disabled={!selectedSamhandler}
             loading={properties.isPending ?? false}
             onClick={() => {

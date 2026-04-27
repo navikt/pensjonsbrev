@@ -4,7 +4,7 @@ import { newCell, newLiteral, newParagraph, newTable } from "~/Brevredigering/Le
 import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer";
 
 import { nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 const undoShortcut = "Control+z";
 
@@ -12,26 +12,26 @@ test.describe.configure({ mode: "serial" });
 
 // Helpers
 const openInsertTableModal = async (page: Page) => {
-  await dataE2E(page, "toolbar-table-btn").click();
-  await expect(dataE2E(page, "insert-table-modal")).toBeVisible();
+  await page.getByTestId("toolbar-table-btn").click();
+  await expect(page.getByTestId("insert-table-modal")).toBeVisible();
 };
 
 const insertTable = async (page: Page, cols: number, rows: number) => {
   await openInsertTableModal(page);
-  await dataE2E(page, "input-cols").clear();
-  await dataE2E(page, "input-cols").fill(String(cols));
-  await dataE2E(page, "input-rows").clear();
-  await dataE2E(page, "input-rows").fill(String(rows));
-  await expect(dataE2E(page, "insert-table-confirm-btn")).toBeEnabled();
-  await dataE2E(page, "insert-table-confirm-btn").click({ force: true });
-  await expect(dataE2E(page, "insert-table-modal")).not.toBeVisible();
+  await page.getByTestId("input-cols").clear();
+  await page.getByTestId("input-cols").fill(String(cols));
+  await page.getByTestId("input-rows").clear();
+  await page.getByTestId("input-rows").fill(String(rows));
+  await expect(page.getByTestId("insert-table-confirm-btn")).toBeEnabled();
+  await page.getByTestId("insert-table-confirm-btn").click({ force: true });
+  await expect(page.getByTestId("insert-table-modal")).not.toBeVisible();
 };
 
 const rightClickCell = (page: Page, row: number, col: number) =>
-  dataE2E(page, `table-cell-${row}-${col}`).click({ button: "right" });
+  page.getByTestId(`table-cell-${row}-${col}`).click({ button: "right" });
 
 const tableCellEditor = (page: Page, row: number, col: number) =>
-  dataE2E(page, `table-cell-${row}-${col}`).locator("span[contenteditable=true]").first();
+  page.getByTestId(`table-cell-${row}-${col}`).locator("span[contenteditable=true]").first();
 
 const waitAfterAutosave = async (page: Page) => {
   const autosavePromise = page.waitForResponse(
@@ -96,7 +96,7 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
   });
 
   test("oppretter en 3x2-tabell", async ({ page }) => {
-    const table = dataE2E(page, "letter-table");
+    const table = page.getByTestId("letter-table");
     await expect(table).toHaveCount(1);
     await expect(table.locator("tbody tr")).toHaveCount(2);
     await expect(table.locator("tbody tr").first().locator("td")).toHaveCount(3);
@@ -108,8 +108,8 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
       await page.locator("[role=menuitem]", { hasText: "Sett inn kolonne til høyre" }).click();
       await waitAfterAutosave(page);
 
-      await expect(dataE2E(page, "table-cell-0-2")).toBeVisible();
-      await expect(dataE2E(page, "letter-table").locator("tbody tr").first().locator("td")).toHaveCount(4);
+      await expect(page.getByTestId("table-cell-0-2")).toBeVisible();
+      await expect(page.getByTestId("letter-table").locator("tbody tr").first().locator("td")).toHaveCount(4);
     });
 
     test("legger til rad under via kontekstmenyen", async ({ page }) => {
@@ -117,8 +117,8 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
       await page.locator("[role=menuitem]", { hasText: "Sett inn rad under" }).click();
       await waitAfterAutosave(page);
 
-      await expect(dataE2E(page, "table-cell-1-0")).toBeVisible();
-      await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(3);
+      await expect(page.getByTestId("table-cell-1-0")).toBeVisible();
+      await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(3);
     });
 
     test("sletter en rad via kontekstmenyen", async ({ page }) => {
@@ -130,7 +130,7 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
       await page.locator("[role=menuitem]", { hasText: "Slett rad" }).click();
       await waitAfterAutosave(page);
 
-      await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(2);
+      await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(2);
     });
 
     test("sletter en kolonne via kontekstmenyen", async ({ page }) => {
@@ -142,7 +142,7 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
       await page.locator("[role=menuitem]", { hasText: "Slett kolonne" }).click();
       await waitAfterAutosave(page);
 
-      await expect(dataE2E(page, "letter-table").locator("tbody tr").first().locator("td")).toHaveCount(3);
+      await expect(page.getByTestId("letter-table").locator("tbody tr").first().locator("td")).toHaveCount(3);
     });
 
     test("sletter hele tabellen via kontekstmenyen", async ({ page }) => {
@@ -150,7 +150,7 @@ test.describe("Tabell innsetting og redigering via kontekstmeny", () => {
       await page.locator("[role=menuitem]", { hasText: "Slett tabellen" }).click();
       await waitAfterAutosave(page);
 
-      await expect(dataE2E(page, "letter-table")).toHaveCount(0);
+      await expect(page.getByTestId("letter-table")).toHaveCount(0);
     });
   });
 });
@@ -180,7 +180,7 @@ test.describe("Tabellsnarveier for sletting", () => {
     });
 
     await page.goto("/saksnummer/123456/brev/1");
-    await expect(dataE2E(page, "letter-table")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table")).toHaveCount(1);
     await expect(page.getByText("Rad 1 kolonne 1")).toBeVisible();
 
     await page.clock.install();
@@ -191,15 +191,15 @@ test.describe("Tabellsnarveier for sletting", () => {
     await page.keyboard.press("Shift+Backspace");
     await waitAfterAutosave(page);
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(1);
     await expect(page.getByText("Rad 2 kolonne 1")).toHaveCount(0);
 
     await page.getByText("Rad 1 kolonne 1").click();
     await page.keyboard.press("Shift+Backspace");
     await waitAfterAutosave(page);
 
-    await expect(dataE2E(page, "letter-table")).toHaveCount(1);
-    await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(1);
     await expect(page.getByText("Rad 1 kolonne 1")).toHaveCount(0);
     await expect(tableCellEditor(page, 0, 0)).toBeVisible();
   });
@@ -209,14 +209,14 @@ test.describe("Tabellsnarveier for sletting", () => {
     await page.keyboard.press("Shift+Delete");
     await waitAfterAutosave(page);
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(1);
     await expect(page.getByText("Rad 1 kolonne 1")).toHaveCount(0);
     await expect(page.getByText("Rad 2 kolonne 1")).toBeVisible();
 
     await tableCellEditor(page, 0, 0).click();
     await page.keyboard.press(undoShortcut);
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr")).toHaveCount(2);
+    await expect(page.getByTestId("letter-table").locator("tbody tr")).toHaveCount(2);
     await expect(page.getByText("Rad 1 kolonne 1")).toBeVisible();
     await expect(page.getByText("Rad 2 kolonne 1")).toBeVisible();
   });
@@ -234,7 +234,7 @@ test.describe("Tabellsnarveier for sletting", () => {
     await page.keyboard.press("Shift+Backspace");
     await waitAfterAutosave(page);
 
-    await expect(dataE2E(page, "letter-table")).toHaveCount(0);
+    await expect(page.getByTestId("letter-table")).toHaveCount(0);
   });
 });
 
@@ -263,7 +263,7 @@ test.describe("Tabellsnarveier for flytting av rader", () => {
     });
 
     await page.goto("/saksnummer/123456/brev/1");
-    await expect(dataE2E(page, "letter-table")).toHaveCount(1);
+    await expect(page.getByTestId("letter-table")).toHaveCount(1);
     await expect(page.getByText("Rad 1 kolonne 1")).toBeVisible();
 
     await page.clock.install();
@@ -273,44 +273,44 @@ test.describe("Tabellsnarveier for flytting av rader", () => {
     await page.getByText("Rad 1 kolonne 1").click();
     await page.keyboard.press("Alt+Shift+ArrowDown");
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
   });
 
   test("flytter en rad opp med Alt+Shift+ArrowUp", async ({ page }) => {
     await page.getByText("Rad 2 kolonne 1").click();
     await page.keyboard.press("Alt+Shift+ArrowUp");
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
   });
 
   test("flytter ikke første rad opp", async ({ page }) => {
     await page.getByText("Rad 1 kolonne 1").click();
     await page.keyboard.press("Alt+Shift+ArrowUp");
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
   });
 
   test("flytter ikke siste rad ned", async ({ page }) => {
     await page.getByText("Rad 2 kolonne 1").click();
     await page.keyboard.press("Alt+Shift+ArrowDown");
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
   });
 
   test("undo gjenoppretter opprinnelig radrekkefølge", async ({ page }) => {
     await page.getByText("Rad 1 kolonne 1").click();
     await page.keyboard.press("Alt+Shift+ArrowDown");
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 1 kolonne 1");
 
     await page.keyboard.press(undoShortcut);
 
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
-    await expect(dataE2E(page, "letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(0)).toContainText("Rad 1 kolonne 1");
+    await expect(page.getByTestId("letter-table").locator("tbody tr").nth(1)).toContainText("Rad 2 kolonne 1");
   });
 });

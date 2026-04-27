@@ -38,7 +38,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
         <HStack align="center" justify="center" marginBlock="space-12">
           <Alert
             css={{ width: "100%", maxWidth: "512px" }}
-            data-e2e="functional-error-alert"
+            data-testid="functional-error-alert"
             size="medium"
             variant="error"
           >

@@ -1,29 +1,28 @@
-import { expect, test } from "@playwright/test";
+import { readFileSync } from "node:fs";
+
+import { expect, type Page, test } from "@playwright/test";
 
 import { nyBrevResponse } from "../utils/brevredigeringTestUtils";
 import p1Data from "./fixtures/p1Data.json" with { type: "json" };
-import { dataE2E, setupSakStubs } from "./utils/helpers";
+import { setupSakStubs } from "./utils/helpers";
 
 const { p1BrevInfo, p1BrevData, p1BrevDataWithMissingFields, countriesSubset } = p1Data;
 
 // Hjelpere
-const openP1Modal = async (page: import("@playwright/test").Page) => {
+const openP1Modal = async (page: Page) => {
   const card = page.locator(`[aria-label="${p1BrevInfo.brevtittel}"]`).first();
   await expect(card).toBeVisible();
   await card.getByRole("button").click();
-  await dataE2E(page, "p1-edit-button").click();
-  await expect(dataE2E(page, "p1-edit-modal")).toBeVisible();
+  await page.getByTestId("p1-edit-button").click();
+  await expect(page.getByTestId("p1-edit-modal")).toBeVisible();
   await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
 };
-
-const getInnvilgetFelt = (page: import("@playwright/test").Page, index: number, felt: string) =>
-  dataE2E(page, `innvilget-${index}-${felt}`);
 
 test.describe("P1 med forsidebrev", () => {
   test.beforeEach(async ({ page }) => {
     await setupSakStubs(page);
 
-    const pdfBase64 = (await import("node:fs")).readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
+    const pdfBase64 = readFileSync("test/e2e/fixtures/helloWorldPdf.txt", "base64");
     await page.route("**/bff/skribenten-backend/sak/123456/brev/*/pdf", (route) => {
       if (route.request().method() === "GET") {
         return route.fulfill({
@@ -85,13 +84,13 @@ test.describe("P1 med forsidebrev", () => {
     // verifiser at land vises med fullt norsk navn, mens to-bokstavskode brukes fra/til backend
     // verifiser at dato vises som dd.MM.yyyy, mens formatet yyyy-MM-dd brukes fra/til backend
     await expect(page.getByText("Bulgaria").first()).toBeVisible();
-    await dataE2E(page, "land-0").clear();
-    await dataE2E(page, "land-0").pressSequentially("Frankrike");
-    await dataE2E(page, "land-0").press("Enter");
+    await page.getByTestId("land-0").clear();
+    await page.getByTestId("land-0").pressSequentially("Frankrike");
+    await page.getByTestId("land-0").press("Enter");
 
-    await expect(getInnvilgetFelt(page, 0, "datoForVedtak")).toHaveValue("23.09.2022");
-    await getInnvilgetFelt(page, 0, "datoForVedtak").clear();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("01.01.2025");
+    await expect(page.getByTestId("innvilget-0-datoForVedtak")).toHaveValue("23.09.2022");
+    await page.getByTestId("innvilget-0-datoForVedtak").clear();
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("01.01.2025");
 
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/p1", async (route) => {
       if (route.request().method() === "POST") {
@@ -115,8 +114,8 @@ test.describe("P1 med forsidebrev", () => {
     await openP1Modal(page);
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
     // Gjør skjemaet dirty ved å endre et felt
-    await getInnvilgetFelt(page, 0, "datoForVedtak").clear();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("01.01.2025");
+    await page.getByTestId("innvilget-0-datoForVedtak").clear();
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("01.01.2025");
     // Forsøk å lagre uten å fylle ut påkrevde felt
     await page.getByRole("button", { name: "Lagre og lukk" }).click();
 
@@ -129,8 +128,8 @@ test.describe("P1 med forsidebrev", () => {
     await openP1Modal(page);
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
     // Skriv inn ugyldig dato
-    await getInnvilgetFelt(page, 0, "datoForVedtak").clear();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("32.13.2022");
+    await page.getByTestId("innvilget-0-datoForVedtak").clear();
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("32.13.2022");
     await page.getByRole("button", { name: "Lagre og lukk" }).click();
     await expect(page.getByText("Skjemaet har feil som må rettes")).toBeVisible();
     await expect(page.getByText("Ugyldig dato")).toBeVisible();
@@ -140,10 +139,10 @@ test.describe("P1 med forsidebrev", () => {
     await openP1Modal(page);
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
     const veryLongText = "A".repeat(300);
-    // Bruker data-e2e for å finne PIN feltet
-    await getInnvilgetFelt(page, 0, "pin").clear();
-    await getInnvilgetFelt(page, 0, "pin").pressSequentially(veryLongText, { delay: 0 });
-    await getInnvilgetFelt(page, 0, "pin").press("Tab");
+    // Bruker data-testid for å finne PIN feltet
+    await page.getByTestId("innvilget-0-pin").clear();
+    await page.getByTestId("innvilget-0-pin").pressSequentially(veryLongText, { delay: 0 });
+    await page.getByTestId("innvilget-0-pin").press("Tab");
 
     await expect(page.getByText("PIN kan ikke være lengre enn")).toBeVisible();
     await expect(page.getByText("Skjemaet har feil som må rettes")).not.toBeVisible();
@@ -160,7 +159,7 @@ test.describe("P1 med forsidebrev", () => {
     });
     await openP1Modal(page);
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("01.01.2025");
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("01.01.2025");
     await page.getByRole("tab", { name: /Avslag på pensjon/ }).click();
     await expect(page.getByText("Institusjon som har avslått")).toBeVisible();
     // Forsøk å lagre med feil i fane 3 (Innvilget)
@@ -179,8 +178,8 @@ test.describe("P1 med forsidebrev", () => {
     });
     await openP1Modal(page);
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").clear();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("01.01.2025");
+    await page.getByTestId("innvilget-0-datoForVedtak").clear();
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("01.01.2025");
     await expect(page.getByRole("button", { name: "Lagre og lukk" })).toBeEnabled();
     await page.getByRole("button", { name: "Lagre og lukk" }).click();
     await expect(page.getByText("Endringene ble lagret")).toBeVisible();
@@ -200,8 +199,8 @@ test.describe("P1 med forsidebrev", () => {
     await expect(page.getByRole("heading", { name: "3. Innvilget pensjon" })).toBeVisible();
 
     // Modify field to enable save
-    await getInnvilgetFelt(page, 0, "datoForVedtak").clear();
-    await getInnvilgetFelt(page, 0, "datoForVedtak").pressSequentially("01.01.2025");
+    await page.getByTestId("innvilget-0-datoForVedtak").clear();
+    await page.getByTestId("innvilget-0-datoForVedtak").pressSequentially("01.01.2025");
 
     await page.route("**/bff/skribenten-backend/sak/123456/brev/1/p1", async (route) => {
       if (route.request().method() === "POST") {

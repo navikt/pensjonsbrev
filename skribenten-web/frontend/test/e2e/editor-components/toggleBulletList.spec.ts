@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 function makeBrevResponse(redigertBrev: object) {
   return {
@@ -112,7 +112,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(0);
       await page.getByText("Dette er kun et avsnitt").click();
       await expect(page.locator("li span")).toHaveCount(0);
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("li span").filter({ hasText: "Dette er kun et avsnitt" })).toBeVisible();
       await expect(page.locator("ul")).toHaveCount(1);
     });
@@ -126,7 +126,7 @@ test.describe("toggle bullet-list", () => {
 
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt med punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("li")).toHaveCount(2);
       await expect(page.locator("li span").nth(1)).toContainText("Avsnitt med punktliste");
     });
@@ -140,7 +140,7 @@ test.describe("toggle bullet-list", () => {
 
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt med punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("li")).toHaveCount(2);
       await expect(page.locator("li span").nth(0)).toContainText("Avsnitt med punktliste");
     });
@@ -159,7 +159,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
       await page.getByText("Avsnitt med punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(3);
       await expect(page.locator("li span").nth(1)).toContainText("Avsnitt med punktliste");
@@ -176,7 +176,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt uten punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
     });
@@ -192,7 +192,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt uten punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
     });
@@ -209,7 +209,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
       await page.getByText("Avsnitt uten punktliste").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(3);
       await expect(page.locator("li")).toHaveCount(3);
       await expect(page.getByText("Avsnitt uten punktliste")).toBeVisible();
@@ -225,7 +225,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Dette er kun et avsnitt").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(0);
       await expect(page.locator("li")).toHaveCount(0);
       await expect(page.getByText("Dette er kun et avsnitt")).toBeVisible();
@@ -241,7 +241,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(2);
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await expect(page.locator(".PARAGRAPH").first().getByText("skal brytes ut")).toBeVisible();
@@ -266,7 +266,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.getByText("Denne skal heller ikke forsvinne når man trigger av punktliste")).toBeVisible();
 
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await expect(page.getByText("skal brytes ut")).toBeVisible();
@@ -293,7 +293,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.getByText("Denne skal heller ikke forsvinne når man trigger av punktliste")).toBeVisible();
 
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(0);
       await expect(page.locator("li")).toHaveCount(0);
       await expect(page.getByText("skal brytes ut")).toBeVisible();
@@ -320,7 +320,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.getByText("Denne skal heller ikke forsvinne når man trigger av punktliste")).toBeVisible();
 
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
       await expect(page.getByText("skal brytes ut")).toBeVisible();
@@ -347,7 +347,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.getByText("Denne skal heller ikke forsvinne når man trigger av punktliste")).toBeVisible();
 
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await expect(page.getByText("skal brytes ut")).toBeVisible();
@@ -374,7 +374,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.getByText("Denne skal heller ikke forsvinne når man trigger av punktliste")).toBeVisible();
 
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(0);
       await expect(page.locator("li")).toHaveCount(0);
       await expect(page.getByText("skal brytes ut")).toBeVisible();
@@ -392,7 +392,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(2);
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(1);
       await expect(page.locator(".PARAGRAPH").first().getByText("skal brytes ut")).toBeVisible();
@@ -410,7 +410,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(3);
       await page.getByText("skal brytes ut").click();
-      await dataE2E(page, "editor-bullet-list").click();
+      await page.getByTestId("editor-bullet-list").click();
       await expect(page.locator("ul")).toHaveCount(2);
       await expect(page.locator("li")).toHaveCount(2);
       await expect(page.locator(".PARAGRAPH").first().getByText("skal brytes ut")).toBeVisible();

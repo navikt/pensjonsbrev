@@ -158,7 +158,7 @@ const UtfyllingAvManuellAdresseForm = (properties: {
                         top: auto;
                       }
                     `}
-                    data-e2e="land-combobox"
+                    data-testid="land-combobox"
                     error={fieldState.error?.message}
                     label="Land *"
                     onToggleSelected={(option) => {

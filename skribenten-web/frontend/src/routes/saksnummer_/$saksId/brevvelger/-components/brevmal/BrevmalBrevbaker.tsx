@@ -215,7 +215,7 @@ const BrevmalBrevbaker = (props: {
                   </Button>
                 )}
                 <Button
-                  data-cy="toggle-endre-mottaker-modal"
+                  data-testid="toggle-endre-mottaker-modal"
                   icon={<PencilIcon />}
                   iconPosition="right"
                   onClick={() => {

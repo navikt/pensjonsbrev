@@ -268,7 +268,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
                         name="valgteBrevSomSkalSendes"
                         render={({ field, fieldState }) => (
                           <CheckboxGroup
-                            data-e2e="ferdigstillbrev-valgte-brev"
+                            data-testid="ferdigstillbrev-valgte-brev"
                             error={fieldState.error?.message}
                             hideLegend
                             legend="Velg brev som skal sendes"

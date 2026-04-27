@@ -26,7 +26,7 @@ interface ManagedDatePickerProps<
   fieldState: ControllerFieldState;
   hideLabel?: boolean;
   label: string;
-  "data-e2e"?: string;
+  "data-testid"?: string;
 }
 
 // Constants moved outside component to prevent recreation on each render
@@ -42,7 +42,7 @@ export const ManagedDatePicker = <
   fieldState,
   hideLabel = false,
   label,
-  "data-e2e": dataE2E,
+  "data-testid": dataTestid,
 }: ManagedDatePickerProps<TFieldValues, TName>) => {
   const selectedDate = useMemo(() => parseIsoDateToDate(dateField.value as string), [dateField.value]);
 
@@ -69,7 +69,7 @@ export const ManagedDatePicker = <
     <DatePicker dropdownCaption {...datepickerProps} wrapperClassName="p1-date-picker-full-width">
       <DatePicker.Input
         {...inputProps}
-        data-e2e={dataE2E}
+        data-testid={dataTestid}
         error={fieldState.error?.message}
         hideLabel={hideLabel}
         label={label}

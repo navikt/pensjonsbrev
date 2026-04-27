@@ -16,7 +16,7 @@ const EditorBulletList = () => {
   return (
     <Button
       color="text-neutral"
-      data-e2e="editor-bullet-list"
+      data-testid="editor-bullet-list"
       disabled={freeze || editorState.focus.blockIndex < 0}
       icon={<BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />}
       onClick={() => {

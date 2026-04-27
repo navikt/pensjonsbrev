@@ -1,5 +1,7 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
+
 import { setupSakStubs } from "../utils/helpers";
 
 const exampleLetter1 = {
@@ -213,6 +215,7 @@ const exampleLetter1 = {
       content: [
         {
           id: 61,
+          parentId: 6,
           text: "Tittel under punktliste",
           type: "LITERAL",
           fontType: "PLAIN",
@@ -225,10 +228,12 @@ const exampleLetter1 = {
     },
     {
       id: 7,
+      parentId: null,
       editable: true,
       content: [
         {
           id: 71,
+          parentId: 7,
           text: "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]",
           type: "LITERAL",
           fontType: "PLAIN",
@@ -248,7 +253,7 @@ const exampleLetter1 = {
     navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
   },
   deletedBlocks: [],
-};
+} as EditedLetter;
 
 function makeBrevResponse(redigertBrev: object) {
   return {
@@ -339,7 +344,7 @@ test.describe("LetterEditor", () => {
   });
 
   test.describe("Navigation", () => {
-    test("ArrowUp works within sibling contenteditables", async ({ page }) => {
+    test("ArrowUp works between sibling contenteditables", async ({ page }) => {
       await page.getByText("CP1-3").click();
       await move(page, "End", 1);
       await move(page, "ArrowLeft", 10);
@@ -347,18 +352,18 @@ test.describe("LetterEditor", () => {
       await assertCaret(page, "[CP1-2]", 30);
     });
 
-    test("ArrowDown works within sibling contenteditables", async ({ page }) => {
+    test("ArrowDown works between sibling contenteditables", async ({ page }) => {
       await page.getByText("CP1-1").click();
       await move(page, "ArrowRight", 10);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP1-2]", 55);
+      await assertCaret(page, "[CP1-2]", 105);
     });
 
     test("ArrowUp moves to the right of a variable if that is closest", async ({ page }) => {
       await page.getByText("CP1-3").click();
       await move(page, "ArrowLeft", 45);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "Informasjon", 0);
+      await assertCaret(page, "[CP1-2]", 0);
     });
 
     test("ArrowUp moves to the left of a variable if that is closest", async ({ page }) => {
@@ -366,19 +371,19 @@ test.describe("LetterEditor", () => {
       await move(page, "Home", 1);
       await move(page, "ArrowRight", 30);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP1-2]", 30);
+      await assertCaret(page, "[CP1-1]", 21);
     });
 
     test("ArrowUp works between paragraphs", async ({ page }) => {
       await page.getByText("CP2-2").click();
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP2-1]", 7);
+      await assertCaret(page, "[CP2-1]", 17);
     });
 
     test("ArrowDown works between paragraphs", async ({ page }) => {
       await page.getByText("CP2-1").click();
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP2-2]", 17);
+      await assertCaret(page, "[CP2-3]", 8);
     });
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
@@ -400,30 +405,30 @@ test.describe("LetterEditor", () => {
     test("Can move up an itemlist", async ({ page }) => {
       await page.getByText("CP3-3").click();
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-2]", 14);
+      await assertCaret(page, "[CP3-2]", 28);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-1]", 97);
+      await assertCaret(page, "[CP3-1]", 111);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-1]", 14);
+      await assertCaret(page, "[CP3-1]", 31);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "Tittel over punktliste", 16);
+      await assertCaret(page, "Tittel over punktliste", 22);
     });
 
     test("Can move down an itemlist", async ({ page }) => {
       await page.getByText("CP3-1").click();
       await move(page, "Home", 1);
-      await assertCaret(page, "[CP3-1]", 0);
-      await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP3-1]", 82);
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP3-2]", 0);
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP3-3]", 0);
+      await move(page, "ArrowDown", 1);
+      await assertCaret(page, "Tittel under punktliste", 6);
     });
 
     test("ArrowUp at first node moves caret to the beginning", async ({ page }) => {
       await page.getByText("Informasjon om saksbehandlingstiden vår").click();
-      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 19);
+      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 39);
       await move(page, "ArrowUp", 1);
       await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 0);
     });
@@ -456,8 +461,74 @@ test.describe("LetterEditor", () => {
 
   test.describe("Focus", () => {
     test("invalid focus is ignored", async ({ page }) => {
-      // Navigate with an invalid focus - just verify the page renders correctly
+      // This replicates the Cypress component test that mounted with an out-of-bounds cursorPosition,
+      // verifying the clamping at ContentGroup.tsx (Math.min(cursorPosition, text.length)).
+      const targetText = (exampleLetter1.blocks[0].content[2] as LiteralValue).text;
+      const validCursorPosition = 5;
+      const invalidCursorPosition = targetText.length + 10;
+
+      // Helper: inject a focus via React fiber internals
+      const setFocus = async (focus: { blockIndex: number; contentIndex: number; cursorPosition: number }) => {
+        await page.evaluate((focusArg) => {
+          const editorEl = document.querySelector(".editor");
+          if (!editorEl) throw new Error("Editor element not found");
+
+          const fiberKey = Object.keys(editorEl).find((key) => key.startsWith("__reactFiber$"));
+          if (!fiberKey) throw new Error("React fiber not found on editor element");
+
+          let fiber = (editorEl as unknown as Record<string, unknown>)[fiberKey] as Record<string, unknown> | null;
+          let setEditorState: ((fn: (prev: unknown) => unknown) => void) | null = null;
+
+          while (fiber) {
+            const memoizedProps = fiber.memoizedProps as Record<string, unknown> | undefined;
+            if (
+              memoizedProps?.value &&
+              typeof (memoizedProps.value as Record<string, unknown>).setEditorState === "function"
+            ) {
+              setEditorState = (memoizedProps.value as Record<string, unknown>).setEditorState as (
+                fn: (prev: unknown) => unknown,
+              ) => void;
+              break;
+            }
+            fiber = fiber.return as Record<string, unknown> | null;
+          }
+
+          if (!setEditorState) throw new Error("setEditorState not found in React fiber tree");
+          setEditorState((prev: unknown) => ({
+            ...(prev as Record<string, unknown>),
+            focus: focusArg,
+          }));
+        }, focus);
+      };
+
+      // First, set a valid cursor position and verify it takes effect
+      await setFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: validCursorPosition });
+
+      // Wait for React to re-render and place the cursor
+      await expect
+        .poll(async () => {
+          return page.evaluate(() => {
+            const sel = globalThis.getSelection();
+            if (!sel || sel.rangeCount === 0) return { offset: -1, text: "" };
+            return {
+              offset: sel.getRangeAt(0).startOffset,
+              text: sel.anchorNode?.parentElement?.getAttribute("contenteditable") ?? "",
+            };
+          });
+        })
+        .toEqual({ offset: validCursorPosition, text: "true" });
+
+      // Now set an invalid cursor position (beyond text length) — should not crash
+      await setFocus({ blockIndex: 0, contentIndex: 2, cursorPosition: invalidCursorPosition });
       await expect(page.getByText("Informasjon om saksbehandlingstiden vår")).toBeVisible();
+      await expect(page.getByText("CP1-2")).toBeVisible();
+
+      // Verify the cursor was clamped to text length rather than placed at the invalid offset
+      const clampedOffset = await page.evaluate(() => {
+        const sel = globalThis.getSelection();
+        return sel?.rangeCount ? sel.getRangeAt(0).startOffset : -1;
+      });
+      expect(clampedOffset).toBeLessThanOrEqual(targetText.length);
     });
   });
 

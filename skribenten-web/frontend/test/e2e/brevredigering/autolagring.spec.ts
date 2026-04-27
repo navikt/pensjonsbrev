@@ -4,7 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
 const brev = JSON.parse(fs.readFileSync(path.join(fixturesDir, "brevResponse.json"), "utf-8"));
@@ -60,11 +60,11 @@ test.describe("autolagring", () => {
 
     await page.getByText("Overstyring").click();
     await expect(page.getByLabel("Mottatt søknad")).toBeVisible();
-    await expect(dataE2E(page, "datepicker-editor")).toHaveValue("24.07.2024");
+    await expect(page.getByTestId("datepicker-editor")).toHaveValue("24.07.2024");
 
-    await dataE2E(page, "datepicker-editor").click();
-    await dataE2E(page, "datepicker-editor").clear();
-    await dataE2E(page, "datepicker-editor").fill("10.09.2024");
+    await page.getByTestId("datepicker-editor").click();
+    await page.getByTestId("datepicker-editor").clear();
+    await page.getByTestId("datepicker-editor").fill("10.09.2024");
 
     await page.waitForResponse(
       (resp) =>
@@ -201,10 +201,10 @@ test.describe("autolagring", () => {
     await expect(page.getByText("Saksbehandlingstiden vår er vanligvis 10 uker.")).toBeVisible();
 
     await page.getByLabel("Inkluder venter svar AFP").click();
-    await expect(dataE2E(page, "datepicker-editor").nth(0)).toHaveValue("");
-    await dataE2E(page, "datepicker-editor").nth(0).click();
-    await dataE2E(page, "datepicker-editor").nth(0).clear();
-    await dataE2E(page, "datepicker-editor").nth(0).fill("10.09.2024");
+    await expect(page.getByTestId("datepicker-editor").nth(0)).toHaveValue("");
+    await page.getByTestId("datepicker-editor").nth(0).click();
+    await page.getByTestId("datepicker-editor").nth(0).clear();
+    await page.getByTestId("datepicker-editor").nth(0).fill("10.09.2024");
 
     // Verify that autosave has not happened yet
     expect(autoSaveCount).toBe(0);
@@ -255,11 +255,11 @@ test.describe("autolagring", () => {
 
     await page.goto("/saksnummer/123456/brev/1");
     await expect(page.getByText("Lagret")).toBeVisible();
-    await expect(dataE2E(page, "brev-editor-saksbehandler")).toContainText("Sak S. Behandler");
+    await expect(page.getByTestId("brev-editor-saksbehandler")).toContainText("Sak S. Behandler");
 
     await page.getByLabel("Underskrift").fill("Min nye underskrift");
 
-    await expect(dataE2E(page, "brev-editor-saksbehandler")).toContainText("Min nye underskrift");
+    await expect(page.getByTestId("brev-editor-saksbehandler")).toContainText("Min nye underskrift");
 
     await page.waitForResponse(
       (resp) => resp.url().includes("/brev/1/redigertBrev") && resp.request().method() === "PUT",
@@ -271,7 +271,7 @@ test.describe("autolagring", () => {
       "Min nye underskrift",
     );
 
-    await expect(dataE2E(page, "brev-editor-saksbehandler")).toContainText("Min nye underskrift");
+    await expect(page.getByTestId("brev-editor-saksbehandler")).toContainText("Min nye underskrift");
   });
 
   test("autolagring av boolean felter", async ({ page }) => {

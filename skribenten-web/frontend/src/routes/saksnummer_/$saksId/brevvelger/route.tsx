@@ -246,7 +246,7 @@ function Brevmaler({
       <Box width="334px">
         <Search
           autoFocus={true}
-          data-e2e="brevmal-search"
+          data-testid="brevmal-search"
           hideLabel={false}
           label="Søk etter brevmal"
           onChange={(value) => setSearchTerm(value)}
@@ -290,7 +290,7 @@ function Brevmaler({
             {alleSaksbrev.isSuccess && <Kladder alleBrevPåSaken={alleSaksbrev.data} brevmetadata={brevmetadata} />}
 
             {Object.keys(brevmalerGroupedByType).length === 0 && (
-              <Alert data-e2e="ingen-treff-alert" size="small" variant="info">
+              <Alert data-testid="ingen-treff-alert" size="small" variant="info">
                 Ingen treff
               </Alert>
             )}
@@ -298,7 +298,7 @@ function Brevmaler({
             {sortedCategoryKeys.map((type) => {
               return (
                 <Accordion.Item
-                  data-e2e="category-item"
+                  data-testid="category-item"
                   defaultOpen={type === "Favoritter"}
                   key={type}
                   onOpenChange={() => handleOpenAccordionChange(type)}
@@ -442,7 +442,7 @@ const BrevmalButton = (props: {
         },
         ...props.extraStyles,
       }}
-      data-e2e="brevmal-button"
+      data-testid="brevmal-button"
       onClick={props.onClick}
       variant="tertiary"
     >

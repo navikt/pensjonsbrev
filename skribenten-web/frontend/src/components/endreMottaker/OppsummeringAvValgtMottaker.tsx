@@ -47,7 +47,7 @@ const OppsummeringAvValgtMottaker = (properties: {
           Avbryt
         </Button>
         <Button
-          data-e2e="bekreft-ny-mottaker"
+          data-testid="bekreft-ny-mottaker"
           loading={properties.isPending ?? false}
           onClick={properties.onBekreft}
           size="small"

@@ -1,6 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 function makeBrevResponse(redigertBrev: object) {
   return {
@@ -150,7 +150,7 @@ test.describe("Typography", () => {
     test.describe("manuelt", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title1").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/1/);
 
         await typographySelect.selectOption({ label: "Normal (Alt+4)" });
@@ -165,7 +165,7 @@ test.describe("Typography", () => {
         await page.keyboard.press("ArrowLeft");
         await page.keyboard.press("ArrowLeft");
         const offsetBefore = await getCaretOffset(page);
-        await dataE2E(page, "typography-select").selectOption({ label: "Normal (Alt+4)" });
+        await page.getByTestId("typography-select").selectOption({ label: "Normal (Alt+4)" });
         await assertCaret(page, "title1", offsetBefore);
       });
     });
@@ -173,7 +173,7 @@ test.describe("Typography", () => {
     test.describe("shortcut", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title1").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/1/);
 
         await page.getByText("title1").press("Alt+4");
@@ -198,7 +198,7 @@ test.describe("Typography", () => {
     test.describe("manuelt", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title2").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
 
         await typographySelect.selectOption({ label: "Normal (Alt+4)" });
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en title2 block")')).toBeVisible();
@@ -212,7 +212,7 @@ test.describe("Typography", () => {
         await page.keyboard.press("ArrowLeft");
         await page.keyboard.press("ArrowLeft");
         const offsetBefore = await getCaretOffset(page);
-        await dataE2E(page, "typography-select").selectOption({ label: "Normal (Alt+4)" });
+        await page.getByTestId("typography-select").selectOption({ label: "Normal (Alt+4)" });
         await assertCaret(page, "title2", offsetBefore);
       });
     });
@@ -220,7 +220,7 @@ test.describe("Typography", () => {
     test.describe("shortcut", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title2").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/2/);
 
         await page.getByText("title2").press("Alt+4");
@@ -245,7 +245,7 @@ test.describe("Typography", () => {
     test.describe("manuelt", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title3").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
 
         await typographySelect.selectOption({ label: "Normal (Alt+4)" });
         await expect(page.locator('.PARAGRAPH:has-text("Dette er en title3 block")')).toBeVisible();
@@ -259,7 +259,7 @@ test.describe("Typography", () => {
         await page.keyboard.press("ArrowLeft");
         await page.keyboard.press("ArrowLeft");
         const offsetBefore = await getCaretOffset(page);
-        await dataE2E(page, "typography-select").selectOption({ label: "Normal (Alt+4)" });
+        await page.getByTestId("typography-select").selectOption({ label: "Normal (Alt+4)" });
         await assertCaret(page, "title3", offsetBefore);
       });
     });
@@ -267,7 +267,7 @@ test.describe("Typography", () => {
     test.describe("shortcut", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("title3").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
         await expect(typographySelect).toHaveValue(/3/);
 
         await page.getByText("title3").press("Alt+4");
@@ -292,7 +292,7 @@ test.describe("Typography", () => {
     test.describe("manuelt", () => {
       test("toggler av/på", async ({ page }) => {
         await page.getByText("paragraph").click();
-        const typographySelect = dataE2E(page, "typography-select");
+        const typographySelect = page.getByTestId("typography-select");
 
         await typographySelect.selectOption({ label: "Overskrift 1 (Alt+1)" });
         await expect(page.locator('.TITLE1:has-text("Dette er en paragraph block")')).toBeVisible();
@@ -306,7 +306,7 @@ test.describe("Typography", () => {
         await page.keyboard.press("ArrowLeft");
         await page.keyboard.press("ArrowLeft");
         const offsetBefore = await getCaretOffset(page);
-        await dataE2E(page, "typography-select").selectOption({ label: "Overskrift 1 (Alt+1)" });
+        await page.getByTestId("typography-select").selectOption({ label: "Overskrift 1 (Alt+1)" });
         await assertCaret(page, "paragraph", offsetBefore);
       });
     });

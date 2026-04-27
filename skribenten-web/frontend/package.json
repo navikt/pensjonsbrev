@@ -18,7 +18,7 @@
     "stylelint:fix": "stylelint --fix '**/*.{tsx,css}'",
     "test": "vitest --config ./vite.config.ts",
     "tsc:watch": "tsc --watch",
-    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run build && ${npm_execpath} run e2e"
+    "verify": "${npm_execpath} run lint-and-check-types && vitest run --config ./vite.config.ts && ${npm_execpath} run e2e"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

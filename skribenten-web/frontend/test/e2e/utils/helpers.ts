@@ -102,17 +102,3 @@ export async function setupSakStubs(page: Page) {
     return route.fulfill({ path: "test/e2e/fixtures/brevreservasjon.json", contentType: "application/json" });
   });
 }
-
-/**
- * Selects a DOM element by data-e2e attribute.
- */
-export function dataE2E(page: Page, value: string) {
-  return page.locator(`[data-e2e=${value}]`);
-}
-
-/**
- * Selects a DOM element by data-cy attribute.
- */
-export function dataCy(page: Page, value: string) {
-  return page.locator(`[data-cy=${value}]`);
-}

@@ -4,7 +4,7 @@ import path from "node:path";
 import { expect, test } from "@playwright/test";
 import { formatISO } from "date-fns";
 
-import { dataE2E, setupSakStubs } from "../utils/helpers";
+import { setupSakStubs } from "../utils/helpers";
 
 const fixturesDir = path.resolve("test/e2e/fixtures");
 const brevResponseEtterLagring = JSON.parse(
@@ -178,7 +178,7 @@ test.describe("Brevredigering", () => {
     await page.getByText("Dersom vi trenger flere opplysninger").click();
     await page.locator(":focus").pressSequentially(" hello!");
 
-    await dataE2E(page, "tilbakestill-mal-button").click();
+    await page.getByTestId("tilbakestill-mal-button").click();
     await expect(page.getByText("Vil du tilbakestille brevmalen?")).toBeVisible();
     await expect(page.getByText("Innholdet du har endret eller lagt til i brevet vil bli slettet.")).toBeVisible();
     await expect(page.getByText("Du kan ikke angre denne handlingen.")).toBeVisible();
@@ -193,7 +193,7 @@ test.describe("Brevredigering", () => {
     await page.getByText("Dersom vi trenger flere opplysninger").click();
     await page.locator(":focus").pressSequentially(" hello!");
 
-    await dataE2E(page, "tilbakestill-mal-button").click();
+    await page.getByTestId("tilbakestill-mal-button").click();
     await page.getByText("Nei, behold brevet").click();
     await expect(page.getByText("hello!")).toBeVisible();
   });
@@ -213,10 +213,10 @@ test.describe("Brevredigering", () => {
     await page.goto("/saksnummer/123456/brev/1");
 
     await page.getByText("Du må melde").click();
-    await dataE2E(page, "editor-bullet-list").click();
+    await page.getByTestId("editor-bullet-list").click();
     await expect(page.locator("ul li span").last()).toContainText("Du må melde");
 
-    await dataE2E(page, "editor-bullet-list").click();
+    await page.getByTestId("editor-bullet-list").click();
     await expect(page.locator("ul li span").last()).not.toContainText("Du må melde");
   });
 

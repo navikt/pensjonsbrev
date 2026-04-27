@@ -29,7 +29,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
           name="finnSamhandler.søketype"
           render={({ field, fieldState }) => (
             <Select
-              data-e2e="endre-mottaker-søketype-select"
+              data-testid="endre-mottaker-søketype-select"
               error={fieldState.error?.message}
               id={field.name}
               label="Søketype"
@@ -55,7 +55,7 @@ const SøkOgVelgSamhandlerForm = (properties: {
       {watchedSøketype && (
         <HStack align="start">
           <Button
-            data-e2e="endre-mottaker-søk-button"
+            data-testid="endre-mottaker-søk-button"
             loading={properties.onFinnSamhandlerSubmit.isPending}
             size="small"
           >
@@ -94,7 +94,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         name="finnSamhandler.samhandlerType"
         render={({ field, fieldState }) => (
           <SamhandlerTypeSelect
-            data-e2e="endre-mottaker-samhandlertype-select"
+            data-testid="endre-mottaker-samhandlertype-select"
             error={fieldState.error}
             onChange={field.onChange}
             value={field.value ?? ""}
@@ -106,7 +106,7 @@ const SamhandlerDirekteOppslag = (properties: { control: Control<CombinedFormDat
         name="finnSamhandler.direkteOppslag.identtype"
         render={({ field, fieldState }) => (
           <Select
-            data-e2e="endre-mottaker-identtype-select"
+            data-testid="endre-mottaker-identtype-select"
             error={fieldState.error?.message}
             id={field.name}
             label="Identtype"
@@ -150,7 +150,7 @@ const SamhandlerOrganisasjonsnavn = (properties: { control: Control<CombinedForm
         name="finnSamhandler.organisasjonsnavn.innOgUtland"
         render={({ field, fieldState }) => (
           <Select
-            data-e2e="endre-mottaker-organisasjonsnavn-innOgUtland"
+            data-testid="endre-mottaker-organisasjonsnavn-innOgUtland"
             label="Inn-/utland"
             {...field}
             error={fieldState.error?.message}

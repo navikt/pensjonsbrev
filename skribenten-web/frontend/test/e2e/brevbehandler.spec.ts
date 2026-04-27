@@ -5,7 +5,7 @@ import { expect, type Page, test } from "@playwright/test";
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
 import { nyBrevInfo } from "../utils/brevredigeringTestUtils";
-import { dataE2E, setupSakStubs } from "./utils/helpers";
+import { setupSakStubs } from "./utils/helpers";
 
 test.describe("Brevbehandler", () => {
   const kladdBrev = nyBrevInfo({
@@ -89,14 +89,14 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Brevet er klart for sending").click();
     await expect(page.getByText("Fortsett redigering")).not.toBeVisible();
     await expect(
-      dataE2E(page, "brevbehandler-distribusjonstype").locator('input[type="radio"][value="SENTRALPRINT"]'),
+      page.getByTestId("brevbehandler-distribusjonstype").locator('input[type="radio"][value="SENTRALPRINT"]'),
     ).toBeChecked();
 
     // ---- ferdigstiller brevet
     await page.getByText("Send 1 brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
     await page.getByText("Ja, send valgte brev").click();
 
@@ -173,7 +173,7 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Send 1 brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
 
     await page.getByText("Ja, send valgte brev").click();
@@ -252,7 +252,7 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Send 1 brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
 
     await page.getByText("Ja, send valgte brev").click();
@@ -302,28 +302,28 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Send 2 ferdigstilte brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="2"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="2"]'),
     ).toBeChecked();
     await page.getByText("Ja, send valgte brev").click();
     await expect(page).toHaveURL(/\/saksnummer\/123456\/kvittering$/);
 
     await expect(page.getByText("Sendt til mottaker")).toBeVisible();
     await openBrevCard(page, kladdBrev.brevtittel);
-    await expect(dataE2E(page, "journalpostId-80912").getByText("Distribusjon")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80912").getByText("Sentral print")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80912").getByText("Journalpost")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80912").getByText("80912")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80912").getByText("Distribusjon")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80912").getByText("Sentral print")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80912").getByText("Journalpost")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80912").getByText("80912")).toBeVisible();
     await openBrevCard(page, kladdBrev.brevtittel);
 
     await expect(page.getByText("Lokalprint – arkivert")).toBeVisible();
     await expect(page.getByText(brevSomSendesSomLokalPrint.brevtittel)).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80913").getByText("Distribusjon")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80913").getByText("Lokal print")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80913").getByText("Journalpost")).toBeVisible();
-    await expect(dataE2E(page, "journalpostId-80913").getByText("80913")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80913").getByText("Distribusjon")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80913").getByText("Lokal print")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80913").getByText("Journalpost")).toBeVisible();
+    await expect(page.getByTestId("journalpostId-80913").getByText("80913")).toBeVisible();
     await expect(page.getByText("Åpne PDF")).toBeVisible();
   });
 
@@ -346,9 +346,9 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Send 2 ferdigstilte brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
-    await dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="2"]').click();
+    await page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="2"]').click();
     await page.getByText("Ja, send valgte brev").click();
     await expect(page).toHaveURL(/\/saksnummer\/123456\/kvittering$/);
 
@@ -465,7 +465,7 @@ test.describe("Brevbehandler", () => {
     await page.getByText("Send 1 ferdigstilt brev").click();
     await expect(page.getByText("Vil du ferdigstille, og sende disse brevene?")).toBeVisible();
     await expect(
-      dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
+      page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]'),
     ).toBeChecked();
     await page.getByText("Ja, send valgte brev").click();
     await expect(page).toHaveURL(/\/saksnummer\/123456\/kvittering$/);
@@ -510,7 +510,7 @@ test.describe("Brevbehandler", () => {
     await page.goto("/saksnummer/123456/brevbehandler");
 
     await page.getByText("Send 2 ferdigstilte brev").click();
-    await dataE2E(page, "ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]').click();
+    await page.getByTestId("ferdigstillbrev-valgte-brev").locator('input[type="checkbox"][value="1"]').click();
     await page.getByText("Ja, send valgte brev").click();
     await page.getByText("Gå til brevbehandler").click();
     await expect(page.locator("[aria-label='Informasjon om saksbehandlingstid']")).toHaveCount(1);
