@@ -70,68 +70,68 @@ object LavereMinstesats {
                                 )
                             }
                         }
-                        showIf(data.endringNettoBarnetillegg) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Nytt barnetillegg" },
-                                        nynorsk { +"Nytt barnetillegg" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
-                                    )
-                                }
+                    }
+                    showIf(data.endringNettoBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Nytt barnetillegg" },
+                                    nynorsk { +"Nytt barnetillegg" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                    nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                )
                             }
                         }
-                        showIf(data.endringNettoGjenlevendetillegg) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Nytt gjenlevendetillegg" },
-                                        nynorsk { +"Nytt gjenlevendetillegg" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                    )
-                                }
+                    }
+                    showIf(data.endringNettoGjenlevendetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Nytt gjenlevendetillegg" },
+                                    nynorsk { +"Nytt gjenlevendetillegg" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                    nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                )
                             }
                         }
-                        showIf(data.endringReduksjonsprosent) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Ny reduksjonsprosent" },
-                                        nynorsk { +"Ny reduksjonsprosent" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.reduksjonsprosent.format() + " prosent" },
-                                        nynorsk { +data.reduksjonsprosent.format() + " prosent" },
-                                    )
-                                }
+                    }
+                    showIf(data.endringReduksjonsprosent) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny reduksjonsprosent" },
+                                    nynorsk { +"Ny reduksjonsprosent" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.reduksjonsprosent.format() + " prosent" },
+                                    nynorsk { +data.reduksjonsprosent.format() + " prosent" },
+                                )
                             }
                         }
-                        showIf(data.harMinstesats) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Ny minstesats" },
-                                        nynorsk { +"Ny minstesats" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +"2,329 G" },
-                                        nynorsk { +"2,329 G" },
-                                    )
-                                }
+                    }
+                    showIf(data.harMinstesats) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny minstesats" },
+                                    nynorsk { +"Ny minstesats" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +"2,329 G" },
+                                    nynorsk { +"2,329 G" },
+                                )
                             }
                         }
                     }
