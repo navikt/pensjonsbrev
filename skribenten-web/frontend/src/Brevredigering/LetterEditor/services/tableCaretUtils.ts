@@ -157,7 +157,19 @@ export const exitTable = (direction: "forward" | "backward") =>
       if (f.blockIndex + 1 < blocks.length) {
         const nextBlock = blocks[f.blockIndex + 1];
         if (nextBlock.content.length > 0) {
-          draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          const nextContent = nextBlock.content[0];
+          if (isTable(nextContent)) {
+            draft.focus = {
+              blockIndex: f.blockIndex + 1,
+              contentIndex: 0,
+              rowIndex: -1,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            };
+          } else {
+            draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          }
           return;
         }
         // If next block is an empty paragraph, insert a blank literal so it can receive focus
@@ -183,7 +195,19 @@ export const exitTable = (direction: "forward" | "backward") =>
       const prevBlock = blocks[f.blockIndex - 1];
       if (prevBlock.content.length > 0) {
         const last = prevBlock.content.length - 1;
-        draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: last, cursorPosition: 0 };
+        const lastContent = prevBlock.content[last];
+        if (isTable(lastContent)) {
+          draft.focus = {
+            blockIndex: f.blockIndex - 1,
+            contentIndex: last,
+            rowIndex: lastContent.rows.length - 1,
+            cellIndex: 0,
+            cellContentIndex: 0,
+            cursorPosition: 0,
+          };
+        } else {
+          draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: last, cursorPosition: 0 };
+        }
         return;
       }
       // If previous block is empty paragraph, insert a blank literal for focus

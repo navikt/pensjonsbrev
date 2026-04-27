@@ -175,6 +175,23 @@ describe("table ArrowDown navigation", () => {
     arrowDown();
     assertFocusedCell("table-header-0");
   });
+
+  it("enters next block's table header when pressing ArrowDown on the last row of a table that is the only content of its block", () => {
+    const rows1 = [tableRow("T1R0"), tableRow("T1R1")];
+    const rows2 = [tableRow("T2R0"), tableRow("T2R1")];
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [newParagraph({ content: [newTable(rows1)] }), newParagraph({ content: [newTable(rows2)] })],
+      }),
+    });
+    const state = Actions.create(brev);
+    state.focus = { blockIndex: 0, contentIndex: 0, rowIndex: 1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
+    cy.mount(<EditorWithState editorState={state} />);
+
+    assertFocusedCell("table-cell-1-0");
+    arrowDown();
+    assertFocusedCell("table-header-0");
+  });
 });
 
 describe("table ArrowUp navigation", () => {
@@ -300,6 +317,30 @@ describe("table ArrowUp navigation", () => {
     cy.mount(<EditorWithState editorState={state} />);
 
     cy.contains("After table").should("be.focused");
+    arrowUp();
+    assertFocusedCell("table-cell-1-0");
+  });
+
+  it("enters previous block's table last row when pressing ArrowUp on the header of a table that is the only content of its block", () => {
+    const rows1 = [tableRow("T1R0"), tableRow("T1R1")];
+    const rows2 = [tableRow("T2R0"), tableRow("T2R1")];
+    const brev = nyBrevResponse({
+      redigertBrev: nyRedigertBrev({
+        blocks: [newParagraph({ content: [newTable(rows1)] }), newParagraph({ content: [newTable(rows2)] })],
+      }),
+    });
+    const state = Actions.create(brev);
+    state.focus = {
+      blockIndex: 1,
+      contentIndex: 0,
+      rowIndex: -1,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+    cy.mount(<EditorWithState editorState={state} />);
+
+    assertFocusedCell("table-header-0");
     arrowUp();
     assertFocusedCell("table-cell-1-0");
   });
