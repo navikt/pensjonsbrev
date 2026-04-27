@@ -170,12 +170,6 @@ export const exitTable = (direction: "forward" | "backward") =>
         draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
         return;
       }
-      // 3) End of document: append an empty literal after the table
-      const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex + 1);
-      if (inserted) {
-        draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
-        draft.saveStatus = "DIRTY";
-      }
       return;
     }
     // Backward direction
