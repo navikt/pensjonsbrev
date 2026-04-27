@@ -399,7 +399,7 @@ async function move(page: Page, key: string, times: number) {
     await page.keyboard.press(key);
   }
   const after = await readCaretDebug(page);
-  console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
+  if (process.env.IS_UI_MODE) console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
 }
 
 async function assertCaret(
@@ -417,13 +417,14 @@ async function assertCaret(
     const selection = globalThis.getSelection();
     return selection?.rangeCount ? selection.getRangeAt(0).startOffset : -1;
   });
-
-  console.info("ASSERT");
-  console.info("focused:", await focused.allTextContents());
-  console.info(await readCaretDebug(page));
-  console.info("expectedContent:", expectedContent);
-  console.info("expectedOffset:", expectedCaretOffset);
-  console.info("actualOffset:", actualOffset);
+  if (process.env.IS_UI_MODE) {
+    console.info("ASSERT");
+    console.info("focused:", await focused.allTextContents());
+    console.info(await readCaretDebug(page));
+    console.info("expectedContent:", expectedContent);
+    console.info("expectedOffset:", expectedCaretOffset);
+    console.info("actualOffset:", actualOffset);
+  }
 
   // assert
   if (precision?.expectExact) {
@@ -490,8 +491,8 @@ test.describe("LetterEditor", () => {
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
-      await move(page, "ArrowRight", 25);
-      await assertCaret(page, "[CP2-1]", 25, { expectExact: true });
+      await move(page, "ArrowRight", 24);
+      await assertCaret(page, "[CP2-1]", 24, { expectExact: true });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
     });
