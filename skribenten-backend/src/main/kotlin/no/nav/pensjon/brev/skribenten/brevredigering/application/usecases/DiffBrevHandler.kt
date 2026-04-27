@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.skribenten.fagsystem.BrevdataService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.letter.DiffSegment
 import no.nav.pensjon.brev.skribenten.letter.Edit
-import no.nav.pensjon.brev.skribenten.letter.createSplitDiffSegments
+import no.nav.pensjon.brev.skribenten.letter.diffBrev
 import no.nav.pensjon.brev.skribenten.letter.toEdit
 import no.nav.pensjon.brev.skribenten.model.BrevId
 
@@ -27,7 +27,7 @@ class DiffBrevHandler(
         val pesysdata = brevdataService.hentBrevdata(brev)
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
 
-        return createSplitDiffSegments(request.redigertBrev, rendretBrev.markup).let { (inserts, deletes) ->
+        return diffBrev(request.redigertBrev, rendretBrev.markup).let { (inserts, deletes) ->
             success(Response(inserts = inserts, deletes = deletes, rendretBrev = rendretBrev.markup.toEdit()))
         }
     }

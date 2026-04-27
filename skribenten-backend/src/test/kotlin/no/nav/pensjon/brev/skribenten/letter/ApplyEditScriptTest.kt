@@ -126,7 +126,7 @@ class ApplyEditScriptTest {
 
     @Test
     fun `can generate delete DiffSegments`() {
-        val diff = createSplitDiffSegments(letter2, letter1.toMarkup())
+        val diff = diffBrev(letter2, letter1.toMarkup())
 
         jacksonObjectMapper().apply {
             registerModule(JavaTimeModule())
@@ -146,7 +146,7 @@ class ApplyEditScriptTest {
 
     @Test
     fun `can generate insert DiffSegments`() {
-        val diff = createSplitDiffSegments(letter2, letter1.toMarkup())
+        val diff = diffBrev(letter2, letter1.toMarkup())
 
         jacksonObjectMapper().apply {
             registerModule(JavaTimeModule())
