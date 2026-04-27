@@ -143,7 +143,7 @@ class LegacyBrevServiceImpl(
                         mottaker = when {
                             isEblankett || isNotat -> null
                             idTSSEkstern != null -> idTSSEkstern
-                            adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> adresse.vergePid?.value
+                            adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE && adresse.vergePid != null -> adresse.vergePid?.value
                             else -> gjelderPid.value
                         },
                         sensitivt = false
