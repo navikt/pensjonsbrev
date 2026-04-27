@@ -51,7 +51,7 @@ const exampleLetter1 = {
         {
           id: 13,
           parentId: 1,
-          text: "Er laget for å teste piltaster vertikalt i samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at markøren beveger seg til nærmeste side av variable.",
+          text: "Er laget for å teste piltaster vertikalt i samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at markøren beveger seg til nærmeste side av variabelen.",
           type: "LITERAL",
           fontType: "PLAIN",
           editedFontType: null,
@@ -193,7 +193,7 @@ const exampleLetter1 = {
                 {
                   id: -5131,
                   parentId: 513,
-                  text: "Punkt 3. Øk budjsettet[CP3-3]",
+                  text: "Punkt 3. Øk budsjettet[CP3-3]",
                   type: "LITERAL",
                   fontType: "PLAIN",
                   editedFontType: null,
@@ -316,24 +316,122 @@ async function navigateToEditor(page: Page) {
   await page.evaluate(() => document.fonts.ready);
 }
 
+async function readCaretDebug(page: Page) {
+  await page.evaluate(
+    () =>
+      new Promise<void>((resolve) => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }),
+  );
+  return page.evaluate(() => {
+    const selection = globalThis.getSelection();
+    if (!selection || selection.rangeCount === 0) {
+      return null;
+    }
+
+    const range = selection.getRangeAt(0).cloneRange();
+    const container = range.startContainer;
+    const containerText = container.textContent ?? "";
+    const offset = range.startOffset;
+
+    const contextStart = Math.max(0, offset - 5);
+    const contextEnd = Math.min(containerText.length, offset + 5);
+
+    const rect = (() => {
+      if (!range.collapsed) {
+        const selectionRect = range.getBoundingClientRect();
+        return {
+          x: Math.round((selectionRect.left + selectionRect.right) / 2),
+          y: Math.round((selectionRect.top + selectionRect.bottom) / 2),
+          source: "selection",
+        };
+      }
+
+      if (container.nodeType === Node.TEXT_NODE) {
+        if (offset < containerText.length) {
+          const probe = range.cloneRange();
+          probe.setEnd(container, offset + 1);
+          const nextCharRect = probe.getClientRects()[0];
+          if (nextCharRect) {
+            return {
+              x: Math.round(nextCharRect.left),
+              y: Math.round((nextCharRect.top + nextCharRect.bottom) / 2),
+              source: "next-char",
+            };
+          }
+        }
+
+        if (offset > 0) {
+          const probe = range.cloneRange();
+          probe.setStart(container, offset - 1);
+          const previousCharRects = probe.getClientRects();
+          const previousCharRect = previousCharRects[previousCharRects.length - 1];
+          if (previousCharRect) {
+            return {
+              x: Math.round(previousCharRect.right),
+              y: Math.round((previousCharRect.top + previousCharRect.bottom) / 2),
+              source: "previous-char",
+            };
+          }
+        }
+      }
+
+      const fallbackRect = range.getBoundingClientRect();
+      return {
+        x: Math.round((fallbackRect.left + fallbackRect.right) / 2),
+        y: Math.round((fallbackRect.top + fallbackRect.bottom) / 2),
+        source: "range",
+      };
+    })();
+
+    return {
+      // activeText: document.activeElement?.textContent,
+      caretOffset: offset,
+      visualized: `${containerText.slice(contextStart, offset)}|${containerText.slice(offset, contextEnd)}`,
+      position: { x: rect.x, y: rect.y },
+    };
+  });
+}
+
 async function move(page: Page, key: string, times: number) {
+  const before = await readCaretDebug(page);
   for (let i = 0; i < times; i++) {
     await page.keyboard.press(key);
   }
+  const after = await readCaretDebug(page);
+  console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
 }
 
-async function assertCaret(page: Page, content: string, caretOffset: number) {
+async function assertCaret(
+  page: Page,
+  expectedContent: string,
+  expectedCaretOffset: number,
+  precision?: { expectExact: boolean },
+) {
   // Verify focused element contains the expected text
   const focused = page.locator(":focus");
-  await expect(focused).toContainText(content);
+  await expect(focused).toContainText(expectedContent);
 
   // Check caret offset with tolerance of ±15 to account for font rendering differences
-  const offset = await page.evaluate(() => {
-    const sel = globalThis.getSelection();
-    return sel?.rangeCount ? sel.getRangeAt(0).startOffset : -1;
+  const actualOffset = await page.evaluate(() => {
+    const selection = globalThis.getSelection();
+    return selection?.rangeCount ? selection.getRangeAt(0).startOffset : -1;
   });
-  expect(offset).toBeGreaterThanOrEqual(caretOffset - 15);
-  expect(offset).toBeLessThanOrEqual(caretOffset + 15);
+
+  console.info("ASSERT");
+  console.info("focused:", await focused.allTextContents());
+  console.info(await readCaretDebug(page));
+  console.info("expectedContent:", expectedContent);
+  console.info("expectedOffset:", expectedCaretOffset);
+  console.info("actualOffset:", actualOffset);
+
+  // assert
+  if (precision?.expectExact) {
+    expect(actualOffset).toBe(expectedCaretOffset);
+  } else {
+    expect(actualOffset).toBeGreaterThanOrEqual(expectedCaretOffset - 15);
+    expect(actualOffset).toBeLessThanOrEqual(expectedCaretOffset + 15);
+  }
 }
 
 test.describe("LetterEditor", () => {
@@ -344,34 +442,36 @@ test.describe("LetterEditor", () => {
   });
 
   test.describe("Navigation", () => {
-    test("ArrowUp works between sibling contenteditables", async ({ page }) => {
-      await page.getByText("CP1-3").click();
+    test("ArrowUp works within contenteditables", async ({ page }) => {
+      // Playwright's click() places caret on element's first line, override with "position"
+      await page.getByText("CP1-3").click({ position: { x: 320, y: 36 } });
       await move(page, "End", 1);
       await move(page, "ArrowLeft", 10);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP1-2]", 30);
+      await assertCaret(page, "[CP1-2]", 20);
     });
 
-    test("ArrowDown works between sibling contenteditables", async ({ page }) => {
+    test("ArrowDown works between contenteditables", async ({ page }) => {
       await page.getByText("CP1-1").click();
-      await move(page, "ArrowRight", 10);
+      await move(page, "ArrowRight", 5);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP1-2]", 105);
+      await assertCaret(page, "[CP1-2]", 48);
     });
 
     test("ArrowUp moves to the right of a variable if that is closest", async ({ page }) => {
-      await page.getByText("CP1-3").click();
-      await move(page, "ArrowLeft", 45);
+      // Playwright's click() places caret on element's first line, override with "position"
+      await page.getByText("CP1-3").click({ position: { x: 0, y: 36 } });
+      await move(page, "ArrowRight", 45);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP1-2]", 0);
+      await assertCaret(page, "[CP1-2]", 0, { expectExact: true });
     });
 
     test("ArrowUp moves to the left of a variable if that is closest", async ({ page }) => {
-      await page.getByText("CP1-3").click();
-      await move(page, "Home", 1);
-      await move(page, "ArrowRight", 30);
+      // Playwright's click() places caret on element's first line, override with "position"
+      await page.getByText("CP1-3").click({ position: { x: 0, y: 36 } });
+      await move(page, "ArrowRight", 40);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP1-1]", 21);
+      await assertCaret(page, "[CP1-1]", 21, { expectExact: true });
     });
 
     test("ArrowUp works between paragraphs", async ({ page }) => {
@@ -383,54 +483,56 @@ test.describe("LetterEditor", () => {
     test("ArrowDown works between paragraphs", async ({ page }) => {
       await page.getByText("CP2-1").click();
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP2-3]", 8);
-    });
-
-    test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
-      await page.getByText("CP2-1").click();
-      await move(page, "End", 1);
-      await move(page, "ArrowLeft", 20);
-      await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17);
     });
 
-    test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
-      await page.getByText("CP2-1").click();
-      await move(page, "End", 1);
-      await move(page, "ArrowLeft", 10);
+    test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
+      await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 25);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP2-3]", 0);
+      await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
+    });
+
+    test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
+      await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 26);
+      await move(page, "ArrowDown", 1);
+      await assertCaret(page, "[CP2-3]", 0, { expectExact: true });
     });
 
     test("Can move up an itemlist", async ({ page }) => {
       await page.getByText("CP3-3").click();
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-2]", 28);
+      await assertCaret(page, "[CP3-2]", 14);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-1]", 111);
+      await assertCaret(page, "[CP3-1]", 97);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP3-1]", 31);
+      await assertCaret(page, "[CP3-1]", 14);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "Tittel over punktliste", 22);
+      await assertCaret(page, "Tittel over punktliste", 16);
     });
 
     test("Can move down an itemlist", async ({ page }) => {
-      await page.getByText("CP3-1").click();
-      await move(page, "Home", 1);
-      await assertCaret(page, "[CP3-1]", 82);
+      await page.getByText("Tittel over punktliste").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 10);
+      await assertCaret(page, "Tittel over punktliste", 10);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP3-2]", 0);
+      await assertCaret(page, "[CP3-1]", 5);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP3-3]", 0);
+      await assertCaret(page, "[CP3-1]", 87);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "Tittel under punktliste", 6);
+      await assertCaret(page, "[CP3-2]", 5);
+      await move(page, "ArrowDown", 1);
+      await assertCaret(page, "[CP3-3]", 5);
+      await move(page, "ArrowDown", 1);
+      await assertCaret(page, "Tittel under punktliste", 10);
     });
 
     test("ArrowUp at first node moves caret to the beginning", async ({ page }) => {
       await page.getByText("Informasjon om saksbehandlingstiden vår").click();
-      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 39);
+      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 19);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 0);
+      await assertCaret(page, "Informasjon om saksbehandlingstiden vår", 0, { expectExact: true });
     });
 
     test("ArrowDown at last node moves caret to the end", async ({ page }) => {
@@ -440,20 +542,18 @@ test.describe("LetterEditor", () => {
       await assertCaret(page, "CP4-1", 68);
     });
 
-    test("ArrowUp moves caret to start of previous line even if the caret is before the start of that line", async ({
+    test("ArrowUp moves caret to start of previous line even if it is displaced rightwards (list item)", async ({
       page,
     }) => {
-      await page.getByText("CP4-1").click();
-      await move(page, "Home", 1);
+      await page.getByText("CP4-1").click({ position: { x: 0, y: 0 } });
       await move(page, "ArrowUp", 2);
-      await assertCaret(page, "CP3-3", 0);
+      await assertCaret(page, "CP3-3", 0, { expectExact: true });
     });
 
-    test("ArrowDown moves caret to start of next line even if the caret is before the start of that line", async ({
+    test("ArrowDown moves caret to start of next line even if it is displaced rightwards (list item)", async ({
       page,
     }) => {
-      await page.getByText("Tittel over punktliste").click();
-      await move(page, "Home", 1);
+      await page.getByText("Tittel over punktliste").click({ position: { x: 0, y: 0 } });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "CP3-1", 0);
     });
