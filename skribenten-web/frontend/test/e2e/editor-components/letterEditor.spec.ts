@@ -475,20 +475,23 @@ test.describe("LetterEditor", () => {
     });
 
     test("ArrowUp works between paragraphs", async ({ page }) => {
-      await page.getByText("CP2-2").click();
+      await page.getByText("CP2-2").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 10);
       await move(page, "ArrowUp", 1);
-      await assertCaret(page, "[CP2-1]", 17);
+      await assertCaret(page, "[CP2-1]", 10);
     });
 
     test("ArrowDown works between paragraphs", async ({ page }) => {
-      await page.getByText("CP2-1").click();
+      await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 10);
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP2-2]", 17);
+      await assertCaret(page, "[CP2-2]", 10);
     });
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
       await move(page, "ArrowRight", 25);
+      await assertCaret(page, "[CP2-1]", 25, { expectExact: true });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
     });
@@ -496,6 +499,7 @@ test.describe("LetterEditor", () => {
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
       await move(page, "ArrowRight", 26);
+      await assertCaret(page, "[CP2-1]", 26, { expectExact: true });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-3]", 0, { expectExact: true });
     });
