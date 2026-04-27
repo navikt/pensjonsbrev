@@ -1,12 +1,10 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.Block
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.Content
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.ContentFont
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.ContentText
 
 interface EditLetterDiff<Token : Any> {
     fun tokenize(letter: Edit.Letter): Sequence<Token>
@@ -21,30 +19,67 @@ interface EditLetterDiff<Token : Any> {
         )
 }
 
-class TextOnlyWordDiff : EditLetterDiff<Token> {
+class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
 
     override fun tokenize(letter: Edit.Letter): Sequence<Token> = object : EditLetterSequence<Token>() {
-        override suspend fun SequenceScope<Token>.visit(block: Edit.Block) {
-            yield(Block(block.id, block.type))
-            block.content.forEach {
-                visit(it)
-            }
-        }
 
-        override suspend fun SequenceScope<Token>.visit(content: Variable) {
-            yield(Content(id = content.id, type = content.type))
-            yield(ContentFont(type = content.fontType))
-            yieldTextEditables(content.text)
+        override suspend fun SequenceScope<Token>.visit(block: Edit.Block) {
+            yield(Token.Block(block.id, block.type))
+            block.content.forEach { visit(it) }
         }
 
         override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Literal) {
-            yield(Content(id = content.id, type = content.type))
-            yield(ContentFont(content.editedFontType ?: content.fontType))
-            yieldTextEditables(content.editedText ?: content.text)
+            yield(Token.Literal(content.id, content.editedFontType ?: content.fontType))
+            yieldWords(content.editedText ?: content.text)
         }
 
-        private suspend fun SequenceScope<Token>.yieldTextEditables(text: String) =
-            text.split(' ').forEach { char -> yield(ContentText(char = char)) }
+        override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Variable) {
+            yield(Token.Variable(content.id, content.fontType))
+            yieldWords(content.text)
+        }
+
+        override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.NewLine) {
+            yield(Token.NewLine(content.id))
+        }
+
+        override suspend fun SequenceScope<Token>.visit(itemList: Edit.ParagraphContent.ItemList) {
+            yield(Token.ItemList(itemList.id, itemList.listType))
+            itemList.items.forEach { visit(it) }
+        }
+
+        override suspend fun SequenceScope<Token>.visit(item: Edit.ParagraphContent.ItemList.Item) {
+            yield(Token.Item(item.id))
+            item.content.forEach { visit(it) }
+        }
+
+        override suspend fun SequenceScope<Token>.visit(table: Edit.ParagraphContent.Table) {
+            yield(Token.Table(table.id))
+            visit(table.header)
+            table.rows.forEach { visit(it) }
+        }
+
+        override suspend fun SequenceScope<Token>.visit(header: Edit.ParagraphContent.Table.Header) {
+            yield(Token.Header(header.id))
+            header.colSpec.forEach { visit(it) }
+        }
+
+        override suspend fun SequenceScope<Token>.visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
+            yield(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
+            visit(colSpec.headerContent)
+        }
+
+        override suspend fun SequenceScope<Token>.visit(row: Edit.ParagraphContent.Table.Row) {
+            yield(Token.Row(row.id))
+            row.cells.forEach { visit(it) }
+        }
+
+        override suspend fun SequenceScope<Token>.visit(cell: Edit.ParagraphContent.Table.Cell) {
+            yield(Token.Cell(cell.id))
+            cell.text.forEach { visit(it) }
+        }
+
+        private suspend fun SequenceScope<Token>.yieldWords(text: String) =
+            text.split(' ').forEach { word -> yield(Token.Word(word)) }
 
     }.build(letter)
 
@@ -58,75 +93,201 @@ class TextOnlyWordDiff : EditLetterDiff<Token> {
         var blockIndex = 0
         while (cursor.hasNext) {
             val (current) = cursor.consume()
-            require(current is Block) { "Found editable that is not a Block at the top level: $current" }
-            addAll(consumeBlock(blockIndex++, cursor))
+            require(current is Token.Block) { "Found token that is not a Block at the top level: $current" }
+            addAll(BlockParser(blockIndex++, cursor).parse())
         }
     }
 
     sealed class Token {
 
-        // Equality is intentionally type-only: the diff algorithm treats two blocks/contents
+        // Equality is intentionally type-only: the diff algorithm treats two blocks
         // of the same type as structurally equivalent anchors, regardless of their id.
         data class Block(val id: Int?, val type: Edit.Block.Type) : Token() {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (javaClass != other?.javaClass) return false
-                other as Block
-                return type == other.type
+                return type == (other as Block).type
             }
 
             override fun hashCode(): Int = type.hashCode()
         }
 
-        data class Content(val id: Int?, val type: Edit.ParagraphContent.Type) : Token() {
+        // Equality on fontType only: a font change is a meaningful structural difference.
+        data class Literal(val id: Int?, val fontType: FontType) : Token() {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (javaClass != other?.javaClass) return false
-                other as Content
-                return type == other.type
+                return fontType == (other as Literal).fontType
             }
 
-            override fun hashCode(): Int = type.hashCode()
+            override fun hashCode(): Int = fontType.hashCode()
         }
 
-        data class ContentFont(val type: FontType) : Token()
-        data class ContentText(val char: String) : Token()
+        data class Variable(val id: Int?, val fontType: FontType) : Token() {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+                return fontType == (other as Variable).fontType
+            }
+
+            override fun hashCode(): Int = fontType.hashCode()
+        }
+
+        data class NewLine(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is NewLine
+            override fun hashCode(): Int = NewLine::class.hashCode()
+        }
+
+        data class Word(val word: String) : Token()
+
+        // Equality on listType only: changing the list style is a meaningful structural difference.
+        data class ItemList(val id: Int?, val listType: Listetype) : Token() {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+                return listType == (other as ItemList).listType
+            }
+
+            override fun hashCode(): Int = listType.hashCode()
+        }
+
+        data class Item(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is Item
+            override fun hashCode(): Int = Item::class.hashCode()
+        }
+
+        data class Table(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is Table
+            override fun hashCode(): Int = Table::class.hashCode()
+        }
+
+        data class Header(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is Header
+            override fun hashCode(): Int = Header::class.hashCode()
+        }
+
+        // Equality on alignment and span: column structure changes are meaningful.
+        data class ColumnSpec(
+            val id: Int?,
+            val alignment: Edit.ParagraphContent.Table.ColumnAlignment,
+            val span: Int,
+        ) : Token() {
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+                other as ColumnSpec
+                return alignment == other.alignment && span == other.span
+            }
+
+            override fun hashCode(): Int = 31 * alignment.hashCode() + span.hashCode()
+        }
+
+        data class Row(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is Row
+            override fun hashCode(): Int = Row::class.hashCode()
+        }
+
+        data class Cell(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is Cell
+            override fun hashCode(): Int = Cell::class.hashCode()
+        }
     }
-}
 
-private fun consumeBlock(
-    blockIndex: Int,
-    cursor: TokenCursor<Token>,
-): List<DiffSegment> = buildList {
-    var contentCount = 0
-    while (cursor.peek() is Content) {
-        val contentIndex = ContentIndex(blockIndex = blockIndex, contentIndex = contentCount++)
+    private class BlockParser(
+        private val blockIndex: Int,
+        private val cursor: TokenCursor<Token>,
+    ) {
+        private var contentCount = 0
 
-        val (content) = cursor.consume()
-        require(content is Content) { "Found editable that is not a Content: $content" }
-        require(cursor.consume().first is ContentFont) { "Found editable that is not a ContentFont" }
-
-        var currentDiff: DiffSegment? = null
-        var text = ""
-        while (cursor.peek() is ContentText) {
-            val (current, textEdit) = cursor.consume()
-            require(current is ContentText)
-
-            val toAppend = " ${current.char}"
-            if (textEdit != null) {
-                if (currentDiff == null) {
-                    currentDiff = DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                } else if (currentDiff.endOffset == text.length) {
-                    currentDiff = currentDiff.copy(endOffset = text.length + toAppend.length)
-                } else {
-                    add(currentDiff)
-                    currentDiff = DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+        fun parse(): List<DiffSegment> = buildList {
+            while (isBlockContent()) {
+                when {
+                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> addAll(consumeTopLevelText())
+                    cursor.peek() is Token.NewLine -> cursor.consume()
+                    cursor.peek() is Token.ItemList -> consumeItemList()
+                    cursor.peek() is Token.Table -> consumeTable()
+                    else -> error("Unexpected block-level token: ${cursor.peek()}")
                 }
             }
-            text += toAppend
         }
-        if (currentDiff != null) {
-            add(currentDiff)
+
+        // DiffSegments are only produced for top-level Literal/Variable within a block.
+        // ContentIndex(blockIndex, contentIndex) preserves its existing semantics for top-level content.
+        // Literal/Variable inside ItemList items and Table cells are parsed but not tracked.
+        private fun consumeTopLevelText(): List<DiffSegment> {
+            cursor.consume() // Consume Literal or Variable (edit on this token is not surfaced as a DiffSegment)
+            val contentIndex = ContentIndex(blockIndex = blockIndex, contentIndex = contentCount++)
+            var currentDiff: DiffSegment? = null
+            var text = ""
+            return buildList {
+                while (cursor.peek() is Token.Word) {
+                    val (current, edit) = cursor.consume()
+                    require(current is Token.Word)
+                    val toAppend = " ${current.word}"
+                    if (edit != null) {
+                        currentDiff = if (currentDiff == null) {
+                            DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                        } else if (currentDiff!!.endOffset == text.length) {
+                            currentDiff!!.copy(endOffset = text.length + toAppend.length)
+                        } else {
+                            add(currentDiff!!)
+                            DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                        }
+                    }
+                    text += toAppend
+                }
+                if (currentDiff != null) add(currentDiff!!)
+            }
+        }
+
+        private fun consumeItemList() {
+            cursor.consume() // ItemList token
+            while (cursor.peek() is Token.Item) {
+                cursor.consume() // Item token
+                while (isTextContent()) consumeNestedTextTokens()
+            }
+        }
+
+        private fun consumeTable() {
+            cursor.consume() // Table token
+            if (cursor.peek() is Token.Header) {
+                cursor.consume()
+                while (cursor.peek() is Token.ColumnSpec) {
+                    cursor.consume()
+                    if (cursor.peek() is Token.Cell) {
+                        cursor.consume()
+                        while (isTextContent()) consumeNestedTextTokens()
+                    }
+                }
+            }
+            while (cursor.peek() is Token.Row) {
+                cursor.consume()
+                while (cursor.peek() is Token.Cell) {
+                    cursor.consume()
+                    while (isTextContent()) consumeNestedTextTokens()
+                }
+            }
+        }
+
+        private fun consumeNestedTextTokens() {
+            when {
+                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> {
+                    cursor.consume()
+                    while (cursor.peek() is Token.Word) cursor.consume()
+                }
+                cursor.peek() is Token.NewLine -> cursor.consume()
+                else -> error("Unexpected text-level token: ${cursor.peek()}")
+            }
+        }
+
+        private fun isBlockContent() = cursor.peek().let {
+            it is Token.Literal || it is Token.Variable || it is Token.NewLine ||
+                it is Token.ItemList || it is Token.Table
+        }
+
+        // Items and table cells can only contain Text (Literal, Variable, NewLine).
+        private fun isTextContent() = cursor.peek().let {
+            it is Token.Literal || it is Token.Variable || it is Token.NewLine
         }
     }
 }
