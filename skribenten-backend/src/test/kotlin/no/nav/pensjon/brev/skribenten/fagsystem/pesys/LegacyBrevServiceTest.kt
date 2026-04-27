@@ -19,6 +19,49 @@ private const val forventaDokumentId = "5678"
 
 class LegacyBrevServiceTest {
 
+    @Test
+    suspend fun `mottaker settes til vergePid ved VERGE_PERSON_POSTADRESSE`() {
+        val vergePid = Pid("12345678901")
+        var faktiskMottaker: String? = null
+
+        val penService = object : PenClientStub() {
+            override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) = Pen.BestillExstreamBrevResponse(forventaJournalpostId).also { faktiskMottaker = bestillExstreamBrevRequest.sakskontekst?.mottaker }
+            override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) = Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)
+        }
+
+        val pensjonPersonDataService = object : PensjonPersonDataServiceStub() {
+            override suspend fun hentKontaktadresse(pid: Pid) = KontaktAdresseResponseDto(
+                adresseString = "vergeadresse",
+                adresselinjer = listOf("linje1"),
+                type = KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE,
+                vergePid = vergePid
+            )
+        }
+
+        val legacyBrevService = LegacyBrevServiceImpl(
+            brevmetadataService = brevmetadataService,
+            safService = safService,
+            penClient = penService,
+            navansattService = navansattService,
+            pensjonPersonDataService = pensjonPersonDataService
+        )
+
+        withPrincipal(principal) {
+            legacyBrevService.bestillOgRedigerExstreamBrev(
+                gjelderPid = Pid("9999"),
+                request = Api.BestillExstreamBrevRequest(
+                    brevkode = "exstream",
+                    spraak = SpraakKode.NB,
+                    vedtaksId = null,
+                    idTSSEkstern = null,
+                    brevtittel = null,
+                    enhetsId = principalSinNAVEnhet.id
+                ),
+                saksId = SaksId(3333L)
+            )
+        }
+        assertThat(faktiskMottaker).isEqualTo(vergePid.value)
+    }
     private val principalIdent = NavIdent("kulIdent1234")
     private val principal = MockPrincipal(principalIdent, "Kul saksbehandler")
     private val principalSinNAVEnhet = NAVAnsattEnhet(EnhetId("1111"), "Nav Ozzzlo")
