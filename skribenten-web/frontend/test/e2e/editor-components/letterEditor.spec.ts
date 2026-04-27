@@ -85,7 +85,7 @@ const exampleLetter1 = {
         {
           id: 23,
           parentId: 2,
-          text: "funker mellom to avsnitt",
+          text: "funker mellom avsnitt",
           type: "LITERAL",
           fontType: "PLAIN",
           editedFontType: null,
@@ -316,7 +316,7 @@ async function navigateToEditor(page: Page) {
   await page.evaluate(() => document.fonts.ready);
 }
 
-async function readCaretDebug(page: Page) {
+async function getCaretDebugInfo(page: Page) {
   await page.evaluate(
     () =>
       new Promise<void>((resolve) => {
@@ -394,11 +394,11 @@ async function readCaretDebug(page: Page) {
 }
 
 async function move(page: Page, key: string, times: number) {
-  const before = await readCaretDebug(page);
+  const before = process.env.IS_UI_MODE ? await getCaretDebugInfo(page) : null;
   for (let i = 0; i < times; i++) {
     await page.keyboard.press(key);
   }
-  const after = await readCaretDebug(page);
+  const after = process.env.IS_UI_MODE ? await getCaretDebugInfo(page) : null;
   if (process.env.IS_UI_MODE) console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
 }
 
@@ -417,10 +417,11 @@ async function assertCaret(
     const selection = globalThis.getSelection();
     return selection?.rangeCount ? selection.getRangeAt(0).startOffset : -1;
   });
+
   if (process.env.IS_UI_MODE) {
     console.info("ASSERT");
     console.info("focused:", await focused.allTextContents());
-    console.info(await readCaretDebug(page));
+    console.info(await getCaretDebugInfo(page));
     console.info("expectedContent:", expectedContent);
     console.info("expectedOffset:", expectedCaretOffset);
     console.info("actualOffset:", actualOffset);
