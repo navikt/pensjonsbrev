@@ -20,7 +20,7 @@ class EditScriptTest {
 
     @Test
     fun testDiff3() {
-        shortestEditScript(tokenizer.tokenize(a), tokenizer.tokenize(b)).forEach { println(it) }
+        shortestEditScript(tokenizer.tokenize(a), tokenizer.tokenize(b)).all.forEach { println(it) }
     }
 
 

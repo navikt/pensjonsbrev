@@ -91,7 +91,7 @@ class ApplyEditScriptTest {
 
     @Test
     fun `can apply edit script correctly`() {
-        val editscript = shortestEditScript(tokenizer.tokenize(letter1), tokenizer.tokenize(letter2)).toMutableList()
+        val editscript = shortestEditScript(tokenizer.tokenize(letter1), tokenizer.tokenize(letter2)).all.toMutableList()
         val appliedScript = tokenizer.tokenize(letter1).toList().applyEditScript(editscript)
 
         println("EDIT SCRIPT")
@@ -104,7 +104,7 @@ class ApplyEditScriptTest {
 
     @Test
     fun `can generate diff from editScript`() {
-        val editscript = shortestEditScript(tokenizer.tokenize(letter1), tokenizer.tokenize(letter2)).toMutableList()
+        val editscript = shortestEditScript(tokenizer.tokenize(letter1), tokenizer.tokenize(letter2)).all.toMutableList()
         val diff = tokenizer.tokenize(letter1).toList().generateDiff(editscript)
 
         println("EDIT SCRIPT")
