@@ -69,7 +69,7 @@ class ApplyEditScriptTest {
             val font = remaining.removeFirst() as? Token.ContentFont
                 ?: throw IllegalStateException("Expected ContentType after Content for content ${content.id}, but found ${remaining.firstOrNull()}")
 
-            val text = remaining.removeWhile<Token.ContentText>().joinToString("") { "${it.char}" }
+            val text = remaining.removeWhile<Token.ContentText>().joinToString(" ") { it.char }
 
             add(
                 when (content.type) {
