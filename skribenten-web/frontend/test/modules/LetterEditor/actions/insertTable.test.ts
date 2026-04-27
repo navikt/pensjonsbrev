@@ -30,7 +30,8 @@ describe("insertTable", () => {
     const lastContent = lastBlock.content.at(-1);
 
     expect(isLiteral(lastContent)).toBe(true);
-    expect((lastContent as { editedText: string | null }).editedText).toBe("");
+    if (!isLiteral(lastContent)) throw new Error("Expected last content to be a literal");
+    expect(lastContent.editedText).toBe("");
     expect(isTable(lastBlock.content.at(-2))).toBe(true);
   });
 
