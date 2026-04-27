@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.Content
 
 interface EditLetterTokenizer<Token : Any> {
     fun tokenize(letter: Edit.Letter): Sequence<Token>
-    fun generateDiffSegments(tokensWithEdits: TokensWithEdits<Token>): List<DiffSegment>
+    fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>>
 }
 
 class TextOnlyWordTokenizer : EditLetterTokenizer<Token> {
@@ -40,8 +40,13 @@ class TextOnlyWordTokenizer : EditLetterTokenizer<Token> {
 
     }.build(letter)
 
-    override fun generateDiffSegments(tokensWithEdits: TokensWithEdits<Token>): List<DiffSegment> = buildList {
-        val cursor = TokenCursor(tokensWithEdits)
+    override fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>> = Pair(
+        generateDiffSegments(editScript.new, editScript.inserts),
+        generateDiffSegments(editScript.old, editScript.deletes),
+    )
+
+    private fun generateDiffSegments(tokens: List<Token>, edits: List<EditOperation<Token>>): List<DiffSegment> = buildList {
+        val cursor = TokenCursor(tokens, edits)
         var blockIndex = 0
         while (cursor.hasNext) {
             val (current) = cursor.consume()
@@ -118,15 +123,12 @@ private fun consumeBlock(
     }
 }
 
-class TokensWithEdits<T : Any>(val tokens: List<T>, val edits: List<EditOperation<T>>) {
+private class TokenCursor<T : Any>(tokens: List<T>, edits: List<EditOperation<T>>) {
     init {
         require(edits.distinctBy { it.position }.size == edits.size) { "Expected edits to only have unique position references" }
     }
-}
-
-private class TokenCursor<T : Any>(tokensWithEdits: TokensWithEdits<T>) {
-    private val tokens = tokensWithEdits.tokens
-    private val edits = tokensWithEdits.edits.associateBy { it.position }
+    private val tokens = tokens
+    private val edits = edits.associateBy { it.position }
     private var currentIndex = 0
     val hasNext: Boolean get() = currentIndex < tokens.size
 

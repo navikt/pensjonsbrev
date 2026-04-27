@@ -13,15 +13,18 @@ import no.nav.pensjon.brev.skribenten.letter.EditOperation.Insert
  *
  * @param T must implement an equals-method
  */
-fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): EditScript<T> =
-    EditScript(MyersDiff(old.toList(), new.toList()).shortestEditScript())
+fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): EditScript<T> {
+    val oldList = old.toList()
+    val newList = new.toList()
+    return EditScript(oldList, newList, MyersDiff(oldList, newList).shortestEditScript())
+}
 
 fun <T : Any> shortestEditScript(old: List<T>, new: List<T>): EditScript<T> =
-    EditScript(MyersDiff(old, new).shortestEditScript())
+    EditScript(old, new, MyersDiff(old, new).shortestEditScript())
 
-class EditScript<T : Any>(val all: List<EditOperation<T>>) {
-    val inserts: List<EditOperation.Insert<T>> = all.filterIsInstance<EditOperation.Insert<T>>()
-    val deletes: List<EditOperation.Delete<T>> = all.filterIsInstance<EditOperation.Delete<T>>()
+class EditScript<T : Any>(val old: List<T>, val new: List<T>, val all: List<EditOperation<T>>) {
+    val inserts: List<Insert<T>> = all.filterIsInstance<Insert<T>>()
+    val deletes: List<Delete<T>> = all.filterIsInstance<Delete<T>>()
 }
 
 sealed class EditOperation<T : Any> {
