@@ -58,7 +58,7 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     // If the table is the last element in the last block of the document,
     // insert an empty literal so the user can continue editing after it
     const isLastBlock = focus.blockIndex === draft.redigertBrev.blocks.length - 1;
-    if (isLastBlock && block.content[block.content.length - 1].type === "TABLE") {
+    if (isLastBlock && isTable(block.content.at(-1))) {
       addElements([newLiteral({ editedText: "" })], block.content.length, block.content, block.deletedContent);
     }
 
