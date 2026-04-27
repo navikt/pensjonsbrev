@@ -7,7 +7,7 @@ FROM --platform=linux/amd64 eclipse-temurin:25 AS jre-build
 
 #using jlink instead to not include modules we dont need. Saves a bunch of space.
 RUN $JAVA_HOME/bin/jlink \
-         --add-modules java.base,java.desktop,java.instrument,java.logging,java.naming,java.sql,java.xml,jdk.crypto.ec,jdk.jdwp.agent,jdk.jfr,jdk.management,jdk.naming.dns,jdk.unsupported \
+         --add-modules java.base,jdk.jdwp.agent,java.xml,java.naming,java.management,java.instrument,jdk.unsupported,jdk.management,jdk.localedata \
          --strip-debug \
          --no-man-pages \
          --no-header-files \
