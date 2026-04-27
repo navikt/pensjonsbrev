@@ -2,17 +2,17 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyCharacterTokenizer.Token
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyCharacterTokenizer.Token.Block
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyCharacterTokenizer.Token.Content
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyCharacterTokenizer.Token.ContentFont
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyCharacterTokenizer.Token.ContentText
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.Block
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.Content
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.ContentFont
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.ContentText
 
 interface EditLetterTokenizer<Token> {
     fun tokenize(letter: Edit.Letter): Sequence<Token>
 }
 
-class TextOnlyCharacterTokenizer : EditLetterTokenizer<Token> {
+class TextOnlyWordTokenizer : EditLetterTokenizer<Token> {
 
     override fun tokenize(letter: Edit.Letter): Sequence<Token> = object : EditLetterSequence<Token>() {
         override suspend fun SequenceScope<Token>.visit(block: Edit.Block) {
@@ -35,7 +35,7 @@ class TextOnlyCharacterTokenizer : EditLetterTokenizer<Token> {
         }
 
         private suspend fun SequenceScope<Token>.yieldTextEditables(text: String) =
-            text.forEach { char -> yield(ContentText(char = char)) }
+            text.split(' ').forEach { char -> yield(ContentText(char = char)) }
 
     }.build(letter)
 
@@ -72,7 +72,7 @@ class TextOnlyCharacterTokenizer : EditLetterTokenizer<Token> {
         }
 
         data class ContentFont(val type: FontType) : Token()
-        data class ContentText(val char: Char) : Token()
+        data class ContentText(val char: String) : Token()
     }
 }
 

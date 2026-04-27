@@ -3,15 +3,15 @@ package no.nav.pensjon.brev.skribenten.letter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 fun createSplitDiffSegments(redigertBrev: Edit.Letter, rendret: LetterMarkup): Pair<List<DiffSegment>, List<DiffSegment>> {
-    val tokenizer = TextOnlyCharacterTokenizer()
+    val tokenizer = TextOnlyWordTokenizer()
 
     return tokenizer.tokenize(rendret.toEdit()).toList().let { rendretEditables ->
         val redigertBrevEditables = tokenizer.tokenize(redigertBrev).toList()
         val editScript = shortestEditScript(rendretEditables, redigertBrevEditables)
 
         Pair(
-            redigertBrevEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Insert<TextOnlyCharacterTokenizer.Token>>()),
-            rendretEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Delete<TextOnlyCharacterTokenizer.Token>>())
+            redigertBrevEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Insert<TextOnlyWordTokenizer.Token>>()),
+            rendretEditables.generateDiffSegments(editScript.filterIsInstance<EditOperation.Delete<TextOnlyWordTokenizer.Token>>())
         )
     }
 }
@@ -20,14 +20,14 @@ data class ContentIndex(val blockIndex: Int, val contentIndex: Int)
 
 data class DiffSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int)
 
-private fun List<TextOnlyCharacterTokenizer.Token>.generateDiffSegments(edits: List<EditOperation<TextOnlyCharacterTokenizer.Token>>): List<DiffSegment> = buildList {
+private fun List<TextOnlyWordTokenizer.Token>.generateDiffSegments(edits: List<EditOperation<TextOnlyWordTokenizer.Token>>): List<DiffSegment> = buildList {
     val editscript = EditscriptConsumer(this@generateDiffSegments, edits)
 
     var blockIndex = 0
     while (editscript.hasNext) {
         // Her slukes en edit operation, men det virker kun relevant å markere tekst inni selve blokken.
         val (current) = editscript.consume()
-        require(current is TextOnlyCharacterTokenizer.Token.Block) { "Found editable that is not a Block at the top level: $current" }
+        require(current is TextOnlyWordTokenizer.Token.Block) { "Found editable that is not a Block at the top level: $current" }
 
         addAll(consumeBlock(blockIndex++, editscript))
     }
@@ -35,33 +35,34 @@ private fun List<TextOnlyCharacterTokenizer.Token>.generateDiffSegments(edits: L
 
 private fun consumeBlock(
     blockIndex: Int,
-    editscript: EditscriptConsumer<TextOnlyCharacterTokenizer.Token>,
+    editscript: EditscriptConsumer<TextOnlyWordTokenizer.Token>,
 ): List<DiffSegment> = buildList {
     var contentIndex = 0
-    while (editscript.peekLetter() is TextOnlyCharacterTokenizer.Token.Content) {
+    while (editscript.peekLetter() is TextOnlyWordTokenizer.Token.Content) {
         val contentIndex = ContentIndex(blockIndex = blockIndex, contentIndex = contentIndex++)
 
         val (content) = editscript.consume()
-        require(content is TextOnlyCharacterTokenizer.Token.Content) { "Found editable that is not a Content: $content" }
-        require(editscript.consume().first is TextOnlyCharacterTokenizer.Token.ContentFont) { "Found editable that is not a ContentFont" }
+        require(content is TextOnlyWordTokenizer.Token.Content) { "Found editable that is not a Content: $content" }
+        require(editscript.consume().first is TextOnlyWordTokenizer.Token.ContentFont) { "Found editable that is not a ContentFont" }
 
         var currentDiff: DiffSegment? = null
-        var offset = 0
-        while (editscript.peekLetter() is TextOnlyCharacterTokenizer.Token.ContentText) {
+        var text = ""
+        while (editscript.peekLetter() is TextOnlyWordTokenizer.Token.ContentText) {
             val (current, textEdit) = editscript.consume()
-            require(current is TextOnlyCharacterTokenizer.Token.ContentText)
+            require(current is TextOnlyWordTokenizer.Token.ContentText)
 
+            val toAppend = " ${current.char}"
             if (textEdit != null) {
                 if (currentDiff == null) {
-                    currentDiff = DiffSegment(index = contentIndex, startOffset = offset, endOffset = offset + 1)
-                } else if (currentDiff.endOffset == offset) {
-                    currentDiff = currentDiff.copy(endOffset = offset + 1)
+                    currentDiff = DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                } else if (currentDiff.endOffset == text.length) {
+                    currentDiff = currentDiff.copy(endOffset = text.length + toAppend.length)
                 } else {
                     add(currentDiff)
-                    currentDiff = DiffSegment(index = contentIndex, startOffset = offset, endOffset = offset + 1)
+                    currentDiff = DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
                 }
             }
-            offset++
+            text += toAppend
         }
         if (currentDiff != null) {
             add(currentDiff)
