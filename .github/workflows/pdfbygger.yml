@@ -187,20 +187,31 @@ jobs:
           mkdir -p brevbaker/pdf-bygger/build/test_visual/png
           find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 "$1" brevbaker/pdf-bygger/build/test_visual/png/$(basename "$1" .pdf)' _ {}
       - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           node-version-file: ".tool-versions"
       - name: Install reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
         run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
       - name: Authenticate to Google Cloud
         uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
         with:
           team: pensjonsbrev
       - name: Run reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
         run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          ACTUAL_KEY: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+          ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
+      - name: Update main baseline on GCS
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: |
+          gcloud storage rsync \
+            brevbaker/pdf-bygger/build/test_visual/png \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main \
+            --recursive \
+            --delete-unmatched-destination-objects
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"

@@ -123,6 +123,7 @@ const BrevmalBrevbaker = (props: {
       trackEvent("brev opprettet", {
         brevkode: props.letterTemplate.id,
         brevtittel: props.letterTemplate.name,
+        brevtype: "brevbaker",
       });
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
