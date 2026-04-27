@@ -36,8 +36,8 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
 
         paragraph {
             text(
-                bokmal { + "Hvert år når likningen er klar mottar vi opplysninger om inntekten" },
-                nynorsk { + "Kvart år når likninga er klar får vi opplysningar om inntekta" },
+                bokmal { + "Hvert år når skattefastsettingen er klar mottar vi opplysninger om inntekten" },
+                nynorsk { + "Kvart år når skattefastsettinga er klar, får vi opplysningar om inntekta" },
             )
 
             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true )) THEN   INCLUDE ENDIF
@@ -105,8 +105,8 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
             text(
-                bokmal { + " fra Skatteetaten. Vi bruker likningsopplysningene til å beregne riktig utbetaling av uføretrygd" },
-                nynorsk { + " frå Skatteetaten. Vi bruker opplysningane om inntekt til å berekne riktig utbetaling av uføretrygd" },
+                bokmal { + " fra Skatteetaten. Vi bruker opplysningene fra skattefastsettingen til å beregne riktig utbetaling av uføretrygd" },
+                nynorsk { + " frå Skatteetaten. Vi bruker opplysningane frå skattefastsettinga til å berekne riktig utbetaling av uføretrygd" },
             )
 
             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
@@ -117,8 +117,8 @@ data class TBU052V_TBU073V_EtteroppgjoerAvUforetrygdOgBarnetillegg(
                 )
             }
             text(
-                bokmal { + " for året likningen gjelder for. Har du fått for mye eller for lite utbetalt i uføretrygd" },
-                nynorsk { + " for det året som likninga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" },
+                bokmal { + " for året fastsettingen gjelder for. Har du fått for mye eller for lite utbetalt i uføretrygd" },
+                nynorsk { + " for det året som fastsettinga gjeld for. Har du fått for mykje eller for lite utbetalt i uføretrygd" },
             )
 
             //IF(( PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true )) THEN   INCLUDE ENDIF
