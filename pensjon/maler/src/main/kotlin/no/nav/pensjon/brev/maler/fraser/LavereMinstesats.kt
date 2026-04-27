@@ -187,7 +187,7 @@ object LavereMinstesats {
             }
             paragraph {
                 text(
-                    bokmal { +"Lovendringen gjelder for deg som fikk uførepensjonen din omregnet til uføretrygd i 2015. Endringen fører til at alle gifte og samboene nå får lik minstesats." },
+                    bokmal { +"Lovendringen gjelder for deg som fikk uførepensjonen din omregnet til uføretrygd i 2015. Endringen fører til at alle gifte og samboende nå får lik minstesats." },
                     nynorsk { +"Lovendringa gjeld for deg som fekk uførepensjonen din omrekna til uføretrygd i 2015. Endringa fører til at alle gifte og sambuande no får lik minstesats." },
                 )
             }
