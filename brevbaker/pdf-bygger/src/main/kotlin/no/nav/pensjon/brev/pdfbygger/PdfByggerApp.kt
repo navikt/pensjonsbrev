@@ -41,14 +41,14 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.pdfbygger.PdfB
 @Suppress("unused")
 fun Application.module() {
     try {
-        setUp()
+        setUp(TypstCompileService())
     } catch (e: Exception) {
         logger.error(e.message, e)
         throw e
     }
 }
 
-private fun Application.setUp() {
+internal fun Application.setUp(typstCompileService: TypstCompileService) {
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
@@ -64,7 +64,6 @@ private fun Application.setUp() {
         }
     }
 
-    val typstCompileService = TypstCompileService()
 
     install(ContentNegotiation) {
         jackson {

@@ -40,10 +40,10 @@ spec:
         - id: loki
   resources:
     requests:
-      cpu: "1"
-      memory: "1024Mi"
+      cpu: "400m"
+      memory: "1Gi"
     limits:
-      memory: "8192Mi"
+      memory: "2Gi"
   accessPolicy:
     inbound:
       rules:

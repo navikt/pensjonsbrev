@@ -26,7 +26,8 @@ import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
 private const val MAX_RETRIES = 1
-private val RETRY_DELAY = 200.milliseconds
+private val RETRY_BASE_DELAY = 200.milliseconds
+private val RETRY_MAX_DELAY = 2.seconds
 
 class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
@@ -53,7 +54,13 @@ class PensjonPdfByggerService(
 
         install(HttpRequestRetry) {
             maxRetries = MAX_RETRIES
-            delayMillis { RETRY_DELAY.inWholeMilliseconds }
+
+            exponentialDelay(
+                base = 2.0,
+                baseDelayMs = RETRY_BASE_DELAY.inWholeMilliseconds,
+                maxDelayMs = RETRY_MAX_DELAY.inWholeMilliseconds,
+                randomizationMs = RETRY_BASE_DELAY.inWholeMilliseconds,
+            )
             retryOnExceptionIf { _, cause ->
                 val actualCause = cause.unwrapCancellationException()
                 val doRetry = actualCause is HttpRequestTimeoutException

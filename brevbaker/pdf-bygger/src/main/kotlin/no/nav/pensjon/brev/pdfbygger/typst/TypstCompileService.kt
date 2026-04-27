@@ -12,7 +12,7 @@ import java.nio.file.Path
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
 
-class TypstCompileService(
+open class TypstCompileService(
     private val templateDir: Path = Path.of(DEFAULT_TYPST_TEMPLATE_DIR)
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -30,7 +30,7 @@ class TypstCompileService(
         "-",
     )
 
-    suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+    open suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
         return when (val result: Execution = executeCompileProcess(writeLetter)) {
             is Execution.Success ->
                 PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
