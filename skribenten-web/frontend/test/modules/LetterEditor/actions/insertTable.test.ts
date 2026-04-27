@@ -7,26 +7,26 @@ import { isLiteral } from "~/Brevredigering/LetterEditor/model/utils";
 import { letter, literal, paragraph } from "../utils";
 
 function createLetterWithOneParagraph() {
-  const para = paragraph([literal({ text: "hello" })]);
-  const state = letter(para);
+  const singleParagraph = paragraph([literal({ text: "hello" })]);
+  const state = letter(singleParagraph);
   state.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 5 };
   return state;
 }
 
 function createLetterWithTwoParagraphs() {
-  const para1 = paragraph([literal({ text: "first" })]);
-  const para2 = paragraph([literal({ text: "second" })]);
-  const state = letter(para1, para2);
+  const firstParagraph = paragraph([literal({ text: "first" })]);
+  const lastParagraph = paragraph([literal({ text: "second" })]);
+  const state = letter(firstParagraph, lastParagraph);
   state.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
   return state;
 }
 
 describe("insertTable", () => {
   it("appends a trailing empty literal when the table ends up last in the last block", () => {
-    const state = createLetterWithOneParagraph();
-    const result = insertTable(state, state.focus, 2, 2);
+    const initialState = createLetterWithOneParagraph();
+    const stateAfterInsert = insertTable(initialState, initialState.focus, 2, 2);
 
-    const lastBlock = result.redigertBrev.blocks[result.redigertBrev.blocks.length - 1];
+    const lastBlock = stateAfterInsert.redigertBrev.blocks[stateAfterInsert.redigertBrev.blocks.length - 1];
     const lastContent = lastBlock.content.at(-1);
 
     expect(isLiteral(lastContent)).toBe(true);
@@ -34,12 +34,12 @@ describe("insertTable", () => {
   });
 
   it("does not append a trailing literal when the table is not in the last block", () => {
-    const state = createLetterWithTwoParagraphs();
+    const initialState = createLetterWithTwoParagraphs();
     // Insert into the first block (not the last)
-    state.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
-    const result = insertTable(state, state.focus, 2, 2);
+    initialState.focus = { blockIndex: 0, contentIndex: 0, cursorPosition: 0 };
+    const stateAfterInsert = insertTable(initialState, initialState.focus, 2, 2);
 
-    const firstBlock = result.redigertBrev.blocks[0];
+    const firstBlock = stateAfterInsert.redigertBrev.blocks[0];
     const lastContentInFirstBlock = firstBlock.content.at(-1);
 
     // The trailing literal should NOT have been added to the non-last block
@@ -47,10 +47,10 @@ describe("insertTable", () => {
   });
 
   it("focuses the newly inserted table header after insertion", () => {
-    const state = createLetterWithOneParagraph();
-    const result = insertTable(state, state.focus, 2, 2);
+    const initialState = createLetterWithOneParagraph();
+    const stateAfterInsert = insertTable(initialState, initialState.focus, 2, 2);
 
-    expect(result.focus).toMatchObject({
+    expect(stateAfterInsert.focus).toMatchObject({
       blockIndex: 0,
       rowIndex: -1,
       cellIndex: 0,
