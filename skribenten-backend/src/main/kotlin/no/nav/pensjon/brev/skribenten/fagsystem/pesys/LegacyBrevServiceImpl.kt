@@ -9,8 +9,10 @@ import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
+import no.nav.pensjon.brev.skribenten.services.KontaktAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.services.Navansatt
 import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
 import no.nav.pensjon.brev.skribenten.services.SafService
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
@@ -26,6 +28,7 @@ class LegacyBrevServiceImpl(
     private val safService: SafService,
     private val penClient: PenClient,
     private val navansattService: NavansattService,
+    private val pensjonPersonDataService: PensjonPersonDataService,
 ) : LegacyBrevService {
     private val logger = LoggerFactory.getLogger(LegacyBrevServiceImpl::class.java)
 
@@ -114,6 +117,8 @@ class LegacyBrevServiceImpl(
         return if (!harTilgangTilEnhet(enhetsId)) {
             Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
         } else {
+            val adresse = pensjonPersonDataService.hentKontaktadresse(gjelderPid)
+
             penClient.bestillExstreamBrev(
                 Pen.BestillExstreamBrevRequest(
                     brevKode = brevkode,
@@ -135,7 +140,12 @@ class LegacyBrevServiceImpl(
                         saksbehandlerid = PrincipalInContext.require().navIdent.id,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                         land = landkode.takeIf { isEblankett },
-                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid.value,
+                        mottaker = when {
+                            isEblankett || isNotat -> null
+                            idTSSEkstern != null -> idTSSEkstern
+                            adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> adresse.vergePid?.value
+                            else -> gjelderPid.value
+                        },
                         sensitivt = false
                     ),
                     vedtaksInformasjon = vedtaksId?.id?.toString()

@@ -87,6 +87,7 @@ class LegacyBrevServiceTest {
         safService = safService,
         penClient = penService,
         navansattService = navansattService,
+        pensjonPersonDataService = PensjonPersonDataServiceStub()
     )
 
     @Test
