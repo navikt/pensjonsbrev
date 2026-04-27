@@ -197,26 +197,23 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
         private val blockIndex: Int,
         private val cursor: TokenCursor<Token>,
     ) {
-        private var contentCount = 0
-
         fun parse(): List<DiffSegment> = buildList {
+            var blockContentPosition = 0
             while (isBlockContent()) {
+                val currentPosition = blockContentPosition++
                 when {
-                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> addAll(consumeTopLevelText())
+                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
+                        addAll(consumeText(ContentIndex.BlockContentIndex(blockIndex, currentPosition)))
                     cursor.peek() is Token.NewLine -> cursor.consume()
-                    cursor.peek() is Token.ItemList -> consumeItemList()
-                    cursor.peek() is Token.Table -> consumeTable()
+                    cursor.peek() is Token.ItemList -> addAll(consumeItemList(currentPosition))
+                    cursor.peek() is Token.Table -> addAll(consumeTable(currentPosition))
                     else -> error("Unexpected block-level token: ${cursor.peek()}")
                 }
             }
         }
 
-        // DiffSegments are only produced for top-level Literal/Variable within a block.
-        // ContentIndex(blockIndex, contentIndex) preserves its existing semantics for top-level content.
-        // Literal/Variable inside ItemList items and Table cells are parsed but not tracked.
-        private fun consumeTopLevelText(): List<DiffSegment> {
+        private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
             cursor.consume() // Consume Literal or Variable (edit on this token is not surfaced as a DiffSegment)
-            val contentIndex = ContentIndex(blockIndex = blockIndex, contentIndex = contentCount++)
             var currentDiff: DiffSegment? = null
             var text = ""
             return buildList {
@@ -240,43 +237,71 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
             }
         }
 
-        private fun consumeItemList() {
+        private fun consumeItemList(listContentIndex: Int): List<DiffSegment> {
             cursor.consume() // ItemList token
-            while (cursor.peek() is Token.Item) {
-                cursor.consume() // Item token
-                while (isTextContent()) consumeNestedTextTokens()
+            return buildList {
+                var itemIndex = 0
+                while (cursor.peek() is Token.Item) {
+                    cursor.consume() // Item token
+                    var itemContentPosition = 0
+                    while (isTextContent()) {
+                        val currentPosition = itemContentPosition++
+                        when {
+                            cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
+                                addAll(consumeText(ContentIndex.ItemContentIndex(blockIndex, listContentIndex, itemIndex, currentPosition)))
+                            cursor.peek() is Token.NewLine -> cursor.consume()
+                            else -> error("Unexpected text-level token: ${cursor.peek()}")
+                        }
+                    }
+                    itemIndex++
+                }
             }
         }
 
-        private fun consumeTable() {
+        private fun consumeTable(tableContentIndex: Int): List<DiffSegment> {
             cursor.consume() // Table token
-            if (cursor.peek() is Token.Header) {
-                cursor.consume()
-                while (cursor.peek() is Token.ColumnSpec) {
+            return buildList {
+                if (cursor.peek() is Token.Header) {
                     cursor.consume()
-                    if (cursor.peek() is Token.Cell) {
+                    var cellIndex = 0
+                    while (cursor.peek() is Token.ColumnSpec) {
                         cursor.consume()
-                        while (isTextContent()) consumeNestedTextTokens()
+                        if (cursor.peek() is Token.Cell) {
+                            cursor.consume()
+                            var cellContentPosition = 0
+                            while (isTextContent()) {
+                                val currentPosition = cellContentPosition++
+                                when {
+                                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
+                                        addAll(consumeText(ContentIndex.TableCellContentIndex(blockIndex, tableContentIndex, -1, cellIndex, currentPosition)))
+                                    cursor.peek() is Token.NewLine -> cursor.consume()
+                                    else -> error("Unexpected text-level token: ${cursor.peek()}")
+                                }
+                            }
+                        }
+                        cellIndex++
                     }
                 }
-            }
-            while (cursor.peek() is Token.Row) {
-                cursor.consume()
-                while (cursor.peek() is Token.Cell) {
+                var rowIndex = 0
+                while (cursor.peek() is Token.Row) {
                     cursor.consume()
-                    while (isTextContent()) consumeNestedTextTokens()
+                    var cellIndex = 0
+                    while (cursor.peek() is Token.Cell) {
+                        cursor.consume()
+                        var cellContentPosition = 0
+                        while (isTextContent()) {
+                            val currentPosition = cellContentPosition++
+                            when {
+                                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
+                                    addAll(consumeText(ContentIndex.TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, currentPosition)))
+                                cursor.peek() is Token.NewLine -> cursor.consume()
+                                else -> error("Unexpected text-level token: ${cursor.peek()}")
+                            }
+                        }
+                        cellIndex++
+                    }
+                    rowIndex++
                 }
-            }
-        }
-
-        private fun consumeNestedTextTokens() {
-            when {
-                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> {
-                    cursor.consume()
-                    while (cursor.peek() is Token.Word) cursor.consume()
-                }
-                cursor.peek() is Token.NewLine -> cursor.consume()
-                else -> error("Unexpected text-level token: ${cursor.peek()}")
             }
         }
 
