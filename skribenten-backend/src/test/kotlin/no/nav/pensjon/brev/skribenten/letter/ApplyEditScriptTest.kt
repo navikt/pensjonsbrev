@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.TITLE2
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.TITLE3
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
@@ -32,7 +32,7 @@ class ApplyEditScriptTest {
         Paragraph(2, true, listOf(Literal(1, "noe tekst "), Variable(2, " og noe mer kjempe billig")))
     )
 
-    private val tokenizer = TextOnlyWordTokenizer()
+    private val tokenizer = TextOnlyWordDiff()
 
     fun List<Token>.reconstructBlocks(): List<LetterMarkup.Block> = reconstructEditLetter(toMutableList())
 

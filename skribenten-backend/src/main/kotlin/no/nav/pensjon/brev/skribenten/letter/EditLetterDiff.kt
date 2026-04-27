@@ -2,24 +2,26 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.Block
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.Content
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.ContentFont
-import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordTokenizer.Token.ContentText
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.Block
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.Content
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.ContentFont
+import no.nav.pensjon.brev.skribenten.letter.TextOnlyWordDiff.Token.ContentText
 
-interface EditLetterTokenizer<Token : Any> {
+interface EditLetterDiff<Token : Any> {
     fun tokenize(letter: Edit.Letter): Sequence<Token>
     fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>>
 
     fun diff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<DiffSegment>> =
-        generateDiffSegments(shortestEditScript(
-            old = tokenize(old).toList(),
-            new = tokenize(new).toList(),
-        ))
+        generateDiffSegments(
+            shortestEditScript(
+                old = tokenize(old).toList(),
+                new = tokenize(new).toList(),
+            )
+        )
 }
 
-class TextOnlyWordTokenizer : EditLetterTokenizer<Token> {
+class TextOnlyWordDiff : EditLetterDiff<Token> {
 
     override fun tokenize(letter: Edit.Letter): Sequence<Token> = object : EditLetterSequence<Token>() {
         override suspend fun SequenceScope<Token>.visit(block: Edit.Block) {
