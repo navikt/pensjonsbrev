@@ -141,24 +141,24 @@ fun Route.sakRoute(
     }
 }
 
-private fun adresseTilDto(adresse: KontaktAdresseResponseDto) = KontaktadresseDto(
+private fun adresseTilDto(adresse: KontaktAdresseResponseDto) = KontaktAdresseDto(
     adresseString = adresse.adresseString,
     adresselinjer = adresse.adresselinjer,
     type = when (adresse.type) {
-        KontaktAdresseResponseDto.Adressetype.MATRIKKELADRESSE -> KontaktadresseDto.Adressetype.MATRIKKELADRESSE
-        KontaktAdresseResponseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT -> KontaktadresseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT
-        KontaktAdresseResponseDto.Adressetype.POSTBOKSADRESSE -> KontaktadresseDto.Adressetype.POSTBOKSADRESSE
-        KontaktAdresseResponseDto.Adressetype.REGOPPSLAG_ADRESSE -> KontaktadresseDto.Adressetype.REGOPPSLAG_ADRESSE
-        KontaktAdresseResponseDto.Adressetype.UKJENT_BOSTED -> KontaktadresseDto.Adressetype.UKJENT_BOSTED
-        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE -> KontaktadresseDto.Adressetype.UTENLANDSK_ADRESSE
-        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT -> KontaktadresseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT
-        KontaktAdresseResponseDto.Adressetype.VEGADRESSE -> KontaktadresseDto.Adressetype.VEGADRESSE
-        KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> KontaktadresseDto.Adressetype.VERGE_PERSON_POSTADRESSE
-        KontaktAdresseResponseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE -> KontaktadresseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE
+        KontaktAdresseResponseDto.Adressetype.MATRIKKELADRESSE -> KontaktAdresseDto.Adressetype.MATRIKKELADRESSE
+        KontaktAdresseResponseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.POSTBOKSADRESSE -> KontaktAdresseDto.Adressetype.POSTBOKSADRESSE
+        KontaktAdresseResponseDto.Adressetype.REGOPPSLAG_ADRESSE -> KontaktAdresseDto.Adressetype.REGOPPSLAG_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UKJENT_BOSTED -> KontaktAdresseDto.Adressetype.UKJENT_BOSTED
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.VEGADRESSE -> KontaktAdresseDto.Adressetype.VEGADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_PERSON_POSTADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE
     }
 )
 
-data class KontaktadresseDto(
+data class KontaktAdresseDto(
     val adresseString: String,
     val adresselinjer: List<String>,
     val type: Adressetype
