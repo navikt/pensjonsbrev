@@ -405,19 +405,21 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             event.preventDefault();
             setEditorState((prev) =>
               produce(prev, (draft) => {
-                const draftBlock = draft.redigertBrev.blocks[f.blockIndex];
+                const focus = draft.focus;
+                if (!isTableCellIndex(focus)) return;
+                const draftBlock = draft.redigertBrev.blocks[focus.blockIndex];
                 if (!("deletedContent" in draftBlock)) return;
 
                 addElements(
                   [newLiteral({ editedText: "" })],
-                  f.contentIndex,
+                  focus.contentIndex,
                   draftBlock.content,
                   draftBlock.deletedContent,
                 );
 
                 draft.focus = {
-                  blockIndex: f.blockIndex,
-                  contentIndex: f.contentIndex,
+                  blockIndex: focus.blockIndex,
+                  contentIndex: focus.contentIndex,
                   cursorPosition: 0,
                 };
                 draft.saveStatus = "DIRTY";
@@ -440,7 +442,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    if (!isTableCellIndex(f) && f.blockIndex !== TITLE_INDEX) {
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
       const blocks = editorState.redigertBrev.blocks;
       const block = blocks[f.blockIndex];
       const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
@@ -549,19 +551,21 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
             event.preventDefault();
             setEditorState((prev) =>
               produce(prev, (draft) => {
-                const draftBlock = draft.redigertBrev.blocks[f.blockIndex];
+                const focus = draft.focus;
+                if (!isTableCellIndex(focus)) return;
+                const draftBlock = draft.redigertBrev.blocks[focus.blockIndex];
                 if (!("deletedContent" in draftBlock)) return;
 
                 addElements(
                   [newLiteral({ editedText: "" })],
-                  f.contentIndex + 1,
+                  focus.contentIndex + 1,
                   draftBlock.content,
                   draftBlock.deletedContent,
                 );
 
                 draft.focus = {
-                  blockIndex: f.blockIndex,
-                  contentIndex: f.contentIndex + 1,
+                  blockIndex: focus.blockIndex,
+                  contentIndex: focus.contentIndex + 1,
                   cursorPosition: 0,
                 };
                 draft.saveStatus = "DIRTY";
@@ -584,7 +588,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    if (!isTableCellIndex(f) && f.blockIndex !== TITLE_INDEX) {
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
       const blocks = editorState.redigertBrev.blocks;
       const block = blocks[f.blockIndex];
       const nextContent = block.content[f.contentIndex + 1];
