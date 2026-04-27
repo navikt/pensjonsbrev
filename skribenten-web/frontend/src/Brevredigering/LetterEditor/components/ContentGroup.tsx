@@ -440,7 +440,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    if (!isTableCellIndex(f)) {
+    if (!isTableCellIndex(f) && f.blockIndex !== TITLE_INDEX) {
       const blocks = editorState.redigertBrev.blocks;
       const block = blocks[f.blockIndex];
       const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
@@ -584,7 +584,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       return;
     }
 
-    if (!isTableCellIndex(f)) {
+    if (!isTableCellIndex(f) && f.blockIndex !== TITLE_INDEX) {
       const blocks = editorState.redigertBrev.blocks;
       const block = blocks[f.blockIndex];
       const nextContent = block.content[f.contentIndex + 1];

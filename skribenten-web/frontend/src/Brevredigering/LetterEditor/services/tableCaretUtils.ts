@@ -2,10 +2,9 @@ import { type Draft, produce } from "immer";
 
 import {
   type Cell,
-  type Content,
   PARAGRAPH,
   type ParagraphBlock,
-  type TABLE,
+  type Table,
   TITLE1,
   TITLE2,
   TITLE3,
@@ -75,7 +74,7 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
 
 export function getValidVerticalTableFocus(
   currentFocus: Extract<Focus, { rowIndex: number; cellIndex: number; cellContentIndex: number }>,
-  table: Extract<Content, { type: typeof TABLE }>,
+  table: Table,
   targetRowIndex: number,
 ) {
   const targetCellCount =
