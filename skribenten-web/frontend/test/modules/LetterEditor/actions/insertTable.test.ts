@@ -50,8 +50,13 @@ describe("insertTable", () => {
     const initialState = createLetterWithOneParagraph();
     const stateAfterInsert = insertTable(initialState, initialState.focus, 2, 2);
 
-    expect(stateAfterInsert.focus).toMatchObject({
+    const { focus, redigertBrev } = stateAfterInsert;
+    const focusedContent = redigertBrev.blocks[focus.blockIndex].content[focus.contentIndex];
+
+    expect(isTable(focusedContent)).toBe(true);
+    expect(focus).toMatchObject({
       blockIndex: 0,
+      contentIndex: 1,
       rowIndex: -1,
       cellIndex: 0,
       cellContentIndex: 0,
