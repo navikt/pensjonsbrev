@@ -159,7 +159,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         when (edited) {
             is Edit.ParagraphContent.Text.Literal -> when (rendered) {
                 is Edit.ParagraphContent.Text.Literal -> rendered.copy(editedText = edited.editedText, editedFontType = edited.editedFontType)
-                is Edit.ParagraphContent.Text.Variable -> edited
+                is Edit.ParagraphContent.Text.Variable -> if (edited.editedText != null) edited else rendered
                 is Edit.ParagraphContent.Text.NewLine -> throw UpdateEditedLetterException("Edited literal and rendered newLine has same ID, cannot merge: $edited - $rendered")
             }
             is Edit.ParagraphContent.Text.Variable -> throw UpdateEditedLetterException("Variable should never be considered edited: $edited")
