@@ -26,6 +26,16 @@ body {
   align-self: center;
 }
 
+.expression {
+  background: var(--ax-meta-purple-300);
+  white-space: break-spaces;
+}
+
+.conditional {
+  background: var(--ax-accent-100);
+  margin: 1rem 0;
+}
+
 .show-if,
 .show-else {
   .conditional {
@@ -33,18 +43,8 @@ body {
   }
   .expression,
   code {
-    background: var(--ax-accent-200);
+    background: var(--ax-accent-300);
   }
-}
-
-.expression {
-  background: var(--ax-meta-purple-200);
-  white-space: break-spaces;
-}
-
-.conditional {
-  background: var(--a-lightblue-100);
-  margin: 1rem 0;
 }
 
 @keyframes highlight-animation {

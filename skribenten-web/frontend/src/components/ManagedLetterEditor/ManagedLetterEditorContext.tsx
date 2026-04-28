@@ -1,14 +1,21 @@
 import { useQueryClient } from "@tanstack/react-query";
 import _ from "lodash";
-import type { Dispatch, ReactNode, SetStateAction } from "react";
-import { createContext, useCallback, useContext, useState } from "react";
+import {
+  createContext,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
-import type { LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
-import type { BrevResponse } from "~/types/brev";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
+import { type BrevResponse } from "~/types/brev";
 
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;

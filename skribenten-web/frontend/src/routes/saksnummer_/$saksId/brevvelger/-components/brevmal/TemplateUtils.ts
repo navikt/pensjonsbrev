@@ -1,8 +1,12 @@
 import { z } from "zod";
 
-import type { OrderEblankettRequest, OrderExstreamLetterRequest } from "~/types/apiTypes";
-import { type LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { Nullable } from "~/types/Nullable";
+import {
+  type LetterMetadata,
+  type OrderEblankettRequest,
+  type OrderExstreamLetterRequest,
+  SpraakKode,
+} from "~/types/apiTypes";
+import { type Nullable } from "~/types/Nullable";
 
 export const byggExstreamOnSubmitRequest = (argz: {
   template: LetterMetadata;

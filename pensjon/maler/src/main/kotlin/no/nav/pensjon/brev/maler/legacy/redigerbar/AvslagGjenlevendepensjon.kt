@@ -4,7 +4,9 @@ import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDto
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.SaksbehandlerValgSelectors.folketrygdlovenParagraf
+import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagGjenlevendepensjonDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -14,6 +16,7 @@ import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -51,9 +54,9 @@ override val featureToggle = FeatureToggles.brevmalAvslagGjenlevendepensjon.togg
         outline {
             paragraph {
                 text(
-                    bokmal { +"Nav viser til søknaden din om gjenlevendepensjon mottatt PE_Kravdata_Kravhode_KravMotattDato. Søknaden din er avslått." }, //TODO
-                    nynorsk { +"Nav viser til søknaden din om etterlatnepensjon motteken PE_Kravdata_Kravhode_KravMotattDato. Søknaden din er avslått." },
-                    english { +"Nav makes reference to your application for a survivor's pension, received on PE_Kravdata_Kravhode_KravMotattDato. Your application has been denied." }
+                    bokmal { +"Nav viser til søknaden din om gjenlevendepensjon mottatt " + pesysData.kravMottattDato.format() + ". Søknaden din er avslått." }, //TODO
+                    nynorsk { +"Nav viser til søknaden din om etterlatnepensjon motteken " + pesysData.kravMottattDato.format() + ". Søknaden din er avslått." },
+                    english { +"Nav makes reference to your application for a survivor's pension, received on " + pesysData.kravMottattDato.format() + ". Your application has been denied." }
                 )
             }
 

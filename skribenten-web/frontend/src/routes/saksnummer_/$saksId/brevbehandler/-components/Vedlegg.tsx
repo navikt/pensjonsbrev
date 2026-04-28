@@ -8,19 +8,23 @@ import {
   Checkbox,
   CheckboxGroup,
   HStack,
+  Label,
   Loader,
+  LocalAlert,
   Modal,
+  ReadMore,
   VStack,
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Fragment, useState } from "react";
+import { Controller, type UseFormReturn, useForm } from "react-hook-form";
 
 import { getBrev } from "~/api/brev-queries";
 import { getBrevVedlegg, hentPdfForBrev, oppdaterVedlegg } from "~/api/sak-api-endpoints";
 import { P1EditModal } from "~/components/P1/P1EditModal";
-import type { AlltidValgbartVedlegg } from "~/types/brev";
-import { type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { type SpraakKode } from "~/types/apiTypes";
+import { type AlltidValgbartVedlegg, type BrevInfo, P1_BREVKODE } from "~/types/brev";
+import { LANGUAGE_CODE_TO_TEXT, SPRAAK_ENUM_TO_TEXT, SPRAAKKODE_TO_LANGUAGE_CODE } from "~/types/nameMappings";
 import { getErrorMessage } from "~/utils/errorUtils";
 
 type VedleggFormData = {
@@ -72,7 +76,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
   const fjernVedleggMutation = useMutation({
     mutationFn: (vedleggToRemove: AlltidValgbartVedlegg) =>
       oppdaterVedlegg(props.saksId, props.brev.id, {
-        valgteVedlegg: savedVedlegg.filter((v) => v.kode !== vedleggToRemove.kode),
+        valgteVedlegg: savedVedlegg.filter((lagretVedlegg) => lagretVedlegg.kode !== vedleggToRemove.kode),
       }),
     onSuccess: (data) => {
       queryClient.setQueryData(getBrev.queryKey(props.brev.id), data);
@@ -216,31 +220,7 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
         open={isModalOpen}
       >
         <Modal.Body>
-          {vedleggKoder && vedleggKoder.length > 0 ? (
-            <Controller
-              control={form.control}
-              name="valgteVedlegg"
-              render={({ field }) => (
-                <CheckboxGroup
-                  hideLegend
-                  legend="Velg vedlegg"
-                  onChange={(selectedKodes: string[]) => {
-                    const selectedVedlegg = vedleggKoder.filter((v) => selectedKodes.includes(v.kode));
-                    field.onChange(selectedVedlegg);
-                  }}
-                  value={field.value.map((v) => v.kode)}
-                >
-                  {vedleggKoder.map((vedlegg) => (
-                    <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
-                      {vedlegg.visningstekst}
-                    </Checkbox>
-                  ))}
-                </CheckboxGroup>
-              )}
-            />
-          ) : (
-            <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>
-          )}
+          <VedleggModalInnhold brevSpraak={props.brev.spraak} form={form} vedleggKoder={vedleggKoder} />
           {leggTilVedleggMutation.isError && (
             <Alert size="small" variant="error">
               {getErrorMessage(leggTilVedleggMutation.error)}
@@ -258,6 +238,110 @@ export const Vedlegg = (props: { saksId: string; brev: BrevInfo; erLaast: boolea
           </HStack>
         </Modal.Footer>
       </Modal>
+    </VStack>
+  );
+};
+
+type VedleggModalInnholdProps = {
+  vedleggKoder: AlltidValgbartVedlegg[] | undefined;
+  brevSpraak: SpraakKode;
+  form: UseFormReturn<VedleggFormData>;
+};
+
+const VedleggModalInnhold = (props: VedleggModalInnholdProps) => {
+  const { vedleggKoder, form } = props;
+
+  if (!vedleggKoder || vedleggKoder.length === 0) {
+    return <BodyShort>Ingen vedlegg tilgjengelig</BodyShort>;
+  }
+
+  const brevSpraakKode = SPRAAKKODE_TO_LANGUAGE_CODE[props.brevSpraak];
+  const brevSpraakTekst = SPRAAK_ENUM_TO_TEXT[props.brevSpraak] ?? props.brevSpraak;
+
+  const tilgjengelige = vedleggKoder.filter((vedlegg) => vedlegg.tilgjengeligForSpraak);
+  const utilgjengelige = vedleggKoder.filter((vedlegg) => !vedlegg.tilgjengeligForSpraak);
+  const ingenTilgjengelige = tilgjengelige.length === 0;
+  const noenErUtilgjengelige = utilgjengelige.length > 0 && tilgjengelige.length > 0;
+
+  return (
+    <VStack gap="space-8">
+      {noenErUtilgjengelige && (
+        <LocalAlert size="small" status="announcement">
+          <LocalAlert.Header>
+            <LocalAlert.Title>Noen skjemaer er ikke tilgjengelig på språket i brevet.</LocalAlert.Title>
+          </LocalAlert.Header>
+        </LocalAlert>
+      )}
+      {ingenTilgjengelige ? (
+        <VStack gap="space-4">
+          <LocalAlert size="small" status="warning">
+            <LocalAlert.Header>
+              <LocalAlert.Title>Ingen skjemaer er tilgjengelig basert på språket i brevet.</LocalAlert.Title>
+            </LocalAlert.Header>
+          </LocalAlert>
+        </VStack>
+      ) : (
+        <Controller
+          control={form.control}
+          name="valgteVedlegg"
+          render={({ field }) => (
+            <CheckboxGroup
+              hideLegend
+              legend="Velg vedlegg"
+              onChange={(selectedKodes: string[]) => {
+                const selectedVedlegg = vedleggKoder.filter(
+                  (vedlegg) => selectedKodes.includes(vedlegg.kode) && vedlegg.tilgjengeligForSpraak,
+                );
+                field.onChange(selectedVedlegg);
+              }}
+              value={field.value.map((valgtVedlegg) => valgtVedlegg.kode)}
+            >
+              {tilgjengelige.map((vedlegg) => (
+                <Checkbox key={vedlegg.kode} value={vedlegg.kode}>
+                  <VStack gap="space-1">
+                    <span>{vedlegg.visningstekst}</span>
+                    <BodyShort as="span" size="small">
+                      {vedlegg.spraak.map((spraakKode, index) => {
+                        const isCurrentLanguage = spraakKode === brevSpraakKode;
+                        const tekst = LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode;
+                        return (
+                          <Fragment key={spraakKode}>
+                            {index > 0 && ", "}
+                            {isCurrentLanguage ? <strong>{tekst}</strong> : tekst}
+                          </Fragment>
+                        );
+                      })}
+                    </BodyShort>
+                  </VStack>
+                </Checkbox>
+              ))}
+            </CheckboxGroup>
+          )}
+        />
+      )}
+      {utilgjengelige.length > 0 && (
+        <CheckboxGroup hideLegend legend="Skjemaer utilgjengelig på valgt språk">
+          {noenErUtilgjengelige && <Label size="small">Skjemaer som ikke er tilgjengelig på {brevSpraakTekst}</Label>}
+          {utilgjengelige.map((vedlegg) => (
+            <Checkbox
+              description={vedlegg.spraak
+                .map((spraakKode) => LANGUAGE_CODE_TO_TEXT[spraakKode] ?? spraakKode)
+                .join(", ")}
+              disabled
+              key={vedlegg.kode}
+              value={vedlegg.kode}
+            >
+              {vedlegg.visningstekst}
+            </Checkbox>
+          ))}
+        </CheckboxGroup>
+      )}
+      {ingenTilgjengelige && (
+        <ReadMore header="Hvorfor kan jeg ikke legge til skjema på et annet språk/målform?">
+          Brevet er skrevet på et annet språk enn det skjemaet støtter. Å kombinere språk eller målform, eksempelvis
+          bokmål og nynorsk, er ikke anbefalt, ifølge Språkloven.
+        </ReadMore>
+      )}
     </VStack>
   );
 };

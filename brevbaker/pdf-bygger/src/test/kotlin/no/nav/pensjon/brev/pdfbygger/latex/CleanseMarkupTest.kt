@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.pdfbygger.latex
 
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.pdfbygger.attachment
+import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl

@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
+import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringEntity
 import no.nav.pensjon.brev.skribenten.common.GeneriskRedigerbarBrevdata
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -16,13 +17,20 @@ import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
-import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
+import org.jetbrains.exposed.v1.jdbc.transactions.transaction
 import org.slf4j.LoggerFactory
 
 private val ekskluderteBrev = hashSetOf("PE_IY_05_301", "PE_BA_01_108", "PE_GP_01_010", "PE_AP_04_922", "PE_IY_03_169")
+
+data class ValgbartVedlegg(
+    val kode: String,
+    val visningstekst: String,
+    val spraak: Set<LanguageCode>,
+    val tilgjengeligForSpraak: Boolean,
+)
 
 class BrevmalService(
     private val brevbakerService: BrevbakerService,
@@ -61,8 +69,19 @@ class BrevmalService(
     suspend fun getModelSpecification(brevkode: Brevkode.Redigerbart): TemplateModelSpecification? =
         brevbakerService.getModelSpecification(brevkode)
 
-    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): Set<AlltidValgbartVedleggKode> =
-        brevbakerService.getAlltidValgbareVedlegg(brevId)
+    suspend fun getAlltidValgbareVedlegg(brevId: BrevId): List<ValgbartVedlegg> {
+        val spraakIBrevet = transaction {
+            BrevredigeringEntity.findById(brevId)?.spraak ?: throw IllegalStateException("Finner ikke brev med id $brevId")
+        }
+        return brevbakerService.getAlltidValgbareVedlegg(brevId).map {
+            ValgbartVedlegg(
+                kode = it.kode,
+                visningstekst = it.visningstekst,
+                spraak = it.spraak,
+                tilgjengeligForSpraak = it.spraak.contains(spraakIBrevet),
+            )
+        }.sortedBy { it.visningstekst }
+    }
 
     suspend fun getTemplates(): List<TemplateDescription.Redigerbar>? =
         brevbakerService.getTemplates()

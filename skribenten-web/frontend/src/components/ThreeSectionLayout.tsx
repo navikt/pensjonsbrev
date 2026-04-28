@@ -1,4 +1,5 @@
 import { Box, HGrid, HStack, VStack } from "@navikt/ds-react";
+
 import { VerticalDivider } from "./Divider";
 
 const ThreeSectionLayout = (props: { left: React.ReactNode; right: React.ReactNode; bottom: React.ReactNode }) => {

@@ -2,10 +2,9 @@ import { Box, Button, HStack } from "@navikt/ds-react";
 import { useMutationState } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
-import type { SubmitTemplateOptions } from "../route";
-import { Route } from "../route";
+import { Route, type SubmitTemplateOptions } from "../route";
 
 const BrevvelgerFooter = (props: {
   saksId: string;
@@ -34,7 +33,7 @@ const BrevvelgerFooter = (props: {
           variant="tertiary"
         >
           {harBrevKlarTilSending
-            ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+            ? `Du har ${props.antallBrevKlarTilSending} brev klar for sending. Gå til brevbehandler`
             : "Gå til brevbehandler"}
         </Button>
         {props.onSubmitClick && (

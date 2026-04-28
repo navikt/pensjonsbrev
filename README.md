@@ -128,6 +128,38 @@ Ytelsestesten er i utgangspunktet satt opp til å teste vedtaksbrevet UNG_UFOER_
 4. Gå inn på locust grensesnittet via http://localhost:8089/ og skriv inn url til endepunktet du ønsker å ytelses-teste.
    [Se dokumentasjon fra locust for mer info om bruk.](http://docs.locust.io/en/stable/quickstart.html#locust-s-web-interface)
 
+## Miljøvariabler for integrasjonstester
+
+Følgende miljøvariabler kan settes for å styre oppførselen til `PDFByggerTestContainer` under kjøring av integrasjonstester:
+
+| Miljøvariabel                 | Beskrivelse |
+|-------------------------------|-------------|
+| `BRUK_LOKAL_PDF_BYGGER`       | Sett til `true` for å kjøre integrasjonstestene mot din lokalt bygde pdf-bygger (`pensjonsbrev-pdf-bygger:latest`) i stedet for å hente imaget fra GitHub Container Registry. |
+| `TESTCONTAINERS_REUSE_ENABLE` | Sett til `true` for å gjenbruke pdf-bygger-containeren mellom kjøringer, noe som kan redusere oppstartstid ved lokal utvikling. Husk å stoppe den kjørende testcontaineren manuelt dersom du ønsker å oppdatere docker-imaget. |
+
+### Bygge nytt lokalt pdf-bygger image
+
+Bygg først jar-filen og deretter docker-imaget:
+
+```bash
+./gradlew :brevbaker:pdf-bygger:installDist
+docker build brevbaker/pdf-bygger
+```
+
+### Eksempel på lokal kjøring av integrasjonstester med lokal pdf-bygger
+
+```bash
+BRUK_LOKAL_PDF_BYGGER=true ./gradlew integrationTest
+```
+
+For å gjenbruke test-containeren mellom ulike tester og moduler:
+
+```bash
+BRUK_LOKAL_PDF_BYGGER=true TESTCONTAINERS_REUSE_ENABLE=true ./gradlew integrationTest
+```
+
+> **Merk:** Når du bruker `TESTCONTAINERS_REUSE_ENABLE=true` vil containeren fortsette å kjøre mellom test-kjøringer. Husk å stoppe den manuelt (f.eks. med `docker stop <container-id>`) dersom du har bygget et nytt pdf-bygger image og ønsker at testene skal bruke det oppdaterte imaget.
+
 ## Endring av obligatoriske felter i API-model
 
 Brevbakeren bruker pensjon-api-model, alder-api-model og ufoere-api-model for bestilling av brev.
@@ -210,14 +242,14 @@ done
 Først en gang for å lage bilder i image_new, så kan du kopiere bildene til image_old for å få ett sammenligningsgrunnlag.
 Deretter kan du kjøre scriptet på nytt og få vite hvor ulike de er, samt en diff mellom bildene i out mappen.
 
-Du vil også kunne se disse endringene i percey ved å lage en pull-request.
+Du vil også kunne se disse endringene med reg-suit ved å lage en pull-request.
 
 ## Oppdatere latex biblioteker
 
 Ved først bygge brevbaker/pdf-bygger/latex.Dockerfile, så sette "from" i brevbaker/pdf-bygger/Dockerfile, kan du iterere over det å oppdatere latex imaget/pakker.
 Når du er ferdig med det, så kan du kjøre github action workflowen "update-latex-image" på branchen, så vil den publisere ett nytt dato-stemplet image som kan tas i bruk i pdf-bygger/Dockerfile.
 
-Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk percy eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
+Vær obs på at pdf-bygger kjører med en egendefinert Java Runtime, bygd opp i pdf-bygger sin Dockerfile, som kun har med modulene fra Java vi bruker. Dermed får vi en så liten runtime som mulig. Ulempa med dette er at vi må passe på litt ekstra ved endringer. For eksempel er `localedata`-modulen viktig for å få norsk dato formatert riktig. Sjekk reg-suit eller ny opp mot gammel pdf fra lokal generering ved endringer i latex-delen, eller tekniske endringer som for eksempel Java-oppgradering, av pdf-bygger for å se at ting ser likt ut.
 
 # Kode generert av GitHub Copilot
 

@@ -6,7 +6,7 @@ import { getPreferredLanguage } from "~/api/skribenten-api-endpoints";
 import { BrevSystem, type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 
-import type { SubmitTemplateOptions } from "../route";
+import { type SubmitTemplateOptions } from "../route";
 import BrevmalBrevbaker from "./brevmal/BrevmalBrevbaker";
 import BrevmalForExstream from "./brevmal/BrevmalExstream";
 import Eblankett from "./brevmal/EBlankett";

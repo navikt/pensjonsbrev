@@ -1,6 +1,7 @@
 #Used for local testing purposes
 services:
   pdf-bygger:
+    image: pensjonsbrev-pdf-bygger:latest
     build: ./brevbaker/pdf-bygger
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
@@ -129,6 +130,8 @@ services:
 
   locust-master:
     depends_on:
+      pdf-bygger:
+        condition: service_started
       locust-worker:
         condition: service_started
     profiles:
@@ -139,7 +142,7 @@ services:
       - "8089:8089"
     volumes:
       - ./brevbaker/locust:/mnt/locust
-    command: -f /mnt/locust/locustfile.py --master -H https://pensjon-brevbaker.intern.dev.nav.no
+    command: -f /mnt/locust/locustfile.py --master -H http://pdf-bygger:8080
 
   locust-worker:
     deploy:

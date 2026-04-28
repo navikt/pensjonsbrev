@@ -27,9 +27,7 @@ on:
       - "gradle/wrapper/gradle-wrapper.jar"
       - "gradle/wrapper/gradle-wrapper.properties"
       - "!**/**.md"
-  # Vi må kjøre Percy minst hver 30. dag for å ha en baseline for visuelle tester. Disse planlagte kjøringene er for det formålet.
   schedule:
-    - cron: "0 5 1,15 * *"
     - cron: '1 0 * * 6' # Kjører bygget rett etter cleanup har kjørt, for å sikre at vi har et main-tagga image
 env:
   "IMAGE_PDF_BYGGER": "ghcr.io/${{ github.repository }}/pdf-bygger:${{ github.sha }}"
@@ -62,16 +60,16 @@ jobs:
       packages: "write"
       id-token: "write"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - name: Download jar
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: pdf-bygger-jar
           path: brevbaker/pdf-bygger/build/install/pdf-bygger/lib
       - name: Docker login
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3.7.0
         with:
           registry: "https://ghcr.io"
           username: ${{ github.repository }}
@@ -104,18 +102,20 @@ jobs:
     permissions:
       contents: read
     outputs:
-      latex: ${{ steps.changes.outputs.latex }}
+      brevmal-design: ${{ steps.changes.outputs['brevmal-design'] }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36
+      - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         id: changes
         with:
           filters: |
-            latex:
+            brevmal-design:
               - 'brevbaker/pdf-bygger/containerFiles/latex/**'
+              - 'brevbaker/pdf-bygger/containerFiles/typst/**'
               - 'brevbaker/pdf-bygger/Dockerfile'
+              - '.github/regsuitconfig.json'
 
   runIntegrationTests:
     name: "Integration tests"
@@ -127,32 +127,33 @@ jobs:
       pull-requests: write
       packages: write
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
-      - uses: actions/setup-java@v5
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           "distribution": ${{ env.JavaDistribution }}
           "java-version": ${{ env.JavaVersion }}
       - name: "run integration tests"
         run: |
-          ./gradlew :brevbaker:api-model-common:publishToMavenLocal 
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
           ./gradlew :brevbaker:pdf-bygger:integrationTest
         env:
           "PDF_BYGGER_IMAGE": "ghcr.io/navikt/pensjonsbrev/pdf-bygger:${{ github.sha }}"
+          "TESTCONTAINERS_REUSE_ENABLE": "true"
       - name: Publish Test Report
         if: ${{ always() }}
-        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da
+        uses: scacap/action-surefire-report@5609ce4db72c09db044803b344a8968fd1f315da # v1.9.1
         with:
           fail_if_no_tests: true
           fail_on_test_failures: true
           report_paths: "**/build/test-results/integrationTest/TEST-*.xml"
       - name: Upload images
-        if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
-        uses: actions/upload-artifact@v6
+        if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
@@ -160,40 +161,58 @@ jobs:
   analyzeImages:
     name: "Analyze images"
     needs: [runIntegrationTests, changes]
-    runs-on: ubuntu-latest-16-cores
-    if: ${{ (needs.changes.outputs.latex == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'schedule')) }}
+    runs-on: ubuntu-latest
+    if: ${{ needs.changes.outputs.brevmal-design == 'true' || (github.ref == 'refs/heads/main' && github.event_name == 'push') }}
     permissions:
       statuses: write
       checks: write
       pull-requests: write
+      id-token: write
     steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd #  v6.0.2
+        with:
+          persist-credentials: false
+          ref: ${{ github.head_ref || github.ref_name }}
+
       - name: Download visuals
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: visuals
           path: brevbaker/pdf-bygger/build/test_visual/
-      - name: Convert visual-test pdfs
-        uses: routsi/ImageMagick-action@v1.1.1
-        with:
-          command: mogrify -path brevbaker/pdf-bygger/build/test_visual -format png -background white -alpha remove -alpha off -density 230 -quality 85 brevbaker/pdf-bygger/build/test_visual/pdf/*.pdf
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "24"
-      - run: npm install --save-dev @percy/cli
-      - name: Publish visual-tests to percy
+      - name: Install poppler-utils
         run: |
-          npx percy upload brevbaker/pdf-bygger/build/test_visual/ > percy.log
-          cat percy.log
-          URL=$(cat percy.log | grep -e "build #[0-9]\+:" | sed 's/^.*build #[0-9]\+: //g')
-          if [[ $URL ]]; then echo $URL > percy-build-url;else echo "Percy upload feilet" > percy-build-url;fi
-        env:
-          PERCY_TOKEN: ${{ secrets.PERCY_TOKEN }}
-      - name: Comment percy review link
-        uses: peter-evans/create-or-update-comment@e8674b075228eee787fea43ef493e45ece1004c9
-        if: ${{ needs.changes.outputs.latex == 'true' && github.event_name == 'pull_request' }}
+          sudo apt-get update
+          sudo apt-get install -y poppler-utils
+      - name: Convert visual-test pdfs to png
+        run: |
+          mkdir -p brevbaker/pdf-bygger/build/test_visual/png
+          find brevbaker/pdf-bygger/build/test_visual/pdf -name '*.pdf' | xargs -P $(nproc) -I{} sh -c 'pdftocairo -png -r 230 "$1" brevbaker/pdf-bygger/build/test_visual/png/$(basename "$1" .pdf)' _ {}
+      - uses: actions/setup-node@53b83947a5a98c8d113130e565377fae1a50d02f # v6.3.0
+        if: ${{ github.event_name == 'pull_request' }}
         with:
-          issue-number: ${{ github.event.number }}
-          body-path: percy-build-url
+          node-version-file: ".tool-versions"
+      - name: Install reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
+        run: npm install --no-save reg-suit reg-publish-gcs-plugin reg-notify-github-with-api-plugin reg-simple-keygen-plugin
+      - name: Authenticate to Google Cloud
+        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # v0
+        with:
+          team: pensjonsbrev
+      - name: Run reg-suit
+        if: ${{ github.event_name == 'pull_request' }}
+        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
+        working-directory: brevbaker/pdf-bygger/build/test_visual/png
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
+      - name: Update main baseline on GCS
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+        run: |
+          gcloud storage rsync \
+            brevbaker/pdf-bygger/build/test_visual/png \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main/actual \
+            --recursive \
+            --delete-unmatched-destination-objects
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
@@ -224,7 +243,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - uses: ./.github/pr

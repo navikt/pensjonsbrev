@@ -4,9 +4,9 @@ import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.toLanguage
 import no.nav.pensjon.brev.pdfbygger.latex.LatexAppendable
 import no.nav.pensjon.brev.pdfbygger.latex.LatexDocument
-import no.nav.pensjon.brev.pdfbygger.latex.clean
+import no.nav.pensjon.brev.pdfbygger.clean
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.render.pensjonLatexSettings
+import no.nav.pensjon.brev.template.render.documentLanguageSettings
 import no.nav.pensjon.brevbaker.api.model.AttachmentTitle
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text
@@ -65,7 +65,7 @@ internal object LatexDocumentRenderer {
         language: Language,
     ) {
         // TODO: Følgende tekster finnes også i LetterMarkup: LanguageSetting.Closing.greeting
-        pensjonLatexSettings.writeLanguageSettings(language) { settingName, settingValue ->
+        documentLanguageSettings.writeLanguageSettings(language) { settingName, settingValue ->
             appendNewCmd("felt$settingName") { append(settingValue) } }
 
         appendln("\\def\\pdfcreationdate{\\string ${pdfCreationTime()}}", escape = false)

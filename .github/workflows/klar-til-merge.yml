@@ -8,15 +8,17 @@ on:
     paths:
       - ".githooks/pre-commit"
       - ".github/dependabot.yml"
+      - ".github/regsuitconfig.json"
+      - ".github/skills/**/*.md"
       - ".github/workflows/.build-frontend.yaml"
       - ".github/workflows/.deploy.yaml"
       - ".github/workflows/klar-til-merge.yml"
+      - ".github/workflows/pdfbygger.yml"
       - ".github/workflows/update-latex-image.yml"
       - ".vscode/settings.json"
       - "CODEOWNERS"
       - "fetch-secrets.sh"
-      - "LICENCE.md"
-      - "README.md"
+      - "*.md"
       - ".tool-versions"
 
 jobs:
@@ -25,7 +27,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-slim"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - uses: ./.github/pr

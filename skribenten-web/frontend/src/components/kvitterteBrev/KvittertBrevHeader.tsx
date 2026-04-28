@@ -51,8 +51,8 @@ const hentTagOgTittelForHeader = (args: {
     case "success": {
       if (args.context === "attestering") {
         const tag = (
-          <Tag data-color="meta-lime" size="small" variant="moderate">
-            Klar til attestering
+          <Tag data-color="meta-purple" size="small" variant="moderate">
+            Klar for attestering
           </Tag>
         );
         return { tag, tittel: args.brevInfo.brevtittel };

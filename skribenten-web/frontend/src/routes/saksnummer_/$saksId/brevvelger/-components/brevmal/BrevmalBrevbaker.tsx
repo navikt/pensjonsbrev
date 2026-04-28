@@ -1,4 +1,5 @@
-import { BodyShort, Button, HStack, Modal, Spacer, VStack } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, HStack, Label, Modal, Spacer, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { memo, useEffect, useMemo, useRef, useState } from "react";
@@ -11,14 +12,14 @@ import BrevmalAlternativer from "~/components/brevmalAlternativer/BrevmalAlterna
 import { Divider } from "~/components/Divider";
 import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
-import type { LetterMetadata, SpraakKode } from "~/types/apiTypes";
-import type { BrevInfo, BrevResponse, Mottaker, SaksbehandlerValg } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type LetterMetadata, type SpraakKode } from "~/types/apiTypes";
+import { type BrevInfo, type BrevResponse, type Mottaker, type SaksbehandlerValg } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { mapEndreMottakerValueTilMottaker } from "~/utils/AdresseUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
-import type { SubmitTemplateOptions } from "../../route";
-import { Route } from "../../route";
+import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectEnhet from "./components/SelectEnhet";
@@ -122,6 +123,7 @@ const BrevmalBrevbaker = (props: {
       trackEvent("brev opprettet", {
         brevkode: props.letterTemplate.id,
         brevtittel: props.letterTemplate.name,
+        brevtype: "brevbaker",
       });
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({
@@ -192,33 +194,57 @@ const BrevmalBrevbaker = (props: {
         <BrevmalFormWrapper formRef={formRef} onSubmit={handleFormSubmit}>
           <VStack flexGrow="1" gap="space-32">
             <VStack gap="space-8">
-              <VStack>
-                <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle />
-
-                {modalÅpen && (
-                  <EndreMottakerModal
-                    error={null}
-                    isPending={null}
-                    onBekreftNyMottaker={(mottaker) => {
-                      form.setValue("mottaker", mapEndreMottakerValueTilMottaker(mottaker));
-                      setModalÅpen(false);
-                    }}
-                    onClose={() => setModalÅpen(false)}
-                    resetOnBekreftState={() => form.setValue("mottaker", null)}
-                    åpen={modalÅpen}
-                  />
-                )}
-              </VStack>
-              <HStack>
-                <Button onClick={() => setModalÅpen(true)} size="small" type="button" variant="secondary">
-                  Endre mottaker
-                </Button>
+              <HStack align="center">
+                <Label size="small">Mottaker</Label>
+                <Spacer />
                 {mottaker !== null && (
-                  <Button onClick={() => form.setValue("mottaker", null)} size="small" type="button" variant="tertiary">
-                    Tilbakestill mottaker
+                  <Button
+                    icon={<ArrowCirclepathReverseIcon />}
+                    iconPosition="right"
+                    onClick={async () => {
+                      trackEvent("tilbakestill mottaker klikket", {
+                        kontekst: "brevbaker mal",
+                        saksId: await truncatedSha256Hash(props.saksId),
+                      });
+                      form.setValue("mottaker", null);
+                    }}
+                    size="xsmall"
+                    type="button"
+                    variant="tertiary"
+                  >
+                    Tilbakestill
                   </Button>
                 )}
+                <Button
+                  data-cy="toggle-endre-mottaker-modal"
+                  icon={<PencilIcon />}
+                  iconPosition="right"
+                  onClick={() => {
+                    trackEvent("endre mottaker klikket", { kontekst: "brevbaker mal", saksId: props.saksId });
+                    setModalÅpen(true);
+                  }}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Endre
+                </Button>
               </HStack>
+
+              <OppsummeringAvMottaker mottaker={mottaker} saksId={props.saksId} withTitle={false} />
+              {modalÅpen && (
+                <EndreMottakerModal
+                  error={null}
+                  isPending={null}
+                  onBekreftNyMottaker={(mottaker) => {
+                    form.setValue("mottaker", mapEndreMottakerValueTilMottaker(mottaker));
+                    setModalÅpen(false);
+                  }}
+                  onClose={() => setModalÅpen(false)}
+                  resetOnBekreftState={() => form.setValue("mottaker", null)}
+                  åpen={modalÅpen}
+                />
+              )}
             </VStack>
             <SelectEnhet />
             <SelectLanguage preferredLanguage={props.preferredLanguage} sorterteSpråk={props.displayLanguages} />

@@ -274,13 +274,17 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                         "1. mai. Dette betyr at omstillingsstønaden øker i takt med grunnbeløpet. Inntekten som " +
                         "omstillingsstønaden reduseres etter, forblir derimot uendret så fremt du ikke melder fra om endring."
             },
-            nynorsk { +"Satsen for omstillingsstønad blir justert kvart år når grunnbeløpet i folketrygda " +
-                    "endrar seg 1. mai. Dette betyr at omstillingsstønaden aukar i takt med grunnbeløpet. Inntekta " +
-                    "som omstillingsstønaden blir redusert etter, forblir derimot uendra så lenge du ikkje melder frå om endring. " },
-            english { +"The rate for the adjustment allowance is adjusted every year when the National " +
-                    "Insurance base amount changes on May 1. This means that the adjustment allowance increases in " +
-                    "line with the base amount. However, the income that the adjustment allowance is reduced " +
-                    "against remains unchanged unless you report a change. " },
+            nynorsk {
+                +"Satsen for omstillingsstønad blir justert kvart år når grunnbeløpet i folketrygda " +
+                        "endrar seg 1. mai. Dette betyr at omstillingsstønaden aukar i takt med grunnbeløpet. Inntekta " +
+                        "som omstillingsstønaden blir redusert etter, forblir derimot uendra så lenge du ikkje melder frå om endring. "
+            },
+            english {
+                +"The rate for the adjustment allowance is adjusted every year when the National " +
+                        "Insurance base amount changes on May 1. This means that the adjustment allowance increases in " +
+                        "line with the base amount. However, the income that the adjustment allowance is reduced " +
+                        "against remains unchanged unless you report a change. "
+            },
         )
     }
     paragraph {
@@ -290,12 +294,16 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
                         "for høy, kan dette endre seg fra 1. mai. Du må selv kontrollere at stønaden er beregnet ut fra riktig " +
                         "inntekt, og melde fra dersom inntekten din endres. "
             },
-            nynorsk { +"Dersom du tidlegare ikkje har fått utbetalt omstillingsstønad fordi inntekta di har " +
-                    "vore for høg, kan dette endre seg frå 1. mai. Du må sjølv kontrollere at stønaden er berekna ut " +
-                    "frå rett inntekt, og melde frå dersom inntekta di endrar seg. " },
-            english { +"If you previously did not receive the adjustment allowance because your income was " +
-                    "too high, this may change from May 1. You must check that the adjustment allowance is calculated " +
-                    "based on the correct income and report any changes in your income. " }
+            nynorsk {
+                +"Dersom du tidlegare ikkje har fått utbetalt omstillingsstønad fordi inntekta di har " +
+                        "vore for høg, kan dette endre seg frå 1. mai. Du må sjølv kontrollere at stønaden er berekna ut " +
+                        "frå rett inntekt, og melde frå dersom inntekta di endrar seg. "
+            },
+            english {
+                +"If you previously did not receive the adjustment allowance because your income was " +
+                        "too high, this may change from May 1. You must check that the adjustment allowance is calculated " +
+                        "based on the correct income and report any changes in your income. "
+            }
         )
     }
 }
@@ -527,22 +535,26 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
     showIf(bosattUtland) {
         paragraph {
             text(
-                bokmal { +"Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge." },
-                nynorsk { +"Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg." },
-                english { +"The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway." }
+                bokmal {
+                    +"Skattereglene for omstillingsstønad avhenger av om du er skattemessig bosatt i Norge. " +
+                            "Du må avtale med Skatteetaten hvert år for å få riktig skattetrekk på utbetalingen av omstillingsstønaden din."
+                },
+                nynorsk {
+                    +"Skattereglar for omstillingsstønad avheng av om du er skattemessig busett i Noreg. " +
+                            "Du må kvart år avtale med Skatteetaten for å få rett skattetrekk på utbetalinga av omstillingsstønaden din."
+                },
+                english {
+                    +"The tax rules for the adjustment allowance vary depending on whether or not you are a tax resident in Norway. " +
+                            "You must contact the Norwegian Tax Administration each year to ensure the correct tax withholding on your adjustment allowance payment."
+                }
             )
         }
         paragraph {
             text(
-                bokmal { +"Skattemessig bosatt i Norge:" },
-                nynorsk { +"Skattemessig busett i Noreg:" },
-                english { +"Tax reident in Norway:" }
-            )
-            text(
                 bokmal {
                     +"Hvis du er skattemessig bosatt i Norge, skal du betale skatt på all inntekt og formue. " +
                             "Husk å kontrollere skattekortet ditt på ${Constants.SKATTEETATEN_ENDRE_URL}. Ønsker du å avslutte skatteplikten, " +
-                            "kan du søke om skattemessig emigrasjon"
+                            "kan du søke om skattemessig emigrasjon."
                 },
                 nynorsk {
                     +"Viss du er skattemessig busett i Norge, skal du betale skatt for all inntekt og formue. " +
@@ -558,15 +570,10 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Ikke skattemessig bosatt i Norge:" },
-                nynorsk { +"Ikkje skattemessig busett i Noreg:" },
-                english { +"Non-tax resident in Norway:" }
-            )
-            text(
                 bokmal {
-                    +"Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad." +
-                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Bor du i et land med skatteavtale med Norge, " +
-                            "kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, kan du bli skatteberegnet som bosatt i Norge."
+                    +"Er du ikke skattemessig bosatt i Norge, skal du betale 15 prosent kildeskatt på brutto omstillingsstønad. " +
+                            "Bor du i et land med skatteavtale med Norge, kan du ha rett til fritak fra kildeskatt. Hvis du bor i et EU- eller EØS-land, " +
+                            "kan du bli skatteberegnet som bosatt i Norge."
                 },
                 nynorsk {
                     +"Er du ikkje skattemessig busett i Noreg, skal du betale 15 prosent kjeldeskatt av brutto omstillingsstønad. " +
@@ -582,7 +589,7 @@ private fun OutlineOnlyScope<LangBokmalNynorskEnglish, InformasjonOmOmstillingss
         }
         paragraph {
             text(
-                bokmal { +"Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet" },
+                bokmal { +"Les mer på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} fra utlandet." },
                 nynorsk { +"Les meir på ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} eller kontakt Skatteetaten på telefon ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} frå utlandet." },
                 english { +"Read more at ${Constants.SKATTEETATEN_KILDESKATTPENSJON_URL} or contact the Norwegian Tax Administration by phone at ${Constants.SKATTEETATEN_KONTAKTTELEFON_MED_LANDKODE} from abroad." }
             )

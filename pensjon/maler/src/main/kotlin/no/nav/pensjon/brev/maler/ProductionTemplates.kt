@@ -4,7 +4,6 @@ import no.nav.brev.brevbaker.AllTemplates
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.maler.adhoc.AdhocFeilEtteroppgjoer2023
-import no.nav.pensjon.brev.maler.adhoc.AdhocGjenlevendEtter1970
 import no.nav.pensjon.brev.maler.adhoc.AdhocInformasjonHvilendeRett4Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocMidlertidigOpphoerHvilenderett10Aar
 import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdEtterbetalingDagpenger
@@ -14,29 +13,19 @@ import no.nav.pensjon.brev.maler.adhoc.AdhocUfoeretrygdVarselOpphoerEktefelletil
 import no.nav.pensjon.brev.maler.adhoc.AdhocVarselOpphoerMedHvilendeRett
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmaktsgiver
 import no.nav.pensjon.brev.maler.adhoc.fullmakterbprof.AdHocVarselUgyldiggjoringFullmektig
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270Utland
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskull6070
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskull6070Utland
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061Utland
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270Utland
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070
-import no.nav.pensjon.brev.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
 import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
-import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndring
@@ -45,6 +34,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoe
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
@@ -95,7 +85,6 @@ object ProductionTemplates : AllTemplates {
         AdHocVarselUgyldiggjoringFullmaktsgiver,
         AdHocVarselUgyldiggjoringFullmektig,
         AdhocFeilEtteroppgjoer2023,
-        AdhocGjenlevendEtter1970,
         AdhocInformasjonHvilendeRett4Aar,
         AdhocMidlertidigOpphoerHvilenderett10Aar,
         AdhocUfoeretrygdEtterbetalingDagpenger,
@@ -104,7 +93,6 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         EndretBarnetilleggUfoerertrygd,
-        EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
@@ -119,24 +107,13 @@ object ProductionTemplates : AllTemplates {
         UfoerOmregningEnslig,
         UngUfoerAuto,
         VarselSaksbehandlingstidAuto,
-        VarselGjpForlengetArskull6061,
-        VarselGjpForlengetArskull6061Utland,
-        VarselGjpForlengetArskull6270,
-        VarselGjpForlengetArskull6270Utland,
-        VarselGjpOpphorArskull6070,
-        VarselGjpOpphorArskull6070Utland,
-        VedtakGjpForlengetArskull6061,
-        VedtakGjpForlengetArskull6061Utland,
-        VedtakGjpForlengetArskull6270,
-        VedtakGjpForlengetArskull6270Utland,
-        VedtakGjpOpphorArskull6070,
-        VedtakGjpOpphorArskull6070Utland,
         FeilBelopInntekstendringsbrev,
         FeilBelopInntekstendringsbrev_AvkortetTil0,
         HvilendeRettInfo4Aar,
         HvilendeRettMidlertidigOppHoer,
         HvilendeRettOppHoer,
         HvilendeRettVarselOpphoer,
+        VedtakOmLavereMinstesatsAuto,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -185,7 +162,10 @@ object ProductionTemplates : AllTemplates {
         DelvisEksportAvUforetrygd,
         InnvilgelseUforetrygdBosattNorgeEtterUtland,
         OpphoerGjenlevendepensjon,
+        AvslagGjenlevendepensjonUtland,
         AvslagGjenlevendepensjon,
+        VedtakOmLavereMinstesatsRedigerbar,
+        InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
     )
 
     override fun hentAutobrevmaler() = autobrev

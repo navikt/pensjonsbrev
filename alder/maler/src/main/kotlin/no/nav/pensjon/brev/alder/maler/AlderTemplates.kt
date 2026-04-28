@@ -6,12 +6,25 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtOpprydding
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonGjtVarselBrev
+import no.nav.pensjon.brev.alder.maler.adhoc.AdhocGjenlevendEtter1970
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilBeroertBruker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocSkjermingstilleggFeilMottaker
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270Utland
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskull6070
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpOpphorArskull6070Utland
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6061Utland
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpForlengetArskull6270Utland
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070
+import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VedtakGjpOpphorArskull6070Utland
 import no.nav.pensjon.brev.alder.maler.aldersovergang.EndringAvAlderspensjonFordiDuFyller75AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps60AarAuto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.InfoAldersovergangEps62AarAuto
@@ -33,6 +46,8 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjo
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
+import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.UforetrygdSokerAfpPrivat
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonPgaGarantitillegg
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstand
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonSivilstandAuto
@@ -57,6 +72,7 @@ object AlderTemplates : AllTemplates {
             AdhocAlderspensjonFraFolketrygden2,
             AdhocAlderspensjonGjtOpprydding,
             AdhocAlderspensjonGjtVarselBrev,
+            AdhocGjenlevendEtter1970,
             AdhocSkjermingstilleggFeilBeroertBruker,
             AdhocSkjermingstilleggFeilMottaker,
             AdhocTidligereUfoereGradertAP,
@@ -73,6 +89,18 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
             OmregningAlderUfore2016Auto,
             FeilUtsendingAvGjenlevenderett,
+            VarselGjpForlengetArskull6061,
+            VarselGjpForlengetArskull6061Utland,
+            VarselGjpForlengetArskull6270,
+            VarselGjpForlengetArskull6270Utland,
+            VarselGjpOpphorArskull6070,
+            VarselGjpOpphorArskull6070Utland,
+            VedtakGjpForlengetArskull6061,
+            VedtakGjpForlengetArskull6061Utland,
+            VedtakGjpForlengetArskull6270,
+            VedtakGjpForlengetArskull6270Utland,
+            VedtakGjpOpphorArskull6070,
+            VedtakGjpOpphorArskull6070Utland,
             InfoAldersovergangEps60AarAuto,
             InfoAldersovergangEps62AarAuto,
             InfoAldersovergang67AarAuto,
@@ -96,6 +124,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,
             VedtakStansAlderspensjonFlyttingMellomLand,
+            AfpPrivatSokerUforeTrygd,
+            UforetrygdSokerAfpPrivat,
         )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(

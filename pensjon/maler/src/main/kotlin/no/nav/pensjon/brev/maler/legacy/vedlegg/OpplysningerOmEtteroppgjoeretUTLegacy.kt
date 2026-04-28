@@ -185,8 +185,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                bokmal { + "Barnetillegg blir beregnet ut fra personinntekt. Dette står i §12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. " },
-                nynorsk { + "Barnetillegg blir berekna ut frå personinntekta. Dette står i §12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. " },
+                bokmal { + "Barnetillegg blir beregnet ut fra personinntekt. Dette står i § 12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. " },
+                nynorsk { + "Barnetillegg blir berekna ut frå personinntekta. Dette står i § 12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. " },
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF

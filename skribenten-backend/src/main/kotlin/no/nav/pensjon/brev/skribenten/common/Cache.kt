@@ -18,7 +18,7 @@ import kotlin.time.TimeSource
 
 val defaultTtl = 10.minutes
 
-abstract class Cache() {
+sealed class Cache {
     val objectMapper = databaseObjectMapper
     abstract suspend fun read(key: String): String?
     abstract suspend fun update(key: String, value: String, ttl: Duration)
@@ -129,4 +129,5 @@ enum class Cacheomraade(val prefix: String) {
     SAMHANDLER("Samhandler"),
     SAMHANDLER_ADRESSE("SamhandlerAdresse"),
     PENSJON_REPRESENTASJON("PensjonRepresentasjon"),
+    PENSJON_PERSONDATA("PensjonPersondata"),
 }

@@ -1,8 +1,8 @@
 import { VStack } from "@navikt/ds-react";
 
-import type { LetterMetadata } from "~/types/apiTypes";
+import { type LetterMetadata } from "~/types/apiTypes";
 
-import type { SubmitTemplateOptions } from "../route";
+import { type SubmitTemplateOptions } from "../route";
 import { BrevmalBrevbakerKladd } from "./BrevmalBrevbakerKladd";
 import { TemplateLoader } from "./TemplateLoader";
 

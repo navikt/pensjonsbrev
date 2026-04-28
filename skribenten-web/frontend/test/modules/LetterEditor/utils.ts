@@ -1,30 +1,36 @@
 import { randomInt } from "node:crypto";
 
 import { newLiteral, newVariable } from "~/Brevredigering/LetterEditor/actions/common";
-import type { LetterEditorState, LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
+import { type LetterEditorState, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
 import { SpraakKode } from "~/types/apiTypes";
 import { Distribusjonstype } from "~/types/brev";
-import type {
-  AnyBlock,
-  Cell,
-  Content,
-  ElementTags,
-  Identifiable,
-  Item,
-  ItemList,
-  LiteralValue,
-  NewLine,
-  ParagraphBlock,
-  Row,
-  Table,
-  TextContent,
-  Title1Block,
-  Title2Block,
-  Title3Block,
-  VariableValue,
+import {
+  type AnyBlock,
+  type Cell,
+  type Content,
+  type ElementTags,
+  type Identifiable,
+  ITEM_LIST,
+  type Item,
+  type ItemList,
+  type LiteralValue,
+  NEW_LINE,
+  type NewLine,
+  PARAGRAPH,
+  type ParagraphBlock,
+  type Row,
+  TABLE,
+  type Table,
+  type TextContent,
+  TITLE1,
+  TITLE2,
+  TITLE3,
+  type Title1Block,
+  type Title2Block,
+  type Title3Block,
+  type VariableValue,
 } from "~/types/brevbakerTypes";
-import { ITEM_LIST, NEW_LINE, PARAGRAPH, TABLE, TITLE1, TITLE2, TITLE3 } from "~/types/brevbakerTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
 export function letter(...blocks: AnyBlock[]): LetterEditorState {
   return {

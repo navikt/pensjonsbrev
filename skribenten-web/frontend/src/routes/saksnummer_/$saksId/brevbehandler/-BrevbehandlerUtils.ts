@@ -1,5 +1,5 @@
-import type { UserInfo } from "~/api/bff-endpoints";
-import type { BrevInfo, BrevStatus, NavAnsatt } from "~/types/brev";
+import { type UserInfo } from "~/api/bff-endpoints";
+import { type BrevInfo, type BrevStatus, type NavAnsatt } from "~/types/brev";
 
 export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeBruker?: UserInfo) => {
   switch (status.type) {
@@ -15,11 +15,11 @@ export const brevStatusTypeToTextAndTagVariant = (status: BrevStatus, gjeldendeB
     }
 
     case "Attestering": {
-      return { color: "meta-lime" as const, text: "Klar til Attestering" };
+      return { color: "meta-purple" as const, text: "Klar for attestering" };
     }
 
     case "Klar": {
-      return { color: "success" as const, text: "Klar til sending" };
+      return { color: "success" as const, text: "Klar for sending" };
     }
 
     case "Arkivert": {

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
 import { hentAlleBrevInfoForSak, slettBrev } from "~/api/sak-api-endpoints";
-import type { BrevInfo } from "~/types/brev";
+import { type BrevInfo } from "~/types/brev";
 
 export const SlettBrev = (properties: {
   sakId: string;

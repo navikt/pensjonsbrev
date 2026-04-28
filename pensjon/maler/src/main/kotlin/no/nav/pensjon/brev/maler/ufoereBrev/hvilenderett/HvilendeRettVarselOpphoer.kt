@@ -1,16 +1,22 @@
 package no.nav.pensjon.brev.maler.ufoereBrev.hvilenderett
 
-import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDto
+import no.nav.pensjon.brev.api.model.maler.ufoerApi.HvilendeRettUforetrygdDtoSelectors.senesteHvilendeAr
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.minus
+import no.nav.pensjon.brev.template.dsl.expression.plus
+import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
-object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
+@TemplateModelHelpers
+object HvilendeRettVarselOpphoer : AutobrevTemplate<HvilendeRettUforetrygdDto> {
     override val kode = Pesysbrevkoder.AutoBrev.UT_HVILENDE_RETT_VARSEL_OPPHOER
     override val template = createTemplate(
         languages = languages(Bokmal),
@@ -25,16 +31,20 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
                 bokmal { + "Varsel om opphør av uføretrygden etter 10 år med hvilende rett" },
             )
         }
+        val forsteHvilendeAr = senesteHvilendeAr.minus(7).format()
+        val forsteKontrollAr = senesteHvilendeAr.plus(1).format()
+        val andreKontrollAr = senesteHvilendeAr.plus(2).format()
+        val opphorAr = senesteHvilendeAr.plus(3).format()
         outline {
             paragraph {
                 text(
-                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1.2027 hvis du ikke har rett " +
-                            "til utbetaling av uføretrygd i 2025 og 2026." }
+                    bokmal { + "Dette er et varsel om at uføretrygden din blir opphørt fra 1.1." + opphorAr + " hvis du ikke har rett " +
+                            "til utbetaling av uføretrygd i " + forsteKontrollAr + " og " + andreKontrollAr + "." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Du har siden 2017 ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
+                    bokmal { + "Du har siden " + forsteHvilendeAr + " ikke fått utbetaling av uføretrygd fordi din inntekt har vært over 80 prosent " +
                             "av oppjustert inntekt før uførhet. Du har derfor hatt innvilget en hvilende rett." }
                 )
             }
@@ -53,14 +63,14 @@ object HvilendeRettVarselOpphoer : AutobrevTemplate<EmptyAutobrevdata> {
             }
             paragraph {
                 text(
-                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden 2017. Har du heller ikke rett til utbetaling " +
-                            "av uføretrygd i 2025 og 2026, vil retten til uføretrygd opphøre fra 1.1.2027. " +
+                    bokmal { + "Du har ikke hatt utbetaling av uføretrygd siden " + forsteHvilendeAr + ". Har du heller ikke rett til utbetaling " +
+                            "av uføretrygd i " + forsteKontrollAr + " og " + andreKontrollAr + ", vil retten til uføretrygd opphøre fra 1.1." + opphorAr + ". " +
                             "Ved opphør av uføretrygden, vil du få eget vedtak om dette." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i 2025 eller 2026, " +
+                    bokmal { + "Har du en årlig inntekt under 80 prosent av oppjustert inntekt før uførhet i " + forsteKontrollAr + " eller " + andreKontrollAr + ", " +
                             "vil du igjen ha rett til utbetaling av uføretrygd. Du vil da opparbeide deg retten til en ny periode med hvilende rett." },
                 )
             }

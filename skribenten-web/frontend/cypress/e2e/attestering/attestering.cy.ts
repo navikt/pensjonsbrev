@@ -1,4 +1,4 @@
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
 import brev from "../../fixtures/bekreftelsePåFlyktningstatus/brev.json";
 import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
@@ -76,7 +76,7 @@ describe("attestering", () => {
 
     cy.contains("Brevet er klart for attestering").click();
     cy.wait("@låsBrev");
-    cy.contains("Klar til Attestering").should("be.visible");
+    cy.contains("Klar for attestering").should("be.visible");
   });
 
   it("kan attestere, forhåndsvise og sende brev", () => {

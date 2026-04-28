@@ -1,8 +1,9 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
   Alert,
   BodyShort,
+  Box,
   Button,
   Detail,
   ExpansionCard,
@@ -18,18 +19,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
-import type { UserInfo } from "~/api/bff-endpoints";
+import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
 import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
-import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { useEndreMottaker } from "~/hooks/useEndreMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { BrevStatus } from "~/types/brev";
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type BrevInfo, type BrevStatus, Distribusjonstype } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
 import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
@@ -178,6 +180,19 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const {
+    modalÅpen,
+    åpneModal,
+    lukkModal,
+    endreMottaker,
+    resetEndreMottaker,
+    endreMottakerError,
+    endreMottakerIsPending,
+    fjernMottaker,
+    fjernMottakerIsPending,
+    fjernMottakerIsError,
+  } = useEndreMottaker(props.saksId, props.brev.id);
+
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
     onSuccess: (response, isKlar) => {
@@ -223,23 +238,69 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 
   return (
     <VStack gap="space-20">
-      <EndreMottakerMedOppsummeringOgApiHåndtering
-        brev={props.brev}
-        endreAsIcon
-        kanTilbakestilleMottaker={!erLaast}
-        overrideOppsummering={(edit) => (
-          <VStack flexGrow="1" gap="space-8">
-            <HStack justify="space-between" wrap={false}>
-              <BodyShort size="small" weight="semibold">
-                Mottaker
-              </BodyShort>
-              {!erLaast && edit}
-            </HStack>
-            <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
-          </VStack>
-        )}
-        saksId={props.saksId}
-      />
+      {modalÅpen && (
+        <EndreMottakerModal
+          error={endreMottakerError}
+          isPending={endreMottakerIsPending}
+          onBekreftNyMottaker={endreMottaker}
+          onClose={lukkModal}
+          resetOnBekreftState={resetEndreMottaker}
+          åpen={modalÅpen}
+        />
+      )}
+      <VStack flexGrow="1" gap="space-8">
+        <HStack justify="space-between" wrap={false}>
+          <BodyShort size="small" weight="semibold">
+            Mottaker
+          </BodyShort>
+          {!erLaast && (
+            <Box asChild borderRadius="4">
+              <Button
+                aria-label="Endre mottaker"
+                data-cy="toggle-endre-mottaker-modal"
+                icon={<PencilIcon />}
+                onClick={() => {
+                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+                  åpneModal();
+                }}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            </Box>
+          )}
+        </HStack>
+        <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
+      </VStack>
+      {props.brev.mottaker && !erLaast && (
+        <HStack>
+          <Button
+            css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
+            loading={fjernMottakerIsPending}
+            onClick={async () => {
+              trackEvent("tilbakestill mottaker klikket", {
+                kontekst: "brevbehandler",
+                saksId: await truncatedSha256Hash(props.saksId),
+              });
+              fjernMottaker();
+            }}
+            size="xsmall"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbakestill mottaker
+          </Button>
+          {fjernMottakerIsError && (
+            <XMarkOctagonFillIcon
+              css={{
+                alignSelf: "center",
+                color: "var(--ax-text-logo)",
+              }}
+              title="error"
+            />
+          )}
+        </HStack>
+      )}
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
       <Switch
         checked={erLaast}

@@ -7,9 +7,9 @@ import { useState } from "react";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
-import type { Cell as CellType, ColumnSpec, Table } from "~/types/brevbakerTypes";
+import { type Cell as CellType, type ColumnSpec, type Table } from "~/types/brevbakerTypes";
 
-import type { TableCellIndex } from "../model/state";
+import { type TableCellIndex } from "../model/state";
 import { isEmptyTableHeader } from "../model/utils";
 import { TableCellContent } from "./TableCellContent";
 import TableContextMenu from "./TableContextMenu";

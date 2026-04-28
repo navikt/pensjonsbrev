@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
 import no.nav.pensjon.brev.skribenten.model.NavIdent
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
@@ -42,6 +43,7 @@ object Testbrevkoder {
     val INFORMASJONSBREV = RedigerbarBrevkode("INFORMASJONSBREV")
     val VEDTAKSBREV = RedigerbarBrevkode("VEDTAKSBREV")
     val VARSELBREV = RedigerbarBrevkode("VARSELBREV")
+    val P1 = RedigerbarBrevkode(P1_BREVKODE)
 }
 
 data class EksempelRedigerbartDto(
