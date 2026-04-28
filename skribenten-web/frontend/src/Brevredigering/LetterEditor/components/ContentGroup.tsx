@@ -1,14 +1,11 @@
-import { produce } from "immer";
 import React, { useEffect, useRef } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import {
-  addElements,
   fontTypeOf,
   isBlockContentIndex,
   isItemContentIndex,
   isTable,
-  newLiteral,
   text as textOf,
 } from "~/Brevredigering/LetterEditor/actions/common";
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
@@ -399,35 +396,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
 
         if (f.rowIndex === -1) {
-          const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
-
-          if (isTable(prevContent) && "deletedContent" in block) {
-            event.preventDefault();
-            setEditorState((prev) =>
-              produce(prev, (draft) => {
-                const focus = draft.focus;
-                if (!isTableCellIndex(focus)) return;
-                const draftBlock = draft.redigertBrev.blocks[focus.blockIndex];
-                if (!("deletedContent" in draftBlock)) return;
-
-                addElements(
-                  [newLiteral({ editedText: "" })],
-                  focus.contentIndex,
-                  draftBlock.content,
-                  draftBlock.deletedContent,
-                );
-
-                draft.focus = {
-                  blockIndex: focus.blockIndex,
-                  contentIndex: focus.contentIndex,
-                  cursorPosition: 0,
-                };
-                draft.saveStatus = "DIRTY";
-              }),
-            );
-            return;
-          }
-
           event.preventDefault();
           setEditorState(exitTable("backward"));
           return;
@@ -541,39 +509,6 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
         }
 
         if (f.rowIndex >= content.rows.length - 1) {
-          const nextContent = block.content[f.contentIndex + 1];
-
-          // When ArrowDown exits a table and the next content is also a table,
-          // insert an empty literal between them so the caret has a normal text
-          // position to land on. We update the nested editor state:
-          // add the literal, focus it, and mark the document as dirty.
-          if (isTable(nextContent) && "deletedContent" in block) {
-            event.preventDefault();
-            setEditorState((prev) =>
-              produce(prev, (draft) => {
-                const focus = draft.focus;
-                if (!isTableCellIndex(focus)) return;
-                const draftBlock = draft.redigertBrev.blocks[focus.blockIndex];
-                if (!("deletedContent" in draftBlock)) return;
-
-                addElements(
-                  [newLiteral({ editedText: "" })],
-                  focus.contentIndex + 1,
-                  draftBlock.content,
-                  draftBlock.deletedContent,
-                );
-
-                draft.focus = {
-                  blockIndex: focus.blockIndex,
-                  contentIndex: focus.contentIndex + 1,
-                  cursorPosition: 0,
-                };
-                draft.saveStatus = "DIRTY";
-              }),
-            );
-            return;
-          }
-
           event.preventDefault();
           setEditorState(exitTable("forward"));
           return;
