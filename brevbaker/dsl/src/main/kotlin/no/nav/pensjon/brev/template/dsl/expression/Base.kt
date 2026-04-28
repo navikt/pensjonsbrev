@@ -22,6 +22,8 @@ fun <T : Any> Expression<T?>.ifNull(then: Expression<T>): Expression<T> =
 fun <T : Any> Expression<T?>.ifNull(then: T): Expression<T> =
     ifNull(then.expr())
 
+fun Expression<String?>.ifNull(then: Fritekst): BrevdataEllerFritekst = BrevdataEllerFritekst(this, then.somExpression())
+
 fun <T : Any> Expression<T?>.notNull(): Expression<Boolean> = isNull().not()
 
 fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> =
@@ -29,6 +31,12 @@ fun <T : Any> Expression<T?>.isNull(): Expression<Boolean> =
 
 fun <T : Enum<T>> Expression<Enum<T>>.isOneOf(vararg enums: Enum<T>): Expression<Boolean> =
     BinaryOperation.EnumInList<Enum<T>>().invoke(this, enums.asList().expr())
+
+fun StringExpression.isOneOf(vararg others: String): Expression<Boolean> =
+    BinaryOperation.IsOneOf<String>().invoke(this, others.asList().expr())
+
+fun StringExpression.isNotAnyOf(vararg others: String): Expression<Boolean> =
+    this.isOneOf(*others).not()
 
 fun <T : Any> Expression<List<T>?>.getOrNull(index: Int = 0): Expression<T?> =
     BinaryOperation.GetElementOrNull<T>().invoke(this, index.expr())

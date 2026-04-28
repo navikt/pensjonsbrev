@@ -14,8 +14,12 @@ import io.ktor.client.statement.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
 import no.nav.pensjon.brev.skribenten.auth.AuthService
-import no.nav.pensjon.brevbaker.api.model.Pid
+import no.nav.pensjon.brev.skribenten.common.Cache
+import no.nav.pensjon.brev.skribenten.common.Cacheomraade
+import no.nav.pensjon.brev.skribenten.common.cached
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
+import kotlin.time.Duration.Companion.minutes
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class KontaktAdresseResponseDto(
@@ -39,7 +43,16 @@ data class KontaktAdresseResponseDto(
 }
 class PensjonPersonDataServiceException(message: String) : ServiceException(message)
 
-class PensjonPersonDataService(config: Config, authService: AuthService, clientEngine: HttpClientEngine = CIO.create()): ServiceStatus {
+interface PensjonPersonDataService {
+    suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto?
+}
+
+class PensjonPersonDataServiceImpl(
+    config: Config,
+    authService: AuthService,
+    clientEngine: HttpClientEngine = CIO.create(),
+    private val cache: Cache,
+): ServiceStatus, PensjonPersonDataService {
     private val logger = LoggerFactory.getLogger(javaClass)
     private val pensjonPersondataURL = config.getString("url")
     private val scope = config.getString("scope")
@@ -56,15 +69,18 @@ class PensjonPersonDataService(config: Config, authService: AuthService, clientE
         callIdAndOnBehalfOfClient(scope, authService)
     }
 
-    suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? {
+    override suspend fun hentKontaktadresse(pid: Pid): KontaktAdresseResponseDto? = cache.cached(
+        Cacheomraade.PENSJON_PERSONDATA,
+        pid,
+        ttl = { 10.minutes }
+    ) {
         val response = client.get("/api/adresse/kontaktadresse") {
             parameter("checkForVerge", true)
             headers {
                 header("pid", pid.value)
             }
         }
-
-        return when {
+        when {
             response.status.isSuccess() -> response.body()
             response.status == HttpStatusCode.NotFound -> null
             else -> throw PensjonPersonDataServiceException("Feil ved henting av kontaktadresse fra Pensjon Persondata: ${response.status}, ${response.bodyAsText()}")

@@ -11,7 +11,7 @@ import {
   getFieldDefaultValue,
   isFieldNullableOrBoolean,
 } from "~/Brevredigering/ModelEditor/components/utils";
-import type { FieldType } from "~/types/brevbakerTypes";
+import { type FieldType } from "~/types/brevbakerTypes";
 
 export const FieldEditor = ({
   prependedName,
@@ -51,7 +51,11 @@ export const FieldEditor = ({
       );
     }
     case "array": {
-      return <div>ARRAY TODO</div>;
+      return (
+        <div>
+          Dette brevet kan ikke bestilles fra Skribenten per nå. Hvis dette er simuleringsbrev, må du gå via kalkulator.
+        </div>
+      );
     }
     case "enum": {
       return (

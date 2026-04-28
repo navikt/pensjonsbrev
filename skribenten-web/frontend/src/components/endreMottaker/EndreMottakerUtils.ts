@@ -1,6 +1,5 @@
 import { z } from "zod";
 
-import type { Adresse, KontaktAdresseResponse } from "~/types/apiTypes";
 import { SamhandlerTypeCode } from "~/types/apiTypes";
 import { ManueltAdressertTil } from "~/types/brev";
 
@@ -273,7 +272,7 @@ export const combinedFormSchema = z.object({
 
 export type CombinedFormData = z.infer<typeof combinedFormSchema>;
 
-export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse" | "oppsummering") => {
+export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "manuellAdresse") => {
   return z.object({
     finnSamhandler: tabToValidate === "samhandler" ? finnSamhandlerFormDataSchema : finnSamhandlerTabNotSelectedSchema,
     manuellAdresse:
@@ -283,10 +282,4 @@ export const createSamhandlerValidationSchema = (tabToValidate: "samhandler" | "
   });
 };
 
-export const erAdresseEnVanligAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is Adresse =>
-  "linje1" in adresse && "linje2" in adresse && "postnr" in adresse && "poststed" in adresse && "land" in adresse;
-
-export const erAdresseKontaktAdresse = (adresse: Adresse | KontaktAdresseResponse): adresse is KontaktAdresseResponse =>
-  "adresseString" in adresse && "adresselinjer" in adresse && "type" in adresse;
-
-export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse" | "oppsummering";
+export type EndreMottakerModalTabs = "samhandler" | "manuellAdresse";

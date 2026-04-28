@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.sivilstand
 
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -64,7 +64,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
@@ -393,7 +393,7 @@ object EndringAvAlderspensjonSivilstandAuto :
                 includePhrase(MeldeFraOmEndringer)
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedlegg = vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
 
             includeAttachment(

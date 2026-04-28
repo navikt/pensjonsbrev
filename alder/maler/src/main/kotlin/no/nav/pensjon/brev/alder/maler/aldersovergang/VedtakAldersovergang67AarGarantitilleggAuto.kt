@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.aldersovergang
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
@@ -169,7 +169,7 @@ object VedtakAldersovergang67AarGarantitilleggAuto : AutobrevTemplate<VedtakAlde
                 includePhrase(MeldeFraOmEndringer)
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedlegg = vedleggOrienteringOmRettigheterOgPlikter))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
 
             includeAttachment(vedleggOrienteringOmRettigheterOgPlikter, orienteringOmRettigheterOgPlikterDto)

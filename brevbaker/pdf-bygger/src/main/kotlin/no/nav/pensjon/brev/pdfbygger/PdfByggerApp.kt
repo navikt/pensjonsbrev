@@ -32,6 +32,8 @@ import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
 import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
 import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
 import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
+import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
+import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import org.slf4j.LoggerFactory
 
 fun main(args: Array<String>) = EngineMain.main(args)
@@ -68,6 +70,7 @@ private fun Application.setUp() {
     }
 
     val blockingLatexService = BlockingLatexService(environment.config.config(LATEX_CONFIG_PATH))
+    val typstCompileService = TypstCompileService()
 
     val activityCounter =
         ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
@@ -121,10 +124,16 @@ private fun Application.setUp() {
     routing {
 
         post("/produserBrev") {
-            val result = activityCounter.count {
-                call.receive<PDFRequest>()
-                    .let { LatexDocumentRenderer.render(it) }
-                    .let { blockingLatexService.producePDF(it.files) }
+            val useTypst = call.request.queryParameters["typst"]?.toBoolean() == true
+            val request = call.receive<PDFRequest>()
+            val result = if (useTypst) {
+                typstCompileService.createLetter {
+                    TypstDocumentRenderer.render(request, it)
+                }
+            } else {
+                activityCounter.count {
+                    LatexDocumentRenderer.render(request).let { blockingLatexService.producePDF(it.files) }
+                }
             }
             handleResult(result, call.application.environment.log)
         }
@@ -147,6 +156,7 @@ private fun Application.setUp() {
     }
 
 }
+
 private suspend fun RoutingContext.handleResult(
     result: PDFCompilationResponse,
     logger: Logger,
@@ -175,7 +185,7 @@ private suspend fun RoutingContext.handleResult(
         }
 
         is PDFCompilationResponse.Failure.QueueTimeout -> {
-            logger.warn("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
+            logger.debug("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
             call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }

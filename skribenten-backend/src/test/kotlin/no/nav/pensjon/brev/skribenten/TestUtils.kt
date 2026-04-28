@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigParseOptions.defaults
 import com.typesafe.config.ConfigResolveOptions
-import io.ktor.util.collections.ConcurrentSet
+import io.ktor.util.collections.*
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -12,13 +12,12 @@ import no.nav.pensjon.brev.skribenten.auth.ADGroup
 import no.nav.pensjon.brev.skribenten.auth.ADGroups
 import no.nav.pensjon.brev.skribenten.auth.UserAccessToken
 import no.nav.pensjon.brev.skribenten.auth.UserPrincipal
+import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.initDatabase
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1_BREVKODE
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.usecase.Outcome
-import no.nav.pensjon.brevbaker.api.model.Bruker
-import no.nav.pensjon.brevbaker.api.model.Felles
-import no.nav.pensjon.brevbaker.api.model.NavEnhet
-import no.nav.pensjon.brevbaker.api.model.SignerendeSaksbehandlere
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.*
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.ObjectAssert
 import org.testcontainers.postgresql.PostgreSQLContainer
@@ -44,6 +43,7 @@ object Testbrevkoder {
     val INFORMASJONSBREV = RedigerbarBrevkode("INFORMASJONSBREV")
     val VEDTAKSBREV = RedigerbarBrevkode("VEDTAKSBREV")
     val VARSELBREV = RedigerbarBrevkode("VARSELBREV")
+    val P1 = RedigerbarBrevkode(P1_BREVKODE)
 }
 
 data class EksempelRedigerbartDto(
@@ -59,14 +59,14 @@ data class EksempelRedigerbartDto(
     ) : FagsystemBrevdata
 }
 
-fun Felles.copy(
+fun BrevbakerFelles.copy(
     dokumentDato: LocalDate = this.dokumentDato,
     saksnummer: String = this.saksnummer,
     avsenderEnhet: NavEnhet = this.avsenderEnhet,
     bruker: Bruker = this.bruker,
     annenMottakerNavn: String? = this.annenMottakerNavn,
     signerendeSaksbehandlere: SignerendeSaksbehandlere? = this.signerendeSaksbehandlere,
-) = Felles(
+) = BrevbakerFelles(
     dokumentDato = dokumentDato,
     saksnummer = saksnummer,
     avsenderEnhet = avsenderEnhet,

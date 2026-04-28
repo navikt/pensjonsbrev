@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte
 
 
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
 import no.nav.brev.brevbaker.PDFCompilationOutput
@@ -12,7 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.template.LetterTemplate
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.etterlatte.maler.ElementType
@@ -29,7 +30,7 @@ class BlockTilSlateKonvertererTest {
     fun `kan lese inn letter markup fra brevbakeren`() {
         val letter = lesInnBrev(ForhaandsvarselOmregningBP.template, Fixtures.create())
         val letterMarkup = Brevbaker(object : PDFByggerService {
-            override suspend fun producePDF(pdfRequest: PDFRequest, path: String, shouldRetry: Boolean) = PDFCompilationOutput(ByteArray(0))
+            override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput = PDFCompilationOutput(ByteArray(0))
         },
             object: PDFVedleggAppender {
                 override fun leggPaaVedlegg(
@@ -192,7 +193,8 @@ class BlockTilSlateKonvertererTest {
                                     )
                                 )
                             ),
-                        )
+                        ),
+                        Listetype.PUNKTLISTE,
                     ),
                     LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl(
                         id = 7,

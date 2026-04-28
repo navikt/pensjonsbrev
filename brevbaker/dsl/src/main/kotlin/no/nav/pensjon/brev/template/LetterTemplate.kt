@@ -1,11 +1,12 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
+import no.nav.brev.Listetype
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
-import no.nav.pensjon.brevbaker.api.model.ElementTags
-import no.nav.pensjon.brevbaker.api.model.IntValue
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 import java.time.LocalDate
 import java.util.Objects
 import kotlin.reflect.KClass
@@ -51,11 +52,11 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
         }
 }
 
-sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : StableHash {
+sealed class Expression<out Out> : StableHash {
 
     abstract fun eval(scope: ExpressionScope<*>): Out
 
-    class Literal<out Out> @InternKonstruktoer constructor(val value: Out, tags: Set<ElementTags> = emptySet()) : Expression<Out>(tags) {
+    class Literal<out Out> @InternKonstruktoer constructor(val value: Out) : Expression<Out>() {
         override fun eval(scope: ExpressionScope<*>): Out = value
         override fun stableHashCode(): Int = stableHash(value).stableHashCode()
 
@@ -78,13 +79,13 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
         override fun equals(other: Any?): Boolean {
             if (other !is Literal<*>) return false
-            return value == other.value && tags == other.tags
+            return value == other.value
         }
-        override fun hashCode() = Objects.hash(value, tags)
+        override fun hashCode() = Objects.hash(value)
     }
 
     sealed class FromScope<out Out> : Expression<Out>() {
-        object Felles : FromScope<no.nav.pensjon.brevbaker.api.model.Felles>() {
+        object Felles : FromScope<BrevbakerFelles>() {
             override fun eval(scope: ExpressionScope<*>) = scope.felles
             override fun stableHashCode(): Int = "FromScope.Felles".hashCode()
         }
@@ -124,8 +125,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
     class UnaryInvoke<In, Out>(
         val value: Expression<In>,
         val operation: UnaryOperation<In, Out>,
-        tags: Set<ElementTags> = value.tags
-    ) : Expression<Out>(tags), StableHash by StableHash.of(value, operation) {
+    ) : Expression<Out>(), StableHash by StableHash.of(value, operation) {
         override fun eval(scope: ExpressionScope<*>): Out {
             if (operation is UnaryOperation.Select) {
                 scope.markUsage(operation.selector)
@@ -137,11 +137,9 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
 
         override fun equals(other: Any?): Boolean {
             if (other !is UnaryInvoke<*, *>) return false
-            return value == other.value && operation == other.operation && tags == other.tags
+            return value == other.value && operation == other.operation
         }
-        override fun hashCode() = Objects.hash(value, operation, tags)
-
-        internal fun medTags(tags: Set<ElementTags>) = UnaryInvoke(value, operation, tags)
+        override fun hashCode() = Objects.hash(value, operation)
     }
 
     class NullSafeApplication<In : Any, Out> private constructor(
@@ -175,7 +173,7 @@ sealed class Expression<out Out>(val tags: Set<ElementTags> = emptySet()) : Stab
         val first: Expression<In1>,
         val second: Expression<In2>,
         val operation: BinaryOperation<In1, In2, Out>
-    ) : Expression<Out>(tags = first.tags + second.tags), StableHash by StableHash.of(first, second, operation) {
+    ) : Expression<Out>(), StableHash by StableHash.of(first, second, operation) {
         override fun eval(scope: ExpressionScope<*>): Out = operation.apply(first.eval(scope), second.eval(scope))
 
         override fun equals(other: Any?): Boolean {
@@ -280,18 +278,19 @@ sealed class Element<out Lang : LanguageSupport> : StableHash {
         sealed class ParagraphContent<out Lang : LanguageSupport> : Element<Lang>() {
 
             class ItemList<out Lang : LanguageSupport> internal constructor(
-                val items: List<ListItemElement<Lang>>
-            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(items) {
+                val items: List<ListItemElement<Lang>>,
+                val type: Listetype,
+            ) : ParagraphContent<Lang>(), StableHash by StableHash.of(StableHash.of(items), StableHash.of(type)) {
                 init {
                     if (items.flatMap { getItems(it) }.isEmpty()) throw InvalidListDeclarationException("List has no items")
                 }
 
                 override fun equals(other: Any?): Boolean {
                     if (other !is ItemList<*>) return false
-                    return items == other.items
+                    return items == other.items && type == other.type
                 }
-                override fun hashCode() = Objects.hash(items)
-                override fun toString() = "ItemList(items=$items)"
+                override fun hashCode() = Objects.hash(items, type)
+                override fun toString() = "ItemList(items=$items, type=$type)"
 
                 class Item<out Lang : LanguageSupport> internal constructor(
                     val text: List<TextElement<Lang>>

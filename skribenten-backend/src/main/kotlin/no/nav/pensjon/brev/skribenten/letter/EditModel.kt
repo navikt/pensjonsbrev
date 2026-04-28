@@ -4,8 +4,9 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.annotation.JsonIgnore
 import no.nav.brev.InterneDataklasser
+import no.nav.brev.Listetype
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.ElementTags
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.Block
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
@@ -41,15 +42,21 @@ object Edit {
             )
         )
 
-        fun withSignatur(
-            saksbehandler: String = signatur.saksbehandlerNavn!!,
-            attestant: String? = signatur.attesterendeSaksbehandlerNavn,
-        ) = copy(
+        fun withSignaturAttestant(signatur: String?): Letter = copy(
             signatur = LetterMarkupImpl.SignaturImpl(
-                hilsenTekst = signatur.hilsenTekst,
-                saksbehandlerNavn = saksbehandler,
-                attesterendeSaksbehandlerNavn = attestant,
-                navAvsenderEnhet = signatur.navAvsenderEnhet,
+                hilsenTekst = this.signatur.hilsenTekst,
+                saksbehandlerNavn = this.signatur.saksbehandlerNavn,
+                attesterendeSaksbehandlerNavn = signatur,
+                navAvsenderEnhet = this.signatur.navAvsenderEnhet,
+            )
+        )
+
+        fun withSignaturSaksbehandler(signatur: String): Letter = copy(
+            signatur = LetterMarkupImpl.SignaturImpl(
+                hilsenTekst = this.signatur.hilsenTekst,
+                saksbehandlerNavn = signatur,
+                attesterendeSaksbehandlerNavn = this.signatur.attesterendeSaksbehandlerNavn,
+                navAvsenderEnhet = this.signatur.navAvsenderEnhet,
             )
         )
     }
@@ -79,6 +86,7 @@ object Edit {
         abstract val content: List<ParagraphContent>
         abstract val deletedContent: Set<Int>
         abstract val originalType: Type?
+        abstract val missingFromTemplate: Boolean
 
         @JsonIgnore
         fun isChangedType() = type != (originalType ?: type)
@@ -92,6 +100,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean = false,
         ) : Block(Type.TITLE1)
 
         data class Title2(
@@ -101,6 +110,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean = false,
         ) : Block(Type.TITLE2)
 
         data class Title3(
@@ -110,6 +120,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean = false,
         ) : Block(Type.TITLE3)
 
         data class Paragraph(
@@ -119,6 +130,7 @@ object Edit {
             override val deletedContent: Set<Int> = emptySet(),
             override val originalType: Type? = null,
             override val parentId: Int? = null,
+            override val missingFromTemplate: Boolean = false,
         ) : Block(Type.PARAGRAPH)
     }
 
@@ -130,6 +142,7 @@ object Edit {
         data class ItemList(
             override val id: Int?,
             val items: List<Item>,
+            val listType: Listetype = Listetype.PUNKTLISTE,
             val deletedItems: Set<Int> = emptySet(),
             override val parentId: Int? = null,
         ) : ParagraphContent(Type.ITEM_LIST) {
@@ -236,7 +249,7 @@ fun List<ParagraphContent.Text>.toEdit(parentId: Int?): List<Edit.ParagraphConte
 
 fun ParagraphContent.toEdit(parentId: Int?): Edit.ParagraphContent =
     when (this) {
-        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId)
+        is ParagraphContent.ItemList -> Edit.ParagraphContent.ItemList(id = id, items = items.map { it.toEdit(id) }, parentId = parentId, listType = listType)
         is ParagraphContent.Text -> toEdit(parentId)
         is ParagraphContent.Form -> throw UnsupportedOperationException("Skribenten does not support element type: $type")
         is ParagraphContent.Table -> toEdit(parentId)
@@ -296,7 +309,7 @@ fun List<Edit.ParagraphContent.Text>.toMarkup() =
 
 fun Edit.ParagraphContent.toMarkup(): ParagraphContent =
     when (this) {
-        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() })
+        is Edit.ParagraphContent.ItemList -> ParagraphContentImpl.ItemListImpl(id = id ?: 0, items = items.map { it.toMarkup() }, listType = listType)
         is Edit.ParagraphContent.Table -> ParagraphContentImpl.TableImpl(id = id ?: 0, rows = rows.map { it.toMarkup() }, header = header.toMarkup())
         is Edit.ParagraphContent.Text -> toMarkup()
     }

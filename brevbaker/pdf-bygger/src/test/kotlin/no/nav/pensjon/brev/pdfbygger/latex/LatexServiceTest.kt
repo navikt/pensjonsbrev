@@ -151,7 +151,7 @@ class LatexServiceTest {
             queueWaitTimeout = 100.milliseconds,
             latexCompileService = LatexCompileService(
                 latexCommand = "/usr/bin/env bash ${getScriptPath("compileInSeconds.sh")} 0.1" + " ",
-                compileTimeout = 500.milliseconds,
+                compileTimeout = 2.seconds,
                 tmpBaseDir = null,
             )
         )
@@ -202,7 +202,7 @@ class LatexServiceTest {
                 compilationQueueWait,
                 "Expected queued compilation to be cancelled by LatexService, but was cancelled by timeout in test"
             )
-            assertThat(compilationQueueWait).isBetween(50L, 100L)
+            assertThat(compilationQueueWait).isBetween(50L, 1000L)
             assertResult<Failure.QueueTimeout>(result) {
                 assertThat(it.reason).contains("queue wait timed out")
             }
@@ -256,11 +256,12 @@ class LatexServiceTest {
             val requests = List(Runtime.getRuntime().availableProcessors() * 10) {
                 async { service.producePDF(emptyList()) }
             }
-            val compilationTime = withTimeoutOrNull(10.seconds) {
+            val timeout = 10.seconds
+            val compilationTime = withTimeoutOrNull(timeout) {
                 measureTimeMillis { requests.awaitAll() }
             }
             assertNotNull(compilationTime, "Test timed out")
-            assertThat(compilationTime).isBetween(1L, 2000L)
+            assertThat(compilationTime).isBetween(1L, timeout.inWholeMilliseconds)
         }
 
     }

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.fraser.common.Constants.SKATTEETATEN_URL
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerometteroppgjoret.OpplysningerOmEtteroppgjoretLegacy.TabellBeloepFratrukketInntektAnnenForelder
@@ -14,10 +14,10 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
 
 @TemplateModelHelpers
-val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, PE>(
+val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, PEgruppe10>(
     title = {
         text(
             bokmal { +"Opplysninger om etteroppgjøret" },
@@ -185,8 +185,8 @@ val opplysningerOmETteroppgjoeretUTLegacy = createAttachment<LangBokmalNynorsk, 
 
         paragraph {
             text(
-                bokmal { + "Barnetillegg blir beregnet ut fra personinntekt. Dette står i §12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. " },
-                nynorsk { + "Barnetillegg blir berekna ut frå personinntekta. Dette står i §12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. " },
+                bokmal { + "Barnetillegg blir beregnet ut fra personinntekt. Dette står i § 12-2 i skatteloven. Personinntekt er den skattepliktige inntekten din før skatt. " },
+                nynorsk { + "Barnetillegg blir berekna ut frå personinntekta. Dette står i § 12-2 i skattelova. Personinntekt er den skattepliktige inntekta di før skatt. " },
             )
 
             //IF(PE_Vedtaksbrev_Vedtaksdata_EtteroppgjorResultat_AvviksbelopTFB <> 0) THEN      INCLUDE ENDIF

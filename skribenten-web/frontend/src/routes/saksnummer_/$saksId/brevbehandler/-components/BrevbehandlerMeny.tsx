@@ -1,13 +1,13 @@
 import { css } from "@emotion/react";
-import { XMarkOctagonFillIcon } from "@navikt/aksel-icons";
+import { PencilIcon, XMarkOctagonFillIcon } from "@navikt/aksel-icons";
 import {
-  Accordion,
   Alert,
   BodyShort,
+  Box,
   Button,
   Detail,
+  ExpansionCard,
   HStack,
-  Label,
   Loader,
   Radio,
   RadioGroup,
@@ -19,18 +19,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 
-import type { UserInfo } from "~/api/bff-endpoints";
+import { type UserInfo } from "~/api/bff-endpoints";
 import { getBrev } from "~/api/brev-queries";
 import { endreDistribusjonstype, hentAlleBrevInfoForSak, veksleKlarStatus } from "~/api/sak-api-endpoints";
-import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
+import { useEndreMottaker } from "~/hooks/useEndreMottaker";
 import { useUserInfo } from "~/hooks/useUserInfo";
-import type { BrevStatus } from "~/types/brev";
-import { type BrevInfo, Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type BrevInfo, type BrevStatus, Distribusjonstype } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 import { erBrevArkivert, erBrevKlar, erBrevLaastForRedigering, erVedtaksbrev } from "~/utils/brevUtils";
 import { formatStringDate, formatStringDateWithTime, isDateToday } from "~/utils/dateUtils";
 import { getErrorMessage } from "~/utils/errorUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
+import { trackEvent } from "~/utils/umami";
 
 import { brevStatusTypeToTextAndTagVariant, forkortetSaksbehandlernavn, sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
@@ -76,7 +78,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
   }
 
   return (
-    <Accordion>
+    <VStack gap="space-8">
       {sortBrev(properties.brev).map((brev) => (
         <BrevItem
           brev={brev}
@@ -86,7 +88,7 @@ const Saksbrev = (properties: { saksId: string; brev: BrevInfo[] }) => {
           saksId={properties.saksId}
         />
       ))}
-    </Accordion>
+    </VStack>
   );
 };
 
@@ -99,21 +101,42 @@ const BrevItem = (properties: {
   const gjeldendeBruker = useUserInfo();
 
   return (
-    <Accordion.Item onOpenChange={() => properties.onOpenChange(!properties.open)} open={properties.open}>
-      <Accordion.Header>
-        <VStack gap="space-8">
-          <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
-          <Label size="small">{properties.brev.brevtittel}</Label>
-        </VStack>
-      </Accordion.Header>
-      <Accordion.Content>
-        <VStack gap="space-16">
+    <ExpansionCard
+      aria-label={properties.brev.brevtittel}
+      onToggle={() => properties.onOpenChange(!properties.open)}
+      open={properties.open}
+      size="small"
+    >
+      <ExpansionCard.Header
+        css={css`
+          gap: var(--ax-space-6);
+        `}
+      >
+        <Brevtilstand gjeldendeBruker={gjeldendeBruker} status={properties.brev.status} />
+        <ExpansionCard.Title
+          as="h4"
+          css={css`
+            font-size: var(--ax-font-size-heading-xsmall);
+          `}
+          size="small"
+        >
+          <VStack align="start" gap="space-8" justify="start">
+            {properties.brev.brevtittel}
+          </VStack>
+        </ExpansionCard.Title>
+      </ExpansionCard.Header>
+      <ExpansionCard.Content>
+        <VStack>
           {erBrevArkivert(properties.brev) ? (
             <ArkivertBrev brev={properties.brev} />
           ) : (
             <ActiveBrev brev={properties.brev} saksId={properties.saksId} />
           )}
-          <div>
+          <div
+            css={css`
+              margin-top: var(--ax-space-20);
+            `}
+          >
             <Detail textColor="subtle">
               Sist endret:{" "}
               {isDateToday(properties.brev.sistredigert)
@@ -124,8 +147,8 @@ const BrevItem = (properties: {
             <Detail textColor="subtle">Brev opprettet: {formatStringDate(properties.brev.opprettet)}</Detail>
           </div>
         </VStack>
-      </Accordion.Content>
-    </Accordion.Item>
+      </ExpansionCard.Content>
+    </ExpansionCard>
   );
 };
 
@@ -133,7 +156,7 @@ const ArkivertBrev = (props: { brev: BrevInfo }) => {
   const sakContext = Route.useLoaderData();
 
   return (
-    <VStack gap="space-16">
+    <VStack>
       {/* TODO - copy-pasted fra <ÅpentBrev /> - Ha denne biten som en del av <OppsummeringAvMottaker /> */}
       <div>
         <Detail textColor="subtle">Mottaker</Detail>
@@ -157,20 +180,54 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const navigate = Route.useNavigate();
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const {
+    modalÅpen,
+    åpneModal,
+    lukkModal,
+    endreMottaker,
+    resetEndreMottaker,
+    endreMottakerError,
+    endreMottakerIsPending,
+    fjernMottaker,
+    fjernMottakerIsPending,
+    fjernMottakerIsError,
+  } = useEndreMottaker(props.saksId, props.brev.id);
+
   const laasForRedigeringMutation = useMutation<BrevInfo, Error, boolean, unknown>({
     mutationFn: (klar) => veksleKlarStatus(props.saksId, props.brev.id, { klar: klar }),
-    onSuccess: (response) => {
+    onSuccess: (response, isKlar) => {
+      const brevType = erVedtaksbrev(response) ? "vedtaksbrev" : "informasjonsbrev";
+      const klarStatus = isKlar
+        ? erVedtaksbrev(response)
+          ? "klart for attestering"
+          : "klart for sending"
+        : "ikke klar";
+      trackEvent("brev klar status endret", {
+        brevId: response.id,
+        brevType,
+        klarStatus,
+        erKlar: isKlar,
+      });
+
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brev) => (brev.id === response.id ? response : brev)),
       );
-      queryClient.invalidateQueries({ queryKey: getBrev.queryKey(props.brev.id) });
+      queryClient.invalidateQueries({
+        queryKey: getBrev.queryKey(props.brev.id),
+      });
     },
   });
 
   const distribusjonstypeMutation = useMutation<BrevInfo, Error, Distribusjonstype, unknown>({
     mutationFn: (distribusjonstype) =>
-      endreDistribusjonstype(props.saksId, props.brev.id, { distribusjon: distribusjonstype }),
-    onSuccess: (response) => {
+      endreDistribusjonstype(props.saksId, props.brev.id, {
+        distribusjon: distribusjonstype,
+      }),
+    onSuccess: (response, distribusjonstype) => {
+      trackEvent("brev distribusjonstype endret", {
+        brevId: response.id,
+        distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
+      });
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
       );
@@ -180,29 +237,77 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
   const erLaast = useMemo(() => erBrevLaastForRedigering(props.brev), [props.brev]);
 
   return (
-    <VStack gap="space-16">
-      <EndreMottakerMedOppsummeringOgApiHåndtering
-        brev={props.brev}
-        endreAsIcon
-        kanTilbakestilleMottaker={!erLaast}
-        overrideOppsummering={(edit) => (
-          <VStack flexGrow="1">
-            <HStack justify="space-between" wrap={false}>
-              <BodyShort size="small" weight="semibold">
-                Mottaker
-              </BodyShort>
-              {!erLaast && edit}
-            </HStack>
-            <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
-          </VStack>
-        )}
-        saksId={props.saksId}
-      />
+    <VStack gap="space-20">
+      {modalÅpen && (
+        <EndreMottakerModal
+          error={endreMottakerError}
+          isPending={endreMottakerIsPending}
+          onBekreftNyMottaker={endreMottaker}
+          onClose={lukkModal}
+          resetOnBekreftState={resetEndreMottaker}
+          åpen={modalÅpen}
+        />
+      )}
+      <VStack flexGrow="1" gap="space-8">
+        <HStack justify="space-between" wrap={false}>
+          <BodyShort size="small" weight="semibold">
+            Mottaker
+          </BodyShort>
+          {!erLaast && (
+            <Box asChild borderRadius="4">
+              <Button
+                aria-label="Endre mottaker"
+                data-cy="toggle-endre-mottaker-modal"
+                icon={<PencilIcon />}
+                onClick={() => {
+                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+                  åpneModal();
+                }}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              />
+            </Box>
+          )}
+        </HStack>
+        <OppsummeringAvMottaker mottaker={props.brev.mottaker ?? null} saksId={props.saksId} withTitle={false} />
+      </VStack>
+      {props.brev.mottaker && !erLaast && (
+        <HStack>
+          <Button
+            css={{ margin: "0 calc(-1 * var(--ax-space-8))" }}
+            loading={fjernMottakerIsPending}
+            onClick={async () => {
+              trackEvent("tilbakestill mottaker klikket", {
+                kontekst: "brevbehandler",
+                saksId: await truncatedSha256Hash(props.saksId),
+              });
+              fjernMottaker();
+            }}
+            size="xsmall"
+            type="button"
+            variant="tertiary"
+          >
+            Tilbakestill mottaker
+          </Button>
+          {fjernMottakerIsError && (
+            <XMarkOctagonFillIcon
+              css={{
+                alignSelf: "center",
+                color: "var(--ax-text-logo)",
+              }}
+              title="error"
+            />
+          )}
+        </HStack>
+      )}
       <Vedlegg brev={props.brev} erLaast={erLaast} saksId={props.saksId} />
       <Switch
         checked={erLaast}
         loading={laasForRedigeringMutation.isPending}
-        onChange={(event) => laasForRedigeringMutation.mutate(event.target.checked)}
+        onChange={(event) => {
+          laasForRedigeringMutation.mutate(event.target.checked);
+        }}
         size="small"
       >
         {erVedtaksbrev(props.brev) && !erBrevKlar(props.brev)
@@ -215,7 +320,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         </Alert>
       )}
       {!erLaast && (
-        <VStack align="start" gap="space-16">
+        <VStack align="start">
           <Button
             data-color="neutral"
             onClick={() =>
@@ -236,8 +341,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         <RadioGroup
           data-cy="brevbehandler-distribusjonstype"
           description={
-            <HStack align="center">
-              Distribusjon
+            <HStack align="center" gap="space-20">
+              <BodyShort color="text-neutral" size="small" weight="semibold">
+                Distribusjon
+              </BodyShort>
               {distribusjonstypeMutation.isPending && <Loader size="small" />}
               {distribusjonstypeMutation.isError && (
                 <XMarkOctagonFillIcon color="var(--ax-text-danger-decoration)" title="error" />
@@ -245,7 +352,9 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             </HStack>
           }
           legend=""
-          onChange={(v) => distribusjonstypeMutation.mutate(v)}
+          onChange={(v) => {
+            distribusjonstypeMutation.mutate(v);
+          }}
           size="small"
           value={props.brev.distribusjonstype}
         >
@@ -259,16 +368,10 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
 };
 
 const Brevtilstand = ({ status, gjeldendeBruker }: { status: BrevStatus; gjeldendeBruker?: UserInfo }) => {
-  const { variant, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
+  const { color, text } = brevStatusTypeToTextAndTagVariant(status, gjeldendeBruker);
 
   return (
-    <Tag
-      css={css`
-        align-self: flex-start;
-      `}
-      size="xsmall"
-      variant={variant}
-    >
+    <Tag data-color={color} size="small" variant="moderate">
       {text}
     </Tag>
   );
@@ -278,10 +381,7 @@ const LokalPrintInfoAlerts = () => {
   return (
     <VStack gap="space-20">
       <Alert size="small" variant="warning">
-        Du må åpne PDF og skrive ut brevet etter du har ferdigstilt.
-      </Alert>
-      <Alert size="small" variant="info">
-        Skribenten-brev som skal til samhandler kan sendes via sentralprint.
+        Husk å åpne PDF og skriv ut brevet.
       </Alert>
     </VStack>
   );

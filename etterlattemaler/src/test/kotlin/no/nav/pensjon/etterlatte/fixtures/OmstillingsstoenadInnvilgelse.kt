@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.brev.brevbaker.vilkaarligDato
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.IntBroek
@@ -42,6 +42,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                                 ytelseFoerAvkorting = Kroner(20000),
                                 trygdetid = 40,
                                 sanksjon = false,
+                                erFakeSanksjon = false,
                                 institusjon = false,
                             ),
                             OmstillingsstoenadBeregningsperiode(
@@ -57,6 +58,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                                 ytelseFoerAvkorting = Kroner(22000),
                                 trygdetid = 40,
                                 sanksjon = false,
+                                erFakeSanksjon = false,
                                 institusjon = false,
                             ),
                         ),
@@ -74,6 +76,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                             ytelseFoerAvkorting = Kroner(22000),
                             trygdetid = 40,
                             sanksjon = false,
+                            erFakeSanksjon = false,
                             institusjon = false,
                         ),
                     sisteBeregningsperiodeNesteAar = null,
@@ -128,6 +131,7 @@ fun createOmstillingsstoenadInnvilgelseDTO() =
                                 utbetaltBeloep = Kroner(9000),
                                 trygdetid = 40,
                                 sanksjon = false,
+                                erFakeSanksjon = false,
                                 institusjon = false,
                             ),
                         ),
@@ -172,6 +176,7 @@ fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
                             ytelseFoerAvkorting = Kroner(20000),
                             trygdetid = 40,
                             sanksjon = false,
+                            erFakeSanksjon = false,
                             institusjon = false,
                         ),
                         OmstillingsstoenadBeregningsperiode(
@@ -187,6 +192,7 @@ fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
                             ytelseFoerAvkorting = Kroner(22000),
                             trygdetid = 40,
                             sanksjon = false,
+                            erFakeSanksjon = false,
                             institusjon = false,
                         ),
                     ),
@@ -204,6 +210,7 @@ fun createOmstillingsstoenadInnvilgelseRedigerbartUtfallDTO() =
                         ytelseFoerAvkorting = Kroner(22000),
                         trygdetid = 40,
                         sanksjon = false,
+                        erFakeSanksjon = false,
                         institusjon = false,
                     ),
                 sisteBeregningsperiodeNesteAar = null,

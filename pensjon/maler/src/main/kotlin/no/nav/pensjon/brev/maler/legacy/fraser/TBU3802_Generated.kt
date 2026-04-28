@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut
 import no.nav.pensjon.brev.maler.legacy.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall
 import no.nav.pensjon.brev.maler.legacy.ut_sumutbt_hoyere_lavere
@@ -15,12 +15,11 @@ import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufor
 import no.nav.pensjon.brev.maler.legacy.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_anvendttrygdetid
 import no.nav.pensjon.brev.model.*
 import no.nav.pensjon.brev.template.*
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
 
 data class TBU3802_Generated(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 		//[TBU3802, TBU3802_NN]
@@ -82,7 +81,7 @@ data class TBU3802_Generated(
 			//IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true  AND NOT(PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoForReduksjonBT > 0  AND PE_Vedtaksbrev_Vedtaksdata_BeregningsData_BeregningUfore_Reduksjonsgrunnlag_SumBruttoEtterReduksjonBT = 0)) THEN      INCLUDE ENDIF
 			showIf((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbinnvilget() and not(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().equalTo(0)))){
 				text (
-					bokmal { + "og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din " },
+					bokmal { + "og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
 					nynorsk { + "og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
 				)
 			}

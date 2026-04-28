@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser.common
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
@@ -33,7 +33,9 @@ object Constants {
     const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     val navKontaktsenterPensjon = Telefonnummer("55553334")
+    val navKontaktsenterUtland = Telefonnummer("+4721073100")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
+    val NAV_KONTAKTSENTER_UTLAND = navKontaktsenterUtland.format()
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val OMSTILLINGSSTOENAD_URL = "$NAV_URL/omstillingsstonad"
     const val GRUNNBELOEP_URL = "$NAV_URL/grunnbelop"
@@ -49,6 +51,7 @@ object Constants {
     const val UFOERE_ETTERSENDE_POST_URL = "$NAV_URL/uføre-ettersende-post"
     const val UFOERE_ETTERSENDE_URL = "$NAV_URL/uføre-ettersende"
     const val UFOERE_JOBB_URL = "$NAV_URL/uføretrygd#jobb"
+    const val UFOERE_SOK_URL = "$NAV_URL/uføretrygd#sok"
     const val UTBETALINGER_URL = "$NAV_URL/utbetalinger"
     const val SAKSBEHANDLINGSTID_URL = "$NAV_URL/saksbehandlingstider"
 }

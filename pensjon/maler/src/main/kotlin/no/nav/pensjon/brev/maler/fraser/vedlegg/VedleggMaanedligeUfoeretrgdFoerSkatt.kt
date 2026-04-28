@@ -25,10 +25,9 @@ import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.dsl.*
 import no.nav.pensjon.brev.template.dsl.expression.*
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 object VedleggMaanedligeUfoeretrgdFoerSkatt {
@@ -217,13 +216,13 @@ object VedleggMaanedligeUfoeretrgdFoerSkatt {
                     }
                 }
 
-                showIf(annetBelop.greaterThan(0)) {
+                showIf(annetBelop.notEqualTo(0)) {
                     showIf(dekningFasteUtgifter.ifNull(Kroner(0)).greaterThan(0)) {
                         row {
                             cell {
                                 text(
-                                    bokmal { + "Fratrukket faste og nødvendige utgifter" },
-                                    nynorsk { + "Fråtrekt faste og nødvendige utgifter" },
+                                    bokmal { + "Dekning av boutgifter ved institusjonsopphold" },
+                                    nynorsk { + "Dekning av boutgifter ved institusjonsopphald" },
                                     english { + "Deducted amount for fixed and necessary housing expenses" },
                                 )
                             }

@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.maler.example.EksempelbrevRedigerbart
 import no.nav.pensjon.brev.maler.example.Testmaler
 import no.nav.pensjon.brev.template.ExpressionScope
 import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
@@ -25,8 +25,8 @@ class RedigerbarTemplateResourceTest {
     private val fakePDFBygger = object : PDFByggerService {
         override suspend fun producePDF(
             pdfRequest: PDFRequest,
-            path: String,
-            shouldRetry: Boolean
+            shouldRetry: Boolean,
+            useTypst: Boolean,
         ): PDFCompilationOutput = PDFCompilationOutput(pdf)
     }
 

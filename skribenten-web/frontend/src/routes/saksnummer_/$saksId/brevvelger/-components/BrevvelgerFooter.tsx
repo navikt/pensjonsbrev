@@ -1,12 +1,10 @@
-import { ArrowRightIcon } from "@navikt/aksel-icons";
 import { Box, Button, HStack } from "@navikt/ds-react";
 import { useMutationState } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
-import type { SubmitTemplateOptions } from "../route";
-import { Route } from "../route";
+import { Route, type SubmitTemplateOptions } from "../route";
 
 const BrevvelgerFooter = (props: {
   saksId: string;
@@ -20,7 +18,7 @@ const BrevvelgerFooter = (props: {
   const mutationState = useMutationState({ filters: { status: "pending" } });
 
   return (
-    <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0">
+    <Box asChild borderColor="neutral-subtle" borderWidth="1 0 0 0" height="var(--nav-bar-height)">
       <HStack gap="space-8" justify="end" paddingBlock="space-8" paddingInline="space-16">
         <Button
           onClick={() =>
@@ -32,23 +30,21 @@ const BrevvelgerFooter = (props: {
           }
           size="small"
           type="button"
-          variant="secondary"
+          variant="tertiary"
         >
           {harBrevKlarTilSending
-            ? `Du har ${props.antallBrevKlarTilSending} brev klar til sending. Gå til brevbehandler`
+            ? `Du har ${props.antallBrevKlarTilSending} brev klar for sending. Gå til brevbehandler`
             : "Gå til brevbehandler"}
         </Button>
         {props.onSubmitClick && (
           <Button
             data-cy="order-letter"
-            icon={<ArrowRightIcon />}
-            iconPosition="right"
             loading={mutationState.at(-1)?.status === "pending"}
             onClick={props.onSubmitClick.onClick}
             size="small"
             variant="primary"
           >
-            Åpne brev
+            Fortsett
           </Button>
         )}
       </HStack>

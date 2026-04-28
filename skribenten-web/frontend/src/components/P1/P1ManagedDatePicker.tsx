@@ -1,6 +1,11 @@
 import { DatePicker, useDatepicker } from "@navikt/ds-react";
 import { useMemo } from "react";
-import type { ControllerFieldState, ControllerRenderProps, FieldPath, FieldValues } from "react-hook-form";
+import {
+  type ControllerFieldState,
+  type ControllerRenderProps,
+  type FieldPath,
+  type FieldValues,
+} from "react-hook-form";
 
 import { formatDateWithoutTimezone, parseIsoDateToDate } from "~/utils/dateUtils";
 

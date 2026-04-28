@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -36,6 +37,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
@@ -159,10 +161,37 @@ abstract class BrevmodulTest(
         }
         val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
 
-        letter.renderTestPDF(filnavn(brevkode, spraak), pdfByggerService = LaTeXCompilerService(PDFByggerTestContainer.mappedUrl()))
+        letter.renderTestPDF(
+            filnavn(brevkode, spraak),
+            pdfByggerService = PdfByggerTestService(),
+            useTypst = false
+        )
     }
 
+    @Tag(TestTags.INTEGRATION_TEST)
     @ParameterizedTest(name = "{1}, {3}")
+    @MethodSource("alleMalene")
+    fun <T : BrevbakerBrevdata> testTypstPdf(
+        template: LetterTemplate<LanguageSupport, T>,
+        brevkode: Brevkode<*>,
+        fixtures: T,
+        spraak: Language,
+    ) {
+        if (!template.language.supports(spraak)) {
+            println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
+            return
+        }
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+
+        letter.renderTestPDF(
+            filnavn(brevkode, spraak),
+            path = Path.of("build", "test_pdf_typst"),
+            pdfByggerService = PdfByggerTestService(),
+            useTypst = true
+        )
+    }
+
+    @ParameterizedTest(name = "{1}, {3}", allowZeroInvocations = true)
     @MethodSource("alleMalene")
     fun <T : BrevbakerBrevdata> testHtml(
         template: LetterTemplate<LanguageSupport, T>,
@@ -182,7 +211,7 @@ abstract class BrevmodulTest(
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
-    @ParameterizedTest(name = "{3}, {2}")
+    @ParameterizedTest(name = "{3}, {2}", allowZeroInvocations = true)
     @MethodSource("filtrerVedlegg")
     fun <T : VedleggData> testVedlegg(
         template: AttachmentTemplate<LanguageSupport, T>,

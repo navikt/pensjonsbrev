@@ -1,10 +1,9 @@
-import type { Draft } from "immer";
+import { type Draft } from "immer";
 
-import type { Table } from "~/types/brevbakerTypes";
-import { PARAGRAPH } from "~/types/brevbakerTypes";
+import { PARAGRAPH, type Table } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import type { Focus, LetterEditorState } from "../model/state";
+import { type Focus, type LetterEditorState } from "../model/state";
 import { newTable } from "../model/tableHelpers";
 import { isEmptyTableHeader, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
@@ -92,7 +91,15 @@ export const removeTableRow: Action<LetterEditorState, []> = withPatches((draft)
     return;
   }
 
+  const deletedRowColumnCount =
+    table.header.colSpec.length > 0 ? table.header.colSpec.length : (table.rows[rowIndex]?.cells.length ?? 1);
+
   removeElements(rowIndex, 1, { content: table.rows, deletedContent: table.deletedRows, id: table.id });
+
+  if (table.rows.length === 0) {
+    addElements([newRow(deletedRowColumnCount)], 0, table.rows, table.deletedRows);
+  }
+
   const clampedRow = Math.min(rowIndex, Math.max(0, table.rows.length - 1));
   draft.focus = {
     blockIndex,
@@ -127,10 +134,36 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
   const parentBlock = draft.redigertBrev.blocks[blockIndex];
   removeElements(contentIndex, 1, parentBlock);
 
-  // Adjust focus to a valid position
-  const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
-  draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+  if (parentBlock.content.length === 0) {
+    addElements([newLiteral({ editedText: "" })], 0, parentBlock.content, parentBlock.deletedContent);
+    draft.focus = { blockIndex, contentIndex: 0, cursorPosition: 0 };
+  } else {
+    const newContentIndex = safeIndex(contentIndex - 1, parentBlock.content);
+    draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
+  }
 
+  draft.saveStatus = "DIRTY";
+});
+
+export type MoveDirection = "up" | "down";
+
+export const moveTableRow: Action<LetterEditorState, [direction: MoveDirection]> = withPatches((draft, direction) => {
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
+
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
+
+  if (rowIndex < 0) return;
+
+  const targetIndex = direction === "up" ? rowIndex - 1 : rowIndex + 1;
+  if (targetIndex < 0 || targetIndex >= table.rows.length) return;
+
+  const temp = table.rows[rowIndex];
+  table.rows[rowIndex] = table.rows[targetIndex];
+  table.rows[targetIndex] = temp;
+
+  draft.focus = { ...draft.focus, rowIndex: targetIndex };
   draft.saveStatus = "DIRTY";
 });
 

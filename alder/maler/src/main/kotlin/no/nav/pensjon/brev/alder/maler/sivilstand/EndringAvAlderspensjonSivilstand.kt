@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.alder.maler.sivilstand
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.ArbeidsinntektOgAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.FeilutbetalingAP
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.InformasjonOmAlderspensjon
 import no.nav.pensjon.brev.alder.maler.felles.MeldeFraOmEndringer
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
@@ -80,7 +80,7 @@ import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // MF_000102 Vedtaksbrevet dekker alle regelverkstypene.
@@ -343,9 +343,9 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                         // flyttetEPS
                         paragraph {
                             text(
-                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen." },
-                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman." },
-                                english { +"You and " + epsNavn + "no longer live together." },
+                                bokmal { +"Du og " + epsNavn + " bor ikke lenger sammen. Vi har lagt til grunn at du nå lever enslig." },
+                                nynorsk { +"Du og " + epsNavn + "bur ikkje lenger saman. Vi har lagt til grunn at du nå lever einsleg." },
+                                english { +"You and " + epsNavn + "no longer live together. The decision is based on the assumption that you are now single." },
                             )
                         }
                     }.orShowIf(
@@ -678,7 +678,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 includePhrase(MeldeFraOmEndringer)
                 includePhrase(RettTilAAKlage)
                 includePhrase(RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))
-                includePhrase(HarDuSpoersmaalAlder)
+                includePhrase(HarDuSpoersmaal.alder)
             }
             includeAttachment(
                 vedleggOrienteringOmRettigheterOgPlikter,

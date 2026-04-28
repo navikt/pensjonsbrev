@@ -10,6 +10,7 @@ on:
       - "main"
     paths:
       - .github/workflows/codeql.yml
+      - gradle/libs.versions.toml
 
 env:
   JavaDistribution: "temurin"
@@ -27,27 +28,37 @@ jobs:
       security-events: write
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           languages: java
           queries: security-and-quality
 
       - name: Setup Java
-        uses: actions/setup-java@v5
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5.2.0
         with:
           distribution: ${{ env.JavaDistribution }}
           java-version: ${{ env.JavaVersion }}
 
       - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
+        uses: gradle/actions/setup-gradle@50e97c2cd7a37755bbfafc9c5b7cafaece252f6e # v6.1.0
         with:
           cache-encryption-key: ${{ secrets.GRADLEKEY }}
+
+      - name: "publish common to Maven local"
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          ./gradlew :brevbaker:api-model-common:publishToMavenLocal
+
+      - name: "publish extra modules to Maven local"
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          ./gradlew :pensjon:api-model:publishToMavenLocal :alder:api-model:publishToMavenLocal :ufoere:api-model:publishToMavenLocal
 
       - name: Assemble (PR)
         if: ${{ github.event_name == 'pull_request' }}
@@ -58,13 +69,13 @@ jobs:
         run: ./gradlew assemble -Dorg.gradle.jvmargs="-Dkotlin.daemon.jvmargs=-Xmx16g"
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           upload: false # disable the upload here - we will upload in a different action
           output: sarif-results
 
       - name: filter-sarif
-        uses: advanced-security/filter-sarif@f3b8118a9349d88f7b1c0c488476411145b6270d
+        uses: advanced-security/filter-sarif@2da736ff05ef065cb2894ac6892e47b5eac2c3c0 # v1.1
         with:
           patterns: |
             -**/*test*.kt
@@ -72,7 +83,7 @@ jobs:
           output: sarif-results/java.sarif
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           sarif_file: sarif-results/java.sarif
           category: "/language:java"
@@ -89,25 +100,25 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
 
       # Initializes the CodeQL tools for scanning.
       - name: Initialize CodeQL
-        uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           languages: javascript
           queries: security-and-quality
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v4
+        uses: github/codeql-action/analyze@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           upload: false # disable the upload here - we will upload in a different action
           output: sarif-results
 
       - name: filter-sarif
-        uses: advanced-security/filter-sarif@f3b8118a9349d88f7b1c0c488476411145b6270d
+        uses: advanced-security/filter-sarif@2da736ff05ef065cb2894ac6892e47b5eac2c3c0 # v1.1
         with:
           patterns: |
             -**/*.test.ts
@@ -115,7 +126,7 @@ jobs:
           output: sarif-results/javascript.sarif
 
       - name: Upload SARIF
-        uses: github/codeql-action/upload-sarif@v4
+        uses: github/codeql-action/upload-sarif@c10b8064de6f491fea524254123dbe5e09572f13 # v4.35.1
         with:
           sarif_file: sarif-results/javascript.sarif
           category: "/language:javascript"
@@ -126,7 +137,7 @@ jobs:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: "ubuntu-latest"
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
       - uses: ./.github/pr

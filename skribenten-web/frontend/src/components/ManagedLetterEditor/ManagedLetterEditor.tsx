@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect } from "react";
 
 import { oppdaterBrevtekst } from "~/api/brev-queries";
@@ -7,8 +7,8 @@ import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
-import type { BrevResponse } from "~/types/brev";
-import type { EditedLetter } from "~/types/brevbakerTypes";
+import { type BrevResponse } from "~/types/brev";
+import { type EditedLetter } from "~/types/brevbakerTypes";
 
 /**
  * Wrapper av <LetterEditor /> som håndterer lagring av brevtekst.
@@ -56,7 +56,6 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
 
   return (
     <LetterEditor
-      editorHeight="var(--main-page-content-height)"
       editorState={editorState}
       error={props.error || isError}
       freeze={props.freeze}

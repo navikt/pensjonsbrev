@@ -2,15 +2,18 @@ package no.nav.pensjon.brev.skribenten.model
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
-import no.nav.brev.Landkode
+import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.model.Dto.Mottaker.ManueltAdressertTil
-import no.nav.pensjon.brev.skribenten.services.*
+import no.nav.pensjon.brev.skribenten.services.EnhetId
+import no.nav.pensjon.brev.skribenten.services.NavEnhet
 import no.nav.pensjon.brevbaker.api.model.AlltidValgbartVedleggKode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupWithDataUsage
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -50,6 +53,7 @@ object Api {
     data class OppdaterKlarStatusRequest(val klar: Boolean)
     data class DistribusjonstypeRequest(val distribusjon: Distribusjonstype)
     data class OppdaterMottakerRequest(val mottaker: OverstyrtMottaker)
+    data class ValgteVedleggRequest(val valgteVedlegg: List<AlltidValgbartVedleggKode>)
 
     data class BrevInfo(
         val id: BrevId,
@@ -156,6 +160,13 @@ object Api {
     }
 
     data class NavAnsatt(val id: NavIdent, val navn: String?)
+
+    data class BestillBrevResponse(
+        val journalpostId: JournalpostId?,
+        val error: Error?,
+    ) {
+        data class Error(val brevIkkeStoettet: String?, val tekniskgrunn: String?, val beskrivelse: String?)
+    }
 
     data class SakContext(
         val sak: Pen.SakSelection,

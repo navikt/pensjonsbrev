@@ -1,6 +1,10 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
+import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
 
 class UpdateEditedLetterException(message: String) : RuntimeException(message)
 
@@ -22,8 +26,8 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         edited.copy(
             title = mergeTitle(edited.title, rendered.title),
             sakspart = rendered.sakspart,
-            signatur = rendered.signatur,
-            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues),
+            signatur = mergeSignatur(edited.signatur, rendered.signatur),
+            blocks = mergeList(null, edited.blocks, rendered.blocks, edited.deletedBlocks, ::mergeBlock, ::updateVariableValues, ::setMissing),
             deletedBlocks = edited.deletedBlocks.filter { id -> rendered.blocks.any { it.id == id } }.toSet(),
         )
 
@@ -55,6 +59,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         deleted: Set<Int>,
         merge: (E, E) -> E,
         updateVariables: ((E) -> E),
+        setMissingFromTemplate: ((E) -> E),
     ): List<E> = buildList {
         // A queue of unprocessed rendered elements
         val remainingRendered = rendered.filter { it.id != null && !deleted.contains(it.id) }.toMutableList()
@@ -82,7 +87,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 } else if (currentEdited.isEdited()) {
                     // The currentEdited element is not present in the fresh render, but it is edited by the Saksbehandler.
                     // We include it so that no potentially important text is lost.
-                    add(updateVariables(currentEdited))
+                    add(setMissingFromTemplate(updateVariables(currentEdited)))
                 } else if (currentEdited.parentId != parent?.id) {
                     // The currentEdited element is moved to another parent, and thus cannot currently be tracked.
                     // But it is moved by intent, so we do not wish to remove it.
@@ -93,16 +98,26 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         addAll(remainingRendered)
     }
 
+    private fun mergeSignatur(edited: LetterMarkup.Signatur, rendered: LetterMarkup.Signatur): LetterMarkup.Signatur =
+        LetterMarkupImpl.SignaturImpl(
+            // Template-controlled fields: always use rendered values
+            hilsenTekst = rendered.hilsenTekst,
+            navAvsenderEnhet = rendered.navAvsenderEnhet,
+            // User-editable fields: preserve edited values
+            saksbehandlerNavn = edited.saksbehandlerNavn,
+            attesterendeSaksbehandlerNavn = edited.attesterendeSaksbehandlerNavn,
+        )
+
     private fun mergeTitle(edited: Edit.Title, rendered: Edit.Title): Edit.Title =
         edited.copy(
-            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
+            text = mergeList(null, edited.text, rendered.text, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing),
             deletedContent = edited.deletedContent.filter { id -> rendered.text.any { it.id == id } }.toSet()
         )
 
     private fun mergeBlock(edited: Edit.Block, rendered: Edit.Block): Edit.Block =
         when (edited) {
             is Edit.Block.Paragraph -> edited.copy(
-                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues),
+                content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeParagraphContent, ::updateVariableValues, ::setMissing),
             )
 
             is Edit.Block.Title1 -> edited.copy(
@@ -126,9 +141,9 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
         deleted: Set<Int>,
     ): List<Edit.ParagraphContent.Text> =
         when (rendered) {
-            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
-            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
-            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues)
+            is Edit.Block.Title1 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
+            is Edit.Block.Title2 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
+            is Edit.Block.Title3 -> mergeList(parent, editedContent, rendered.content, deleted, ::mergeTextContent, ::updateVariableValues, ::setMissing)
             is Edit.Block.Paragraph -> mergeList(
                 parent,
                 editedContent,
@@ -136,6 +151,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 deleted,
                 ::mergeTextContent,
                 ::updateVariableValues,
+                ::setMissing
             )
         }
 
@@ -159,7 +175,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
             is Edit.ParagraphContent.ItemList ->
                 if (rendered is Edit.ParagraphContent.ItemList) {
                     edited.copy(
-                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues),
+                        items = mergeList(edited, edited.items, rendered.items, edited.deletedItems, ::mergeItems, ::updateVariableValues, ::setMissing),
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -176,7 +192,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
                 if (rendered is Edit.ParagraphContent.Table) {
                     edited.copy(
                         header = mergeTableHeader(edited.header, rendered.header),
-                        rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows, ::updateVariableValues),
+                        rows = mergeList(edited, edited.rows, rendered.rows, rendered.deletedRows, ::mergeRows, ::updateVariableValues, ::setMissing),
                     )
                 } else {
                     throw UpdateEditedLetterException("Cannot merge ${edited.type} with ${rendered.type}: $edited - $rendered")
@@ -185,7 +201,7 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     private fun mergeTableHeader(edited: Edit.ParagraphContent.Table.Header, rendered: Edit.ParagraphContent.Table.Header): Edit.ParagraphContent.Table.Header =
         edited.copy(
-            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec, ::updateVariableValues),
+            colSpec = mergeList(edited, edited.colSpec, rendered.colSpec, emptySet(), ::mergeColumnSpec, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeColumnSpec(
@@ -196,17 +212,17 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
 
     private fun mergeCell(edited: Edit.ParagraphContent.Table.Cell, rendered: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         edited.copy(
-            text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent, ::updateVariableValues),
+            text = mergeList(edited, edited.text, rendered.text, emptySet(), ::mergeTextContent, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeRows(edited: Edit.ParagraphContent.Table.Row, rendered: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row =
         edited.copy(
-            cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell, ::updateVariableValues),
+            cells = mergeList(edited, edited.cells, rendered.cells, emptySet(), ::mergeCell, ::updateVariableValues, ::setMissing),
         )
 
     private fun mergeItems(edited: Edit.ParagraphContent.ItemList.Item, rendered: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item =
         edited.copy(
-            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues),
+            content = mergeList(edited, edited.content, rendered.content, edited.deletedContent, ::mergeTextContent, ::updateVariableValues, ::setMissing),
         )
 
     private fun updateVariableValues(edited: Edit.Block): Edit.Block =
@@ -260,4 +276,22 @@ class UpdateEditedLetter(private val edited: Edit.Letter, rendered: LetterMarkup
     private fun updateVariableValues(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell =
         cell.copy(text = cell.text.map(::updateVariableValues))
 
+    private fun setMissing(block: Edit.Block): Edit.Block = when (block) {
+        is Edit.Block.Title1 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Title2 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Title3 -> block.copy(missingFromTemplate = true)
+        is Edit.Block.Paragraph -> block.copy(missingFromTemplate = true)
+    }
+
+    private fun setMissing(content: Edit.ParagraphContent): Edit.ParagraphContent = content
+
+    private fun setMissing(text: Edit.ParagraphContent.Text): Edit.ParagraphContent.Text = text
+
+    private fun setMissing(item: Edit.ParagraphContent.ItemList.Item): Edit.ParagraphContent.ItemList.Item = item
+
+    private fun setMissing(columnSpec: Edit.ParagraphContent.Table.ColumnSpec): Edit.ParagraphContent.Table.ColumnSpec = columnSpec
+
+    private fun setMissing(row: Edit.ParagraphContent.Table.Row): Edit.ParagraphContent.Table.Row = row
+
+    private fun setMissing(cell: Edit.ParagraphContent.Table.Cell): Edit.ParagraphContent.Table.Cell = cell
 }

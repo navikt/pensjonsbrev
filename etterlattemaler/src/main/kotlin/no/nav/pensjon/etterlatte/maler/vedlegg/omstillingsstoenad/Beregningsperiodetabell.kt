@@ -5,10 +5,13 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoFOM
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.datoTOM
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.inntekt
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.institusjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
@@ -63,9 +66,12 @@ data class Beregningsperiodetabell(
                             includePhrase(KronerText(periode.utbetaltBeloep))
                             showIf(periode.sanksjon) {
                                 text(
-                                    bokmal { +" - sanksjon" },
-                                    nynorsk { +" - sanksjon" },
-                                    english { +" - sanction" },
+                                    bokmal { +" - " + ifElse(periode.erFakeSanksjon,
+                                        "stans", "sanksjon")},
+                                    nynorsk { +" - " + ifElse(periode.erFakeSanksjon,
+                                        "stans", "sanksjon") },
+                                    english { +" - " + ifElse(periode.erFakeSanksjon,
+                                        "stopped", "sanction") },
                                 )
                             }
                             showIf(periode.institusjon) {

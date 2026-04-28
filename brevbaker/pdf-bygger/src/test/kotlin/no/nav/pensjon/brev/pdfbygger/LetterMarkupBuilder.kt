@@ -3,7 +3,8 @@
 package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brevbaker.api.model.Foedselsnummer
+import no.nav.brev.Listetype
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup.ParagraphContent.Text.FontType
@@ -172,8 +173,8 @@ class TextBuilder {
 class ParagraphBuilder {
     private val content = mutableListOf<ParagraphContent>()
 
-    fun text(text: String) {
-        content.add(LiteralImpl(text.hashCode(), text))
+    fun text(text: String, fontType: FontType = FontType.PLAIN) {
+        content.add(LiteralImpl(text.hashCode(), text, fontType))
     }
 
     fun newLine() {
@@ -181,7 +182,11 @@ class ParagraphBuilder {
     }
 
     fun list(block: ItemListBuilder.() -> Unit) {
-        content.add(ItemListBuilder().apply(block).build())
+        content.add(ItemListBuilder(Listetype.PUNKTLISTE).apply(block).build())
+    }
+
+    fun numberedList(block: ItemListBuilder.() -> Unit) {
+        content.add(ItemListBuilder(Listetype.NUMMERERT_LISTE).apply(block).build())
     }
 
     fun table(header: TableHeaderBuilder.() -> Unit, bodyBlock: TableBodyBuilder.() -> Unit) {
@@ -197,6 +202,39 @@ class ParagraphBuilder {
         )
     }
 
+    fun formText(
+        size: ParagraphContent.Form.Text.Size,
+        vspace: Boolean = false,
+        prompt: TextBuilder.() -> Unit
+    ) {
+        val promptContent = TextBuilder().apply(prompt).build()
+        content.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.TextImpl(
+                id = promptContent.fold(1) { hash, e -> 31 * hash + (e.id) },
+                prompt = promptContent,
+                size = size,
+                vspace = vspace
+            )
+        )
+    }
+
+    fun formChoice(
+        vspace: Boolean = false,
+        prompt: TextBuilder.() -> Unit,
+        choices: FormChoiceBuilder.() -> Unit
+    ) {
+        val promptContent = TextBuilder().apply(prompt).build()
+        val choicesList = FormChoiceBuilder().apply(choices).build()
+        content.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl(
+                id = promptContent.fold(1) { hash, e -> 31 * hash + (e.id) },
+                prompt = promptContent,
+                choices = choicesList,
+                vspace = vspace
+            )
+        )
+    }
+
     fun build(): LetterMarkup.Block.Paragraph =
         LetterMarkupImpl.BlockImpl.ParagraphImpl(
             id = content.fold(1) { hash, e -> 31 * hash + (e.hashCode()) },
@@ -205,7 +243,24 @@ class ParagraphBuilder {
 }
 
 @LetterMarkupBuilderDsl
-class ItemListBuilder {
+class FormChoiceBuilder {
+    private val choices = mutableListOf<ParagraphContent.Form.MultipleChoice.Choice>()
+
+    fun choice(block: TextBuilder.() -> Unit) {
+        val text = TextBuilder().apply(block).build()
+        choices.add(
+            LetterMarkupImpl.ParagraphContentImpl.Form.MultipleChoiceImpl.ChoiceImpl(
+                id = text.fold(1) { hash, e -> 31 * hash + (e.id) },
+                text = text
+            )
+        )
+    }
+
+    fun build(): List<ParagraphContent.Form.MultipleChoice.Choice> = choices
+}
+
+@LetterMarkupBuilderDsl
+class ItemListBuilder(val type: Listetype) {
     private val items = mutableListOf<ParagraphContent.ItemList.Item>()
 
     fun item(block: TextBuilder.() -> Unit) {
@@ -221,7 +276,8 @@ class ItemListBuilder {
     fun build(): ParagraphContent.ItemList =
         LetterMarkupImpl.ParagraphContentImpl.ItemListImpl(
             id = items.fold(1) { hash, e -> 31 * hash + (e.id) },
-            items = items
+            items = items,
+            listType = type
         )
 }
 

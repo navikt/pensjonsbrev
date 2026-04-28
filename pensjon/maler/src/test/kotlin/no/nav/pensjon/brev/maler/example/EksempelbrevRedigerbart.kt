@@ -20,18 +20,22 @@ import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Expression
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.TextOnlyPhrase
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.BrukerSelectors.fornavn
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.bruker
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
@@ -298,4 +302,12 @@ data class EksempelRedigerbartDto(
         val datoAvslaatt: LocalDate?,
         val pensjonBeloep: Int?,
     ) : FagsystemBrevdata
+}
+
+data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
+    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
+        text(
+            bokmal { +"Dette er en tekstfrase med datoen: " + dato.format() },
+            nynorsk { +"Dette er en tekstfrase med datoen: " + dato.format() },
+        )
 }

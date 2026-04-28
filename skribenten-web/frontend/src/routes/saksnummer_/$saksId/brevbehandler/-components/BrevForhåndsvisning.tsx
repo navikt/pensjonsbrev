@@ -7,6 +7,7 @@ import { useState } from "react";
 import { getBrevInfo } from "~/api/brev-queries";
 import { hentPdfForBrev, veksleKlarStatus } from "~/api/sak-api-endpoints";
 import { CenteredLoader } from "~/components/CenteredLoader";
+import { getErrorMessage, getErrorTitle } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import PDFViewer from "../../-components/PDFViewer";
@@ -64,22 +65,28 @@ const BrevForhåndsvisning = (properties: { saksId: string; brevId: number }) =>
     query: hentPdfQuery,
     initial: () => <></>,
     pending: () => <CenteredLoader label="Henter brev..." />,
-    error: () => (
-      <>
-        <PDFViewerTopBar brevId={properties.brevId} sakId={properties.saksId} utenSlettKnapp={false} />
-        <Alert
-          css={css`
-            border-left: none;
-            border-right: none;
-          `}
-          fullWidth
-          variant="error"
-        >
-          <Heading size="xsmall">Klarte ikke åpne pdf</Heading>
-          <BodyLong>Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys.</BodyLong>
-        </Alert>
-      </>
-    ),
+    error: (error) => {
+      const is422 = error?.response?.status === 422;
+      const errorTitle = is422 ? getErrorTitle(error) : undefined;
+      const errorMessage = is422 ? getErrorMessage(error) : undefined;
+
+      return (
+        <>
+          <PDFViewerTopBar brevId={properties.brevId} sakId={properties.saksId} utenSlettKnapp={false} />
+          <Alert
+            css={css`
+              border-left: none;
+              border-right: none;
+            `}
+            fullWidth
+            variant="error"
+          >
+            <Heading size="xsmall">{errorTitle ?? "Klarte ikke åpne pdf"}</Heading>
+            <BodyLong>{errorMessage ?? "Dette kan skje hvis du f.eks. har gjort endringer i saken i pesys."}</BodyLong>
+          </Alert>
+        </>
+      );
+    },
     success: (pdfResponse) =>
       pdfResponse === null ? (
         <VStack align="center" justify="center">

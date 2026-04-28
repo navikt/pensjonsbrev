@@ -1,5 +1,7 @@
 package no.nav.pensjon.brevbaker.api.model
 
+import no.nav.brev.Listetype
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import java.time.LocalDate
 
 interface LetterMarkupWithDataUsage {
@@ -83,6 +85,7 @@ interface LetterMarkup {
 
         interface ItemList : ParagraphContent {
             val items: List<Item>
+            val listType: Listetype
             interface Item {
                 val id: Int
                 val content: List<Text>

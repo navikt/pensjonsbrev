@@ -138,7 +138,12 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         )
                     }
                     paragraph {
-                        eval(fritekst("fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"))
+                        val beskrivelse = "fyll ut mer informasjon knyttet til forsørget av bidrag fra den avdøde"
+                        text(
+                            bokmal { + fritekst(beskrivelse) },
+                            nynorsk { + fritekst(beskrivelse) },
+                            english { + fritekst(beskrivelse)}
+                        )
                     }
                 }
             }

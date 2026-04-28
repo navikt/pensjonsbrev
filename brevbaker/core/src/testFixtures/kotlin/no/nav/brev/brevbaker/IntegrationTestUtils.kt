@@ -36,7 +36,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brev.template.toCode
-import no.nav.pensjon.brevbaker.api.model.Felles
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -70,7 +70,8 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     pdfFileName: String,
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
-    pdfVedleggAppender: PDFVedleggAppender? = null
+    pdfVedleggAppender: PDFVedleggAppender? = null,
+    useTypst: Boolean = true,
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -79,7 +80,7 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
         })
     }
 
-    val pdfBygger = pdfByggerService ?: LaTeXCompilerService(PDFByggerTestContainer.mappedUrl())
+    val pdfBygger = pdfByggerService ?: PdfByggerTestService()
 
     Letter2Markup.render(this)
         .let {
@@ -92,7 +93,8 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
                         template.letterMetadata.brevtype,
                         Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
                     ),
-                    shouldRetry = false
+                    shouldRetry = false,
+                    useTypst = useTypst,
                 )
             }
         }
@@ -169,7 +171,7 @@ inline fun <reified LetterData : Any> outlineTestTemplate(
         outline(function)
     }
 
-fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: Felles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
+fun LetterTemplate<LangBokmal, EmptyAutobrevdata>.renderTestPDF(fileName: String, felles: BrevbakerFelles = FellesFactory.felles, pdfByggerService: PDFByggerService) =
     LetterImpl(this, EmptyAutobrevdata, Bokmal, felles).renderTestPDF(fileName, pdfByggerService = pdfByggerService)
 
 val bokmalTittel = newText(Bokmal to "test brev")
@@ -186,7 +188,7 @@ object VedleggPDFTestUtils {
         title: String? = null,
         includeSakspart: Boolean,
         outputFolder: String,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         pdfByggerService: PDFByggerService,
         outlineInit: OutlineOnlyScope<LangBokmal, *>.() -> Unit,
     ) {
@@ -202,7 +204,7 @@ object VedleggPDFTestUtils {
     fun renderTestPdfOutline(
         outputFolder: String,
         testName: String,
-        felles: Felles? = null,
+        felles: BrevbakerFelles? = null,
         brevtype: LetterMetadata.Brevtype = LetterMetadata.Brevtype.VEDTAKSBREV,
         attachments: List<AttachmentTemplate<LangBokmal, EmptyVedleggData>> = emptyList(),
         title: String? = null,

@@ -1,17 +1,16 @@
-import { Accordion, BodyShort, Button, VStack } from "@navikt/ds-react";
+import { BodyShort, Button, ExpansionCard, VStack } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
 
 import { hentPdfForJournalpost } from "~/api/sak-api-endpoints";
 import { useSakGjelderNavnFormatert } from "~/hooks/useSakGjelderNavn";
 import Oppsummeringspar from "~/routes/saksnummer_/$saksId/kvittering/-components/Oppsummeringspar";
-import type { BrevInfo } from "~/types/brev";
-import { Distribusjonstype } from "~/types/brev";
-import type { Nullable } from "~/types/Nullable";
+import { type BrevInfo, Distribusjonstype } from "~/types/brev";
+import { type Nullable } from "~/types/Nullable";
 
 import { ApiError } from "../ApiError";
 import { distribusjonstypeTilText } from "./KvitterteBrevUtils";
 
-const AccordionContent = (props: {
+const KvittertBrevContent = (props: {
   saksId: string;
   apiStatus: "error" | "success";
   isPending: boolean;
@@ -21,16 +20,16 @@ const AccordionContent = (props: {
 }) => {
   switch (props.apiStatus) {
     case "error":
-      return <AccordionContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
+      return <KvittertBrevContentError isPending={props.isPending} onPrøvIgjenClick={props.onRetry} />;
 
     case "success":
-      return <AccordionContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
+      return <KvittertBrevContentSuccess brev={props.brev} journalpostId={props.journalpostId} saksId={props.saksId} />;
   }
 };
 
-export default AccordionContent;
+export default KvittertBrevContent;
 
-const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
+const KvittertBrevContentSuccess = (props: { saksId: string; brev: BrevInfo; journalpostId: Nullable<number> }) => {
   const pdfForJournalpost = useMutation<Blob, Error, number>({
     mutationFn: (journalpostId) => hentPdfForJournalpost.queryFn(props.saksId, journalpostId),
     onSuccess: (pdf) => window.open(URL.createObjectURL(pdf), "_blank"),
@@ -41,34 +40,40 @@ const AccordionContentSuccess = (props: { saksId: string; brev: BrevInfo; journa
     props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && props.brev.status.type !== "Attestering";
 
   return (
-    <Accordion.Content data-cy={`journalpostId-${props.journalpostId}`}>
+    <ExpansionCard.Content data-cy={`journalpostId-${props.journalpostId}`}>
       <VStack align="start" gap="space-16">
         <Oppsummeringspar
+          size="small"
           tittel="Mottaker"
           verdi={props.brev?.mottaker?.navn ?? sakenGjelderNavn ?? "Fant ikke mottakerens navn"}
         />
 
-        <Oppsummeringspar tittel="Distribueres via" verdi={distribusjonstypeTilText(props.brev.distribusjonstype)} />
-        {props.journalpostId && <Oppsummeringspar tittel="Journalpost ID" verdi={props.journalpostId!} />}
+        <Oppsummeringspar
+          size="small"
+          tittel="Distribusjon"
+          verdi={distribusjonstypeTilText(props.brev.distribusjonstype)}
+        />
+        {props.journalpostId && <Oppsummeringspar size="small" tittel="Journalpost" verdi={props.journalpostId!} />}
         {showOpenPdf && (
           <Button
             loading={pdfForJournalpost.isPending}
             onClick={() => pdfForJournalpost.mutate(props.journalpostId!)}
             size="small"
             type="button"
+            variant="secondary"
           >
-            Åpne PDF i ny fane
+            Åpne PDF
           </Button>
         )}
         {pdfForJournalpost.isError && <ApiError error={pdfForJournalpost.error} title="Klarte ikke å hente PDF" />}
       </VStack>
-    </Accordion.Content>
+    </ExpansionCard.Content>
   );
 };
 
-const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
+const KvittertBrevContentError = (props: { onPrøvIgjenClick: () => void; isPending: boolean }) => {
   return (
-    <Accordion.Content>
+    <ExpansionCard.Content>
       <VStack align="start" gap="space-12">
         <VStack gap="space-20">
           <BodyShort size="small">Skribenten klarte ikke å sende brevet.</BodyShort>
@@ -79,6 +84,6 @@ const AccordionContentError = (props: { onPrøvIgjenClick: () => void; isPending
           Prøv å sende igjen
         </Button>
       </VStack>
-    </Accordion.Content>
+    </ExpansionCard.Content>
   );
 };

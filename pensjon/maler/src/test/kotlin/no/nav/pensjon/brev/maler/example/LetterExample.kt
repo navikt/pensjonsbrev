@@ -1,36 +1,25 @@
 package no.nav.pensjon.brev.maler.example
 
-import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.maler.FeatureToggles
-import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.navn
-import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg1
-import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg2
-import no.nav.pensjon.brev.maler.example.ExampleTilleggDtoSelectors.tillegg3
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoAvslaatt
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.datoInnvilget
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.navneliste
 import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.pensjonInnvilget
-import no.nav.pensjon.brev.maler.example.LetterExampleDtoSelectors.tilleggEksempel
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi1
 import no.nav.pensjon.brev.maler.example.TestVedleggDtoSelectors.testVerdi2
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.*
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Form.Text.Size
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.dsl.*
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.expr
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
-import no.nav.pensjon.brevbaker.api.model.BrukerSelectors.fornavn
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.bruker
-import no.nav.pensjon.brevbaker.api.model.FellesSelectors.dokumentDato
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFellesSelectors.dokumentDato
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
-import no.nav.pensjon.brev.template.dsl.text
 import java.time.LocalDate
 
 enum class LetterExampleBrevkode : Brevkode.Automatisk {
@@ -45,7 +34,7 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     override val kode: Brevkode.Automatisk = LetterExampleBrevkode.TESTBREV
 
     override val template = createTemplate(
-        languages = languages(Bokmal, Nynorsk),
+        languages = languages(Bokmal, Nynorsk), // Data class containing the required data of this letter
         letterMetadata = LetterMetadata(
             displayTitle = "Dette er ett eksempel-brev", // Display title for external systems
             distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, // Brukes ved distribusjon av brevet
@@ -54,249 +43,197 @@ object LetterExample : AutobrevTemplate<LetterExampleDto> {
     ) {
         title {
             text(
-                bokmal { + "Eksempelbrev" },
-                nynorsk { + "Eksempelbrev" }
+                bokmal { +"Eksempelbrev" },
+                nynorsk { +"Eksempelbrev" }
             )
         }
 
         // Main letter content
         outline {
-            //Select boolean expression from this letters argument
-
-
-            // Data from the felles(common) argument can also be used. Both felles and argument supports map and select.
-            val firstName = felles.bruker.fornavn
-
-            // section title
+            // ── TITLE1 + intro-avsnitt ───────────────────────────────────────────────
             title1 {
-                text(bokmal { + "Du har fått innvilget pensjon" }, nynorsk { + "Du har fått innvilget pensjon" })
+                text(bokmal { +"Du har fått innvilget alderspensjon" }, nynorsk { +"Du har fått innvilga alderspensjon" })
             }
 
             paragraph {
                 text(
-                    bokmal { + "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." },
-                    nynorsk { + "Du kan klage på vedtaket innen seks uker fra du mottok det. Kontoret som har fattet vedtaket, vil da vurdere saken din på nytt." }
+                    bokmal { +"NAV har behandlet søknaden din og vedtatt at du har rett til alderspensjon fra " + datoInnvilget.format() + ". Pensjonen er beregnet på grunnlag av dine opptjente rettigheter." },
+                    nynorsk { +"NAV har handsama søknaden din og vedteke at du har rett til alderspensjon frå " + datoInnvilget.format() + ". Pensjonen er rekna ut på grunnlag av dei opptente rettane dine." }
                 )
             }
 
+            // ── TITLE2 + avsnitt med bold og italic ──────────────────────────────────
+            title2 {
+                text(bokmal { +"Slik er pensjonen din beregnet" }, nynorsk { +"Slik er pensjonen din rekna ut" })
+            }
+
             paragraph {
-                showIf(firstName.equalTo("Alexander")) {
-                    text(
-                        bokmal { + "Hei Alexander" },
-                        nynorsk { + "Hei Alexander" },
-                    )
-                }.orShowIf(firstName.equalTo("Håkon")) {
-                    text(
-                        bokmal { + "Hei Håkon" },
-                        nynorsk { + "Hei Håkon" }
-                    )
-                }.orShow {
-                    text(
-                        bokmal { + "Hei " + firstName },
-                        nynorsk { + "Hei " + firstName },
-                    )
-                }
                 text(
-                    bokmal { + ", håper du har en fin dag!" },
-                    nynorsk { + ", håper du har en fin dag!" }
+                    bokmal { +"Pensjonen din består av tre deler:" },
+                    nynorsk { +"Pensjonen din består av tre delar:" }
                 )
             }
 
+            // ── Punktliste ───────────────────────────────────────────────────────────
             paragraph {
-                forEach(tilleggEksempel) {
-                    text(
-                        bokmal { + "Heisann " + it.navn + " håper du har en fin dag!" },
-                        nynorsk { + "Heisann " + it.navn + " håper du har en fin dag!" },
-                    )
-                }
-            }
-
-            paragraph {
-                showIf(FeatureToggles.pl7231ForventetSvartid.toggle.expr().enabled() and true.expr()) {
-                    text(
-                        bokmal { + "a" },
-                        nynorsk { + "b" },
-                    )
-                }.orShow {
-                    text(
-                        bokmal { + "nei" },
-                        nynorsk { + "kanskje" },
-                    )
-                }
-            }
-
-            showIf(FeatureToggle("" + System.currentTimeMillis()).expr().enabled()) {
-                paragraph {
-                    text(
-                        bokmal { + "Tekst styrt av funksjonsbryter" },
-                        nynorsk { + "Tekst styrt av funksjonsbrytar" }
-                    )
-                }
-            }
-
-            // Fetch a value from the letter arguments
-            paragraph {
-                //ShowIf shows the content of the block if the boolean expression resolves to true
-                showIf(pensjonInnvilget) {
-                    text(
-                        // Text expressions can use variables as expressions, but the text literals also need to be expressions
-                        bokmal { + "Hei " + firstName + ". Du har fått innvilget pensjon." },
-                        nynorsk { + "Hei " + firstName + ". Du har fått innvilget pensjon." },
-                    )
-                }
-
                 list {
-                    forEach(tilleggEksempel) { tillegg ->
-                        ifNotNull(tillegg.tillegg1) {
-                            item {
-                                text(
-                                    bokmal { + "Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
-                                    nynorsk { + "Du har fått tilleg1 for " + tillegg.navn + " på " + it.format() },
-                                )
-                            }
-                        }
-                        item { text(bokmal { + "Joda" }, nynorsk { + "Jauda" }) }
+                    item {
+                        text(bokmal { +"Grunnpensjon" }, nynorsk { +"Grunnpensjon" }, FontType.BOLD)
+                        text(
+                            bokmal { +" – basert på trygdetid i Norge." },
+                            nynorsk { +" – basert på trygdetid i Noreg." }
+                        )
                     }
                     item {
-                        text(bokmal { + "Test1" }, nynorsk { + "Test1" })
+                        text(bokmal { +"Tilleggspensjon" }, nynorsk { +"Tilleggspensjon" }, FontType.BOLD)
+                        text(
+                            bokmal { +" – basert på pensjonsgivende inntekt." },
+                            nynorsk { +" – basert på pensjonsgivande inntekt." }
+                        )
                     }
-                    ifNotNull(datoAvslaatt) { dato ->
-                        item {
-                            text(
-                                bokmal { + "Du har fått avslag på noe " + dato.format() },
-                                nynorsk { + "Du har fått avslag på noe " + dato.format() }
-                            )
-                        }
-                    }
-
                     item {
-                        text(bokmal { + "Test2" }, nynorsk { + "Test2" })
+                        text(bokmal { +"Særtillegg" }, nynorsk { +"Særtillegg" }, FontType.BOLD)
+                        text(
+                            bokmal { +" – gis dersom tilleggspensjonen er lav." },
+                            nynorsk { +" – vert gjeve dersom tilleggspensjonen er låg." }
+                        )
                     }
-
                     item {
-                        text(bokmal { + "Test3" }, nynorsk { + "Test3" })
-                    }
-
-                    item {
-                        //textOnlyPhrase can be included anywhere you write text.
+                        // textOnlyPhrase kan inkluderes overalt der man skriver tekst
                         includePhrase(TextOnlyPhraseTest)
                     }
+                }
+            }
+
+            // ── TITLE2 + nummerert liste ─────────────────────────────────────────────
+            title2 {
+                text(bokmal { +"Hva skjer videre?" }, nynorsk { +"Kva skjer vidare?" })
+            }
+
+            paragraph {
+                numberedList {
                     item {
-                        //Any type of phrase can also require data
-                        includePhrase(TextOnlyPhraseTestWithParams(datoInnvilget))
+                        text(
+                            bokmal { +"Du vil motta et informasjonsbrev innen 14 dager." },
+                            nynorsk { +"Du vil få eit informasjonsbrev innan 14 dagar." }
+                        )
+                    }
+                    item {
+                        text(
+                            bokmal { +"Utbetalingen starter den " },
+                            nynorsk { +"Utbetalinga startar den " }
+                        )
+                        text(bokmal { +"1. juni 2024" }, nynorsk { +"1. juni 2024" }, FontType.BOLD)
+                        text(bokmal { +"." }, nynorsk { +"." })
+                    }
+                    item {
+                        text(
+                            bokmal { +"Du kan følge saken din på " },
+                            nynorsk { +"Du kan følgje saka di på " }
+                        )
+                        text(bokmal { +"nav.no/minside" }, nynorsk { +"nav.no/minside" }, FontType.ITALIC)
+                        text(bokmal { +"." }, nynorsk { +"." })
                     }
                 }
-                text(bokmal { + lipsums[0] }, nynorsk { + lipsums[0] })
             }
 
             title1 {
-                text(bokmal { + "Utbetalingsoversikt" }, nynorsk { + "Utbetalingsoversikt" })
+                text(bokmal { +"Utbetalingsoversikt" }, nynorsk { +"Utbetalingsoversikt" })
             }
 
             paragraph {
                 text(
-                    bokmal { + "Dette er din inntekt fra 01.01.2020 til 01.05.2020" },
-                    nynorsk { + "Dette er din inntekt fra 01.01.2020 til 01.05.2020" }
+                    bokmal { +"Tabellen nedenfor viser de månedlige beløpene for perioden januar–juni 2024." },
+                    nynorsk { +"Tabellen nedanfor viser dei månadlege beløpa for perioden januar–juni 2024." }
                 )
                 table(
                     header = {
-                        column(3) { text(bokmal { + "Kolonne 1" }, nynorsk { + "Kolonne 1" }) }
-                        column(1, RIGHT) { text(bokmal { + "Kolonne 2" }, nynorsk { + "Kolonne 2" }) }
-                        column(1, RIGHT) { text(bokmal { + "Kolonne 3" }, nynorsk { + "Kolonne 3" }) }
-                        column(1, RIGHT) { text(bokmal { + "Kolonne 4" }, nynorsk { + "Kolonne 4" }) }
+                        column(3) { text(bokmal { +"Ytelse" }, nynorsk { +"Yting" }) }
+                        column(1, RIGHT) { text(bokmal { +"Brutto (kr)" }, nynorsk { +"Brutto (kr)" }) }
+                        column(1, RIGHT) { text(bokmal { +"Skatt (kr)" }, nynorsk { +"Skatt (kr)" }) }
+                        column(1, RIGHT) { text(bokmal { +"Netto (kr)" }, nynorsk { +"Netto (kr)" }) }
                     }
                 ) {
-                    forEach(tilleggEksempel) { tillegg ->
-                        val navn = tillegg.navn
-                        val tillegg1 = tillegg.tillegg1
-                        val tillegg2 = tillegg.tillegg2
-                        val tillegg3 = tillegg.tillegg3
-                        row {
-                            cell {
-                                text(
-                                    bokmal { + "Du får tillegg for " + navn },
-                                    nynorsk { + "Du får tillegg for " + navn }
-                                )
-                            }
-                            cell {
-                                ifNotNull(tillegg1) { tillegg ->
-                                    includePhrase(KronerText(tillegg))
-                                }
-                            }
-                            cell {
-                                ifNotNull(tillegg2) { tillegg ->
-                                    text(
-                                        bokmal { + tillegg.format() },
-                                        nynorsk { + tillegg.format() }
-                                    )
-                                }
-                            }
-                            cell {
-                                ifNotNull(tillegg3) { tillegg ->
-                                    text(
-                                        bokmal { + tillegg.format() },
-                                        nynorsk { + tillegg.format() }
-                                    )
-                                }
-                            }
-                        }
+                    row {
+                        cell { text(bokmal { +"Grunnpensjon" }, nynorsk { +"Grunnpensjon" }) }
+                        cell { text(bokmal { +"11 306" }, nynorsk { +"11 306" }) }
+                        cell { text(bokmal { +"2 826" }, nynorsk { +"2 826" }) }
+                        cell { text(bokmal { +"8 480" }, nynorsk { +"8 480" }) }
                     }
                     row {
-                        cell {
-                            text(
-                                bokmal { + "Din inntekt før skatt i måned 1" },
-                                nynorsk { + "Din inntekt før skatt i måned 1" }
-                            )
-                        }
-                        cell { text(bokmal { + "100 Kr" }, nynorsk { + "100 Kr" }) }
-                        cell { text(bokmal { + "200 Kr" }, nynorsk { + "200 Kr" }) }
-                        cell { text(bokmal { + "300 Kr" }, nynorsk { + "300 Kr" }) }
+                        cell { text(bokmal { +"Tilleggspensjon" }, nynorsk { +"Tilleggspensjon" }) }
+                        cell { text(bokmal { +"5 200" }, nynorsk { +"5 200" }) }
+                        cell { text(bokmal { +"1 300" }, nynorsk { +"1 300" }) }
+                        cell { text(bokmal { +"3 900" }, nynorsk { +"3 900" }) }
                     }
                     row {
-                        cell {
-                            text(
-                                bokmal { + "Din inntekt før skatt i måned 1" },
-                                nynorsk { + "Din inntekt før skatt i måned 1" }
-                            )
-                        }
-                        cell { text(bokmal { + "400 Kr" }, nynorsk { + "400 Kr" }) }
-                        cell { text(bokmal { + "500 Kr" }, nynorsk { + "500 Kr" }) }
-                        cell { text(bokmal { + "600 Kr" }, nynorsk { + "600 Kr" }) }
+                        cell { text(bokmal { +"Særtillegg" }, nynorsk { +"Særtillegg" }) }
+                        cell { text(bokmal { +"0" }, nynorsk { +"0" }) }
+                        cell { text(bokmal { +"0" }, nynorsk { +"0" }) }
+                        cell { text(bokmal { +"0" }, nynorsk { +"0" }) }
                     }
-                    ifNotNull(datoAvslaatt) { dato ->
-                        row {
-                            cell {
-                                text(
-                                    bokmal { + "Du har en dato satt! " + dato.format() },
-                                    nynorsk { + "Du har en dato satt! " + dato.format() }
-                                )
-                            }
-                            cell { text(bokmal { + "400 Kr" }, nynorsk { + "400 Kr" }) }
-                            cell { text(bokmal { + "500 Kr" }, nynorsk { + "500 Kr" }) }
-                            cell { text(bokmal { + "600 Kr" }, nynorsk { + "600 Kr" }) }
-                        }
+                    row {
+                        cell { text(bokmal { +"Sum" }, nynorsk { +"Sum" }, FontType.BOLD) }
+                        cell { text(bokmal { +"16 506" }, nynorsk { +"16 506" }, FontType.BOLD) }
+                        cell { text(bokmal { +"4 126" }, nynorsk { +"4 126" }, FontType.BOLD) }
+                        cell { text(bokmal { +"12 380" }, nynorsk { +"12 380" }, FontType.BOLD) }
                     }
-                }
-            }
-            // Repeat content for each element in list
-            forEach(navneliste) {
-                title1 {
-                    text(bokmal { + it }, nynorsk { + it })
-                }
-                paragraph {
-                    text(
-                        bokmal { + "En liste med navn har elementet: " + it },
-                        nynorsk { + "En liste med navn har elementet: " + it }
-                    )
                 }
             }
 
-            //Include outline phrase
+            // ── TITLE3 + tekst med newline ────────────────────────────────────────────
+            title3 {
+                text(bokmal { +"Merknader til beregningen" }, nynorsk { +"Merknader til utrekninga" })
+            }
+
+            paragraph {
+                text(bokmal { +"Trygdetid:" }, nynorsk { +"Trygdetid:" }, FontType.BOLD)
+                newline()
+                text(
+                    bokmal { +"Du er registrert med 40 års trygdetid i Norge, som gir full grunnpensjon." },
+                    nynorsk { +"Du er registrert med 40 års trygdetid i Noreg, som gjev full grunnpensjon." }
+                )
+                newline()
+                text(bokmal { +"Pensjonsgivende inntekt:" }, nynorsk { +"Pensjonsgivande inntekt:" }, FontType.BOLD)
+                newline()
+                text(
+                    bokmal { +"Gjennomsnittlig pensjonsgivende inntekt de 20 beste inntektsårene er lagt til grunn." },
+                    nynorsk { +"Gjennomsnittleg pensjonsgivande inntekt dei 20 beste inntektsåra er lagt til grunn." }
+                )
+            }
+
+            // ── OutlinePhrase ────────────────────────────────────────────────────────
             includePhrase(OutlinePhraseTest(datoInnvilget, pensjonInnvilget))
 
-            //Print some lipsum paragraphs.
-            for (lipsum in lipsums) {
-                paragraph { text(bokmal { + lipsum }, nynorsk { + lipsum }) }
+            // ── TITLE1 + klagerett ────────────────────────────────────────────────────
+            title1 {
+                text(bokmal { +"Du har rett til å klage" }, nynorsk { +"Du har rett til å klage" })
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du kan klage på vedtaket innen " },
+                    nynorsk { +"Du kan klage på vedtaket innan " }
+                )
+                text(bokmal { +"seks uker" }, nynorsk { +"seks veker" }, FontType.BOLD)
+                text(
+                    bokmal { +" fra du mottok dette brevet. Klagen skal sendes til det kontoret som har fattet vedtaket." },
+                    nynorsk { +" frå du mottok dette brevet. Klaga skal sendast til det kontoret som har gjort vedtaket." }
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Du kan lese mer om klagerett og saksbehandlingstid på " },
+                    nynorsk { +"Du kan lese meir om klagerett og sakshandsamingstid på " }
+                )
+                text(bokmal { +"nav.no/klage" }, nynorsk { +"nav.no/klage" }, FontType.ITALIC)
+                text(bokmal { +"." }, nynorsk { +"." })
+            }
+
+            // ── Noen ekstra avsnitt for å fylle siden ────────────────────────────────
+            for (lipsum in lipsums.take(3)) {
+                paragraph { text(bokmal { +lipsum }, nynorsk { +lipsum }) }
             }
         }
         includeAttachment(testVedlegg, TestVedleggDto("test1", "test2").expr())
@@ -337,8 +274,8 @@ data class OutlinePhraseTest(val datoInnvilget: Expression<LocalDate>, val pensj
             showIf(pensjonInnvilget) {
                 val dato = datoInnvilget.format()
                 text(
-                    bokmal { + "Du har fått innvilget pensjon fra " + dato + "." },
-                    nynorsk { + "Du har fått innvilget pensjon fra " + dato + "." },
+                    bokmal { +"Du har fått innvilget pensjon fra " + dato + "." },
+                    nynorsk { +"Du har fått innvilget pensjon fra " + dato + "." },
                 )
             }
         }
@@ -349,30 +286,22 @@ object ParagraphPhraseTest : ParagraphPhrase<LangBokmalNynorsk>() {
     override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() =
         list {
             item {
-                text(bokmal { + "Test 1" }, nynorsk { + "Test 1" })
+                text(bokmal { +"Test 1" }, nynorsk { +"Test 1" })
             }
 
             item {
-                text(bokmal { + "Test 2" }, nynorsk { + "Test 2" })
+                text(bokmal { +"Test 2" }, nynorsk { +"Test 2" })
             }
 
             item {
-                text(bokmal { + "Test 3" }, nynorsk { + "Test 3" })
+                text(bokmal { +"Test 3" }, nynorsk { +"Test 3" })
             }
         }
 }
 
 object TextOnlyPhraseTest : TextOnlyPhrase<LangBokmalNynorsk>() {
     override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
-        text(bokmal { + "Dette er en tekstfrase" }, nynorsk { + "Dette er en tekstfrase" })
-}
-
-data class TextOnlyPhraseTestWithParams(val dato: Expression<LocalDate>) : TextOnlyPhrase<LangBokmalNynorsk>() {
-    override fun TextOnlyScope<LangBokmalNynorsk, Unit>.template() =
-        text(
-            bokmal { + "Dette er en tekstfrase med datoen: " + dato.format() },
-            nynorsk { + "Dette er en tekstfrase med datoen: " + dato.format() },
-        )
+        text(bokmal { +"Dette er en tekstfrase" }, nynorsk { +"Dette er en tekstfrase" })
 }
 
 data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : VedleggData
@@ -381,19 +310,212 @@ data class TestVedleggDto(val testVerdi1: String, val testVerdi2: String) : Vedl
 val testVedlegg = createAttachment<LangBokmalNynorsk, TestVedleggDto>(
     title = {
         text(
-            bokmal { +"Test vedlegg" },
-            nynorsk { +"Test vedlegg" },
+            bokmal { +"Egenerklæring og tilleggsinformasjon" },
+            nynorsk { +"Eigenerklæring og tilleggsinformasjon" },
         )
     },
     includeSakspart = true
 ) {
+    // ── TITLE1 + intro ──────────────────────────────────────────────────────────
+    title1 {
+        text(bokmal { +"Om dette vedlegget" }, nynorsk { +"Om dette vedlegget" })
+    }
+
     paragraph {
-        //felles can also be used in phrases and attachment even if it wasn't explicitly sent in
         val dokDato = felles.dokumentDato.format()
         text(
-            bokmal { + "Test verdi 1: " + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato },
-            nynorsk { + "Test verdi 1: " + testVerdi1 + " Test verdi 2: " + testVerdi2 + " dokument dato: " + dokDato },
+            bokmal { +"Dette vedlegget gjelder sak " + testVerdi1 + " (referanse: " + testVerdi2 + "), datert " + dokDato + ". Les det nøye før du fyller ut skjemaet." },
+            nynorsk { +"Dette vedlegget gjeld sak " + testVerdi1 + " (referanse: " + testVerdi2 + "), datert " + dokDato + ". Les det nøye før du fyller ut skjemaet." },
         )
+    }
+
+    // ── TITLE2 + punktliste med bold/italic ─────────────────────────────────────
+    title2 {
+        text(bokmal { +"Dokumentasjon du må legge ved" }, nynorsk { +"Dokumentasjon du må leggje ved" })
+    }
+
+    paragraph {
+        list {
+            item {
+                text(bokmal { +"Gyldig " }, nynorsk { +"Gyldig " })
+                text(bokmal { +"legitimasjon" }, nynorsk { +"legitimasjon" }, FontType.BOLD)
+                text(bokmal { +" (pass eller nasjonalt ID-kort)." }, nynorsk { +" (pass eller nasjonalt ID-kort)." })
+            }
+            item {
+                text(bokmal { +"Dokumentasjon på " }, nynorsk { +"Dokumentasjon på " })
+                text(bokmal { +"utenlandsk inntekt" }, nynorsk { +"utanlandsk inntekt" }, FontType.ITALIC)
+                text(bokmal { +" de siste fem år." }, nynorsk { +" dei siste fem åra." })
+            }
+            item {
+                text(
+                    bokmal { +"Attest fra bostedskommune." },
+                    nynorsk { +"Attest frå bustadkommunen." }
+                )
+            }
+        }
+    }
+
+    // ── TITLE2 + nummerert liste ─────────────────────────────────────────────────
+    title2 {
+        text(bokmal { +"Slik sender du dokumentasjonen" }, nynorsk { +"Slik sender du dokumentasjonen" })
+    }
+
+    paragraph {
+        numberedList {
+            item {
+                text(
+                    bokmal { +"Skann eller fotografer dokumentene i god kvalitet." },
+                    nynorsk { +"Skann eller fotografer dokumenta i god kvalitet." }
+                )
+            }
+            item {
+                text(
+                    bokmal { +"Last opp filene på " },
+                    nynorsk { +"Last opp filene på " }
+                )
+                text(bokmal { +"nav.no/minside" }, nynorsk { +"nav.no/minside" }, FontType.BOLD)
+                text(bokmal { +" under «Send dokumentasjon»." }, nynorsk { +" under «Send dokumentasjon»." })
+            }
+            item {
+                text(
+                    bokmal { +"Du kan også sende dokumentene per post til adressen nedenfor." },
+                    nynorsk { +"Du kan også sende dokumenta per post til adressa nedanfor." }
+                )
+            }
+        }
+    }
+
+    // ── TITLE3 + tekst med newline ──────────────────────────────────────────────
+    title3 {
+        text(bokmal { +"Postadresse" }, nynorsk { +"Postadresse" })
+    }
+
+    paragraph {
+        text(bokmal { +"NAV Pensjon" }, nynorsk { +"NAV Pensjon" }, FontType.BOLD)
+        newline()
+        text(bokmal { +"Postboks 6600 Etterstad" }, nynorsk { +"Postboks 6600 Etterstad" })
+        newline()
+        text(bokmal { +"0607 Oslo" }, nynorsk { +"0607 Oslo" })
+    }
+
+    // ── TITLE1 + tabell ─────────────────────────────────────────────────────────
+    title1 {
+        text(bokmal { +"Oppsummering av trygdetid" }, nynorsk { +"Oppsummering av trygdetid" })
+    }
+
+    paragraph {
+        text(
+            bokmal { +"Tabellen viser registrert trygdetid per land som er lagt til grunn ved beregningen." },
+            nynorsk { +"Tabellen viser registrert trygdetid per land som er lagt til grunn ved utrekninga." }
+        )
+        table(
+            header = {
+                column(3) { text(bokmal { +"Land" }, nynorsk { +"Land" }) }
+                column(1, RIGHT) { text(bokmal { +"Fra" }, nynorsk { +"Frå" }) }
+                column(1, RIGHT) { text(bokmal { +"Til" }, nynorsk { +"Til" }) }
+                column(1, RIGHT) { text(bokmal { +"År" }, nynorsk { +"År" }) }
+            }
+        ) {
+            row {
+                cell { text(bokmal { +"Norge" }, nynorsk { +"Noreg" }) }
+                cell { text(bokmal { +"1984" }, nynorsk { +"1984" }) }
+                cell { text(bokmal { +"2024" }, nynorsk { +"2024" }) }
+                cell { text(bokmal { +"40" }, nynorsk { +"40" }) }
+            }
+            row {
+                cell { text(bokmal { +"Sverige" }, nynorsk { +"Sverige" }) }
+                cell { text(bokmal { +"1980" }, nynorsk { +"1980" }) }
+                cell { text(bokmal { +"1984" }, nynorsk { +"1984" }) }
+                cell { text(bokmal { +"4" }, nynorsk { +"4" }) }
+            }
+            row {
+                cell { text(bokmal { +"Sum" }, nynorsk { +"Sum" }, FontType.BOLD) }
+                cell { text(bokmal { +"" }, nynorsk { +"" }) }
+                cell { text(bokmal { +"" }, nynorsk { +"" }) }
+                cell { text(bokmal { +"44" }, nynorsk { +"44" }, FontType.BOLD) }
+            }
+        }
+    }
+
+    // ── TITLE1 + skjemadel ──────────────────────────────────────────────────────
+    title1 {
+        text(bokmal { +"Egenerklæring – fyll ut og returner" }, nynorsk { +"Eigenerklæring – fyll ut og returner" })
+    }
+
+    paragraph {
+        text(
+            bokmal { +"Fyll ut alle feltene og send skjemaet til NAV. Ufullstendig utfylt skjema kan forsinke saksbehandlingen." },
+            nynorsk { +"Fyll ut alle felta og send skjemaet til NAV. Ufullstendig utfylt skjema kan forseinka sakshandsaminga." }
+        )
+    }
+
+    // ── formText – ulike størrelser ──────────────────────────────────────────────
+    paragraph {
+        formText(
+            size = Size.LONG,
+            prompt = {
+                text(bokmal { +"Saksnummer (" + testVerdi1 + "):" }, nynorsk { +"Saksnummer (" + testVerdi1 + "):" })
+            }
+        )
+        formText(
+            size = Size.SHORT,
+            prompt = {
+                text(bokmal { +"Referanse (" + testVerdi2 + "):" }, nynorsk { +"Referanse (" + testVerdi2 + "):" })
+            }
+        )
+        formText(
+            size = Size.FILL,
+            prompt = {
+                text(bokmal { +"Adresse:" }, nynorsk { +"Adresse:" })
+            }
+        )
+        formText(
+            size = Size.SHORT,
+            vspace = false,
+            prompt = {
+                text(bokmal { +"Dato:" }, nynorsk { +"Dato:" })
+            }
+        )
+        formText(
+            size = Size.LONG,
+            vspace = false,
+            prompt = {
+                text(bokmal { +"Underskrift:" }, nynorsk { +"Underskrift:" })
+            }
+        )
+    }
+
+    // ── formChoice ───────────────────────────────────────────────────────────────
+    paragraph {
+        formChoice(
+            prompt = {
+                text(
+                    bokmal { +"Har du hatt inntekt fra utlandet de siste 12 månedene?" },
+                    nynorsk { +"Har du hatt inntekt frå utlandet dei siste 12 månadene?" }
+                )
+            }
+        ) {
+            choice(bokmal { +"Ja" }, nynorsk { +"Ja" })
+            choice(bokmal { +"Nei" }, nynorsk { +"Nei" })
+            choice(
+                bokmal { +"Vet ikke" },
+                nynorsk { +"Veit ikkje" }
+            )
+        }
+
+        formChoice(
+            prompt = {
+                text(
+                    bokmal { +"Hvilken type bolig bor du i?" },
+                    nynorsk { +"Kva for ein type bustad bur du i?" }
+                )
+            },
+            vspace = true
+        ) {
+            choice(bokmal { +"Selveierbolig" }, nynorsk { +"Sjølveigarbustad" })
+            choice(bokmal { +"Leiebolig" }, nynorsk { +"Leigebustad" })
+            choice(bokmal { +"Institusjon / bofellesskap" }, nynorsk { +"Institusjon / bufellesskap" })
+        }
     }
 }
 

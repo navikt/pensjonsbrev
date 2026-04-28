@@ -1,17 +1,16 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { BodyShort, TextField } from "@navikt/ds-react";
 import { useMutation } from "@tanstack/react-query";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { useEffect, useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { orderEblankett, orderLetterKeys } from "~/api/skribenten-api-endpoints";
 import { Divider } from "~/components/Divider";
-import type { LetterMetadata, OrderEblankettRequest } from "~/types/apiTypes";
+import { type LetterMetadata, type OrderEblankettRequest } from "~/types/apiTypes";
 
-import type { SubmitTemplateOptions } from "../../route";
-import { Route } from "../../route";
+import { Route, type SubmitTemplateOptions } from "../../route";
 import BrevmalFormWrapper, { OrderLetterResult } from "./components/BrevmalFormWrapper";
 import LetterTemplateHeading from "./components/LetterTemplate";
 import SelectAvtaleland from "./components/SelectAvtaleland";

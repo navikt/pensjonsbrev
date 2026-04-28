@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.avslag.gradsendring
 
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaalAlder
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.RettTilAAKlage
 import no.nav.pensjon.brev.alder.maler.felles.RettTilInnsyn
 import no.nav.pensjon.brev.alder.maler.felles.dineRettigheterOgMulighetTilAaKlagePensjonStatisk
@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class AvslagGradsendringFoerNormertPensjonsalderFelles(
@@ -54,6 +54,6 @@ data class AvslagGradsendringFoerNormertPensjonsalderFelles(
 
         includePhrase(RettTilAAKlage)
         includePhrase(RettTilInnsyn(dineRettigheterOgMulighetTilAaKlagePensjonStatisk))
-        includePhrase(HarDuSpoersmaalAlder)
+        includePhrase(HarDuSpoersmaal.alder)
     }
 }

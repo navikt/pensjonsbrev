@@ -1,4 +1,5 @@
-import { BodyShort, Heading, Loader, VStack } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, PencilIcon } from "@navikt/aksel-icons";
+import { BodyShort, Button, Heading, HStack, Label, Loader, Spacer, Tag, VStack } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
@@ -6,18 +7,20 @@ import { useEffect } from "react";
 import { hentAlleBrevInfoForSak } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
 import { Divider } from "~/components/Divider";
-import EndreMottakerMedOppsummeringOgApiHåndtering from "~/components/EndreMottakerMedApiHåndtering";
+import { EndreMottakerModal } from "~/components/endreMottaker/EndreMottakerModal";
 import LetterTemplateTags from "~/components/LetterTemplateTags";
 import OppsummeringAvMottaker from "~/components/OppsummeringAvMottaker";
 import { SlettBrev } from "~/components/SlettBrev";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type { BrevInfo } from "~/types/brev";
+import { useEndreMottaker } from "~/hooks/useEndreMottaker";
+import { type LetterMetadata } from "~/types/apiTypes";
+import { type BrevInfo } from "~/types/brev";
 import { SPRAAK_ENUM_TO_TEXT } from "~/types/nameMappings";
 import { erBrevArkivert } from "~/utils/brevUtils";
+import { truncatedSha256Hash } from "~/utils/hashUtils";
+import { trackEvent } from "~/utils/umami";
 
 import Oppsummeringspar from "../../kvittering/-components/Oppsummeringspar";
-import type { SubmitTemplateOptions } from "../route";
-import { Route } from "../route";
+import { Route, type SubmitTemplateOptions } from "../route";
 
 export const BrevmalBrevbakerKladd = (props: {
   saksId: string;
@@ -70,6 +73,18 @@ const Brevmal = (props: {
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId, vedtaksId } = Route.useSearch();
 
+  const {
+    modalÅpen,
+    åpneModal,
+    lukkModal,
+    endreMottaker,
+    resetEndreMottaker,
+    endreMottakerError,
+    endreMottakerIsPending,
+    fjernMottaker,
+    fjernMottakerIsPending,
+  } = useEndreMottaker(props.saksId, props.brev.id);
+
   useEffect(() => {
     setOnFormSubmitClick({
       onClick: () => {
@@ -115,11 +130,18 @@ const Brevmal = (props: {
         )}
         <VStack align="start" gap="space-8">
           <Heading size="small">{props.brev.brevtittel}</Heading>
-          {props.letterMetadata ? (
-            <LetterTemplateTags letterTemplate={props.letterMetadata} />
-          ) : (
-            <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
-          )}
+          <HStack gap="space-8">
+            {props.letterMetadata ? (
+              <LetterTemplateTags letterTemplate={props.letterMetadata} />
+            ) : (
+              <BodyShort>Fant ikke brev-metadata for å finne brevsystem</BodyShort>
+            )}
+            {props.letterMetadata?.redigerbart && (
+              <Tag data-color="neutral" size="small" variant="moderate">
+                Redigerbar
+              </Tag>
+            )}
+          </HStack>
         </VStack>
       </VStack>
       <Divider />
@@ -127,12 +149,56 @@ const Brevmal = (props: {
         {erBrevArkivert(props.brev) ? (
           <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle />
         ) : (
-          <EndreMottakerMedOppsummeringOgApiHåndtering
-            brev={props.brev}
-            saksId={props.saksId}
-            withGap
-            withOppsummeringTitle
-          />
+          <VStack gap="space-8">
+            {modalÅpen && (
+              <EndreMottakerModal
+                error={endreMottakerError}
+                isPending={endreMottakerIsPending}
+                onBekreftNyMottaker={endreMottaker}
+                onClose={lukkModal}
+                resetOnBekreftState={resetEndreMottaker}
+                åpen={modalÅpen}
+              />
+            )}
+            <HStack align="center">
+              <Label size="small">Mottaker</Label>
+              <Spacer />
+              {props.brev.mottaker !== null && (
+                <Button
+                  disabled={fjernMottakerIsPending}
+                  icon={<ArrowCirclepathReverseIcon />}
+                  iconPosition="right"
+                  loading={fjernMottakerIsPending}
+                  onClick={async () => {
+                    trackEvent("tilbakestill mottaker klikket", {
+                      kontekst: "kladd",
+                      saksId: await truncatedSha256Hash(props.saksId),
+                    });
+                    fjernMottaker();
+                  }}
+                  size="xsmall"
+                  type="button"
+                  variant="tertiary"
+                >
+                  Tilbakestill
+                </Button>
+              )}
+              <Button
+                icon={<PencilIcon />}
+                iconPosition="right"
+                onClick={() => {
+                  trackEvent("endre mottaker klikket", { kontekst: "kladd", saksId: props.saksId });
+                  åpneModal();
+                }}
+                size="xsmall"
+                type="button"
+                variant="tertiary"
+              >
+                Endre
+              </Button>
+            </HStack>
+            <OppsummeringAvMottaker mottaker={props.brev.mottaker} saksId={props.saksId} withTitle={false} />
+          </VStack>
         )}
         <Oppsummeringspar boldedTitle size="small" tittel="Avsenderenhet" verdi={props.brev.avsenderEnhet.navn} />
         <Oppsummeringspar boldedTitle size="small" tittel="Språk" verdi={SPRAAK_ENUM_TO_TEXT[props.brev.spraak]} />

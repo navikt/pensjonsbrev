@@ -1,5 +1,4 @@
-import { css } from "@emotion/react";
-import { FileIcon, ParagraphIcon } from "@navikt/aksel-icons";
+import { FileIcon, ParagraphIcon, PersonIcon } from "@navikt/aksel-icons";
 import { BodyShort, Box, CopyButton, HStack, Tag } from "@navikt/ds-react";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
@@ -14,7 +13,7 @@ import {
   getSakContext,
 } from "~/api/skribenten-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { SakContextDto } from "~/types/apiTypes";
+import { type SakContextDto } from "~/types/apiTypes";
 import { SAK_TYPE_TO_TEXT } from "~/types/nameMappings";
 import { humanizeName } from "~/utils/stringUtils";
 
@@ -67,7 +66,7 @@ function SakLayout() {
 
 function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   const sak = sakContext.sak;
-  const { fødselsdato, personnummer } = splitFødselsnummer(sak.foedselsnr);
+  const { datoDel, personnummerDel } = splitPid(sak.pid);
   const { data: brukerStatus } = useQuery(getBrukerStatus(sak.saksId.toString()));
 
   const dateOfBirth = useMemo(() => {
@@ -92,83 +91,109 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
       borderColor="neutral-subtle"
       borderWidth="0 0 1 0"
       css={{ zIndex: 10 }}
+      height="44px"
       top="space-48"
     >
       <HStack
         align="center"
-        css={css`
-          p {
-            display: flex;
-            align-items: center;
-          }
-
-          p::after {
-            content: "/";
-            margin: 0 var(--ax-space-12);
-          }
-
-          p:last-child::after {
-            content: none;
-          }
-        `}
+        css={{
+          p: {
+            display: "flex",
+            alignItems: "center",
+            textWrap: "nowrap",
+          },
+        }}
+        gap="space-8"
         justify="space-between"
-        paddingBlock="space-8"
-        paddingInline="space-32"
+        wrap={false}
       >
-        <HStack>
-          <BodyShort size="small">
-            {fødselsdato} {personnummer} <CopyButton copyText={sak.foedselsnr} size="small" variant="action" />
+        <HStack
+          align="center"
+          gap="space-8"
+          overflowX="auto"
+          paddingBlock="space-4"
+          paddingInline="space-20 space-0"
+          wrap={false}
+        >
+          <Box height="24px" width="24px">
+            <PersonIcon fontSize="24px" />
+          </Box>
+          <BodyShort size="medium">
+            {datoDel} {personnummerDel}
+            <Box asChild marginInline="space-4 space-8">
+              <CopyButton copyText={sak.pid} data-color="accent" size="small" />
+            </Box>
           </BodyShort>
-          <BodyShort size="small">
+          /
+          <BodyShort size="medium">
             {sak.navn.etternavn}, {humanizeName(sak.navn.fornavn)} {humanizeName(sak.navn.mellomnavn ?? "")}
           </BodyShort>
-          {/* Vil ikke vises for ugyldig dato, f.eks. dummy pnr med ugyldig månedsledd */}
-          {dateOfBirth && <BodyShort size="small">Født: {dateOfBirth}</BodyShort>}
-          {dateOfDeath && <BodyShort size="small">Død: {dateOfDeath}</BodyShort>}
+          {dateOfBirth && (
+            <>
+              /<BodyShort size="medium">Født: {dateOfBirth}</BodyShort>
+            </>
+          )}
+          {dateOfDeath && (
+            <>
+              /<BodyShort size="medium">Død: {dateOfDeath}</BodyShort>
+            </>
+          )}
           {brukerStatus?.erSkjermet && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
-                Egen ansatt
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="neutral"
+                  icon={<FileIcon />}
+                  size="small"
+                  variant="outline"
+                >
+                  Egen ansatt
+                </Tag>
+              </BodyShort>
+            </>
           )}
           {brukerStatus?.vergemaal && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="neutral"
-                icon={<FileIcon />}
-                size="small"
-                variant="outline"
-              >
-                Vergemål
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="neutral"
+                  icon={<FileIcon />}
+                  size="small"
+                  variant="outline"
+                >
+                  Vergemål
+                </Tag>
+              </BodyShort>
+            </>
           )}
           {brukerStatus?.adressebeskyttelse && (
-            <BodyShort>
-              <Tag
-                css={{ borderRadius: "var(--ax-radius-4)" }}
-                data-color="danger"
-                icon={<ParagraphIcon />}
-                size="small"
-                variant="strong"
-              >
-                Diskresjon
-              </Tag>
-            </BodyShort>
+            <>
+              /
+              <BodyShort>
+                <Tag
+                  css={{ borderRadius: "var(--ax-radius-4)" }}
+                  data-color="danger"
+                  icon={<ParagraphIcon />}
+                  size="small"
+                  variant="strong"
+                >
+                  Diskresjon
+                </Tag>
+              </BodyShort>
+            </>
           )}
         </HStack>
-        <HStack>
+        <HStack gap="space-8" paddingInline="space-0 space-48" wrap={false}>
           <BodyShort size="small">{SAK_TYPE_TO_TEXT[sak.sakType]}</BodyShort>
           <BodyShort size="small">
-            {sak.saksId} <CopyButton copyText={sak.saksId.toString()} size="small" variant="action" />
+            {sak.saksId}{" "}
+            <Box asChild marginInline="space-8 space-0">
+              <CopyButton copyText={sak.saksId.toString()} data-color="accent" size="small" />
+            </Box>
           </BodyShort>
         </HStack>
       </HStack>
@@ -176,9 +201,9 @@ function Subheader({ sakContext }: { sakContext: SakContextDto }) {
   );
 }
 
-const splitFødselsnummer = (fødselsnummer: string) => {
-  const fødselsdato = fødselsnummer.slice(0, 6);
-  const personnummer = fødselsnummer.slice(6);
+const splitPid = (pid: string) => {
+  const datoDel = pid.slice(0, 6);
+  const personnummerDel = pid.slice(6);
 
-  return { fødselsdato, personnummer };
+  return { datoDel, personnummerDel };
 };

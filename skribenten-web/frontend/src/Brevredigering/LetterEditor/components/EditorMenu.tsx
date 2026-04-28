@@ -1,5 +1,5 @@
-import { ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
-import { BodyShort, Box, HStack, Select } from "@navikt/ds-react";
+import { ArrowCirclepathReverseIcon, ExclamationmarkTriangleFillIcon } from "@navikt/aksel-icons";
+import { BodyShort, Box, Button, HStack, Select } from "@navikt/ds-react";
 import { format, isToday } from "date-fns";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -11,8 +11,7 @@ import { formatTime } from "~/utils/dateUtils";
 
 import { applyAction } from "../lib/actions";
 import { getCursorOffset } from "../services/caretUtils";
-import type { Typography } from "../utils";
-import { TypographyToText } from "../utils";
+import { type Typography, TypographyToText } from "../utils";
 import EditorBulletList from "./EditorBulletList";
 import EditorFonts from "./EditorFonts";
 import { EditorUndoRedo } from "./EditorUndoRedo";
@@ -52,25 +51,34 @@ type EditorMenuProps = {
   redo: () => void;
   canUndo: boolean;
   canRedo: boolean;
+  setVilTilbakestilleMal: (state: boolean) => void;
 };
 
-export const EditorMenu = ({ undo, redo, canUndo, canRedo }: EditorMenuProps) => {
+export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
   return (
-    <Box background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
-      <HStack align="center" gap="space-4" justify="space-between" minHeight="48px" paddingInline="space-16">
-        <HStack align="center" gap="space-16" margin-block="2">
-          <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
-          <VerticalDivider />
-          <EditorFonts />
-          <VerticalDivider />
-          <EditorBulletList />
-          <VerticalDivider />
-          <EditorTableTools />
-          <VerticalDivider />
-          <SelectTypography />
+    <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
+      <HStack align="center" gap="space-8 space-16" paddingBlock="space-8" paddingInline="space-16">
+        <EditorUndoRedo canRedo={canRedo} canUndo={canUndo} redo={redo} undo={undo} />
+        <VerticalDivider />
+        <EditorFonts />
+        <VerticalDivider />
+        <EditorBulletList />
+        <VerticalDivider />
+        <EditorTableTools />
+        <VerticalDivider />
+        <SelectTypography />
+        <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8">
+          <LagringStatus />
+          <Button
+            data-color="danger"
+            data-cy="tilbakestill-mal-button"
+            icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
+            onClick={() => setVilTilbakestilleMal(true)}
+            size="small"
+            type="button"
+            variant="primary"
+          />
         </HStack>
-
-        <LagringStatus />
       </HStack>
     </Box>
   );

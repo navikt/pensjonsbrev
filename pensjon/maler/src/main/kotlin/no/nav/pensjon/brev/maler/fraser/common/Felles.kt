@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.common
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_OPEN_HOURS
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_UTLAND
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
@@ -19,7 +20,7 @@ import no.nav.pensjon.brev.template.dsl.expression.lessThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.size
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
-import no.nav.pensjon.brevbaker.api.model.Bruker
+import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles.Bruker
 
 object Felles {
     /**
@@ -56,6 +57,7 @@ object Felles {
     data class HarDuSpoersmaal(
         val merInformasjonUrl: String,
         val telefonnummer: String,
+        val utland: Expression<Boolean>? = null,
     ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
         override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
             title1 {
@@ -80,6 +82,15 @@ object Felles {
                         " If you do not find the answer at $NAV_URL, you can call us at: +47 $telefonnummer," +
                         " weekdays $NAV_KONTAKTSENTER_OPEN_HOURS." },
                 )
+                if (utland != null) {
+                    showIf(utland) {
+                        text(
+                            bokmal { + " Ringer du ikke fra Norge? Bruk $NAV_KONTAKTSENTER_UTLAND." },
+                            nynorsk { + " Ringjer du ikkje frå Noreg? Bruk $NAV_KONTAKTSENTER_UTLAND." },
+                            english { + " Are you calling from outside Norway? Call $NAV_KONTAKTSENTER_UTLAND." },
+                        )
+                    }
+                }
             }
         }
 

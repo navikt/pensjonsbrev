@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.api.model.maler.ufoerApi.endretUtPgaInntekt
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import java.time.LocalDate
 
@@ -20,7 +20,7 @@ data class EndretUTPgaInntektDtoV2 (
     val datoForNormertPensjonsalder: LocalDate,
     val sokerMottarApIlaAret: Boolean,
     val brukerBorINorge: Boolean,
-    val pe: PE,
+    val pe: PEgruppe10,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto
 
     ) : AutobrevData

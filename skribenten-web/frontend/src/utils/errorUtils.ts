@@ -1,4 +1,12 @@
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
+
+export function getErrorTitle(error: Error): string | undefined {
+  const data = (error as AxiosError).response?.data;
+  if (data && typeof data === "object" && "tittel" in data) {
+    return (data as { tittel: string }).tittel;
+  }
+  return undefined;
+}
 
 export function getErrorMessage(error: Error): string {
   const data = (error as AxiosError).response?.data;

@@ -52,10 +52,12 @@ class Felles {
                 text(
                     bokmal { +
                     "Nav kan veilede deg på telefon om hvordan du sender en klage. Nav-kontoret ditt kan også hjelpe deg med å skrive en klage. " +
-                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp."},
+                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} hvis du trenger hjelp. " +
+                    "Klagen kan sendes direkte til oss eller gjennom utenlandsk trygdemyndighet på ditt bosted."},
                     nynorsk { +
                     "Nav kan rettleie deg på telefon om korleis du sender ei klage. Nav-kontoret ditt kan òg hjelpe deg med å skrive ei klage. " +
-                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} dersom du treng hjelp."}
+                    "Kontakt oss på telefon ${Constants.NAV_KONTAKTSENTER_TELEFON_UFORE} dersom du treng hjelp. " +
+                    "Klagen kan sendast direkte til oss eller gjennom utanlandsk trygdemyndigheit på din bustad."}
                 )
             }
             paragraph {
@@ -130,13 +132,13 @@ class Felles {
             title1 {
                 text(
                     bokmal { + "Du har rett til innsyn" },
-                    nynorsk { + "Du har rett til innsyn" }
+                    nynorsk { + "Du har rett til innsyn " }
                 )
             }
             paragraph {
                 text(
                     bokmal { + "Du har rett til å se dokumentene i saken din. Se vedlegg «Dine rettigheter og plikter» for informasjon om hvordan du går fram."},
-                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram." }
+                    nynorsk { + "Du har rett til å sjå dokumenta i saka di. Sjå vedlegg «Dine rettar og plikter» for informasjon om korleis du går fram. " }
                 )
             }
         }

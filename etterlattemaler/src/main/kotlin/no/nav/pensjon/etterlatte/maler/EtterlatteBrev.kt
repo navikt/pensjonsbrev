@@ -1,7 +1,7 @@
 package no.nav.pensjon.etterlatte.maler
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
 data class OmstillingsstoenadEtterbetaling(
@@ -69,6 +69,7 @@ data class OmstillingsstoenadBeregningsperiode(
     val utbetaltBeloep: Kroner,
     val trygdetid: Int,
     val sanksjon: Boolean,
+    val erFakeSanksjon: Boolean,
     val institusjon: Boolean = false,
 )
 

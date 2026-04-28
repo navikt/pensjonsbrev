@@ -1,4 +1,4 @@
-import type { BrevResponse } from "~/types/brev";
+import { type BrevResponse } from "~/types/brev";
 
 import brev from "../../fixtures/bekreftelsePåFlyktningstatus/brev.json";
 import { nyBrevInfo, nyBrevResponse } from "../../utils/brevredigeringTestUtils";
@@ -76,7 +76,7 @@ describe("attestering", () => {
 
     cy.contains("Brevet er klart for attestering").click();
     cy.wait("@låsBrev");
-    cy.contains("Klar til Attestering").should("be.visible");
+    cy.contains("Klar for attestering").should("be.visible");
   });
 
   it("kan attestere, forhåndsvise og sende brev", () => {
@@ -141,7 +141,10 @@ describe("attestering", () => {
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
     cy.wait("@attester");
-    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/forhandsvisning")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
 
     //------Forhåndsvisning------
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
@@ -158,15 +161,18 @@ describe("attestering", () => {
     cy.contains("Ja, send brev").click();
 
     //------Kvittering------
-    cy.url().should("contain", "/saksnummer/123456/attester/1/kvittering");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/kvittering")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
     cy.contains("Sendt til mottaker").should("exist");
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
-    cy.contains("Informasjon om saksbehandlingstid").click();
+    cy.get('[aria-label="Informasjon om saksbehandlingstid"] button[aria-expanded]').click();
     cy.contains("Mottaker").should("exist");
     cy.contains("Tydelig Bakke").should("exist");
-    cy.contains("Distribueres via").should("exist");
+    cy.contains("Distribusjon").should("exist");
     cy.contains("Sentral print").should("exist");
-    cy.contains("Journalpost ID").should("exist");
+    cy.contains("Journalpost").should("exist");
     cy.contains("9908").should("exist");
   });
 
@@ -202,11 +208,17 @@ describe("attestering", () => {
       });
     }).as("attester");
 
+    //fyller inn underskrift for attestant
+    cy.contains("Underskrift").click().type("Attestant Navn");
+
     //attesterer
     cy.get("@attester.all").should("have.length", 0);
     cy.contains("Fortsett").click();
     cy.wait("@attester");
-    cy.url().should("contain", "/saksnummer/123456/attester/1/forhandsvisning");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/attester/1/forhandsvisning")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
 
     //------Forhåndsvisning------
     cy.contains("Informasjon om saksbehandlingstid").should("exist");
@@ -244,6 +256,9 @@ describe("attestering", () => {
     cy.wait("@slettBrev2").its("response.statusCode").should("eq", 204);
 
     cy.contains("Gå til brevbehandler").click();
-    cy.url().should("eq", "http://localhost:5173/saksnummer/123456/brevbehandler?enhetsId=0001");
+    cy.location("pathname")
+      .should("eq", "/saksnummer/123456/brevbehandler")
+      .location("search")
+      .should("eq", "?enhetsId=0001");
   });
 });

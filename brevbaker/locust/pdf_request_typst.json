@@ -1,0 +1,121 @@
+{
+  "letterMarkup" : {
+    "title" : [ {
+      "id" : 1281205870,
+      "text" : "Informasjon om uføretrygd",
+      "fontType" : "PLAIN",
+      "tags" : [ ],
+      "type" : "LITERAL"
+    } ],
+    "sakspart" : {
+      "gjelderNavn" : "Test Testesen",
+      "gjelderFoedselsnummer" : "12345678901",
+      "annenMottakerNavn" : null,
+      "saksnummer" : "1337123",
+      "dokumentDato" : "2025-01-01"
+    },
+    "blocks" : [ {
+      "id" : 2008633064,
+      "editable" : true,
+      "content" : [ {
+        "id" : 2008633033,
+        "text" : "Vedtak om uføretrygd",
+        "fontType" : "PLAIN",
+        "tags" : [ ],
+        "type" : "LITERAL"
+      } ],
+      "type" : "TITLE1"
+    }, {
+      "id" : 72656336,
+      "editable" : true,
+      "content" : [ {
+        "id" : -470250815,
+        "text" : "Vi har innvilget søknaden din om uføretrygd. Du får utbetalt 9000 kroner per måned før skatt.",
+        "fontType" : "PLAIN",
+        "tags" : [ ],
+        "type" : "LITERAL"
+      } ],
+      "type" : "PARAGRAPH"
+    }, {
+      "id" : -1710486162,
+      "editable" : true,
+      "content" : [ {
+        "id" : -1710486193,
+        "text" : "Hva betyr dette for deg?",
+        "fontType" : "PLAIN",
+        "tags" : [ ],
+        "type" : "LITERAL"
+      } ],
+      "type" : "TITLE2"
+    }, {
+      "id" : -180774768,
+      "editable" : true,
+      "content" : [ {
+        "id" : 1227923415,
+        "text" : "Uføretrygden din vil bli utbetalt den siste virkedagen i måneden.",
+        "fontType" : "PLAIN",
+        "tags" : [ ],
+        "type" : "LITERAL"
+      } ],
+      "type" : "PARAGRAPH"
+    }, {
+      "id" : 988212078,
+      "editable" : true,
+      "content" : [ {
+        "id" : 988212047,
+        "text" : "Dine rettigheter",
+        "fontType" : "PLAIN",
+        "tags" : [ ],
+        "type" : "LITERAL"
+      } ],
+      "type" : "TITLE2"
+    }, {
+      "id" : 434252983,
+      "editable" : true,
+      "content" : [ {
+        "id" : -914282559,
+        "items" : [ {
+          "id" : -479137036,
+          "content" : [ {
+            "id" : -479137067,
+            "text" : "Du har rett til å klage på dette vedtaket innen 6 uker.",
+            "fontType" : "PLAIN",
+            "tags" : [ ],
+            "type" : "LITERAL"
+          } ]
+        }, {
+          "id" : -1097545034,
+          "content" : [ {
+            "id" : -1097545065,
+            "text" : "Du kan be om innsyn i sakens dokumenter.",
+            "fontType" : "PLAIN",
+            "tags" : [ ],
+            "type" : "LITERAL"
+          } ]
+        }, {
+          "id" : -360963740,
+          "content" : [ {
+            "id" : -360963771,
+            "text" : "Du må melde fra om endringer i inntekt eller livssituasjon.",
+            "fontType" : "PLAIN",
+            "tags" : [ ],
+            "type" : "LITERAL"
+          } ]
+        } ],
+        "listType" : "PUNKTLISTE",
+        "type" : "ITEM_LIST"
+      } ],
+      "type" : "PARAGRAPH"
+    } ],
+    "signatur" : {
+      "hilsenTekst" : "Med vennlig hilsen",
+      "saksbehandlerNavn" : "Sansen Behandansen",
+      "attesterendeSaksbehandlerNavn" : null,
+      "navAvsenderEnhet" : "Nav Familie- og pensjonsytelser Porsgrunn"
+    }
+  },
+  "attachments" : [ ],
+  "language" : "BOKMAL",
+  "brevtype" : "VEDTAKSBREV",
+  "pdfVedlegg" : [ ]
+}

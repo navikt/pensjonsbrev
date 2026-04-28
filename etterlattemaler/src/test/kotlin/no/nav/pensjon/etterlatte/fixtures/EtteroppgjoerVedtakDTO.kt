@@ -1,6 +1,6 @@
 package no.nav.pensjon.etterlatte.fixtures
 
-import no.nav.pensjon.brevbaker.api.model.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerResultatType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakBrevDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerVedtakDataDTO
@@ -35,7 +35,8 @@ fun createEtteroppgjoerVedtakBrevDTO() =
             utbetaltBeloep = Kroner(4444),
             rettsgebyrBeloep = Kroner(1234),
             harOpphoer = false,
-            mottattSkatteoppgjoer = false
+            mottattSkatteoppgjoer = false,
+            klageOmgjoering = true
         )
     )
 

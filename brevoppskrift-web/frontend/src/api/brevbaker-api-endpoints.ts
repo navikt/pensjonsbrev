@@ -3,7 +3,7 @@
 
 import axios from "axios";
 
-import type { TemplateDescription, TemplateDocumentation } from "~/api/brevbakerTypes";
+import { type TemplateDescription, type TemplateDocumentation } from "~/api/brevbakerTypes";
 
 const BREVBAKER_API_BASE_PATH = "/brevbaker";
 

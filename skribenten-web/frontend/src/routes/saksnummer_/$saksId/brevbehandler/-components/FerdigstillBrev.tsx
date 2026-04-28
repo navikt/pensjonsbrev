@@ -15,7 +15,7 @@ import {
 } from "@navikt/ds-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
+import { type AxiosError } from "axios";
 import { partition } from "lodash";
 import { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -23,12 +23,13 @@ import { z } from "zod";
 
 import { hentAlleBrevInfoForSak, sendBrev } from "~/api/sak-api-endpoints";
 import { ApiError } from "~/components/ApiError";
-import type { BestillBrevError, BestillBrevResponse, BrevInfo } from "~/types/brev";
+import { type BestillBrevError, type BestillBrevResponse, type BrevInfo } from "~/types/brev";
 import { erBrevArkivert, erBrevKlar, erBrevKlarTilAttestering } from "~/utils/brevUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 
 import { useBrevInfoKlarTilAttestering } from "../../kvittering/-components/KlarTilAttesteringContext";
 import { useSendtBrev } from "../../kvittering/-components/SendtBrevContext";
+import { sortBrev } from "../-BrevbehandlerUtils";
 import { Route } from "../route";
 
 export const FerdigstillOgSendBrevButton = (properties: {
@@ -56,7 +57,7 @@ export const FerdigstillOgSendBrevButton = (properties: {
     );
   }
 
-  //hvis ingen spesifikk brev er valgt, og noen står klar til å sendes, vis knapp for å sende
+  //hvis ingen spesifikke brev er valgt, og noen er klar for å sendes, vis knapp for å sende
   if (!properties.valgtBrevId && properties.brevInfo.some((b) => erBrevKlar(b) || erBrevArkivert(b))) {
     return (
       <Button onClick={properties.åpneFerdigstillModal} size="small" type="button">
@@ -165,7 +166,7 @@ export const FerdigstillOgSendBrevModal = (properties: { sakId: string; åpen: b
   });
 
   const [brevAttestering, brevSending] = useMemo(() => {
-    const alle = alleBrevResult.data ?? [];
+    const alle = sortBrev(alleBrevResult.data ?? []);
     return partition(alle, (brev) => erBrevKlarTilAttestering(brev));
   }, [alleBrevResult.data]);
 

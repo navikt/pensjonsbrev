@@ -4,16 +4,16 @@
 import axios from "axios";
 
 import { base64ToPdfBlob } from "~/Brevredigering/LetterEditor/actions/common";
-import type {
-  AlltidValgbartVedlegg,
-  BestillBrevResponse,
-  BrevInfo,
-  BrevResponse,
-  DistribusjonstypeRequest,
-  OppdaterBrevRequest,
-  OppdaterKlarStatusRequest,
-  OppdaterMottakerRequest,
-  OppdaterVedleggRequest,
+import {
+  type AlltidValgbartVedlegg,
+  type BestillBrevResponse,
+  type BrevInfo,
+  type BrevResponse,
+  type DistribusjonstypeRequest,
+  type OppdaterBrevRequest,
+  type OppdaterKlarStatusRequest,
+  type OppdaterMottakerRequest,
+  type ValgteVedleggRequest,
 } from "~/types/brev";
 
 import { SKRIBENTEN_API_BASE_PATH } from "./skribenten-api-endpoints";
@@ -73,8 +73,8 @@ export const endreDistribusjonstype = async (saksId: string, brevId: string | nu
 export const endreMottaker = async (saksId: string, brevId: string | number, body: OppdaterMottakerRequest) =>
   (await axios.put<BrevInfo>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/mottaker`, body)).data;
 
-export const oppdaterVedlegg = async (saksId: string, brevId: number, body: OppdaterVedleggRequest) =>
-  (await axios.patch<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}`, body)).data;
+export const oppdaterVedlegg = async (saksId: string, brevId: number, body: ValgteVedleggRequest) =>
+  (await axios.put<BrevResponse>(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/valgteVedlegg`, body)).data;
 
 export const fjernOverstyrtMottaker = async ({ saksId, brevId }: { saksId: string; brevId: string | number }) => {
   return (await axios.delete(`${SKRIBENTEN_API_BASE_PATH}/sak/${saksId}/brev/${brevId}/mottaker`)).data;

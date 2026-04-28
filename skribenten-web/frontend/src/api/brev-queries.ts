@@ -1,18 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import type { AxiosResponse } from "axios";
-import axios from "axios";
+import axios, { type AxiosResponse } from "axios";
 
 import { SKRIBENTEN_API_BASE_PATH } from "~/api/skribenten-api-endpoints";
-import type { LetterMetadata } from "~/types/apiTypes";
-import type {
-  BrevInfo,
-  BrevResponse,
-  OppdaterBrevRequest,
-  OpprettBrevRequest,
-  ReservasjonResponse,
+import { type LetterMetadata } from "~/types/apiTypes";
+import {
+  type BrevInfo,
+  type BrevResponse,
+  type OppdaterBrevRequest,
+  type OpprettBrevRequest,
+  type ReservasjonResponse,
 } from "~/types/brev";
-import type { EditedLetter, LetterModelSpecification } from "~/types/brevbakerTypes";
-import type { P1Redigerbar } from "~/types/p1";
+import { type EditedLetter, type LetterModelSpecification } from "~/types/brevbakerTypes";
+import { type P1Redigerbar } from "~/types/p1";
 
 export const brevmetadataKeys = {
   all: ["BREVMETADATA"] as const,

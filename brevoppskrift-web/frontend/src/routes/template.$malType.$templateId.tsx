@@ -1,21 +1,25 @@
 import { css } from "@emotion/react";
 import { BodyLong, Heading, Select, VStack } from "@navikt/ds-react";
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
-import { redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, redirect, useNavigate } from "@tanstack/react-router";
 
-import type { MalType } from "~/api/brevbaker-api-endpoints";
-import { getBrevkoder, getTemplateDescription, getTemplateDocumentation } from "~/api/brevbaker-api-endpoints";
-import type {
-  Attachment,
-  Conditional,
-  ContentOrControlStructure,
-  Element,
-  ElseIf,
-  Expression,
-  ForEach,
-  TemplateDocumentation,
+import {
+  getBrevkoder,
+  getTemplateDescription,
+  getTemplateDocumentation,
+  type MalType,
+} from "~/api/brevbaker-api-endpoints";
+import {
+  type Attachment,
+  type Conditional,
+  type ContentOrControlStructure,
+  ContentOrControlStructureType,
+  type Element,
+  ElementType,
+  type ElseIf,
+  type Expression,
+  type ForEach,
+  type TemplateDocumentation,
 } from "~/api/brevbakerTypes";
-import { ContentOrControlStructureType, ElementType } from "~/api/brevbakerTypes";
 import { DataClasses, trimClassName } from "~/components/DataClasses";
 
 export const Route = createFileRoute("/template/$malType/$templateId")({
@@ -153,11 +157,9 @@ function ForEachComponent({ content }: { content: ForEach<Element> }) {
       <div className="expression">
         <code>For hver X i:</code> <ExpressionToText expression={content.items} />
       </div>
-      <>
-        {content.body.map((b, index) => (
-          <ContentOrControlStructureComponent cocs={b} key={index} />
-        ))}
-      </>
+      {content.body.map((b, index) => (
+        <ContentOrControlStructureComponent cocs={b} key={index} />
+      ))}
     </>
   );
 }
@@ -329,18 +331,16 @@ function ShowIf<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E
 
 function ShowElse<E extends Element>({ cocs }: { cocs: ContentOrControlStructure<E>[] }) {
   if (cocs.length === 0) {
-    return <></>;
+    return null;
   }
   return (
     <div className="show-else">
       <div className="expression">
         <code>Else</code>
       </div>
-      <>
-        {cocs.map((a, index) => (
-          <ContentOrControlStructureComponent cocs={a} key={index} />
-        ))}
-      </>
+      {cocs.map((a, index) => (
+        <ContentOrControlStructureComponent cocs={a} key={index} />
+      ))}
     </div>
   );
 }

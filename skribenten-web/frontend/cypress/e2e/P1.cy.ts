@@ -5,7 +5,7 @@ const { p1BrevInfo, p1BrevData, p1BrevDataWithMissingFields, countriesSubset } =
 
 // Hjelpere
 const openP1Modal = () => {
-  cy.contains(p1BrevInfo.brevtittel).click();
+  cy.get(`[aria-label="${p1BrevInfo.brevtittel}"] button[aria-expanded]`).click();
   cy.get('[data-cy="p1-edit-button"]').should("be.visible").click();
   cy.get('[data-cy="p1-edit-modal"]').should("be.visible");
   cy.contains("3. Innvilget pensjon").should("be.visible");

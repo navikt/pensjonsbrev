@@ -1,7 +1,8 @@
-import type { EditedLetter, PropertyUsage } from "~/types/brevbakerTypes";
+import { type EditedLetter, type PropertyUsage } from "~/types/brevbakerTypes";
 
-import type { SpraakKode } from "./apiTypes";
-import type { Nullable } from "./Nullable";
+import { type SpraakKode } from "./apiTypes";
+import { type LanguageCode } from "./brevbakerTypes";
+import { type Nullable } from "./Nullable";
 
 export type OpprettBrevRequest = {
   brevkode: string;
@@ -37,8 +38,8 @@ export interface OppdaterMottakerRequest {
   mottaker: Mottaker;
 }
 
-export interface OppdaterVedleggRequest {
-  alltidValgbareVedlegg: AlltidValgbartVedlegg[];
+export interface ValgteVedleggRequest {
+  valgteVedlegg: AlltidValgbartVedlegg[];
 }
 
 export interface BestillBrevResponse {
@@ -151,4 +152,6 @@ export const P1_BREVKODE = "P1_SAMLET_MELDING_OM_PENSJONSVEDTAK_V2";
 export interface AlltidValgbartVedlegg {
   kode: string;
   visningstekst: string;
+  spraak: LanguageCode[];
+  tilgjengeligForSpraak: boolean;
 }

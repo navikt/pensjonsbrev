@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.felles
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brevbaker.api.model.Telefonnummer
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 
 object Constants {
     const val NAV_URL = "nav.no"
@@ -45,6 +45,7 @@ object Constants {
     const val ETTERSENDELSE_URL = "$NAV_URL/ettersendelse"
     const val HELFO = "HELFO"
     const val HELSENORGE = "helsenorge.no"
+    const val ARBEID_URL = "$NAV_URL/arbeid"
     const val HELSE_URL= "$NAV_URL/helse"
     const val INNTEKTSPLANLEGGEREN_URL = "$NAV_URL/inntektsplanleggeren"
     const val MEDLEMSKAP_URL = "$NAV_URL/medlemskap"

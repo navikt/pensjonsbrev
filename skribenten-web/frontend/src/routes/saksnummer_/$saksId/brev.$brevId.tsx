@@ -1,14 +1,12 @@
-import { ArrowCirclepathReverseIcon, ArrowRightIcon } from "@navikt/aksel-icons";
 import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
-import type { AxiosError } from "axios";
-import { useEffect, useMemo, useState } from "react";
+import { type AxiosError } from "axios";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
-import Actions from "~/Brevredigering/LetterEditor/actions";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
   SaksbehandlerValgModelEditor,
@@ -21,11 +19,16 @@ import {
   useManagedLetterEditorContext,
 } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { UnderskriftTextField } from "~/components/ManagedLetterEditor/UnderskriftTextField";
-import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useBrevEditorWarnings } from "~/hooks/useBrevEditorWarnings";
 import { Route as BrevvelgerRoute } from "~/routes/saksnummer_/$saksId/brevvelger/route";
-import type { BrevResponse, OppdaterBrevRequest, ReservasjonResponse, SaksbehandlerValg } from "~/types/brev";
+import {
+  type BrevResponse,
+  type OppdaterBrevRequest,
+  type ReservasjonResponse,
+  type SaksbehandlerValg,
+} from "~/types/brev";
 import { queryFold } from "~/utils/tanstackUtils";
+import { trackEvent } from "~/utils/umami";
 
 export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   params: {
@@ -126,7 +129,10 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
   if (reservasjon) {
     return (
       <Modal
-        header={{ heading: "Brevet redigeres av noen andre", closeButton: false }}
+        header={{
+          heading: "Brevet redigeres av noen andre",
+          closeButton: false,
+        }}
         onClose={() => {}}
         open={!reservasjon.vellykket}
         width={478}
@@ -142,7 +148,12 @@ const ReservertBrevError = ({ reservasjon, doRetry }: { reservasjon?: Reservasjo
             Ja, åpne på nytt
           </Button>
           <Button
-            onClick={() => navigate({ to: BrevvelgerRoute.fullPath, search: { enhetsId, vedtaksId } })}
+            onClick={() =>
+              navigate({
+                to: BrevvelgerRoute.fullPath,
+                search: { enhetsId, vedtaksId },
+              })
+            }
             type="button"
             variant="tertiary"
           >
@@ -172,12 +183,15 @@ function RedigerBrev({
 }) {
   const navigate = useNavigate({ from: Route.fullPath });
   const { enhetsId } = Route.useSearch();
-  const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
+  const editorStartTime = useRef(Date.now());
 
   const [warnOpen, setWarnOpen] = useState(false);
-  const [warn, setWarn] = useState<{ kind: WarnModalKind; count?: number } | null>(null);
+  const [warn, setWarn] = useState<{
+    kind: WarnModalKind;
+    count?: number;
+  } | null>(null);
 
-  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
 
   const navigateToBrevbehandler = () =>
     navigate({
@@ -248,6 +262,13 @@ function RedigerBrev({
       },
       {
         onSuccess: () => {
+          const varighetSekunder = Math.round((Date.now() - editorStartTime.current) / 1000);
+          trackEvent("tid brukt i editor", {
+            brevId: brev.info.id,
+            brevkode: brev.info.brevkode,
+            varighetSekunder,
+            varighetMinutter: Math.round(varighetSekunder / 60),
+          });
           navigateDone?.();
         },
       },
@@ -299,20 +320,11 @@ function RedigerBrev({
               open={warnOpen}
             />
             <ReservertBrevError doRetry={doReload} reservasjon={reservasjonQuery.data} />
-            {vilTilbakestilleMal && (
-              <TilbakestillMalModal
-                brevId={brev.info.id}
-                onClose={() => setVilTilbakestilleMal(false)}
-                resetEditor={(brevResponse) => setEditorState(Actions.create(brevResponse))}
-                åpen={vilTilbakestilleMal}
-              />
-            )}
-            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)">
+            <HGrid columns="minmax(304px, 384px) minmax(640px, 694px)" height="var(--main-page-content-height)">
               <Box
                 asChild
                 borderColor="neutral-subtle"
                 borderWidth="0 1 0 0"
-                height="var(--main-page-content-height)"
                 overflowY="auto"
                 padding={{ sm: "space-12", lg: "space-24" }}
               >
@@ -331,44 +343,28 @@ function RedigerBrev({
               background="default"
               borderColor="neutral-subtle"
               borderWidth="1 0 0 0"
-              bottom="space-0"
-              left="space-0"
-              position="sticky"
+              height="var(--nav-bar-height)"
             >
               <HStack justify="space-between" paddingBlock="space-8" paddingInline="space-16">
                 <Button
-                  data-color="danger"
-                  onClick={() => setVilTilbakestilleMal(true)}
+                  onClick={() =>
+                    navigate({
+                      to: "/saksnummer/$saksId/brevvelger",
+                      params: { saksId: saksId },
+                      search: (s) => ({ ...s, brevId: brev.info.id }),
+                    })
+                  }
                   size="small"
                   type="button"
-                  variant="primary"
+                  variant="tertiary"
                 >
-                  <HStack align="center" gap="space-4">
-                    <ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />
-                    Tilbakestill malen
+                  Tilbake til brevvelger
+                </Button>
+                <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
+                  <HStack align="center" gap="space-8">
+                    <Label size="small">Fortsett</Label>
                   </HStack>
                 </Button>
-                <HStack gap="space-8" justify="end">
-                  <Button
-                    onClick={() =>
-                      navigate({
-                        to: "/saksnummer/$saksId/brevvelger",
-                        params: { saksId: saksId },
-                        search: (s) => ({ ...s, brevId: brev.info.id }),
-                      })
-                    }
-                    size="small"
-                    type="button"
-                    variant="secondary"
-                  >
-                    Tilbake til brevvelger
-                  </Button>
-                  <Button loading={oppdaterBrevMutation.isPending} size="small" type="submit">
-                    <HStack align="center" gap="space-8">
-                      <Label size="small">Fortsett</Label> <ArrowRightIcon fontSize="1.5rem" title="pil-høyre" />
-                    </HStack>
-                  </Button>
-                </HStack>
               </HStack>
             </Box>
           </form>

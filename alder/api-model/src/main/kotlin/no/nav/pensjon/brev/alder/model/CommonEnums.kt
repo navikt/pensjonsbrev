@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.alder.model
 
-import no.nav.pensjon.brev.api.model.ISakstype
+import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 
 enum class AlderspensjonRegelverkType {

@@ -8,7 +8,7 @@ describe("Brevvelger spec", () => {
   it("Søk med saksnummer", () => {
     cy.visit("/");
     cy.contains("Brevvelger").should("not.exist");
-    cy.contains("Saksnummer").click();
+    cy.contains("Skriv inn saksnummer").click();
     cy.focused().type("123{enter}");
     cy.contains("Finner ikke saksnummer").should("exist");
     cy.focused().type("456{enter}");
@@ -176,6 +176,22 @@ describe("Brevvelger spec", () => {
     });
     cy.wait("@enheter");
     cy.getDataCy("avsenderenhet-select").should("have.value", "4815");
+  });
+
+  it("valg av ikke-foretrukket språk viser advarsel (ikke feilmelding)", () => {
+    cy.intercept("GET", "/bff/skribenten-backend/sak/123456/foretrukketSpraak", { spraakKode: "EN" });
+    cy.visit('/saksnummer/123456/brevvelger?templateId=PE_IY_03_163&enhetsId="4815"', {
+      onBeforeLoad(window) {
+        cy.stub(window, "open").as("window-open");
+      },
+    });
+    cy.wait("@enheter");
+    cy.getDataCy("språk-velger-select").select("Bokmål");
+    cy.contains("Brukers foretrukne språk er engelsk.").as("warning").should("be.visible");
+    cy.getDataCy("språk-velger-select").select("Engelsk (foretrukket språk)");
+    cy.get("@warning").should("not.exist");
+    cy.getDataCy("språk-velger-select").select("Bokmål");
+    cy.get("@warning").should("be.visible");
   });
 
   it("Saksinformasjon i subheader", () => {

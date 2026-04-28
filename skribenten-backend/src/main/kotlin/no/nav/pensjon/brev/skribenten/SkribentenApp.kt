@@ -25,18 +25,21 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import no.nav.brev.BrevExceptionDto
 import no.nav.pensjon.brev.skribenten.Metrics.configureMetrics
 import no.nav.pensjon.brev.skribenten.auth.*
+import no.nav.pensjon.brev.skribenten.common.InMemoryCache
+import no.nav.pensjon.brev.skribenten.common.Valkey
+import no.nav.pensjon.brev.skribenten.common.oneShotJobs
+import no.nav.pensjon.brev.skribenten.common.updateBrevredigeringJson
 import no.nav.pensjon.brev.skribenten.db.kryptering.KrypteringService
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1Exception
+import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenDataException
+import no.nav.pensjon.brev.skribenten.letter.Edit
 import no.nav.pensjon.brev.skribenten.serialize.BrevkodeJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.EditLetterJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import no.nav.pensjon.brev.skribenten.serialize.SakstypeModule
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException
-import no.nav.pensjon.brev.skribenten.services.BrevredigeringException.*
-import no.nav.pensjon.brev.skribenten.services.P1Exception
-import no.nav.pensjon.brev.skribenten.services.PenDataException
+import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brev.skribenten.services.ServiceException
 import org.slf4j.LoggerFactory
 import kotlin.time.Duration.Companion.minutes
@@ -120,20 +123,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
                 call.respond(HttpStatusCode.BadRequest, cause.message ?: "Bad request exception")
             }
         }
-        exception<BrevredigeringException> { call, cause ->
+        exception<Dto2ApiService.BrevmalFinnesIkke> { call, cause ->
             logger.info(cause.message, cause)
-            when (cause) {
-                is ArkivertBrevException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevIkkeKlartTilSendingException -> call.respond(HttpStatusCode.UnprocessableEntity,
-                    BrevExceptionDto(tittel = "Brev ikke klart", melding = cause.message))
-                is NyereVersjonFinsException -> call.respond(HttpStatusCode.BadRequest, cause.message)
-                is KanIkkeReservereBrevredigeringException -> call.respond(HttpStatusCode.Locked, cause.response)
-                is HarIkkeAttestantrolleException -> call.respond(HttpStatusCode.Forbidden, cause.message)
-                is KanIkkeAttestereEgetBrevException -> call.respond(HttpStatusCode.Forbidden, cause.message)
-                is AlleredeAttestertException -> call.respond(HttpStatusCode.Conflict, cause.message)
-                is BrevmalFinnesIkke -> call.respond(HttpStatusCode.InternalServerError, cause.message)
-                is IkkeTilgangTilEnhetException -> call.respond(HttpStatusCode.Forbidden, cause.message)
-            }
+            call.respond(HttpStatusCode.InternalServerError, cause.message)
         }
         exception<P1Exception> { call, cause ->
             logger.info(cause.message, cause)
@@ -150,7 +142,7 @@ fun Application.skribentenApp(skribentenConfig: Config) {
             call.respond(status = cause.status, message = cause.message)
         }
         exception<Exception> { call, cause ->
-            logger.error(cause.message, cause)
+            cleanSensitiveDataAndLog(cause)
             call.respond(HttpStatusCode.InternalServerError, cause.message ?: "Ukjent intern feil")
         }
     }
@@ -192,6 +184,9 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         launch {
             delay(5.minutes)
             oneShotJobs(skribentenConfig) {
+                job("leggPaaSpraakForValgbareVedlegg") {
+                    updateBrevredigeringJson()
+                }
                 // Sett opp evt. jobber her
             }
         }
@@ -201,6 +196,26 @@ fun Application.skribentenApp(skribentenConfig: Config) {
         Features.shutdown()
     }
 }
+
+// Vi må gjøre denne vaskingen fordi Exposed sin BasicBinaryColumnType::valueFromDB kaster en IllegalStateException med toString av Edit.Letter.
+// Meldt inn til exposed: https://youtrack.jetbrains.com/issue/EXPOSED-1012
+private fun cleanSensitiveDataAndLog(cause: Exception) {
+    if (cause is IllegalStateException && cause.messageHasEditedLetter()) {
+        val cleansedException = IllegalStateException(
+            "Unexpected value ***stripped sensitive Edit.Letter value*** of type ${Edit.Letter::class.qualifiedName}",
+            cause.cause
+        ).apply {
+            stackTrace = cause.stackTrace
+        }
+        logger.error(cleansedException.message, cleansedException)
+    } else {
+        logger.error(cause.message, cause)
+    }
+}
+
+private fun IllegalStateException.messageHasEditedLetter(): Boolean = message?.let { msg ->
+    msg.startsWith("Unexpected value") && msg.endsWith("of type ${Edit.Letter::class.qualifiedName}")
+} ?: false
 
 fun Application.skribentenContenNegotiation() {
     install(ContentNegotiation) {

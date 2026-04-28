@@ -1,21 +1,18 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.PE
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.and
-import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 
 
 data class TBU2338_Generated(
-    val pe: Expression<PE>,
+    val pe: Expression<PEgruppe10>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
     override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
 
@@ -39,7 +36,7 @@ data class TBU2338_Generated(
 			// Bokmål var egentlig: sivilstand_ektefelle_partner_samboer_bormed_ut_alle_spraak_entall
 			showIf((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig") and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().notEqualTo("enslig separert"))){
 				text (
-					bokmal { + "Inntekten til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " din har ikke betydning for størrelsen på barnetillegget." },
+					bokmal { + "Inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " har ikke betydning for størrelsen på barnetillegget." },
 					nynorsk { + "Inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din har ikkje noko å seie for storleiken på barnetillegget. " },
 					english { + "The income of your " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_en_cohabiting_partner() + " does not affect the size of your child supplement." },
 				)
