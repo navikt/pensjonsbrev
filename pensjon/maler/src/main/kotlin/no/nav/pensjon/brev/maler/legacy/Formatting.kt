@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -13,8 +14,9 @@ import java.time.format.FormatStyle
 
 object BarnetilleggFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
     override fun apply(first: BarnetilleggUTDto, second: Language): String {
-        val periodetekst = first.tom?.let { " i perioden fra ${first.fom.format(second)} til ${it.format(second)}" } ?: ""
-        val periodetekstNn = first.tom?.let { " i perioden frå ${first.fom.format(second)} til ${it.format(second)}" } ?: ""
+        val periodetekst = first.tom?.let { " i perioden fra ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " fra ${first.fom.format(second)}" else ""
+        val periodetekstNn = first.tom?.let { " i perioden frå ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " frå ${first.fom.format(second)}" else ""
+
         return when (second) {
             Bokmal -> "${AntallBarnFormatter().apply(first, second)}${periodetekst}"
             Nynorsk -> "${AntallBarnFormatter().apply(first, second)}${periodetekstNn}"
