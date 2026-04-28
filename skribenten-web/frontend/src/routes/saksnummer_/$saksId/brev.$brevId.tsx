@@ -9,6 +9,12 @@ import { z } from "zod";
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
+  collectAllIds,
+  collectNewIds,
+  findLastInsertedFocus,
+  InsertedHighlightProvider,
+} from "~/Brevredigering/LetterEditor/insertedHighlight";
+import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
@@ -191,7 +197,20 @@ function RedigerBrev({
     count?: number;
   } | null>(null);
 
-  const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+
+  const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
+
+  useEffect(
+    () => () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    },
+    [],
+  );
 
   const navigateToBrevbehandler = () =>
     navigate({
@@ -220,7 +239,23 @@ function RedigerBrev({
           saksbehandlerValg: values.saksbehandlerValg,
         },
       }),
-    onSuccess: onSaveSuccess,
+    onSuccess: (response) => {
+      const previousIds = previousIdsRef.current;
+      previousIdsRef.current = null;
+      onSaveSuccess(response);
+
+      if (!previousIds) return;
+      const newIds = collectNewIds(previousIds, response.redigertBrev);
+      if (newIds.size === 0) return;
+
+      setHighlightedIds(newIds);
+      const focus = findLastInsertedFocus(response.redigertBrev, newIds);
+      if (focus) {
+        setEditorState((s) => ({ ...s, focus }));
+      }
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+      highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
+    },
   });
 
   const defaultValuesModelEditor = useMemo(
@@ -246,6 +281,7 @@ function RedigerBrev({
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
+        previousIdsRef.current = collectAllIds(editorState.redigertBrev);
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: form.getValues().saksbehandlerValg,
@@ -336,7 +372,9 @@ function RedigerBrev({
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               </Box>
-              <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+              <InsertedHighlightProvider ids={highlightedIds}>
+                <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+              </InsertedHighlightProvider>
             </HGrid>
             <Box
               asChild

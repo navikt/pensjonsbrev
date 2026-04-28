@@ -12,6 +12,7 @@ import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
+import { isHighlighted, useInsertedHighlight } from "~/Brevredigering/LetterEditor/insertedHighlight";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
@@ -190,6 +191,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const pasteViaKeyboardRef = useRef(false);
   const pasteViaContextMenuRef = useRef(false);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
+  const highlightedIds = useInsertedHighlight();
+  const isInserted = isHighlighted(highlightedIds, content);
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -682,6 +685,7 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       // bold/italic/underline formatting from interfering with Skribenten-styling. However, Cypress
       // and jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
       // shortcuts and pasting can be blocked/overridden in event handlers.
+      className={isInserted ? "inserted-flash-text" : undefined}
       contentEditable={!freeze}
       css={{
         ...(erFritekst && {

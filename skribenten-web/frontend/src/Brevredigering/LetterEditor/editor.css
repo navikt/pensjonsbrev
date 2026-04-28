@@ -97,3 +97,23 @@
 .PARAGRAPH > ul {
   margin-top: 0;
 }
+
+/* Kort visuell markering av tekst som ble satt inn ved valg av tekstvalg */
+@keyframes inserted-flash-bg {
+  0% {
+    background-color: var(--ax-bg-accent-moderate, rgba(0, 102, 204, 0.18));
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.inserted-flash-block {
+  animation: inserted-flash-bg 2s ease-out 1;
+  border-radius: var(--ax-radius-2);
+}
+
+.inserted-flash-text {
+  animation: inserted-flash-bg 2s ease-out 1;
+  border-radius: var(--ax-radius-2);
+}
