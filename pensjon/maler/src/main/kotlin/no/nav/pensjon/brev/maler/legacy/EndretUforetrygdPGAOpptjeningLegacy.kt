@@ -4,6 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerBruktIBeregningUTLegacySelector
+import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDtoSelectors.pe
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
@@ -562,7 +564,11 @@ override val kode = Pesysbrevkoder.AutoBrev.UT_ENDRET_PGA_OPPTJENING
         }
 
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, pe, pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(
+            vedleggOpplysningerBruktIBeregningUTLegacy,
+            argument.select(opplysningerBruktIBeregningUTLegacySelector<EndretUforetrygdPGAOpptjeningLegacyDto> { pe }),
+            pe.inkluderopplysningerbruktiberegningen(),
+        )
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, orienteringOmRettigheterUfoere)
     }
 }

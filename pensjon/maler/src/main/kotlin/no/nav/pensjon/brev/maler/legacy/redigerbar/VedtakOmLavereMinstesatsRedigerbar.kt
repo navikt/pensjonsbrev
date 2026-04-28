@@ -21,6 +21,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.nettoUforetrygdUtenTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.nyMinstesats
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.orienteringOmRettigheterUfoere
+import no.nav.pensjon.brev.maler.legacy.vedlegg.opplysningerBruktIBeregningUTLegacySelector
+import no.nav.pensjon.brev.template.dsl.expression.select
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsDataSelectors.tidligereMinstesats
@@ -92,7 +94,11 @@ object VedtakOmLavereMinstesatsRedigerbar : RedigerbarTemplate<VedtakOmLavereMin
             )
         }
         includeAttachmentIfNotNull(vedleggMaanedligUfoeretrygdFoerSkatt, data.maanedligUfoeretrygdFoerSkatt)
-        includeAttachment(vedleggOpplysningerBruktIBeregningUTLegacy, data.pe, data.pe.inkluderopplysningerbruktiberegningen())
+        includeAttachment(
+            vedleggOpplysningerBruktIBeregningUTLegacy,
+            argument.select(opplysningerBruktIBeregningUTLegacySelector<VedtakOmLavereMinstesatsRedigerbarDto> { pesysData.vedtakData.pe }),
+            data.pe.inkluderopplysningerbruktiberegningen(),
+        )
         includeAttachment(vedleggDineRettigheterOgPlikterUfoere, data.orienteringOmRettigheterUfoere)
     }
 }
