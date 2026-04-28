@@ -122,7 +122,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
                 if (javaClass != other?.javaClass) return false
-                return fontType == (other as Literal).fontType
+                return fontType == (other as Text).fontType
             }
 
             override fun hashCode(): Int = fontType.hashCode()
@@ -253,8 +253,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
             return buildList {
                 var itemIndex = 0
-                while (cursor.peek() is Token.Item) {
-                    cursor.consume()
+                while (cursor.consumeIf<Token.Item>() != null) {
                     addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) })
                     itemIndex++
                 }
@@ -277,8 +276,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
             cursor.requireAndConsume<Token.TableHeader>()
             var cellIndex = 0
-            while (cursor.peek() is Token.ColumnSpec) {
-                cursor.consume()
+            while (cursor.consumeIf<Token.ColumnSpec>() != null) {
                 addAll(consumeCell(tableContentIndex, -1, cellIndex++))
             }
         }
@@ -339,5 +337,10 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
         val (token) = consume()
         require(token is E) { "Expected to consume ${E::class.simpleName}-token but found: $token" }
         return token
+    }
+    inline fun <reified E : T> consumeIf(): Pair<E, EditOperation<T>?>? {
+        if (peek() !is E) return null
+        val (token, edit) = consume()
+        return Pair(token as E, edit)
     }
 }
