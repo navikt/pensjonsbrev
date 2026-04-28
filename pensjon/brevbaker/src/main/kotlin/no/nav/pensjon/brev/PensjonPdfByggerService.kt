@@ -25,7 +25,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
-private const val MAX_RETRIES = 1
+private const val MAX_RETRIES = 5
 private val RETRY_BASE_DELAY = 200.milliseconds
 private val RETRY_MAX_DELAY = 2.seconds
 
