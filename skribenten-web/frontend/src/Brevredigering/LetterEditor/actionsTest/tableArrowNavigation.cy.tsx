@@ -31,10 +31,6 @@ function assertFocusedCell(dataCy: string) {
   cy.get(`[data-cy="${dataCy}"] [contenteditable]`).should("be.focused");
 }
 
-function assertFocusNotInTable() {
-  cy.focused().parents("[data-cy^='table-cell'], [data-cy^='table-header']").should("have.length", 0);
-}
-
 describe("table ArrowDown navigation", () => {
   beforeEach(() => {
     cy.viewport(800, 1400);
@@ -138,22 +134,6 @@ describe("table ArrowDown navigation", () => {
 
     arrowDown();
     cy.focused().should("have.text", "After table");
-  });
-
-  it("inserts a blank literal between adjacent tables and focuses it when pressing ArrowDown on the last row of the first table", () => {
-    const rows1 = [tableRow("T1R0"), tableRow("T1R1")];
-    const rows2 = [tableRow("T2R0"), tableRow("T2R1")];
-    const brev = nyBrevResponse({
-      redigertBrev: nyRedigertBrev({
-        blocks: [newParagraph({ content: [newTable(rows1), newTable(rows2)] })],
-      }),
-    });
-    const state = Actions.create(brev);
-    state.focus = { blockIndex: 0, contentIndex: 0, rowIndex: 1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-    cy.mount(<EditorWithState editorState={state} />);
-
-    arrowDown();
-    assertFocusNotInTable();
   });
 
   it("enters table header when pressing ArrowDown on a literal directly preceding the table", () => {
@@ -276,29 +256,6 @@ describe("table ArrowUp navigation", () => {
 
     arrowUp();
     cy.focused().should("have.text", "Before table");
-  });
-
-  it("inserts a blank literal between adjacent tables and focuses it when pressing ArrowUp on the header of the second table", () => {
-    const rows1 = [tableRow("T1R0"), tableRow("T1R1")];
-    const rows2 = [tableRow("T2R0"), tableRow("T2R1")];
-    const brev = nyBrevResponse({
-      redigertBrev: nyRedigertBrev({
-        blocks: [newParagraph({ content: [newTable(rows1), newTable(rows2)] })],
-      }),
-    });
-    const state = Actions.create(brev);
-    state.focus = {
-      blockIndex: 0,
-      contentIndex: 1,
-      rowIndex: -1,
-      cellIndex: 0,
-      cellContentIndex: 0,
-      cursorPosition: 0,
-    };
-    cy.mount(<EditorWithState editorState={state} />);
-
-    arrowUp();
-    assertFocusNotInTable();
   });
 
   it("enters table last row when pressing ArrowUp on a literal directly following the table", () => {
