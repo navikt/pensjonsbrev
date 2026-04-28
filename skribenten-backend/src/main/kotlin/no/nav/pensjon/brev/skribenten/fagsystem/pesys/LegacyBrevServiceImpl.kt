@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import io.ktor.http.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.model.*
@@ -141,7 +142,7 @@ class LegacyBrevServiceImpl(
                         mottaker = when {
                             isEblankett || isNotat -> null
                             idTSSEkstern != null -> idTSSEkstern
-                            else -> {
+                            Features.vergeForExstream.isEnabled() -> {
                                 val adresse = pensjonPersonDataService.hentKontaktadresse(gjelderPid)
                                 if (adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE && adresse.vergePid != null) {
                                     adresse.vergePid.value
@@ -149,6 +150,7 @@ class LegacyBrevServiceImpl(
                                     gjelderPid.value
                                 }
                             }
+                            else -> gjelderPid.value
                         },
                         sensitivt = false
                     ),

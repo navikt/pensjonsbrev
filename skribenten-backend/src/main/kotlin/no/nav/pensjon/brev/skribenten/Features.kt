@@ -16,6 +16,7 @@ data class UnleashToggle(val name: String) {
 object Features {
 //    val exampleToggle = UnleashToggle("exampleToggle")
     val hindreDuplikateAvsnitt = UnleashToggle("hindreDuplikateAvsnitt")
+    val vergeForExstream = UnleashToggle("vergeForExstream")
 
     private var unleash: Unleash? = null
     private val overrides = mutableMapOf<String, Boolean>()

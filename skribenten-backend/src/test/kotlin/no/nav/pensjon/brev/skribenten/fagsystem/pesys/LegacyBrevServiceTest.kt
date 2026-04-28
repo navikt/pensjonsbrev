@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 
 import kotlinx.coroutines.runBlocking
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.*
@@ -24,6 +25,7 @@ class LegacyBrevServiceTest {
         val vergePid = Pid("12345678901")
         var faktiskMottaker: String? = null
 
+        Features.override(Features.vergeForExstream, true)
         val penService = object : PenClientStub() {
             override suspend fun bestillExstreamBrev(bestillExstreamBrevRequest: Pen.BestillExstreamBrevRequest) = Pen.BestillExstreamBrevResponse(forventaJournalpostId).also { faktiskMottaker = bestillExstreamBrevRequest.sakskontekst?.mottaker }
             override suspend fun redigerExstreamBrev(journalpostId: JournalpostId) = Pen.RedigerDokumentResponse(EXPECTED_EXSTREAM_URL)
