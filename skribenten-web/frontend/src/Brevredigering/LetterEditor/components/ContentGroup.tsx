@@ -46,11 +46,12 @@ import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
+  adjacentTableEntryFocus,
   determineTableCellDeleteAction,
   exitTable,
-  getValidVerticalTableFocus,
   isAtLastTableCell,
   nextTableFocus,
+  verticalTableStep,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -377,29 +378,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const content = block.content[f.contentIndex];
 
       if (isTable(content)) {
-        if (f.rowIndex > 0) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: getValidVerticalTableFocus(f, content, f.rowIndex - 1),
-          }));
-          return;
-        }
-
-        if (f.rowIndex === 0) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: getValidVerticalTableFocus(f, content, -1),
-          }));
-          return;
-        }
-
-        if (f.rowIndex === -1) {
-          event.preventDefault();
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "up");
+        if (next === "exit") {
           setEditorState(exitTable("backward"));
-          return;
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
         }
+        return;
       }
     }
 
@@ -411,57 +397,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
-      const blocks = editorState.redigertBrev.blocks;
-      const block = blocks[f.blockIndex];
-      const prevContent = f.contentIndex > 0 ? block.content[f.contentIndex - 1] : undefined;
-
-      const prevBlock = f.contentIndex === 0 && f.blockIndex > 0 ? blocks[f.blockIndex - 1] : undefined;
-      const lastContentInPrevBlock =
-        prevBlock && prevBlock.content.length > 0 ? prevBlock.content[prevBlock.content.length - 1] : undefined;
-
-      const hasAdjacentTable = isTable(prevContent) || (f.contentIndex === 0 && isTable(lastContentInPrevBlock));
-
-      if (hasAdjacentTable) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "up");
+      if (tableEntry) {
         const elementRect = element.getBoundingClientRect();
         const isOnFirstVisualLine = caretCoordinates.top <= elementRect.top + 1;
 
-        if (!isOnFirstVisualLine) {
-          return;
-        }
+        if (!isOnFirstVisualLine) return;
 
-        if (isTable(prevContent)) {
-          const lastRowIndex = prevContent.rows.length - 1;
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: {
-              blockIndex: f.blockIndex,
-              contentIndex: f.contentIndex - 1,
-              rowIndex: lastRowIndex,
-              cellIndex: 0,
-              cellContentIndex: 0,
-              cursorPosition: 0,
-            },
-          }));
-          return;
-        }
-
-        if (f.contentIndex === 0 && prevBlock && isTable(lastContentInPrevBlock)) {
-          const lastRowIndex = lastContentInPrevBlock.rows.length - 1;
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: {
-              blockIndex: f.blockIndex - 1,
-              contentIndex: prevBlock.content.length - 1,
-              rowIndex: lastRowIndex,
-              cellIndex: 0,
-              cellContentIndex: 0,
-              cursorPosition: 0,
-            },
-          }));
-          return;
-        }
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
       }
     }
 
@@ -490,29 +435,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
       const content = block.content[f.contentIndex];
 
       if (isTable(content)) {
-        if (f.rowIndex === -1 && content.rows.length > 0) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: getValidVerticalTableFocus(f, content, 0),
-          }));
-          return;
-        }
-
-        if (f.rowIndex >= 0 && f.rowIndex < content.rows.length - 1) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: getValidVerticalTableFocus(f, content, f.rowIndex + 1),
-          }));
-          return;
-        }
-
-        if (f.rowIndex >= content.rows.length - 1) {
-          event.preventDefault();
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "down");
+        if (next === "exit") {
           setEditorState(exitTable("forward"));
-          return;
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
         }
+        return;
       }
     }
 
@@ -524,58 +454,16 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     }
 
     if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
-      const blocks = editorState.redigertBrev.blocks;
-      const block = blocks[f.blockIndex];
-      const nextContent = block.content[f.contentIndex + 1];
-
-      const nextBlock =
-        f.contentIndex >= block.content.length - 1 && f.blockIndex + 1 < blocks.length
-          ? blocks[f.blockIndex + 1]
-          : undefined;
-      const firstContentInNextBlock = nextBlock?.content[0];
-
-      const hasAdjacentTable =
-        isTable(nextContent) || (f.contentIndex >= block.content.length - 1 && isTable(firstContentInNextBlock));
-
-      if (hasAdjacentTable) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "down");
+      if (tableEntry) {
         const elementRect = element.getBoundingClientRect();
         const isOnLastVisualLine = caretCoordinates.bottom >= elementRect.bottom - 1;
 
-        if (!isOnLastVisualLine) {
-          return;
-        }
+        if (!isOnLastVisualLine) return;
 
-        if (isTable(nextContent)) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: {
-              blockIndex: f.blockIndex,
-              contentIndex: f.contentIndex + 1,
-              rowIndex: -1,
-              cellIndex: 0,
-              cellContentIndex: 0,
-              cursorPosition: 0,
-            },
-          }));
-          return;
-        }
-
-        if (nextBlock && isTable(firstContentInNextBlock)) {
-          event.preventDefault();
-          setEditorState((prev) => ({
-            ...prev,
-            focus: {
-              blockIndex: f.blockIndex + 1,
-              contentIndex: 0,
-              rowIndex: -1,
-              cellIndex: 0,
-              cellContentIndex: 0,
-              cursorPosition: 0,
-            },
-          }));
-          return;
-        }
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
       }
     }
 

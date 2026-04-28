@@ -1,6 +1,7 @@
 import { type Draft, produce } from "immer";
 
 import {
+  type AnyBlock,
   type Cell,
   PARAGRAPH,
   type ParagraphBlock,
@@ -14,7 +15,7 @@ import {
 } from "~/types/brevbakerTypes";
 
 import { addElements, isTable, newLiteral, newRow } from "../actions/common";
-import { type Focus, type LetterEditorState } from "../model/state";
+import { type Focus, type LetterEditorState, type TableCellIndex } from "../model/state";
 import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
 
@@ -97,6 +98,93 @@ export function getValidVerticalTableFocus(
     cellContentIndex: 0,
     cursorPosition: 0,
   };
+}
+
+/**
+ * One ArrowUp/ArrowDown step inside a table.
+ * Returns the next focus, or "exit" when the caller should hand off to {@link exitTable}.
+ */
+export function verticalTableStep(focus: TableCellIndex, table: Table, direction: "up" | "down"): Focus | "exit" {
+  if (direction === "up") {
+    if (focus.rowIndex > 0) return getValidVerticalTableFocus(focus, table, focus.rowIndex - 1);
+    if (focus.rowIndex === 0) return getValidVerticalTableFocus(focus, table, -1);
+    return "exit";
+  }
+
+  if (focus.rowIndex === -1 && table.rows.length > 0) return getValidVerticalTableFocus(focus, table, 0);
+  if (focus.rowIndex >= 0 && focus.rowIndex < table.rows.length - 1) {
+    return getValidVerticalTableFocus(focus, table, focus.rowIndex + 1);
+  }
+  return "exit";
+}
+
+/**
+ * Builds a {@link TableCellIndex} that lands on the header (row -1) of the given table coordinates.
+ * Used when ArrowDown crosses from plain text into a following table.
+ */
+export function tableHeaderEntry(blockIndex: number, contentIndex: number): Focus {
+  return { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
+}
+
+/**
+ * Builds a {@link TableCellIndex} that lands on the last body row of the given table.
+ * Used when ArrowUp crosses from plain text into a preceding table.
+ */
+export function tableTailEntry(blockIndex: number, contentIndex: number, table: Table): Focus {
+  return {
+    blockIndex,
+    contentIndex,
+    rowIndex: table.rows.length - 1,
+    cellIndex: 0,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+/**
+ * When focus is on plain block content next to a table, returns the focus to
+ * use when ArrowUp/ArrowDown should cross into that table. Returns undefined
+ * when there is no adjacent table to enter.
+ *
+ * The caller is responsible for verifying the caret is on the appropriate
+ * visual line (first for "up", last for "down") before applying the focus.
+ */
+export function adjacentTableEntryFocus(
+  focus: { blockIndex: number; contentIndex: number },
+  blocks: AnyBlock[],
+  direction: "up" | "down",
+): Focus | undefined {
+  const block = blocks[focus.blockIndex];
+  if (!block) return undefined;
+
+  if (direction === "up") {
+    const prevContent = focus.contentIndex > 0 ? block.content[focus.contentIndex - 1] : undefined;
+    if (isTable(prevContent)) {
+      return tableTailEntry(focus.blockIndex, focus.contentIndex - 1, prevContent);
+    }
+    if (focus.contentIndex === 0 && focus.blockIndex > 0) {
+      const prevBlock = blocks[focus.blockIndex - 1];
+      const lastContentInPrevBlock =
+        prevBlock.content.length > 0 ? prevBlock.content[prevBlock.content.length - 1] : undefined;
+      if (isTable(lastContentInPrevBlock)) {
+        return tableTailEntry(focus.blockIndex - 1, prevBlock.content.length - 1, lastContentInPrevBlock);
+      }
+    }
+    return undefined;
+  }
+
+  const nextContent = block.content[focus.contentIndex + 1];
+  if (isTable(nextContent)) {
+    return tableHeaderEntry(focus.blockIndex, focus.contentIndex + 1);
+  }
+  if (focus.contentIndex >= block.content.length - 1 && focus.blockIndex + 1 < blocks.length) {
+    const nextBlock = blocks[focus.blockIndex + 1];
+    const firstContentInNextBlock = nextBlock.content[0];
+    if (isTable(firstContentInNextBlock)) {
+      return tableHeaderEntry(focus.blockIndex + 1, 0);
+    }
+  }
+  return undefined;
 }
 
 /**
