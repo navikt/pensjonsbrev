@@ -51,6 +51,10 @@ class PensjonPdfByggerService(
 
             engine {
                 requestTimeout = 0
+                endpoint {
+                    // La alltid kubernetes load balancer bestemme pdf-bygger instans
+                    keepAliveTime = 0
+                }
             }
 
             if (maxRetries > 0) {
