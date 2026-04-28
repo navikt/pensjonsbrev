@@ -1,4 +1,4 @@
-import { type Draft } from "immer";
+import { type Draft, produce } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -250,12 +250,49 @@ export function isNew(obj: Identifiable): boolean {
 export function create(brev: BrevResponse): LetterEditorState {
   return {
     info: brev.info,
-    redigertBrev: brev.redigertBrev,
+    redigertBrev: normalizeTableSeparators(brev.redigertBrev),
     redigertBrevHash: brev.redigertBrevHash,
     saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
     history: { entries: [], entryPointer: -1 },
   };
+}
+
+/**
+ * Ensure tables have an editable literal between them (when adjacent in the same
+ * block) and after the last table when it ends the document. Server-loaded
+ * letters may not satisfy these invariants; normalizing here lets navigation and
+ * editing work without runtime structural mutations.
+ *
+ * Inserted separators are empty literals with id=null. saveStatus is left
+ * untouched by callers so this normalization only persists if the user later
+ * makes a real edit.
+ */
+export function normalizeTableSeparators(letter: EditedLetter): EditedLetter {
+  return produce(letter, (draft) => {
+    const blocks = draft.blocks;
+    for (let blockIndex = 0; blockIndex < blocks.length; blockIndex++) {
+      const block = blocks[blockIndex];
+      if (block.type !== PARAGRAPH) continue;
+
+      // Insert a separator between any two adjacent tables in the same block
+      let contentIndex = 0;
+      while (contentIndex < block.content.length - 1) {
+        if (isTable(block.content[contentIndex]) && isTable(block.content[contentIndex + 1])) {
+          block.content.splice(contentIndex + 1, 0, newLiteral({ editedText: "" }));
+          contentIndex += 2;
+        } else {
+          contentIndex++;
+        }
+      }
+
+      // Append a trailing literal if the last block ends in a table
+      const isLastBlock = blockIndex === blocks.length - 1;
+      if (isLastBlock && block.content.length > 0 && isTable(block.content.at(-1))) {
+        block.content.push(newLiteral({ editedText: "" }));
+      }
+    }
+  });
 }
 
 export function removeElements<T extends Identifiable>(
