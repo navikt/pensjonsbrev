@@ -257,42 +257,4 @@ class EditLetterWordDiffTest {
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 12)), deletes)
     }
 
-    // --- Helpers ---
-
-    private fun paragraph(vararg content: Edit.ParagraphContent) =
-        Edit.Block.Paragraph(id = null, editable = true, content = content.toList())
-
-    private fun literal(
-        id: Int? = null,
-        text: String,
-        fontType: FontType = FontType.PLAIN,
-        editedText: String? = null,
-        editedFontType: FontType? = null,
-    ) = Edit.ParagraphContent.Text.Literal(id, text, fontType, editedText, editedFontType)
-
-    private fun variable(id: Int? = null, text: String, fontType: FontType = FontType.PLAIN) =
-        Edit.ParagraphContent.Text.Variable(id, text, fontType)
-
-    private fun newLine(id: Int? = null) = Edit.ParagraphContent.Text.NewLine(id)
-
-    private fun itemList(vararg items: Edit.ParagraphContent.ItemList.Item) =
-        Edit.ParagraphContent.ItemList(id = null, items = items.toList())
-
-    private fun item(vararg content: Edit.ParagraphContent.Text) =
-        Edit.ParagraphContent.ItemList.Item(id = null, content = content.toList())
-
-    private fun table(header: Edit.ParagraphContent.Table.Header, vararg rows: Edit.ParagraphContent.Table.Row) =
-        Edit.ParagraphContent.Table(id = null, rows = rows.toList(), header = header)
-
-    private fun header(vararg colSpecs: Edit.ParagraphContent.Table.ColumnSpec) =
-        Edit.ParagraphContent.Table.Header(id = null, colSpec = colSpecs.toList())
-
-    private fun colSpec(headerContent: Edit.ParagraphContent.Table.Cell = cell()) =
-        Edit.ParagraphContent.Table.ColumnSpec(id = null, headerContent = headerContent, alignment = LEFT, span = 1)
-
-    private fun row(vararg cells: Edit.ParagraphContent.Table.Cell) =
-        Edit.ParagraphContent.Table.Row(id = null, cells = cells.toList())
-
-    private fun cell(vararg text: Edit.ParagraphContent.Text) =
-        Edit.ParagraphContent.Table.Cell(id = null, text = text.toList())
 }
