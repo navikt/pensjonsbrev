@@ -2,21 +2,24 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
 import no.nav.pensjon.brev.skribenten.serialize.LetterMarkupJacksonModule
 import org.junit.jupiter.api.Test
 
 class ApplyEditScriptTest {
 
-    val letter1 = editedLetter(
-        Paragraph(2, true, listOf(Literal(1, "noe tekst "), Variable(2, " og noe mer veldig dyrt")))
-    )
-    val letter2 = editedLetter(
-        Paragraph(null, true, listOf(Literal(null, "jadda"))),
-        Paragraph(2, true, listOf(Literal(1, "noe tekst "), Variable(2, " og noe mer kjempe billig")))
-    )
+    val letter1 = editedLetter {
+        paragraph(id = 2) {
+            literal(id = 1, text = "noe tekst ")
+            variable(id = 2, text = " og noe mer veldig dyrt")
+        }
+    }
+    val letter2 = editedLetter {
+        paragraph { literal(text = "jadda") }
+        paragraph(id = 2) {
+            literal(id = 1, text = "noe tekst ")
+            variable(id = 2, text = " og noe mer kjempe billig")
+        }
+    }
 
     @Test
     fun `can generate delete DiffSegments`() {

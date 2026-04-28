@@ -21,28 +21,20 @@ class FerdigRedigertPolicyTest {
 
     @Test
     suspend fun `tomt brev er klar til sending`() {
-        val brev = RedigertBrevStub(editedLetter())
+        val brev = RedigertBrevStub(editedLetter { })
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
     suspend fun `brev uten fritekst er klar til sending`() {
-        val brev = RedigertBrevStub(
-            editedLetter(Edit.Block.Paragraph(null, true, listOf(Edit.ParagraphContent.Text.Literal(null, "lit1"))))
-        )
+        val brev = RedigertBrevStub(editedLetter { paragraph { literal(text = "lit1") } })
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
 
     @Test
     suspend fun `brev med redigert fritekst er klar til sending`() {
         val brev = RedigertBrevStub(
-            editedLetter(
-                Edit.Block.Paragraph(
-                    null,
-                    true,
-                    listOf(Edit.ParagraphContent.Text.Literal(null, "lit1", editedText = "hei", tags = fritekst))
-                )
-            )
+            editedLetter { paragraph { literal(text = "lit1", editedText = "hei", tags = fritekst) } }
         )
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
@@ -50,14 +42,12 @@ class FerdigRedigertPolicyTest {
     @Test
     suspend fun `brev med ikke redigert fritekst er ikke klar til sending`() {
         val brev = RedigertBrevStub(
-            editedLetter(
-                Edit.Block.Paragraph(
-                    null, true, listOf(
-                        Edit.ParagraphContent.Text.Literal(null, "lit1", tags = fritekst),
-                        Edit.ParagraphContent.Text.Literal(null, "lit2")
-                    )
-                )
-            )
+            editedLetter {
+                paragraph {
+                    literal(text = "lit1", tags = fritekst)
+                    literal(text = "lit2")
+                }
+            }
         )
         assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.FritekstFelterUredigert, _, _>()
     }
@@ -66,10 +56,10 @@ class FerdigRedigertPolicyTest {
     suspend fun `brev uten duplikat avsnitt er klar til sending`() {
         Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(
-            editedLetter(
-                Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = false),
-                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = false),
-            )
+            editedLetter {
+                paragraph(id = 1) { }
+                paragraph(id = 2) { }
+            }
         )
         assertThat(policy.erFerdigRedigert(brev)).isSuccess()
     }
@@ -78,10 +68,10 @@ class FerdigRedigertPolicyTest {
     suspend fun `brev med duplikat avsnitt er ikke klar til sending`() {
         Features.override(Features.hindreDuplikateAvsnitt, true)
         val brev = RedigertBrevStub(
-            editedLetter(
-                Edit.Block.Paragraph(id = 1, editable = true, content = emptyList(), missingFromTemplate = true),
-                Edit.Block.Paragraph(id = 2, editable = true, content = emptyList(), missingFromTemplate = false),
-            )
+            editedLetter {
+                paragraph(id = 1, missingFromTemplate = true) { }
+                paragraph(id = 2) { }
+            }
         )
         assertThat(policy.erFerdigRedigert(brev)).isFailure<FerdigRedigertPolicy.IkkeFerdigRedigert.DuplikatAvsnittUhaandtert, _, _>()
     }
