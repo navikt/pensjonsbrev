@@ -117,8 +117,6 @@ class LegacyBrevServiceImpl(
         return if (!harTilgangTilEnhet(enhetsId)) {
             Api.BestillOgRedigerBrevResponse(failureType = ENHET_UNAUTHORIZED)
         } else {
-            val adresse = pensjonPersonDataService.hentKontaktadresse(gjelderPid)
-
             penClient.bestillExstreamBrev(
                 Pen.BestillExstreamBrevRequest(
                     brevKode = brevkode,
@@ -143,8 +141,14 @@ class LegacyBrevServiceImpl(
                         mottaker = when {
                             isEblankett || isNotat -> null
                             idTSSEkstern != null -> idTSSEkstern
-                            adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE && adresse.vergePid != null -> adresse.vergePid?.value
-                            else -> gjelderPid.value
+                            else -> {
+                                val adresse = pensjonPersonDataService.hentKontaktadresse(gjelderPid)
+                                if (adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE && adresse.vergePid != null) {
+                                    adresse.vergePid.value
+                                } else {
+                                    gjelderPid.value
+                                }
+                            }
                         },
                         sensitivt = false
                     ),
