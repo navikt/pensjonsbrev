@@ -250,9 +250,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeItemList(listContentIndex: Int): List<DiffSegment> {
-            cursor.consume().first.run {
-                require(this is Token.ItemList) { "Expected to consume ItemList-token but found: $this" }
-            }
+            cursor.requireAndConsume<Token.ItemList>()
 
             return buildList {
                 var itemIndex = 0
@@ -265,9 +263,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeTable(tableContentIndex: Int): List<DiffSegment> {
-            cursor.consume().first.run {
-                require(this is Token.ItemList) { "Expected to consume Table-token but found: $this" }
-            }
+            cursor.requireAndConsume<Token.Table>()
 
             return buildList {
                 consumeTableHeader(tableContentIndex)
@@ -280,9 +276,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
-            cursor.consume().first.run {
-                require(this is Token.TableHeader) { "Expected to consume TableHeader-token but found: $this" }
-            }
+            cursor.requireAndConsume<Token.TableHeader>()
             var cellIndex = 0
             while (cursor.peek() is Token.ColumnSpec) {
                 cursor.consume()
@@ -291,9 +285,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> {
-            cursor.consume().first.run {
-                require(this is Token.Row) { "Expected to consume Row-token but found: $this" }
-            }
+            cursor.requireAndConsume<Token.Row>()
             return buildList {
                 var cellIndex = 0
                 while (cursor.peek() is Token.Cell) {
@@ -303,9 +295,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeCell(tableContentIndex: Int, rowIndex: Int, cellIndex: Int): List<DiffSegment> {
-            cursor.consume().first.run {
-                require(this is Token.Cell) { "Expected to consume Cell-token but found: $this" }
-            }
+            cursor.requireAndConsume<Token.Cell>()
             return consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) }
         }
 
@@ -343,6 +333,13 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
 
     fun peek(): T? = tokens.getOrNull(currentIndex)
     fun consume(): Pair<T, EditOperation<T>?> = Pair(tokens[currentIndex], edits[currentIndex++]).also {
-        require(it.second == null || it.second?.value == it.first) { "Expected edit operation value to match tokens at position ${currentIndex - 1}, but was ${it.second?.value} and ${it.first}" }
+        require(it.second == null || it.second?.value == it.first) {
+            "Expected edit operation value to match tokens at position ${currentIndex - 1}, but was ${it.second?.value} and ${it.first}"
+        }
+    }
+    inline fun <reified E : T> requireAndConsume(): E {
+        val (token) = consume()
+        require(token is E) { "Expected to consume ${E::class.simpleName}-token but found: $token" }
+        return token
     }
 }
