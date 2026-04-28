@@ -260,7 +260,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             cursor.requireAndConsume<Token.Table>()
 
             return buildList {
-                consumeTableHeader(tableContentIndex)
+                addAll(consumeTableHeader(tableContentIndex))
 
                 var rowIndex = 0
                 cursor.forEach<Token.Row> { _, _ ->
@@ -273,6 +273,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             cursor.requireAndConsume<Token.TableHeader>()
             var cellIndex = 0
             cursor.forEach<Token.ColumnSpec> { _, _ ->
+                cursor.requireAndConsume<Token.Cell>()
                 addAll(consumeCell(tableContentIndex, -1, cellIndex++))
             }
         }
