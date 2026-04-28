@@ -50,6 +50,9 @@ class PensjonPdfByggerService(
 
         engine {
             requestTimeout = 0
+            endpoint {
+                keepAliveTime = 0
+            }
         }
 
         install(HttpRequestRetry) {
