@@ -146,7 +146,7 @@ object UforeAvslagInntektsevne50 : RedigerbarTemplate<UforeAvslagInntektDto> {
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-7." })
             }
 
-            includePhrase(Felles.HvaSkjerNa)
+            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
