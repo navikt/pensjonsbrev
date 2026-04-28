@@ -224,17 +224,15 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             var currentDiff: DiffSegment? = null
             var text = ""
             return buildList {
-                while (cursor.peek() is Token.Word) {
-                    val (current, edit) = cursor.consume()
-                    require(current is Token.Word) { "Expected to consume Word-token but found: $current" }
-
+                cursor.forEach<Token.Word> { current, edit ->
                     val toAppend = " ${current.word}"
                     if (edit != null) {
+                        val diff = currentDiff
                         currentDiff = when {
-                            currentDiff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                            currentDiff.endOffset == text.length -> currentDiff.copy(endOffset = text.length + toAppend.length)
+                            diff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                            diff.endOffset == text.length -> diff.copy(endOffset = text.length + toAppend.length)
                             else -> {
-                                add(currentDiff)
+                                add(diff)
                                 DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
                             }
                         }
@@ -253,9 +251,8 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
             return buildList {
                 var itemIndex = 0
-                while (cursor.consumeIf<Token.Item>() != null) {
-                    addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) })
-                    itemIndex++
+                cursor.forEach<Token.Item> { _, _ ->
+                    addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex++, it) })
                 }
             }
         }
@@ -267,7 +264,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
                 consumeTableHeader(tableContentIndex)
 
                 var rowIndex = 0
-                while (cursor.peek() is Token.Row) {
+                cursor.forEach<Token.Row> { _, _ ->
                     addAll(consumeRow(tableContentIndex, rowIndex++))
                 }
             }
@@ -276,25 +273,20 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
             cursor.requireAndConsume<Token.TableHeader>()
             var cellIndex = 0
-            while (cursor.consumeIf<Token.ColumnSpec>() != null) {
+            cursor.forEach<Token.ColumnSpec> { _, _ ->
                 addAll(consumeCell(tableContentIndex, -1, cellIndex++))
             }
         }
 
-        private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> {
-            cursor.requireAndConsume<Token.Row>()
-            return buildList {
-                var cellIndex = 0
-                while (cursor.peek() is Token.Cell) {
-                    addAll(consumeCell(tableContentIndex, rowIndex, cellIndex++))
-                }
+        private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> = buildList {
+            var cellIndex = 0
+            cursor.forEach<Token.Cell> { _, _ ->
+                addAll(consumeCell(tableContentIndex, rowIndex, cellIndex++))
             }
         }
 
-        private fun consumeCell(tableContentIndex: Int, rowIndex: Int, cellIndex: Int): List<DiffSegment> {
-            cursor.requireAndConsume<Token.Cell>()
-            return consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) }
-        }
+        private fun consumeCell(tableContentIndex: Int, rowIndex: Int, cellIndex: Int): List<DiffSegment> =
+            consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) }
 
         private fun consumeTextOnlyContent(makeIndex: (Int) -> ContentIndex): List<DiffSegment> = buildList {
             var contentPosition = 0
@@ -338,9 +330,16 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
         require(token is E) { "Expected to consume ${E::class.simpleName}-token but found: $token" }
         return token
     }
-    inline fun <reified E : T> consumeIf(): Pair<E, EditOperation<T>?>? {
+    inline fun <reified E : T> consumeIf(): Pair<E, EditOperation<E>?>? {
         if (peek() !is E) return null
         val (token, edit) = consume()
-        return Pair(token as E, edit)
+        @Suppress("UNCHECKED_CAST")
+        return Pair(token as E, edit as EditOperation<E>?)
+    }
+    inline fun <reified E : T> forEach(action: (E, EditOperation<E>?) -> Unit) {
+        while (true) {
+            val (token, edit) = consumeIf<E>() ?: break
+            action(token, edit)
+        }
     }
 }
