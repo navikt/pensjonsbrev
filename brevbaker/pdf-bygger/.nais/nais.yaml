@@ -22,6 +22,10 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 5
+    # Tåle en kortvarig CPU-spike (typst-prosesser som spiser tid) uten å bli kicket
+    # ut av ingress-rotasjon. failureThreshold * periodSeconds = ~100s før poden
+    periodSeconds: 10
+    failureThreshold: 10
   replicas:
     min: {{minReplicas}}
     max: 150
@@ -49,3 +53,9 @@ spec:
       rules:
         - application: {{brevbaker-app}}
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]
+  env:
+    # Maks antall samtidige `typst compile`-subprosesser per pod. Verdi `"0"`
+    # (eller tom) betyr "bruk default" – som er antall tilgjengelige vCPU
+    # (cgroup-bevisst). Settes per miljø i dev.yaml/prod.yaml.
+    - name: "PDF_BYGGER_MAX_CONCURRENT_COMPILES"
+      value: "{{maxConcurrentCompiles}}"
