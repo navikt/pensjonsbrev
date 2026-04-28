@@ -11,7 +11,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Vedtak
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalNynorsk
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -208,6 +208,6 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                 )
             }
         }
-        includeAttachment(vedleggFolketrygdenBokmalNynorsk)
+        includeAttachment(vedleggFolketrygden)
     }
 }
