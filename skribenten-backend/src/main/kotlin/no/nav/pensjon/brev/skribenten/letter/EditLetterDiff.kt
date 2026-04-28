@@ -119,25 +119,23 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             abstract val id: Int?
             abstract val fontType: FontType
 
+            override fun equals(other: Any?): Boolean {
+                if (this === other) return true
+                if (javaClass != other?.javaClass) return false
+                return fontType == (other as Literal).fontType
+            }
+
+            override fun hashCode(): Int = fontType.hashCode()
+
             // Equality on fontType only: a font change is a meaningful structural difference.
             data class Literal(override val id: Int?, override val fontType: FontType) : Text() {
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) return true
-                    if (javaClass != other?.javaClass) return false
-                    return fontType == (other as Literal).fontType
-                }
-
-                override fun hashCode(): Int = fontType.hashCode()
+                override fun equals(other: Any?): Boolean = super.equals(other)
+                override fun hashCode(): Int = super.hashCode()
             }
 
             data class Variable(override val id: Int?, override val fontType: FontType) : Text() {
-                override fun equals(other: Any?): Boolean {
-                    if (this === other) return true
-                    if (javaClass != other?.javaClass) return false
-                    return fontType == (other as Variable).fontType
-                }
-
-                override fun hashCode(): Int = fontType.hashCode()
+                override fun equals(other: Any?): Boolean = super.equals(other)
+                override fun hashCode(): Int = super.hashCode()
             }
         }
 
