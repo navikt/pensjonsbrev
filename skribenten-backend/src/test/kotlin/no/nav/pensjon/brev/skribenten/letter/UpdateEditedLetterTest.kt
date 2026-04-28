@@ -1091,11 +1091,11 @@ class UpdateRenderedLetterTest {
         val editedLetter1 = editedLetter(
             E_Paragraph(1, true, listOf(
                 E_Literal(11, "fast tekst"),
-                E_Literal(12, "fritekst", editedText = "fyllt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
+                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
             ))
         )
 
-        val brevDataVariabelHarEnVerdi = letter(
+        val brevdataVariabelHarEnVerdi = letter(
             ParagraphImpl(1, true, listOf(
                 LiteralImpl(11, "fast tekst oppdatert"),
                 VariableImpl(12, "verdi fra brevdata"),
@@ -1106,11 +1106,11 @@ class UpdateRenderedLetterTest {
         val expected = editedLetter(
             E_Paragraph(1, true, listOf(
                 E_Literal(11, "fast tekst oppdatert"),
-                E_Literal(12, "fritekst", editedText = "fyllt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
+                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
             ))
         )
 
-        assertEquals(expected, editedLetter1.updateEditedLetter(brevDataVariabelHarEnVerdi))
+        assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
     }
 
 }
