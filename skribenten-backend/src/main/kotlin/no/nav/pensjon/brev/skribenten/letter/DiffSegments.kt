@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.letter
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 
 fun diffBrev(redigertBrev: Edit.Letter, rendret: LetterMarkup): Pair<List<DiffSegment>, List<DiffSegment>> =
-    TextOnlyWordDiff().diff(old = rendret.toEdit(), new = redigertBrev)
+    EditLetterWordDiff().diff(old = rendret.toEdit(), new = redigertBrev)
 
 sealed class ContentIndex {
     data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex()

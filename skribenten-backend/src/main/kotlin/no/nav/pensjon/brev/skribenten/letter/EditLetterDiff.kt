@@ -4,6 +4,9 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 
 interface EditLetterDiff<Token : Any> {
@@ -19,7 +22,7 @@ interface EditLetterDiff<Token : Any> {
         )
 }
 
-class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
+class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
     override fun tokenize(letter: Edit.Letter): Sequence<Token> = object : EditLetterSequence<Token>() {
 
@@ -59,7 +62,7 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
         }
 
         override suspend fun SequenceScope<Token>.visit(header: Edit.ParagraphContent.Table.Header) {
-            yield(Token.Header(header.id))
+            yield(Token.TableHeader(header.id))
             header.colSpec.forEach { visit(it) }
         }
 
@@ -161,9 +164,9 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
             override fun hashCode(): Int = Table::class.hashCode()
         }
 
-        data class Header(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is Header
-            override fun hashCode(): Int = Header::class.hashCode()
+        data class TableHeader(val id: Int?) : Token() {
+            override fun equals(other: Any?): Boolean = other is TableHeader
+            override fun hashCode(): Int = TableHeader::class.hashCode()
         }
 
         // Equality on alignment and span: column structure changes are meaningful.
@@ -193,6 +196,7 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
         }
     }
 
+    // This is a general block parser which will not fail for Title-blocks that contain invalid content types.
     private class BlockParser(
         private val blockIndex: Int,
         private val cursor: TokenCursor<Token>,
@@ -201,44 +205,55 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
             var blockContentPosition = 0
             while (isBlockContent()) {
                 val currentPosition = blockContentPosition++
-                when {
-                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
-                        addAll(consumeText(ContentIndex.BlockContentIndex(blockIndex, currentPosition)))
-                    cursor.peek() is Token.NewLine -> cursor.consume()
-                    cursor.peek() is Token.ItemList -> addAll(consumeItemList(currentPosition))
-                    cursor.peek() is Token.Table -> addAll(consumeTable(currentPosition))
+                when (cursor.peek()) {
+                    is Token.Literal, is Token.Variable -> addAll(consumeText(BlockContentIndex(blockIndex, currentPosition)))
+                    is Token.NewLine -> cursor.consume()
+                    is Token.ItemList -> addAll(consumeItemList(currentPosition))
+                    is Token.Table -> addAll(consumeTable(currentPosition))
                     else -> error("Unexpected block-level token: ${cursor.peek()}")
                 }
             }
         }
 
         private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
-            cursor.consume() // Consume Literal or Variable (edit on this token is not surfaced as a DiffSegment)
+            cursor.consume().first.run {
+                require(this is Token.Literal || this is Token.Variable ) {
+                    "Expected to consume Literal- or Variable-token, but found: $this"
+                }
+            }
+
             var currentDiff: DiffSegment? = null
             var text = ""
             return buildList {
                 while (cursor.peek() is Token.Word) {
                     val (current, edit) = cursor.consume()
-                    require(current is Token.Word)
+                    require(current is Token.Word) { "Expected to consume Word-token but found: $current" }
+
                     val toAppend = " ${current.word}"
                     if (edit != null) {
-                        currentDiff = if (currentDiff == null) {
-                            DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                        } else if (currentDiff!!.endOffset == text.length) {
-                            currentDiff!!.copy(endOffset = text.length + toAppend.length)
-                        } else {
-                            add(currentDiff!!)
-                            DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                        currentDiff = when {
+                            currentDiff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                            currentDiff.endOffset == text.length -> currentDiff.copy(endOffset = text.length + toAppend.length)
+                            else -> {
+                                add(currentDiff)
+                                DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                            }
                         }
                     }
                     text += toAppend
                 }
-                if (currentDiff != null) add(currentDiff!!)
+                // Add any dangling last diff segment
+                if (currentDiff != null) {
+                    add(currentDiff)
+                }
             }
         }
 
         private fun consumeItemList(listContentIndex: Int): List<DiffSegment> {
-            cursor.consume() // ItemList token
+            cursor.consume().first.run {
+                require(this is Token.ItemList) { "Expected to consume ItemList-token but found: $this" }
+            }
+
             return buildList {
                 var itemIndex = 0
                 while (cursor.peek() is Token.Item) {
@@ -246,10 +261,11 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
                     var itemContentPosition = 0
                     while (isTextContent()) {
                         val currentPosition = itemContentPosition++
-                        when {
-                            cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
-                                addAll(consumeText(ContentIndex.ItemContentIndex(blockIndex, listContentIndex, itemIndex, currentPosition)))
-                            cursor.peek() is Token.NewLine -> cursor.consume()
+                        when (cursor.peek()) {
+                            is Token.Literal, is Token.Variable -> addAll(
+                                consumeText(ItemContentIndex(blockIndex, listContentIndex, itemIndex, currentPosition))
+                            )
+                            is Token.NewLine -> cursor.consume()
                             else -> error("Unexpected text-level token: ${cursor.peek()}")
                         }
                     }
@@ -259,29 +275,13 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
         }
 
         private fun consumeTable(tableContentIndex: Int): List<DiffSegment> {
-            cursor.consume() // Table token
+            cursor.consume().first.run {
+                require(this is Token.ItemList) { "Expected to consume Table-token but found: $this" }
+            }
+
             return buildList {
-                if (cursor.peek() is Token.Header) {
-                    cursor.consume()
-                    var cellIndex = 0
-                    while (cursor.peek() is Token.ColumnSpec) {
-                        cursor.consume()
-                        if (cursor.peek() is Token.Cell) {
-                            cursor.consume()
-                            var cellContentPosition = 0
-                            while (isTextContent()) {
-                                val currentPosition = cellContentPosition++
-                                when {
-                                    cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
-                                        addAll(consumeText(ContentIndex.TableCellContentIndex(blockIndex, tableContentIndex, -1, cellIndex, currentPosition)))
-                                    cursor.peek() is Token.NewLine -> cursor.consume()
-                                    else -> error("Unexpected text-level token: ${cursor.peek()}")
-                                }
-                            }
-                        }
-                        cellIndex++
-                    }
-                }
+                consumeTableHeader(tableContentIndex)
+
                 var rowIndex = 0
                 while (cursor.peek() is Token.Row) {
                     cursor.consume()
@@ -292,8 +292,9 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
                         while (isTextContent()) {
                             val currentPosition = cellContentPosition++
                             when {
-                                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable ->
-                                    addAll(consumeText(ContentIndex.TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, currentPosition)))
+                                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> addAll(
+                                    consumeText(TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, currentPosition))
+                                )
                                 cursor.peek() is Token.NewLine -> cursor.consume()
                                 else -> error("Unexpected text-level token: ${cursor.peek()}")
                             }
@@ -302,6 +303,31 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
                     }
                     rowIndex++
                 }
+            }
+        }
+
+        private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
+            cursor.consume().first.run {
+                require(this is Token.TableHeader) { "Expected to consume TableHeader-token but found: $this" }
+            }
+            var cellIndex = 0
+            while (cursor.peek() is Token.ColumnSpec) {
+                cursor.consume()
+                if (cursor.peek() is Token.Cell) {
+                    cursor.consume()
+                    var cellContentPosition = 0
+                    while (isTextContent()) {
+                        val currentPosition = cellContentPosition++
+                        when (cursor.peek()) {
+                            is Token.Literal, is Token.Variable -> addAll(
+                                consumeText(TableCellContentIndex(blockIndex, tableContentIndex, -1, cellIndex, currentPosition))
+                            )
+                            is Token.NewLine -> cursor.consume()
+                            else -> error("Unexpected text-level token: ${cursor.peek()}")
+                        }
+                    }
+                }
+                cellIndex++
             }
         }
 
@@ -317,11 +343,10 @@ class TextOnlyWordDiff : EditLetterDiff<TextOnlyWordDiff.Token> {
     }
 }
 
-private class TokenCursor<T : Any>(tokens: List<T>, edits: List<EditOperation<T>>) {
+private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<EditOperation<T>>) {
     init {
         require(edits.distinctBy { it.position }.size == edits.size) { "Expected edits to only have unique position references" }
     }
-    private val tokens = tokens
     private val edits = edits.associateBy { it.position }
     private var currentIndex = 0
     val hasNext: Boolean get() = currentIndex < tokens.size
