@@ -88,7 +88,6 @@ object UforeAvslagIFUOktStilling : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-9 og forskrift om uføretrygd frå folketrygda § 2-2." })
             }
 
-            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)

@@ -109,7 +109,6 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-13 tredje ledd." })
             }
 
-            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)
