@@ -220,19 +220,18 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
         private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
             cursor.requireAndConsume<Token.Text>()
-
-            var currentDiff: DiffSegment? = null
-            var text = ""
             return buildList {
+                var currentDiff: DiffSegment? = null
+                var text = ""
+
                 cursor.forEach<Token.Word> { current, edit ->
                     val toAppend = " ${current.word}"
                     if (edit != null) {
-                        val diff = currentDiff
                         currentDiff = when {
-                            diff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                            diff.endOffset == text.length -> diff.copy(endOffset = text.length + toAppend.length)
+                            currentDiff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
+                            currentDiff.endOffset == text.length -> currentDiff.copy(endOffset = text.length + toAppend.length)
                             else -> {
-                                add(diff)
+                                add(currentDiff)
                                 DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
                             }
                         }
@@ -320,22 +319,26 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
     val hasNext: Boolean get() = currentIndex < tokens.size
 
     fun peek(): T? = tokens.getOrNull(currentIndex)
+
     fun consume(): Pair<T, EditOperation<T>?> = Pair(tokens[currentIndex], edits[currentIndex++]).also {
         require(it.second == null || it.second?.value == it.first) {
             "Expected edit operation value to match tokens at position ${currentIndex - 1}, but was ${it.second?.value} and ${it.first}"
         }
     }
+
     inline fun <reified E : T> requireAndConsume(): E {
         val (token) = consume()
         require(token is E) { "Expected to consume ${E::class.simpleName}-token but found: $token" }
         return token
     }
+
     inline fun <reified E : T> consumeIf(): Pair<E, EditOperation<E>?>? {
         if (peek() !is E) return null
         val (token, edit) = consume()
         @Suppress("UNCHECKED_CAST")
         return Pair(token as E, edit as EditOperation<E>?)
     }
+
     inline fun <reified E : T> forEach(action: (E, EditOperation<E>?) -> Unit) {
         while (true) {
             val (token, edit) = consumeIf<E>() ?: break

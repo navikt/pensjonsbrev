@@ -16,7 +16,7 @@ class EditScriptTest {
         Paragraph(null, true, listOf(Literal(null, "jadda"))),
         Paragraph(2, true, listOf(Literal(1, "noe tekst "), Variable(2, " og noe merb")))
     )
-    private val tokenizer = TextOnlyWordDiff()
+    private val tokenizer = EditLetterWordDiff()
 
     @Test
     fun testDiff3() {
