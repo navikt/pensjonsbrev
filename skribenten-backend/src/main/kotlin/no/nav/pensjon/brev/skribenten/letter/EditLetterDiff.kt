@@ -274,12 +274,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
                 var rowIndex = 0
                 while (cursor.peek() is Token.Row) {
-                    cursor.consume()
-                    var cellIndex = 0
-                    while (cursor.peek() is Token.Cell) {
-                        addAll(consumeCell(tableContentIndex, rowIndex, cellIndex++))
-                    }
-                    rowIndex++
+                    addAll(consumeRow(tableContentIndex, rowIndex++))
                 }
             }
         }
@@ -292,6 +287,18 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             while (cursor.peek() is Token.ColumnSpec) {
                 cursor.consume()
                 addAll(consumeCell(tableContentIndex, -1, cellIndex++))
+            }
+        }
+
+        private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> {
+            cursor.consume().first.run {
+                require(this is Token.Row) { "Expected to consume Row-token but found: $this" }
+            }
+            return buildList {
+                var cellIndex = 0
+                while (cursor.peek() is Token.Cell) {
+                    addAll(consumeCell(tableContentIndex, rowIndex, cellIndex++))
+                }
             }
         }
 
