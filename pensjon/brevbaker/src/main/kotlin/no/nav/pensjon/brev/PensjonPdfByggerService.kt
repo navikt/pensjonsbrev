@@ -51,6 +51,10 @@ class PensjonPdfByggerService(
 
             engine {
                 requestTimeout = 0
+                endpoint {
+                    // settes for å ikke gjenbruke connections mot pdf-bygger slik at alle pdf-bygger instanser brukes jevnt.
+                    keepAliveTime = 0
+                }
             }
 
             if (maxRetries > 0) {
