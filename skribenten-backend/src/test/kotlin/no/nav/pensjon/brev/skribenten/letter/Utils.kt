@@ -3,13 +3,10 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.Listetype
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnAlignment.LEFT
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 import java.time.LocalDate
 
 
@@ -52,42 +49,15 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         deletedBlocks = deleted
     )
 
-fun paragraph(vararg content: Edit.ParagraphContent) =
-    Edit.Block.Paragraph(id = null, editable = true, content = content.toList())
-
-fun literal(
-    id: Int? = null,
-    text: String,
-    fontType: FontType = FontType.PLAIN,
-    editedText: String? = null,
-    editedFontType: FontType? = null,
-) = Edit.ParagraphContent.Text.Literal(id, text, fontType, editedText, editedFontType)
-
-fun variable(id: Int? = null, text: String, fontType: FontType = FontType.PLAIN) =
-    Edit.ParagraphContent.Text.Variable(id, text, fontType)
-
-fun newLine(id: Int? = null) = Edit.ParagraphContent.Text.NewLine(id)
-
-fun itemList(vararg items: Edit.ParagraphContent.ItemList.Item) =
-    Edit.ParagraphContent.ItemList(id = null, items = items.toList())
-
-fun item(vararg content: Edit.ParagraphContent.Text) =
-    Edit.ParagraphContent.ItemList.Item(id = null, content = content.toList())
-
-fun table(header: Edit.ParagraphContent.Table.Header, vararg rows: Edit.ParagraphContent.Table.Row) =
-    Edit.ParagraphContent.Table(id = null, rows = rows.toList(), header = header)
-
-fun header(vararg colSpecs: Edit.ParagraphContent.Table.ColumnSpec) =
-    Edit.ParagraphContent.Table.Header(id = null, colSpec = colSpecs.toList())
-
-fun colSpec(headerContent: Edit.ParagraphContent.Table.Cell = cell()) =
-    Edit.ParagraphContent.Table.ColumnSpec(id = null, headerContent = headerContent, alignment = LEFT, span = 1)
-
-fun row(vararg cells: Edit.ParagraphContent.Table.Cell) =
-    Edit.ParagraphContent.Table.Row(id = null, cells = cells.toList())
-
-fun cell(vararg text: Edit.ParagraphContent.Text) =
-    Edit.ParagraphContent.Table.Cell(id = null, text = text.toList())
+fun editedLetter(
+    deleted: Set<Int> = emptySet(),
+    fixParentIds: Boolean = true,
+    dokumentDato: LocalDate = LocalDate.now(),
+    builder: EditLetterBuilder.() -> Unit,
+): Edit.Letter {
+    val blocks = EditLetterBuilder().apply(builder).blocks
+    return editedLetter(*blocks.toTypedArray(), deleted = deleted, fixParentIds = fixParentIds, dokumentDato = dokumentDato)
+}
 
 private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
     when (this) {
