@@ -257,18 +257,8 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             return buildList {
                 var itemIndex = 0
                 while (cursor.peek() is Token.Item) {
-                    cursor.consume() // Item token
-                    var itemContentPosition = 0
-                    while (isTextContent()) {
-                        val currentPosition = itemContentPosition++
-                        when (cursor.peek()) {
-                            is Token.Literal, is Token.Variable -> addAll(
-                                consumeText(ItemContentIndex(blockIndex, listContentIndex, itemIndex, currentPosition))
-                            )
-                            is Token.NewLine -> cursor.consume()
-                            else -> error("Unexpected text-level token: ${cursor.peek()}")
-                        }
-                    }
+                    cursor.consume()
+                    addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) })
                     itemIndex++
                 }
             }
@@ -288,17 +278,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
                     var cellIndex = 0
                     while (cursor.peek() is Token.Cell) {
                         cursor.consume()
-                        var cellContentPosition = 0
-                        while (isTextContent()) {
-                            val currentPosition = cellContentPosition++
-                            when {
-                                cursor.peek() is Token.Literal || cursor.peek() is Token.Variable -> addAll(
-                                    consumeText(TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, currentPosition))
-                                )
-                                cursor.peek() is Token.NewLine -> cursor.consume()
-                                else -> error("Unexpected text-level token: ${cursor.peek()}")
-                            }
-                        }
+                        addAll(consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) })
                         cellIndex++
                     }
                     rowIndex++
@@ -315,19 +295,21 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
                 cursor.consume()
                 if (cursor.peek() is Token.Cell) {
                     cursor.consume()
-                    var cellContentPosition = 0
-                    while (isTextContent()) {
-                        val currentPosition = cellContentPosition++
-                        when (cursor.peek()) {
-                            is Token.Literal, is Token.Variable -> addAll(
-                                consumeText(TableCellContentIndex(blockIndex, tableContentIndex, -1, cellIndex, currentPosition))
-                            )
-                            is Token.NewLine -> cursor.consume()
-                            else -> error("Unexpected text-level token: ${cursor.peek()}")
-                        }
-                    }
+                    addAll(consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, -1, cellIndex, it) })
                 }
                 cellIndex++
+            }
+        }
+
+        private fun consumeTextOnlyContent(makeIndex: (Int) -> ContentIndex): List<DiffSegment> = buildList {
+            var contentPosition = 0
+            while (isTextContent()) {
+                val currentPosition = contentPosition++
+                when (cursor.peek()) {
+                    is Token.Literal, is Token.Variable -> addAll(consumeText(makeIndex(currentPosition)))
+                    is Token.NewLine -> cursor.consume()
+                    else -> error("Unexpected text-level token: ${cursor.peek()}")
+                }
             }
         }
 
