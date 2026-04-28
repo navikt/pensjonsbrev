@@ -827,7 +827,7 @@ public abstract class no/nav/pensjon/brev/template/Operation : no/nav/pensjon/br
 
 public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
 	public fun <init> ()V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineScope;)V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 }
 

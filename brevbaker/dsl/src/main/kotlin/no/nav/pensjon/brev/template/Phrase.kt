@@ -44,7 +44,7 @@ abstract class ParagraphPhrase<Lang : LanguageSupport> {
 
 abstract class OutlinePhrase<Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()
-    fun apply(scope: OutlineScope<in Lang, *>) {
+    fun apply(scope: OutlineOnlyScope<in Lang, *>) {
         OutlineOnlyScope<Lang, Unit>().apply { template() }.elements
             .forEach { scope.addOutlineContent(it) }
     }

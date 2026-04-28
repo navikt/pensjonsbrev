@@ -22,6 +22,7 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constr
     fun includePhrase(phrase: OutlinePhrase<out Lang>) {
         phrase.apply(this)
     }
+
 }
 
 sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {

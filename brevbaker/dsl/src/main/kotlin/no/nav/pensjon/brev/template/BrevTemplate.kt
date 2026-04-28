@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.template
 
-import no.nav.brev.InternKonstruktoer
 import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
