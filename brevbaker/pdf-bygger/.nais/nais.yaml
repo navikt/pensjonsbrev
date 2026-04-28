@@ -45,7 +45,7 @@ spec:
   resources:
     requests:
       cpu: "400m"
-      memory: "1Gi"
+      memory: "256Mi"
     limits:
       memory: "2Gi"
   accessPolicy:
