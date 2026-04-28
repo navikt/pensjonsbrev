@@ -32,12 +32,12 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Literal) {
-            yield(Token.Literal(content.id, content.editedFontType ?: content.fontType))
+            yield(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
             yieldWords(content.editedText ?: content.text)
         }
 
         override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Variable) {
-            yield(Token.Variable(content.id, content.fontType))
+            yield(Token.Text.Variable(content.id, content.fontType))
             yieldWords(content.text)
         }
 
@@ -115,25 +115,30 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             override fun hashCode(): Int = type.hashCode()
         }
 
-        // Equality on fontType only: a font change is a meaningful structural difference.
-        data class Literal(val id: Int?, val fontType: FontType) : Token() {
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                return fontType == (other as Literal).fontType
+        sealed class Text : Token() {
+            abstract val id: Int?
+            abstract val fontType: FontType
+
+            // Equality on fontType only: a font change is a meaningful structural difference.
+            data class Literal(override val id: Int?, override val fontType: FontType) : Text() {
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (javaClass != other?.javaClass) return false
+                    return fontType == (other as Literal).fontType
+                }
+
+                override fun hashCode(): Int = fontType.hashCode()
             }
 
-            override fun hashCode(): Int = fontType.hashCode()
-        }
+            data class Variable(override val id: Int?, override val fontType: FontType) : Text() {
+                override fun equals(other: Any?): Boolean {
+                    if (this === other) return true
+                    if (javaClass != other?.javaClass) return false
+                    return fontType == (other as Variable).fontType
+                }
 
-        data class Variable(val id: Int?, val fontType: FontType) : Token() {
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                return fontType == (other as Variable).fontType
+                override fun hashCode(): Int = fontType.hashCode()
             }
-
-            override fun hashCode(): Int = fontType.hashCode()
         }
 
         data class NewLine(val id: Int?) : Token() {
@@ -206,7 +211,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             while (isBlockContent()) {
                 val currentPosition = blockContentPosition++
                 when (cursor.peek()) {
-                    is Token.Literal, is Token.Variable -> addAll(consumeText(BlockContentIndex(blockIndex, currentPosition)))
+                    is Token.Text -> addAll(consumeText(BlockContentIndex(blockIndex, currentPosition)))
                     is Token.NewLine -> cursor.consume()
                     is Token.ItemList -> addAll(consumeItemList(currentPosition))
                     is Token.Table -> addAll(consumeTable(currentPosition))
@@ -216,11 +221,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
-            cursor.consume().first.run {
-                require(this is Token.Literal || this is Token.Variable ) {
-                    "Expected to consume Literal- or Variable-token, but found: $this"
-                }
-            }
+            cursor.requireAndConsume<Token.Text>()
 
             var currentDiff: DiffSegment? = null
             var text = ""
@@ -304,7 +305,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             while (isTextContent()) {
                 val currentPosition = contentPosition++
                 when (cursor.peek()) {
-                    is Token.Literal, is Token.Variable -> addAll(consumeText(makeIndex(currentPosition)))
+                    is Token.Text -> addAll(consumeText(makeIndex(currentPosition)))
                     is Token.NewLine -> cursor.consume()
                     else -> error("Unexpected text-level token: ${cursor.peek()}")
                 }
@@ -312,13 +313,12 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         private fun isBlockContent() = cursor.peek().let {
-            it is Token.Literal || it is Token.Variable || it is Token.NewLine ||
-                it is Token.ItemList || it is Token.Table
+            it is Token.Text || it is Token.NewLine || it is Token.ItemList || it is Token.Table
         }
 
         // Items and table cells can only contain Text (Literal, Variable, NewLine).
         private fun isTextContent() = cursor.peek().let {
-            it is Token.Literal || it is Token.Variable || it is Token.NewLine
+            it is Token.Text || it is Token.NewLine
         }
     }
 }
