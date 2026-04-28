@@ -69,7 +69,7 @@ const exampleLetter1 = {
         {
           id: 21,
           parentId: 2,
-          text: "[CP2-1]Her vil vi teste om piltast opp/ned",
+          text: "[CP2-1]Her vil vi teste at piltast opp/ned",
           type: "LITERAL",
           fontType: "PLAIN",
           editedFontType: null,
@@ -119,7 +119,7 @@ const exampleLetter1 = {
         {
           id: 33,
           parentId: 3,
-          text: " teste om pil opp/ned traverserer avsnitt [CP2-3]",
+          text: " teste at pil opp/ned krysser avsnitt [CP2-3]",
           type: "LITERAL",
           fontType: "PLAIN",
           editedFontType: null,
@@ -492,10 +492,18 @@ test.describe("LetterEditor", () => {
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
-      await move(page, "ArrowRight", 24);
-      await assertCaret(page, "[CP2-1]", 24, { expectExact: true });
+      await move(page, "ArrowRight", 25);
+      await assertCaret(page, "[CP2-1]", 25, { expectExact: true });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
+    });
+
+    test("ArrowUp moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
+      await page.getByText("CP2-3").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 15);
+      await assertCaret(page, "[CP2-3]", 15, { expectExact: true });
+      await move(page, "ArrowUp", 1);
+      await assertCaret(page, "[CP2-1]", 42, { expectExact: true });
     });
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
