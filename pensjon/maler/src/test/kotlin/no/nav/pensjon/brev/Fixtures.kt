@@ -150,8 +150,6 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsRed
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoerepensjon
-import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
