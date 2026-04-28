@@ -20,7 +20,7 @@ class AvslagUfoerepensjonTest {
             Fixtures.create<AvslagUfoerepensjonDto>(),
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestPDF("GP_AVSLAG_UFOERPENSJON")
+        ).renderTestPDF("UP_AVSLAG_UFOERPENSJON")
     }
 
     @Test
@@ -30,6 +30,6 @@ class AvslagUfoerepensjonTest {
             Fixtures.create<AvslagUfoerepensjonDto>(),
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestHtml("GP_AVSLAG_UFOERPENSJON")
+        ).renderTestHtml("UP_AVSLAG_UFOERPENSJON")
     }
 }
