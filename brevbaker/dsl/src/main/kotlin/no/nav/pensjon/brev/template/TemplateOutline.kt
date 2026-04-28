@@ -22,32 +22,6 @@ class OutlineOnlyScope<Lang : LanguageSupport, LetterData : Any> internal constr
     fun includePhrase(phrase: OutlinePhrase<out Lang>) {
         phrase.apply(this)
     }
-
-    fun includePhrase(phrase: OutlinePhraseRedigerbar<out Lang, *>) {
-        phrase.apply(this)
-    }
-}
-
-@LetterTemplateMarker
-class OutlineOnlyScopeRedigerbar<Lang : LanguageSupport, LetterData : Any> internal constructor(): OutlineScope<Lang, LetterData>, ControlStructureScope<Lang, LetterData, Element.OutlineContent<Lang>, OutlineOnlyScopeRedigerbar<Lang, LetterData>> {
-    private val children = mutableListOf<OutlineElement<Lang>>()
-    override val elements: List<OutlineElement<Lang>>
-        get() = children
-
-    override fun scopeFactory(): OutlineOnlyScopeRedigerbar<Lang, LetterData> = OutlineOnlyScopeRedigerbar()
-
-    override fun addControlStructure(e: OutlineElement<Lang>) {
-        children.add(e)
-    }
-
-    override fun addOutlineContent(e: OutlineElement<Lang>) {
-        children.add(e)
-    }
-
-    fun includePhrase(phrase: OutlinePhraseRedigerbar<out Lang, *>) {
-        phrase.apply(this)
-    }
-
 }
 
 sealed interface OutlineScope<Lang : LanguageSupport, LetterData : Any> {

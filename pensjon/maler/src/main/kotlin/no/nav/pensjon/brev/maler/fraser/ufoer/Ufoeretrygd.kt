@@ -400,9 +400,9 @@ object Ufoeretrygd {
         }
     }
 
-    data class AvslagBarnetillegg<T : RedigerbarTemplate<*>> (val barnetilleggAvslatt: Expression<List<BarnetilleggUTDto>>) :
-        OutlinePhraseRedigerbar<LangBokmalNynorsk, T>() {
-        override fun OutlineOnlyScopeRedigerbar<LangBokmalNynorsk, Unit>.template() {
+    data class AvslagBarnetillegg<T : RedigerbarTemplate<*>>(val barnetilleggAvslatt: Expression<List<BarnetilleggUTDto>>) :
+        OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
                 title2 {
@@ -418,7 +418,7 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
+                    includePhrase(BegrunnelseBarnetilleggTekst<T>(barnetillegg))
                     text(
                         bokmal { +" Du oppfyller derfor ikke vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygden. Du kan lese mer i folketrygdloven §§ 12-15 og 12-16." },
                         nynorsk { +" Du oppfyller derfor ikkje vilkåret, og vi avslår søknaden din om barnetillegg i uføretrygda. Du kan lese meir i folketrygdlova §§ 12-15 og 12-16." },
@@ -428,7 +428,7 @@ object Ufoeretrygd {
         }
     }
 
-    data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
+    data class OpphorBarnetillegg<T : RedigerbarTemplate<*>>(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
         OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
@@ -446,7 +446,7 @@ object Ufoeretrygd {
                     )
                 }
                 paragraph {
-                    includePhrase(BegrunnelseBarnetilleggTekst(barnetillegg))
+                    includePhrase(BegrunnelseBarnetilleggTekst<T>(barnetillegg))
                     text(
                         bokmal { +" Vilkårene for barnetillegg er derfor ikke lenger oppfylt, og barnetillegget opphører fra " + barnetillegg.fom.format() + "." },
                         nynorsk { +" Vilkåra for barnetillegg er derfor ikkje lenger oppfylte, og barnetillegget opphøyrer frå " + barnetillegg.fom.format() + "." },
@@ -456,7 +456,7 @@ object Ufoeretrygd {
         }
     }
 
-    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : ParagraphPhrase<LangBokmalNynorsk>() {
+    private data class BegrunnelseBarnetilleggTekst <T : RedigerbarTemplate<*>>(val barnetillegg: Expression<BarnetilleggUTDto>) : ParagraphPhrase<LangBokmalNynorsk>(), RedigerbarPhrase<T> {
         override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
             val barnetBarna = barnetillegg.antallBarn.format(BarnetBarnaFormatter)
             val barnetBarnaStor = barnetillegg.antallBarn.format(BarnetBarnaStorFormatter)
