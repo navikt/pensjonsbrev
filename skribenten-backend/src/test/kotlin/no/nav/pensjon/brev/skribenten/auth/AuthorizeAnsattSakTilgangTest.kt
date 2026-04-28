@@ -249,7 +249,7 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
-    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(Sakstype("Sakstype123"))
+    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = null
 
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"

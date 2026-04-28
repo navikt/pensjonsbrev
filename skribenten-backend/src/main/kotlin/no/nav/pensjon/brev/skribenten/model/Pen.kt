@@ -5,33 +5,13 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
-import org.slf4j.LoggerFactory
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 object Pen {
-    private val logger = LoggerFactory.getLogger(javaClass)
-
-    // TODO: Denne bør på sikt flyttes ut herifra
-    private val behandlingsnummerMap = mapOf(
-        "AFP" to B345,
-        "AFP_PRIVAT" to B296,
-        "ALDER" to B280,
-        "BARNEP" to B359,
-        "FAM_PL" to B150,
-        "GAM_YRK" to B377,
-        "GJENLEV" to B222,
-        "KRIGSP" to B298,
-        "OMSORG" to B300,
-        "UFOREP" to B255,
-    )
-
-    fun finnBehandlingsnummer(sakstype: ISakstype): Pdl.Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
-
     data class SakSelection(
         val saksId: SaksId,
         val foedselsdato: LocalDate,
