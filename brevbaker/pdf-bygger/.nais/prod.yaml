@@ -2,5 +2,3 @@ app-name: "pensjon-pdf-bygger"
 brevbaker-app: "pensjon-brevbaker"
 ingresses: []
 minReplicas: 2
-# "0" => la koden velge default (antall tilgjengelige vCPU per pod).
-maxConcurrentCompiles: "0"

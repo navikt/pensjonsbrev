@@ -2,8 +2,6 @@ package no.nav.pensjon.brev.pdfbygger.typst
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.sync.Semaphore
-import kotlinx.coroutines.sync.withPermit
 import kotlinx.coroutines.withContext
 import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.pensjon.brev.pdfbygger.PDFCompilationResponse
@@ -13,35 +11,20 @@ import java.nio.file.Path
 
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
-private const val MAX_CONCURRENT_COMPILES_ENV = "PDF_BYGGER_MAX_CONCURRENT_COMPILES"
 
-private fun defaultMaxConcurrentCompiles(): Int =
-    System.getenv(MAX_CONCURRENT_COMPILES_ENV)?.toIntOrNull()?.takeIf { it > 0 }
-        ?: Runtime.getRuntime().availableProcessors().coerceAtLeast(1)
+/**
+ * Nice-økning for typst-subprosessene. Høyere verdi = lavere CPU-prioritet.
+ */
+private const val TYPST_NICE_INCREMENT = "10"
 
 open class TypstCompileService(
     private val templateDir: Path = Path.of(DEFAULT_TYPST_TEMPLATE_DIR),
-    maxConcurrentCompiles: Int = defaultMaxConcurrentCompiles(),
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
-    /**
-     * Begrenser hvor mange `typst compile`-subprosesser som kjører samtidig per pod.
-     *
-     * Uten en slik grense kan en byge med samtidige requests fyre opp et høyt antall
-     * CPU-tunge subprosesser som thrash'er om CPU. Det gjør at hver enkelt request blir
-     * tregere, og at Ktor/Netty blir CPU-sultet og ikke rekker å svare på readiness-proben
-     * innen timeout – kubelet markerer da poden NotReady, ingress fjerner den fra rotasjon,
-     * og lasten flyttes til andre pods. Resultatet er flapping og ujevn lastfordeling.
-     *
-     * Default settes til antall tilgjengelige vCPU, og kan
-     * overstyres via env var [MAX_CONCURRENT_COMPILES_ENV]
-     */
-    private val compileSemaphore = Semaphore(permits = maxConcurrentCompiles).also {
-        logger.info("TypstCompileService startet med maxConcurrentCompiles=$maxConcurrentCompiles")
-    }
-
     private fun typstCommand() = listOf(
+        // Start typst med lavere OS-prioritet (nice).
+        "nice", "-n", TYPST_NICE_INCREMENT,
         "typst", "compile",
         "--root", templateDir.toString(),
         "--pdf-standard", "a-3a",
@@ -55,22 +38,20 @@ open class TypstCompileService(
     )
 
     open suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
-        return compileSemaphore.withPermit {
-            when (val result: Execution = executeCompileProcess(writeLetter)) {
-                is Execution.Success ->
-                    PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
+        return when (val result: Execution = executeCompileProcess(writeLetter)) {
+            is Execution.Success ->
+                PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
 
-                is Execution.Failure.Compilation ->
-                    PDFCompilationResponse.Failure.Client(
-                        reason = "PDF compilation failed",
-                        output = null,
-                        error = result.error
-                    )
+            is Execution.Failure.Compilation ->
+                PDFCompilationResponse.Failure.Client(
+                    reason = "PDF compilation failed",
+                    output = null,
+                    error = result.error
+                )
 
-                is Execution.Failure.Execution -> {
-                    logger.error("typst command failed", result.cause)
-                    PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: ${typstCommand()}")
-                }
+            is Execution.Failure.Execution -> {
+                logger.error("typst command failed", result.cause)
+                PDFCompilationResponse.Failure.Server(reason = "Compilation process execution failed: ${typstCommand()}")
             }
         }
     }
@@ -83,17 +64,12 @@ open class TypstCompileService(
                     .directory(templateDir.toFile())
                     .start()
 
-                // Write letter content directly to stdin
                 process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
-                // Read stdout (PDF bytes) and stderr (error messages) concurrently
-                // to avoid deadlock when either buffer fills up
                 val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
                 val pdfBytes = stdoutDeferred.await()
 
-                // Both streams fully drained means the process has already exited;
-                // waitFor() returns immediately without scheduling async work.
                 val exitCode = process.waitFor()
 
                 if (exitCode == 0) {

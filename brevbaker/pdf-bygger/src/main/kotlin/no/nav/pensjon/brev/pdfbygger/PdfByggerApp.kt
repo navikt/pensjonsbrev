@@ -124,6 +124,11 @@ internal fun Application.setUp(typstCompileService: TypstCompileService) {
         }
 
         get("/isReady") {
+            // Default Ktor-dispatcher. Typst-subprosessene kjøres med `nice`
+            // (lavere OS-prioritet), så Ktor-tråder får prioritet og readiness
+            // svarer fortsatt kjapt selv ved høy compile-last. Hvis CPU likevel
+            // skulle bli så presset at responsen tregner, slår probe-timeouten
+            // inn og kubelet sheddes lasten – akkurat som ønsket.
             call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
     }

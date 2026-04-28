@@ -3,4 +3,3 @@ brevbaker-app: "pensjon-brevbaker"
 minReplicas: 2
 ingresses:
   - "https://pensjon-pdf-bygger.intern.dev.nav.no"
-maxConcurrentCompiles: "4"
