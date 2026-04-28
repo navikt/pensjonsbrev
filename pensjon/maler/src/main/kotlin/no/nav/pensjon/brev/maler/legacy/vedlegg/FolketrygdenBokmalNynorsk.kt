@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.EmptyVedleggData
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.text
@@ -91,7 +90,7 @@ val vedleggFolketrygdenBokmalNynorsk =
                 item {
                     text(
                         bokmal { +"Dekning av saksomkostninger - forvaltningsloven § 36" },
-                        nynorsk { +"Dekning av sakskostnader - forvaltningslova § 36" }, BOLD
+                        nynorsk { +"Dekning av sakskostnader - forvaltningslova § 36" }
                     )
                     newline()
                     text(
@@ -110,7 +109,7 @@ val vedleggFolketrygdenBokmalNynorsk =
                 item {
                     text(
                         bokmal { +"Fri rettshjelp" },
-                        nynorsk { +"Fri rettshjelp" }, BOLD
+                        nynorsk { +"Fri rettshjelp" }
                     )
                     newline()
                     text(
@@ -141,7 +140,7 @@ val vedleggFolketrygdenBokmalNynorsk =
                 item {
                     text(
                         bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
-                        nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." }, BOLD
+                        nynorsk { +"Tilbakekrevjing - folketrygdlova § 22-15 flg." }
                     )
                     newline()
                     text(
@@ -152,7 +151,7 @@ val vedleggFolketrygdenBokmalNynorsk =
                 item {
                     text(
                         bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
-                        nynorsk { +"Straffeansvar - folketrygdlova § 25-12" }, BOLD
+                        nynorsk { +"Straffeansvar - folketrygdlova § 25-12" }
                     )
                     newline()
                     text(

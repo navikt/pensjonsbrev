@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KLAGE_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.KONTAKT_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Vedtak
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalNynorsk
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -45,7 +46,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
     ) {
         title {
             text(
-                bokmal { +"Uførepensjon fra folketrygden - Melding om avslag" },
+                bokmal { +"Uførepensjon fra folketrygden - melding om avslag" },
                 nynorsk { +"Uførepensjon frå folketrygda - melding om avslag" }
             )
         }
@@ -53,12 +54,12 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
             paragraph {
                 text(
                     bokmal {
-                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst(
+                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avgjort den " + fritekst(
                             "Oppgi vedtaksdato"
                         ) + "."
                     },
                     nynorsk {
-                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avjort den " + fritekst(
+                        +"Kravet ditt av " + pesysData.kravMottattDato.format() + " om uførepensjon er avgjort den " + fritekst(
                             "Oppgi vedtaksdato"
                         ) + "."
                     }
@@ -70,12 +71,7 @@ object AvslagUfoerepensjon : RedigerbarTemplate<AvslagUfoerepensjonDto> {
                     nynorsk { +"Kravet er avslått, fordi vilkåra for å få uførepensjon ikkje er oppfylte i ditt tilfelle." }
                 )
             }
-            title1 {
-                text(
-                    bokmal { +"Begrunnelse for vedtaket" },
-                    nynorsk { +"Grunngiving for vedtaket" }
-                )
-            }
+            includePhrase(Vedtak.BegrunnelseOverskrift)
             paragraph {
                 text(
                     bokmal { +fritekst("Vedtaket er gjort etter folketrygdloven paragraf") },
