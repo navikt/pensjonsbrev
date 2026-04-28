@@ -92,7 +92,7 @@ val vedleggFolketrygdenBokmalEnglish =
                 item {
                     text(
                         bokmal { +"Dekning av saksomkostninger - forvaltningsloven § 36" },
-                        english { +"Cover for case costs - Section 36 of the Public Administration Act" }, BOLD
+                        english { +"Cover for case costs - Section 36 of the Public Administration Act" }
                     )
                     newline()
                     text(
@@ -111,7 +111,7 @@ val vedleggFolketrygdenBokmalEnglish =
                 item {
                     text(
                         bokmal { +"Fri rettshjelp" },
-                        english { +"Free legal aid" }, BOLD
+                        english { +"Free legal aid" }
                     )
                     newline()
                     text(
@@ -142,7 +142,7 @@ val vedleggFolketrygdenBokmalEnglish =
                 item {
                     text(
                         bokmal { +"Tilbakekreving - folketrygdloven § 22-15 flg." },
-                        english { +"Recovery - Sections 22-15 ff of the National Insurance Act" }, BOLD
+                        english { +"Recovery - Sections 22-15 ff of the National Insurance Act" }
                     )
                     newline()
                     text(
@@ -153,7 +153,7 @@ val vedleggFolketrygdenBokmalEnglish =
                 item {
                     text(
                         bokmal { +"Straffeansvar - folketrygdloven § 25-12" },
-                        english { +"Criminal liability - Section 25-12 of the National Insurance Act" }, BOLD
+                        english { +"Criminal liability - Section 25-12 of the National Insurance Act" }
                     )
                     newline()
                     text(
