@@ -18,7 +18,13 @@ import no.nav.pensjon.brev.ufore.maler.info.Honnorkort
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFU
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFURedigerbar
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesats
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosent
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosentRedigerbar
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesatsS
 import no.nav.pensjon.brev.ufore.maler.uforeavslag.*
 
@@ -27,6 +33,9 @@ object UfoereTemplates : AllTemplates {
         InfoEndretUforetrygdPgaInntekt,
         InfobrevLovendringer2026,
         VarselOmLavereMinstesats,
+        VarselOmLavereReduksjonsprosent,
+        VarselOmHoyereMinstesatsForIFU,
+        VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -85,6 +94,9 @@ object UfoereTemplates : AllTemplates {
         HvilendeRettMidlertidigOppHoer,
         Honnorkort,
         VarselOmLavereMinstesatsS,
+        VarselOmLavereReduksjonsprosentRedigerbar,
+        VarselOmHoyereMinstesatsForIFURedigerbar,
+        VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()
