@@ -2,7 +2,10 @@ package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.*
 
-abstract class TextOnlyPhrase<Lang : LanguageSupport> {
+
+abstract class TextOnlyPhrase<Lang : LanguageSupport> : AbstractTextOnlyPhrase<Typer.Auto, Lang>()
+
+abstract class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun TextOnlyScope<Lang, Unit>.template()
     fun apply(scope: TextOnlyScope<in Lang, *>) {
         TextOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -15,7 +18,9 @@ abstract class TextOnlyPhrase<Lang : LanguageSupport> {
     }
 }
 
-abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> {
+abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> : AbstractPlainTextOnlyPhrase<Typer.Auto, Lang>()
+
+abstract class AbstractPlainTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
 
     abstract fun PlainTextOnlyScope<Lang, Unit>.template()
 
@@ -34,7 +39,14 @@ abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> {
     private fun applyPlainTextScope() = PlainTextOnlyScope<Lang, Unit>().apply { template() }.elements
 }
 
-abstract class ParagraphPhrase<Lang : LanguageSupport> {
+sealed interface Typer {
+    object Redigerbar : Typer
+    object Auto : Typer
+}
+
+abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Typer.Auto, Lang>()
+
+abstract class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun ParagraphOnlyScope<Lang, Unit>.template()
     fun apply(scope: ParagraphOnlyScope<in Lang, *>) {
         ParagraphOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -42,7 +54,9 @@ abstract class ParagraphPhrase<Lang : LanguageSupport> {
     }
 }
 
-abstract class OutlinePhrase<Lang : LanguageSupport> {
+abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Typer.Auto, Lang>()
+
+abstract class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()
     fun apply(scope: OutlineOnlyScope<in Lang, *>) {
         OutlineOnlyScope<Lang, Unit>().apply { template() }.elements

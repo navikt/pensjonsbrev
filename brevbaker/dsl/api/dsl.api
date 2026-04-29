@@ -53,6 +53,33 @@ public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 	public static final fun formatTelefonnummerStandard (Ljava/lang/String;)Ljava/lang/String;
 }
 
+public abstract class no/nav/pensjon/brev/template/AbstractOutlinePhrase {
+	public fun <init> ()V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
+	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
+}
+
+public abstract class no/nav/pensjon/brev/template/AbstractParagraphPhrase {
+	public fun <init> ()V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
+	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
+}
+
+public abstract class no/nav/pensjon/brev/template/AbstractPlainTextOnlyPhrase {
+	public fun <init> ()V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/PlainTextOnlyScope;)V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
+	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/PlainTextOnlyScope;)V
+}
+
+public abstract class no/nav/pensjon/brev/template/AbstractTextOnlyPhrase {
+	public fun <init> ()V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)V
+	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
+	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
+}
+
 public final class no/nav/pensjon/brev/template/AlltidValgbartVedlegg : no/nav/pensjon/brev/template/HasModel, no/nav/pensjon/brev/template/StableHash {
 	public fun <init> (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brevbaker/api/model/AlltidValgbartVedleggKode;)V
 	public final fun asIncludeAttachment ()Lno/nav/pensjon/brev/template/IncludeAttachment;
@@ -825,24 +852,16 @@ public abstract class no/nav/pensjon/brev/template/Operation : no/nav/pensjon/br
 	public fun toString ()Ljava/lang/String;
 }
 
-public abstract class no/nav/pensjon/brev/template/OutlinePhrase {
+public abstract class no/nav/pensjon/brev/template/OutlinePhrase : no/nav/pensjon/brev/template/AbstractOutlinePhrase {
 	public fun <init> ()V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
-	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 }
 
-public abstract class no/nav/pensjon/brev/template/ParagraphPhrase {
+public abstract class no/nav/pensjon/brev/template/ParagraphPhrase : no/nav/pensjon/brev/template/AbstractParagraphPhrase {
 	public fun <init> ()V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
-	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
 }
 
-public abstract class no/nav/pensjon/brev/template/PlainTextOnlyPhrase {
+public abstract class no/nav/pensjon/brev/template/PlainTextOnlyPhrase : no/nav/pensjon/brev/template/AbstractPlainTextOnlyPhrase {
 	public fun <init> ()V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/PlainTextOnlyScope;)V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
-	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/PlainTextOnlyScope;)V
 }
 
 public final class no/nav/pensjon/brev/template/PreventToStringForExpressionException : java/lang/Exception {
@@ -945,11 +964,19 @@ public abstract class no/nav/pensjon/brev/template/TemplateValidationException :
 	public fun <init> (Ljava/lang/String;)V
 }
 
-public abstract class no/nav/pensjon/brev/template/TextOnlyPhrase {
+public abstract class no/nav/pensjon/brev/template/TextOnlyPhrase : no/nav/pensjon/brev/template/AbstractTextOnlyPhrase {
 	public fun <init> ()V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)V
-	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
-	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
+}
+
+public abstract interface class no/nav/pensjon/brev/template/Typer {
+}
+
+public final class no/nav/pensjon/brev/template/Typer$Auto : no/nav/pensjon/brev/template/Typer {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/Typer$Auto;
+}
+
+public final class no/nav/pensjon/brev/template/Typer$Redigerbar : no/nav/pensjon/brev/template/Typer {
+	public static final field INSTANCE Lno/nav/pensjon/brev/template/Typer$Redigerbar;
 }
 
 public abstract class no/nav/pensjon/brev/template/UnaryOperation : no/nav/pensjon/brev/template/Operation {
