@@ -86,12 +86,10 @@ export function gotoCoordinates(coordinates: Coordinates) {
   // caretPositionFromPoint() (supported by all except WebKit/Safari per 2025)
   // caretRangeFromPoint() (supported by all except Gecko/Firefox per 2025)
   // We should prioritize the non-deprecated caretPositionFromPoint,
-  // but will keep caretRangeFromPoint first until we resolve a component test issue
+  // but will keep caretRangeFromPoint as backup for wider support
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretRangeFromPoint
-  if (document.caretRangeFromPoint) {
-    range = document.caretRangeFromPoint(x, y);
-  } else if (document.caretPositionFromPoint) {
+  if (document.caretPositionFromPoint) {
     const position = document.caretPositionFromPoint(x, y);
     if (position === null) {
       console.warn("Could not get caret for position:", x, y);
@@ -100,6 +98,8 @@ export function gotoCoordinates(coordinates: Coordinates) {
     range = document.createRange();
     range.setStart(position.offsetNode, position.offset);
     range.collapse(true);
+  } else if (document.caretRangeFromPoint) {
+    range = document.caretRangeFromPoint(x, y);
   }
   if (range === null) {
     console.warn("Could not get caret for position:", x, y);

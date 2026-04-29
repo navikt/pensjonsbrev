@@ -1,3 +1,4 @@
+import { Global } from "@emotion/react";
 import { Box } from "@navikt/ds-react";
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
@@ -8,7 +9,6 @@ import { AppHeader } from "~/components/AppHeader";
 export const queryClient = new QueryClient();
 
 const isProd = process.env.NODE_ENV === "production";
-const { Global } = isProd ? { Global: () => null } : await import("@emotion/react");
 const TanStackRouterDevtools = isProd
   ? () => null
   : React.lazy(() =>
