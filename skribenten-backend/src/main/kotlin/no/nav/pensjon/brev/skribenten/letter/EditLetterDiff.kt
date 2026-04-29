@@ -11,81 +11,81 @@ import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 
 interface EditLetterDiff<Token : Any> {
-    fun tokenize(letter: Edit.Letter): Sequence<Token>
+    fun tokenize(letter: Edit.Letter): List<Token>
     fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>>
 
     fun diff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<DiffSegment>> =
         generateDiffSegments(
             shortestEditScript(
-                old = tokenize(old).toList(),
-                new = tokenize(new).toList(),
+                old = tokenize(old),
+                new = tokenize(new),
             )
         )
 }
 
 class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
-    override fun tokenize(letter: Edit.Letter): Sequence<Token> = object : EditLetterSequence<Token>() {
+    override fun tokenize(letter: Edit.Letter): List<Token> = object : EditLetterVisitor<Token>(letter) {
 
-        override suspend fun SequenceScope<Token>.visit(block: Edit.Block) {
-            yield(Token.Block(block.id, block.type))
+        override fun visit(block: Edit.Block) {
+            emit(Token.Block(block.id, block.type))
             block.content.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Literal) {
-            yield(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
-            yieldWords(content.editedText ?: content.text)
+        override fun visit(content: Edit.ParagraphContent.Text.Literal) {
+            emit(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
+            emitWords(content.editedText ?: content.text)
         }
 
-        override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.Variable) {
-            yield(Token.Text.Variable(content.id, content.fontType))
-            yieldWords(content.text)
+        override fun visit(content: Edit.ParagraphContent.Text.Variable) {
+            emit(Token.Text.Variable(content.id, content.fontType))
+            emitWords(content.text)
         }
 
-        override suspend fun SequenceScope<Token>.visit(content: Edit.ParagraphContent.Text.NewLine) {
-            yield(Token.NewLine(content.id))
+        override fun visit(content: Edit.ParagraphContent.Text.NewLine) {
+            emit(Token.NewLine(content.id))
         }
 
-        override suspend fun SequenceScope<Token>.visit(itemList: Edit.ParagraphContent.ItemList) {
-            yield(Token.ItemList(itemList.id, itemList.listType))
+        override fun visit(itemList: Edit.ParagraphContent.ItemList) {
+            emit(Token.ItemList(itemList.id, itemList.listType))
             itemList.items.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(item: Edit.ParagraphContent.ItemList.Item) {
-            yield(Token.Item(item.id))
+        override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
+            emit(Token.Item(item.id))
             item.content.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(table: Edit.ParagraphContent.Table) {
-            yield(Token.Table(table.id))
+        override fun visit(table: Edit.ParagraphContent.Table) {
+            emit(Token.Table(table.id))
             visit(table.header)
             table.rows.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(header: Edit.ParagraphContent.Table.Header) {
-            yield(Token.TableHeader(header.id))
+        override fun visit(header: Edit.ParagraphContent.Table.Header) {
+            emit(Token.TableHeader(header.id))
             header.colSpec.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
-            yield(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
+        override fun visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
+            emit(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
             visit(colSpec.headerContent)
         }
 
-        override suspend fun SequenceScope<Token>.visit(row: Edit.ParagraphContent.Table.Row) {
-            yield(Token.Row(row.id))
+        override fun visit(row: Edit.ParagraphContent.Table.Row) {
+            emit(Token.Row(row.id))
             row.cells.forEach { visit(it) }
         }
 
-        override suspend fun SequenceScope<Token>.visit(cell: Edit.ParagraphContent.Table.Cell) {
-            yield(Token.Cell(cell.id))
+        override fun visit(cell: Edit.ParagraphContent.Table.Cell) {
+            emit(Token.Cell(cell.id))
             cell.text.forEach { visit(it) }
         }
 
-        private suspend fun SequenceScope<Token>.yieldWords(text: String) =
-            text.split(' ').forEach { word -> yield(Token.Word(word)) }
+        private fun emitWords(text: String) =
+            text.split(' ').forEach { word -> emit(Token.Word(word)) }
 
-    }.build(letter)
+    }.build()
 
     override fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>> = Pair(
         generateDiffSegments(editScript.new, editScript.inserts),
