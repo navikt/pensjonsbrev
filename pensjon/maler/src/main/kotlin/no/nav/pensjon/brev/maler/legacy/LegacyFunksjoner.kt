@@ -113,7 +113,7 @@ fun Expression<PEgruppe10>.ut_tbu056v_51() = (
 fun Expression<PEgruppe10>.pe_ut_tbu601v_tbu604v(): Expression<Boolean> {
     val belopsendring = vedtaksbrev.safe { vedtaksdata }.safe { beregningsdata }.safe { beregningufore }.safe { belopsendring }
     return vedtaksbrev.safe { vedtaksdata }.safe { kravhode }.safe { kravarsaktype }.equalTo("endret_inntekt") and
-            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb }) or
+            (belopsendring.safe { barnetilleggfellesyk }.safe { belopgammelbtfb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggfellesyk }.safe { belopnybtfb.ifNull(Kroner(0)) }) or
                     belopsendring.safe { barnetilleggserkullyk }.safe { belopgammelbtsb.ifNull(Kroner(0)) }.notEqualTo(belopsendring.safe { barnetilleggserkullyk }.safe { belopnybtsb.ifNull(Kroner(0)) }))
 }
 

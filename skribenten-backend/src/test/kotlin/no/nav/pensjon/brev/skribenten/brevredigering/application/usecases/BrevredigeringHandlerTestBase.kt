@@ -78,7 +78,7 @@ abstract class BrevredigeringHandlerTestBase {
             letter.medSignatur(
                 saksbehandler = it.signerendeSaksbehandlere?.saksbehandler,
                 attestant = it.signerendeSaksbehandlere?.attesterendeSaksbehandler
-            )
+            ).medAnnenMottakerNavn(it.annenMottakerNavn)
         }
 
         brevbakerService.redigerbareMaler[Testbrevkoder.INFORMASJONSBREV] = informasjonsbrev
@@ -210,6 +210,13 @@ abstract class BrevredigeringHandlerTestBase {
                 signatur = (signatur as SignaturImpl).copy(
                     saksbehandlerNavn = saksbehandler,
                     attesterendeSaksbehandlerNavn = attestant
+                )
+            )
+
+        fun LetterMarkupImpl.medAnnenMottakerNavn(navn: String?) =
+            copy(
+                sakspart = (sakspart as LetterMarkupImpl.SakspartImpl).copy(
+                    annenMottakerNavn = navn,
                 )
             )
     }

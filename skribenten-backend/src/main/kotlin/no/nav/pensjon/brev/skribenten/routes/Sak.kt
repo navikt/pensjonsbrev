@@ -116,7 +116,7 @@ fun Route.sakRoute(
             val adresse = pensjonPersonDataService.hentKontaktadresse(sak.pid)
 
             if (adresse != null) {
-                call.respond(adresse)
+                call.respond(adresseTilDto(adresse))
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
@@ -138,5 +138,41 @@ fun Route.sakRoute(
         }
 
         sakBrev(brevmalService, p1Service, brevredigeringFacade, dto2ApiService)
+    }
+}
+
+private fun adresseTilDto(adresse: KontaktAdresseResponseDto) = KontaktAdresseDto(
+    adresseString = adresse.adresseString,
+    adresselinjer = adresse.adresselinjer,
+    type = when (adresse.type) {
+        KontaktAdresseResponseDto.Adressetype.MATRIKKELADRESSE -> KontaktAdresseDto.Adressetype.MATRIKKELADRESSE
+        KontaktAdresseResponseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.POSTBOKSADRESSE -> KontaktAdresseDto.Adressetype.POSTBOKSADRESSE
+        KontaktAdresseResponseDto.Adressetype.REGOPPSLAG_ADRESSE -> KontaktAdresseDto.Adressetype.REGOPPSLAG_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UKJENT_BOSTED -> KontaktAdresseDto.Adressetype.UKJENT_BOSTED
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.VEGADRESSE -> KontaktAdresseDto.Adressetype.VEGADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_PERSON_POSTADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE
+    }
+)
+
+data class KontaktAdresseDto(
+    val adresseString: String,
+    val adresselinjer: List<String>,
+    val type: Adressetype
+) {
+    enum class Adressetype {
+        MATRIKKELADRESSE,
+        POSTADRESSE_I_FRITT_FORMAT,
+        POSTBOKSADRESSE,
+        REGOPPSLAG_ADRESSE,
+        UKJENT_BOSTED,
+        UTENLANDSK_ADRESSE,
+        UTENLANDSK_ADRESSE_I_FRITT_FORMAT,
+        VEGADRESSE,
+        VERGE_PERSON_POSTADRESSE,
+        VERGE_SAMHANDLER_POSTADRESSE,
     }
 }

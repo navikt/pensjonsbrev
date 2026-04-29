@@ -470,12 +470,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                                 bokmal {+"Du har vært medlem av folketrygden fra " + trygdetid.fom.format() + " til " + trygdetid.tom.format() + ". " +
                                         "Vi har fått opplyst at du har vært medlem av den " + fritekst("nasjonalitet") + " trygdeordningen fra " + fritekst("fom") + " til " + fritekst("tom") + ". " +
                                         "Uføretidspunktet ditt er satt til " + uforetidspunkt.format() + ". " +
-                                        "Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i fem år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden."
+                                        "Du har derfor vært medlem av folketrygden og den " + fritekst("nasjonalitet") + " trygdeordningen sammenhengende i " + pe.aars_trygdetid() + " år eller mer fram til uføretidspunktet ditt. Fordi vi har lagt sammen perioder med medlemskap i folketrygden og i " + fritekst("land") + ", får du unntak fra vilkåret om medlemskap i folketrygden."
                                 },
                                 nynorsk {+"Du har vore medlem av den norske folketrygda frå " + trygdetid.fom.format() + " til " + trygdetid.tom.format() + ". " +
                                         "Vi har fått opplyst at du har vore medlem av den " + fritekst("Nasjonalitet") + " trygdeordninga frå " + fritekst("fom") + " til " + fritekst("tom") + ". " +
                                         "Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". " +
-                                        "Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i fem år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda."
+                                        "Du har derfor vore medlem av den norske folketrygda og den " + fritekst("Nasjonalitet") + " trygdeordninga samanhengande i " + pe.aars_trygdetid() + " år eller meir fram til uføretidspunktet ditt. Fordi vi har lagt saman periodar med medlemstid i Noreg og i " + fritekst("land") + ", får du unntak frå vilkåret om medlemskap i folketrygda."
                                 },
                             )
                         }

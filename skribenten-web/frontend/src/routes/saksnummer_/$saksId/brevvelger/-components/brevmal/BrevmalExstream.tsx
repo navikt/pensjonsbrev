@@ -10,6 +10,7 @@ import { orderExstreamLetter, orderLetterKeys } from "~/api/skribenten-api-endpo
 import { Divider } from "~/components/Divider";
 import { type LetterMetadata, type OrderExstreamLetterRequest, type SpraakKode } from "~/types/apiTypes";
 import { type Nullable } from "~/types/Nullable";
+import { trackEvent } from "~/utils/umami";
 
 import { Route, type SubmitTemplateOptions } from "../../route";
 import EndreMottaker from "../endreMottaker/EndreMottaker";
@@ -45,6 +46,11 @@ export default function BrevmalForExstream({
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
     onSuccess: (callbackUrl) => {
+      trackEvent("brev opprettet", {
+        brevkode: letterTemplate.id,
+        brevtittel: letterTemplate.name,
+        brevtype: "exstream",
+      });
       window.open(callbackUrl);
     },
     mutationKey: orderLetterKeys.brevsystem("exstream"),

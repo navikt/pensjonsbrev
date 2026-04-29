@@ -32,7 +32,9 @@ class BrevdataService(private val penClient: PenClient, private val samhandlerSe
         return pesysData.copy(
             felles = pesysData.felles
                 .medSignerendeSaksbehandlere(signatur)
-                .medAnnenMottakerNavn(mottaker?.annenMottakerNavn())
+                .let {
+                    if (mottaker != null) it.medAnnenMottakerNavn(mottaker.annenMottakerNavn()) else it
+                }
         )
     }
 
