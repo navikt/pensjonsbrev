@@ -15,67 +15,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
 
 class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
-    override fun tokenize(letter: Edit.Letter): List<Token> = object : EditLetterVisitor<Token>(letter) {
-
-        override fun visit(block: Edit.Block) {
-            emit(Token.Block(block.id, block.type))
-            block.content.forEach { visit(it) }
-        }
-
-        override fun visit(content: Edit.ParagraphContent.Text.Literal) {
-            emit(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
-            emitWords(content.editedText ?: content.text)
-        }
-
-        override fun visit(content: Edit.ParagraphContent.Text.Variable) {
-            emit(Token.Text.Variable(content.id, content.fontType))
-            emitWords(content.text)
-        }
-
-        override fun visit(content: Edit.ParagraphContent.Text.NewLine) {
-            emit(Token.NewLine(content.id))
-        }
-
-        override fun visit(itemList: Edit.ParagraphContent.ItemList) {
-            emit(Token.ItemList(itemList.id, itemList.listType))
-            itemList.items.forEach { visit(it) }
-        }
-
-        override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
-            emit(Token.Item(item.id))
-            item.content.forEach { visit(it) }
-        }
-
-        override fun visit(table: Edit.ParagraphContent.Table) {
-            emit(Token.Table(table.id))
-            visit(table.header)
-            table.rows.forEach { visit(it) }
-        }
-
-        override fun visit(header: Edit.ParagraphContent.Table.Header) {
-            emit(Token.TableHeader(header.id))
-            header.colSpec.forEach { visit(it) }
-        }
-
-        override fun visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
-            emit(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
-            visit(colSpec.headerContent)
-        }
-
-        override fun visit(row: Edit.ParagraphContent.Table.Row) {
-            emit(Token.Row(row.id))
-            row.cells.forEach { visit(it) }
-        }
-
-        override fun visit(cell: Edit.ParagraphContent.Table.Cell) {
-            emit(Token.Cell(cell.id))
-            cell.text.forEach { visit(it) }
-        }
-
-        private fun emitWords(text: String) =
-            text.split(' ').forEach { word -> emit(Token.Word(word)) }
-
-    }.build()
+    override fun tokenize(letter: Edit.Letter): List<Token> = Tokenizer(letter).build()
 
     override fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>> = Pair(
         generateDiffSegments(editScript.new, editScript.inserts),
@@ -186,5 +126,66 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
                     is Token.NewLine -> emptyList()
                 }
             }
+    }
+
+    private class Tokenizer(letter: Edit.Letter) : EditLetterVisitor<Token>(letter) {
+
+        override fun visit(block: Edit.Block) {
+            emit(Token.Block(block.id, block.type))
+            block.content.forEach { visit(it) }
+        }
+
+        override fun visit(content: Edit.ParagraphContent.Text.Literal) {
+            emit(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
+            emitWords(content.editedText ?: content.text)
+        }
+
+        override fun visit(content: Edit.ParagraphContent.Text.Variable) {
+            emit(Token.Text.Variable(content.id, content.fontType))
+            emitWords(content.text)
+        }
+
+        override fun visit(content: Edit.ParagraphContent.Text.NewLine) {
+            emit(Token.NewLine(content.id))
+        }
+
+        override fun visit(itemList: Edit.ParagraphContent.ItemList) {
+            emit(Token.ItemList(itemList.id, itemList.listType))
+            itemList.items.forEach { visit(it) }
+        }
+
+        override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
+            emit(Token.Item(item.id))
+            item.content.forEach { visit(it) }
+        }
+
+        override fun visit(table: Edit.ParagraphContent.Table) {
+            emit(Token.Table(table.id))
+            visit(table.header)
+            table.rows.forEach { visit(it) }
+        }
+
+        override fun visit(header: Edit.ParagraphContent.Table.Header) {
+            emit(Token.TableHeader(header.id))
+            header.colSpec.forEach { visit(it) }
+        }
+
+        override fun visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
+            emit(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
+            visit(colSpec.headerContent)
+        }
+
+        override fun visit(row: Edit.ParagraphContent.Table.Row) {
+            emit(Token.Row(row.id))
+            row.cells.forEach { visit(it) }
+        }
+
+        override fun visit(cell: Edit.ParagraphContent.Table.Cell) {
+            emit(Token.Cell(cell.id))
+            cell.text.forEach { visit(it) }
+        }
+
+        private fun emitWords(text: String) =
+            text.split(' ').forEach { word -> emit(Token.Word(word)) }
     }
 }
