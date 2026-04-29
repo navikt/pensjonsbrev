@@ -4,8 +4,8 @@ import { expect, type Page, test } from "@playwright/test";
 
 import { type BrevInfo, Distribusjonstype } from "~/types/brev";
 
-import { nyBrevInfo } from "../utils/brevredigeringTestUtils";
-import { setupSakStubs } from "./utils/helpers";
+import { nyBrevInfo } from "../../utils/brevredigeringTestUtils";
+import { setupSakStubs } from "../utils/helpers";
 
 test.describe("Brevbehandler", () => {
   const kladdBrev = nyBrevInfo({
