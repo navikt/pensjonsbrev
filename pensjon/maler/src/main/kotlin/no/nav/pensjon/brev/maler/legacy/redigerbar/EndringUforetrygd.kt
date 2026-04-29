@@ -1063,8 +1063,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg<EndringUforetrygd>(pesysData.nyeAvslagBarnetillegg))
-            includePhrase(Ufoeretrygd.OpphorBarnetillegg<EndringUforetrygd>(pesysData.nyeOpphorteBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.nyeOpphorteBarnetillegg))
 
             title1 {
                 text(

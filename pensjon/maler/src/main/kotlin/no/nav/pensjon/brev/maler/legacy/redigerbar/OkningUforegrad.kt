@@ -1667,7 +1667,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                     )
                 }
             }
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg<OkningUforegrad>(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage)

@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.template.dsl.*
 
 abstract class TextOnlyPhrase<Lang : LanguageSupport> : AbstractTextOnlyPhrase<Typer.Auto, Lang>()
 
-abstract class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun TextOnlyScope<Lang, Unit>.template()
     fun apply(scope: TextOnlyScope<in Lang, *>) {
         TextOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -20,7 +20,7 @@ abstract class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
 
 abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> : AbstractPlainTextOnlyPhrase<Typer.Auto, Lang>()
 
-abstract class AbstractPlainTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractPlainTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
 
     abstract fun PlainTextOnlyScope<Lang, Unit>.template()
 
@@ -46,7 +46,9 @@ sealed interface Typer {
 
 abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Typer.Auto, Lang>()
 
-abstract class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
+abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Typer.Redigerbar, Lang>(), RedigerbarFrase
+
+sealed class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun ParagraphOnlyScope<Lang, Unit>.template()
     fun apply(scope: ParagraphOnlyScope<in Lang, *>) {
         ParagraphOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -56,7 +58,13 @@ abstract class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
 
 abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Typer.Auto, Lang>()
 
-abstract class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
+abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Typer.Redigerbar, Lang>(), RedigerbarFrase {
+    fun ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
+        phrase.apply(this)
+    }
+}
+
+sealed class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()
     fun apply(scope: OutlineOnlyScope<in Lang, *>) {
         OutlineOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -64,7 +72,7 @@ abstract class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
     }
 }
 
-interface RedigerbarPhrase<T : RedigerbarTemplate<*>> {
+internal interface RedigerbarFrase {
     fun TemplateGlobalScope<*>.fritekst(beskrivelse: String): Fritekst = beskrivelse.takeIf { it.trim().isNotEmpty() }
         ?.let { Fritekst(it) }
         ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")

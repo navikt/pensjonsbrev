@@ -54,19 +54,16 @@ public final class no/nav/pensjon/brev/model/GenerellFormattingKt {
 }
 
 public abstract class no/nav/pensjon/brev/template/AbstractOutlinePhrase {
-	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;)V
 }
 
 public abstract class no/nav/pensjon/brev/template/AbstractParagraphPhrase {
-	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
 }
 
 public abstract class no/nav/pensjon/brev/template/AbstractPlainTextOnlyPhrase {
-	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;)V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/PlainTextOnlyScope;)V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
@@ -74,7 +71,6 @@ public abstract class no/nav/pensjon/brev/template/AbstractPlainTextOnlyPhrase {
 }
 
 public abstract class no/nav/pensjon/brev/template/AbstractTextOnlyPhrase {
-	public fun <init> ()V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/ParagraphScope;)V
 	public final fun apply (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
 	public abstract fun template (Lno/nav/pensjon/brev/template/dsl/TextOnlyScope;)V
@@ -881,14 +877,17 @@ public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/
 	public final synthetic fun unbox-impl ()Lno/nav/pensjon/brev/template/Expression;
 }
 
-public abstract interface class no/nav/pensjon/brev/template/RedigerbarPhrase {
+public abstract class no/nav/pensjon/brev/template/RedigerbarOutlinePhrase : no/nav/pensjon/brev/template/AbstractOutlinePhrase, no/nav/pensjon/brev/template/RedigerbarFrase {
+	public fun <init> ()V
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+	public final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public final class no/nav/pensjon/brev/template/RedigerbarPhrase$DefaultImpls {
-	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarPhrase;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
-	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarPhrase;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : no/nav/pensjon/brev/template/AbstractParagraphPhrase, no/nav/pensjon/brev/template/RedigerbarFrase {
+	public fun <init> ()V
+	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
 public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate {
@@ -898,6 +897,7 @@ public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate 
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;
 	public abstract fun getKategori ()Lno/nav/pensjon/brev/api/model/TemplateDescription$IBrevkategori;
 	public abstract fun getSakstyper ()Ljava/util/Set;
+	public fun includePhrase (Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
@@ -906,6 +906,7 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun description (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public static fun getFeatureToggle (Lno/nav/pensjon/brev/template/RedigerbarTemplate;)Lno/nav/pensjon/brev/api/model/FeatureToggle;
+	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 

@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
+import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -63,6 +64,10 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
     fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
+
+    fun <Lang : LanguageSupport> OutlineOnlyScope<Lang, LetterData>.includePhrase(phrase: RedigerbarOutlinePhrase<Lang>) {
+        phrase.apply(this)
+    }
 }
 
 sealed interface SpesialkonstruksjonIMal
