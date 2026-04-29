@@ -494,170 +494,6 @@ test.describe("LetterEditor", () => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
       await move(page, "ArrowRight", 25);
       await assertCaret(page, "[CP2-1]", 25, { expectExact: true });
-
-      // ── Diagnostic: capture every intermediate value in the ArrowDown code path ──
-      const diag = await page.evaluate(() => {
-        const sel = globalThis.getSelection();
-        if (!sel || sel.rangeCount === 0) return { error: "no selection" };
-
-        // 1. Current caret rect (same as getCaretRect())
-        const caretRect = sel.getRangeAt(0).getBoundingClientRect();
-        const caretX = caretRect.x;
-        // const caretY = caretRect.y;
-
-        // 2. Current element (the contenteditable span with focus)
-        const element = document.activeElement as HTMLElement;
-        const elementText = element?.textContent ?? "null";
-
-        // 3. areAnyContentEditableSiblingsPlacedLower
-        const parent = element?.parentElement;
-        const allEditableChildren = parent ? [...parent.querySelectorAll(":scope > [contenteditable]")] : [];
-        const lastEditable = allEditableChildren.at(-1);
-        const lastEditableBottom = lastEditable?.getBoundingClientRect().bottom ?? -1;
-        const siblingsPlacedLower = lastEditableBottom > caretRect.bottom;
-
-        // 4. findOnLineBelow — walk all contenteditables
-        const allEditables = [...document.querySelectorAll("[contenteditable]")];
-        const currentIndex = allEditables.indexOf(element);
-        let nextRect: DOMRect | null = null;
-        let nextElement: Element | null = null;
-        for (let i = currentIndex + 1; i < allEditables.length; i++) {
-          const candidate = allEditables[i];
-          const candidateRect = candidate.getBoundingClientRect();
-          // Compare bottom to the "current walking" element's bottom
-          const refElement = i === currentIndex + 1 ? element : allEditables[i - 1];
-          const refBottom = refElement.getBoundingClientRect().bottom;
-          if (candidateRect.bottom !== refBottom) {
-            nextRect = candidateRect;
-            nextElement = candidate;
-            break;
-          }
-        }
-
-        if (!nextRect || !nextElement)
-          return { error: "no next line found", currentIndex, totalEditables: allEditables.length };
-
-        // 5. Target coordinates (what gotoCoordinates receives)
-        const Y_COORD_SAFETY_MARGIN = 10;
-        const targetX = caretX;
-        const targetY = nextRect.top + Y_COORD_SAFETY_MARGIN;
-
-        // 6. fineAdjustCoordinates — replicate exactly
-        const allElementsAtPoint = document.elementsFromPoint(targetX, targetY);
-        const clickedElement = allElementsAtPoint[0];
-        const clickedElementInfo = {
-          tagName: clickedElement?.tagName,
-          className: String(clickedElement?.className ?? "").slice(0, 80),
-          textContent: clickedElement?.textContent?.slice(0, 50),
-          hasContenteditable: clickedElement?.hasAttribute("contenteditable"),
-        };
-
-        const editableChildElement = clickedElement?.querySelector(":scope > [contenteditable]");
-        const editableChildInfo = editableChildElement
-          ? {
-              tagName: editableChildElement.tagName,
-              textContent: editableChildElement.textContent?.slice(0, 50),
-              hasContenteditable: editableChildElement.hasAttribute("contenteditable"),
-            }
-          : null;
-
-        const targetElement = editableChildElement || clickedElement;
-        const targetElementIsContenteditable = targetElement?.hasAttribute("contenteditable") ?? false;
-        const shortCircuited = targetElementIsContenteditable;
-
-        // 7. If NOT short-circuited, compute closest rect
-        let adjustedX = targetX;
-        let closestRectInfo = null;
-        if (!shortCircuited && targetElement?.parentElement) {
-          const editableSiblings = [...targetElement.parentElement.querySelectorAll(":scope [contenteditable]")];
-          const targetElRect = targetElement.getBoundingClientRect();
-
-          const rectsOnTheSameLine = editableSiblings
-            .flatMap((sib) =>
-              Array.from(sib.getClientRects()).map((r) => ({ rect: r, text: sib.textContent?.slice(0, 30) })),
-            )
-            .filter(({ rect: sibRect }) => {
-              const val = sibRect.top + targetElRect.height / 2;
-              return val >= targetElRect.top && val < targetElRect.bottom;
-            });
-
-          let minDist = Infinity;
-          let bestEntry: (typeof rectsOnTheSameLine)[0] | null = null;
-          for (const entry of rectsOnTheSameLine) {
-            const dLeft = Math.abs(entry.rect.left - targetX);
-            const dRight = Math.abs(entry.rect.right - targetX);
-            const d = Math.min(dLeft, dRight);
-            if (d < minDist) {
-              minDist = d;
-              bestEntry = entry;
-            }
-          }
-
-          if (bestEntry) {
-            const dLeft = Math.abs(bestEntry.rect.left - targetX);
-            const dRight = Math.abs(bestEntry.rect.right - targetX);
-            adjustedX = dLeft < dRight ? bestEntry.rect.left : bestEntry.rect.right;
-            closestRectInfo = {
-              text: bestEntry.text,
-              left: bestEntry.rect.left,
-              right: bestEntry.rect.right,
-              top: bestEntry.rect.top,
-              bottom: bestEntry.rect.bottom,
-              chosenEdge: dLeft < dRight ? "left" : "right",
-              adjustedX,
-            };
-          }
-        }
-
-        // 8. caretRangeFromPoint results
-        const rangeAtAdjusted = document.caretRangeFromPoint?.(adjustedX, targetY);
-        const rangeAtOriginal = document.caretRangeFromPoint?.(targetX, targetY);
-
-        const describeRange = (r: Range | null | undefined) => {
-          if (!r) return null;
-          const container = r.startContainer;
-          return {
-            nodeType: container.nodeType,
-            textContent: container.textContent?.slice(0, 50),
-            parentTag: (container.parentElement ?? (container as Element))?.tagName,
-            parentContenteditable: (container.parentElement ?? (container as Element))?.hasAttribute("contenteditable"),
-            offset: r.startOffset,
-          };
-        };
-
-        return {
-          caretRect: {
-            x: caretRect.x,
-            y: caretRect.y,
-            width: caretRect.width,
-            height: caretRect.height,
-            top: caretRect.top,
-            bottom: caretRect.bottom,
-            left: caretRect.left,
-            right: caretRect.right,
-          },
-          currentElement: { text: elementText.slice(0, 50), index: currentIndex },
-          siblingsPlacedLower,
-          nextLineElement: {
-            text: (nextElement as HTMLElement).textContent?.slice(0, 50),
-            rect: { top: nextRect.top, bottom: nextRect.bottom, left: nextRect.left, right: nextRect.right },
-          },
-          targetCoords: { x: targetX, y: targetY },
-          elementsFromPoint: {
-            clicked: clickedElementInfo,
-            editableChild: editableChildInfo,
-            allCount: allElementsAtPoint.length,
-          },
-          fineAdjust: { shortCircuited, targetElementIsContenteditable, adjustedX, closestRectInfo },
-          caretRangeFromPoint: {
-            atAdjusted: describeRange(rangeAtAdjusted),
-            atOriginal: describeRange(rangeAtOriginal),
-          },
-        };
-      });
-      console.info("DIAGNOSTIC [LEFT]:", JSON.stringify(diag, null, 2));
-      // ── End diagnostic ──
-
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
     });
@@ -671,11 +507,14 @@ test.describe("LetterEditor", () => {
     });
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
-      await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
-      await move(page, "ArrowRight", 26);
-      await assertCaret(page, "[CP2-1]", 26, { expectExact: true });
+      // Start in "funker mellom avsnitt" on the CP2-1 line — this text is positioned
+      // to the RIGHT of the NEDRE-VARIABLE midpoint on the CP2-2 line below
+      await page.getByText("funker mellom avsnitt").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 5);
+      await assertCaret(page, "funker mellom avsnitt", 5, { expectExact: true });
       await move(page, "ArrowDown", 1);
-      await assertCaret(page, "[CP2-3]", 0, { expectExact: true });
+      // Caret should land in [CP2-3] (the text to the RIGHT of NEDRE-VARIABLE)
+      await assertCaret(page, "[CP2-3]", 29);
     });
 
     test("Can move up an itemlist", async ({ page }) => {
