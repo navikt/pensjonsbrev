@@ -2,6 +2,7 @@ import { type Draft } from "immer";
 
 import {
   addElements,
+  applyTableSeparatorNormalization,
   isAtEndOfItemList,
   isAtEndOfTable,
   isAtSameBlockContent,
@@ -134,6 +135,13 @@ export function deleteSelectionRecipe(draft: LetterEditorState, selection: Selec
       mergeRecipe(draft, indexAfterDeletion, MergeTarget.NEXT);
     }
   }
+
+  // A selection delete may have removed an empty literal that sat between two
+  // tables, or the trailing literal after the last table. Run the same
+  // normalization we use when loading a letter so the user is never left with
+  // adjacent tables or a table at the very end with no caret target.
+  applyTableSeparatorNormalization(redigertBrev);
+
   draft.saveStatus = "DIRTY";
 }
 
@@ -277,53 +285,60 @@ function deleteInTable(
     // entire table is selected
     removeElements(start.contentIndex, 1, parent);
     return true;
-  } else if (end) {
-    // selection ends in same table as it starts
-    if (isAtSameTableCell(start, end)) {
-      // at TextContent in same table cell
-      const startCell =
-        start.rowIndex === -1
-          ? table.header.colSpec[start.cellIndex].headerContent
-          : table.rows[start.rowIndex].cells[start.cellIndex];
+  } else if (end && isAtSameTableCell(start, end)) {
+    // at TextContent in same table cell
+    const startCell =
+      start.rowIndex === -1
+        ? table.header.colSpec[start.cellIndex].headerContent
+        : table.rows[start.rowIndex].cells[start.cellIndex];
 
-      removeInTextContentParent(
-        { content: startCell.text, deletedContent: [], id: startCell.id },
-        { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
-        { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
-      );
-    } else {
-      for (let r = start.rowIndex; r <= end.rowIndex; r++) {
-        const cells = r === -1 ? table.header.colSpec.map((spec) => spec.headerContent) : table.rows[r].cells;
+    removeInTextContentParent(
+      { content: startCell.text, deletedContent: [], id: startCell.id },
+      { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
+      { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
+    );
+  } else {
+    // selection spans multiple cells, or extends past the end of the table when end is omitted
+    clearTableRange(table, start, end);
+  }
+  return false;
+}
 
-        const startCellIndex = r === start.rowIndex ? start.cellIndex : 0;
-        const endCellIndex = r === end.rowIndex ? end.cellIndex : cells.length - 1;
-        for (let c = startCellIndex; c <= endCellIndex; c++) {
-          const cell = cells[c];
-          if (r === start.rowIndex && c === start.cellIndex) {
-            // first cell in selection, remove from start position
-            removeInTextContentParent(
-              { content: cell.text, deletedContent: [], id: cell.id },
-              { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
-            );
-          } else if (r === end.rowIndex && c === end.cellIndex) {
-            // last cell in selection, remove up to end position
-            removeInTextContentParent(
-              { content: cell.text, deletedContent: [], id: cell.id },
-              { contentIndex: 0, cursorPosition: 0 },
-              { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
-            );
-          } else {
-            // middle cells, remove everything
-            removeInTextContentParent(
-              { content: cell.text, deletedContent: [], id: cell.id },
-              { contentIndex: 0, cursorPosition: 0 },
-            );
-          }
-        }
+function clearTableRange(
+  table: Draft<Table>,
+  start: TableCellIndex & { cursorPosition: number },
+  end?: TableCellIndex & { cursorPosition: number },
+) {
+  const lastRowIndex = end ? end.rowIndex : table.rows.length - 1;
+  for (let r = start.rowIndex; r <= lastRowIndex; r++) {
+    const cells = r === -1 ? table.header.colSpec.map((spec) => spec.headerContent) : table.rows[r].cells;
+
+    const startCellIndex = r === start.rowIndex ? start.cellIndex : 0;
+    const endCellIndex = end && r === end.rowIndex ? end.cellIndex : cells.length - 1;
+    for (let c = startCellIndex; c <= endCellIndex; c++) {
+      const cell = cells[c];
+      if (r === start.rowIndex && c === start.cellIndex) {
+        // first cell in selection, remove from start position
+        removeInTextContentParent(
+          { content: cell.text, deletedContent: [], id: cell.id },
+          { contentIndex: start.cellContentIndex, cursorPosition: start.cursorPosition },
+        );
+      } else if (end && r === end.rowIndex && c === end.cellIndex) {
+        // last cell in selection, remove up to end position
+        removeInTextContentParent(
+          { content: cell.text, deletedContent: [], id: cell.id },
+          { contentIndex: 0, cursorPosition: 0 },
+          { contentIndex: end.cellContentIndex, cursorPosition: end.cursorPosition },
+        );
+      } else {
+        // middle cells, remove everything
+        removeInTextContentParent(
+          { content: cell.text, deletedContent: [], id: cell.id },
+          { contentIndex: 0, cursorPosition: 0 },
+        );
       }
     }
   }
-  return false;
 }
 
 type ContentIndex<T extends Table | ItemList> = T extends ItemList ? ItemContentIndex : TableCellIndex;
