@@ -492,8 +492,8 @@ test.describe("LetterEditor", () => {
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [LEFT]", async ({ page }) => {
       await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
-      await move(page, "ArrowRight", 25);
-      await assertCaret(page, "[CP2-1]", 25, { expectExact: true });
+      await move(page, "ArrowRight", 27);
+      await assertCaret(page, "[CP2-1]", 27, { expectExact: true });
       await move(page, "ArrowDown", 1);
       await assertCaret(page, "[CP2-2]", 17, { expectExact: true });
     });
@@ -507,14 +507,11 @@ test.describe("LetterEditor", () => {
     });
 
     test("ArrowDown moves between paragraphs and to the nearest side of a variable [RIGHT]", async ({ page }) => {
-      // Start in "funker mellom avsnitt" on the CP2-1 line — this text is positioned
-      // to the RIGHT of the NEDRE-VARIABLE midpoint on the CP2-2 line below
-      await page.getByText("funker mellom avsnitt").click({ position: { x: 0, y: 0 } });
-      await move(page, "ArrowRight", 5);
-      await assertCaret(page, "funker mellom avsnitt", 5, { expectExact: true });
+      await page.getByText("CP2-1").click({ position: { x: 0, y: 0 } });
+      await move(page, "ArrowRight", 28);
+      await assertCaret(page, "[CP2-1]", 28, { expectExact: true });
       await move(page, "ArrowDown", 1);
-      // Caret should land in [CP2-3] (the text to the RIGHT of NEDRE-VARIABLE)
-      await assertCaret(page, "[CP2-3]", 29);
+      await assertCaret(page, "[CP2-3]", 0, { expectExact: true });
     });
 
     test("Can move up an itemlist", async ({ page }) => {
