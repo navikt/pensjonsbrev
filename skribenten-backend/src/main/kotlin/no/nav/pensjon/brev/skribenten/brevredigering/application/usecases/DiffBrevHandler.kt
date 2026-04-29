@@ -25,10 +25,10 @@ class DiffBrevHandler(
         val brev = BrevredigeringEntity.findById(request.brevId) ?: return null
 
         val pesysdata = brevdataService.hentBrevdata(brev)
-        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
+        val rendretBrev = brevmalService.renderMarkup(brev, pesysdata).markup.toEdit()
 
-        return EditLetterWordDiff().diff(old = rendretBrev.markup.toEdit(), new = request.redigertBrev).let { (inserts, deletes) ->
-            success(Response(inserts = inserts, deletes = deletes, rendretBrev = rendretBrev.markup.toEdit()))
+        return EditLetterWordDiff().diff(old = rendretBrev, new = request.redigertBrev).let { (inserts, deletes) ->
+            success(Response(inserts = inserts, deletes = deletes, rendretBrev = rendretBrev))
         }
     }
 
