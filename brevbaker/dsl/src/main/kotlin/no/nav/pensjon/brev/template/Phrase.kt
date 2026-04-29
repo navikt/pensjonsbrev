@@ -53,11 +53,7 @@ sealed class AbstractParagraphPhrase<Lang : LanguageSupport> {
 
 abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>()
 
-abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), DslExtensionForRedigerbareBrev {
-    fun ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
-        phrase.apply(this)
-    }
-}
+abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), DslExtensionForRedigerbareBrev
 
 sealed class AbstractOutlinePhrase<Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()

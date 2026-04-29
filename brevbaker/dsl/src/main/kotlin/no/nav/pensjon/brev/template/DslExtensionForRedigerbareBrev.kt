@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.template
 
+import no.nav.pensjon.brev.template.dsl.ParagraphOnlyScope
 import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 
 sealed interface DslExtensionForRedigerbareBrev {
@@ -8,4 +9,8 @@ sealed interface DslExtensionForRedigerbareBrev {
         ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
 
     fun TemplateGlobalScope<*>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
+
+    fun <Lang : LanguageSupport> ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
+        phrase.apply(this)
+    }
 }
