@@ -322,6 +322,16 @@ public final class no/nav/pensjon/brev/template/DateFormatterKt {
 	public static final fun dateFormatter (Lno/nav/pensjon/brev/template/Language;Ljava/time/format/FormatStyle;)Ljava/time/format/DateTimeFormatter;
 }
 
+public abstract interface class no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
+	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev$DefaultImpls {
+	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
+	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
 public abstract class no/nav/pensjon/brev/template/Element : no/nav/pensjon/brev/template/StableHash {
 }
 
@@ -877,30 +887,20 @@ public final class no/nav/pensjon/brev/template/RedigerbarData : no/nav/pensjon/
 	public final synthetic fun unbox-impl ()Lno/nav/pensjon/brev/template/Expression;
 }
 
-public abstract interface class no/nav/pensjon/brev/template/RedigerbarFrase {
-	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
-	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public final class no/nav/pensjon/brev/template/RedigerbarFrase$DefaultImpls {
-	public static fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/RedigerbarFrase;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
-	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarFrase;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public abstract class no/nav/pensjon/brev/template/RedigerbarOutlinePhrase : no/nav/pensjon/brev/template/AbstractOutlinePhrase, no/nav/pensjon/brev/template/RedigerbarFrase {
+public abstract class no/nav/pensjon/brev/template/RedigerbarOutlinePhrase : no/nav/pensjon/brev/template/AbstractOutlinePhrase, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
 	public fun <init> ()V
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public final fun includePhrase (Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : no/nav/pensjon/brev/template/AbstractParagraphPhrase, no/nav/pensjon/brev/template/RedigerbarFrase {
+public abstract class no/nav/pensjon/brev/template/RedigerbarParagraphPhrase : no/nav/pensjon/brev/template/AbstractParagraphPhrase, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
 	public fun <init> ()V
 	public fun fritekst-8M4hbz4 (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Ljava/lang/String;)Ljava/lang/String;
 	public fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
 }
 
-public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate, no/nav/pensjon/brev/template/RedigerbarFrase {
+public abstract interface class no/nav/pensjon/brev/template/RedigerbarTemplate : no/nav/pensjon/brev/template/BrevTemplate, no/nav/pensjon/brev/template/DslExtensionForRedigerbareBrev {
 	public fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Redigerbar;
 	public synthetic fun description ()Lno/nav/pensjon/brev/api/model/TemplateDescription;
 	public abstract fun getBrevkontekst ()Lno/nav/pensjon/brev/api/model/TemplateDescription$Brevkontekst;

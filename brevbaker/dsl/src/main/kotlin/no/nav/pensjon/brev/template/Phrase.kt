@@ -41,7 +41,7 @@ sealed class AbstractPlainTextOnlyPhrase<Lang : LanguageSupport> {
 
 abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>()
 
-abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>(), RedigerbarFrase
+abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>(), DslExtensionForRedigerbareBrev
 
 sealed class AbstractParagraphPhrase<Lang : LanguageSupport> {
     abstract fun ParagraphOnlyScope<Lang, Unit>.template()
@@ -53,7 +53,7 @@ sealed class AbstractParagraphPhrase<Lang : LanguageSupport> {
 
 abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>()
 
-abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), RedigerbarFrase {
+abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), DslExtensionForRedigerbareBrev {
     fun ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
         phrase.apply(this)
     }
@@ -65,12 +65,4 @@ sealed class AbstractOutlinePhrase<Lang : LanguageSupport> {
         OutlineOnlyScope<Lang, Unit>().apply { template() }.elements
             .forEach { scope.addOutlineContent(it) }
     }
-}
-
-sealed interface RedigerbarFrase {
-    fun TemplateGlobalScope<*>.fritekst(beskrivelse: String): Fritekst = beskrivelse.takeIf { it.trim().isNotEmpty() }
-        ?.let { Fritekst(it) }
-        ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
-
-    fun TemplateGlobalScope<*>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
 }
