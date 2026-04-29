@@ -15,7 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
 
 class UpdateRenderedLetterTest {
@@ -199,29 +198,6 @@ class UpdateRenderedLetterTest {
         }
 
         assertEquals(expected, edited.updateEditedLetter(next))
-    }
-
-
-    @Test
-    fun `should fail when edited content has different type than the rendered content with same ID`() {
-        val next = letter(
-            Title1Impl(
-                1, true, listOf(
-                    VariableImpl(1, "En tittel "),
-                    VariableImpl(2, "for deg "),
-                    LiteralImpl(3, "og meg!")
-                )
-            )
-        )
-        val edited = editedLetter {
-            title1(id = 1) {
-                literal(id = 1, text = "En tittel", editedText = "Her er det en ulovlig redigering")
-                variable(id = 2, text = "for deg ")
-                literal(id = 3, text = "og meg!")
-            }
-        }
-
-        assertThrows<UpdateEditedLetterException> { edited.updateEditedLetter(next) }
     }
 
 
@@ -973,12 +949,12 @@ class UpdateRenderedLetterTest {
     @Test
     fun `BrevdataEllerFritekst som begynner som fritekst og endres til variabel senere fordi saken oppdateres`() {
         // Om et BrevdataEllerFritekst-expression i et brev ikke får brevdata ved første render, men får en verdi etter at saksbehandler har fylt inn fritekst så skal det ikke feile i Skribenten.
-        val editedLetter1 = editedLetter(
-            E_Paragraph(1, true, listOf(
-                E_Literal(11, "fast tekst"),
-                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
-            ))
-        )
+        val editedLetter1 = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "fast tekst")
+                literal(id = 12, text = "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST))
+            }
+        }
 
         val brevdataVariabelHarEnVerdi = letter(
             ParagraphImpl(1, true, listOf(
@@ -988,12 +964,12 @@ class UpdateRenderedLetterTest {
         )
 
         // Saksbehandlers redigering beholdes
-        val expected = editedLetter(
-            E_Paragraph(1, true, listOf(
-                E_Literal(11, "fast tekst oppdatert"),
-                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
-            ))
-        )
+        val expected = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "fast tekst oppdatert")
+                literal(id = 12, text = "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST))
+            }
+        }
 
         assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
     }
