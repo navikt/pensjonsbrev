@@ -94,28 +94,29 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
     private fun generateDiffSegments(tokens: List<Token>, edits: List<EditOperation<Token>>): List<DiffSegment> = buildList {
         val cursor = TokenCursor(tokens, edits)
-        var blockIndex = 0
-        while (cursor.hasNext) {
-            val (current) = cursor.consume()
-            require(current is Token.Block) { "Found token that is not a Block at the top level: $current" }
-            addAll(BlockParser(blockIndex++, cursor).parse())
+        cursor.forEachIndexed<Token.Block> { blockIndex, _, _ ->
+            addAll(BlockParser(blockIndex, cursor).parse())
         }
+        require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" }
     }
 
-    // Equality is intentionally excludes id so that it doesn't affect the diff algorithm
+    // Equality intentionally excludes id so that it doesn't affect the diff algorithm
     sealed interface Token {
         class Block(val id: Int?, val type: Edit.Block.Type) : Token, EqualityBy<Block>(Block::type)
 
-        class ItemList(val id: Int?, val listType: Listetype) : Token, EqualityBy<ItemList>(ItemList::listType)
+        sealed interface BlockContent : Token
+        sealed interface TextContent : BlockContent
+
+        class ItemList(val id: Int?, val listType: Listetype) : BlockContent, EqualityBy<ItemList>(ItemList::listType)
         class Item(val id: Int?) : Token, EqualityBy<Item>()
 
-        class Table(val id: Int?) : Token, EqualityBy<Table>()
+        class Table(val id: Int?) : BlockContent, EqualityBy<Table>()
         class TableHeader(val id: Int?) : Token, EqualityBy<TableHeader>()
         class ColumnSpec(val id: Int?, val alignment: Edit.ParagraphContent.Table.ColumnAlignment, val span: Int) : Token, EqualityBy<ColumnSpec>(ColumnSpec::alignment, ColumnSpec::span)
         class Row(val id: Int?) : Token, EqualityBy<Row>()
         class Cell(val id: Int?) : Token, EqualityBy<Cell>()
 
-        sealed class Text : Token, EqualityBy<Text>(Text::fontType) {
+        sealed class Text : TextContent, EqualityBy<Text>(Text::fontType) {
             abstract val id: Int?
             abstract val fontType: FontType
 
@@ -123,7 +124,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             class Variable(override val id: Int?, override val fontType: FontType) : Text()
         }
 
-        class NewLine(val id: Int?) : Token, EqualityBy<NewLine>()
+        class NewLine(val id: Int?) : TextContent, EqualityBy<NewLine>()
         data class Word(val word: String) : Token
     }
 
@@ -133,21 +134,17 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         private val cursor: TokenCursor<Token>,
     ) {
         fun parse(): List<DiffSegment> = buildList {
-            var blockContentPosition = 0
-            while (isBlockContent()) {
-                val currentPosition = blockContentPosition++
-                when (cursor.peek()) {
+            cursor.forEachIndexed<Token.BlockContent> { currentPosition, token, _ ->
+                when (token) {
                     is Token.Text -> addAll(consumeText(BlockContentIndex(blockIndex, currentPosition)))
-                    is Token.NewLine -> cursor.consume()
+                    is Token.NewLine -> Unit
                     is Token.ItemList -> addAll(consumeItemList(currentPosition))
                     is Token.Table -> addAll(consumeTable(currentPosition))
-                    else -> error("Unexpected block-level token: ${cursor.peek()}")
                 }
             }
         }
 
         private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
-            cursor.requireAndConsume<Token.Text>()
             return buildList {
                 var currentDiff: DiffSegment? = null
                 var text = ""
@@ -173,43 +170,30 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             }
         }
 
-        private fun consumeItemList(listContentIndex: Int): List<DiffSegment> {
-            cursor.requireAndConsume<Token.ItemList>()
-
-            return buildList {
-                var itemIndex = 0
-                cursor.forEach<Token.Item> { _, _ ->
-                    addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex++, it) })
-                }
+        private fun consumeItemList(listContentIndex: Int): List<DiffSegment> = buildList {
+            cursor.forEachIndexed<Token.Item> { itemIndex, _, _ ->
+                addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) })
             }
         }
 
-        private fun consumeTable(tableContentIndex: Int): List<DiffSegment> {
-            cursor.requireAndConsume<Token.Table>()
-
-            return buildList {
-                addAll(consumeTableHeader(tableContentIndex))
-
-                var rowIndex = 0
-                cursor.forEach<Token.Row> { _, _ ->
-                    addAll(consumeRow(tableContentIndex, rowIndex++))
-                }
+        private fun consumeTable(tableContentIndex: Int): List<DiffSegment> = buildList {
+            addAll(consumeTableHeader(tableContentIndex))
+            cursor.forEachIndexed<Token.Row> { rowIndex, _, _ ->
+                addAll(consumeRow(tableContentIndex, rowIndex))
             }
         }
 
         private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
             cursor.requireAndConsume<Token.TableHeader>()
-            var cellIndex = 0
-            cursor.forEach<Token.ColumnSpec> { _, _ ->
+            cursor.forEachIndexed<Token.ColumnSpec> { cellIndex, _, _ ->
                 cursor.requireAndConsume<Token.Cell>()
-                addAll(consumeCell(tableContentIndex, -1, cellIndex++))
+                addAll(consumeCell(tableContentIndex, -1, cellIndex))
             }
         }
 
         private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> = buildList {
-            var cellIndex = 0
-            cursor.forEach<Token.Cell> { _, _ ->
-                addAll(consumeCell(tableContentIndex, rowIndex, cellIndex++))
+            cursor.forEachIndexed<Token.Cell> { cellIndex, _, _ ->
+                addAll(consumeCell(tableContentIndex, rowIndex, cellIndex))
             }
         }
 
@@ -217,24 +201,12 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) }
 
         private fun consumeTextOnlyContent(makeIndex: (Int) -> ContentIndex): List<DiffSegment> = buildList {
-            var contentPosition = 0
-            while (isTextContent()) {
-                val currentPosition = contentPosition++
-                when (cursor.peek()) {
+            cursor.forEachIndexed<Token.TextContent> { currentPosition, token, _ ->
+                when (token) {
                     is Token.Text -> addAll(consumeText(makeIndex(currentPosition)))
-                    is Token.NewLine -> cursor.consume()
-                    else -> error("Unexpected text-level token: ${cursor.peek()}")
+                    is Token.NewLine -> Unit
                 }
             }
-        }
-
-        private fun isBlockContent() = cursor.peek().let {
-            it is Token.Text || it is Token.NewLine || it is Token.ItemList || it is Token.Table
-        }
-
-        // Items and table cells can only contain Text (Literal, Variable, NewLine).
-        private fun isTextContent() = cursor.peek().let {
-            it is Token.Text || it is Token.NewLine
         }
     }
 }
@@ -272,6 +244,14 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
         while (true) {
             val (token, edit) = consumeIf<E>() ?: break
             action(token, edit)
+        }
+    }
+
+    inline fun <reified E : T> forEachIndexed(action: (Int, E, EditOperation<E>?) -> Unit) {
+        var index = 0
+        while (true) {
+            val (token, edit) = consumeIf<E>() ?: break
+            action(index++, token, edit)
         }
     }
 }
