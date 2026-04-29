@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.pensjon.brev.skribenten.common.diff.shortestEditScript
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

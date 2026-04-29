@@ -1,5 +1,6 @@
-package no.nav.pensjon.brev.skribenten.letter
+package no.nav.pensjon.brev.skribenten.common.diff
 
+import no.nav.pensjon.brev.skribenten.common.diff.EditOperation
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test

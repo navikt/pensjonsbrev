@@ -1,8 +1,8 @@
-package no.nav.pensjon.brev.skribenten.letter
+package no.nav.pensjon.brev.skribenten.common.diff
 
-import no.nav.pensjon.brev.skribenten.letter.Coords.Companion.origin
-import no.nav.pensjon.brev.skribenten.letter.EditOperation.Delete
-import no.nav.pensjon.brev.skribenten.letter.EditOperation.Insert
+import no.nav.pensjon.brev.skribenten.common.diff.Coords.Companion.origin
+import no.nav.pensjon.brev.skribenten.common.diff.EditOperation.Delete
+import no.nav.pensjon.brev.skribenten.common.diff.EditOperation.Insert
 
 /**
  * Find the shortest edit script of insert and delete operations to transform
@@ -13,12 +13,6 @@ import no.nav.pensjon.brev.skribenten.letter.EditOperation.Insert
  *
  * @param T must implement an equals-method
  */
-fun <T : Any> shortestEditScript(old: Sequence<T>, new: Sequence<T>): EditScript<T> {
-    val oldList = old.toList()
-    val newList = new.toList()
-    return EditScript(oldList, newList, MyersDiff(oldList, newList).shortestEditScript())
-}
-
 fun <T : Any> shortestEditScript(old: List<T>, new: List<T>): EditScript<T> =
     EditScript(old, new, MyersDiff(old, new).shortestEditScript())
 
