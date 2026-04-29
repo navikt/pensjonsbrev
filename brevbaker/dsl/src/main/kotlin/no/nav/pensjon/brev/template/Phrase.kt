@@ -72,11 +72,10 @@ sealed class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
     }
 }
 
-internal interface RedigerbarFrase {
+sealed interface RedigerbarFrase {
     fun TemplateGlobalScope<*>.fritekst(beskrivelse: String): Fritekst = beskrivelse.takeIf { it.trim().isNotEmpty() }
         ?.let { Fritekst(it) }
         ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
-
 
     fun TemplateGlobalScope<*>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
 }

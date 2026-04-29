@@ -42,7 +42,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
     noinline init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
-interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
+interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart>, RedigerbarFrase {
     val kategori: TemplateDescription.IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
@@ -57,13 +57,6 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             brevkontekst = brevkontekst,
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
-
-    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Fritekst =
-        beskrivelse.takeIf { it.trim().isNotEmpty() }
-            ?.let { Fritekst(it) }
-            ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
-
-    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
 
     fun <Lang : LanguageSupport> OutlineOnlyScope<Lang, LetterData>.includePhrase(phrase: RedigerbarOutlinePhrase<Lang>) {
         phrase.apply(this)
