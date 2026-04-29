@@ -24,7 +24,7 @@ object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
     override val featureToggle = FeatureToggles.varsellavereminstesats.toggle
 
     override val kode = UT_S_VARSEL_LAVERE_MINSTESATS_2026
-    override val kategori = Brevkategori.ETTEROPPGJOER
+    override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
 
