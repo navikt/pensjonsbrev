@@ -92,12 +92,11 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         generateDiffSegments(editScript.old, editScript.deletes),
     )
 
-    private fun generateDiffSegments(tokens: List<Token>, edits: List<EditOperation<Token>>): List<DiffSegment> = buildList {
+    private fun generateDiffSegments(tokens: List<Token>, edits: List<EditOperation<Token>>): List<DiffSegment> {
         val cursor = TokenCursor(tokens, edits)
-        cursor.forEachIndexed<Token.Block> { blockIndex, _, _ ->
-            addAll(BlockParser(blockIndex, cursor).parse())
-        }
-        require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" }
+        return cursor.flatMapIndexed<Token.Block, DiffSegment> { blockIndex, _, _ ->
+            BlockParser(blockIndex, cursor).parse()
+        }.also { require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" } }
     }
 
     // Equality intentionally excludes id so that it doesn't affect the diff algorithm
@@ -133,81 +132,70 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         private val blockIndex: Int,
         private val cursor: TokenCursor<Token>,
     ) {
-        fun parse(): List<DiffSegment> = buildList {
-            cursor.forEachIndexed<Token.BlockContent> { currentPosition, token, _ ->
+        fun parse(): List<DiffSegment> =
+            cursor.flatMapIndexed<Token.BlockContent, DiffSegment> { currentPosition, token, _ ->
                 when (token) {
-                    is Token.Text -> addAll(consumeText(BlockContentIndex(blockIndex, currentPosition)))
-                    is Token.NewLine -> Unit
-                    is Token.ItemList -> addAll(consumeItemList(currentPosition))
-                    is Token.Table -> addAll(consumeTable(currentPosition))
+                    is Token.Text -> consumeText(BlockContentIndex(blockIndex, currentPosition))
+                    is Token.NewLine -> emptyList()
+                    is Token.ItemList -> consumeItemList(currentPosition)
+                    is Token.Table -> consumeTable(currentPosition)
                 }
             }
-        }
 
         private fun consumeText(contentIndex: ContentIndex): List<DiffSegment> {
-            return buildList {
-                var currentDiff: DiffSegment? = null
-                var text = ""
+            data class State(val textLength: Int = 0, val currentDiff: DiffSegment? = null, val completed: List<DiffSegment> = emptyList())
 
-                cursor.forEach<Token.Word> { current, edit ->
-                    val toAppend = " ${current.word}"
-                    if (edit != null) {
-                        currentDiff = when {
-                            currentDiff == null -> DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                            currentDiff.endOffset == text.length -> currentDiff.copy(endOffset = text.length + toAppend.length)
-                            else -> {
-                                add(currentDiff)
-                                DiffSegment(index = contentIndex, startOffset = text.length, endOffset = text.length + toAppend.length)
-                            }
-                        }
+            return cursor.fold<Token.Word, State>(State()) { state, current, edit ->
+                val toAppend = " ${current.word}"
+                val newLength = state.textLength + toAppend.length
+                if (edit != null) {
+                    when {
+                        state.currentDiff == null ->
+                            State(newLength, DiffSegment(index = contentIndex, startOffset = state.textLength, endOffset = newLength), state.completed)
+                        state.currentDiff.endOffset == state.textLength ->
+                            State(newLength, state.currentDiff.copy(endOffset = newLength), state.completed)
+                        else ->
+                            State(newLength, DiffSegment(index = contentIndex, startOffset = state.textLength, endOffset = newLength), state.completed + state.currentDiff)
                     }
-                    text += toAppend
+                } else {
+                    state.copy(textLength = newLength)
                 }
-                // Add any dangling last diff segment
-                if (currentDiff != null) {
-                    add(currentDiff)
-                }
-            }
+            }.let { it.completed + listOfNotNull(it.currentDiff) }
         }
 
-        private fun consumeItemList(listContentIndex: Int): List<DiffSegment> = buildList {
-            cursor.forEachIndexed<Token.Item> { itemIndex, _, _ ->
-                addAll(consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) })
+        private fun consumeItemList(listContentIndex: Int): List<DiffSegment> =
+            cursor.flatMapIndexed<Token.Item, DiffSegment> { itemIndex, _, _ ->
+                consumeTextOnlyContent { ItemContentIndex(blockIndex, listContentIndex, itemIndex, it) }
             }
-        }
 
-        private fun consumeTable(tableContentIndex: Int): List<DiffSegment> = buildList {
-            addAll(consumeTableHeader(tableContentIndex))
-            cursor.forEachIndexed<Token.Row> { rowIndex, _, _ ->
-                addAll(consumeRow(tableContentIndex, rowIndex))
+        private fun consumeTable(tableContentIndex: Int): List<DiffSegment> =
+            consumeTableHeader(tableContentIndex) + cursor.flatMapIndexed<Token.Row, DiffSegment> { rowIndex, _, _ ->
+                consumeRow(tableContentIndex, rowIndex)
             }
-        }
 
-        private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> = buildList {
+        private fun consumeTableHeader(tableContentIndex: Int): List<DiffSegment> {
             cursor.requireAndConsume<Token.TableHeader>()
-            cursor.forEachIndexed<Token.ColumnSpec> { cellIndex, _, _ ->
+            return cursor.flatMapIndexed<Token.ColumnSpec, DiffSegment> { cellIndex, _, _ ->
                 cursor.requireAndConsume<Token.Cell>()
-                addAll(consumeCell(tableContentIndex, -1, cellIndex))
+                consumeCell(tableContentIndex, -1, cellIndex)
             }
         }
 
-        private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> = buildList {
-            cursor.forEachIndexed<Token.Cell> { cellIndex, _, _ ->
-                addAll(consumeCell(tableContentIndex, rowIndex, cellIndex))
+        private fun consumeRow(tableContentIndex: Int, rowIndex: Int): List<DiffSegment> =
+            cursor.flatMapIndexed<Token.Cell, DiffSegment> { cellIndex, _, _ ->
+                consumeCell(tableContentIndex, rowIndex, cellIndex)
             }
-        }
 
         private fun consumeCell(tableContentIndex: Int, rowIndex: Int, cellIndex: Int): List<DiffSegment> =
             consumeTextOnlyContent { TableCellContentIndex(blockIndex, tableContentIndex, rowIndex, cellIndex, it) }
 
-        private fun consumeTextOnlyContent(makeIndex: (Int) -> ContentIndex): List<DiffSegment> = buildList {
-            cursor.forEachIndexed<Token.TextContent> { currentPosition, token, _ ->
+        private fun consumeTextOnlyContent(makeIndex: (Int) -> ContentIndex): List<DiffSegment> =
+            cursor.flatMapIndexed<Token.TextContent, DiffSegment> { currentPosition, token, _ ->
                 when (token) {
-                    is Token.Text -> addAll(consumeText(makeIndex(currentPosition)))
-                    is Token.NewLine -> Unit
+                    is Token.Text -> consumeText(makeIndex(currentPosition))
+                    is Token.NewLine -> emptyList()
                 }
             }
-        }
     }
 }
 
@@ -240,18 +228,22 @@ private class TokenCursor<T : Any>(private val tokens: List<T>, edits: List<Edit
         return Pair(token as E, edit as EditOperation<E>?)
     }
 
-    inline fun <reified E : T> forEach(action: (E, EditOperation<E>?) -> Unit) {
+    inline fun <reified E : T, R> fold(initial: R, action: (R, E, EditOperation<E>?) -> R): R {
+        var accumulator = initial
         while (true) {
             val (token, edit) = consumeIf<E>() ?: break
-            action(token, edit)
+            accumulator = action(accumulator, token, edit)
         }
+        return accumulator
     }
 
-    inline fun <reified E : T> forEachIndexed(action: (Int, E, EditOperation<E>?) -> Unit) {
+    inline fun <reified E : T, R> flatMapIndexed(action: (Int, E, EditOperation<E>?) -> List<R>): List<R> {
+        val result = mutableListOf<R>()
         var index = 0
         while (true) {
             val (token, edit) = consumeIf<E>() ?: break
-            action(index++, token, edit)
+            result.addAll(action(index++, token, edit))
         }
+        return result
     }
 }
