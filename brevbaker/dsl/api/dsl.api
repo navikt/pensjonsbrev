@@ -977,17 +977,6 @@ public abstract class no/nav/pensjon/brev/template/TextOnlyPhrase : no/nav/pensj
 	public fun <init> ()V
 }
 
-public abstract interface class no/nav/pensjon/brev/template/Typer {
-}
-
-public final class no/nav/pensjon/brev/template/Typer$Auto : no/nav/pensjon/brev/template/Typer {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/Typer$Auto;
-}
-
-public final class no/nav/pensjon/brev/template/Typer$Redigerbar : no/nav/pensjon/brev/template/Typer {
-	public static final field INSTANCE Lno/nav/pensjon/brev/template/Typer$Redigerbar;
-}
-
 public abstract class no/nav/pensjon/brev/template/UnaryOperation : no/nav/pensjon/brev/template/Operation {
 	public abstract fun apply (Ljava/lang/Object;)Ljava/lang/Object;
 	public final fun invoke (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;

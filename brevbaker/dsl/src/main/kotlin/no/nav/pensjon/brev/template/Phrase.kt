@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.template.dsl.*
 
 
-abstract class TextOnlyPhrase<Lang : LanguageSupport> : AbstractTextOnlyPhrase<Typer.Auto, Lang>()
+abstract class TextOnlyPhrase<Lang : LanguageSupport> : AbstractTextOnlyPhrase<Lang>()
 
-sealed class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractTextOnlyPhrase<Lang : LanguageSupport> {
     abstract fun TextOnlyScope<Lang, Unit>.template()
     fun apply(scope: TextOnlyScope<in Lang, *>) {
         TextOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -18,9 +18,9 @@ sealed class AbstractTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
     }
 }
 
-abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> : AbstractPlainTextOnlyPhrase<Typer.Auto, Lang>()
+abstract class PlainTextOnlyPhrase<Lang : LanguageSupport> : AbstractPlainTextOnlyPhrase<Lang>()
 
-sealed class AbstractPlainTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractPlainTextOnlyPhrase<Lang : LanguageSupport> {
 
     abstract fun PlainTextOnlyScope<Lang, Unit>.template()
 
@@ -39,16 +39,11 @@ sealed class AbstractPlainTextOnlyPhrase<Type : Typer, Lang : LanguageSupport> {
     private fun applyPlainTextScope() = PlainTextOnlyScope<Lang, Unit>().apply { template() }.elements
 }
 
-sealed interface Typer {
-    object Redigerbar : Typer
-    object Auto : Typer
-}
+abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>()
 
-abstract class ParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Typer.Auto, Lang>()
+abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Lang>(), RedigerbarFrase
 
-abstract class RedigerbarParagraphPhrase<Lang : LanguageSupport> : AbstractParagraphPhrase<Typer.Redigerbar, Lang>(), RedigerbarFrase
-
-sealed class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractParagraphPhrase<Lang : LanguageSupport> {
     abstract fun ParagraphOnlyScope<Lang, Unit>.template()
     fun apply(scope: ParagraphOnlyScope<in Lang, *>) {
         ParagraphOnlyScope<Lang, Unit>().apply { template() }.elements
@@ -56,15 +51,15 @@ sealed class AbstractParagraphPhrase<Type : Typer, Lang : LanguageSupport> {
     }
 }
 
-abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Typer.Auto, Lang>()
+abstract class OutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>()
 
-abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Typer.Redigerbar, Lang>(), RedigerbarFrase {
+abstract class RedigerbarOutlinePhrase<Lang : LanguageSupport> : AbstractOutlinePhrase<Lang>(), RedigerbarFrase {
     fun ParagraphOnlyScope<Lang, *>.includePhrase(phrase: RedigerbarParagraphPhrase<Lang>) {
         phrase.apply(this)
     }
 }
 
-sealed class AbstractOutlinePhrase<Type : Typer, Lang : LanguageSupport> {
+sealed class AbstractOutlinePhrase<Lang : LanguageSupport> {
     abstract fun OutlineOnlyScope<Lang, Unit>.template()
     fun apply(scope: OutlineOnlyScope<in Lang, *>) {
         OutlineOnlyScope<Lang, Unit>().apply { template() }.elements
