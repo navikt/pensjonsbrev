@@ -24,3 +24,4 @@ sealed class ContentIndex {
 }
 
 data class DiffSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int)
+

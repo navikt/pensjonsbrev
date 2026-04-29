@@ -23,5 +23,9 @@ abstract class EqualityBy<T : EqualityBy<T>>(vararg properties: KProperty1<T, *>
     }
 
     final override fun hashCode(): Int =
-        properties.fold(0) { acc, prop -> 31 * acc + (prop.get(this as T)?.hashCode() ?: 0) }
+        if (properties.isEmpty()) {
+            javaClass.hashCode()
+        } else {
+            properties.fold(0) { acc, prop -> 31 * acc + (prop.get(this as T)?.hashCode() ?: 0) }
+        }
 }

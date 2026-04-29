@@ -51,6 +51,12 @@ class EqualityByTest {
         assertNotEquals(a, b)
     }
 
+    @Test
+    fun `hashCode uses javaclass for empty property list`() {
+        assertEquals(NoPropEqualityA("a").hashCode(), NoPropEqualityA("b").hashCode())
+        assertNotEquals(NoPropEqualityA("a").hashCode(), NoPropEqualityB("a").hashCode())
+    }
+
     private class UnrelatedA(val x: String) : EqualityBy<UnrelatedA>()
     private class UnrelatedB(val x: String) : EqualityBy<UnrelatedA>(UnrelatedA::x)
 

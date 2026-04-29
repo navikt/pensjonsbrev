@@ -16,6 +16,8 @@ import no.nav.pensjon.brev.skribenten.common.diff.EditOperation.Insert
 fun <T : Any> shortestEditScript(old: List<T>, new: List<T>): EditScript<T> =
     EditScript(old, new, MyersDiff(old, new).shortestEditScript())
 
+private fun <T> List<T>.asArrayList() = if (this is ArrayList) this else ArrayList(this)
+
 class EditScript<T : Any>(val old: List<T>, val new: List<T>, val all: List<EditOperation<T>>) {
     val inserts: List<Insert<T>> = all.filterIsInstance<Insert<T>>()
     val deletes: List<Delete<T>> = all.filterIsInstance<Delete<T>>()
@@ -58,7 +60,8 @@ private data class Coords(val x: Int, val y: Int) {
 }
 private data class MiddleSnake(val d: Int, val from: Coords, val to: Coords)
 
-private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val oldOffset: Int = 0, val newOffset: Int = 0) {
+private class MyersDiff<T : Any>(val old: ArrayList<T>, val new: ArrayList<T>, val oldOffset: Int = 0, val newOffset: Int = 0) {
+    constructor(old: List<T>, new: List<T>, oldOffset: Int = 0, newOffset: Int = 0) : this(old.asArrayList(), new.asArrayList(), oldOffset, newOffset)
     private val n get() = old.size
     private val m get() = new.size
     private val size = n + m
@@ -66,11 +69,6 @@ private class MyersDiff<T : Any>(val old: List<T>, val new: List<T>, val oldOffs
     private val deltaIsOdd = (delta % 2) != 0
     private val halfway = size / 2 + (if (deltaIsOdd) 1 else 0)
     private val endCoords get() = Coords(n, m)
-
-    init {
-        require(old is RandomAccess) { "first er ikke RandomAccess (ArrayList)" }
-        require(new is RandomAccess) { "second er ikke RandomAccess (ArrayList)" }
-    }
 
     fun slice(from: Coords, to: Coords): MyersDiff<T> =
         MyersDiff(old.slice(from.x..<to.x), new.slice(from.y..<to.y), oldOffset + from.x, newOffset + from.y)
