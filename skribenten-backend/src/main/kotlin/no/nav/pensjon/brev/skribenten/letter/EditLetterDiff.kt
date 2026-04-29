@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.skribenten.common.EqualityBy
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
@@ -101,102 +102,29 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
     }
 
-    sealed class Token {
+    // Equality is intentionally excludes id so that it doesn't affect the diff algorithm
+    sealed interface Token {
+        class Block(val id: Int?, val type: Edit.Block.Type) : Token, EqualityBy<Block>(Block::type)
 
-        // Equality is intentionally type-only: the diff algorithm treats two blocks
-        // of the same type as structurally equivalent anchors, regardless of their id.
-        data class Block(val id: Int?, val type: Edit.Block.Type) : Token() {
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                return type == (other as Block).type
-            }
+        class ItemList(val id: Int?, val listType: Listetype) : Token, EqualityBy<ItemList>(ItemList::listType)
+        class Item(val id: Int?) : Token, EqualityBy<Item>()
 
-            override fun hashCode(): Int = type.hashCode()
-        }
+        class Table(val id: Int?) : Token, EqualityBy<Table>()
+        class TableHeader(val id: Int?) : Token, EqualityBy<TableHeader>()
+        class ColumnSpec(val id: Int?, val alignment: Edit.ParagraphContent.Table.ColumnAlignment, val span: Int) : Token, EqualityBy<ColumnSpec>(ColumnSpec::alignment, ColumnSpec::span)
+        class Row(val id: Int?) : Token, EqualityBy<Row>()
+        class Cell(val id: Int?) : Token, EqualityBy<Cell>()
 
-        sealed class Text : Token() {
+        sealed class Text : Token, EqualityBy<Text>(Text::fontType) {
             abstract val id: Int?
             abstract val fontType: FontType
 
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                return fontType == (other as Text).fontType
-            }
-
-            override fun hashCode(): Int = fontType.hashCode()
-
-            // Equality on fontType only: a font change is a meaningful structural difference.
-            data class Literal(override val id: Int?, override val fontType: FontType) : Text() {
-                override fun equals(other: Any?): Boolean = super.equals(other)
-                override fun hashCode(): Int = super.hashCode()
-            }
-
-            data class Variable(override val id: Int?, override val fontType: FontType) : Text() {
-                override fun equals(other: Any?): Boolean = super.equals(other)
-                override fun hashCode(): Int = super.hashCode()
-            }
+            class Literal(override val id: Int?, override val fontType: FontType) : Text()
+            class Variable(override val id: Int?, override val fontType: FontType) : Text()
         }
 
-        data class NewLine(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is NewLine
-            override fun hashCode(): Int = NewLine::class.hashCode()
-        }
-
-        data class Word(val word: String) : Token()
-
-        // Equality on listType only: changing the list style is a meaningful structural difference.
-        data class ItemList(val id: Int?, val listType: Listetype) : Token() {
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                return listType == (other as ItemList).listType
-            }
-
-            override fun hashCode(): Int = listType.hashCode()
-        }
-
-        data class Item(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is Item
-            override fun hashCode(): Int = Item::class.hashCode()
-        }
-
-        data class Table(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is Table
-            override fun hashCode(): Int = Table::class.hashCode()
-        }
-
-        data class TableHeader(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is TableHeader
-            override fun hashCode(): Int = TableHeader::class.hashCode()
-        }
-
-        // Equality on alignment and span: column structure changes are meaningful.
-        data class ColumnSpec(
-            val id: Int?,
-            val alignment: Edit.ParagraphContent.Table.ColumnAlignment,
-            val span: Int,
-        ) : Token() {
-            override fun equals(other: Any?): Boolean {
-                if (this === other) return true
-                if (javaClass != other?.javaClass) return false
-                other as ColumnSpec
-                return alignment == other.alignment && span == other.span
-            }
-
-            override fun hashCode(): Int = 31 * alignment.hashCode() + span.hashCode()
-        }
-
-        data class Row(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is Row
-            override fun hashCode(): Int = Row::class.hashCode()
-        }
-
-        data class Cell(val id: Int?) : Token() {
-            override fun equals(other: Any?): Boolean = other is Cell
-            override fun hashCode(): Int = Cell::class.hashCode()
-        }
+        class NewLine(val id: Int?) : Token, EqualityBy<NewLine>()
+        data class Word(val word: String) : Token
     }
 
     // This is a general block parser which will not fail for Title-blocks that contain invalid content types.
