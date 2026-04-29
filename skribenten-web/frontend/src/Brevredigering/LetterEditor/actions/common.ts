@@ -1,4 +1,4 @@
-import { type Draft } from "immer";
+import { type Draft, produce } from "immer";
 
 import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { updateLiteralText } from "~/Brevredigering/LetterEditor/actions/updateContentText";
@@ -250,12 +250,63 @@ export function isNew(obj: Identifiable): boolean {
 export function create(brev: BrevResponse): LetterEditorState {
   return {
     info: brev.info,
-    redigertBrev: brev.redigertBrev,
+    redigertBrev: normalizeTableSeparators(brev.redigertBrev),
     redigertBrevHash: brev.redigertBrevHash,
     saveStatus: "SAVED",
     focus: { blockIndex: 0, contentIndex: 0 },
     history: { entries: [], entryPointer: -1 },
   };
+}
+
+/**
+ * Normalizes table-separator invariants on a server-loaded letter:
+ *   1. Two tables that sit next to each other in the same paragraph get an
+ *      empty literal inserted between them.
+ *   2. If the last paragraph of the letter ends with a table, an empty literal
+ *      is appended after it so the user has somewhere to place the caret and
+ *      keep typing.
+ *
+ * This is intentionally a pure transform: it returns a new letter without
+ * touching `saveStatus`. The inserted separators are brand-new empty literals,
+ * so they only get persisted to the backend if the user later makes a real
+ * edit that triggers a save.
+ */
+export function normalizeTableSeparators(letter: EditedLetter): EditedLetter {
+  return produce(letter, applyTableSeparatorNormalization);
+}
+
+/**
+ * Same invariants as {@link normalizeTableSeparators}, but operates directly on
+ * an existing immer draft.
+ *
+ * Intended for use inside other recipes (e.g. after a deletion) that already
+ * own a draft and need to restore the table-separator invariants without
+ * spinning up a nested `produce` call. Callers are responsible for setting
+ * `saveStatus` themselves — this function only adjusts the letter structure.
+ */
+export function applyTableSeparatorNormalization(draft: Draft<EditedLetter>) {
+  const blocks = draft.blocks;
+  for (let blockIndex = 0; blockIndex < blocks.length; blockIndex++) {
+    const block = blocks[blockIndex];
+    if (block.type !== PARAGRAPH) continue;
+
+    // Insert a separator between any two adjacent tables in the same block
+    let contentIndex = 0;
+    while (contentIndex < block.content.length - 1) {
+      if (isTable(block.content[contentIndex]) && isTable(block.content[contentIndex + 1])) {
+        block.content.splice(contentIndex + 1, 0, newLiteral({ editedText: "" }));
+        contentIndex += 2;
+      } else {
+        contentIndex++;
+      }
+    }
+
+    // Append a trailing literal if the last block ends in a table
+    const isLastBlock = blockIndex === blocks.length - 1;
+    if (isLastBlock && block.content.length > 0 && isTable(block.content.at(-1))) {
+      block.content.push(newLiteral({ editedText: "" }));
+    }
+  }
 }
 
 export function removeElements<T extends Identifiable>(
