@@ -17,7 +17,7 @@ class EditScriptCursorTest {
 
     private fun <T : Token> insert(token: T, position: Int): Insert<T> = Insert(token, position)
 
-    // region constructor
+    // constructor
 
     @Test
     fun `constructor throws on duplicate edit positions`() {
@@ -26,9 +26,7 @@ class EditScriptCursorTest {
         }
     }
 
-    // endregion
-
-    // region hasNext and peek
+    // hasNext and peek
 
     @Test
     fun `hasNext is false for empty token list`() {
@@ -63,9 +61,7 @@ class EditScriptCursorTest {
         assertNull(cursor.peek())
     }
 
-    // endregion
-
-    // region consume
+    // consume
 
     @Test
     fun `consume returns token with null edit when no edit at position`() {
@@ -101,9 +97,36 @@ class EditScriptCursorTest {
         assertThrows<IllegalArgumentException> { cursor.consume() }
     }
 
-    // endregion
+    @Test
+    fun `consume returns null edit for token before the edited position`() {
+        val tokens = listOf(Token.A("x"), Token.A("y"))
+        val op = insert(Token.A("y"), 1)
+        val cursor = EditScriptCursor(tokens, listOf(op))
+        val (_, firstEdit) = cursor.consume()
+        assertNull(firstEdit)
+    }
 
-    // region requireAndConsume
+    @Test
+    fun `consume returns edit for token at its exact position`() {
+        val tokens = listOf(Token.A("x"), Token.A("y"))
+        val op = insert(Token.A("y"), 1)
+        val cursor = EditScriptCursor(tokens, listOf(op))
+        cursor.consume()
+        val (_, secondEdit) = cursor.consume()
+        assertEquals(op, secondEdit)
+    }
+
+    @Test
+    fun `consume throws when edit value does not match token at non-zero position`() {
+        val cursor = EditScriptCursor(
+            listOf(Token.A("x"), Token.A("y")),
+            listOf(insert(Token.A("different"), 1)),
+        )
+        cursor.consume()
+        assertThrows<IllegalArgumentException> { cursor.consume() }
+    }
+
+    // requireAndComsume
 
     @Test
     fun `requireAndConsume returns typed token on type match`() {
@@ -118,9 +141,7 @@ class EditScriptCursorTest {
         assertThrows<IllegalArgumentException> { cursor.requireAndConsume<Token.B>() }
     }
 
-    // endregion
-
-    // region consumeIf
+    // consumeIf
 
     @Test
     fun `consumeIf returns null without advancing when type does not match`() {
@@ -149,9 +170,7 @@ class EditScriptCursorTest {
         assertEquals(op, edit)
     }
 
-    // endregion
-
-    // region fold
+    // fold
 
     @Test
     fun `fold accumulates over matching tokens`() {
@@ -185,9 +204,16 @@ class EditScriptCursorTest {
         assertEquals(listOf(op), edits)
     }
 
-    // endregion
+    @Test
+    fun `fold passes edit only for token at the edited position`() {
+        val tokens = listOf(Token.A("a"), Token.A("b"), Token.A("c"))
+        val op = insert(Token.A("b"), 1)
+        val cursor = EditScriptCursor(tokens, listOf(op))
+        val edits = cursor.fold<Token.A, List<EditOperation<Token.A>?>>(emptyList()) { acc, _, edit -> acc + edit }
+        assertEquals(listOf(null, op, null), edits)
+    }
 
-    // region flatMapIndexed
+    // flatMapIndexed
 
     @Test
     fun `flatMapIndexed passes correct indices`() {
@@ -218,13 +244,12 @@ class EditScriptCursorTest {
     }
 
     @Test
-    fun `flatMapIndexed passes edit correctly`() {
-        val token = Token.A("x")
-        val op = insert(token, 0)
-        val cursor = EditScriptCursor(listOf(token), listOf(op))
+    fun `flatMapIndexed passes edit only for token at the edited position`() {
+        val tokens = listOf(Token.A("a"), Token.A("b"), Token.A("c"))
+        val op = insert(Token.A("c"), 2)
+        val cursor = EditScriptCursor(tokens, listOf(op))
         val edits = cursor.flatMapIndexed<Token.A, EditOperation<Token.A>?> { _, _, edit -> listOf(edit) }
-        assertEquals(listOf(op), edits)
+        assertEquals(listOf(null, null, op), edits)
     }
 
-    // endregion
 }
