@@ -132,57 +132,59 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
 
         override fun visit(block: Edit.Block) {
             emit(Token.Block(block.id, block.type))
-            block.content.forEach { visit(it) }
+            super.visit(block)
         }
 
         override fun visit(content: Edit.ParagraphContent.Text.Literal) {
             emit(Token.Text.Literal(content.id, content.editedFontType ?: content.fontType))
             emitWords(content.editedText ?: content.text)
+            super.visit(content)
         }
 
         override fun visit(content: Edit.ParagraphContent.Text.Variable) {
             emit(Token.Text.Variable(content.id, content.fontType))
             emitWords(content.text)
+            super.visit(content)
         }
 
         override fun visit(content: Edit.ParagraphContent.Text.NewLine) {
             emit(Token.NewLine(content.id))
+            super.visit(content)
         }
 
         override fun visit(itemList: Edit.ParagraphContent.ItemList) {
             emit(Token.ItemList(itemList.id, itemList.listType))
-            itemList.items.forEach { visit(it) }
+            super.visit(itemList)
         }
 
         override fun visit(item: Edit.ParagraphContent.ItemList.Item) {
             emit(Token.Item(item.id))
-            item.content.forEach { visit(it) }
+            super.visit(item)
         }
 
         override fun visit(table: Edit.ParagraphContent.Table) {
             emit(Token.Table(table.id))
-            visit(table.header)
-            table.rows.forEach { visit(it) }
+            super.visit(table)
         }
 
         override fun visit(header: Edit.ParagraphContent.Table.Header) {
             emit(Token.TableHeader(header.id))
-            header.colSpec.forEach { visit(it) }
+            super.visit(header)
         }
 
         override fun visit(colSpec: Edit.ParagraphContent.Table.ColumnSpec) {
             emit(Token.ColumnSpec(colSpec.id, colSpec.alignment, colSpec.span))
-            visit(colSpec.headerContent)
+            super.visit(colSpec)
         }
 
         override fun visit(row: Edit.ParagraphContent.Table.Row) {
             emit(Token.Row(row.id))
-            row.cells.forEach { visit(it) }
+            super.visit(row)
         }
 
         override fun visit(cell: Edit.ParagraphContent.Table.Cell) {
             emit(Token.Cell(cell.id))
-            cell.text.forEach { visit(it) }
+            super.visit(cell)
         }
 
         private fun emitWords(text: String) =
