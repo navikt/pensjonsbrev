@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
-import no.nav.pensjon.brev.template.dsl.TemplateGlobalScope
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -41,7 +40,7 @@ inline fun <Kode : Brevkode<Kode>, Lang : LanguageSupport, reified LetterData : 
     noinline init: TemplateRootScope<Lang, LetterData>.() -> Unit
 ): LetterTemplate<Lang, LetterData> = createTemplate(LetterData::class, languages, letterMetadata, init)
 
-interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart> {
+interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerValgBrevdata, out FagsystemBrevdata>> : BrevTemplate<LetterData, Brevkode.Redigerbart>, DslExtensionForRedigerbareBrev {
     val kategori: TemplateDescription.IBrevkategori
     val brevkontekst: TemplateDescription.Brevkontekst
     val sakstyper: Set<ISakstype>
@@ -56,13 +55,6 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             brevkontekst = brevkontekst,
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
-
-    fun TemplateGlobalScope<LetterData>.fritekst(beskrivelse: String): Fritekst =
-        beskrivelse.takeIf { it.trim().isNotEmpty() }
-            ?.let { Fritekst(it) }
-            ?: throw IllegalArgumentException("Fritekstfelt må ha initiell tekst for at vi ikke skal lure bruker.")
-
-    fun TemplateGlobalScope<LetterData>.redigerbarData(variabel: StringExpression): RedigerbarData = RedigerbarData(variabel)
 }
 
 sealed interface SpesialkonstruksjonIMal
@@ -75,16 +67,16 @@ internal fun SpesialkonstruksjonIMal.somExpression() = when (this) {
 }
 
 @JvmInline
-value class Fritekst(val str: String) : SpesialkonstruksjonIMal {
+value class Fritekst internal constructor(val str: String) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
 @JvmInline
-value class RedigerbarData(val variabel: StringExpression) : SpesialkonstruksjonIMal {
+value class RedigerbarData internal constructor(val variabel: StringExpression) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
-class BrevdataEllerFritekst(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
+class BrevdataEllerFritekst internal constructor(val tekst: Expression<String?>, val fritekst: Expression<String>) : SpesialkonstruksjonIMal {
     override fun toString(): String = throw PreventToStringForExpressionException()
 }
 
