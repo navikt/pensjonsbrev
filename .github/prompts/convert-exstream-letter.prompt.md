@@ -7,15 +7,15 @@ You are finishing the manual pass on a Kotlin file produced by the team's Exstre
 
 **Read first (do not skip):**
 - `AGENTS.md`
-- `.github/skills/convert-exstream-letter.md` — the step-by-step pipeline for this task.
-- `.github/skills/write-template.md` — **read end-to-end, not just as a reference.** 
-- `.github/skills/write-redigerbar-template.md` — only if the letter contains `<FRITEKST: …>` markers (then it must be a `RedigerbarTemplate`).
+- `.github/skills/write-template/convert-exstream-letter.md` — the step-by-step pipeline for this task.
+- `.github/skills/write-template/SKILL.md` — **read end-to-end, not just as a reference.** 
+- `.github/skills/write-template/write-redigerbar-template.md` — only if the letter contains `<FRITEKST: …>` markers (then it must be a `RedigerbarTemplate`).
 
 **Inputs**
 - Path to the converter-produced file: ${input:sourceFile}
 
 **Hard rules**
-- Follow the steps of `.github/skills/convert-exstream-letter.md` in order. Do not skip ahead.
+- Follow the steps of `.github/skills/write-template/convert-exstream-letter.md` in order. Do not skip ahead.
 - Selector block at top of the converter output belongs in `pensjon/maler/.../legacy/LegacySelectors.kt`, not in the template file. Dedupe against existing entries before pasting.
 - If the file contains `<FRITEKST: …>` markers, change the template type to `RedigerbarTemplate` and add the `Saksbehandlervalg` / fagsystem Dto split.
 - Resolve all `FUNKSJON_PE_…("$/* TODO (SYS_TableRow) */")` placeholders into `forEach` iterations.

@@ -2,7 +2,7 @@
 
 **Scope:** every way a brevmal branches or repeats — `showIf`, `ifElse`, `ifNotNull`, `forEach`, and the predicate operators (`and`, `or`, `not`, `equalTo`, …) that build the boolean expressions they take.
 
-**Companion docs:** [`dsl/kontroll-struktur/index.adoc`](../../docs/modules/ROOT/pages/dsl/kontroll-struktur/index.adoc) and the per-function pages under that folder.
+**Companion docs:** [`dsl/kontroll-struktur/index.adoc`](../../../docs/modules/ROOT/pages/dsl/kontroll-struktur/index.adoc) and the per-function pages under that folder.
 
 ## Always use DSL conditionals — never Kotlin `if`
 

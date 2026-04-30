@@ -40,7 +40,7 @@ Sample comment style (one block per field):
 val netto: Kroner,
 ```
 
-> **Pre-existing `PEgruppeN`-based legacy templates.** A handful of older converted templates still consume `PEgruppe2/3/10` directly and depend on extension functions in [`pensjon/maler/.../legacy/LegacySelectors.kt`](../../pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/LegacySelectors.kt). Do not add new selectors there for fresh conversions — only touch the file if you are extending an existing legacy template that already reads through it. Inside that file, watch for `.ifNull(TODO)` stubs (won't compile) and Exstream-preserved typos like `beregningytelseomp` / `sertilegg` (the method name is wrong but the underlying `.safe{…}` chain points at the real field — leave it unless you also rename every call site).
+> **Pre-existing `PEgruppeN`-based legacy templates.** A handful of older converted templates still consume `PEgruppe2/3/10` directly and depend on extension functions in [`pensjon/maler/.../legacy/LegacySelectors.kt`](../../../pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/LegacySelectors.kt). Do not add new selectors there for fresh conversions — only touch the file if you are extending an existing legacy template that already reads through it. Inside that file, watch for `.ifNull(TODO)` stubs (won't compile) and Exstream-preserved typos like `beregningytelseomp` / `sertilegg` (the method name is wrong but the underlying `.safe{…}` chain points at the real field — leave it unless you also rename every call site).
 
 ## Step 2 — Fill in the template TODOs
 
@@ -162,7 +162,7 @@ Most converted letters introduce a new Dto under `<module>/api-model/src/…`. T
 
 Symptoms you skipped this: `Unresolved reference 'XDto'` on the import line (api-model not published) or `Unresolved reference 'XDtoSelectors'` on selector imports (KSP hasn't run yet). See `write-template.md` *Build after the first commit of a new Dto or template* for the full diagnostic table. **Revert the version bumps before committing** unless you are also publishing a new api-model release.
 
-Visual regression: when possible, run `AllTemplatesTest` / the module's `BrevmodulTest` and compare the rendered PDF with the original Exstream output. Wording should match exactly; layout is allowed to differ within brevbaker's styling. See [`README.md`](../../README.md#oppdatere-latex-malavhengigheter) for the PDF-image diff script if you need to verify large letters byte-by-byte.
+Visual regression: when possible, run `AllTemplatesTest` / the module's `BrevmodulTest` and compare the rendered PDF with the original Exstream output. Wording should match exactly; layout is allowed to differ within brevbaker's styling. See [`README.md`](../../../README.md#oppdatere-latex-malavhengigheter) for the PDF-image diff script if you need to verify large letters byte-by-byte.
 
 ## Common pitfalls
 

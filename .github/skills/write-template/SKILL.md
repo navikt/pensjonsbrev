@@ -1,3 +1,8 @@
+---
+name: write-template
+description: Add a new letter template (autobrev or redigerbar) — module/registry, brevkode, Dto, DSL body, fixtures, registration, verify. Includes DSL sub-skills (scopes, text, control structures, tables/lists, phrases, attachments) and Exstream conversion deltas.
+---
+
 # Skill: Write a letter template (Kotlin DSL body)
 
 **Scope:** the recipe for adding a letter template — module/registry layout, brevkode rules, Dto design, the template object skeleton (`createTemplate(...)`, `LetterMetadata`), languages, fixture wiring, and registration. The actual DSL body — scopes, text, conditionals, tables, phrases, attachments — is split into focused sub-skills, cross-referenced below. For redigerbar-specific extras (caseworker-editable fields, Skribenten-visible metadata) see [`write-redigerbar-template.md`](write-redigerbar-template.md).
@@ -11,7 +16,7 @@
 - [`dsl-phrases.md`](dsl-phrases.md) — `OutlinePhrase` / `ParagraphPhrase` / `TextOnlyPhrase` / `PlainTextOnlyPhrase`
 - [`dsl-attachments.md`](dsl-attachments.md) — `createAttachment` / `includeAttachment`
 
-**Canonical project docs** (may be partially outdated — prefer this skill + current source for module-local details): [`docs/modules/ROOT/pages/dsl/index.adoc`](../../docs/modules/ROOT/pages/dsl/index.adoc), [`dsl/scopes.adoc`](../../docs/modules/ROOT/pages/dsl/scopes.adoc), [`dsl/stegvis guide nytt brev.adoc`](../../docs/modules/ROOT/pages/dsl/stegvis%20guide%20nytt%20brev.adoc).
+**Canonical project docs** (may be partially outdated — prefer this skill + current source for module-local details): [`docs/modules/ROOT/pages/dsl/index.adoc`](../../../docs/modules/ROOT/pages/dsl/index.adoc), [`dsl/scopes.adoc`](../../../docs/modules/ROOT/pages/dsl/scopes.adoc), [`dsl/stegvis guide nytt brev.adoc`](../../../docs/modules/ROOT/pages/dsl/stegvis%20guide%20nytt%20brev.adoc).
 
 ## Before you write
 
@@ -326,5 +331,5 @@ Integration tests spin up pdf-bygger via **Testcontainers** — Docker must be r
 
 Rendered output lands under each module's `build/test_html/` and `build/test_pdf/` — open those to inspect the letter visually.
 
-**Faster iteration** (optional): `TESTCONTAINERS_REUSE_ENABLE=true` keeps pdf-bygger running between test invocations; `BRUK_LOKAL_PDF_BYGGER=true` tests against a locally built `pensjonsbrev-pdf-bygger:latest` instead of the GHCR image. See [`README.md`](../../README.md#miljøvariabler-for-integrasjonstester).
+**Faster iteration** (optional): `TESTCONTAINERS_REUSE_ENABLE=true` keeps pdf-bygger running between test invocations; `BRUK_LOKAL_PDF_BYGGER=true` tests against a locally built `pensjonsbrev-pdf-bygger:latest` instead of the GHCR image. See [`README.md`](../../../README.md#miljøvariabler-for-integrasjonstester).
 

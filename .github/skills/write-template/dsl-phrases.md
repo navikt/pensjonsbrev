@@ -2,7 +2,7 @@
 
 **Scope:** the four phrase base classes (`OutlinePhrase`, `ParagraphPhrase`, `TextOnlyPhrase`, `PlainTextOnlyPhrase`), how to author and include them, and the search-before-you-write rule that keeps wording from forking.
 
-**Companion docs:** [`dsl/fraser/oversikt.adoc`](../../docs/modules/ROOT/pages/dsl/fraser/oversikt.adoc) and the per-type pages under that folder.
+**Companion docs:** [`dsl/fraser/oversikt.adoc`](../../../docs/modules/ROOT/pages/dsl/fraser/oversikt.adoc) and the per-type pages under that folder.
 
 ## Pick the phrase type by the scope where you'll include it
 

@@ -2,7 +2,7 @@
 
 **Scope:** the two structured-content elements available in `ParagraphScope` — `list { item { … } }` and `table { header { column { … } } row { cell { … } } }`. Covers static authoring, dynamic rows/items via `forEach`, conditional rows/items, and column alignment / width.
 
-**Companion docs:** [`dsl/paragraph/lister.adoc`](../../docs/modules/ROOT/pages/dsl/paragraph/lister.adoc), [`dsl/paragraph/tabeller.adoc`](../../docs/modules/ROOT/pages/dsl/paragraph/tabeller.adoc).
+**Companion docs:** [`dsl/paragraph/lister.adoc`](../../../docs/modules/ROOT/pages/dsl/paragraph/lister.adoc), [`dsl/paragraph/tabeller.adoc`](../../../docs/modules/ROOT/pages/dsl/paragraph/tabeller.adoc).
 
 ## Lists
 

@@ -2,7 +2,7 @@
 
 **Scope:** how to author text inside `bokmal { } / nynorsk { } / english { }` blocks — the unary-plus rule, concatenation, formatter catalogue, and inline word-level conditionals.
 
-**Companion docs:** [`dsl/text/index.adoc`](../../docs/modules/ROOT/pages/dsl/text/index.adoc), [`dsl/text/formattering.adoc`](../../docs/modules/ROOT/pages/dsl/text/formattering.adoc), [`dsl/text/ifElse.adoc`](../../docs/modules/ROOT/pages/dsl/text/ifElse.adoc).
+**Companion docs:** [`dsl/text/index.adoc`](../../../docs/modules/ROOT/pages/dsl/text/index.adoc), [`dsl/text/formattering.adoc`](../../../docs/modules/ROOT/pages/dsl/text/formattering.adoc), [`dsl/text/ifElse.adoc`](../../../docs/modules/ROOT/pages/dsl/text/ifElse.adoc).
 
 ## Text sources
 

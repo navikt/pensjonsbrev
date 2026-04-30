@@ -50,8 +50,8 @@ Step-by-step recipes for common authoring tasks live under [`.github/skills/`](.
 
 | Task | Skill |
 |---|---|
-| Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`.github/skills/write-template.md`](.github/skills/write-template.md) |
-| Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-redigerbar-template.md`](.github/skills/write-redigerbar-template.md) |
+| Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`.github/skills/write-template/SKILL.md`](.github/skills/write-template/SKILL.md) |
+| Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-template/write-redigerbar-template.md`](.github/skills/write-template/write-redigerbar-template.md) |
 
 ## Do NOT Edit By Hand
 

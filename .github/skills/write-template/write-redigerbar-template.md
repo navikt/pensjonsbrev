@@ -1,6 +1,6 @@
 # Skill: Write a redigerbar template (Kotlin DSL body)
 
-**Parent recipe:** step 4 of [*Add a new redigerbar brev*](../../AGENTS.md#add-a-new-redigerbar-caseworker-editable-brev) in `AGENTS.md`.
+**Parent recipe:** step 4 of [*Add a new redigerbar brev*](../../../AGENTS.md#add-a-new-redigerbar-caseworker-editable-brev) in `AGENTS.md`.
 
 **Scope:** this skill covers only the deltas between `AutobrevTemplate` and `RedigerbarTemplate`. Start with [`write-template.md`](write-template.md) for Dto design, the template object skeleton, languages, registration, fixtures and the verify step. The DSL building blocks (scopes, text, conditionals, tables/lists, phrases, attachments) are split into focused sub-skills:
 
@@ -42,7 +42,12 @@ data class XDto(
     data class Saksbehandlervalg(
         // One property per caseworker form input shown in Skribenten.
         // Booleans → checkbox; enums → dropdown; strings → text field.
+        // Every field MUST be annotated with @DisplayText("...") — this is the
+        // human-readable label rendered next to the input in Skribenten's
+        // ModelEditor.
+        @DisplayText("Har barnetillegg")
         val harBarnetillegg: Boolean,
+        @DisplayText("Årsak til endring")
         val aarsak: Aarsak,
     ) : SaksbehandlerValgBrevdata
 
@@ -55,6 +60,7 @@ data class XDto(
 ```
 
 - All the Dto design rules from `write-template.md` apply to both nested classes (non-nullable by default, no defaults on required fields, group related fields).
+- **Every `Saksbehandlervalg` property must carry a `@DisplayText("...")` annotation** (`no.nav.pensjon.brevbaker.api.model.DisplayText`). The string is the label Skribenten renders next to the form input — write it in Norwegian, sentence case, describing the choice from the saksbehandler's perspective (e.g. `@DisplayText("Har barnetillegg")`, not the field name). Examples: see `VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg`.
 - Empty shortcuts when a side is not needed: `EmptySaksbehandlerValg`, `EmptyFagsystemdata`, or `EmptyRedigerbarBrevdata` for the whole thing.
 - Generated selectors expose the split: `XDtoSelectors.saksbehandlerValg.harBarnetillegg`, `XDtoSelectors.pesysData.virkDatoFom`. The property names become the selector names — choose them deliberately.
 
@@ -171,7 +177,7 @@ A redigerbar brevkode that has reached production may be referenced by rows in S
 
 ## Verify
 
-Verification is the parent Golden Path's job — run the module's `:integrationTest` and the cross-module `AllTemplatesTest`. See [`../../AGENTS.md`](../../AGENTS.md#8-verify).
+Verification is the parent Golden Path's job — run the module's `:integrationTest` and the cross-module `AllTemplatesTest`. See [`../../AGENTS.md`](../../../AGENTS.md#8-verify).
 
 
 

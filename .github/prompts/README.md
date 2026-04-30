@@ -17,5 +17,5 @@ In the Copilot Chat panel:
 - Type `/` to see the list of available prompts, or start typing `/write-letter` to invoke it.
 - The agent will prompt for the declared inputs (module, brevkode, …) before running.
 
-If you are using Copilot Chat without prompt-file support, you can still reference the skills inline by attaching them with `#file:.github/skills/write-template.md`.
+If you are using Copilot Chat without prompt-file support, you can still reference the skills inline by attaching them with `#file:.github/skills/write-template/SKILL.md`.
 

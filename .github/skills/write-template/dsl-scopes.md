@@ -2,7 +2,7 @@
 
 **Scope:** the nested DSL receivers you write inside `createTemplate(...) { … }`, what each one allows, and how to read selector / phrase errors as "wrong scope".
 
-**Companion docs:** [`dsl/scopes.adoc`](../../docs/modules/ROOT/pages/dsl/scopes.adoc) — authoritative listing.
+**Companion docs:** [`dsl/scopes.adoc`](../../../docs/modules/ROOT/pages/dsl/scopes.adoc) — authoritative listing.
 
 ## The hierarchy
 

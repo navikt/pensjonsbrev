@@ -2,7 +2,7 @@
 
 **Scope:** how to define a vedlegg with `createAttachment`, include it from a template (always or conditionally), and choose between data-carrying and `EmptyVedleggData`.
 
-**Companion docs:** [`dsl/vedlegg.adoc`](../../docs/modules/ROOT/pages/dsl/vedlegg.adoc).
+**Companion docs:** [`dsl/vedlegg.adoc`](../../../docs/modules/ROOT/pages/dsl/vedlegg.adoc).
 
 ## What a vedlegg is
 
