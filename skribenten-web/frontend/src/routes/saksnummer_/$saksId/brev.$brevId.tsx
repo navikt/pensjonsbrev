@@ -12,8 +12,8 @@ import {
   collectAllIds,
   collectNewIds,
   findLastInsertedFocus,
-  InsertedHighlightProvider,
-} from "~/Brevredigering/LetterEditor/insertedHighlight";
+  InsertedTekstValgHighlightProvider,
+} from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
@@ -379,9 +379,9 @@ function RedigerBrev({
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               </Box>
-              <InsertedHighlightProvider ids={highlightedIds}>
+              <InsertedTekstValgHighlightProvider ids={highlightedIds}>
                 <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
-              </InsertedHighlightProvider>
+              </InsertedTekstValgHighlightProvider>
             </HGrid>
             <Box
               asChild

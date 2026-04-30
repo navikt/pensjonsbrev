@@ -2,7 +2,7 @@ import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/mod
 import { FontType, NEW_LINE, type NewLine, VARIABLE, type VariableValue } from "~/types/brevbakerTypes";
 
 import { isBlockContentIndex, isItemContentIndex } from "../actions/common";
-import { isHighlighted, useInsertedHighlight } from "../insertedHighlight";
+import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "../InsertedTekstValgHighlight";
 import { useEditor } from "../LetterEditor";
 import { isTableCellIndex } from "../model/utils";
 
@@ -13,9 +13,9 @@ export type TextProperties = {
 
 export const Text = ({ content, literalIndex }: TextProperties) => {
   const { editorState, setEditorState } = useEditor();
-  const highlightedIds = useInsertedHighlight();
+  const highlightedIds = useInsertedTekstValgHighlight();
   const isFocused = hasFocus(editorState.focus, literalIndex);
-  const isInserted = isHighlighted(highlightedIds, content);
+  const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
   switch (content.type) {
     case NEW_LINE: {

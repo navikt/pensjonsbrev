@@ -16,7 +16,7 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
-import { isHighlighted, useInsertedHighlight } from "./insertedHighlight";
+import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
 
@@ -36,7 +36,7 @@ export const LetterEditor = ({
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
-  const highlightedIds = useInsertedHighlight();
+  const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
@@ -127,7 +127,9 @@ export const LetterEditor = ({
             >
               {blocks.map((block, blockIndex) => (
                 <div
-                  className={isHighlighted(highlightedIds, block) ? `${block.type} inserted-flash-block` : block.type}
+                  className={
+                    isTekstValgHighlighted(highlightedIds, block) ? `${block.type} inserted-flash-block` : block.type
+                  }
                   key={blockIndex}
                 >
                   <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
