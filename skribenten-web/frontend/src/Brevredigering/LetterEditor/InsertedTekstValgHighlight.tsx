@@ -1,17 +1,16 @@
 import { createContext, type ReactNode, useContext } from "react";
 
+import { isTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Focus } from "~/Brevredigering/LetterEditor/model/state";
+import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
 import {
   type AnyBlock,
   type Cell,
   type Content,
   type EditedLetter,
   type Identifiable,
-  ITEM_LIST,
   type Item,
   LITERAL,
-  NEW_LINE,
-  TABLE,
   type TextContent,
   VARIABLE,
 } from "~/types/brevbakerTypes";
@@ -56,9 +55,9 @@ const collectCellIds = (ids: Set<number>, cell: Cell) => {
 const collectContentIds = (ids: Set<number>, contents: readonly Content[]) => {
   for (const content of contents) {
     addId(ids, content);
-    if (content.type === ITEM_LIST) {
+    if (isItemList(content)) {
       collectItemIds(ids, content.items);
-    } else if (content.type === TABLE) {
+    } else if (isTable(content)) {
       addId(ids, content.header);
       for (const colSpec of content.header.colSpec) {
         addId(ids, colSpec);
@@ -111,16 +110,14 @@ const findLastTextFocusInBlock = (
   // Prefer a highlighted text content if present.
   for (let contentIndex = contents.length - 1; contentIndex >= 0; contentIndex--) {
     const content = contents[contentIndex];
-    if (content.type === LITERAL || content.type === VARIABLE || content.type === NEW_LINE) {
-      if (isTekstValgHighlighted(highlightedIds, content)) {
-        return { blockIndex, contentIndex, cursorPosition: lengthOfText(content) };
-      }
+    if (isTextContent(content) && isTekstValgHighlighted(highlightedIds, content)) {
+      return { blockIndex, contentIndex, cursorPosition: lengthOfText(content) };
     }
   }
   // Otherwise fall back to the last text-like content.
   for (let contentIndex = contents.length - 1; contentIndex >= 0; contentIndex--) {
     const content = contents[contentIndex];
-    if (content.type === LITERAL || content.type === VARIABLE || content.type === NEW_LINE) {
+    if (isTextContent(content)) {
       return { blockIndex, contentIndex, cursorPosition: lengthOfText(content) };
     }
   }
@@ -145,10 +142,7 @@ export const findLastInsertedFocus = (letter: EditedLetter, highlightedIds: Read
     const contents = block.content as readonly Content[];
     for (let contentIndex = contents.length - 1; contentIndex >= 0; contentIndex--) {
       const content = contents[contentIndex];
-      if (
-        (content.type === LITERAL || content.type === VARIABLE || content.type === NEW_LINE) &&
-        isTekstValgHighlighted(highlightedIds, content)
-      ) {
+      if (isTextContent(content) && isTekstValgHighlighted(highlightedIds, content)) {
         return { blockIndex, contentIndex, cursorPosition: lengthOfText(content) };
       }
     }
