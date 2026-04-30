@@ -40,7 +40,7 @@ class FagsakService(private val penClient: PenClient) {
         "UFOREP" to Behandlingsnummer("B255"),
     )
 
-    fun finnBehandlingsnummer(sakstype: TemplateDescription.ISakstype): Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
+    private fun finnBehandlingsnummer(sakstype: TemplateDescription.ISakstype): Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
 
 }
 
