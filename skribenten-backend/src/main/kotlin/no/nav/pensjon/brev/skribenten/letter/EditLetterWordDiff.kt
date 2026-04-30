@@ -76,16 +76,17 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
             data class State(val textLength: Int = 0, val currentDiff: DiffSegment? = null, val completed: List<DiffSegment> = emptyList())
 
             return cursor.fold<Token.Word, State>(State()) { state, current, edit ->
-                val toAppend = " ${current.word}"
-                val newLength = state.textLength + toAppend.length
+                val spaceLength = if (state.textLength == 0) 0 else 1
+                val wordStart = state.textLength + spaceLength
+                val newLength = wordStart + current.word.length
                 if (edit != null) {
                     when {
                         state.currentDiff == null ->
-                            State(newLength, DiffSegment(index = contentIndex, startOffset = state.textLength, endOffset = newLength), state.completed)
+                            State(newLength, DiffSegment(index = contentIndex, startOffset = wordStart, endOffset = newLength), state.completed)
                         state.currentDiff.endOffset == state.textLength ->
                             State(newLength, state.currentDiff.copy(endOffset = newLength), state.completed)
                         else ->
-                            State(newLength, DiffSegment(index = contentIndex, startOffset = state.textLength, endOffset = newLength), state.completed + state.currentDiff)
+                            State(newLength, DiffSegment(index = contentIndex, startOffset = wordStart, endOffset = newLength), state.completed + state.currentDiff)
                     }
                 } else {
                     state.copy(textLength = newLength)

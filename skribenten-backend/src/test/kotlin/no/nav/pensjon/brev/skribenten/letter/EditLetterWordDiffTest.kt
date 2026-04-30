@@ -22,7 +22,7 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `tokenize paragraph with literal produces Block, Text_Literal, and Word tokens`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "hello world") } }).toList()
+        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "hello world") } })
         assertEquals(
             listOf(
                 Token.Block(null, PARAGRAPH),
@@ -36,7 +36,7 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `tokenize uses editedText instead of text for word tokens`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "original", editedText = "edited") } }).toList()
+        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "original", editedText = "edited") } })
         assertEquals(
             listOf(Token.Block(null, PARAGRAPH), Token.Text.Literal(null, FontType.PLAIN), Token.Word("edited")),
             tokens
@@ -47,7 +47,7 @@ class EditLetterWordDiffTest {
     fun `tokenize uses editedFontType instead of fontType for Literal token`() {
         val tokens = wordDiff.tokenize(
             editedLetter { paragraph { literal(text = "hello", fontType = FontType.PLAIN, editedFontType = FontType.BOLD) } }
-        ).toList()
+        )
         assertEquals(
             listOf(Token.Block(null, PARAGRAPH), Token.Text.Literal(null, FontType.BOLD), Token.Word("hello")),
             tokens
@@ -56,7 +56,7 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `tokenize Variable produces Variable token with fontType`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { variable(text = "val", fontType = FontType.ITALIC) } }).toList()
+        val tokens = wordDiff.tokenize(editedLetter { paragraph { variable(text = "val", fontType = FontType.ITALIC) } })
         assertEquals(
             listOf(Token.Block(null, PARAGRAPH), Token.Text.Variable(null, FontType.ITALIC), Token.Word("val")),
             tokens
@@ -65,7 +65,7 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `tokenize NewLine produces NewLine token between literals`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "a"); newLine(); literal(text = "b") } }).toList()
+        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "a"); newLine(); literal(text = "b") } })
         assertEquals(
             listOf(
                 Token.Block(null, PARAGRAPH),
@@ -90,7 +90,7 @@ class EditLetterWordDiffTest {
                     }
                 }
             }
-        ).toList()
+        )
         assertEquals(
             listOf(
                 Token.Block(null, PARAGRAPH),
@@ -119,7 +119,7 @@ class EditLetterWordDiffTest {
                     }
                 }
             }
-        ).toList()
+        )
         assertEquals(
             listOf(
                 Token.Block(null, PARAGRAPH),
@@ -143,6 +143,28 @@ class EditLetterWordDiffTest {
     // --- Diff ---
 
     @Test
+    fun `first and only word has no phantom leading space in offset`() {
+        // "foo" is 3 chars; the segment should be 0-3, not 0-4
+        val old = editedLetter { paragraph { literal(text = "foo") } }
+        val new = editedLetter { paragraph { literal(text = "bar") } }
+        val (inserts, deletes) = wordDiff.diff(old, new)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 3)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 3)), deletes)
+    }
+
+    @Test
+    fun `second word offset reflects actual space position in text`() {
+        // "foo bar": "foo"=3, space at 3, "bar" at 4-6
+        // The segment for the changed word should start at 4 (after the space), not 3
+        val old = editedLetter { paragraph { literal(text = "foo bar") } }
+        val new = editedLetter { paragraph { literal(text = "foo baz") } }
+        val (inserts, deletes) = wordDiff.diff(old, new)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 4, 7)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 4, 7)), deletes)
+    }
+
+
+    @Test
     fun `no change produces empty diff segments`() {
         val letter = editedLetter { paragraph { literal(text = "hello world") } }
         val (inserts, deletes) = wordDiff.diff(letter, letter)
@@ -155,9 +177,9 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "hello world") } }
         val new = editedLetter { paragraph { literal(text = "goodbye world") } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        // " goodbye" = 8, " hello" = 6
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 8)), inserts)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 6)), deletes)
+        // "goodbye"=7, "hello"=5 (no leading space on first word)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 7)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 5)), deletes)
     }
 
     @Test
@@ -165,9 +187,9 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "hello world") } }
         val new = editedLetter { paragraph { literal(text = "hello goodbye") } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        // " hello"=6, then " goodbye"=8 → [6,14) and " world"=6 → [6,12)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 14)), inserts)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 12)), deletes)
+        // "hello"=5, then " goodbye"=8: word starts at 6 → [6,13) and " world"=6: word starts at 6 → [6,11)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 13)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), deletes)
     }
 
     @Test
@@ -175,7 +197,7 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "hello") } }
         val new = editedLetter { paragraph { literal(text = "hello world") } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 12)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), inserts)
         assertEquals(emptyList<DiffSegment>(), deletes)
     }
 
@@ -185,7 +207,7 @@ class EditLetterWordDiffTest {
         val new = editedLetter { paragraph { literal(text = "hello") } }
         val (inserts, deletes) = wordDiff.diff(old, new)
         assertEquals(emptyList<DiffSegment>(), inserts)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 12)), deletes)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), deletes)
     }
 
     @Test
@@ -193,8 +215,8 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "hello world foo") } }
         val new = editedLetter { paragraph { literal(text = "goodbye there foo") } }
         val (inserts, _) = wordDiff.diff(old, new)
-        // " goodbye there" = 14
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 14)), inserts)
+        // "goodbye there" = 7 + 1 + 5 = 13 (space between is included when words merge)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 0), 0, 13)), inserts)
     }
 
     @Test
@@ -202,11 +224,11 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "hello world foo") } }
         val new = editedLetter { paragraph { literal(text = "goodbye world bar") } }
         val (inserts, _) = wordDiff.diff(old, new)
-        // " goodbye"=[0,8), " bar"=[14,18)
+        // "goodbye"=[0,7), "bar" starts at 14 (after "goodbye world "=13) → [14,17)
         assertEquals(
             listOf(
-                DiffSegment(BlockContentIndex(0, 0), 0, 8),
-                DiffSegment(BlockContentIndex(0, 0), 14, 18),
+                DiffSegment(BlockContentIndex(0, 0), 0, 7),
+                DiffSegment(BlockContentIndex(0, 0), 14, 17),
             ),
             inserts
         )
@@ -218,8 +240,8 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { literal(text = "first"); newLine(); literal(text = "hello world") } }
         val new = editedLetter { paragraph { literal(text = "first"); newLine(); literal(text = "hello goodbye") } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 14)), inserts)
-        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 12)), deletes)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 13)), inserts)
+        assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 11)), deletes)
     }
 
     @Test
@@ -227,8 +249,8 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { itemList { item { literal(text = "hello world") } } } }
         val new = editedLetter { paragraph { itemList { item { literal(text = "hello goodbye") } } } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 6, 14)), inserts)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 6, 12)), deletes)
+        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 6, 13)), inserts)
+        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 0, 0), 6, 11)), deletes)
     }
 
     @Test
@@ -236,7 +258,7 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { itemList { item { literal(text = "unchanged") }; item { literal(text = "hello world") } } } }
         val new = editedLetter { paragraph { itemList { item { literal(text = "unchanged") }; item { literal(text = "hello goodbye") } } } }
         val (inserts, _) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 1, 0), 6, 14)), inserts)
+        assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 1, 0), 6, 13)), inserts)
     }
 
     @Test
@@ -244,8 +266,8 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { table { header { colSpec() }; row { cell { literal(text = "hello world") } } } } }
         val new = editedLetter { paragraph { table { header { colSpec() }; row { cell { literal(text = "hello goodbye") } } } } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 14)), inserts)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 12)), deletes)
+        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 13)), inserts)
+        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 11)), deletes)
     }
 
     @Test
@@ -253,8 +275,8 @@ class EditLetterWordDiffTest {
         val old = editedLetter { paragraph { table { header { colSpec { literal(text = "hello world") } }; row { cell() } } } }
         val new = editedLetter { paragraph { table { header { colSpec { literal(text = "hello goodbye") } }; row { cell() } } } }
         val (inserts, deletes) = wordDiff.diff(old, new)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 14)), inserts)
-        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 12)), deletes)
+        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 13)), inserts)
+        assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 11)), deletes)
     }
 
 }
