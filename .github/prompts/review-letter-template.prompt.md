@@ -5,8 +5,8 @@ description: Review a letter template against the repo's conventions
 
 Review the currently selected / open letter template file against the checklists in:
 
-- `skills/write-template.md` (applies to both autobrev and redigerbar)
-- `skills/write-redigerbar-template.md` (only if the template is a `RedigerbarTemplate`)
+- `.github/skills/write-template.md` (applies to both autobrev and redigerbar)
+- `.github/skills/write-redigerbar-template.md` (only if the template is a `RedigerbarTemplate`)
 
 Check, at minimum:
 

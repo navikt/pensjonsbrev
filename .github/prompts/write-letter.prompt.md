@@ -7,8 +7,8 @@ You are adding a new letter template to the Pensjonsbrev repo.
 
 **Read first (do not skip):**
 - `AGENTS.md` — repo-wide conventions.
-- `skills/write-template.md` — the full recipe (module selection, brevkode rules, Dto design, DSL body, fixture, registration, verification).
-- If the brev is a `RedigerbarTemplate`, also read `skills/write-redigerbar-template.md` for the `Saksbehandlervalg` / fagsystem-data Dto split, `kategori` / `brevkontekst` / `sakstyper`, and `fritekst(...)`.
+- `.github/skills/write-template.md` — the full recipe (module selection, brevkode rules, Dto design, DSL body, fixture, registration, verification).
+- If the brev is a `RedigerbarTemplate`, also read `.github/skills/write-redigerbar-template.md` for the `Saksbehandlervalg` / fagsystem-data Dto split, `kategori` / `brevkontekst` / `sakstyper`, and `fritekst(...)`.
 
 **Inputs**
 - Kind (autobrev or redigerbar): ${input:kind:redigerbar}

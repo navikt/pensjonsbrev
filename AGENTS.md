@@ -46,12 +46,12 @@ object UngUfoerAuto : AutobrevTemplate<UngUfoerAutoDto> {
 
 ## Task recipes (skills)
 
-Step-by-step recipes for common authoring tasks live under [`skills/`](skills/). Follow the linked skill before starting a task it covers.
+Step-by-step recipes for common authoring tasks live under [`.github/skills/`](.github/skills/). Follow the linked skill before starting a task it covers.
 
 | Task | Skill |
 |---|---|
-| Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`skills/write-template.md`](skills/write-template.md) |
-| Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`skills/write-redigerbar-template.md`](skills/write-redigerbar-template.md) |
+| Add a new letter template (autobrev or redigerbar) — module selection, brevkode rules, Dto, DSL body, fixture, registration, verification | [`.github/skills/write-template.md`](.github/skills/write-template.md) |
+| Deltas specific to a `RedigerbarTemplate` — `Saksbehandlervalg` / fagsystem split, `kategori` / `brevkontekst` / `sakstyper`, `fritekst(...)` | [`.github/skills/write-redigerbar-template.md`](.github/skills/write-redigerbar-template.md) |
 
 ## Do NOT Edit By Hand
 
