@@ -6,16 +6,16 @@ import io.ktor.server.response.*
 import io.ktor.server.util.*
 import io.ktor.util.*
 import no.nav.pensjon.brev.skribenten.brevredigering.application.HentBrevService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.model.Pdl
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.routes.brevId
 import no.nav.pensjon.brev.skribenten.services.PdlService
 import org.slf4j.LoggerFactory
 
 const val SAKSID_PARAM = "saksId"
-val SakKey = AttributeKey<Pen.SakSelection>("AuthorizeAnsattSakTilgang:sak")
+val SakKey = AttributeKey<Fagsak>("AuthorizeAnsattSakTilgang:sak")
 
 private val logger = LoggerFactory.getLogger("AuthorizeAnsattSakTilgang")
 
@@ -60,10 +60,10 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
         ?.also { call.attributes.put(SakKey, it) }
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 
-suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService): Pen.SakSelection? {
-    val sak = penService.hentSak(saksId)
+suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService): Fagsak? {
+    val sak = fagsakService.hentSak(saksId)
     if (sak != null) {
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, sak.behandlingsnummer)
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 

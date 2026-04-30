@@ -12,11 +12,11 @@ import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
@@ -42,7 +42,7 @@ fun Route.sakRoute(
         }
 
         get {
-            val sak: Pen.SakSelection = call.attributes[SakKey]
+            val sak: Fagsak = call.attributes[SakKey]
             val vedtaksId: VedtaksId? = call.request.queryParameters["vedtaksId"]?.let { VedtaksId(it.toLong()) }
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
@@ -64,10 +64,10 @@ fun Route.sakRoute(
 
         get("/brukerstatus") {
             coroutineScope {
-                val sak: Pen.SakSelection = call.attributes[SakKey]
+                val sak: Fagsak = call.attributes[SakKey]
                 val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
                 val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
-                val person = pdlService.hentBrukerContext(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
+                val person = pdlService.hentBrukerContext(sak.pid, sak.behandlingsnummer)
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(
