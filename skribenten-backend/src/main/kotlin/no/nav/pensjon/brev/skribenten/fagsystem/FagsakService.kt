@@ -12,14 +12,14 @@ class FagsakService(private val penClient: PenClient) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
     suspend fun hentSak(saksId: SaksId): Fagsak? =
-        penClient.hentSak(saksId)?.let {
+        penClient.hentSak(saksId)?.let { sak ->
             Fagsak(
-                saksId = it.saksId,
-                foedselsdato = it.foedselsdato,
-                navn = Fagsak.Navn(it.navn.fornavn, it.navn.mellomnavn, it.navn.etternavn),
-                sakType = it.sakType,
-                pid = it.pid,
-                behandlingsnummer = finnBehandlingsnummer(it.sakType)
+                saksId = sak.saksId,
+                foedselsdato = sak.foedselsdato,
+                navn = Fagsak.Navn(sak.navn.fornavn, sak.navn.mellomnavn, sak.navn.etternavn),
+                sakType = sak.sakType,
+                behandlingsnummer = behandlingsnummerMap[sak.sakType.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: ${sak.sakType}") },
+                pid = sak.pid
             )
         }
 
@@ -39,9 +39,6 @@ class FagsakService(private val penClient: PenClient) {
         "OMSORG" to Behandlingsnummer("B300"),
         "UFOREP" to Behandlingsnummer("B255"),
     )
-
-    private fun finnBehandlingsnummer(sakstype: TemplateDescription.ISakstype): Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
-
 }
 
 @JvmInline
