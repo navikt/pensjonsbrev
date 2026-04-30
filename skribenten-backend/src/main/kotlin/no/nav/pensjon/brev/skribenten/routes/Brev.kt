@@ -6,6 +6,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.auth.AuthorizeAnsattSakTilgangForBrev
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
+import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.DiffBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.OppdaterBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.ReserverBrevHandler
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.TilbakestillBrevHandler
@@ -62,6 +63,15 @@ fun Route.brev(
             val brevId = call.parameters.brevId()
             val resultat = brevredigeringFacade.tilbakestillBrev(TilbakestillBrevHandler.Request(brevId = brevId))
             apiRespond(dto2ApiService, resultat)
+        }
+
+        post<Edit.Letter>("/diff") { request ->
+            val brevId = call.parameters.brevId()
+
+            val result = brevredigeringFacade.diffBrev(DiffBrevHandler.Request(brevId, request))
+            respondOutcome(dto2ApiService, result) {
+                respond(HttpStatusCode.OK, it)
+            }
         }
     }
 }

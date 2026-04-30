@@ -15,22 +15,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SakspartImpl
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.SignaturImpl
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertThrows
 import java.time.LocalDate
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title1 as E_Title1
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title2 as E_Title2
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Title3 as E_Title3
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList as E_ItemList
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.ItemList.Item as E_Item
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table as E_Table
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Cell as E_Cell
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnSpec as E_ColumnSpec
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Header as E_Header
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.Row as E_Row
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType as E_FontType
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable as E_Variable
 
 class UpdateRenderedLetterTest {
 
@@ -94,15 +79,13 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -118,15 +101,13 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+        }
 
         assertEquals(rendered.toEdit(), edited.updateEditedLetter(rendered))
     }
@@ -140,24 +121,20 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+        }
 
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert"),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                )
-            )
-        )
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert")
+                variable(id = 2, text = "for deg ")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(rendered))
     }
@@ -172,28 +149,24 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "Her har jeg lagt til "),
-                    E_Literal(1, "Var med i forrige rendring, men skal ikke være med i neste", E_FontType.PLAIN),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN),
-                    E_Literal(null, "", E_FontType.PLAIN, " Også lagt til"),
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(text = "", editedText = "Her har jeg lagt til ")
+                literal(id = 1, text = "Var med i forrige rendring, men skal ikke være med i neste")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+                literal(text = "", editedText = " Også lagt til")
+            }
+        }
 
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "Her har jeg lagt til "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN),
-                    E_Literal(null, "", E_FontType.PLAIN, " Også lagt til"),
-                )
-            )
-        )
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(text = "", editedText = "Her har jeg lagt til ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+                literal(text = "", editedText = " Også lagt til")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(next))
     }
@@ -209,24 +182,20 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN, "og dine"),
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!", editedText = "og dine")
+            }
+        }
 
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN, "og dine"),
-                    E_Literal(4, " pluss noe mer tekst", E_FontType.PLAIN),
-                )
-            )
-        )
+        val expected = editedLetter {
+            title1(id = 1) {
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!", editedText = "og dine")
+                literal(id = 4, text = " pluss noe mer tekst")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(next))
     }
@@ -243,16 +212,14 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
-                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(text = "", editedText = "ny literal")
+                variable(id = 1, text = "En tittel ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -269,27 +236,23 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN),
-                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
-                )
-            )
-        )
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Variable(1, "En tittel ", E_FontType.PLAIN),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN),
-                    E_Literal(null, "", E_FontType.PLAIN, "ny literal"),
-                    E_Literal(4, "ny rendered literal", E_FontType.PLAIN),
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                variable(id = 1, text = "En tittel ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+                literal(text = "", editedText = "ny literal")
+            }
+        }
+        val expected = editedLetter {
+            title1(id = 1) {
+                variable(id = 1, text = "En tittel ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+                literal(text = "", editedText = "ny literal")
+                literal(id = 4, text = "ny rendered literal")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(next))
     }
@@ -304,16 +267,12 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true,
-                listOf(
-                    E_Literal(1, "Noe tekst", E_FontType.PLAIN),
-                    E_Variable(2, "en variabel", E_FontType.PLAIN),
-                ),
-                originalType = Edit.Block.Type.PARAGRAPH,
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1, originalType = Edit.Block.Type.PARAGRAPH) {
+                literal(id = 1, text = "Noe tekst")
+                variable(id = 2, text = "en variabel")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -330,24 +289,20 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "Noe tekst", E_FontType.PLAIN, "Noe redigert tekst "),
-                    E_Variable(2, "med en variabel", E_FontType.PLAIN),
-                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
-                )
-            )
-        )
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
-                    E_Variable(2, "med en oppdatert variabel", E_FontType.PLAIN),
-                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
-                )
-            ),
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "Noe tekst", editedText = "Noe redigert tekst ")
+                variable(id = 2, text = "med en variabel")
+                literal(id = 3, text = " og noe mer tekst")
+            }
+        }
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "Noe tekst ", editedText = "Noe redigert tekst ")
+                variable(id = 2, text = "med en oppdatert variabel")
+                literal(id = 3, text = " og noe mer tekst")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -363,25 +318,21 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
-                    E_Variable(2, "med en variabel", E_FontType.PLAIN),
-                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
-                )
-            )
-        )
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "Noe tekst ", E_FontType.PLAIN, "Noe redigert tekst "),
-                    E_Variable(2, "med en oppdatert variabel", E_FontType.PLAIN),
-                    E_Literal(3, " og noe mer tekst", E_FontType.PLAIN),
-                    E_Literal(4, " pluss noe ny tekst", E_FontType.PLAIN),
-                )
-            )
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "Noe tekst ", editedText = "Noe redigert tekst ")
+                variable(id = 2, text = "med en variabel")
+                literal(id = 3, text = " og noe mer tekst")
+            }
+        }
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "Noe tekst ", editedText = "Noe redigert tekst ")
+                variable(id = 2, text = "med en oppdatert variabel")
+                literal(id = 3, text = " og noe mer tekst")
+                literal(id = 4, text = " pluss noe ny tekst")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -396,25 +347,19 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "Noe ny tekst")
-                )
-            ),
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "Noe mer ny tekst")
-                )
-            ),
-        )
+        val edited = editedLetter {
+            paragraph {
+                literal(text = "", editedText = "Noe ny tekst")
+            }
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "", editedText = "Noe mer ny tekst")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -436,39 +381,29 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
-                )
-            ),
-        )
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
-                )
-            ),
-            E_Title1(
-                3, true, listOf(
-                    E_Literal(1, "En ny tittel ", E_FontType.PLAIN),
-                )
-            ),
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "Noe mer ny tekst")
+            }
+        }
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "Noe mer ny tekst")
+            }
+            title1(id = 3) {
+                literal(id = 1, text = "En ny tittel ")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(next))
     }
@@ -490,40 +425,28 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "", E_FontType.PLAIN, "første teksten")
-                )
-            ),
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "Noe mer ny tekst", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "enda mer tekst", E_FontType.PLAIN)
-                )
-            ),
-            E_Title1(
-                3, true, listOf(
-                    E_Literal(1, "En ny tittel ", E_FontType.PLAIN),
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "siste teksten", E_FontType.PLAIN)
-                )
-            ),
-        )
+        val edited = editedLetter {
+            paragraph {
+                literal(text = "", editedText = "første teksten")
+            }
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "Noe mer ny tekst")
+            }
+            paragraph {
+                literal(text = "enda mer tekst")
+            }
+            title1(id = 3) {
+                literal(id = 1, text = "En ny tittel ")
+            }
+            paragraph {
+                literal(text = "siste teksten")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -549,49 +472,35 @@ class UpdateRenderedLetterTest {
                 )
             ),
         )
-        val edited = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "Noe ny redigert tekst", E_FontType.PLAIN)
-                )
-            ),
-            E_Title1(
-                4, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
-                )
-            ),
-        )
-        val expected = editedLetter(
-            E_Title1(
-                1, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN, "Her har jeg redigert "),
-                    E_Variable(2, "for deg ", E_FontType.PLAIN),
-                    E_Literal(3, "og meg!", E_FontType.PLAIN)
-                )
-            ),
-            E_Paragraph(
-                null, true, listOf(
-                    E_Literal(null, "Noe ny redigert tekst", E_FontType.PLAIN)
-                )
-            ),
-            E_Title1(
-                3, true, listOf(
-                    E_Literal(1, "Dette er en ny block før id:4 ", E_FontType.PLAIN),
-                )
-            ),
-            E_Title1(
-                4, true, listOf(
-                    E_Literal(1, "En tittel ", E_FontType.PLAIN),
-                )
-            ),
-        )
+        val edited = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "Noe ny redigert tekst")
+            }
+            title1(id = 4) {
+                literal(id = 1, text = "En tittel ")
+            }
+        }
+        val expected = editedLetter {
+            title1(id = 1) {
+                literal(id = 1, text = "En tittel ", editedText = "Her har jeg redigert ")
+                variable(id = 2, text = "for deg ")
+                literal(id = 3, text = "og meg!")
+            }
+            paragraph {
+                literal(text = "Noe ny redigert tekst")
+            }
+            title1(id = 3) {
+                literal(id = 1, text = "Dette er en ny block før id:4 ")
+            }
+            title1(id = 4) {
+                literal(id = 1, text = "En tittel ")
+            }
+        }
 
         assertEquals(expected, edited.updateEditedLetter(next))
     }
@@ -615,32 +524,24 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true, listOf(
-                    E_Literal(11, "Første", E_FontType.PLAIN),
-                    E_Variable(12, "en variabel", E_FontType.PLAIN),
-                    E_Literal(13, "Andre", E_FontType.PLAIN),
-                    E_Variable(14, "andre variabel", E_FontType.PLAIN),
-                    E_Literal(25, "Tredje", E_FontType.PLAIN),
-                    E_Variable(27, "burde ikke bli med etter rendring", E_FontType.PLAIN),
-                    E_Literal(28, "burde heller ikke bli med etter rendring", E_FontType.PLAIN),
-                    E_ItemList(
-                        16, listOf(
-                            E_Item(
-                                160,
-                                listOf(
-                                    E_Literal(161, "punkt 1", E_FontType.PLAIN),
-                                    E_Literal(162, "punkt 2", E_FontType.PLAIN),
-                                    E_Literal(163, "punkt 3", E_FontType.PLAIN)
-                                )
-                            ),
-                        ),
-                        listType = Listetype.PUNKTLISTE
-                    ),
-                )
-            )
-        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "Første")
+                variable(id = 12, text = "en variabel")
+                literal(id = 13, text = "Andre")
+                variable(id = 14, text = "andre variabel")
+                literal(id = 25, text = "Tredje")
+                variable(id = 27, text = "burde ikke bli med etter rendring")
+                literal(id = 28, text = "burde heller ikke bli med etter rendring")
+                itemList(id = 16) {
+                    item(id = 160) {
+                        literal(id = 161, text = "punkt 1")
+                        literal(id = 162, text = "punkt 2")
+                        literal(id = 163, text = "punkt 3")
+                    }
+                }
+            }
+        }
 
         assertEquals(next.toEdit(), edited.updateEditedLetter(next))
     }
@@ -657,16 +558,13 @@ class UpdateRenderedLetterTest {
                 ),
             ),
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(11, "lit1", E_FontType.PLAIN),
-                    E_Variable(12, "var1", E_FontType.PLAIN),
-                    E_Literal(13, "rediger til tom streng", E_FontType.PLAIN, ""),
-                ),
-            ),
-        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "lit1")
+                variable(id = 12, text = "var1")
+                literal(id = 13, text = "rediger til tom streng", editedText = "")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -687,15 +585,11 @@ class UpdateRenderedLetterTest {
                 ),
             ),
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(11, "lit1", E_FontType.PLAIN),
-                ),
-            ),
-            deleted = setOf(2),
-        )
+        val edited = editedLetter(deleted = setOf(2)) {
+            paragraph(id = 1) {
+                literal(id = 11, text = "lit1")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -729,32 +623,20 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true, listOf(
-                    E_Literal(11, "1lit1", E_FontType.PLAIN),
-                ),
-                deletedContent = setOf(12)
-            ),
-            E_Title1(
-                2, true, listOf(
-                    E_Literal(21, "2lit1", E_FontType.PLAIN),
-                ),
-                deletedContent = setOf(22)
-            ),
-            E_Title2(
-                3, true, listOf(
-                    E_Literal(31, "3lit1", E_FontType.PLAIN),
-                ),
-                deletedContent = setOf(32)
-            ),
-            E_Title3(
-                4, true, listOf(
-                    E_Literal(41, "4lit1", E_FontType.PLAIN),
-                ),
-                deletedContent = setOf(42)
-            )
-        )
+        val edited = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(12)) {
+                literal(id = 11, text = "1lit1")
+            }
+            title1(id = 2, deletedContent = setOf(22)) {
+                literal(id = 21, text = "2lit1")
+            }
+            title2(id = 3, deletedContent = setOf(32)) {
+                literal(id = 31, text = "3lit1")
+            }
+            title3(id = 4, deletedContent = setOf(42)) {
+                literal(id = 41, text = "4lit1")
+            }
+        }
 
         assertEquals(edited, edited.updateEditedLetter(next))
     }
@@ -775,21 +657,15 @@ class UpdateRenderedLetterTest {
                 ),
             ),
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_ItemList(
-                        11,
-                        listOf(
-                            E_Item(112, listOf(E_Literal(1121, "item 2", E_FontType.PLAIN))),
-                        ),
-                        Listetype.PUNKTLISTE,
-                        setOf(111),
-                    ),
-                ),
-            ),
-        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                itemList(id = 11, deletedItems = setOf(111)) {
+                    item(id = 112) {
+                        literal(id = 1121, text = "item 2")
+                    }
+                }
+            }
+        }
         assertEquals(edited, edited.updateEditedLetter(next))
     }
 
@@ -806,25 +682,19 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(14, "fjerde", E_FontType.PLAIN, "fjerdeEdited"),
-                )
-            )
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_Literal(11, "første", E_FontType.PLAIN),
-                    E_Literal(12, "andre", E_FontType.PLAIN),
-                    E_Literal(13, "tredje", E_FontType.PLAIN),
-                    E_Literal(14, "fjerde", E_FontType.PLAIN, "fjerdeEdited"),
-                )
-            )
-        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 14, text = "fjerde", editedText = "fjerdeEdited")
+            }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "første")
+                literal(id = 12, text = "andre")
+                literal(id = 13, text = "tredje")
+                literal(id = 14, text = "fjerde", editedText = "fjerdeEdited")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -842,62 +712,64 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                null, true,
-                listOf(
-                    E_Literal(11, "en literal", E_FontType.PLAIN),
-                    E_Variable(12, "en variabel", E_FontType.PLAIN),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN)))), Listetype.PUNKTLISTE),
-                    E_Table(
-                        id = 14,
-                        header = E_Header(
-                            141,
-                            colSpec = listOf(
-                                E_ColumnSpec(
-                                    1411,
-                                    E_Cell(14111, listOf(E_Variable(141111, "variabel 3", E_FontType.PLAIN))),
-                                    E_Table.ColumnAlignment.LEFT,
-                                    1
-                                )
-                            )
-                        ),
-                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "variabel 4", E_FontType.PLAIN)))))),
-                    )
-                )
-            ),
-            E_Title1(null, true, listOf(E_Variable(1311, "variabel 2", E_FontType.PLAIN))),
-            E_Title2(null, true, listOf(E_Variable(14211, "variabel 4", E_FontType.PLAIN))),
-            deleted = setOf(1),
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                null, true,
-                listOf(
-                    E_Literal(11, "en literal", E_FontType.PLAIN),
-                    E_Variable(12, "oppdatert variabel", E_FontType.PLAIN),
-                    E_ItemList(13, items = listOf(E_Item(131, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN)))), Listetype.PUNKTLISTE),
-                    E_Table(
-                        id = 14,
-                        header = E_Header(
-                            141,
-                            colSpec = listOf(
-                                E_ColumnSpec(
-                                    1411,
-                                    E_Cell(14111, listOf(E_Variable(141111, "oppdatert variabel 3", E_FontType.PLAIN))),
-                                    E_Table.ColumnAlignment.LEFT,
-                                    1
-                                )
-                            )
-                        ),
-                        rows = listOf(E_Row(142, listOf(E_Cell(1421, listOf(E_Variable(14211, "oppdatert variabel 4", E_FontType.PLAIN)))))),
-                    )
-                )
-            ),
-            E_Title1(null, true, listOf(E_Variable(1311, "oppdatert variabel 2", E_FontType.PLAIN))),
-            E_Title2(null, true, listOf(E_Variable(14211, "oppdatert variabel 4", E_FontType.PLAIN))),
-            deleted = setOf(1),
-        )
+        val edited = editedLetter(deleted = setOf(1)) {
+            paragraph {
+                literal(id = 11, text = "en literal")
+                variable(id = 12, text = "en variabel")
+                itemList(id = 13) {
+                    item(id = 131) {
+                        variable(id = 1311, text = "variabel 2")
+                    }
+                }
+                table(id = 14) {
+                    header(id = 141) {
+                        colSpec(id = 1411, cellId = 14111) {
+                            variable(id = 141111, text = "variabel 3")
+                        }
+                    }
+                    row(id = 142) {
+                        cell(id = 1421) {
+                            variable(id = 14211, text = "variabel 4")
+                        }
+                    }
+                }
+            }
+            title1 {
+                variable(id = 1311, text = "variabel 2")
+            }
+            title2 {
+                variable(id = 14211, text = "variabel 4")
+            }
+        }
+        val expected = editedLetter(deleted = setOf(1)) {
+            paragraph {
+                literal(id = 11, text = "en literal")
+                variable(id = 12, text = "oppdatert variabel")
+                itemList(id = 13) {
+                    item(id = 131) {
+                        variable(id = 1311, text = "oppdatert variabel 2")
+                    }
+                }
+                table(id = 14) {
+                    header(id = 141) {
+                        colSpec(id = 1411, cellId = 14111) {
+                            variable(id = 141111, text = "oppdatert variabel 3")
+                        }
+                    }
+                    row(id = 142) {
+                        cell(id = 1421) {
+                            variable(id = 14211, text = "oppdatert variabel 4")
+                        }
+                    }
+                }
+            }
+            title1 {
+                variable(id = 1311, text = "oppdatert variabel 2")
+            }
+            title2 {
+                variable(id = 14211, text = "oppdatert variabel 4")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -911,20 +783,18 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                null, true,
-                listOf(E_Literal(11, "en literal"), E_Variable(12, "en variabel"))
-            ),
-            deleted = setOf(1),
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                null, true,
-                listOf(E_Literal(11, "en literal"), E_Literal(12, "en variabel"))
-            ),
-            deleted = setOf(1),
-        )
+        val edited = editedLetter(deleted = setOf(1)) {
+            paragraph {
+                literal(id = 11, text = "en literal")
+                variable(id = 12, text = "en variabel")
+            }
+        }
+        val expected = editedLetter(deleted = setOf(1)) {
+            paragraph {
+                literal(id = 11, text = "en literal")
+                literal(id = 12, text = "en variabel")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -943,28 +813,24 @@ class UpdateRenderedLetterTest {
                 listOf(LiteralImpl(21, "to literal")),
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal")),
-                deletedContent = setOf(12),
-            ),
-            E_Paragraph(
-                2, true,
-                listOf(E_Variable(1211, "variable 1", parentId = 121), E_Literal(21, "to literal")),
-            ),
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal")),
-                deletedContent = setOf(12),
-            ),
-            E_Paragraph(
-                2, true,
-                listOf(E_Variable(1211, "oppdatert v1", parentId = 121), E_Literal(21, "to literal")),
-            ),
-        )
+        val edited = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(12)) {
+                literal(id = 11, text = "en literal")
+            }
+            paragraph(id = 2) {
+                variable(id = 1211, text = "variable 1", parentId = 121)
+                literal(id = 21, text = "to literal")
+            }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(12)) {
+                literal(id = 11, text = "en literal")
+            }
+            paragraph(id = 2) {
+                variable(id = 1211, text = "oppdatert v1", parentId = 121)
+                literal(id = 21, text = "to literal")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -979,20 +845,18 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal"), E_Variable(1211, "variable 1", parentId = 121)),
-                deletedContent = setOf(12),
-            ),
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal"), E_Variable(1211, "oppdatert v1", parentId = 121)),
-                deletedContent = setOf(12),
-            ),
-        )
+        val edited = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(12)) {
+                literal(id = 11, text = "en literal")
+                variable(id = 1211, text = "variable 1", parentId = 121)
+            }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(12)) {
+                literal(id = 11, text = "en literal")
+                variable(id = 1211, text = "oppdatert v1", parentId = 121)
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -1004,27 +868,26 @@ class UpdateRenderedLetterTest {
                 listOf(LiteralImpl(11, "en literal"), VariableImpl(12, "oppdatert v1")),
             ),
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal"),E_Variable(12, "variable 1")),
-            ),
-            E_Paragraph(
-                2, true,
-                listOf(E_Variable(12, "variable 1"), E_Literal(21, text = "hei", editedText = "heisann")),
-            )
-        )
-        val expected = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(E_Literal(11, "en literal"), E_Variable(12, "oppdatert v1")),
-            ),
-            E_Paragraph(
-                2, true,
-                listOf(E_Variable(12, "oppdatert v1"),E_Literal(21, "hei", editedText = "heisann")),
-                missingFromTemplate = true
-            ),
-        )
+        val edited = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "en literal")
+                variable(id = 12, text = "variable 1")
+            }
+            paragraph(id = 2) {
+                variable(id = 12, text = "variable 1")
+                literal(id = 21, text = "hei", editedText = "heisann")
+            }
+        }
+        val expected = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "en literal")
+                variable(id = 12, text = "oppdatert v1")
+            }
+            paragraph(id = 2, missingFromTemplate = true) {
+                variable(id = 12, text = "oppdatert v1")
+                literal(id = 21, text = "hei", editedText = "heisann")
+            }
+        }
         assertEquals(expected, edited.updateEditedLetter(next))
     }
 
@@ -1041,22 +904,20 @@ class UpdateRenderedLetterTest {
                 )
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_ItemList(
-                        13,
-                        listOf(
-                            E_Item(null, listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))),
-                            E_Item(131, listOf(E_Literal(1311, "punkt1"), E_Literal(14, "lit2", parentId = 1)))
-                        ),
-                        Listetype.PUNKTLISTE,
-                    ),
-                ),
-                deletedContent = setOf(11, 12, 14)
-            )
-        )
+        val edited = editedLetter {
+            paragraph(id = 1, deletedContent = setOf(11, 12, 14)) {
+                itemList(id = 13) {
+                    item {
+                        literal(id = 11, text = "lit1", parentId = 1)
+                        variable(id = 12, text = "var2", parentId = 1)
+                    }
+                    item(id = 131) {
+                        literal(id = 1311, text = "punkt1")
+                        literal(id = 14, text = "lit2", parentId = 1)
+                    }
+                }
+            }
+        }
         assertEquals(edited, edited.updateEditedLetter(next))
     }
 
@@ -1068,32 +929,32 @@ class UpdateRenderedLetterTest {
                 listOf(LiteralImpl(11, "lit1"), VariableImpl(12, "var2"), ItemListImpl(13, listOf(ItemImpl(131, listOf(LiteralImpl(1311, "punkt1")))), Listetype.PUNKTLISTE), LiteralImpl(14, "lit2"))
             )
         )
-        val edited = editedLetter(
-            E_Paragraph(
-                null, true,
-                listOf(E_Literal(11, "lit1", parentId = 1), E_Variable(12, "var2", parentId = 1))
-            ),
-            E_Paragraph(
-                1, true,
-                listOf(
-                    E_ItemList(13, listOf(E_Item(131, listOf(E_Literal(1311, "punkt1")))), Listetype.PUNKTLISTE),
-                    E_Literal(14, "lit2")
-                ),
-                deletedContent = setOf(11, 12)
-            )
-        )
+        val edited = editedLetter {
+            paragraph {
+                literal(id = 11, text = "lit1", parentId = 1)
+                variable(id = 12, text = "var2", parentId = 1)
+            }
+            paragraph(id = 1, deletedContent = setOf(11, 12)) {
+                itemList(id = 13) {
+                    item(id = 131) {
+                        literal(id = 1311, text = "punkt1")
+                    }
+                }
+                literal(id = 14, text = "lit2")
+            }
+        }
         assertEquals(edited, edited.updateEditedLetter(next))
     }
 
     @Test
     fun `BrevdataEllerFritekst som begynner som fritekst og endres til variabel senere fordi saken oppdateres`() {
         // Om et BrevdataEllerFritekst-expression i et brev ikke får brevdata ved første render, men får en verdi etter at saksbehandler har fylt inn fritekst så skal det ikke feile i Skribenten.
-        val editedLetter1 = editedLetter(
-            E_Paragraph(1, true, listOf(
-                E_Literal(11, "fast tekst"),
-                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
-            ))
-        )
+        val editedLetter1 = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "fast tekst")
+                literal(id = 12, text = "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST))
+            }
+        }
 
         val brevdataVariabelHarEnVerdi = letter(
             ParagraphImpl(1, true, listOf(
@@ -1103,12 +964,12 @@ class UpdateRenderedLetterTest {
         )
 
         // Saksbehandlers redigering beholdes
-        val expected = editedLetter(
-            E_Paragraph(1, true, listOf(
-                E_Literal(11, "fast tekst oppdatert"),
-                E_Literal(12, "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST)),
-            ))
-        )
+        val expected = editedLetter {
+            paragraph(id = 1) {
+                literal(id = 11, text = "fast tekst oppdatert")
+                literal(id = 12, text = "fritekst", editedText = "fylt inn fritekst", tags = setOf(ElementTags.FRITEKST))
+            }
+        }
 
         assertEquals(expected, editedLetter1.updateEditedLetter(brevdataVariabelHarEnVerdi))
     }

@@ -1,5 +1,8 @@
+@file:OptIn(InterneDataklasser::class)
+
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.brev.InterneDataklasser
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.*
@@ -45,6 +48,16 @@ fun editedLetter(vararg blocks: Edit.Block, deleted: Set<Int> = emptySet(), fixP
         ),
         deletedBlocks = deleted
     )
+
+fun editedLetter(
+    deleted: Set<Int> = emptySet(),
+    fixParentIds: Boolean = true,
+    dokumentDato: LocalDate = LocalDate.now(),
+    builder: EditLetterBuilder.() -> Unit,
+): Edit.Letter {
+    val blocks = EditLetterBuilder().apply(builder).blocks
+    return editedLetter(*blocks.toTypedArray(), deleted = deleted, fixParentIds = fixParentIds, dokumentDato = dokumentDato)
+}
 
 private fun Edit.Block.fixParentIds(parentId: Int?): Edit.Block =
     when (this) {
