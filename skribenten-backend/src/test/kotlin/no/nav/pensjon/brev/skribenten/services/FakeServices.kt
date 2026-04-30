@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.skribenten.MockPrincipal
 import no.nav.pensjon.brev.skribenten.auth.withPrincipal
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerService
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.*
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient.KravStoettetAvDatabyggerResult
 import no.nav.pensjon.brev.skribenten.model.*
@@ -159,8 +160,8 @@ open class PenClientStub : PenClient {
 
 
 open class PdlServiceStub : PdlService {
-    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): List<Pdl.Gradering>? = notYetStubbed()
-    override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
+    override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?): List<Pdl.Gradering>? = notYetStubbed()
+    override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Behandlingsnummer?): Pdl.PersonContext = notYetStubbed()
 }
 
 open class SafServiceStub : SafService {

@@ -3,7 +3,7 @@ package no.nav.pensjon.brev.skribenten.fagsystem
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.Pdl
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer.*
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import org.slf4j.LoggerFactory
@@ -31,6 +31,19 @@ class FagsakService(private val penClient: PenClient) {
         "UFOREP" to B255,
     )
 
-    fun finnBehandlingsnummer(sakstype: TemplateDescription.ISakstype): Pdl.Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
+    fun finnBehandlingsnummer(sakstype: TemplateDescription.ISakstype): Behandlingsnummer? = behandlingsnummerMap[sakstype.kode] ?: null.also { logger.warn("Spurte om sakstype som ikke har behandlingsnummer: $sakstype") }
 
+}
+
+enum class Behandlingsnummer {
+    B222,
+    B255,
+    B280,
+    B359,
+    B345,
+    B296,
+    B298,
+    B150,
+    B377,
+    B300,
 }
