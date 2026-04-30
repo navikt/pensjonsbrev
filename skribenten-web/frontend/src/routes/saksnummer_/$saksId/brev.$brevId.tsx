@@ -199,6 +199,7 @@ function RedigerBrev({
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
+  const initialIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
   const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
@@ -245,7 +246,13 @@ function RedigerBrev({
       onSaveSuccess(response);
 
       if (!previousIds) return;
-      const newIds = collectNewIds(previousIds, response.redigertBrev);
+      const initialIds = initialIdsRef.current;
+      const newIds = new Set<number>();
+      for (const id of collectNewIds(previousIds, response.redigertBrev)) {
+        // Suppress ids that the saksbehandler already saw on initial load (e.g. default
+        // text that reappears when toggling a tekstvalg off).
+        if (!initialIds.has(id)) newIds.add(id);
+      }
       if (newIds.size === 0) return;
 
       setHighlightedIds(newIds);

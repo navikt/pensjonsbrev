@@ -86,10 +86,10 @@ export const collectAllIds = (letter: EditedLetter): Set<number> => {
   return acc;
 };
 
-export const collectNewIds = (previousIds: ReadonlySet<number>, letter: EditedLetter): Set<number> => {
+export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedLetter): Set<number> => {
   const all = collectAllIds(letter);
   const result = new Set<number>();
-  for (const id of all) if (!previousIds.has(id)) result.add(id);
+  for (const id of all) if (!seenIds.has(id)) result.add(id);
   return result;
 };
 
