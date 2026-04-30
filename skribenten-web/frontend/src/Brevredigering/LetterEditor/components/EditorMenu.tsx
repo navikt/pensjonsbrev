@@ -55,6 +55,8 @@ type EditorMenuProps = {
 };
 
 export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMal }: EditorMenuProps) => {
+  const { showDiff, setShowDiff } = useEditor();
+
   return (
     <Box asChild background="default" borderColor="neutral-subtle" borderWidth="0 0 1 0" width="100%">
       <HStack align="center" gap="space-8 space-16" paddingBlock="space-8" paddingInline="space-16">
@@ -69,6 +71,15 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
         <SelectTypography />
         <HStack align="center" css={{ marginInlineStart: "auto" }} gap="space-8">
           <LagringStatus />
+          <Button
+            data-cy="vis-diff-button"
+            onClick={() => setShowDiff(!showDiff)}
+            size="small"
+            type="button"
+            variant={showDiff ? "primary" : "secondary"}
+          >
+            { showDiff ? "Viser diff" : "Ikke diff" }
+          </Button>
           <Button
             data-color="danger"
             data-cy="tilbakestill-mal-button"

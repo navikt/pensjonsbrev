@@ -1,4 +1,5 @@
 import { type Nullable } from "./Nullable";
+import {LiteralIndex} from "~/Brevredigering/LetterEditor/model/state";
 
 export type LetterModelSpecification = {
   readonly types: ObjectTypeSpecifications;
@@ -190,4 +191,30 @@ export interface EditedLetter {
 export interface PropertyUsage {
   readonly typeName: string;
   readonly propertyName: string;
+}
+
+export interface ContentIndex1 {
+  readonly blockIndex: number;
+  readonly contentIndex: number;
+}
+
+export interface DiffSegment2 {
+  readonly index: LiteralIndex;
+  readonly startOffset: number;
+  readonly endOffset: number;
+}
+
+export interface DiffSegment {
+  readonly type: "Insert" | "Delete";
+  readonly index: ContentIndex1;
+}
+export interface InsertSegment extends DiffSegment {
+  readonly type: "Insert";
+  readonly startOffset: number;
+  readonly endOffset: number;
+}
+export interface DeleteSegment extends DiffSegment {
+  readonly type: "Delete";
+  readonly offset: number;
+  readonly text: string;
 }

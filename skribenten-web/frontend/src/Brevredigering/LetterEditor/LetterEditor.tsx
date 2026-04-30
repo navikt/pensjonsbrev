@@ -18,6 +18,7 @@ import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
+import { type DiffResponse } from "~/api/brev-queries";
 
 export const LetterEditor = ({
   freeze,
@@ -25,12 +26,18 @@ export const LetterEditor = ({
   editorState,
   setEditorState,
   showDebug,
+  diff,
+  showDiff,
+  setShowDiff,
 }: {
   freeze: boolean;
   error: boolean;
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
   showDebug: boolean;
+  diff: DiffResponse | undefined;
+  showDiff: boolean;
+  setShowDiff: (v: boolean) => void;
 }) => {
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
@@ -40,7 +47,6 @@ export const LetterEditor = ({
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
 
   useDragSelectUnifier(editorRoot, !freeze);
-
   useSelectionDeleteHotkey(editorRoot, (focus) => applyAction(Actions.deleteSelection, setEditorState, focus), !freeze);
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
@@ -56,10 +62,7 @@ export const LetterEditor = ({
       return {
         ...previous,
         saveStatus: "DIRTY",
-        history: {
-          ...previous.history,
-          entryPointer: current.history.entryPointer - 1,
-        },
+        history: { ...previous.history, entryPointer: current.history.entryPointer - 1 },
       };
     });
   }, [canUndo, setEditorState]);
@@ -73,17 +76,14 @@ export const LetterEditor = ({
       return {
         ...next,
         saveStatus: "DIRTY",
-        history: {
-          ...next.history,
-          entryPointer: nextPointer,
-        },
+        history: { ...next.history, entryPointer: nextPointer },
       };
     });
   }, [canRedo, setEditorState]);
 
   return (
     <VStack overflowY="hidden">
-      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo }}>
+      <EditorStateContext.Provider value={{ freeze, error, editorState, setEditorState, undo, redo, diff, showDiff, setShowDiff, diffMode: "inserts" }}>
         <EditorMenu
           canRedo={canRedo}
           canUndo={canUndo}
@@ -97,10 +97,7 @@ export const LetterEditor = ({
             <Heading
               className="letter-title"
               level="1"
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "none";
-              }}
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "none"; }}
               onDragStart={(e) => e.preventDefault()}
               onDrop={(e) => e.preventDefault()}
               size="medium"
@@ -114,10 +111,7 @@ export const LetterEditor = ({
             <div
               className="editor-surface"
               data-editor-root
-              onDragOver={(e) => {
-                e.preventDefault();
-                e.dataTransfer.dropEffect = "none";
-              }}
+              onDragOver={(e) => { e.preventDefault(); e.dataTransfer.dropEffect = "none"; }}
               onDragStart={(e) => e.preventDefault()}
               onDrop={(e) => e.preventDefault()}
               onKeyDown={editorKeyboardShortcuts}
@@ -133,7 +127,6 @@ export const LetterEditor = ({
           </Box>
         </VStack>
         {showDebug && <DebugPanel />}
-        {/* Åpner modal, tar ikke plass i DOM her */}
         {vilTilbakestilleMal && (
           <TilbakestillMalModal
             brevId={editorState.info.id}
@@ -154,6 +147,10 @@ export const EditorStateContext = createContext<{
   setEditorState: CallbackReceiver<LetterEditorState>;
   undo: () => void;
   redo: () => void;
+  diff: DiffResponse | undefined;
+  showDiff: boolean;
+  setShowDiff: (v: boolean) => void;
+  diffMode: "inserts" | "deletes";
 }>({
   freeze: false,
   error: false,
@@ -161,6 +158,10 @@ export const EditorStateContext = createContext<{
   setEditorState: () => {},
   undo: () => {},
   redo: () => {},
+  diff: undefined,
+  showDiff: false,
+  setShowDiff: () => {},
+  diffMode: "inserts",
 });
 export const useEditor = () => {
   return useContext(EditorStateContext);

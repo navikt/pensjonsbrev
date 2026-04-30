@@ -10,7 +10,7 @@ import {
   type OpprettBrevRequest,
   type ReservasjonResponse,
 } from "~/types/brev";
-import { type EditedLetter, type LetterModelSpecification } from "~/types/brevbakerTypes";
+import {DiffSegment, DiffSegment2, type EditedLetter, type LetterModelSpecification} from "~/types/brevbakerTypes";
 import { type P1Redigerbar } from "~/types/p1";
 
 export const brevmetadataKeys = {
@@ -95,6 +95,22 @@ export async function oppdaterBrev(args: {
     )
   ).data;
 }
+
+export const diffKeys = {
+  all: ["DIFF"] as const,
+  id: (brevId: number) => [...diffKeys.all, brevId] as const,
+}
+
+export type DiffResponse = {
+  readonly inserts: DiffSegment2[];
+  readonly deletes: DiffSegment2[];
+  readonly rendretBrev: EditedLetter;
+}
+
+export const getDiff = {
+  queryKey: diffKeys.id,
+  queryFn: async (brevId: number, redigertBrev: EditedLetter) => (await axios.post<DiffResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/diff`, redigertBrev)).data,
+};
 
 export async function oppdaterBrevtekst(brevId: number, redigertBrev: EditedLetter, frigiReservasjon?: boolean) {
   return (

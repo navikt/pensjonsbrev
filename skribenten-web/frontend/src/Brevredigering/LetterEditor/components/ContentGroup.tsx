@@ -28,7 +28,7 @@ import {
   gotoCoordinates,
 } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import {
-  type Content,
+  type Content, DiffSegment2,
   type EditedLetter,
   ElementTags,
   FontType,
@@ -80,7 +80,7 @@ function getContent(letter: EditedLetter, literalIndex: LiteralIndex) {
 }
 
 export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
-  const { editorState } = useEditor();
+  const { editorState, showDiff } = useEditor();
   const contents = getContent(editorState.redigertBrev, literalIndex);
 
   return (
@@ -94,14 +94,19 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
               "itemIndex" in literalIndex
                 ? { ...literalIndex, itemContentIndex: contentIndex }
                 : { ...literalIndex, contentIndex: contentIndex };
-            return needsWordJoiner ? (
-              <React.Fragment key={contentIndex}>
-                {WORD_JOINER}
-                <EditableText content={content} literalIndex={updatedLiteralIndex} />
-              </React.Fragment>
-            ) : (
-              <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
-            );
+
+            if (showDiff) {
+              return <DiffText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />;
+            } else {
+              return needsWordJoiner ? (
+                <React.Fragment key={contentIndex}>
+                  {WORD_JOINER}
+                  <EditableText content={content} literalIndex={updatedLiteralIndex} />
+                </React.Fragment>
+              ) : (
+                <EditableText content={content} key={contentIndex} literalIndex={updatedLiteralIndex} />
+              );
+            }
           }
           case NEW_LINE:
           case VARIABLE: {
@@ -184,6 +189,96 @@ const shouldPreserveFullSelection = (isFritekst: boolean, element: HTMLElement):
   const fullText = element.textContent ?? "";
   return r.startOffset === 0 && r.endOffset === fullText.length;
 };
+
+type DiffChunk =
+  | { kind: "normal"; text: string }
+  | { kind: "insert"; text: string }
+  | { kind: "delete"; text: string };
+
+function buildDiffChunks(text: string, segments: DiffSegment2[], kind: "insert" | "delete"): DiffChunk[] {
+  const chunks: DiffChunk[] = [];
+  let i = 0;
+
+  while (i <= text.length) {
+    if (i === text.length) break;
+
+    const isHighlighted = segments.some((s) => i >= s.startOffset && i < s.endOffset);
+
+    let j = i + 1;
+    while (j < text.length) {
+      const jIsHighlighted = segments.some((s) => j >= s.startOffset && j < s.endOffset);
+      if (jIsHighlighted !== isHighlighted) break;
+      j++;
+    }
+
+    chunks.push({ kind: isHighlighted ? kind : "normal", text: text.slice(i, j) });
+    i = j;
+  }
+
+  return chunks;
+}
+
+function indicesMatch(index1: LiteralIndex, index2: LiteralIndex) {
+  const blockContentMatch = index1.blockIndex == index2.blockIndex && index1.contentIndex == index2.contentIndex;
+  if (isBlockContentIndex(index1) && isBlockContentIndex(index2)) {
+    return blockContentMatch;
+  } else if (isItemContentIndex(index1) && isItemContentIndex(index2)) {
+    return blockContentMatch && index1.itemIndex == index2.itemIndex && index1.itemContentIndex == index2.itemContentIndex;
+  } else if (isTableCellIndex(index1) && isTableCellIndex(index2)) {
+    return blockContentMatch && index1.rowIndex == index2.rowIndex && index1.cellIndex == index2.cellIndex && index1.cellContentIndex == index2.cellContentIndex;
+  } else {
+    return false;
+  }
+}
+
+export function DiffText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
+  const { diff, diffMode } = useEditor();
+  const text = textOf(content);
+  const erFritekst =
+    content.tags.includes(ElementTags.FRITEKST) &&
+    (content.editedText === null || content.editedText === undefined || content.editedText === content.text);
+
+
+  const matchingSegments = (diffMode === "inserts" ? diff?.inserts : diff?.deletes)
+    ?.filter((segment) => indicesMatch(segment.index, literalIndex)) ?? [];
+
+  const chunks = buildDiffChunks(text, matchingSegments, diffMode === "inserts" ? "insert" : "delete");
+
+  return (
+    <span
+      css={{
+        ...(erFritekst && {
+          color: "var(--ax-accent-600)",
+          textDecoration: "underline",
+          cursor: "pointer",
+        }),
+        ...(fontTypeOf(content) === FontType.BOLD && { fontWeight: "bold" }),
+        ...(fontTypeOf(content) === FontType.ITALIC && { fontStyle: "italic" }),
+      }}
+    >
+      {chunks.map((chunk, index) => {
+        if (chunk.kind === "insert") {
+          return (
+            <span css={{ backgroundColor: "var(--ax-bg-success-moderate)" }} key={index}>
+              {chunk.text}
+            </span>
+          );
+        }
+        if (chunk.kind === "delete") {
+          return (
+            <span
+              css={{ backgroundColor: "var(--ax-bg-danger-moderate)", textDecoration: "line-through" }}
+              key={index}
+            >
+              {chunk.text}
+            </span>
+          );
+        }
+        return <React.Fragment key={index}>{chunk.text}</React.Fragment>;
+      })}
+    </span>
+  );
+}
 
 export function EditableText({ literalIndex, content }: { literalIndex: LiteralIndex; content: LiteralValue }) {
   const contentEditableReference = useRef<HTMLSpanElement>(null);
