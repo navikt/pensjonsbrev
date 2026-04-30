@@ -24,7 +24,7 @@ const SelectTypography = () => {
 
   return (
     <Select
-      data-cy="typography-select"
+      data-testid="typography-select"
       disabled={freeze || editorState.focus.blockIndex < 0}
       hideLabel
       label="Tekst stil"
@@ -71,7 +71,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
           <LagringStatus />
           <Button
             data-color="danger"
-            data-cy="tilbakestill-mal-button"
+            data-testid="tilbakestill-mal-button"
             icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
             onClick={() => setVilTilbakestilleMal(true)}
             size="small"

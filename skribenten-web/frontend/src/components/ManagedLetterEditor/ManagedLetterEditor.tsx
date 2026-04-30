@@ -10,6 +10,8 @@ import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/
 import { type BrevResponse } from "~/types/brev";
 import { type EditedLetter } from "~/types/brevbakerTypes";
 
+import { AUTOSAVE_TIMER } from "./autosave_timer";
+
 /**
  * Wrapper av <LetterEditor /> som håndterer lagring av brevtekst.
  *
@@ -34,7 +36,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
       if (editorState.saveStatus === "DIRTY") {
         mutate(editorState.redigertBrev);
       }
-    }, 5000);
+    }, AUTOSAVE_TIMER);
     return () => clearTimeout(timoutId);
   }, [editorState.saveStatus, editorState.redigertBrev, mutate]);
 

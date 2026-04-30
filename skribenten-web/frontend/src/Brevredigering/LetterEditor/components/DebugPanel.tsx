@@ -11,7 +11,7 @@ import { isFritekst, isLiteral, isTextContent } from "~/Brevredigering/LetterEdi
 import { getCaretRect, getRange, getSelectionFocus } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { type AnyBlock, type Content, type Item } from "~/types/brevbakerTypes";
 
-export function DebugPanel() {
+export default function DebugPanel() {
   const { freeze, editorState } = useEditor();
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [caretOffset, setCaretOffset] = useState(0);
@@ -53,9 +53,9 @@ export function DebugPanel() {
           ".editor": {
             "[contenteditable]": {
               "&:focus-within": {
-                outline: "1px solid var(--ax-border-brand-magenta-subtle)",
+                outline: "1px dotted var(--ax-border-brand-magenta-subtle)",
               },
-              outline: "1px solid var(--ax-border-brand-magenta-subtle)",
+              outline: "1px dotted var(--ax-border-brand-magenta-subtle)",
               outlineOffset: "-1px",
             },
           },
@@ -287,7 +287,7 @@ function isEdited(content: Content | AnyBlock): boolean {
     case "NEW_LINE":
       return isNew(content);
     case "ITEM_LIST":
-      return isNew(content) || content.deletedItems.length > 0 || content.items.some(isEditedItem);
+      return isNew(content) || content.deletedItems?.length > 0 || content.items.some(isEditedItem);
     case "LITERAL":
       return isNew(content) || content.editedText !== null || content.editedFontType !== null;
     case "VARIABLE":
@@ -309,7 +309,7 @@ function isEdited(content: Content | AnyBlock): boolean {
 }
 
 function isEditedItem(item: Item): boolean {
-  return isNew(item) || item.deletedContent.length > 0 || item.content.some(isEdited);
+  return isNew(item) || item.deletedContent?.length > 0 || item.content.some(isEdited);
 }
 
 function textExtract(str: string, maxLength: number = 65): string {

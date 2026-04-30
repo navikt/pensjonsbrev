@@ -86,12 +86,10 @@ export function gotoCoordinates(coordinates: Coordinates) {
   // caretPositionFromPoint() (supported by all except WebKit/Safari per 2025)
   // caretRangeFromPoint() (supported by all except Gecko/Firefox per 2025)
   // We should prioritize the non-deprecated caretPositionFromPoint,
-  // but will keep caretRangeFromPoint first until we resolve a component test issue
+  // but will keep caretRangeFromPoint as backup for wider support
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretPositionFromPoint
   // https://developer.mozilla.org/en-US/docs/Web/API/Document/caretRangeFromPoint
-  if (document.caretRangeFromPoint) {
-    range = document.caretRangeFromPoint(x, y);
-  } else if (document.caretPositionFromPoint) {
+  if (document.caretPositionFromPoint) {
     const position = document.caretPositionFromPoint(x, y);
     if (position === null) {
       console.warn("Could not get caret for position:", x, y);
@@ -100,15 +98,45 @@ export function gotoCoordinates(coordinates: Coordinates) {
     range = document.createRange();
     range.setStart(position.offsetNode, position.offset);
     range.collapse(true);
+  } else if (document.caretRangeFromPoint) {
+    range = document.caretRangeFromPoint(x, y);
   }
   if (range === null) {
     console.warn("Could not get caret for position:", x, y);
     return;
-  } else {
-    const selection = globalThis.getSelection();
-    selection?.removeAllRanges();
-    selection?.addRange(range);
   }
+
+  // caretRangeFromPoint may return a range pointing to an Element node (nodeType 1)
+  // instead of a Text node (nodeType 3) — observed on Linux Chromium when the target
+  // coordinates land at the exact edge of an inline element. In that case, the offset
+  // is a child-node index, not a text character offset. Resolve to the actual text node
+  // so the selection is placed at a meaningful text position.
+  if (range.startContainer.nodeType === Node.ELEMENT_NODE) {
+    const container = range.startContainer as Element;
+    const childIndex = range.startOffset;
+
+    // childIndex points *before* the child at that index; if it equals childCount,
+    // it means "after the last child" → place caret at the end of the last text node.
+    if (childIndex >= container.childNodes.length) {
+      // After last child → end of last text node
+      const lastChild = container.lastChild;
+      if (lastChild?.nodeType === Node.TEXT_NODE) {
+        range.setStart(lastChild, lastChild.textContent?.length ?? 0);
+        range.collapse(true);
+      }
+    } else {
+      const targetChild = container.childNodes[childIndex];
+      if (targetChild.nodeType === Node.TEXT_NODE) {
+        // Before this text node → start of it
+        range.setStart(targetChild, 0);
+        range.collapse(true);
+      }
+    }
+  }
+
+  const selection = globalThis.getSelection();
+  selection?.removeAllRanges();
+  selection?.addRange(range);
 }
 
 export function fineAdjustCoordinates({ x, y }: Coordinates) {

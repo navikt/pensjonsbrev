@@ -7,8 +7,8 @@ on:
         description: "Working directory"
         required: true
         type: string
-      cypress:
-        description: "Run cypress tests"
+      runTests:
+        description: "Run tests"
         required: true
         type: boolean
 
@@ -61,62 +61,40 @@ jobs:
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
 
-      - name: Cache Cypress binary
-        if: ${{ inputs.cypress }}
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
-
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
 
-      - name: Install Cypress binary
-        if: ${{ inputs.cypress }}
-        working-directory: ${{ inputs.workingDir }}/frontend
-        run: npx cypress install
-
-      - name: Run Biome lint
+      - name: Lint code and config
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run lint
 
-      - name: Run stylelint
+      - name: Lint css
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run stylelint
 
-      - name: Check for typescript errors
+      - name: Check types
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run check-types
 
-      - name: Run tests
-        if: ${{ inputs.cypress }}
+      - name: Run unit tests
+        if: ${{ inputs.runTests }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run test
 
-      - name: Cypress run component tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: true
+      - name: Install e2e test runner and browser
+        if: ${{ inputs.runTests }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx playwright install --with-deps chromium
 
-      - name: Cypress run e2e tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: false
-          build: npm run build
-          start: 'npm run preview -- --port 5173'
+      - name: Run e2e tests
+        if: ${{ inputs.runTests }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx playwright test
 
-      - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        if: ${{ failure() && inputs.cypress}}
+      - name: Upload e2e artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
+        if: ${{ inputs.runTests && failure() }}
         with:
-          name: cypress-screenshots
-          path: ${{ inputs.workingDir }}/frontend/cypress/screenshots
+          name: playwright-artifacts
+          path: ${{ inputs.workingDir }}/frontend/test/e2e-report/

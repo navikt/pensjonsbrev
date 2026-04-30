@@ -3,6 +3,7 @@
     "target": "ESNext",
     "useDefineForClassFields": true,
     "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vitest/globals", "node"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -18,6 +19,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["src", "test", "cypress", "cypress.config.ts"],
+  "include": ["src", "test", "playwright.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

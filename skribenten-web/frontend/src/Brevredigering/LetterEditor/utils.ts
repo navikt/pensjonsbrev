@@ -13,7 +13,7 @@ export enum Typography {
   TITLE3 = "TITLE3",
 }
 
-export const isMac = !globalThis.Cypress ? /Mac|iPod|iPad/.test(navigator.userAgent) : false;
+export const isMac = /Mac|iPod|iPad/.test(navigator.userAgent);
 
 export const TypographyToText = isMac
   ? ({

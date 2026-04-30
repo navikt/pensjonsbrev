@@ -108,7 +108,7 @@ export default function BrevmalForExstream({
             <TextField
               {...methods.register("brevtittel")}
               autoComplete="on"
-              data-cy="brev-title-textfield"
+              data-testid="brev-title-textfield"
               description="Gi brevet en kort og forklarende tittel."
               error={methods.formState.errors.brevtittel?.message}
               label="Endre tittel"

@@ -4,7 +4,7 @@ import { type Signatur } from "~/types/brevbakerTypes";
 
 const Saksbehandler = ({ navn }: { navn?: string }) =>
   navn ? (
-    <Box as="span" data-cy="brev-editor-saksbehandler">
+    <Box as="span" data-testid="brev-editor-saksbehandler">
       {navn}
     </Box>
   ) : null;
