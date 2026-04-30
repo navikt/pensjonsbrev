@@ -12,21 +12,35 @@ Legacy (Exstream-originated) templates go under `pensjon/maler/src/main/kotlin/n
 
 The converter produces a single file with two sections:
 
-1. **Selector block at the top** — extension functions on `Expression<PEgruppeN>` prefixed with a copy-into-`LegacySelectors` comment. Chains of `.safe{…}.safe{…}.ifNull(fallback)` that navigate the legacy Pesys data model with null-safety.
+1. **Selector block at the top** — extension functions on `Expression<PEgruppeN>` prefixed with a copy-into-`LegacySelectors` comment. Chains of `.safe{…}.safe{…}.ifNull(fallback)` that navigate the legacy Pesys data model with null-safety. **Discard for new conversions** — see Step 1.
 2. **Template skeleton** — a `@TemplateModelHelpers object … : AutobrevTemplate<…>` stub with `// TODO` placeholders for metadata, and an `outline { … }` body that mirrors the Exstream source structure with trace comments.
 
 The manual pass has seven steps. Work through them in order; each later step assumes the earlier ones have been done.
 
-## Step 1 — Move the selector block into `LegacySelectors.kt`
+## Step 1 — Build a data-minimised, traceable Dto
 
-The comment block labelled *"Selectors used in this letter (Copy into LegacySelectors as needed)"* belongs in [`pensjon/maler/.../legacy/LegacySelectors.kt`](../pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/LegacySelectors.kt), not in the template file.
+The converter wires the template against the legacy `PEgruppe2` / `PEgruppe3` / `PEgruppe10` mega-classes via a block of `Expression<PEgruppeN>.foo_bar_baz()` selectors at the top of the file. **Discard that block.** New conversions instead get a fresh Dto containing only the fields the letter actually renders, because:
 
-For each emitted `fun Expression<PEgruppeN>.foo_bar_baz()`:
+- the contract with the bestiller is small and stable, and
+- every field carries a comment with its original Exstream `PE_…` source path so a downstream mapping team can locate the right PESYS XML node.
 
-- **Search `LegacySelectors.kt` first** — many chains already exist. Reuse; do not duplicate. (Two selectors with the same chain but different names cause drift.)
-- Paste new ones alongside siblings covering the same `.safe{…}.safe{…}` prefix, matching the style of that region of the file (layout / formatting is inconsistent across the file — match the local block).
-- **Fix `.ifNull(TODO)` stubs.** The converter emits `TODO` as the null fallback whenever it cannot pick a sensible default — most often for `LocalDate` and enum types. Replace with a real fallback after confirming with Pesys semantics what "missing" means for that field. Never ship `.ifNull(TODO)` — it will not compile.
-- **Watch for typos preserved from Exstream.** The example input contains both `beregningytelsekomp` (correct-for-Pesys) and `beregningytelseomp` / `sertilegg` (misspellings). The converter preserves the Exstream name as the selector's method name but the `.safe{…}` chain hits the real field. Leave the method name as emitted unless the broken name hides an actual wrong field reference — in which case rename the selector *and* every call site in the template.
+To build it:
+
+1. List every selector used in the template body (and every reachable subfield through chained `.foo()` calls in the discarded selector block — that block is the easiest inventory of what the letter reads).
+2. For each, look up the original `PE_…` variable in `pensjonsbrev-utils/exstreamConverter/src/main/resources/pe_xml_mappinger(in).csv`. Both the variable name (`Name` column) and the `rtv-brev brev …` path (`Layout` column) go into the comment, verbatim from the CSV — preserve any typos / casing differences (e.g. `BeregningYtelseomp` vs `BeregningYtelsesKomp`) since the mapping team will grep the CSV with these exact strings.
+3. Group fields into nested data classes that mirror the rendering structure (e.g. `PesysData`, `AvdoedData`, `BrukerData`, `Beregning`, …). Sub-classes are siblings of `PesysData` inside the Dto — the KSP selector tree mirrors **declaration nesting**, not field reachability (see `write-template.md` *Sibling nesting vs. field-reachability*).
+4. Collapse legacy oddities: `FF_GetArrayElement_Boolean(<list>, 1)` reads to a single `Boolean` if the letter only ever uses index 1 — note the original `FF_…` call in the comment.
+5. Place the Dto under `<module>/api-model/.../maler/legacy/redigerbar/<Situation>Dto.kt` (or `.../legacy/<Situation>Dto.kt` for autobrev).
+
+Sample comment style (one block per field):
+
+```kotlin
+// PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_Tilleggspensjon_TPnetto
+// (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningYtelsesKomp Tilleggspensjon TPnetto)
+val netto: Kroner,
+```
+
+> **Pre-existing `PEgruppeN`-based legacy templates.** A handful of older converted templates still consume `PEgruppe2/3/10` directly and depend on extension functions in [`pensjon/maler/.../legacy/LegacySelectors.kt`](../pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/LegacySelectors.kt). Do not add new selectors there for fresh conversions — only touch the file if you are extending an existing legacy template that already reads through it. Inside that file, watch for `.ifNull(TODO)` stubs (won't compile) and Exstream-preserved typos like `beregningytelseomp` / `sertilegg` (the method name is wrong but the underlying `.safe{…}` chain points at the real field — leave it unless you also rename every call site).
 
 ## Step 2 — Fill in the template TODOs
 
@@ -34,14 +48,16 @@ The skeleton will have, at minimum:
 
 | TODO | What to supply |
 |---|---|
-| Object name | `PascalCase` ending in `Legacy` (e.g. `VedtakOmXYZLegacy`). |
-| `AutobrevTemplate<// TODO>` | The Dto type (usually a `PEgruppeN` or a wrapper Dto — see neighbour legacy templates). |
+| Object name | Situation-describing `PascalCase` (e.g. `DelvisEksportAvGjenlevendepensjon`). The `…Legacy` suffix only appears on older `PEgruppeN`-based templates — do not add it for new conversions that built a fresh Dto in Step 1. |
+| `AutobrevTemplate<// TODO>` / `RedigerbarTemplate<// TODO>` | The Dto type built in Step 1. |
 | `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `write-template.md` (unique, ≤ 50 chars, immutable, never deleted). |
-| `letterDataType` | The same `PEgruppeN::class`. |
+| `letterDataType` | `<YourDto>::class`. |
 | `displayTitle` | Situation-describing Bokmål — see `write-template.md` *displayTitle* conventions. |
 | `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. |
 | `distribusjonstype` / `brevtype` | `LetterMetadata.Distribusjonstype.{VEDTAK|VIKTIG|ANNET}` and `LetterMetadata.Brevtype.{VEDTAKSBREV|INFORMASJONSBREV}` — **infer from content, then ask the user to confirm** (same pattern as `kategori`/`brevkontekst`/`sakstyper` in `write-redigerbar-template.md`). |
 | `title { text(…) }` | Usually the same wording as the Exstream overskrift — lift it from the first outline paragraph if the converter left it blank. |
+
+While transcribing the body, replace every `pe.foo_bar_baz()` call (which referenced the discarded `PEgruppeN` selector block) with the corresponding selector chain on the new Dto, e.g. `pesysData.beregning.tilleggspensjon.netto`.
 
 ## Step 3 — Resolve `SYS_TableRow` placeholders to `forEach`
 
@@ -150,7 +166,6 @@ Visual regression: when possible, run `AllTemplatesTest` / the module's `Brevmod
 
 ## Common pitfalls
 
-- `.ifNull(TODO)` left in `LegacySelectors.kt` — won't compile.
 - Template type still `AutobrevTemplate` after `fritekst(…)` conversion — won't compile.
 - Adjacent `text(…)` calls left in place → runs together in the rendered PDF. See Step 5.
 - `SYS_TableRow` placeholders left in `FUNKSJON_PE_…` calls → compile error on the unresolved function name.

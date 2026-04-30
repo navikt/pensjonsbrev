@@ -68,13 +68,21 @@ Place the Dto in the module's `api-model` under the same domain folder as the te
 
 ### Iterating on the Dto locally
 
-Maler modules consume their `api-model` as a published artifact. While iterating on a new Dto locally, publish it to the local Maven repository and bump `apiModelVersion` in the maler module's `gradle.properties` / `build.gradle.kts` so the new fields are visible:
+Maler modules consume their `api-model` as a published artifact. While iterating on a new Dto locally you **must** bump the version in two places **and** publish to mavenLocal — otherwise the maler module sees stale bytecode and every reference to the new Dto / its `…DtoSelectors` is unresolved.
+
+Concrete locations (replace `<module>` with the relevant domain module — `pensjon`, `alder`, `ufoere`, `etterlattemaler`, `planlegge-pensjon-maler`, …):
+
+| File | What to change |
+|---|---|
+| `<module>/api-model/gradle.properties` | `version=<N>` → `version=<N+1>` |
+| `<module>/maler/build.gradle.kts` | `val apiModelVersion = <N>` → `val apiModelVersion = <N+1>` |
+
+Then publish and rebuild:
 
 ```bash
-./gradlew publishToMavenLocal
+./gradlew :<module>:api-model:publishToMavenLocal
+./gradlew :<module>:maler:compileKotlin   # forces KSP to regenerate selectors against the new artifact
 ```
-
-Revert the version bump before committing if you are not also publishing a new api-model release.
 
 ## Template object skeleton
 
@@ -118,6 +126,8 @@ The IDE usually picks the new files up on the next re-index; otherwise *File →
 **Symptom B — the Dto class itself is unresolved (`import …XDto` red, `RedigerbarTemplate<XDto>` shows `ERROR CLASS: Symbol not found`).**
 The maler module consumes its sibling `api-model` as a **published Maven artifact**, not a source dependency. A new Dto added under `<module>/api-model/src/…` is invisible to the maler module until you publish it locally and bump the consumer's version. See *Iterating on the Dto locally* below.
 
+> KSP side-effect of Symptom B: `:<module>:maler:kspKotlin` will print `w: [ksp] Some annotated symbols does not validate: [YourTemplate]` and silently produce **no** `XDtoSelectors` file. Every selector then looks like Symptom A — but rebuilding KSP will not fix it until the Dto resolves. Always clear Symptom B first.
+
 Only after both symptoms are cleared do reported errors become trustworthy — do not chase selector-reference errors before then.
 
 ### Nested-Dto selector paths
@@ -142,6 +152,8 @@ import …XDtoSelectors.PesysDataSelectors.BeregningSelectors.YtelseskomponentSe
 ```
 
 Each selector is an extension property on `Expression<ReceiverType>`, so two selectors with the same simple name but different receiver types (here `Expression<Beregning>.brutto` and `Expression<Ytelseskomponent>.brutto`) can be imported side-by-side — Kotlin resolves the call by receiver: `pesysData.beregning.brutto` picks the first, `ifNotNull(pesysData.beregning.komponent) { it.brutto }` picks the second.
+
+**Do not alias these imports with `as`** to "disambiguate". Renaming `…BrukerDataSelectors.minst20ArBotid as brukerMinst20ArBotid` removes the original name from scope, so `pesysData.bruker.minst20ArBotid` no longer resolves at all — the only remaining call site shape is the renamed `brukerMinst20ArBotid(pesysData.bruker)` style, which is not the DSL convention. Just import every same-named selector unaliased and let receiver-type resolution do its job.
 
 **Sibling nesting vs. field-reachability.** The generated `…Selectors` path tracks **where the inner class is declared**, not where it is first reached via a field. If `Beregning` is declared as a *sibling* of `PesysData` (both nested directly under `XDto`) but is only *referenced* through `PesysData.beregning`, the selector still lives at the top level:
 
@@ -271,19 +283,24 @@ bokmal { +"Du får " + beloep.format() + " kroner før skatt." }
 bokmal { +"Du får " + beloep.format() + " før skatt." }
 ```
 
-**For bare numbers** (e.g. inside a table cell where the column header carries the unit) use the denominator-off overload:
+#### Order of preference for `Kroner`
 
-```kotlin
-bokmal { + beloep.format(denominator = false) + " kr" }   // "1 000 kr"
-```
+1. **Default — `.format()`.** Use this everywhere in prose. If the surrounding sentence currently contains `" kroner"` / `" kr"` / `" NOK"`, rewrite the sentence to drop the literal unit; the formatter already emits a localised unit. *Don't* reach for `denominator = false` to keep a hand-written `" kroner"` — change the prose instead.
+   ```kotlin
+   // wrong — keeps the literal "kroner" by silencing the formatter
+   bokmal { +"Du får " + beloep.format(denominator = false) + " kroner hver måned før skatt." }
 
-**For table cells specifically, prefer the module's `KronerText` phrase** instead of re-deriving the per-language unit by hand:
+   // right — let the formatter emit the unit, drop it from the sentence
+   bokmal { +"Du får " + beloep.format() + " hver måned før skatt." }
+   ```
+2. **Table cells — `KronerText` phrase.** Inside `cell { … }` the column header usually carries the unit, so the cell wants the bare number. Use the module's phrase rather than re-deriving the per-language suffix:
+   ```kotlin
+   cell { includePhrase(KronerText(beloep)) }
+   ```
+   `KronerText` lives in `fraser/common/TabellFormattering.kt` (pensjon; alder has its own copy). It already handles `" kr"` / `"NOK "` per language.
+3. **`.format(denominator = false)` — last resort.** Only reach for it when (a) you need the bare number outside a table cell and (b) `KronerText` doesn't apply (e.g. inline interpolation in a math expression: `"(" + a.format(denominator = false) + " + " + b.format(denominator = false) + ") kroner"`). Even then, prefer rephrasing so each value carries its own unit via `.format()`.
 
-```kotlin
-cell { includePhrase(KronerText(beløp)) }
-```
-
-`KronerText` already uses `denominator = false` + `" kr"` / `"NOK "` and covers all three supported languages (see `fraser/common/TabellFormattering.kt` in the pensjon module, the alder module has its own copy). Use it unless you have a reason not to.
+`denominator = false` exists for table-cell rendering and similar edge cases — it is not the default knob for "I want a number without `kroner` in this sentence". Re-author the sentence first.
 
 **Related Dto design rule:** if a field represents money, type it as `Kroner` — not `Int` — so the selector's `.format()` carries the unit. Using `Int` means every call site must append `" kroner"` manually, which drifts as soon as a second language branch is added.
 
@@ -475,7 +492,17 @@ Details: [`dsl/fraser/oversikt.adoc`](../docs/modules/ROOT/pages/dsl/fraser/over
 
 ### Wire the fixture
 
-If the Dto introduces new nested types, extend the module's `Fixtures.kt` (see the table in *Before you write*) so `Fixtures.create<XDto>()` resolves via the reflection-based factory. Search neighbouring tests for `Fixtures.create<` to match the module's conventions.
+`Fixtures.create<XDto>()` is **not** reflection-based — every module's `Fixtures.kt` is a hand-written `when (letterDataType) { … }` dispatch on `KClass`. A new Dto needs three things, all in the module's `Fixtures.kt` (see the table in *Before you write*):
+
+1. A `createXDto()` factory function. Place it under `…/fixtures/<package>/XDto.kt` (the file name typically matches the Dto class). Look at the closest sibling Dto's fixture file for shape.
+2. An explicit `import …fixtures.<package>.createXDto` near the top of `Fixtures.kt` — these factories live in different packages and **are not glob-imported**.
+3. A new branch in the `create` function:
+   ```kotlin
+   XDto::class -> createXDto() as T
+   ```
+   Without this branch, `Fixtures.create<XDto>()` falls into the `else` arm and throws `IllegalArgumentException("Don't know how to construct: …")` at integration-test time.
+
+For nested types inside the Dto that are reused across letters, register them on the same `when` so other tests can also build them via `Fixtures.create`.
 
 ### Register the template
 
@@ -494,11 +521,11 @@ Once registered, the module's shared `BrevmodulTest` subclass (e.g. `ProductionT
 - Business logic inside the template body. Push it into the Dto (data-minimise) or into a phrase.
 - Kotlin `if` on Dto values inside the DSL body. The template body runs once at application startup; a Kotlin `if` bakes a single branch into the template. Use `showIf` / `ifElse` / `ifNotNull` so the condition is evaluated per letter order.
 - Nullable field rendering: not handling the null branch, or printing `null`. The DSL blocks this, but ugly `ifNotNull` nesting often signals the Dto should have been non-nullable in the first place.
-- **Every new `Dto` field needs a fixture value.** `Fixtures.create<T>()` uses reflection and will fail without a registered value for new nested types — extend the module's `Fixtures.kt` when adding new types.
+- **Every new `Dto` field needs a fixture value, and the new Dto class needs a fixture branch in `Fixtures.kt`.** The dispatch is a hand-written `when` on `KClass`, not reflection — see *Wire the fixture* above. A missing `XDto::class -> createXDto() as T` branch fails the shared rendering test with `IllegalArgumentException("Don't know how to construct: …")`.
 - Forgetting to register the template in the module's `AllTemplates` object.
 - **Silently editing user-supplied wording.** If the user handed over exact text for the letter, render it verbatim. Stop and ask before changing grammar, punctuation, or phrasing — see *Text sources* above.
 - **Re-authoring content that already exists as a standard phrase** — especially the end-of-letter trio (right-to-appeal, right-to-innsyn, "Har du spørsmål?"). If the closing content you are about to write matches one of these, use `includePhrase(...)`. See *Standard end-of-letter phrases exist* above.
-- **Appending `" kroner"` / `" kr"` / `" NOK"` after `Expression<Kroner>.format()`** — the default formatter already emits the unit per language, so the suffix doubles up. Use `.format(denominator = false)` or the module's `KronerText` phrase. See *Typed-value formatters carry their own unit* above.
+- **Appending `" kroner"` / `" kr"` / `" NOK"` after `Expression<Kroner>.format()`** — the default formatter already emits the unit per language, so the suffix doubles up. Drop the literal unit from the surrounding prose (preferred), or use the `KronerText` phrase in table cells. Reach for `.format(denominator = false)` only as a last resort. See *Typed-value formatters carry their own unit → Order of preference for `Kroner`* above.
 - **Typing a money field as `Int` instead of `Kroner` in the Dto** — forces every call site to append the unit manually and lose the per-language localisation. Use `Kroner` whenever the semantic is "amount of money".
 - **Tables without column alignment or with unconsidered column widths** — numbers must be right-aligned per the NAV letter standard (default is LEFT; set `alignment = ColumnAlignment.RIGHT` on number columns), and every column's `columnSpan` weight should be chosen deliberately so wide text columns get proportionally more width than narrow numeric ones. See *Tables — column alignment and width* above.
 
