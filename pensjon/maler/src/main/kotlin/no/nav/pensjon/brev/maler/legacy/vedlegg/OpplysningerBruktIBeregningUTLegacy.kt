@@ -13,18 +13,29 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.VedtaksbrevSelectors.grunnlag
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDto
+import no.nav.pensjon.brev.api.model.vedlegg.OpplysningerBruktIBeregningUTLegacyDtoSelectors.pe
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
+import no.nav.pensjon.brev.template.SimpleSelector
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
+inline fun <reified T : Any> opplysningerBruktIBeregningUTLegacySelector(
+    crossinline peExtractor: T.() -> PEgruppe10,
+) = SimpleSelector<T, OpplysningerBruktIBeregningUTLegacyDto>(
+    T::class.qualifiedName ?: "",
+    "opplysningerBruktIBeregningUTLegacy",
+    OpplysningerBruktIBeregningUTLegacyDto::class.qualifiedName ?: "",
+) { OpplysningerBruktIBeregningUTLegacyDto(pe = peExtractor()) }
+
 @TemplateModelHelpers
 val vedleggOpplysningerBruktIBeregningUTLegacy =
-    createAttachment<LangBokmalNynorsk, PEgruppe10>(
+    createAttachment<LangBokmalNynorsk, OpplysningerBruktIBeregningUTLegacyDto>(
         title = {
             text(
                 bokmal { +"Opplysninger om beregningen" },
@@ -33,7 +44,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         },
         includeSakspart = false,
     ) {
-        val pe = argument
+        val pe = argument.pe
 
         title2 {
             text(

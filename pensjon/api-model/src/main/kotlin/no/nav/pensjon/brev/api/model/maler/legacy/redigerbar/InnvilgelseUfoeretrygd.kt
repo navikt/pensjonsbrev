@@ -21,6 +21,8 @@ data class InnvilgelseUfoeretrygdDto(
         val barnetilleggInfo: Boolean,
         @DisplayText("Refusjon")
         val refusjon: Boolean,
+        @DisplayText("Ftl. § 12-2 tredje ledd")
+        val ftl_12_2_3_ledd: Boolean,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
