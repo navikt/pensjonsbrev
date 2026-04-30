@@ -18,7 +18,7 @@ class FagsakService(private val penClient: PenClient) {
                 foedselsdato = sak.foedselsdato,
                 navn = Fagsak.Navn(sak.navn.fornavn, sak.navn.mellomnavn, sak.navn.etternavn),
                 sakType = sak.sakType,
-                behandlingsnummer = behandlingsnummerMap[sak.sakType.kode] ?: null.also { logger.error("Spurte om sakstype som ikke har behandlingsnummer: ${sak.sakType}") },
+                behandlingsnummer = behandlingsnummerMap[sak.sakType.kode] ?: null.also { logger.error("Spurte om sakstype som ikke har behandlingsnummer: ${sak.sakType} for sak ${sak.saksId}") },
                 pid = sak.pid
             )
         }
