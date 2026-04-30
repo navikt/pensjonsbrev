@@ -4,13 +4,24 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import org.slf4j.LoggerFactory
+import java.time.LocalDate
 
 class FagsakService(private val penClient: PenClient) {
     private val logger = LoggerFactory.getLogger(javaClass)
 
-    suspend fun hentSak(saksId: SaksId): Pen.SakSelection? =
-        penClient.hentSak(saksId)
+    suspend fun hentSak(saksId: SaksId): Fagsak? =
+        penClient.hentSak(saksId)?.let {
+            Fagsak(
+                saksId = it.saksId,
+                foedselsdato = it.foedselsdato,
+                navn = Fagsak.Navn(it.navn.fornavn, it.navn.mellomnavn, it.navn.etternavn),
+                sakType = it.sakType,
+                pid = it.pid,
+                behandlingsnummer = finnBehandlingsnummer(it.sakType)
+            )
+        }
 
     suspend fun hentAvtaleland(): List<Pen.Avtaleland> =
         penClient.hentAvtaleland()
@@ -35,3 +46,14 @@ class FagsakService(private val penClient: PenClient) {
 
 @JvmInline
 value class Behandlingsnummer(val value: String)
+
+data class Fagsak(
+    val saksId: SaksId,
+    val foedselsdato: LocalDate,
+    val navn: Navn,
+    val sakType: TemplateDescription.ISakstype,
+    val pid: BrevbakerType.Pid,
+    val behandlingsnummer: Behandlingsnummer?,
+) {
+    data class Navn(val fornavn: String, val mellomnavn: String?, val etternavn: String)
+}

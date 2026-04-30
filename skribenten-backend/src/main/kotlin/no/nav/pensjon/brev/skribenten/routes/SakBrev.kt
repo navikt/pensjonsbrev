@@ -8,10 +8,10 @@ import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.brevredigering.application.usecases.*
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.model.Api
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.toDto
 import no.nav.pensjon.brev.skribenten.services.Dto2ApiService
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -24,7 +24,7 @@ fun Route.sakBrev(
 ) =
     route("/brev") {
         get {
-            val sak: Pen.SakSelection = call.attributes[SakKey]
+            val sak: Fagsak = call.attributes[SakKey]
 
             call.respond(
                 HttpStatusCode.OK,
@@ -33,7 +33,7 @@ fun Route.sakBrev(
         }
 
         post<Api.OpprettBrevRequest> { request ->
-            val sak: Pen.SakSelection = call.attributes[SakKey]
+            val sak: Fagsak = call.attributes[SakKey]
             val spraak = request.spraak.toLanguageCode()
             val avsenderEnhetsId = request.avsenderEnhetsId
 
@@ -219,7 +219,7 @@ fun Route.sakBrev(
             route("/p1") {
                 get {
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
+                    val sak: Fagsak = call.attributes[SakKey]
                     val p1Data = p1Service.hentP1Data(brevId, sak.saksId)
                     if (p1Data != null) {
                         call.respond(p1Data)
@@ -231,7 +231,7 @@ fun Route.sakBrev(
 
                 post<Api.GeneriskBrevdata> { p1Data ->
                     val brevId = call.parameters.brevId()
-                    val sak: Pen.SakSelection = call.attributes[SakKey]
+                    val sak: Fagsak = call.attributes[SakKey]
                     call.respond(p1Service.lagreP1Data(p1Data, brevId, sak.saksId))
                 }
             }
