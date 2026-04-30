@@ -46,10 +46,12 @@ import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
+  adjacentTableEntryFocus,
   determineTableCellDeleteAction,
   exitTable,
   isAtLastTableCell,
   nextTableFocus,
+  verticalTableStep,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -367,11 +369,45 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "up");
+        if (next === "exit") {
+          setEditorState(exitTable("backward"));
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
+        }
+        return;
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
+    }
+
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "up");
+      if (tableEntry) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnFirstVisualLine = caretCoordinates.top <= elementRect.top + 1;
+
+        if (!isOnFirstVisualLine) return;
+
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
+      }
     }
 
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
@@ -390,14 +426,49 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "down");
+        if (next === "exit") {
+          setEditorState(exitTable("forward"));
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
+        }
+        return;
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
     }
 
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "down");
+      if (tableEntry) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnLastVisualLine = caretCoordinates.bottom >= elementRect.bottom - 1;
+
+        if (!isOnLastVisualLine) return;
+
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
+      }
+    }
+
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
+
     if (shouldDoItOurselves) {
       const next = findOnLineBelow(element);
 
