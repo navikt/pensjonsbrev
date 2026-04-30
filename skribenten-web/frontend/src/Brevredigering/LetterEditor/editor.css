@@ -101,7 +101,7 @@
 /* Kort visuell markering av tekst som ble satt inn ved valg av tekstvalg */
 @keyframes inserted-flash-bg {
   0% {
-    background-color: var(--ax-bg-accent-moderate, rgba(0, 102, 204, 0.18));
+    background-color: var(--ax-bg-accent-moderate-pressed, rgba(0, 102, 204, 0.18));
   }
   100% {
     background-color: transparent;
