@@ -246,6 +246,18 @@ function RedigerBrev({
       onSaveSuccess(response);
 
       if (!previousIds) return;
+
+      // onSaveSuccess drops the response when the editor is DIRTY (in-flight typing).
+      // Detect that by reading the editor state synchronously via a no-op updater and
+      // comparing the hash. If the response was not applied, do not flash or move the
+      // cursor based on a letter the user is not seeing.
+      let responseWasApplied = false;
+      setEditorState((current) => {
+        responseWasApplied = current.redigertBrevHash === response.redigertBrevHash;
+        return current;
+      });
+      if (!responseWasApplied) return;
+
       const initialIds = initialIdsRef.current;
       const newIds = new Set<number>();
       for (const id of collectNewIds(previousIds, response.redigertBrev)) {
