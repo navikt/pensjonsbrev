@@ -1,5 +1,5 @@
 import { TableIcon } from "@navikt/aksel-icons";
-import { Button, HStack } from "@navikt/ds-react";
+import { Button, HStack, Tooltip } from "@navikt/ds-react";
 import { useState } from "react";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
@@ -7,6 +7,7 @@ import InsertTableDialog from "~/Brevredigering/LetterEditor/components/InsertTa
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Focus } from "~/Brevredigering/LetterEditor/model/state";
+import { tooltipText } from "~/Brevredigering/LetterEditor/utils";
 
 const EditorTableTools = () => {
   const { editorState, freeze, setEditorState } = useEditor();
@@ -16,19 +17,21 @@ const EditorTableTools = () => {
   return (
     <>
       <HStack gap="space-8">
-        <Button
-          data-color="neutral"
-          data-cy="toolbar-table-btn"
-          disabled={freeze || editorState.focus.blockIndex < 0}
-          icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
-          onClick={() => {
-            setFocusAtOpen(editorState.focus);
-            setIsInsertTableDialogOpen(true);
-          }}
-          size="small"
-          type="button"
-          variant="tertiary"
-        />
+        <Tooltip content={tooltipText.table}>
+          <Button
+            data-color="neutral"
+            data-cy="toolbar-table-btn"
+            disabled={freeze || editorState.focus.blockIndex < 0}
+            icon={<TableIcon fontSize="1.5rem" title="Sett inn tabell" />}
+            onClick={() => {
+              setFocusAtOpen(editorState.focus);
+              setIsInsertTableDialogOpen(true);
+            }}
+            size="small"
+            type="button"
+            variant="tertiary"
+          />
+        </Tooltip>
       </HStack>
       <InsertTableDialog
         onCancel={() => setIsInsertTableDialogOpen(false)}

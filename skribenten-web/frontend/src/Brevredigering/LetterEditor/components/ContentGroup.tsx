@@ -34,6 +34,7 @@ import {
   FontType,
   ITEM_LIST,
   LITERAL,
+  ListType,
   type LiteralValue,
   NEW_LINE,
   TABLE,
@@ -117,8 +118,9 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             );
           }
           case ITEM_LIST: {
+            const ListTag = content.listType === ListType.PUNKTLISTE ? "ul" : "ol";
             return (
-              <ul key={contentIndex}>
+              <ListTag key={contentIndex}>
                 {content.items.map((_item, itemIndex) => (
                   <li key={itemIndex}>
                     <ContentGroup
@@ -130,7 +132,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
                     />
                   </li>
                 ))}
-              </ul>
+              </ListTag>
             );
           }
           case TABLE: {
