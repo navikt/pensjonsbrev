@@ -10,7 +10,5 @@ sealed class PDFCompilationResponse {
 
         data class Client(override val reason: String, val output: String? = null, val error: String? = null): Failure()
         data class Server(override val reason: String): Failure()
-        data class Timeout(override val reason: String): Failure()
-        data class QueueTimeout(override val reason: String): Failure()
     }
 }

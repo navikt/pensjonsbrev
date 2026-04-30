@@ -122,7 +122,6 @@ fun Application.brevbakerModule(
 
     val pdfbyggerService = PensjonPdfByggerService(
         pdfByggerUrl = brevbakerConfig.property("pdfByggerUrl").getString(),
-        maxRetries = brevbakerConfig.propertyOrNull("pdfByggerMaxRetries")?.getString()?.toInt() ?: 30,
     )
 
     konfigurerUnleash(brevbakerConfig)

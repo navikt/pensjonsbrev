@@ -71,7 +71,6 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
     path: Path = Path.of("build", "test_pdf"),
     pdfByggerService: PDFByggerService? = null,
     pdfVedleggAppender: PDFVedleggAppender? = null,
-    useTypst: Boolean = true,
 ): Letter<ParameterType> {
     if (!FeatureToggleSingleton.isInitialized) {
         FeatureToggleSingleton.init(object : FeatureToggleService {
@@ -93,8 +92,6 @@ fun <ParameterType : BrevbakerBrevdata> Letter<ParameterType>.renderTestPDF(
                         template.letterMetadata.brevtype,
                         Letter2Markup.renderPDFTitlesOnly(this@renderTestPDF.toScope(), this@renderTestPDF.template)
                     ),
-                    shouldRetry = false,
-                    useTypst = useTypst,
                 )
             }
         }

@@ -24,14 +24,9 @@ import io.ktor.server.request.receive
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.logging.Logger
-import io.micrometer.core.instrument.Tag
 import io.micrometer.prometheusmetrics.PrometheusConfig
 import io.micrometer.prometheusmetrics.PrometheusMeterRegistry
 import no.nav.pensjon.brev.PDFRequest
-import no.nav.pensjon.brev.pdfbygger.api.ActiveCounter
-import no.nav.pensjon.brev.pdfbygger.latex.BlockingLatexService
-import no.nav.pensjon.brev.pdfbygger.latex.LATEX_CONFIG_PATH
-import no.nav.pensjon.brev.pdfbygger.latex.documentRender.LatexDocumentRenderer
 import no.nav.pensjon.brev.pdfbygger.typst.TypstCompileService
 import no.nav.pensjon.brev.pdfbygger.typst.documentrender.TypstDocumentRenderer
 import org.slf4j.LoggerFactory
@@ -46,14 +41,14 @@ private val logger = LoggerFactory.getLogger("no.nav.pensjon.brev.pdfbygger.PdfB
 @Suppress("unused")
 fun Application.module() {
     try {
-        setUp()
+        setUp(TypstCompileService())
     } catch (e: Exception) {
         logger.error(e.message, e)
         throw e
     }
 }
 
-private fun Application.setUp() {
+internal fun Application.setUp(typstCompileService: TypstCompileService) {
     monitor.subscribe(ApplicationStopPreparing) {
         it.log.info("Application preparing to shutdown gracefully")
     }
@@ -69,13 +64,6 @@ private fun Application.setUp() {
         }
     }
 
-    val blockingLatexService = BlockingLatexService(environment.config.config(LATEX_CONFIG_PATH))
-    val typstCompileService = TypstCompileService()
-
-    val activityCounter =
-        ActiveCounter(prometheusMeterRegistry, "pensjonsbrev_pdf_compile_active", listOf(Tag.of("hpa", "value")))
-
-    log.info("Target parallelism : ${blockingLatexService.latexParallelism}")
 
     install(ContentNegotiation) {
         jackson {
@@ -124,16 +112,9 @@ private fun Application.setUp() {
     routing {
 
         post("/produserBrev") {
-            val useTypst = call.request.queryParameters["typst"]?.toBoolean() == true
             val request = call.receive<PDFRequest>()
-            val result = if (useTypst) {
-                typstCompileService.createLetter {
-                    TypstDocumentRenderer.render(request, it)
-                }
-            } else {
-                activityCounter.count {
-                    LatexDocumentRenderer.render(request).let { blockingLatexService.producePDF(it.files) }
-                }
+            val result = typstCompileService.createLetter {
+                TypstDocumentRenderer.render(request, it)
             }
             handleResult(result, call.application.environment.log)
         }
@@ -143,15 +124,12 @@ private fun Application.setUp() {
         }
 
         get("/isReady") {
-            val currentActivity = activityCounter.currentCount()
-            if (currentActivity > blockingLatexService.latexParallelism) {
-                val msg =
-                    "Application not ready: pdf compilation activity of $currentActivity above target of ${blockingLatexService.latexParallelism}"
-                call.application.log.info(msg)
-                call.respondText(msg, ContentType.Text.Plain, HttpStatusCode.ServiceUnavailable)
-            } else {
-                call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
-            }
+            // Default Ktor-dispatcher. Typst-subprosessene kjøres med `nice`
+            // (lavere OS-prioritet), så Ktor-tråder får prioritet og readiness
+            // svarer fortsatt kjapt selv ved høy compile-last. Hvis CPU likevel
+            // skulle bli så presset at responsen tregner, slår probe-timeouten
+            // inn og kubelet sheddes lasten – akkurat som ønsket.
+            call.respondText("Ready!", ContentType.Text.Plain, HttpStatusCode.OK)
         }
     }
 
@@ -177,16 +155,6 @@ private suspend fun RoutingContext.handleResult(
         is PDFCompilationResponse.Failure.Server -> {
             logger.error(result.reason)
             call.respond(HttpStatusCode.InternalServerError, result)
-        }
-
-        is PDFCompilationResponse.Failure.Timeout -> {
-            logger.error(result.reason)
-            call.respond(HttpStatusCode.InternalServerError, result)
-        }
-
-        is PDFCompilationResponse.Failure.QueueTimeout -> {
-            logger.debug("Kø-timeout, løses med automatisk oppstart av flere pods: ${result.reason}")
-            call.respond(HttpStatusCode.ServiceUnavailable, result)
         }
     }
 }
