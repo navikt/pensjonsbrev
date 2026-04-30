@@ -132,7 +132,7 @@ class PdlServiceHttp(config: Config, authService: AuthService) : PdlService, Ser
             setBody(query)
             headers {
                 if (behandlingsnummer != null) {
-                    set("Behandlingsnummer", behandlingsnummer.name)
+                    set("Behandlingsnummer", behandlingsnummer.value)
                 }
             }
         }
