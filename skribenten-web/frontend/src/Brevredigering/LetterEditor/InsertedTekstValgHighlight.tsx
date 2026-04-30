@@ -131,15 +131,15 @@ export const findLastInsertedFocus = (letter: EditedLetter, highlightedIds: Read
   for (let blockIndex = letter.blocks.length - 1; blockIndex >= 0; blockIndex--) {
     const block = letter.blocks[blockIndex];
     if (isTekstValgHighlighted(highlightedIds, block)) {
-      const focus = findLastTextFocusInBlock(blockIndex, block.content, highlightedIds);
-      if (focus) return focus;
-      return { blockIndex, contentIndex: 0, cursorPosition: 0 };
+      // If the new block has no top-level text content (e.g. only an ItemList/Table),
+      // skip focus rather than returning an invalid LiteralIndex. Highlight still flashes.
+      return findLastTextFocusInBlock(blockIndex, block.content, highlightedIds);
     }
   }
   // 2) Last newly added text content inside an existing block.
   for (let blockIndex = letter.blocks.length - 1; blockIndex >= 0; blockIndex--) {
     const block = letter.blocks[blockIndex];
-    const contents = block.content as readonly Content[];
+    const contents: readonly (Content | TextContent)[] = block.content;
     for (let contentIndex = contents.length - 1; contentIndex >= 0; contentIndex--) {
       const content = contents[contentIndex];
       if (isTextContent(content) && isTekstValgHighlighted(highlightedIds, content)) {
