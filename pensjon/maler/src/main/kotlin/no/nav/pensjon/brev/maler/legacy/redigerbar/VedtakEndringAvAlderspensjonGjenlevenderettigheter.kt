@@ -220,15 +220,6 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                                 english { + "This leads to an increase in your retirement pension." }
                             )
                         }
-                    }.orShow {
-                        // ingenEndringBelop_002
-                        paragraph {
-                            text(
-                                bokmal { + "Dette får derfor ingen betydning for utbetalingen din." },
-                                nynorsk { + "Dette får derfor ingen følgjer for utbetalinga di." },
-                                english { + "Therefore, this does not affect the amount you will receive." }
-                            )
-                        }
                     }
 
                     title1 {
