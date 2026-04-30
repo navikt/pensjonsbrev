@@ -5,23 +5,17 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.barn_flyttet_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.barn_opph_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.bruker_flyttet_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_flyttet_ikke_avt_land
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.OpphoersbegrunnelseSelectors.eps_opph_ikke_avt_land
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.annen_forld_rett_bt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.antallBarnOpphor
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_innt_over_1g
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.bt_over_18
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.mindre_ett_ar_bt_flt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.nyeOpphorteBarnetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphoersbegrunnelse
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphoersbegrunnelseEktefelletillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortEktefelletillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.opphortGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDtoSelectors.PesysDataSelectors.pe
@@ -117,9 +111,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val instoppholdanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()
         val fasteUtgifterInstopphold = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter()
 
-        val txtBarnetBarnaOpphor = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna" else "barnet"
-        val txtBarnetBarnaOpphorForsorgaForsorgde = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna forsørgde" else "barnet forsørga"
-        val txtBarnetBarnaOpphorDittDine = if (pesysData.antallBarnOpphor.greaterThan(1).equals(true)) "barna dine" else "barnet ditt"
         val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
 
         title {
@@ -149,10 +140,17 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf((pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty())){
                 paragraph {
-                    text (
-                        bokmal { + "Du er innvilget barnetillegg i uføretrygden din for" },
-                        nynorsk { + "Du er innvilga barnetillegg i uføretrygda di for" },
-                    )
+                    showIf(kravarsak.equalTo("soknad_bt")) {
+                        text(
+                            bokmal { +"Du er innvilget barnetillegg i uføretrygden din for" },
+                            nynorsk { +"Du er innvilga barnetillegg i uføretrygda di for" },
+                        )
+                    } orShow {
+                        text(
+                            bokmal { +"Barnetillegget i uføretrygden din er endret for" },
+                            nynorsk { +"Barnetillegget i uføretrygda di er endra for" },
+                        )
+                    }
                     includePhrase(Felles.TextOrList(pesysData.nyeInnvilgedeBarnetillegg.map(BarnetilleggFormatter), 0))
 
                     showIf(barnetilleggFellesInnvilget and btFellesNetto0 and (not(barnetilleggSerkullInnvilget) or btSerkullNetto0)){
@@ -199,12 +197,13 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(pesysData.opphortBarnetillegg) {
+            showIf(pesysData.nyeOpphorteBarnetillegg.isNotEmpty()) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører fra " + onsketvirkningsdato.format() + " for barn født " + fritekst("fødselsdato barnet/barna") + "." },
-                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di frå " + onsketvirkningsdato.format() + " for barn fødd " + fritekst("fødselsdato barnet/barna") + "." },
+                        bokmal { +"Vi har vedtatt at barnetillegget i uføretrygden din opphører for" },
+                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda di for"},
                     )
+                    includePhrase(Felles.TextOrList(pesysData.nyeOpphorteBarnetillegg.map(BarnetilleggOpphorFormatter), 0))
                 }
             }
 
@@ -769,28 +768,28 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
             showIf(pesysData.opphortEktefelletillegg and kravarsak.isNotAnyOf("sivilstandsendring", "soknad_bt", "instopphold")) {
                 paragraph {
-                    showIf(not(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)) {
+                    showIf(not(pesysData.opphoersbegrunnelseEktefelletillegg.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.eps_opph_ikke_avt_land)) {
                         text(
                             bokmal { +"Ektefelletillegg beholdes bare ut den perioden som vedtaket gjelder for. Vi har derfor opphørt ektefelletillegget." },
                             nynorsk { +"Ektefelletillegget beheld du bare ut perioden vedtaket gjeld for. Vi har derfor stansa ektefelletillegget ditt. " },
                         )
                     }
 
-                    showIf(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land) {
+                    showIf(pesysData.opphoersbegrunnelseEktefelletillegg.bruker_flyttet_ikke_avt_land) {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg." },
-                            nynorsk { +"Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg." },
+                            bokmal { +"Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg. " },
+                            nynorsk { +"Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg. " },
                         )
                     }
 
-                    showIf((pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)) {
+                    showIf((pesysData.opphoersbegrunnelseEktefelletillegg.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.eps_opph_ikke_avt_land)) {
                         text(
-                            bokmal { +"Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg." },
+                            bokmal { +"Ifølge våre opplysninger er " + fritekst("ektefellen/partneren/samboeren din") + " bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til ektefelletillegg. " },
                             nynorsk { +"Ifølgje våre opplysningar er " + fritekst("ektefelle/partner/sambuar") + " busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til ektefelletillegg. " },
                         )
                     }
 
-                    showIf((pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.eps_opph_ikke_avt_land)) {
+                    showIf((pesysData.opphoersbegrunnelseEktefelletillegg.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.eps_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelseEktefelletillegg.eps_opph_ikke_avt_land)) {
                         text(
                             bokmal { +"For å ha rett til ektefelletillegg fra 1. juli 2020 må du og ektefellen/samboeren din enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med. " },
                             nynorsk { +"For å ha rett til ektefelletillegg frå 1. juli 2020 må du og ektefellen/sambuaren din enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med. " },
@@ -817,110 +816,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            //TODO: kan vi slå sammen noe her med avslag bt?
-            showIf(pesysData.opphortBarnetillegg) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har opphørt barnetillegget i uføretrygden din for barn født " + fritekst("fødselsdato barnet/barna") + "." },
-                        nynorsk { +"Vi har stansa barnetillegget i uføretrygda for barn fødd " + fritekst("fødselsdato barnet/barna") + "." },
-                    )
-                }
-
-                showIf(pesysData.bt_over_18) {
-                    paragraph {
-                        text(
-                            bokmal { +"For å ha rett til barnetillegg må du forsørge barn under 18 år. Vi har vedtatt at barnetillegget i uføretrygden opphører fordi " + txtBarnetBarnaOpphor + " har fylt 18 år. " },
-                            nynorsk { +"For å ha rett til barnetillegg må du forsørgje barn under 18 år. Vi har stansa barnetillegget i uføretrygda fordi " + txtBarnetBarnaOpphor + " har fylt 18 år." },
-                        )
-                    }
-                }
-
-                showIf(pesysData.annen_forld_rett_bt) {
-                    paragraph {
-                        text(
-                            bokmal { +fritekst("slett det som ikke er aktuelt") },
-                            nynorsk { +fritekst("slett det som ikke er aktuelt") },
-                        )
-                    }
-                }
-
-                showIf(pesysData.annen_forld_rett_bt) {
-                    paragraph {
-                        text(
-                            bokmal { +"Når " + txtBarnetBarnaOpphor + " blir forsørget av begge foreldrene og begge mottar uføretrygd, skal barnetillegget gis til den som får det høyeste tillegget. Den andre forelderen har rett til et høyere barnetillegg enn det du vil få. Vi har derfor opphørt barnetillegget i uføretrygden din. " },
-                            nynorsk { +"Når " + txtBarnetBarnaOpphor + " blir " + txtBarnetBarnaOpphorForsorgaForsorgde + " av begge foreldra og begge får uføretrygd, blir barnetillegget gitt til den som får det høgaste tillegget. Den andre forelderen har rett til eit høgare barnetillegg enn det du vil få. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                        )
-                    }
-                }
-
-                showIf(pesysData.annen_forld_rett_bt) {
-                    paragraph {
-                        text(
-                            bokmal { +"Når " + txtBarnetBarnaOpphor + " blir forsørget av foreldre som ikke bor sammen, blir barnetillegget gitt til den som har samme folkeregistrerte adresse som " + txtBarnetBarnaOpphor + ". Du bor ikke på samme folkeregistrerte adresse som " + txtBarnetBarnaOpphor + ". Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                            nynorsk { +"Når " + txtBarnetBarnaOpphor + " blir " + txtBarnetBarnaOpphorForsorgaForsorgde + " av foreldre som ikkje bur saman, blir barnetillegget gitt til den som har same folkeregistrerte adresse som " + txtBarnetBarnaOpphor + ". Du bur ikkje på same folkeregistrerte adresse som " + txtBarnetBarnaOpphor + ". Vi har derfor stansa barnetillegget i uføretrygda di." },
-                        )
-                    }
-                }
-
-                showIf(pesysData.mindre_ett_ar_bt_flt) {
-                    paragraph {
-                        text(
-                            bokmal { +"Det er mulig å flytte barnetillegget fra den ene til den andre forelderen. Det må imidlertid ha gått et år siden barnetillegget ble overført. I ditt tilfelle har det gått ett år og barnetillegget er overført til den andre forelderen. Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                            nynorsk { +"Det er mogleg å flytte barnetillegget frå den eine til den andre forelderen. Det må i det minste ha gått eit år sidan barnetillegget blei overført. I ditt tilfelle har det gått eit år og barnetillegget er overført til den andre forelderen. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                        )
-                    }
-                }
-
-                showIf(pesysData.bt_innt_over_1g) {
-                    paragraph {
-                        text(
-                            bokmal { +"Når " + txtBarnetBarnaOpphor + " har inntekt over folketrygdens grunnbeløp på " + grunnbelop.format() + " kroner, har du ikke rett til barnetillegg. " },
-                            nynorsk { +"Når " + txtBarnetBarnaOpphor + " har inntekt over grunnbeløpet i folketrygda på " + grunnbelop.format() + " kroner, har du ikkje rett til barnetillegg." },
-                        )
-                        text(
-                            bokmal { +"Det er opplyst at " + txtBarnetBarnaOpphor + " " + txtBarnetBarnaOpphorDittDine + " har inntekt over " + grunnbelop.format() + " kroner. Vi har derfor opphørt barnetillegget i uføretrygden din." },
-                            nynorsk { +"Det er opplyst at " + txtBarnetBarnaOpphor + " " + txtBarnetBarnaOpphorDittDine + " har inntekt over " + grunnbelop.format() + " kroner. Vi har derfor stansa barnetillegget i uføretrygda di." },
-                        )
-                    }
-                }
-            }
-
-            showIf(pesysData.opphortBarnetillegg and (pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_opph_ikke_avt_land)) {
-                showIf(pesysData.opphoersbegrunnelse.barn_flyttet_ikke_avt_land or pesysData.opphoersbegrunnelse.barn_opph_ikke_avt_land) {
-                    paragraph {
-                        text(
-                            bokmal { +"Ifølge våre opplysninger er " + txtBarnetBarnaOpphor + " bosatt i " + fritekst("bostedsland") + ".  Derfor har du ikke lenger rett til barnetillegg" },
-                            nynorsk { +"Ifølgje våre opplysningar er " + txtBarnetBarnaOpphor + " busett i " + fritekst("bostedsland") + ". Derfor har du ikkje lenger rett til barnetillegg." },
-                        )
-                    }
-                }
-
-                showIf(pesysData.opphoersbegrunnelse.bruker_flyttet_ikke_avt_land) {
-                    paragraph {
-                        text(
-                            bokmal { +"Ifølge våre opplysninger er du bosatt i " + fritekst("bostedsland") + ". Derfor har du ikke lenger rett til barnetillegg." },
-                            nynorsk { +"Ifølgje våre opplysningar er du busett i " + fritekst("bostedsland") + ". Da har du ikkje lenger rett til barnetillegg." },
-                        )
-                    }
-                }
-
-                paragraph {
-                    text(
-                        bokmal { +"For å ha rett til barnetillegg fra 1. juli 2020 må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med " },
-                        nynorsk { +"For å ha rett til barnetillegg frå 1. juli 2020 må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med " },
-                    )
-                    //TODO: teksten under er for barn, trenger vi noe logikk her?
-                    text(
-                        bokmal { +"må også barnet være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med " },
-                        nynorsk { +"må også barn vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med " },
-                    )
-                    text(
-                        bokmal { +"Dette går frem av folketrygdloven § 12-15 som gjelder fra 1.juli 2020." },
-                        nynorsk { +"Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020" },
-                    )
-                }
-            }
-
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
             // showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and kravarsak.notEqualTo("sivilstandsendring"))){
             // TODO: dette ser aldri ut til å ha blitt vist, pga resultat = "false"-sjekk. Skal det være med?
@@ -933,7 +828,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(not(pesysData.opphortBarnetillegg)) {
+            showIf(pesysData.nyeOpphorteBarnetillegg.isEmpty()) {
                 paragraph {
                     showIf(barnetilleggInnvilget) {
                         text(
@@ -1167,6 +1062,9 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     )
                 }
             }
+
+            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
+            includePhrase(Ufoeretrygd.OpphorBarnetillegg(pesysData.nyeOpphorteBarnetillegg))
 
             title1 {
                 text(
@@ -1957,8 +1855,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     )
                 }
             }
-
-            includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Felles.RettTilAAKlage)

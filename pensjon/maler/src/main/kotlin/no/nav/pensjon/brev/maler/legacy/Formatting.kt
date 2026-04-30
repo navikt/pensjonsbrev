@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.maler.legacy
 
 import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BtBegrunnelseCode
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -13,34 +14,46 @@ import java.time.format.FormatStyle
 
 object BarnetilleggFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
     override fun apply(first: BarnetilleggUTDto, second: Language): String {
-        val antall = antallTekst(first.antallBarn)
-        val dato = first.fodselsdato.format(dateFormatter(second, FormatStyle.LONG))
-        val periodetekst = first.tom?.let { " i perioden fra  ${first.fom.format(second)} til ${it.format(second)}" } ?: ""
-        val periodetekstNn = first.tom?.let { " i perioden frå  ${first.fom.format(second)} til ${it.format(second)}" } ?: ""
+        val periodetekst = first.tom?.let { " i perioden fra ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " fra ${first.fom.format(second)}" else ""
+        val periodetekstNn = first.tom?.let { " i perioden frå ${first.fom.format(second)} til ${it.format(second)}" } ?: if(first.begrunnelse == BtBegrunnelseCode.INNVILGET) " frå ${first.fom.format(second)}" else ""
+
         return when (second) {
-            Bokmal -> "${antall}barn født ${dato}${periodetekst}"
-            Nynorsk -> "${antall}barn fødd ${dato}${periodetekstNn}"
+            Bokmal -> "${AntallBarnFormatter().apply(first, second)}${periodetekst}"
+            Nynorsk -> "${AntallBarnFormatter().apply(first, second)}${periodetekstNn}"
             English -> throw Exception()
         }
     }
 
-    private fun antallTekst(antall: Int) =
-        when (antall) {
-            1 -> ""
-            2 -> "to "
-            3 -> "tre "
-            4 -> "fire "
-            5 -> "fem "
-            6 -> "seks "
-            7 -> "sju "
-            8 -> "åtte "
-            9 -> "ni "
-            else -> "$antall "
-        }
-
     override fun stableHashCode(): Int = "BarnetilleggFormatter".hashCode()
+}
 
-    private fun LocalDate.format(lang: Language) = this.format(dateFormatter(lang, FormatStyle.LONG))
+object BarnetilleggOpphorFormatter : LocalizedFormatter<BarnetilleggUTDto>() {
+    override fun apply(first: BarnetilleggUTDto, second: Language): String {
+        val fratekst = first.fom.let { ", opphørt fra  ${first.fom.format(second)}" }
+        val fratekstNn = first.fom.let { ", stansa frå  ${first.fom.format(second)}" }
+        return when (second) {
+            Bokmal -> "${AntallBarnFormatter().apply(first, second)}${fratekst}"
+            Nynorsk -> "${AntallBarnFormatter().apply(first, second)}${fratekstNn}"
+            English -> throw Exception()
+        }
+    }
+
+    override fun stableHashCode(): Int = "BarnetilleggOpphorFormatter".hashCode()
+}
+
+class AntallBarnFormatter(private val storBokstav: Boolean = false) : LocalizedFormatter<BarnetilleggUTDto>() {
+    override fun apply(first: BarnetilleggUTDto, second: Language): String {
+        val antall = antallBarnTekst(first.antallBarn)
+        val dato = first.fodselsdato.format(dateFormatter(second, FormatStyle.LONG))
+        val tekst = when (second) {
+            Bokmal -> "${antall}barn født ${dato}"
+            Nynorsk -> "${antall}barn fødd ${dato}"
+            English -> throw Exception()
+        }
+        return if(storBokstav) tekst.replaceFirstChar { it.uppercase() } else tekst
+    }
+
+    override fun stableHashCode(): Int = "AntallBarnFormatter($storBokstav)".hashCode()
 }
 
 object UTOgTilleggMapper : LocalizedFormatter<Collection<Tillegg>>() {
@@ -101,3 +114,19 @@ class HjemmelFormatter(private val avsluttMedOg: Boolean) : LocalizedFormatter<C
 
     override fun stableHashCode(): Int = "HjemmelFormatter($avsluttMedOg)".hashCode()
 }
+
+private fun antallBarnTekst(antall: Int) =
+    when (antall) {
+        1 -> ""
+        2 -> "to "
+        3 -> "tre "
+        4 -> "fire "
+        5 -> "fem "
+        6 -> "seks "
+        7 -> "sju "
+        8 -> "åtte "
+        9 -> "ni "
+        else -> "$antall "
+    }
+
+private fun LocalDate.format(lang: Language) = this.format(dateFormatter(lang, FormatStyle.LONG))

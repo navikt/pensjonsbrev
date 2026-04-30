@@ -17,12 +17,12 @@ import no.nav.pensjon.brev.maler.alder.EndringAvUttaksgradAuto
 import no.nav.pensjon.brev.maler.alder.InnvilgelseAvAlderspensjonAuto
 import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjeningAuto
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
-import no.nav.pensjon.brev.maler.legacy.EndretUfoeretrygdPGAInntektLegacy
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
+import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoerepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoeretrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.DelvisEksportAvUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.EndringUforetrygd
@@ -94,7 +94,6 @@ object ProductionTemplates : AllTemplates {
         AdhocUfoeretrygdVarselOpphoerEktefelletillegg,
         AdhocVarselOpphoerMedHvilendeRett,
         EndretBarnetilleggUfoerertrygd,
-        EndretUfoeretrygdPGAInntektLegacy,
         EndretUfoeretrygdPGAInntektV2,
         EndretUforetrygdPGAInntektNesteAr,
         EndretUforetrygdPGAOpptjeningLegacy,
@@ -120,12 +119,17 @@ object ProductionTemplates : AllTemplates {
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
         AvslagForLiteTrygdetidAP,
+        AvslagGjenlevendepensjon,
+        AvslagGjenlevendepensjonUtland,
         AvslagPaaGjenlevenderettIAlderspensjon,
+        AvslagUfoerepensjon,
         AvslagUfoeretrygd,
         BekreftelsePaaFlyktningstatus,
         BekreftelsePaaPensjon,
         BekreftelsePaaUfoeretrygd,
         BrukerTestBrev,
+        DelvisEksportAvUforetrygd,
+        EndringUforetrygd,
         ForespoerselOmDokumentasjonAvBotidINorgeAlder,
         ForespoerselOmDokumentasjonAvBotidINorgeEtterlatte,
         InformasjonOmGjenlevenderettigheter,
@@ -136,8 +140,14 @@ object ProductionTemplates : AllTemplates {
         InnhentingOpplysningerFraBruker,
         InnvilgelseAvAlderspensjon,
         InnvilgelseAvAlderspensjonTrygdeavtale,
+        InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
+        InnvilgelseUforetrygd,
+        InnvilgelseUforetrygdBosattNorgeEtterUtland,
+        InnvilgelseUforetrygdMedEndring,
+        OkningUforegrad,
         OmregningUfoerepensjonTilUfoeretrygd,
         OmsorgEgenManuell,
+        OpphoerGjenlevendepensjon,
         OrienteringOmForlengetSaksbehandlingstid,
         OrienteringOmSaksbehandlingstid,
         OversettelseAvDokumenter,
@@ -157,17 +167,7 @@ object ProductionTemplates : AllTemplates {
         VedtakEndringVedFlyttingMellomLand,
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
-        InnvilgelseUforetrygd,
-        EndringUforetrygd,
-        InnvilgelseUforetrygdMedEndring,
-        OkningUforegrad,
-        DelvisEksportAvUforetrygd,
-        InnvilgelseUforetrygdBosattNorgeEtterUtland,
-        OpphoerGjenlevendepensjon,
-        AvslagGjenlevendepensjonUtland,
-        AvslagGjenlevendepensjon,
         VedtakOmLavereMinstesatsRedigerbar,
-        InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
     )
 
     override fun hentAutobrevmaler() = autobrev

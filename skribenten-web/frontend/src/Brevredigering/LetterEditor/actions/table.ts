@@ -54,6 +54,18 @@ export const insertTable: Action<LetterEditorState, [focus: Focus, rows: number,
     const safeContentIndex = safeIndex(focus.contentIndex, block.content);
     const insertAt = block.content.length === 0 ? 0 : safeContentIndex + 1;
     addElements([table], insertAt, block.content, block.deletedContent);
+    // If inserting adjacent to another table in the same block, separate them
+    const nextContent = block.content[insertAt + 1];
+    if (isTable(nextContent)) {
+      addElements([newLiteral({ editedText: "" })], insertAt + 1, block.content, block.deletedContent);
+    }
+    // If the table is the last element in the last block of the document,
+    // insert an empty literal so the user can continue editing after it
+    const isLastBlock = focus.blockIndex === draft.redigertBrev.blocks.length - 1;
+    if (isLastBlock && isTable(block.content.at(-1))) {
+      addElements([newLiteral({ editedText: "" })], block.content.length, block.content, block.deletedContent);
+    }
+
     draft.focus = {
       blockIndex: focus.blockIndex,
       contentIndex: insertAt,
@@ -142,6 +154,28 @@ export const removeTable: Action<LetterEditorState, []> = withPatches((draft) =>
     draft.focus = { blockIndex, contentIndex: newContentIndex, cursorPosition: 0 };
   }
 
+  draft.saveStatus = "DIRTY";
+});
+
+export type MoveDirection = "up" | "down";
+
+export const moveTableRow: Action<LetterEditorState, [direction: MoveDirection]> = withPatches((draft, direction) => {
+  if (!isTableCellIndex(draft.focus)) return;
+  const { blockIndex, contentIndex, rowIndex } = draft.focus;
+
+  const table = draft.redigertBrev.blocks[blockIndex].content[contentIndex];
+  if (!isTable(table)) return;
+
+  if (rowIndex < 0) return;
+
+  const targetIndex = direction === "up" ? rowIndex - 1 : rowIndex + 1;
+  if (targetIndex < 0 || targetIndex >= table.rows.length) return;
+
+  const temp = table.rows[rowIndex];
+  table.rows[rowIndex] = table.rows[targetIndex];
+  table.rows[targetIndex] = temp;
+
+  draft.focus = { ...draft.focus, rowIndex: targetIndex };
   draft.saveStatus = "DIRTY";
 });
 

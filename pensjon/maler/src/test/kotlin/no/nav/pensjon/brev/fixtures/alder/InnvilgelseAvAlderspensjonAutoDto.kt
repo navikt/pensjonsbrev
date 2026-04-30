@@ -62,4 +62,5 @@ fun createInnvilgelseAvAlderspensjonAutoDto() =
         ),
         opplysningerBruktIBeregningenAlderspensjon = createOpplysningerBruktIBeregningAlderDto(),
         opplysningerBruktIBeregningenAlderspensjonAP2025 = createOpplysningerBruktIBeregningAlderAP2025Dto(),
+        fremtidigSamboer = true,
         )
