@@ -60,10 +60,10 @@ private suspend fun RouteScopedPluginBuilder<out AuthorizeAnsattSakTilgangConfig
         ?.also { call.attributes.put(SakKey, it) }
         ?: call.respond(HttpStatusCode.NotFound, "Sak ikke funnet")
 
-suspend fun validerTilgangTilSak(penService: FagsakService, saksId: SaksId, pdlService: PdlService): Pen.SakSelection? {
-    val sak = penService.hentSak(saksId)
+suspend fun validerTilgangTilSak(fagsakService: FagsakService, saksId: SaksId, pdlService: PdlService): Pen.SakSelection? {
+    val sak = fagsakService.hentSak(saksId)
     if (sak != null) {
-        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, penService.finnBehandlingsnummer(sak.sakType))
+        val harTilgang = pdlService.hentAdressebeskyttelse(sak.pid, fagsakService.finnBehandlingsnummer(sak.sakType))
             ?.saksbehandlerHarTilgangTilGradering()
             ?: true
 
