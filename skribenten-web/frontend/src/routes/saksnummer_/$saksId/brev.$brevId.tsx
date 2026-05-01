@@ -232,8 +232,8 @@ function RedigerBrev({
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
     mutationFn: (values) => {
-      // Mirror ManagedLetterEditor's auto-save: mark SAVE_PENDING so onSaveSuccess
-      // applies the server response (it drops the response while DIRTY).
+      // Mark the editor as saving so onSaveSuccess will apply the response
+      // (it ignores responses while the editor is DIRTY).
       setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
       return oppdaterBrev({
         saksId: Number.parseInt(saksId, 10),
@@ -250,8 +250,8 @@ function RedigerBrev({
 
       onSaveSuccess(response);
 
-      // If the user typed while the request was in-flight, saveStatus is now "DIRTY"
-      // and onSaveSuccess dropped the response. Skip highlight/focus in that case.
+      // The editor went DIRTY while the request was in flight (user typed);
+      // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
       let responseWasApplied = true;
       setEditorState((current) => {
         responseWasApplied = current.saveStatus !== "DIRTY";
@@ -262,8 +262,7 @@ function RedigerBrev({
       const initialIds = initialIdsRef.current;
       const newIds = new Set<number>();
       for (const id of collectNewIds(previousIds, response.redigertBrev)) {
-        // Suppress ids that the saksbehandler already saw on initial load (e.g. default
-        // text that reappears when toggling a tekstvalg off).
+        // Skip ids that were already in the letter when it was opened
         if (!initialIds.has(id)) newIds.add(id);
       }
       if (newIds.size === 0) return;
