@@ -231,32 +231,33 @@ function RedigerBrev({
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
-    mutationFn: (values) =>
-      oppdaterBrev({
+    mutationFn: (values) => {
+      // Mirror ManagedLetterEditor's auto-save: mark SAVE_PENDING so onSaveSuccess
+      // applies the server response (it drops the response while DIRTY).
+      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
+      return oppdaterBrev({
         saksId: Number.parseInt(saksId, 10),
         brevId: brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
         },
-      }),
+      });
+    },
     onSuccess: (response) => {
       const previousIds = previousIdsRef.current;
       previousIdsRef.current = null;
+
       onSaveSuccess(response);
 
-      if (!previousIds) return;
-
-      // onSaveSuccess drops the response when the editor is DIRTY (in-flight typing).
-      // Detect that by reading the editor state synchronously via a no-op updater and
-      // comparing the hash. If the response was not applied, do not flash or move the
-      // cursor based on a letter the user is not seeing.
-      let responseWasApplied = false;
+      // If the user typed while the request was in-flight, saveStatus is now "DIRTY"
+      // and onSaveSuccess dropped the response. Skip highlight/focus in that case.
+      let responseWasApplied = true;
       setEditorState((current) => {
-        responseWasApplied = current.redigertBrevHash === response.redigertBrevHash;
+        responseWasApplied = current.saveStatus !== "DIRTY";
         return current;
       });
-      if (!responseWasApplied) return;
+      if (!previousIds || !responseWasApplied) return;
 
       const initialIds = initialIdsRef.current;
       const newIds = new Set<number>();
