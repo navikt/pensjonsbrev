@@ -17,7 +17,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
-import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
@@ -311,20 +310,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            showIf(saksbehandlerValg.barnetilleggInfo) {
-                title1 {
-                    text(
-                        bokmal { +"Du kan ha rett til barnetillegg" },
-                        nynorsk { +"Du kan ha rett til barnetillegg" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal { + "Forsørger du barn under 18 år kan du har rett til barnetillegg. Du må søke om å få barnetillegg. Barnetillegget blir beregnet ut fra din inntekt. Du finner søknadsskjema for barnetillegg på $UFOERE_SOK_URL. Trenger du hjelp til å søke, kan du kontakte oss." },
-                        nynorsk { + "Forsørgjer du barn under 18 år kan du har rett til barnetillegg. Du må søkje om å få barnetillegg. Barnetillegget blir rekna ut frå inntekta di. Du finn søknadsskjema for barnetillegg på $UFOERE_SOK_URL. Treng du hjelp til å søkje, kan du kontakte oss." },
-                    )
-                }
-            }
+            includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = saksbehandlerValg.barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)

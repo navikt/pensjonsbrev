@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
@@ -1609,6 +1610,27 @@ object Innvilgelse {
                     text(
                         bokmal { +"Søknaden din er innvilget etter klage og vi anser klagen som ferdig behandlet. Dersom du ønsker å opprettholde klagen, må du gi tilbakemelding til Nav innen 3 uker." },
                         nynorsk { +"Søknaden din er innvilga etter klage, og vi ser det slik at klaga er ferdig behandla. Dersom du ønskjer å halde fast på klaga, må du melde dette tilbake til Nav innan 3 veker." },
+                    )
+                }
+            }
+        }
+    }
+
+    data class RettTilBarnetillegg(
+        val barnetilleggInfo: Expression<Boolean>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(barnetilleggInfo) {
+                title1 {
+                    text(
+                        bokmal { +"Du kan ha rett til barnetillegg" },
+                        nynorsk { +"Du kan ha rett til barnetillegg" },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Forsørger du barn under 18 år kan du har rett til barnetillegg. Du må søke om å få barnetillegg. Barnetillegget blir beregnet ut fra din inntekt. Du finner søknadsskjema for barnetillegg på $UFOERE_SOK_URL. Trenger du hjelp til å søke, kan du kontakte oss." },
+                        nynorsk { +"Forsørgjer du barn under 18 år kan du har rett til barnetillegg. Du må søkje om å få barnetillegg. Barnetillegget blir rekna ut frå inntekta di. Du finn søknadsskjema for barnetillegg på $UFOERE_SOK_URL. Treng du hjelp til å søkje, kan du kontakte oss." },
                     )
                 }
             }
