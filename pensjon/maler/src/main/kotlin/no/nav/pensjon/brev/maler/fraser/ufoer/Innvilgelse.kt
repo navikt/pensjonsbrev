@@ -66,21 +66,6 @@ object Innvilgelse {
                     )
                 }
             }
-
-            showIf(kravGjelder.equalTo("mellombh")){
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vi viser til vedtak fra " + fritekst("vedtaksdato") + " om foreløpig avslag på søknaden din om uføretrygd. Vi har innvilget søknaden din ut fra opplysninger vi har fått fra " +
-                                    fritekst("land") + ". Du får " + uforegrad.format() + " prosent uføretrygd fra " + virkningstidpunkt.format() + "."
-                                   },
-                        nynorsk {
-                            +"Vi viser til vedtak frå " + fritekst("vedtaksdato") + " om førebels avslag på søknaden din om uføretrygd. Vi har innvilga søknaden din ut ifrå opplysningar vi har fått frå " +
-                                    fritekst("land") + ". Du får " + uforegrad.format() + " prosent uføretrygd frå " + virkningstidpunkt.format() + "."
-                        },
-                    )
-                }
-            }
         }
     }
 

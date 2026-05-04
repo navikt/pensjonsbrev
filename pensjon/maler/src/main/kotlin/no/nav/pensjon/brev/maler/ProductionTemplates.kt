@@ -30,6 +30,7 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygd
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMedEndring
+import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdMellombehandling
 import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseUforetrygdUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OkningUforegrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygd
@@ -144,6 +145,7 @@ object ProductionTemplates : AllTemplates {
         InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         InnvilgelseUforetrygd,
         InnvilgelseUforetrygdUtland,
+        InnvilgelseUforetrygdMellombehandling,
         InnvilgelseUforetrygdBosattNorgeEtterUtland,
         InnvilgelseUforetrygdMedEndring,
         OkningUforegrad,
