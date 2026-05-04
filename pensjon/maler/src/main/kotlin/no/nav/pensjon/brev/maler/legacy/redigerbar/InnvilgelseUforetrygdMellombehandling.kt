@@ -163,21 +163,6 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 )
             }
 
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                title1 {
-                    text (
-                        bokmal { + "Dette er en foreløpig beregning" },
-                        nynorsk { + "Dette er ei førebels berekning" },
-                    )
-                }
-                paragraph {
-                    text (
-                        bokmal { + "Fordi du har jobbet eller bodd i et annet EØS-land, er dette en foreløpig beregning basert på trygdetiden du har opparbeidet deg i Norge. Vi venter på informasjon fra " + fritekst("land") + ". Når vi har fått den informasjonen vi trenger, sender vi deg et vedtak med en endelig beregning av uføretrygden din. Der vil du se den totale summen du får utbetalt fra både Norge og eventuelt " + fritekst("land") + "." },
-                        nynorsk { + "Fordi du har jobba eller budd i eit anna EØS-land, er dette ei førebels berekning basert på trygdetida du har opparbeidd deg i Noreg. Vi ventar på informasjon frå " + fritekst("land") + ". Når vi har fått den informasjonen vi treng, sender vi deg eit vedtak med ei endeleg berekning av uføretrygda di. Der vil du sjå den totale summen du får betalt ut frå både Noreg og eventuelt " + fritekst("land") + "." },
-                    )
-                }
-            }
-
             title1 {
                 text (
                     bokmal { + "Dette er et forskudd" },
