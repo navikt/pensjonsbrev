@@ -31,7 +31,7 @@ fun createVedtakEndringGjenlevendepensjonBosattUtlandDto() =
                 grunnbeloep = Kroner(124_028),
                 framtidigAarligInntekt = Kroner(250_000),
                 brutto = Kroner(15_000),
-                netto = Kroner(12_000),
+                netto = Kroner(15_000),
                 grunnpensjon = Komponent(brutto = Kroner(9_000), netto = Kroner(7_500)),
                 tilleggspensjon = Komponent(brutto = Kroner(5_000), netto = Kroner(4_000)),
                 saertillegg = Komponent(brutto = Kroner(1_000), netto = Kroner(500)),
@@ -42,7 +42,7 @@ fun createVedtakEndringGjenlevendepensjonBosattUtlandDto() =
             avdoed = Avdoed(
                 doedsfallSkyldesYrkesskade = false,
                 flyktning = false,
-                ungUfoerFodtEtter1940 = false,
+                ungUfoerFodtEtter1940 = true,
                 ungUfoerFodtFor1941 = false,
             ),
             ektefelle = EktefelleData(

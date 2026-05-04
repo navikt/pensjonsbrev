@@ -45,6 +45,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -642,14 +643,17 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 showIf(pesysData.avdoed.ungUfoerFodtEtter1940 or pesysData.avdoed.ungUfoerFodtFor1941) {
                     paragraph {
                         text(
-                            bokmal {
-                                +"Tilleggspensjonen er beregnet med utgangspunkt i at avdøde tidligere har mottatt pensjon beregnet" +
+                            bokmal { +"Tilleggspensjonen"},
+                            english { +"Supplementary pension" }, BOLD
+                        )
+                        text(
+                            bokmal { +" er beregnet med utgangspunkt i at avdøde tidligere har mottatt pensjon beregnet" +
                                     " etter særbestemmelsene for unge uføre. Dette grunnlaget er fortsatt benyttet, ettersom dette gir den" +
                                     " høyeste tilleggspensjonen. Vær oppmerksom på at tilleggspensjonen etter særbestemmelsene for unge" +
                                     " uføre vil falle bort dersom du velger å flytte fra Norge."
                             },
                             english {
-                                +"The supplementary pension has been calculated on the basis that the deceased previously received a" +
+                                +" has been calculated on the basis that the deceased previously received a" +
                                     " pension based on the particular regulations for young disabled people. This basis has still been used," +
                                     " as it gives the highest supplementary pension. Please note that your supplementary pension based on" +
                                     " the regulations for young disabled people will be terminated if you choose to move away from Norway."
