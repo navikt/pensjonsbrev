@@ -211,14 +211,9 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 )
             }
 
-            showIf(kravarsak.equalTo("omgj_etter_klage")){
-                paragraph {
-                    text (
-                        bokmal { + "Søknaden din er innvilget etter klage og vi anser klagen som ferdig behandlet. Dersom du ønsker å opprettholde klagen, må du gi tilbakemelding til Nav innen 3 uker." },
-                        nynorsk { + "Søknaden din er innvilga etter klage, og vi ser det slik at klaga er ferdig behandla. Dersom du ønskjer å halde fast på klaga, må du melde dette tilbake til Nav innan 3 veker." },
-                    )
-                }
-            }
+            includePhrase(Innvilgelse.InnvilgetEtterKlage(
+                kravarsak = kravarsak,
+            ))
 
             paragraph {
                 text(
