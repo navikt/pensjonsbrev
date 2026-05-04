@@ -535,6 +535,73 @@ describe("Actions.deleteSelection", () => {
       expect(block.content[3]).toMatchObject({ text: " etter table." });
     });
   });
+
+  describe("table-separator invariants are preserved after selection delete", () => {
+    it("re-inserts a trailing literal when selection deletes from inside the last table through the trailing literal", () => {
+      const lastTableInLetter = table(
+        [cell(literal("h1")), cell(literal("h2"))],
+        [row(cell(literal("a")), cell(literal("b")))],
+      );
+      const letterEndingWithTable = letter(paragraph([literal("intro"), lastTableInLetter, literal("")]));
+
+      // Select from inside the last cell of the table through the trailing literal
+      const letterAfterDelete = Actions.deleteSelection(letterEndingWithTable, {
+        start: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 1, cellContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 2, cursorPosition: 0 },
+      });
+
+      const onlyParagraph = letterAfterDelete.redigertBrev.blocks[0];
+      const literalAfterTable = onlyParagraph.content.at(-1);
+      expect(literalAfterTable?.type).toEqual(LITERAL);
+      expect(text(literalAfterTable as LiteralValue)).toEqual("");
+      expect(onlyParagraph.content.at(-2)?.type).toEqual("TABLE");
+    });
+
+    it("re-inserts a separator literal when selection deletes the literal between two adjacent tables", () => {
+      const firstTable = table([cell(literal("h1"))], [row(cell(literal("a")))]);
+      const secondTable = table([cell(literal("h2"))], [row(cell(literal("b")))]);
+      const letterWithAdjacentTables = letter(paragraph([firstTable, literal(""), secondTable, literal("")]));
+
+      // Select from inside the last cell of firstTable through the literal between the tables
+      const letterAfterDelete = Actions.deleteSelection(letterWithAdjacentTables, {
+        start: { blockIndex: 0, contentIndex: 0, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 },
+        end: { blockIndex: 0, contentIndex: 2, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 },
+      });
+
+      const onlyParagraph = letterAfterDelete.redigertBrev.blocks[0];
+      const contentTypes = onlyParagraph.content.map((content) => content.type);
+      // Both tables remain, with a literal between them and a trailing literal
+      expect(contentTypes).toEqual(["TABLE", "LITERAL", "TABLE", "LITERAL"]);
+    });
+
+    it("clears cell contents from start through end of table when selection extends into the next block", () => {
+      const twoRowTable = table(
+        [cell(literal("h1")), cell(literal("h2"))],
+        [row(cell(literal("a1")), cell(literal("a2"))), row(cell(literal("b1")), cell(literal("b2")))],
+      );
+      const letterWithTableThenParagraph = letter(
+        paragraph([literal("før "), twoRowTable, literal(" etter")]),
+        paragraph([literal("neste avsnitt")]),
+      );
+
+      // Select from inside row 0, cell 0 (after "a") through to inside the next block
+      const letterAfterDelete = Actions.deleteSelection(letterWithTableThenParagraph, {
+        start: { blockIndex: 0, contentIndex: 1, rowIndex: 0, cellIndex: 0, cellContentIndex: 0, cursorPosition: 1 },
+        end: { blockIndex: 1, contentIndex: 0, cursorPosition: 5 },
+      });
+
+      const tableAfterDelete = select<Table>(letterAfterDelete, { blockIndex: 0, contentIndex: 1 });
+      // Header cells remain unchanged (start was in body)
+      expect(text(tableAfterDelete.header.colSpec[0].headerContent.text[0])).toEqual("h1");
+      expect(text(tableAfterDelete.header.colSpec[1].headerContent.text[0])).toEqual("h2");
+      // Row 0, cell 0: kept "a" (chars before cursor 1), rest cleared
+      expect(text(tableAfterDelete.rows[0].cells[0].text[0])).toEqual("a");
+      // Remaining body cells from start through end of table are emptied
+      expectEmptyCell(tableAfterDelete.rows[0].cells[1]);
+      expectEmptyCell(tableAfterDelete.rows[1].cells[0]);
+      expectEmptyCell(tableAfterDelete.rows[1].cells[1]);
+    });
+  });
 });
 
 function expectEmptyCell(cell: Cell) {

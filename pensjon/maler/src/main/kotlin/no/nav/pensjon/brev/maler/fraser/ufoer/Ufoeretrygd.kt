@@ -401,7 +401,7 @@ object Ufoeretrygd {
     }
 
     data class AvslagBarnetillegg(val barnetilleggAvslatt: Expression<List<BarnetilleggUTDto>>) :
-        OutlinePhrase<LangBokmalNynorsk>() {
+        RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggAvslatt) { barnetillegg ->
@@ -429,7 +429,7 @@ object Ufoeretrygd {
     }
 
     data class OpphorBarnetillegg(val barnetilleggOpphort: Expression<List<BarnetilleggUTDto>>) :
-        OutlinePhrase<LangBokmalNynorsk>() {
+        RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             forEach(barnetilleggOpphort) { barnetillegg ->
@@ -456,7 +456,7 @@ object Ufoeretrygd {
         }
     }
 
-    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : ParagraphPhrase<LangBokmalNynorsk>() {
+    private data class BegrunnelseBarnetilleggTekst(val barnetillegg: Expression<BarnetilleggUTDto>) : RedigerbarParagraphPhrase<LangBokmalNynorsk>() {
         override fun ParagraphOnlyScope<LangBokmalNynorsk, Unit>.template() {
             val barnetBarna = barnetillegg.antallBarn.format(BarnetBarnaFormatter)
             val barnetBarnaStor = barnetillegg.antallBarn.format(BarnetBarnaStorFormatter)
@@ -513,8 +513,8 @@ object Ufoeretrygd {
                 )
             }.orShow {
                 text(
-                    bokmal { +Fritekst("Begrunnelse") },
-                    nynorsk { +Fritekst("Begrunnelse") },
+                    bokmal { +fritekst("Avslagstekst for perioden") },
+                    nynorsk { +fritekst("Avslagstekst for perioden") },
                 )
             }
         }
