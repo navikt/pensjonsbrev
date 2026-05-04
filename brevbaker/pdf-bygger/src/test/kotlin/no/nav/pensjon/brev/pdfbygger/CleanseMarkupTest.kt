@@ -1,12 +1,9 @@
-package no.nav.pensjon.brev.pdfbygger.latex
+package no.nav.pensjon.brev.pdfbygger
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.pdfbygger.attachment
-import no.nav.pensjon.brev.pdfbygger.clean
-import no.nav.pensjon.brev.pdfbygger.letterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl
-import org.assertj.core.api.Assertions.assertThat
+import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Test
 
 @OptIn(InterneDataklasser::class)
@@ -23,7 +20,7 @@ class CleanseMarkupTest {
                 }
             }
         }
-        assertThat(markup.clean().blocks).isEmpty()
+        Assertions.assertThat(markup.clean().blocks).isEmpty()
     }
 
     @Test
@@ -38,9 +35,10 @@ class CleanseMarkupTest {
             }
         }.clean()
 
-        assertThat(cleansed.blocks).isNotEmpty()
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.Title1Impl::class.java) { title1 ->
-            assertThat(title1.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks).isNotEmpty()
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.Title1Impl::class.java) { title1 ->
+            Assertions.assertThat(title1.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
@@ -59,7 +57,7 @@ class CleanseMarkupTest {
             }
         }
         val cleansed = markup.clean()
-        assertThat(cleansed.blocks).isEmpty()
+        Assertions.assertThat(cleansed.blocks).isEmpty()
     }
 
     @Test
@@ -80,11 +78,12 @@ class CleanseMarkupTest {
             }
         }
         val cleansed = markup.clean()
-        assertThat(cleansed.blocks).hasSize(1)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).anySatisfy {
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).anySatisfy {
                 if (it is LetterMarkup.ParagraphContent.Text) {
-                    assertThat(it.text).isEqualTo("Innhold")
+                    Assertions.assertThat(it.text).isEqualTo("Innhold")
                 }
             }
         }
@@ -107,14 +106,16 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(2)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(1)
-            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks).hasSize(2)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(1)
+            Assertions.assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
-        assertThat(cleansed.blocks[1]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(3)
-            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks[1])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(3)
+            Assertions.assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
@@ -129,10 +130,11 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(1)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(1)
-            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(1)
+            Assertions.assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
@@ -151,10 +153,11 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(1)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(3)
-            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(3)
+            Assertions.assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
@@ -184,10 +187,11 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(1)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(3)
-            assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(3)
+            Assertions.assertThat(paragraph.content).allSatisfy { it !is LetterMarkup.ParagraphContent.Text.NewLine }
         }
     }
 
@@ -206,10 +210,11 @@ class CleanseMarkupTest {
                 }
             }
         }.clean()
-        assertThat(cleansed.blocks).hasSize(1)
-        assertThat(cleansed.blocks[0]).isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
-            assertThat(paragraph.content).hasSize(1)
-            assertThat(paragraph.content).allSatisfy { it is LetterMarkup.ParagraphContent.Text.Literal }
+        Assertions.assertThat(cleansed.blocks).hasSize(1)
+        Assertions.assertThat(cleansed.blocks[0])
+            .isInstanceOfSatisfying(LetterMarkupImpl.BlockImpl.ParagraphImpl::class.java) { paragraph ->
+            Assertions.assertThat(paragraph.content).hasSize(1)
+            Assertions.assertThat(paragraph.content).allSatisfy { it is LetterMarkup.ParagraphContent.Text.Literal }
         }
     }
 }
