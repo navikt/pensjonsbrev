@@ -816,18 +816,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
-            // showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and kravarsak.notEqualTo("sivilstandsendring"))){
-            // TODO: dette ser aldri ut til å ha blitt vist, pga resultat = "false"-sjekk. Skal det være med?
-            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and kravarsak.notEqualTo("sivilstandsendring"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
-                        nynorsk { +"Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
-                    )
-                }
-            }
-
             showIf(pesysData.nyeOpphorteBarnetillegg.isEmpty()) {
                 paragraph {
                     showIf(barnetilleggInnvilget) {
