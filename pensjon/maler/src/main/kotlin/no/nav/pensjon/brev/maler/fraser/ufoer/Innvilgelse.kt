@@ -62,7 +62,7 @@ object Innvilgelse {
                 paragraph {
                     text (
                         bokmal { + "Vi har innvilget søknaden din om uføretrygd som vi mottok " + kravmottatdato.format() + ". Du har fått medhold i klagen din, og du får " + uforegrad.format() + " prosent uføretrygd med rettighet som ung ufør fra " + virkningfom.format() + "." },
-                        nynorsk { + "Vi har innvilga søknaden din om uføretrygd som vi fekk " + kravmottatdato.format() + ". Du har fått medhald i klaga din, og du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
+                        nynorsk { + "Vi har innvilga søknaden din om uføretrygd som vi fekk " + kravmottatdato.format() + ". Du har fått medhald i klaga di, og du får " + uforegrad.format() + " prosent uføretrygd med rett som ung ufør frå " + virkningfom.format() + "." },
                     )
                 }
             }
