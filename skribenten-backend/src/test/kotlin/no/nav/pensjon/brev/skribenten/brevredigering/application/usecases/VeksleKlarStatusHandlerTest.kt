@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.FerdigRedigertPolicy
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
+import no.nav.pensjon.brev.skribenten.letter.editLetterBlocks
 import no.nav.pensjon.brev.skribenten.letter.letter
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
@@ -14,8 +15,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.BlockImpl.ParagraphIm
 import no.nav.pensjon.brevbaker.api.model.LetterMarkupImpl.ParagraphContentImpl.TextImpl.LiteralImpl
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph as E_Paragraph
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal as E_Literal
 
 class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
 
@@ -98,17 +97,13 @@ class VeksleKlarStatusHandlerTest : BrevredigeringHandlerTestBase() {
             oppdaterBrev(
                 brevId = brev.info.id,
                 nyttRedigertbrev = brev.redigertBrev.copy(
-                    blocks = listOf(
-                        E_Paragraph(
-                            1,
-                            true,
-                            listOf(
-                                E_Literal(12, "Vi har "),
-                                E_Literal(13, "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert"),
-                                E_Literal(14, " mottatt søknad.")
-                            )
-                        )
-                    )
+                    blocks = editLetterBlocks {
+                        paragraph(id = 1) {
+                            literal(id = 12, text = "Vi har ")
+                            literal(id = 13, text = "dato", tags = setOf(ElementTags.FRITEKST), editedText = "redigert")
+                            literal(id = 14, text = " mottatt søknad.")
+                        }
+                    }
                 )
             )
         ).isSuccess()

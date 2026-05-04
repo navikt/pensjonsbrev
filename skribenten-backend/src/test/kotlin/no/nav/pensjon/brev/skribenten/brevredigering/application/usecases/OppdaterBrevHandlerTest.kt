@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.RedigerBrevPolicy
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.isFailure
 import no.nav.pensjon.brev.skribenten.isSuccess
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Paragraph
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.editedLetter
 import no.nav.pensjon.brev.skribenten.letter.letter
@@ -23,7 +22,9 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
-    private val nyttRedigertBrev = editedLetter(Paragraph(1, true, listOf(Literal(1, text = "red pill", editedText = "blue pill"))))
+    private val nyttRedigertBrev = editedLetter {
+        paragraph(id = 1) { literal(id = 1, text = "red pill", editedText = "blue pill") }
+    }
 
     @Test
     suspend fun `naar vi ikke klarer aa kople avsnitt saksbehandler har redigert med avsnitt i mal markerer vi avsnittet`() {
@@ -39,7 +40,9 @@ class OppdaterBrevHandlerTest : BrevredigeringHandlerTestBase() {
         val etterSaksbehandlersEndringerOgDeretterEndringIMalen = oppdaterBrev(
             brevId = originalBrevmal.info.id,
             nyeSaksbehandlerValg = Api.GeneriskBrevdata(),
-            nyttRedigertbrev = editedLetter(Paragraph(1, true, listOf(Literal(2, text = "red pill", editedText = "blue pill")))),
+            nyttRedigertbrev = editedLetter {
+                paragraph(id = 1) { literal(id = 2, text = "red pill", editedText = "blue pill") }
+            },
         )
 
         assertThat(etterSaksbehandlersEndringerOgDeretterEndringIMalen).isSuccess {
