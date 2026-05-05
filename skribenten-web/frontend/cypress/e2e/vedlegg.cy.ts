@@ -51,12 +51,14 @@ const setupBrevbehandler = (vedlegg: AlltidValgbartVedlegg[]) => {
     "getVedlegg",
   );
   cy.visit("/saksnummer/123456/brevbehandler");
-  cy.get(`[aria-label="${bokmaalBrev.brevtittel}"] button[aria-expanded]`).click();
   cy.wait("@getVedlegg");
 };
 
 const openVedleggModal = () => {
-  cy.get('button[title="Legg til vedlegg"]').click();
+  cy.get(`[aria-label="${bokmaalBrev.brevtittel}"]`)
+    .find('button[title="Legg til vedlegg"]')
+    .should("be.visible")
+    .click();
 };
 
 describe("Vedlegg modal - viser tilgjengelighet basert på brevets språk", () => {
