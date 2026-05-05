@@ -96,13 +96,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 text(
                     bokmal {
                         +"Pensjonen din endres fra " + pesysData.virkningFom.format() +
-                            ". Du får " + pesysData.beregning.netto.format() +
-                            " i pensjon hver måned før skatt."
+                                ". Du får " + pesysData.beregning.netto.format() +
+                                " i pensjon hver måned før skatt."
                     },
                     english {
                         +"Your pension will be changed as of " + pesysData.virkningFom.format() +
-                            ". You will receive " + pesysData.beregning.netto.format() +
-                            " each month, before tax."
+                                ". You will receive " + pesysData.beregning.netto.format() +
+                                " each month, before tax."
                     },
                 )
             }
@@ -115,13 +115,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
-                                " Pensjonen din vil reduseres fordi du har hatt en økning i forventet arbeidsinntekt." +
-                                " Reduksjonen av pensjonen trer i kraft fra og med måneden etter at arbeidsinntekten ble endret."
+                                    " Pensjonen din vil reduseres fordi du har hatt en økning i forventet arbeidsinntekt." +
+                                    " Reduksjonen av pensjonen trer i kraft fra og med måneden etter at arbeidsinntekten ble endret."
                         },
                         english {
                             +"Your pension will be regulated in relation to the earned income you have or is expected to have." +
-                                " Your pension will be reduced due to an increase in your expected earned income." +
-                                " Your pension will be changed as of the month from which your earned income has changed."
+                                    " Your pension will be reduced due to an increase in your expected earned income." +
+                                    " Your pension will be changed as of the month from which your earned income has changed."
                         },
                     )
                 }
@@ -136,13 +136,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
-                                " Pensjonen din vil øke fordi du har hatt en reduksjon i forventet arbeidsinntekt." +
-                                " Økning av pensjonen trer i kraft fra og med den måneden arbeidsinntekten din ble endret."
+                                    " Pensjonen din vil øke fordi du har hatt en reduksjon i forventet arbeidsinntekt." +
+                                    " Økning av pensjonen trer i kraft fra og med den måneden arbeidsinntekten din ble endret."
                         },
                         english {
                             +"Your pension will be regulated in relation to the earned income you have or is expected to have." +
-                                " Your pension will be increased due to a change in your expected earned income." +
-                                " Your pension will be changed as of the month from which your earned income has changed."
+                                    " Your pension will be increased due to a change in your expected earned income." +
+                                    " Your pension will be changed as of the month from which your earned income has changed."
                         },
                     )
                 }
@@ -158,13 +158,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Pensjonen din er endret fordi du har vært samboer i 12 av de siste 18 månedene," +
-                                " og fordi samboeren din har en inntekt som overstiger to ganger grunnbeløpet" +
-                                " eller mottar pensjon eller uføretrygd fra folketrygden."
+                                    " og fordi samboeren din har en inntekt som overstiger to ganger grunnbeløpet" +
+                                    " eller mottar pensjon eller uføretrygd fra folketrygden."
                         },
                         english {
                             +"Your pension has been changed because you have been cohabiting for 12 of the past 18 months," +
-                                " and because your cohabitant has an income that exceeds twice the national insurance basic amount" +
-                                " or receives a pension from the National Insurance Scheme."
+                                    " and because your cohabitant has an income that exceeds twice the national insurance basic amount" +
+                                    " or receives a pension from the National Insurance Scheme."
                         },
                     )
                 }
@@ -203,17 +203,17 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                pesysData.beregning.grunnbeloep.format() +
-                                ". Framtidig årlig inntekt benyttet i beregningen er " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                "."
+                                    pesysData.beregning.grunnbeloep.format() +
+                                    ". Framtidig årlig inntekt benyttet i beregningen er " +
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    "."
                         },
                         english {
                             +"The national insurance basic amount (G) used in the calculation is " +
-                                pesysData.beregning.grunnbeloep.format() +
-                                ". Expected future earned income used in the calculation is " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                "."
+                                    pesysData.beregning.grunnbeloep.format() +
+                                    ". Expected future earned income used in the calculation is " +
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    "."
                         },
                     )
                 }
@@ -247,14 +247,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -265,14 +265,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.brutto.format(denominator = false) + " kr" },
-                                        english { +tp.brutto.format(denominator = false) + " NOK" },
+                                        bokmal { +tp.brutto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + tp.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +tp.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +tp.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -284,14 +284,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.brutto.format(denominator = false) + " kr" },
-                                        english { +st.brutto.format(denominator = false) + " NOK" },
+                                        bokmal { +st.brutto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + st.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +st.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +st.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -306,14 +306,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.brutto.format(denominator = false) + " kr" },
-                                        english { +fu.brutto.format(denominator = false) + " NOK" },
+                                        bokmal { +fu.brutto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + fu.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +fu.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +fu.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -325,14 +325,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.brutto.format(denominator = false) + " kr" },
-                                        english { +ft.brutto.format(denominator = false) + " NOK" },
+                                        bokmal { +ft.brutto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + ft.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +ft.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +ft.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -346,14 +346,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.brutto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.netto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -378,19 +378,19 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Din månedlige gjenlevendepensjon fra " + pesysData.beregning.virkDatoFom.format() +
-                                ". Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                pesysData.beregning.grunnbeloep.format(denominator = false) +
-                                " kroner. Framtidig årlig inntekt benyttet i beregningen er " +
-                                pesysData.beregning.framtidigAarligInntekt.format(denominator = false) +
-                                " kroner."
+                                    ". Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
+                                    pesysData.beregning.grunnbeloep.format() +
+                                    ". Framtidig årlig inntekt benyttet i beregningen er " +
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    "."
                         },
                         english {
                             +"Your monthly survivor's pension from " + pesysData.beregning.virkDatoFom.format() +
-                                ". The national insurance basic amount (G) used in the calculation is " +
-                                pesysData.beregning.grunnbeloep.format(denominator = false) +
-                                " NOK. Expected future earned income used in the calculation is " +
-                                pesysData.beregning.framtidigAarligInntekt.format(denominator = false) +
-                                " NOK."
+                                    ". The national insurance basic amount (G) used in the calculation is " +
+                                    pesysData.beregning.grunnbeloep.format() +
+                                    ". Expected future earned income used in the calculation is " +
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    "."
                         },
                     )
                 }
@@ -415,8 +415,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -427,8 +427,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +tp.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +tp.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -440,8 +440,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +st.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +st.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -456,8 +456,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +fu.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +fu.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -469,8 +469,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +ft.netto.format(denominator = false) + " NOK" },
+                                        bokmal { +ft.netto.format(denominator = false) + "\u00A0kr" },
+                                        english { +"NOK\u00A0" + ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -484,8 +484,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.netto.format(denominator = false) + " NOK" },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + "\u00A0kr" },
+                                    english { +"NOK\u00A0" + pesysData.beregning.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -495,27 +495,28 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // ---- PE_GP_04_028_tekst2: trygdetid og avhengige tilleggsavsnitt ----
             paragraph {
+                text(bokmal { +"Grunnpensjon" }, english { +"The basic pension" }, BOLD)
                 text(
                     bokmal {
-                        +"Grunnpensjon fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " +
-                            pesysData.beregning.grunnbeloep.format() +
-                            ". For at du skal få full grunnpensjon må avdødes trygdetid være minst 40 år." +
-                            " Trygdetiden tilsvarer det antall år den avdøde har vært medlem i folketrygden etter fylte 16 år." +
-                            " Dersom avdøde var under 67 år på tidspunktet for dødsfallet, blir det beregnet framtidig trygdetid." +
-                            " Den regnes vanligvis fram til og med det året avdøde ville ha fylt 66 år." +
-                            " Ved mindre enn 40 års trygdetid blir grunnpensjonen tilsvarende redusert." +
-                            " Oversikt over trygdetiden er gitt i vedlegg til dette vedtaket."
+                        +" fastsettes med utgangspunkt i folketrygdens grunnbeløp, som for tiden er " +
+                                pesysData.beregning.grunnbeloep.format() +
+                                ". For at du skal få full grunnpensjon må avdødes trygdetid være minst 40 år." +
+                                " Trygdetiden tilsvarer det antall år den avdøde har vært medlem i folketrygden etter fylte 16 år." +
+                                " Dersom avdøde var under 67 år på tidspunktet for dødsfallet, blir det beregnet framtidig trygdetid." +
+                                " Den regnes vanligvis fram til og med det året avdøde ville ha fylt 66 år." +
+                                " Ved mindre enn 40 års trygdetid blir grunnpensjonen tilsvarende redusert." +
+                                " Oversikt over trygdetiden er gitt i vedlegg til dette vedtaket."
                     },
                     english {
-                        +"The basic pension is calculated on the basis of the national insurance basic amount, which currently is " +
-                            pesysData.beregning.grunnbeloep.format() +
-                            ". In order for you to receive a full basic pension, the deceased's period of national insurance cover" +
-                            " must be at least 40 years. The period of national insurance cover is equivalent to the years the deceased" +
-                            " had been a member of the National Insurance Scheme since turning 16. If the deceased was under 67 years of" +
-                            " age at the time of death, credit is also given for their future period of national insurance cover." +
-                            " This period is usually calculated to include the years up to and including the year the deceased would have" +
-                            " turned 66. If the deceased had less than 40 years of national insurance cover, the basic pension is reduced" +
-                            " proportionately. An overview of the period of national insurance cover is enclosed with this decision."
+                        +" is calculated on the basis of the national insurance basic amount, which currently is " +
+                                pesysData.beregning.grunnbeloep.format() +
+                                ". In order for you to receive a full basic pension, the deceased's period of national insurance cover" +
+                                " must be at least 40 years. The period of national insurance cover is equivalent to the years the deceased" +
+                                " had been a member of the National Insurance Scheme since turning 16. If the deceased was under 67 years of" +
+                                " age at the time of death, credit is also given for their future period of national insurance cover." +
+                                " This period is usually calculated to include the years up to and including the year the deceased would have" +
+                                " turned 66. If the deceased had less than 40 years of national insurance cover, the basic pension is reduced" +
+                                " proportionately. An overview of the period of national insurance cover is enclosed with this decision."
                     },
                 )
             }
@@ -526,7 +527,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         bokmal { +"Pensjonen er beregnet etter full trygdetid (40 år) fordi avdøde var flyktning." },
                         english {
                             +"The pension has been calculated based on a full period of national insurance cover (40 years)" +
-                                " because the deceased was a refugee."
+                                    " because the deceased was a refugee."
                         },
                     )
                 }
@@ -540,7 +541,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                         english {
                             +"If the death occurred as the result of a workplace injury, the basic pension is not reduced even if" +
-                                " the deceased's period of national insurance cover was less than 40 years."
+                                    " the deceased's period of national insurance cover was less than 40 years."
                         },
                     )
                 }
@@ -551,12 +552,12 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Når avdøde mottok en pensjon beregnet helt eller delvis etter regler som gjelder for yrkesskade," +
-                                " blir ikke denne delen av grunnpensjonen avkortet på grunn av manglende trygdetid."
+                                    " blir ikke denne delen av grunnpensjonen avkortet på grunn av manglende trygdetid."
                         },
                         english {
                             +"If the deceased received a pension based entirely or in part on the regulations for workplace injuries," +
-                                " this part of the basic pension is not reduced even if the deceased's period of national insurance cover" +
-                                " was less than 40 years."
+                                    " this part of the basic pension is not reduced even if the deceased's period of national insurance cover" +
+                                    " was less than 40 years."
                         },
                     )
                 }
@@ -567,11 +568,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Grunnpensjonen er justert til 90 prosent av beløpet fordi din samboer mottar pensjon" +
-                                " eller uføretrygd fra folketrygden."
+                                    " eller uføretrygd fra folketrygden."
                         },
                         english {
                             +"The basic pension has been adjusted to 90 per cent of the total amount, because your cohabitant" +
-                                " receives a national insurance pension."
+                                    " receives a national insurance pension."
                         },
                     )
                 }
@@ -585,7 +586,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                         english {
                             +"The basic pension has been adjusted to 90 per cent of the total amount, because your cohabitant has" +
-                                " an income that exceeds twice the national insurance basic amount."
+                                    " an income that exceeds twice the national insurance basic amount."
                         },
                     )
                 }
@@ -594,22 +595,25 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             ifNotNull(pesysData.beregning.tilleggspensjon) {
                 paragraph {
                     text(
+                        bokmal { +"Tilleggspensjonen" }, english { +"Your supplementary pension" }, BOLD
+                    )
+                    text(
                         bokmal {
-                            +"Tilleggspensjonen avhenger av antall år med pensjonspoeng avdøde har opptjent og størrelsen på pensjonspoengene." +
-                                " Det gis pensjonspoeng for år med inntekt over folketrygdens grunnbeløp." +
-                                " Det kreves 40 år med pensjonspoeng for å få full tilleggspensjon." +
-                                " På visse vilkår kan det medregnes framtidige poengår fra dødsåret til og med det året avdøde ville ha fylt 66 år." +
-                                " Tilleggspensjonen din utgjør 55 prosent av den tilleggspensjonen avdøde hadde opptjent rett til." +
-                                " Oversikt over poengopptjeningen er gitt i vedlegg til dette vedtaket."
+                            +" avhenger av antall år med pensjonspoeng avdøde har opptjent og størrelsen på pensjonspoengene." +
+                                    " Det gis pensjonspoeng for år med inntekt over folketrygdens grunnbeløp." +
+                                    " Det kreves 40 år med pensjonspoeng for å få full tilleggspensjon." +
+                                    " På visse vilkår kan det medregnes framtidige poengår fra dødsåret til og med det året avdøde ville ha fylt 66 år." +
+                                    " Tilleggspensjonen din utgjør 55 prosent av den tilleggspensjonen avdøde hadde opptjent rett til." +
+                                    " Oversikt over poengopptjeningen er gitt i vedlegg til dette vedtaket."
                         },
                         english {
-                            +"Your supplementary pension depends on the number of years the deceased earned pension points and on how" +
-                                " many pension points were earned. You receive pension points for years in which you have an income greater" +
-                                " than the national insurance basic amount. 40 years of pension points are required to receive a full" +
-                                " supplementary pension. In some cases credit may be given for future years of earning pension points." +
-                                " The future years of earning pension points usually include the years between death and up to and including" +
-                                " the year the deceased would have turned 66. Your supplementary pension is 55 per cent of the supplementary" +
-                                " pension the deceased had accumulated. An overview of the accumulated points is enclosed with this decision."
+                            +" depends on the number of years the deceased earned pension points and on how" +
+                                    " many pension points were earned. You receive pension points for years in which you have an income greater" +
+                                    " than the national insurance basic amount. 40 years of pension points are required to receive a full" +
+                                    " supplementary pension. In some cases credit may be given for future years of earning pension points." +
+                                    " The future years of earning pension points usually include the years between death and up to and including" +
+                                    " the year the deceased would have turned 66. Your supplementary pension is 55 per cent of the supplementary" +
+                                    " pension the deceased had accumulated. An overview of the accumulated points is enclosed with this decision."
                         },
                     )
                 }
@@ -621,7 +625,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                             english {
                                 +"When the death is caused by a workplace injury, particular regulations for the calculation of" +
-                                    " supplementary pensions apply."
+                                        " supplementary pensions apply."
                             },
                         )
                     }
@@ -631,11 +635,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Når avdøde mottok en pensjon beregnet helt eller delvis etter regler som gjelder for yrkesskade," +
-                                    " gjelder det spesielle regler for beregning av tilleggspensjon."
+                                        " gjelder det spesielle regler for beregning av tilleggspensjon."
                             },
                             english {
                                 +"If the deceased received a pension calculated in whole or in part in accordance with the regulations" +
-                                    " for workplace injuries, particular regulations for the calculation of a supplementary pension apply."
+                                        " for workplace injuries, particular regulations for the calculation of a supplementary pension apply."
                             },
                         )
                     }
@@ -643,20 +647,17 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 showIf(pesysData.avdoed.ungUfoerFodtEtter1940 or pesysData.avdoed.ungUfoerFodtFor1941) {
                     paragraph {
                         text(
-                            bokmal { +"Tilleggspensjonen"},
-                            english { +"Supplementary pension" }, BOLD
-                        )
-                        text(
-                            bokmal { +" er beregnet med utgangspunkt i at avdøde tidligere har mottatt pensjon beregnet" +
-                                    " etter særbestemmelsene for unge uføre. Dette grunnlaget er fortsatt benyttet, ettersom dette gir den" +
-                                    " høyeste tilleggspensjonen. Vær oppmerksom på at tilleggspensjonen etter særbestemmelsene for unge" +
-                                    " uføre vil falle bort dersom du velger å flytte fra Norge."
+                            bokmal {
+                                +"Tilleggspensjonen er beregnet med utgangspunkt i at avdøde tidligere har mottatt pensjon beregnet" +
+                                        " etter særbestemmelsene for unge uføre. Dette grunnlaget er fortsatt benyttet, ettersom dette gir den" +
+                                        " høyeste tilleggspensjonen. Vær oppmerksom på at tilleggspensjonen etter særbestemmelsene for unge" +
+                                        " uføre vil falle bort dersom du velger å flytte fra Norge."
                             },
                             english {
-                                +" has been calculated on the basis that the deceased previously received a" +
-                                    " pension based on the particular regulations for young disabled people. This basis has still been used," +
-                                    " as it gives the highest supplementary pension. Please note that your supplementary pension based on" +
-                                    " the regulations for young disabled people will be terminated if you choose to move away from Norway."
+                                +"Supplementary pension has been calculated on the basis that the deceased previously received a" +
+                                        " pension based on the particular regulations for young disabled people. This basis has still been used," +
+                                        " as it gives the highest supplementary pension. Please note that your supplementary pension based on" +
+                                        " the regulations for young disabled people will be terminated if you choose to move away from Norway."
                             },
                         )
                     }
@@ -665,34 +666,30 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             ifNotNull(pesysData.beregning.saertillegg) {
                 paragraph {
+                    text(bokmal { +"Særtillegget" }, english { +"A pension supplement" }, BOLD)
                     text(
                         bokmal {
-                            +"Særtillegget er gitt for å sikre et minste pensjonsnivå til de som har liten eller ingen opptjening av tilleggspensjon."
+                            +" er gitt for å sikre et minste pensjonsnivå til de som har liten eller ingen opptjening av tilleggspensjon."
                         },
                         english {
-                            +"A pension supplement is granted to ensure a minimum pension level for people who are not eligible for a" +
-                                " supplementary pension or only qualify for a small supplementary pension."
+                            +" is granted to ensure a minimum pension level for people who are not eligible for a" +
+                                    " supplementary pension or only qualify for a small supplementary pension."
                         },
                     )
                 }
             }
 
             // ---- PE_GP_04_028_tekst4: forventet inntekt ----
-            title1 {
-                text(
-                    bokmal { +"Forventet inntekt" },
-                    english { +"Expected income" },
-                )
-            }
+            title1 { text(bokmal { +"Forventet inntekt" }, english { +"Expected income" }) }
             paragraph {
                 text(
                     bokmal {
                         +"Størrelsen på pensjonen er avhengig av hvilken arbeidsinntekt du har eller kan forventes å få ved siden av pensjonen." +
-                            " Det er arbeidsinntekt før skatt som legges til grunn."
+                                " Det er arbeidsinntekt før skatt som legges til grunn."
                     },
                     english {
                         +"The size of your pension depends on your earned income level or the income level you are expected to receive in" +
-                            " addition to your pension. Your pre-tax earned income level forms the basis for the calculation of your pension."
+                                " addition to your pension. Your pre-tax earned income level forms the basis for the calculation of your pension."
                     },
                 )
             }
@@ -700,14 +697,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 text(
                     bokmal {
                         +"Med arbeidsinntekt menes personinntekt fra arbeid eller næringsvirksomhet som er pensjonsgivende, eller andre" +
-                            " ytelser fra folketrygden som likestilles med arbeidsinntekt. Slike ytelser er dagpenger under arbeidsledighet," +
-                            " sykepenger, pleiepenger, svangerskapspenger, foreldrepenger og arbeidsavklaringspenger."
+                                " ytelser fra folketrygden som likestilles med arbeidsinntekt. Slike ytelser er dagpenger under arbeidsledighet," +
+                                " sykepenger, pleiepenger, svangerskapspenger, foreldrepenger og arbeidsavklaringspenger."
                     },
                     english {
                         +"\"Earned income\" means personal income from pensionable work or business activities, or other benefits from the" +
-                            " National Insurance Scheme that are considered equivalent to earned income. Such benefits include unemployment" +
-                            " benefit (dagpenger), sickness benefit (sykepenger), attendance allowance (pleiepenger), pregnancy allowance" +
-                            " (svangerskapspenger), parental benefit (foreldrepenger) and work assessment allowance (arbeidsavklaringspenger)."
+                                " National Insurance Scheme that are considered equivalent to earned income. Such benefits include unemployment" +
+                                " benefit (dagpenger), sickness benefit (sykepenger), attendance allowance (pleiepenger), pregnancy allowance" +
+                                " (svangerskapspenger), parental benefit (foreldrepenger) and work assessment allowance (arbeidsavklaringspenger)."
                     },
                 )
             }
@@ -719,17 +716,17 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Vi har lagt til grunn at du har en inntekt tilsvarende " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". Pensjonen din er beregnet uten reduksjon for arbeidsinntekt, siden inntekten din er under halvparten" +
-                                " av folketrygdens grunnbeløp. Hvis inntekten din overstiger halvparten av grunnbeløpet er det viktig at du" +
-                                " varsler Nav om dette."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". Pensjonen din er beregnet uten reduksjon for arbeidsinntekt, siden inntekten din er under halvparten" +
+                                    " av folketrygdens grunnbeløp. Hvis inntekten din overstiger halvparten av grunnbeløpet er det viktig at du" +
+                                    " varsler Nav om dette."
                         },
                         english {
                             +"The pension calculation has been adjusted to your reported income being " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". Your pension has not been reduced due to registered employment/taxable income, because your income" +
-                                " is less than half of the national insurance basic amount. It is important that you notify Nav if your" +
-                                " income increases to more than half the national insurance basic amount."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". Your pension has not been reduced due to registered employment/taxable income, because your income" +
+                                    " is less than half of the national insurance basic amount. It is important that you notify Nav if your" +
+                                    " income increases to more than half the national insurance basic amount."
                         },
                     )
                 }
@@ -738,13 +735,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Pensjonen er redusert etter en forventet inntekt tilsvarende " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". Hvis inntekten din endrer seg er det viktig at du varsler Nav om dette."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". Hvis inntekten din endrer seg er det viktig at du varsler Nav om dette."
                         },
                         english {
                             +"Your pension has been reduced because you have an expected income of " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". It is important that you notify Nav if your income changes."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". It is important that you notify Nav if your income changes."
                         },
                     )
                 }
@@ -754,16 +751,16 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Pensjonen er redusert etter en forventet inntekt tilsvarende " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". Du får derfor ikke utbetalt noen pensjon per i dag. Det er imidlertid viktig at du melder fra til" +
-                                " Nav om endringer av inntekten din, slik at vi kan vurdere om endringen kan medføre at du likevel vil få" +
-                                " utbetalt pensjon."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". Du får derfor ikke utbetalt noen pensjon per i dag. Det er imidlertid viktig at du melder fra til" +
+                                    " Nav om endringer av inntekten din, slik at vi kan vurdere om endringen kan medføre at du likevel vil få" +
+                                    " utbetalt pensjon."
                         },
                         english {
                             +"Your pension has been reduced because you have an expected income of " +
-                                pesysData.beregning.framtidigAarligInntekt.format() +
-                                ". You have consequently not been granted a pension. However, it is important that you notify Nav if" +
-                                " your income changes, so that we can assess whether the changes mean that you will receive a pension."
+                                    pesysData.beregning.framtidigAarligInntekt.format() +
+                                    ". You have consequently not been granted a pension. However, it is important that you notify Nav if" +
+                                    " your income changes, so that we can assess whether the changes mean that you will receive a pension."
                         },
                     )
                 }
@@ -775,13 +772,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Nav har som en av sine hovedoppgaver å bistå mottakere av trygdeytelser til å komme i arbeid og aktivitet." +
-                                " Har du behov for hjelp til å komme i arbeid, forbedre din kompetanse, eller øke din stillingsprosent," +
-                                " kan du ta kontakt med ditt lokale Nav-kontor."
+                                    " Har du behov for hjelp til å komme i arbeid, forbedre din kompetanse, eller øke din stillingsprosent," +
+                                    " kan du ta kontakt med ditt lokale Nav-kontor."
                         },
                         english {
                             +"One of the main tasks of Nav is to assist recipients of national insurance benefits in getting work or" +
-                                " starting work-related activities. Contact your local Nav office if you need help in finding work," +
-                                " improving your skills or increasing your labour market participation."
+                                    " starting work-related activities. Contact your local Nav office if you need help in finding work," +
+                                    " improving your skills or increasing your labour market participation."
                         },
                     )
                 }
@@ -799,13 +796,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     text(
                         bokmal {
                             +"Gjenlevendepensjonen din blir vanligvis utbetalt den 20. hver måned. Når den 20. er en lørdag eller offentlig" +
-                                " fridag blir pensjonen utbetalt senest siste virkedag før den 20. Oversikt over utbetalingsdatoer finner du" +
-                                " på $NAV_URL."
+                                    " fridag blir pensjonen utbetalt senest siste virkedag før den 20. Oversikt over utbetalingsdatoer finner du" +
+                                    " på $NAV_URL."
                         },
                         english {
                             +"Your survivor's pension will normally be paid on the 20th of each month. When the 20th is a Saturday or public" +
-                                " holiday, your pension will be paid at the latest on the last business day before the 20th. You can find a" +
-                                " list of payment dates on $NAV_URL."
+                                    " holiday, your pension will be paid at the latest on the last business day before the 20th. You can find a" +
+                                    " list of payment dates on $NAV_URL."
                         },
                     )
                 }
@@ -826,18 +823,18 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Pensjonen er skattepliktig til Norge og vil bli utbetalt etter fradrag for skatt. Trekk for skatt og eventuelt" +
-                                    " andre trekk framkommer på den månedlige utbetalingsmeldingen. Ønsker du endring i skattetrekket, må du" +
-                                    " henvende deg til Skatteetaten. Spørsmål om skatteplikt til Norge etter flytting til utlandet må også" +
-                                    " rettes til Skatteetaten. Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
-                                    " med skattemyndighetene der."
+                                        " andre trekk framkommer på den månedlige utbetalingsmeldingen. Ønsker du endring i skattetrekket, må du" +
+                                        " henvende deg til Skatteetaten. Spørsmål om skatteplikt til Norge etter flytting til utlandet må også" +
+                                        " rettes til Skatteetaten. Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
+                                        " med skattemyndighetene der."
                             },
                             english {
                                 +"The pension is taxable in Norway and tax will be deducted before the pension is paid to you. Tax deductions" +
-                                    " and any other deductions will be specified in the monthly notification of payment. Contact the Norwegian" +
-                                    " Tax Administration if you want to have your tax rate altered. Any questions regarding tax liability in" +
-                                    " Norway after you have moved abroad must also be addressed to the Norwegian Tax Administration. You must" +
-                                    " clarify issues regarding your tax liability in the country you have moved to with that country's tax" +
-                                    " authorities."
+                                        " and any other deductions will be specified in the monthly notification of payment. Contact the Norwegian" +
+                                        " Tax Administration if you want to have your tax rate altered. Any questions regarding tax liability in" +
+                                        " Norway after you have moved abroad must also be addressed to the Norwegian Tax Administration. You must" +
+                                        " clarify issues regarding your tax liability in the country you have moved to with that country's tax" +
+                                        " authorities."
                             },
                         )
                     }
@@ -847,18 +844,18 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Pensjonen vil bli beskattet i Norge etter reglene om kildeskatt. Reglene innebærer at man i utgangspunktet" +
-                                    " er skattepliktig i Norge for norsk pensjon selv om man er skattemessig emigrert fra Norge eller aldri" +
-                                    " har bodd i Norge. Det innebærer et forskuddstrekk på 15 prosent av brutto pensjon. Du kan søke om helt" +
-                                    " eller delvis skattefritak, som vil avhenge av din skatteplikt til bostedslandet og eventuell skatteavtale" +
-                                    " mellom Norge og bostedslandet ditt."
+                                        " er skattepliktig i Norge for norsk pensjon selv om man er skattemessig emigrert fra Norge eller aldri" +
+                                        " har bodd i Norge. Det innebærer et forskuddstrekk på 15 prosent av brutto pensjon. Du kan søke om helt" +
+                                        " eller delvis skattefritak, som vil avhenge av din skatteplikt til bostedslandet og eventuell skatteavtale" +
+                                        " mellom Norge og bostedslandet ditt."
                             },
                             english {
                                 +"Your pension will be taxed in Norway pursuant to the rules on withholding tax. The rules mean that you are" +
-                                    " in principle liable to tax in Norway for Norwegian pensions even if you have moved from Norway for tax" +
-                                    " purposes or have never been resident in Norway. The tax is 15 per cent of the gross pension amount." +
-                                    " You can apply for full or partial exemption from this tax liability; whether you qualify for an exemption" +
-                                    " will depend on your tax liability in your country of residence and any tax treaties between Norway and" +
-                                    " your country of residence."
+                                        " in principle liable to tax in Norway for Norwegian pensions even if you have moved from Norway for tax" +
+                                        " purposes or have never been resident in Norway. The tax is 15 per cent of the gross pension amount." +
+                                        " You can apply for full or partial exemption from this tax liability; whether you qualify for an exemption" +
+                                        " will depend on your tax liability in your country of residence and any tax treaties between Norway and" +
+                                        " your country of residence."
                             },
                         )
                     }
@@ -866,13 +863,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Alle spørsmål om kildeskatt og skattefritak skal rettes til Skatt nord, Postboks 6310, NO - 9293 Tromsø." +
-                                    " Tlf.: +47 22 07 70 00. Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
-                                    " med skattemyndighetene der."
+                                        " Tlf.: +47 22 07 70 00. Spørsmål om skatteplikt til det landet du har flyttet til, må du selv avklare" +
+                                        " med skattemyndighetene der."
                             },
                             english {
                                 +"All questions about withholding tax and tax exemptions must be directed to Skatt nord, Postboks 6310," +
-                                    " NO - 9293 Tromsø. Tel.: +47 22 07 70 00. Questions related to tax obligations in your current country" +
-                                    " of residence must be clarified with local tax authorities."
+                                        " NO - 9293 Tromsø. Tel.: +47 22 07 70 00. Questions related to tax obligations in your current country" +
+                                        " of residence must be clarified with local tax authorities."
                             },
                         )
                     }
@@ -892,17 +889,17 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Du får etterbetalt pensjon fra " + pesysData.virkningFom.format() +
-                                    ". Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i" +
-                                    " etterbetalingen for skatt, ytelser du har mottatt fra Nav eller andre, som for eksempel" +
-                                    " tjenestepensjonsordninger. Hvis skattekontor eller andre ordninger har krav i etterbetalingen kan denne" +
-                                    " bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen."
+                                        ". Etterbetalingen vil vanligvis bli utbetalt i løpet av sju virkedager. Det kan bli beregnet fradrag i" +
+                                        " etterbetalingen for skatt, ytelser du har mottatt fra Nav eller andre, som for eksempel" +
+                                        " tjenestepensjonsordninger. Hvis skattekontor eller andre ordninger har krav i etterbetalingen kan denne" +
+                                        " bli forsinket. Fradrag i etterbetalingen vil gå fram av utbetalingsmeldingen."
                             },
                             english {
                                 +"You will receive a back pay pension from " + pesysData.virkningFom.format() +
-                                    ". The back pay will normally be paid within seven business days. Your back pay may be reduced due to" +
-                                    " taxes, benefits you have received from the Nav or others (such as from an occupational pension)." +
-                                    " If the tax office or other offices have demands on your back pay, your payment may be delayed." +
-                                    " Any reduction of your back pay will be noted in your payment notification."
+                                        ". The back pay will normally be paid within seven business days. Your back pay may be reduced due to" +
+                                        " taxes, benefits you have received from the Nav or others (such as from an occupational pension)." +
+                                        " If the tax office or other offices have demands on your back pay, your payment may be delayed." +
+                                        " Any reduction of your back pay will be noted in your payment notification."
                             },
                         )
                     }
@@ -910,13 +907,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Ved etterbetalinger som gjelder tidligere år, vil Nav trekke 30 prosent som en standardsats." +
-                                    " Dersom du krever at skatteetaten forut for utbetalingen reberegner skatten for de tidligere årene," +
-                                    " så må du gi beskjed om dette til Nav innen sju dager etter dato for dette brevet."
+                                        " Dersom du krever at skatteetaten forut for utbetalingen reberegner skatten for de tidligere årene," +
+                                        " så må du gi beskjed om dette til Nav innen sju dager etter dato for dette brevet."
                             },
                             english {
                                 +"For refunds for previous years, Nav will deduct 30 percent as a standard rate. If you demand in advance" +
-                                    " of the payment that the Norwegian Tax Administration recalculate taxes for the previous years," +
-                                    " you must notify Nav of this within seven days after the date of this letter."
+                                        " of the payment that the Norwegian Tax Administration recalculate taxes for the previous years," +
+                                        " you must notify Nav of this within seven days after the date of this letter."
                             },
                         )
                     }
@@ -932,13 +929,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         text(
                             bokmal {
                                 +"Siden pensjonen din er redusert tilbake i tid, medfører dette at du har fått utbetalt for mye i pensjon" +
-                                    " i denne perioden. Vi vil sende deg eget forhåndsvarsel om eventuell tilbakekreving av det" +
-                                    " feilutbetalte beløpet."
+                                        " i denne perioden. Vi vil sende deg eget forhåndsvarsel om eventuell tilbakekreving av det" +
+                                        " feilutbetalte beløpet."
                             },
                             english {
                                 +"As your pension reduction has been made retroactive, this means that your pension payments have been too" +
-                                    " high in this period. We will send you a separate notification of any demands for the return of the" +
-                                    " payments made in error."
+                                        " high in this period. We will send you a separate notification of any demands for the return of the" +
+                                        " payments made in error."
                             },
                         )
                     }
@@ -959,7 +956,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     },
                     english {
                         +"As a main rule you have the right to see the case documents, in accordance with paragraph 18 of the Public" +
-                            " Administration Act."
+                                " Administration Act."
                     },
                 )
             }
@@ -970,7 +967,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     },
                     english {
                         +"If you disagree with the decision, you have the right to appeal. The time limit for filing an appeal is six weeks" +
-                            " from the date you receive this letter."
+                                " from the date you receive this letter."
                     },
                 )
             }
@@ -985,11 +982,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 text(
                     bokmal {
                         +"Vi gjør oppmerksom på at du har plikt til å melde fra til Nav om endringer som har betydning for størrelsen på" +
-                            " pensjonen din, eller for retten til pensjon. Du må alltid melde fra dersom"
+                                " pensjonen din, eller for retten til pensjon. Du må alltid melde fra dersom"
                     },
                     english {
                         +"We wish to remind you that you have a duty to notify Nav of any changes that will have an impact on the amount" +
-                            " of pension you receive, or on your rights to a pension. You must always notify Nav if:"
+                                " of pension you receive, or on your rights to a pension. You must always notify Nav if:"
                     },
                 )
             }
@@ -1014,11 +1011,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             text(
                                 bokmal {
                                     +"samboerens inntektsforhold endrer seg. Dette gjelder både endringer i arbeidsinntekt," +
-                                        " pensjonsinntekter og kapitalinntekt"
+                                            " pensjonsinntekter og kapitalinntekt"
                                 },
                                 english {
                                     +"there are changes to your cohabitant's income. This regards any changes in earned income," +
-                                        " pension, or capital income"
+                                            " pension, or capital income"
                                 },
                             )
                         }
@@ -1068,7 +1065,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     },
                     english {
                         +"If you do not notify us of changes to your situation and your pension payments subsequently are too high," +
-                            " you may have to repay the pension that has been paid to you in error."
+                                " you may have to repay the pension that has been paid to you in error."
                     },
                 )
             }
@@ -1083,6 +1080,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
         }
     }
 }
+
+
 
 
 

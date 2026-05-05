@@ -74,14 +74,14 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first.value)
-                .replace(' ', NON_BREAKING_SPACE).let {
+                .let {
                     if (denominator) {
                         when (second) {
                             Language.Bokmal, Language.Nynorsk -> "$it kroner"
                             Language.English -> "NOK $it"
                         }
                     } else it
-                }
+                }.replace(' ', NON_BREAKING_SPACE)
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
