@@ -12,17 +12,24 @@ import java.nio.file.Path
 
 private const val DEFAULT_TYPST_TEMPLATE_DIR = "/app/typst"
 
-class TypstCompileService(
-    private val templateDir: Path = Path.of(DEFAULT_TYPST_TEMPLATE_DIR)
+/**
+ * Nice-økning for typst-subprosessene. Høyere verdi = lavere CPU-prioritet.
+ */
+private const val TYPST_NICE_INCREMENT = "10"
+
+open class TypstCompileService(
+    private val templateDir: Path = Path.of(DEFAULT_TYPST_TEMPLATE_DIR),
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private fun typstCommand() = listOf(
+        // Start typst med lavere OS-prioritet (nice).
+        "nice", "-n", TYPST_NICE_INCREMENT,
         "typst", "compile",
         "--root", templateDir.toString(),
         "--pdf-standard", "a-3a",
         "--ignore-system-fonts",
-        "--font-path", "/usr/share/fonts/truetype/sourcesans3",
+        "--font-path", "/app/typst/fonts/truetype/sourcesans3",
         "--font-path", "/usr/share/fonts/truetype/noto",
         // Read input from stdin
         "-",
@@ -30,7 +37,7 @@ class TypstCompileService(
         "-",
     )
 
-    suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
+    open suspend fun createLetter(writeLetter: (TypstFileWriter) -> Unit): PDFCompilationResponse {
         return when (val result: Execution = executeCompileProcess(writeLetter)) {
             is Execution.Success ->
                 PDFCompilationResponse.Success(PDFCompilationOutput(result.pdfBytes))
@@ -57,17 +64,12 @@ class TypstCompileService(
                     .directory(templateDir.toFile())
                     .start()
 
-                // Write letter content directly to stdin
                 process.outputStream.writer(Charsets.UTF_8).use { writeLetter(TypstFileWriter(it)) }
 
-                // Read stdout (PDF bytes) and stderr (error messages) concurrently
-                // to avoid deadlock when either buffer fills up
                 val stdoutDeferred = async(Dispatchers.IO) { process.inputStream.readAllBytes() }
                 val stderrContent = String(process.errorStream.readAllBytes(), Charsets.UTF_8)
                 val pdfBytes = stdoutDeferred.await()
 
-                // Both streams fully drained means the process has already exited;
-                // waitFor() returns immediately without scheduling async work.
                 val exitCode = process.waitFor()
 
                 if (exitCode == 0) {

@@ -1470,14 +1470,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf(barnetilleggInnvilget) {
                     paragraph {
                         text(
-                            bokmal { +"Endringer i inntekten din" },
-                            nynorsk { +"Endringar i inntekta di" },
+                            bokmal { +"Endringer i inntekten din " },
+                            nynorsk { +"Endringar i inntekta di " },
                         )
 
                         showIf(barnetilleggFellesInnvilget) {
                             text(
-                                bokmal { +" og til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
-                                nynorsk { +" og til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
+                                bokmal { +"og til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
+                                nynorsk { +"og til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                             )
                         }
 
