@@ -166,8 +166,8 @@ data class TBU011V_TBU016V(val pe: Expression<PEgruppe10>): OutlinePhrase<LangBo
 
                 paragraph {
                     text (
-                        bokmal { + "Når vi beregner gjennomsnittet bruker vi bare de årene du hadde inntekt i Norge i femårsperioden. Hvis du hadde inntekt i Norge og i utlandet samme år, bruker vi den inntekten som er best for deg." },
-                        nynorsk { + "Når vi bereknar gjennomsnittet, bruker vi berre dei åra du hadde inntekt i Noreg i femårsperioden. Dersom du hadde inntekt i Noreg og i utlandet same året, bruker vi den inntekta som er best for deg." },
+                        bokmal { + "Når vi beregner gjennomsnittet bruker vi bare de årene du hadde inntekt i Norge i femårsperioden." },
+                        nynorsk { + "Når vi bereknar gjennomsnittet, bruker vi berre dei åra du hadde inntekt i Noreg i femårsperioden." },
                     )
                 }
             }
