@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.api.model.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
@@ -81,6 +82,9 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning BeregningSivilstandAnvendt)
         // Kollapset til enum: Exstream sammenlignet med strengene "enslig" og "bormed 3-2".
         val sivilstand: Sivilstand,
+        // Vedlegg "Opplysninger om beregningen" (PE_GP_Utland_opplysninger_om_beregningen_HORISONT).
+        // Nullable så bestiller kan utelate vedlegget når det ikke er relevant.
+        val opplysningerOmBeregningen: OpplysningerOmBeregningenGPUtlandDto? = null,
     ) : FagsystemBrevdata
 
     data class Beregning(
