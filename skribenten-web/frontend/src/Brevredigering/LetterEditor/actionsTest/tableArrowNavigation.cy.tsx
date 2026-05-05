@@ -33,7 +33,6 @@ function assertFocusedCell(dataCy: string) {
 
 describe("table ArrowDown navigation", () => {
   beforeEach(() => {
-    cy.viewport(800, 1400);
     cy.document().then((doc) => doc.fonts.ready);
   });
 
@@ -176,7 +175,6 @@ describe("table ArrowDown navigation", () => {
 
 describe("table ArrowUp navigation", () => {
   beforeEach(() => {
-    cy.viewport(800, 1400);
     cy.document().then((doc) => doc.fonts.ready);
   });
 
