@@ -10,14 +10,16 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
 
-data class InnvilgelseUfoeretrygdDto(
+data class InnvilgelseUfoeretrygdUtlandDto(
     override val saksbehandlerValg: Saksbehandlervalg,
     override val pesysData: PesysData,
-    ) : RedigerbarBrevdata<InnvilgelseUfoeretrygdDto.Saksbehandlervalg, InnvilgelseUfoeretrygdDto.PesysData> {
+    ) : RedigerbarBrevdata<InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg, InnvilgelseUfoeretrygdUtlandDto.PesysData> {
 
     data class Saksbehandlervalg(
         @DisplayText("Info om rett til barnetillegg")
         val barnetilleggInfo: Boolean,
+        @DisplayText("Refusjon")
+        val refusjon: Boolean,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
