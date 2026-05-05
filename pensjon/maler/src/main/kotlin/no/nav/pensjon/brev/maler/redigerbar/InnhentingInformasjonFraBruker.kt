@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -100,7 +101,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.inntektsopplysninger) {
+            showIf(saksbehandlerValg.inntektsopplysninger.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Inntektsopplysninger" },
@@ -117,7 +118,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bankopplysninger) {
+            showIf(saksbehandlerValg.bankopplysninger.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Bankopplysninger" },
@@ -141,7 +142,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.amerikanskSocialSecurityNumber) {
+            showIf(saksbehandlerValg.amerikanskSocialSecurityNumber.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Amerikansk social security-nummer" },
@@ -160,7 +161,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
 
 
 
-            showIf(saksbehandlerValg.registreringAvSivilstand) {
+            showIf(saksbehandlerValg.registreringAvSivilstand.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Personnummer/ID for " + fritekst("ektefellen/partneren/samboeren") + " din" },
@@ -187,7 +188,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.eps60aarOgInntektUnder1g) {
+            showIf(saksbehandlerValg.eps60aarOgInntektUnder1g.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på din " + fritekst("ektefelle/partner/samboer") + " sin inntekt" },
@@ -288,7 +289,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.eps62aarOgInntektUnder1gBoddArbeidUtland) {
+            showIf(saksbehandlerValg.eps62aarOgInntektUnder1gBoddArbeidUtland.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Opplysninger om din ektefelles/partners/samboers opphold i utlandet" },
@@ -368,7 +369,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.epsInntektUnder2g) {
+            showIf(saksbehandlerValg.epsInntektUnder2g.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på din ektefelle/partner/samboer sin inntekt" },
@@ -486,7 +487,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.forsoergerEpsBosattIUtlandet) {
+            showIf(saksbehandlerValg.forsoergerEpsBosattIUtlandet.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Dokumentasjon på at du forsørger " + fritekst("ektefellen/partneren/samboeren") + " din" },
@@ -503,7 +504,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.manglendeOpptjening) {
+            showIf(saksbehandlerValg.manglendeOpptjening.ifNull(false)) {
                 title1 {
 
                     text(
@@ -528,7 +529,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.boOgArbeidsperioder) {
+            showIf(saksbehandlerValg.boOgArbeidsperioder.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Bo- og arbeidsperioder i Norge" },
@@ -545,7 +546,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                 }
             }
 
-            showIf(saksbehandlerValg.bosattIEoesLandSedErEoesBlanketter) {
+            showIf(saksbehandlerValg.bosattIEoesLandSedErEoesBlanketter.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Søknad fra EØS-land" },
@@ -568,7 +569,7 @@ object InnhentingInformasjonFraBruker : RedigerbarTemplate<InnhentingInformasjon
                     )
                 }
             }
-            showIf(saksbehandlerValg.tidspunktForUttak) {
+            showIf(saksbehandlerValg.tidspunktForUttak.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Tidspunkt for uttak/ønsket uttaksgrad" },
