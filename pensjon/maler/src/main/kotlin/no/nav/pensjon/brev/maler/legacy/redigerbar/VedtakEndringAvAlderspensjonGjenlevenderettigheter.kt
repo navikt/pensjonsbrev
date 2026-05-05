@@ -362,7 +362,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             }
 
             // omregnetEnsligAP_001
-            showIf(saksbehandlerValg.omregnetTilEnsligISammeVedtak) {
+            showIf(saksbehandlerValg.omregnetTilEnsligISammeVedtak.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { + "I tillegg har vi regnet om pensjonen din fordi du har blitt enslig pensjonist." },
@@ -657,7 +657,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-                        and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar
+                        and saksbehandlerValg.brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar.ifNull(false)
             ) {
                 paragraph {
                     text(
@@ -672,7 +672,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
             // infoAPopptjRedusPoengOver67Aar_001
             showIf(
                 pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
-                        and saksbehandlerValg.avdoedeHarRedusertTrygdetidEllerPoengaar
+                        and saksbehandlerValg.avdoedeHarRedusertTrygdetidEllerPoengaar.ifNull(false)
             ) {
                 paragraph {
                     text(
