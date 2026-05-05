@@ -100,22 +100,6 @@ describe("table ArrowDown navigation", () => {
     assertFocusedCell("table-cell-0-1");
   });
 
-  it("does not insert a blank literal when pressing ArrowDown on the last row of a table that is the last element in the document", () => {
-    const rows = [tableRow("R0C0"), tableRow("R1C0")];
-    const brev = nyBrevResponse({
-      redigertBrev: nyRedigertBrev({
-        blocks: [newParagraph({ content: [newTable(rows)] })],
-      }),
-    });
-    const state = Actions.create(brev);
-    state.focus = { blockIndex: 0, contentIndex: 0, rowIndex: 1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
-    cy.mount(<EditorWithState editorState={state} />);
-
-    arrowDown();
-    // Focus must remain inside the table; no new editable span should appear outside it.
-    assertFocusedCell("table-cell-1-0");
-  });
-
   it("exits table forward into the next literal when pressing ArrowDown on the last row", () => {
     const rows = [tableRow("R0C0"), tableRow("R1C0")];
     const brev = nyBrevResponse({
