@@ -304,6 +304,19 @@ abstract class BrevmodulTest(
             assertTrue(it.isEmpty(), "Alle brevkoder må være under 50 lange for å kunne arkiveres. Disse feila: $it")
         }
     }
+
+    @Test
+    fun `alle saksbehandlervalg skal vaere nullable`() {
+        templates.hentRedigerbareMaler()
+            .asSequence()
+            .map { it.template.letterDataType.java.declaredFields }
+            .flatMap { it.asSequence() }
+            .map { it.type }
+            .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
+            .flatMap { it.kotlin.members }
+            .filterIsInstance<KProperty<*>>()
+            .forEach { require(it.returnType.isMarkedNullable) { "Saksbehandlervalg må være nullable for at ikke Skribenten skal bli forvirra. $it er ikke nullable" } }
+    }
 }
 
 object FeatureToggleDummy : FeatureToggleService {
