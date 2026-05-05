@@ -986,7 +986,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     showIf((pe.ut_forsorgeransvar_siste_er_true())) {
                         text(
                             bokmal { +"Da du forsørger barn" },
-                            nynorsk { +" Da du forsørgjer barn" },
+                            nynorsk { +"Da du forsørgjer barn" },
                         )
                     }
 
