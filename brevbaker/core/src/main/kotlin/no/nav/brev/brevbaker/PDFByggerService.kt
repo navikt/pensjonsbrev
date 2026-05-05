@@ -8,7 +8,7 @@ class PDFTimeoutException(msg: String, cause: Throwable? = null) : Exception(msg
 class PDFInvalidException(msg: String, cause: Throwable? = null) : Exception(msg, cause)
 
 interface PDFByggerService {
-    suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean = false): PDFCompilationOutput
+    suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput
 
     suspend fun validateResponse(statusCode: Int, logWarning: (msg: String) -> Unit, getBody: suspend () -> String) {
         when (statusCode) {

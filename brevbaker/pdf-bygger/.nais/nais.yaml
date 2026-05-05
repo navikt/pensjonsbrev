@@ -22,8 +22,14 @@ spec:
     port: 8080
     initialDelay: 20
     timeout: 5
+    # Tåle en kortvarig CPU-spike (typst-prosesser som spiser tid) uten å bli kicket
+    # ut av ingress-rotasjon. failureThreshold * periodSeconds = ~100s før poden
+    periodSeconds: 10
+    failureThreshold: 10
   replicas:
-    disableAutoScaling: true
+    min: {{minReplicas}}
+    max: 150
+    cpuThresholdPercentage: 50
   prometheus:
     enabled: true
     path: "/metrics"
@@ -38,27 +44,12 @@ spec:
         - id: loki
   resources:
     requests:
-      cpu: "1"
-      memory: "1024Mi"
+      cpu: "400m"
+      memory: "256Mi"
     limits:
-      memory: "8192Mi"
+      memory: "2Gi"
   accessPolicy:
     inbound:
       rules:
         - application: {{brevbaker-app}}
-  filesFrom:
-    - emptyDir:
-        medium: Memory
-      mountPath: /app/tmp
-  env:
-    - name: PDF_BYGGER_COMPILE_TIMEOUT
-      value: "45s"
-    - name: PDF_BYGGER_LATEX_PARALLELISM
-      value: "4"
-    - name: PDF_BYGGER_COMPILE_QUEUE_WAIT_TIMEOUT
-      value: "1s"
-    - name: PDF_BYGGER_COMPILE_TMP_DIR
-      value: "/app/tmp"
-    - name: PDF_BYGGER_IS_ASYNC
-      value: "false"
   ingresses: [{{#each ingresses as |url|}}{{url}},{{/each}}]

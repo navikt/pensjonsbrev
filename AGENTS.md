@@ -14,7 +14,7 @@ Letter templates live in domain-specific modules: `pensjon/maler`, `alder/maler`
 Additionally, there is PoC application `brevoppskrift-web` used to view automatically generated documentation for the letter templates. 
 
 ### Key Data Flow
-- **Auto letters**: Template DSL → LetterMarkup → PDF-bygger (LaTeX) → PDF
+- **Auto letters**: Template DSL → LetterMarkup → PDF-bygger (Typst) → PDF
 - **Editable letters**: Template DSL → LetterMarkup → Skribenten edits → Edit.Letter → converted to LetterMarkup → PDF
 - ExStream/Doksys are **legacy** systems being migrated away from (see `docs/adr/MigreringsstrategiBrevlosninger.md`)
 
@@ -113,11 +113,10 @@ npm run dev --prefix skribenten-web/frontend  # Frontend on :5173, access via :8
 
 **Debug ports** (in docker-compose.yml): brevbaker :5015, pdf-bygger :5016, skribenten-backend :5017
 
-### Iterating on LaTeX
-For fast LaTeX updates during visual tests, use this before-launch command:
+### Iterating on Typst templates
+For fast Typst template updates during visual tests, use this before-launch command to sync `containerFiles/typst` into the running container without a rebuild:
 ```bash
-docker exec -u 0 -it pensjonsbrev-pdf-bygger-1 rm -rf /app/pensjonsbrev_latex && \
-docker cp ./brevbaker/pdf-bygger/containerFiles/latex pensjonsbrev-pdf-bygger-1:/app/pensjonsbrev_latex/
+docker cp ./brevbaker/pdf-bygger/containerFiles/typst/. pensjonsbrev-pdf-bygger-1:/app/typst/
 ```
 
 ## TypeScript/React Frontend Stack

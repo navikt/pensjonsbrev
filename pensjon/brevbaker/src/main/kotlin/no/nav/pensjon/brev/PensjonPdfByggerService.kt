@@ -21,75 +21,76 @@ import no.nav.brev.brevbaker.PDFCompilationOutput
 import no.nav.brev.brevbaker.PDFTimeoutException
 import no.nav.pensjon.brev.template.brevbakerJacksonObjectMapper
 import org.slf4j.LoggerFactory
-import kotlin.math.pow
-import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
+
+private const val MAX_RETRIES = 5
+private val RETRY_BASE_DELAY = 200.milliseconds
+private val RETRY_MAX_DELAY = 2.seconds
 
 class PensjonPdfByggerService(
     private val pdfByggerUrl: String,
-    maxRetries: Int = 30,
     private val timeout: Duration = 300.seconds,
 ) : PDFByggerService {
     private val logger = LoggerFactory.getLogger(this::class.java)
     private val objectmapper = brevbakerJacksonObjectMapper()
-    private val httpClientAuto = settOppHttpClient(maxRetries)
-    private val httpClientRedigerbar = settOppHttpClient(0)
+    private val httpClient = HttpClient(CIO) {
+        install(ContentNegotiation) {
+            jackson {
+                disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+            }
+        }
+        HttpResponseValidator {
+            validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
+        }
+        install(ContentEncoding) {
+            gzip()
+        }
 
-    private fun settOppHttpClient(maxRetries: Int): HttpClient = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                jackson {
-                    disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
-                }
-            }
-            HttpResponseValidator {
-                validateResponse { validateResponse(it.status.value, { msg -> logger.warn(msg) }) { it.body<String>() } }
-            }
-            install(ContentEncoding) {
-                gzip()
-            }
-
-            engine {
-                requestTimeout = 0
-                endpoint {
-                    // La alltid kubernetes load balancer bestemme pdf-bygger instans
-                    keepAliveTime = 0
-                }
-            }
-
-            if (maxRetries > 0) {
-                install(HttpRequestRetry) {
-                    this.maxRetries = maxRetries
-                    delayMillis {
-                        minOf(2.0.pow(it).toLong(), 1000L) + Random.nextLong(100)
-                    }
-                    retryOnExceptionIf { _, cause ->
-                        val actualCause = cause.unwrapCancellationException()
-                        val doRetry = actualCause is HttpRequestTimeoutException
-                                || actualCause is ConnectTimeoutException
-                                || actualCause is ServerResponseException
-                                || actualCause is IOException
-                        if (!doRetry) {
-                            logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
-                        }
-                        doRetry
-                    }
-                }
-                install(HttpSend) {
-                    // It is important that maxSendCount exceeds maxRetries.
-                    // If not, the client will fail with SendCountExceeded-exception instead of the server response.
-                    maxSendCount = maxRetries + 20
-                }
+        engine {
+            requestTimeout = 0
+            endpoint {
+                // La alltid kubernetes load balancer bestemme pdf-bygger instans
+                keepAliveTime = 0
             }
         }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput = try {
-        withTimeoutOrNull(timeout) {
-            val httpClient = if (shouldRetry) httpClientAuto else httpClientRedigerbar
-            httpClient.post("$pdfByggerUrl/produserBrev") {
-                url {
-                    if (useTypst) parameters.append("typst", "true")
+        install(HttpRequestRetry) {
+            maxRetries = MAX_RETRIES
+
+            exponentialDelay(
+                base = 2.0,
+                baseDelayMs = RETRY_BASE_DELAY.inWholeMilliseconds,
+                maxDelayMs = RETRY_MAX_DELAY.inWholeMilliseconds,
+                randomizationMs = RETRY_BASE_DELAY.inWholeMilliseconds,
+            )
+            retryOnExceptionIf { _, cause ->
+                val actualCause = cause.unwrapCancellationException()
+                val doRetry = actualCause is HttpRequestTimeoutException
+                        || actualCause is ConnectTimeoutException
+                        || actualCause is ServerResponseException
+                        || actualCause is IOException
+                if (!doRetry) {
+                    logger.error("Won't retry for exception: ${actualCause.message}", actualCause)
                 }
+                doRetry
+            }
+        }
+        install(HttpSend) {
+            // It is important that maxSendCount exceeds maxRetries.
+            // If not, the client will fail with SendCountExceeded-exception instead of the server response.
+            maxSendCount = MAX_RETRIES + 20
+        }
+    }
+
+    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput = try {
+        withTimeoutOrNull(timeout) {
+            httpClient.post("$pdfByggerUrl/produserBrev") {
+                // Bakoverkompatibilitet: pdf-bygger <= main ruter til LaTeX uten dette flagget.
+                // Ny pdf-bygger ignorerer parameteret og bruker alltid typst.
+                // Fjern dette etter at ny pdf-bygger er rullet ut til alle miljø.
+                url { parameters.append("typst", "true") }
                 contentType(ContentType.Application.Json)
                 header("X-Request-ID", coroutineContext[KtorCallIdContextElement]?.callId)
                 //TODO unresolved bug. There is a bug where simultanious requests will lock up the requests for this http client
@@ -106,5 +107,5 @@ class PensjonPdfByggerService(
         throw PDFTimeoutException("Spent more than $timeout trying to compile pdf", e)
     } ?: throw PDFTimeoutException("Spent more than $timeout trying to compile pdf")
 
-    suspend fun ping(): Boolean = httpClientAuto.get("$pdfByggerUrl/isAlive").status.isSuccess()
+    suspend fun ping(): Boolean = httpClient.get("$pdfByggerUrl/isAlive").status.isSuccess()
 }

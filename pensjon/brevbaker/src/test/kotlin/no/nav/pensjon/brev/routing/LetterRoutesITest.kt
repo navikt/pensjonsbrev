@@ -22,7 +22,6 @@ import no.nav.pensjon.brev.maler.example.LetterExample
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterImpl
 import no.nav.pensjon.brev.testBrevbakerApp
-import no.nav.pensjon.brev.testBrevbakerAppTypst
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 import org.assertj.core.api.Assertions.assertThat
@@ -100,6 +99,7 @@ class LetterRoutesITest {
         assertThat(String(responseBody.file, Charsets.UTF_8)).containsPattern("<html.*>")
     }
 
+
     @Test
     fun `render pdf can respond with raw pdf`() = testBrevbakerApp { client ->
         val response = client.post("/letter/autobrev/pdf") {
@@ -108,18 +108,7 @@ class LetterRoutesITest {
         }
         assertEquals(ContentType.Application.Pdf, response.contentType())
         assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsBytes().toString(Charsets.ISO_8859_1)).contains("LaTeX")
-    }
-
-    @Test
-    fun `render pdf can respond with raw pdf (typst)`() = testBrevbakerAppTypst { client ->
-        val response = client.post("/letter/autobrev/pdf") {
-            accept(ContentType.Application.Pdf)
-            setBody(autoBrevRequest)
-        }
-        assertEquals(ContentType.Application.Pdf, response.contentType())
-        assertEquals(HttpStatusCode.OK, response.status)
-        assertThat(response.bodyAsBytes().toString(Charsets.ISO_8859_1)).contains("Typst")
+        assertThat(response.bodyAsBytes().toString(Charsets.ISO_8859_1)).startsWith("%PDF-")
     }
 
     @Test
@@ -141,24 +130,6 @@ class LetterRoutesITest {
     }
 
     @Test
-    fun `render pdf can deserialize standard JavaTimeModule formatted localdate (typst)`() {
-        val pesysJackson = jacksonObjectMapper().apply {
-            registerModule(JavaTimeModule())
-        }
-        println(pesysJackson.writeValueAsString(autoBrevRequest))
-
-        testBrevbakerAppTypst { client ->
-            val response = client.post("/letter/autobrev/pdf") {
-                accept(ContentType.Application.Pdf)
-                contentType(ContentType.Application.Json)
-                setBody(pesysJackson.writeValueAsString(autoBrevRequest))
-            }
-            assertEquals(ContentType.Application.Pdf, response.contentType())
-            assertEquals(HttpStatusCode.OK, response.status)
-        }
-    }
-
-    @Test
     fun `render pdf can respond with json`() = testBrevbakerApp { client ->
         val responseBody = client.post("/letter/autobrev/pdf") {
             accept(ContentType.Application.Json)
@@ -166,18 +137,7 @@ class LetterRoutesITest {
         }.body<LetterResponse>()
 
         assertEquals(ContentType.Application.Pdf.toString(), responseBody.contentType)
-        assertThat(responseBody.file.toString(Charsets.ISO_8859_1)).contains("LaTeX")
-    }
-
-    @Test
-    fun `render pdf can respond with json (typst)`() = testBrevbakerAppTypst { client ->
-        val responseBody = client.post("/letter/autobrev/pdf") {
-            accept(ContentType.Application.Json)
-            setBody(autoBrevRequest)
-        }.body<LetterResponse>()
-
-        assertEquals(ContentType.Application.Pdf.toString(), responseBody.contentType)
-        assertThat(responseBody.file.toString(Charsets.ISO_8859_1)).contains("Typst")
+        assertThat(responseBody.file.toString(Charsets.ISO_8859_1)).startsWith("%PDF-")
     }
 
     @Test
@@ -213,20 +173,7 @@ class LetterRoutesITest {
         assertEquals(HttpStatusCode.OK, response.status)
         val body = response.body<LetterResponse>()
         assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
-        assertThat(body.file.toString(Charsets.ISO_8859_1)).contains("LaTeX")
-    }
-
-    @Test
-    fun `can render pdf from markup (typst)`() = testBrevbakerAppTypst { client ->
-        val response = client.post("/letter/redigerbar/pdf") {
-            accept(ContentType.Application.Json)
-            setBody(redigertBestilling)
-        }
-
-        assertEquals(HttpStatusCode.OK, response.status)
-        val body = response.body<LetterResponse>()
-        assertEquals(ContentType.Application.Pdf.toString(), body.contentType)
-        assertThat(body.file.toString(Charsets.ISO_8859_1)).contains("Typst")
+        assertThat(body.file.toString(Charsets.ISO_8859_1)).startsWith("%PDF-")
     }
 }
 
