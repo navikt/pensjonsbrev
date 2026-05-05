@@ -125,7 +125,7 @@ class BrevbakerServiceHttp(config: Config, authService: AuthService, val cache: 
             response.body()
         } else {
             throw BrevbakerServiceException(
-                response.bodyAsText().takeIf { it.isNotBlank() }
+                response.bodyAsText().takeIf { it.isNotBlank() }?.let { "${response.status}: $it" }
                     ?: "Ukjent feil oppstod ved generering av markup for brevkode: $brevkode"
             )
         }
