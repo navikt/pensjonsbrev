@@ -42,10 +42,14 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
             size="medium"
             variant="error"
           >
-            <Heading level="2" size="small">
+            <Heading css={{ overflowWrap: "anywhere" }} level="2" size="small">
               {tittel ?? title}
             </Heading>
-            {melding && <Box marginBlock="space-4 space-0">{melding}</Box>}
+            {melding && (
+              <Box css={{ overflowWrap: "anywhere" }} marginBlock="space-4 space-0">
+                {melding}
+              </Box>
+            )}
           </Alert>
         </HStack>
       );
@@ -55,13 +59,13 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
     return (
       <HStack align="center" justify="center" marginBlock="space-12">
         <HStack maxWidth="512px" width="100%">
-          <Alert size="small" variant="error">
-            <Heading level="2" size="small">
+          <Alert data-cy="generic-error-alert" size="small" variant="error">
+            <Heading css={{ overflowWrap: "anywhere" }} level="2" size="small">
               {title}
             </Heading>
             {correlationId && (
               <VStack gap="space-4">
-                <div>
+                <div css={{ overflowWrap: "anywhere" }}>
                   <span>{mapErrorMessage(error.message)}</span>
                   <span>
                     Hvis det skjer igjen, trykk på knappen <i>Kopier ID</i> nedenfor og meld feil til oss i Teams.
