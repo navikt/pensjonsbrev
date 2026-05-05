@@ -34,7 +34,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
       - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/bff
@@ -77,6 +77,8 @@ jobs:
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
       - name: Install Cypress binary
         if: ${{ inputs.cypress }}
