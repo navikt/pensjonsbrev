@@ -7,10 +7,10 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.ufore.Fixtures
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFU
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFURedigerbar
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFU
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosent
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosent
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosentRedigerbar
 import org.junit.jupiter.api.Tag
@@ -30,23 +30,23 @@ class VarselbrevLovendringer2026Test {
     }
 
     @Test
-    fun testHtmlVarselOmHoyereMinstesatsForIFU() {
+    fun testHtmlOktMinsteIFU() {
         LetterTestImpl(
-            template = VarselOmHoyereMinstesatsForIFU.template,
+            template = VarselOmOktMinsteIFU.template,
             argument = EmptyAutobrevdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
-        ).renderTestHtml(VarselOmHoyereMinstesatsForIFU::class.simpleName!!)
+        ).renderTestHtml(VarselOmOktMinsteIFU::class.simpleName!!)
     }
 
     @Test
-    fun testHtmlVarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent() {
+    fun testHtmlVarselOmOktMinsteIFUOgLavereReduksjonsprosent() {
         LetterTestImpl(
-            template = VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent.template,
+            template = VarselOmOktMinsteIFUOgLavereReduksjonsprosent.template,
             argument = EmptyAutobrevdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
-        ).renderTestHtml(VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent::class.simpleName!!)
+        ).renderTestHtml(VarselOmOktMinsteIFUOgLavereReduksjonsprosent::class.simpleName!!)
     }
 
     @Test
@@ -60,22 +60,22 @@ class VarselbrevLovendringer2026Test {
     }
 
     @Test
-    fun testHtmlVarselOmHoyereMinstesatsForIFUS() {
+    fun testHtmlVarselOmOktMinsteIFUS() {
         LetterTestImpl(
-            template = VarselOmHoyereMinstesatsForIFURedigerbar.template,
+            template = VarselOmOktMinsteIFURedigerbar.template,
             argument = EmptyRedigerbarBrevdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
-        ).renderTestHtml("VarselOmHoyereMinstesatsForIFUS")
+        ).renderTestHtml("VarselOmOktMinsteIFUS")
     }
 
     @Test
-    fun testHtmlVarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentS() {
+    fun testHtmlVarselOmOktMinsteIFUOgLavereReduksjonsprosentS() {
         LetterTestImpl(
-            template = VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar.template,
+            template = VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar.template,
             argument = EmptyRedigerbarBrevdata,
             language = Language.Bokmal,
             felles = Fixtures.felles
-        ).renderTestHtml("VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentS")
+        ).renderTestHtml("VarselOmOktMinsteIFUOgLavereReduksjonsprosentS")
     }
 }

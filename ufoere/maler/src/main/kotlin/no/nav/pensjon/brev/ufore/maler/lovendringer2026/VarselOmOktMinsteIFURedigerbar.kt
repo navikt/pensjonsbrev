@@ -17,11 +17,11 @@ import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
-object VarselOmHoyereMinstesatsForIFURedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object VarselOmOktMinsteIFURedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
-    override val featureToggle = FeatureToggles.varselhoyereminstesatsifuoglaverereduksjonsprosent.toggle
+    override val featureToggle = FeatureToggles.varseloktminsteifuoglaverereduksjonsprosent.toggle
 
-    override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_HOYERE_MINSTESATS_IFU
+    override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_OKT_MINSTE_IFU
     override val kategori = Brevkategori.VARSEL
     override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -29,7 +29,7 @@ object VarselOmHoyereMinstesatsForIFURedigerbar : RedigerbarTemplate<EmptyRedige
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varsel - høyere minstesats for IFU",
+            displayTitle = "Varsel - økt minste IFU",
             distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
         )
@@ -42,7 +42,7 @@ object VarselOmHoyereMinstesatsForIFURedigerbar : RedigerbarTemplate<EmptyRedige
         }
         outline {
             includePhrase(UforetrygdLovendringer2026Fraser.Introduksjon)
-            includePhrase(UforetrygdLovendringer2026Fraser.HoyereMinstesatsIFU)
+            includePhrase(UforetrygdLovendringer2026Fraser.OktMinsteIFU)
             includePhrase(UforetrygdLovendringer2026Fraser.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)

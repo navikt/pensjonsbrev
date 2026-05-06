@@ -1,37 +1,30 @@
 package no.nav.pensjon.brev.ufore.maler.lovendringer2026
 
-import no.nav.pensjon.brev.api.model.TemplateDescription
-import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
+import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
+import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Language.Bokmal
-import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
-import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
-import no.nav.pensjon.brev.ufore.maler.Brevkategori
-import no.nav.pensjon.brev.ufore.maler.FeatureToggles
 import no.nav.pensjon.brev.ufore.maler.fraser.Felles
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Brevtype.INFORMASJONSBREV
+import no.nav.pensjon.brevbaker.api.model.LetterMetadata.Distribusjonstype.VIKTIG
 
 @TemplateModelHelpers
-object VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
+object VarselOmOktMinsteIFUOgLavereReduksjonsprosent : AutobrevTemplate<EmptyAutobrevdata> {
 
-    override val featureToggle = FeatureToggles.varselhoyereminstesatsifuoglaverereduksjonsprosent.toggle
-
-    override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_HOYERE_MINSTESATS_IFU_LAVERE_REDPROS
-    override val kategori = Brevkategori.VARSEL
-    override val brevkontekst = TemplateDescription.Brevkontekst.ALLE
-    override val sakstyper = setOf(Sakstype.UFOREP)
+    override val kode = Ufoerebrevkoder.AutoBrev.UT_VARSEL_OKT_MINSTE_IFU_LAVERE_REDPROS
 
     override val template = createTemplate(
         languages = languages(Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Varsel - høyere minstesats for IFU og lavere reduksjonsprosent",
-            distribusjonstype = LetterMetadata.Distribusjonstype.VIKTIG,
-            brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV,
+            displayTitle = "Varsel - økt minste IFU og lavere reduksjonsprosent",
+            distribusjonstype = VIKTIG,
+            brevtype = INFORMASJONSBREV
         )
     ) {
         title {
@@ -43,7 +36,7 @@ object VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar : Redig
         outline {
             includePhrase(UforetrygdLovendringer2026Fraser.Introduksjon)
             includePhrase(UforetrygdLovendringer2026Fraser.LavereReduksjonsprosent)
-            includePhrase(UforetrygdLovendringer2026Fraser.HoyereMinstesatsIFU)
+            includePhrase(UforetrygdLovendringer2026Fraser.OktMinsteIFU)
             includePhrase(UforetrygdLovendringer2026Fraser.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilInnsyn)
             includePhrase(Felles.HarDuSporsmal)
