@@ -104,16 +104,7 @@ export const hasAnyTekstvalgToggledOn = (
 ): boolean => {
   if (!after) return false;
   for (const key of Object.keys(after)) {
-    const current = after[key];
-    const previous = before?.[key];
-    if (current === true && previous !== true) return true;
-    if (current && typeof current === "object" && !Array.isArray(current)) {
-      const previousGroup =
-        previous && typeof previous === "object" && !Array.isArray(previous)
-          ? (previous as SaksbehandlerValg)
-          : undefined;
-      if (hasAnyTekstvalgToggledOn(previousGroup, current as SaksbehandlerValg)) return true;
-    }
+    if (after[key] === true && before?.[key] !== true) return true;
   }
   return false;
 };
