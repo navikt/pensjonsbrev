@@ -268,25 +268,6 @@ object LavereMinstesats {
                 )
             }
 
-            title1 {
-                text(
-                    bokmal { +"Dette kan du gjøre nå" },
-                    nynorsk { +"Dette kan du gjere no" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du har rett til å klage på vedtaket, selv om endringen i uføretrygden din skyldes endringer i lovverket. " +
-                                "Mener du vi har feil opplysninger om saken din, kan du også klage på vedtaket."
-                    },
-                    nynorsk {
-                        +"Du har rett til å klage på vedtaket, sjølv om endringa i uføretrygda di kjem av endringar i lovverket. " +
-                                "Meiner du at vi har feil opplysningar om saka di, kan du òg klage på vedtaket."
-                    },
-                )
-            }
-
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
