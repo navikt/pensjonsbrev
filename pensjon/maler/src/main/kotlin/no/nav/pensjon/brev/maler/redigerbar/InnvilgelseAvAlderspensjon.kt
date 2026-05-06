@@ -238,7 +238,7 @@ object InnvilgelseAvAlderspensjon : RedigerbarTemplate<InnvilgelseAvAlderspensjo
                 }
             }
 
-            showIf(saksbehandlerValg.kravVirkDatoFomSenereEnnOensketUttakstidspunkt) {
+            showIf(saksbehandlerValg.kravVirkDatoFomSenereEnnOensketUttakstidspunkt.ifNull(false)) {
                 // invilgelseAPVirkfom
                 paragraph {
                     text(

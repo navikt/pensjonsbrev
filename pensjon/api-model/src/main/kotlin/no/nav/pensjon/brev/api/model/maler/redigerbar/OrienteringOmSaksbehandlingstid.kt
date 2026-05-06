@@ -11,6 +11,6 @@ data class OrienteringOmSaksbehandlingstidDto(
 ) : RedigerbarBrevdata<OrienteringOmSaksbehandlingstidDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
         @DisplayText("Søknad oversendes til utlandet")
-        val soeknadOversendesTilUtlandet: Boolean
+        val soeknadOversendesTilUtlandet: Boolean?,
     ) : SaksbehandlerValgBrevdata
 }

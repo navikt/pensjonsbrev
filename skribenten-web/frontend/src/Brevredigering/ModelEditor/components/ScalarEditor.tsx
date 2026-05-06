@@ -248,7 +248,7 @@ const ControlledDatePicker = (props: {
    */
   useEffect(() => {
     const onSubmit = props.onSubmit;
-    if (fieldState.isDirty && !!watchedValue && onSubmit) {
+    if (fieldState.isDirty && watchedValue && onSubmit) {
       const timeout = setTimeout(() => {
         onSubmit();
       }, 500);

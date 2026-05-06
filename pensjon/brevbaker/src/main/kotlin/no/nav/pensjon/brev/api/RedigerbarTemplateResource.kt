@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.pensjon.brev.BrevbakerFeatureToggles
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
@@ -20,7 +19,7 @@ class RedigerbarTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Bre
     pdfByggerService: PDFByggerService,
     val alltidValgbareVedlegg: Set<AlltidValgbartVedlegg<*>>,
 ) : TemplateResource<Kode, T, BestillRedigertBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
-    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl, typstToggleRedigerbar = BrevbakerFeatureToggles.typstRedigerbareBrev.toggle)
+    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(alltidValgbareVedlegg)
 
     override fun renderLetterMarkup(brevbestilling: BestillBrevRequest<Kode>): LetterMarkup =

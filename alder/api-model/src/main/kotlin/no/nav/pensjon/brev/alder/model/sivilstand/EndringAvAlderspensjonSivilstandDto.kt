@@ -24,7 +24,7 @@ data class EndringAvAlderspensjonSivilstandDto(
         @DisplayText("Årsak til sivilstandsendringen")
         val sivilstandsendringsaarsak: Sivilstandsendringsaarsak?,
         @DisplayText("Hvis reduksjon tilbake i tid")
-        val feilutbetaling: Boolean,
+        val feilutbetaling: Boolean?,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean?,
     ) : SaksbehandlerValgBrevdata {

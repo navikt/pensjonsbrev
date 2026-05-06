@@ -27,6 +27,7 @@ import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevredigeringError
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.OpprettBrevPolicy
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.initADGroups
@@ -36,7 +37,6 @@ import no.nav.pensjon.brev.skribenten.model.BrevId
 import no.nav.pensjon.brev.skribenten.model.Distribusjonstype
 import no.nav.pensjon.brev.skribenten.model.Dto
 import no.nav.pensjon.brev.skribenten.model.NavIdent
-import no.nav.pensjon.brev.skribenten.model.Pdl
 import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.SaksId
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
@@ -149,7 +149,7 @@ class ExternalAPIRouteTest {
         }
         routing {
             externalAPI(jwtConfig, externalAPIService, object : PdlServiceStub() {
-                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnummer: Pdl.Behandlingsnummer?) = null
+                override suspend fun hentAdressebeskyttelse(ident: BrevbakerType.Pid, behandlingsnummer: Behandlingsnummer?) = null
             }, FagsakService(object : PenClientStub() {
                 override suspend fun hentSak(saksId: SaksId) = Pen.SakSelection(saksId, LocalDate.now(), Pen.SakSelection.Navn("fornavn1", mellomnavn = null, "etternavn2"), Sakstype("hei"), BrevbakerType.Pid("123"))
             }))
