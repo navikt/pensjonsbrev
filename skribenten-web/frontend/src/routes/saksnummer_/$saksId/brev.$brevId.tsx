@@ -200,9 +200,8 @@ function RedigerBrev({
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  // Snapshots tracking the latest server-known letter and saksbehandlerValg.
-  // Updated synchronously when `brev` changes (initial load, save, Tilbakestill) using the
-  // "store information from previous renders" pattern: https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  // Tracks the latest server-known letter and saksbehandlerValg for event handlers
+  // and mutation callbacks. These refs do not affect rendering.
   const lastBrevRef = useRef(brev);
   const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
   const previousValgRef = useRef(brev.saksbehandlerValg);
