@@ -29,6 +29,8 @@ jobs:
           node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: "npm"
+          cache-dependency-path: ${{ inputs.workingDir }}/bff/package-lock.json
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
