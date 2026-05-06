@@ -354,7 +354,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 }
             }
 
-            showIf(saksbehandlerValg.etterbetaling) {
+            showIf(saksbehandlerValg.etterbetaling.ifNull(false)) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }

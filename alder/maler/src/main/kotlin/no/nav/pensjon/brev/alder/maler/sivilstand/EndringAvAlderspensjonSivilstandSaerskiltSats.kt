@@ -370,7 +370,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-            showIf(saksbehandlerValg.feilutbetaling.ifNull(false)) {
+            showIf(saksbehandlerValg.feilutbetaling) {
                 includePhrase(FeilutbetalingAP)
             }
 
