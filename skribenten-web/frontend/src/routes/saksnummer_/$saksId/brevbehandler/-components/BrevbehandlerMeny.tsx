@@ -204,7 +204,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         : "ikke klar";
       trackEvent("brev klar status endret", {
         brevId: response.id,
-        brevKode: response.brevkode,
+        brevkode: response.brevkode,
         brevType,
         klarStatus,
         erKlar: isKlar,
@@ -227,7 +227,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
     onSuccess: (response, distribusjonstype) => {
       trackEvent("brev distribusjonstype endret", {
         brevId: response.id,
-        brevKode: response.brevkode,
+        brevkode: response.brevkode,
         distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
       });
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>

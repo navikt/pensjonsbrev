@@ -128,7 +128,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
     onSuccess: (response) => {
       trackEvent("brev sendt", {
         brevId: Number(props.brevId),
-        brevKode: cachedBrevData?.info.brevkode,
+        brevkode: cachedBrevData?.info.brevkode,
         type: "attestering",
       });
       setBrevResult(props.brevId, {
