@@ -52,6 +52,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
           destinasjon: "brev-redigering",
           erForfatter: isOriginalCreator,
           enhetsId: brevInfo.avsenderEnhet.enhetNr,
+          brevKode: brevInfo.brevkode,
         });
         throw redirect({
           to: "/saksnummer/$saksId/brev/$brevId",
@@ -66,6 +67,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
             erForfatter: true,
             rolle: "forfatter",
             enhetsId: brevInfo.avsenderEnhet.enhetNr,
+            brevKode: brevInfo.brevkode,
           });
           throw redirect({
             to: "/saksnummer/$saksId/brevbehandler",
@@ -79,6 +81,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
           erForfatter: false,
           rolle: "attestant",
           enhetsId: brevInfo.avsenderEnhet.enhetNr,
+          brevKode: brevInfo.brevkode,
         });
         throw redirect({
           to: "/saksnummer/$saksId/attester/$brevId/redigering",
@@ -96,6 +99,7 @@ export const Route = createFileRoute("/aapne/brev/$brevId")({
           destinasjon: "brevbehandler",
           erForfatter: isOriginalCreator,
           enhetsId: brevInfo.avsenderEnhet.enhetNr,
+          brevKode: brevInfo.brevkode,
         });
         throw redirect({
           to: "/saksnummer/$saksId/brevbehandler",
