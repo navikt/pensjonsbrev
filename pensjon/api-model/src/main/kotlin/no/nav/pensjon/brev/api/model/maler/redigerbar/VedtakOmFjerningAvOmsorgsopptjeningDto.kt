@@ -13,7 +13,7 @@ data class VedtakOmFjerningAvOmsorgsopptjeningDto(
 ) : RedigerbarBrevdata<VedtakOmFjerningAvOmsorgsopptjeningDto.SaksbehandlerValg, VedtakOmFjerningAvOmsorgsopptjeningDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Aktuelle år")
-        val aktuelleAar: String,
+        val aktuelleAar: String?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

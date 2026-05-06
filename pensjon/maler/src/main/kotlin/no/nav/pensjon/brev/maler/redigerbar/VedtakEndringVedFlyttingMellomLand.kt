@@ -95,6 +95,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.safe
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -623,7 +624,7 @@ object VedtakEndringVedFlyttingMellomLand : RedigerbarTemplate<VedtakEndringVedF
                 includePhrase(VedtakAlderspensjon.EndringKanHaBetydningForSkatt)
             }
 
-            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and saksbehandlerValg.etterbetaling) {
+            showIf(beloepOekning and pesysData.erEtterbetaling1Maaned and saksbehandlerValg.etterbetaling.ifNull(false)) {
                 // etterbetalingAP_002
                 includePhrase(Vedtak.Etterbetaling(pesysData.krav.virkDatoFom))
             }

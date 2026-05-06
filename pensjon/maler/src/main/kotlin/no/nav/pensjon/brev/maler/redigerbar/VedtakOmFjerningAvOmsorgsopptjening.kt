@@ -43,24 +43,29 @@ object VedtakOmFjerningAvOmsorgsopptjening : RedigerbarTemplate<VedtakOmFjerning
         )
     ) {
         title {
-            text(
-                bokmal { + "Omsorgsopptjening for " + saksbehandlerValg.aktuelleAar + " er fjernet" },
-                english { + "Care credits for " + saksbehandlerValg.aktuelleAar + " has been removed" }
-            )
-        }
-        outline {
-            paragraph {
+            ifNotNull(saksbehandlerValg.aktuelleAar) { aktuelleAar ->
                 text(
-                    bokmal { + "Du har tidligere fått godskrevet omsorgsopptjening for " + saksbehandlerValg.aktuelleAar + ". Ved en gjennomgang av saken din har vi blitt oppmerksomme på at du ikke oppfyller vilkårene for rett til omsorgsopptjening for " + saksbehandlerValg.aktuelleAar + "." },
-                    english { + "You were previously credited with care credits for " + saksbehandlerValg.aktuelleAar + ". Upon reviewing your case, we have become aware that you do not meet the conditions for entitlement to care credits for " + saksbehandlerValg.aktuelleAar + "." }
+                    bokmal { +"Omsorgsopptjening for " + aktuelleAar + " er fjernet" },
+                    english { +"Care credits for " + aktuelleAar + " has been removed" }
                 )
             }
+        }
+        outline {
+            ifNotNull(saksbehandlerValg.aktuelleAar) { aktuelleAar ->
+                paragraph {
+                    text(
+                        bokmal { +"Du har tidligere fått godskrevet omsorgsopptjening for " + aktuelleAar + ". Ved en gjennomgang av saken din har vi blitt oppmerksomme på at du ikke oppfyller vilkårene for rett til omsorgsopptjening for " + aktuelleAar + "." },
+                        english { +"You were previously credited with care credits for " + aktuelleAar + ". Upon reviewing your case, we have become aware that you do not meet the conditions for entitlement to care credits for " + aktuelleAar + "." }
+                    )
+                }
             includePhrase(Vedtak.BegrunnelseOverskrift)
             paragraph {
                 text(
-                    bokmal { + "For å ha rett til omsorgsopptjening er det blant annet et krav at " + fritekst("omsorgsyteren har vært medlem i folketrygden i minst 6 måneder i det aktuelle året / angi evt. annet relevant vilkår") + ". Du har ikke rett til omsorgsopptjening for " + saksbehandlerValg.aktuelleAar + " fordi " + fritekst("du ikke var medlem i folketrygden i minst seks måneder / angi evt. annen årsak") + ". Vedtaket er gjort etter folketrygdloven §§ 3-16 og 20-8." },
-                    english { + "To be entitled to care credits, it is required, among other things, that " + fritekst("the caregiver has been a member of the National Insurance Scheme for at least 6 months in the relevant year / specify any other relevant condition") + ". You are not entitled to care credits for " + saksbehandlerValg.aktuelleAar + " because " + fritekst("you were not a member of the National Insurance Scheme for at least six months / specify any other reason") + ". The decision is made pursuant to the National Insurance Act §§ 3-16 and 20-8." }
+                    bokmal { +"For å ha rett til omsorgsopptjening er det blant annet et krav at " + fritekst("omsorgsyteren har vært medlem i folketrygden i minst 6 måneder i det aktuelle året / angi evt. annet relevant vilkår") + ". Du har ikke rett til omsorgsopptjening for " + aktuelleAar + " fordi " + fritekst("du ikke var medlem i folketrygden i minst seks måneder / angi evt. annen årsak") + ". Vedtaket er gjort etter folketrygdloven §§ 3-16 og 20-8." },
+                    english { +"To be entitled to care credits, it is required, among other things, that " + fritekst("the caregiver has been a member of the National Insurance Scheme for at least 6 months in the relevant year / specify any other relevant condition") + ". You are not entitled to care credits for " + aktuelleAar + " because " + fritekst("you were not a member of the National Insurance Scheme for at least six months / specify any other reason") + ". The decision is made pursuant to the National Insurance Act §§ 3-16 and 20-8." }
                 )
+            }
+
             }
             paragraph {
                 text(
