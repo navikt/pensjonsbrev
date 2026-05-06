@@ -1101,6 +1101,10 @@ public final class no/nav/pensjon/brev/template/dsl/ControlStructureScope$Defaul
 	public static fun showIf (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
 }
 
+public final class no/nav/pensjon/brev/template/dsl/ControlStructureScopeKt {
+	public static final fun showIfNotNull (Lno/nav/pensjon/brev/template/dsl/ControlStructureScope;Lno/nav/pensjon/brev/template/Expression;Lkotlin/jvm/functions/Function1;)Lno/nav/pensjon/brev/template/dsl/ShowElseScope;
+}
+
 public final class no/nav/pensjon/brev/template/dsl/ListScope : no/nav/pensjon/brev/template/dsl/ControlStructureScope {
 	public fun addControlStructure (Lno/nav/pensjon/brev/template/ContentOrControlStructure;)V
 	public fun bokmal (Lkotlin/jvm/functions/Function1;)Lkotlin/Pair;

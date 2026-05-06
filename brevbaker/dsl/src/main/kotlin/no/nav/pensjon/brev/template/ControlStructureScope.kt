@@ -62,3 +62,8 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
         addControlStructure(ContentOrControlStructure.ForEach(items, scopeFactory().apply { body(nextExpr) }.elements, nextExpr))
     }
 }
+
+@JvmName("showIfNotNull")
+fun <Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> ControlStructureScope<Lang, LetterData, C, Scope>.showIf(predicate: Expression<Boolean?>, showIf: Scope.() -> Unit) = ifNotNull(predicate) { pred ->
+    showIf(pred, showIf)
+}
