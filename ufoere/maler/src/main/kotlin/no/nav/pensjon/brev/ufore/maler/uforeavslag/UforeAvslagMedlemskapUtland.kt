@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MEDLEMSKAP_UTLAND
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagUtlandDto
@@ -254,7 +255,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger.ifNull(false)) {
+            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
                 title1 {
                     text(bokmal { +"Supplerende stønad for uføre flyktninger" })
                 }

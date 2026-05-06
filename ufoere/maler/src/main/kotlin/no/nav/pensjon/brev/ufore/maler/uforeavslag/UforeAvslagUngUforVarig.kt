@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagForverrelseEtter26Dto
@@ -72,7 +72,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                             "Det er dokumentert at du blei varig ufør før fylte 26 år på grunn av " + fritekst("diagnose") +
                             ", men sjukdomen er ikkje vurdert som alvorleg nok til å oppfylle vilkåra for ung ufør. " }
                 )
-                showIf(saksbehandlerValg.visForverrelseEtter26.ifNull(false)) {
+                showIf(saksbehandlerValg.visForverrelseEtter26) {
                     text(bokmal {
                         +"Vi ser at sykdommen din har blitt betydelig forverret etter at du fylte 26 år. " +
                                 "Det er helsesituasjonen din før du fylte 26 år som avgjør om du kan få rettighet som ung ufør."
@@ -90,7 +90,7 @@ object UforeAvslagUngUforVarig : RedigerbarTemplate<UforeAvslagForverrelseEtter2
                     nynorsk { + "I vurderinga har vi lagt vekt på: " + fritekst("Sett inn konkret argument med kilde og dato") })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) })

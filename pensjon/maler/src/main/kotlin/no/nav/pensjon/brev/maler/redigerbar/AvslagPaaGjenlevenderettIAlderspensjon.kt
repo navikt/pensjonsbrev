@@ -77,6 +77,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -145,7 +146,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGjRettAPUnder1aarTTSøknad_001
-            showIf(saksbehandlerValg.underEttAarsMedlemstidEOESEllerAvtaleland.ifNull(false)) {
+            showIf(saksbehandlerValg.underEttAarsMedlemstidEOESEllerAvtaleland) {
                 paragraph {
                     text(
                         bokmal { + "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha bodd eller arbeidet i Norge i minst ett år." },
@@ -189,7 +190,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGjRettAPUnder3aar_001
-            showIf(saksbehandlerValg.underTreFemAarsMedlemstidNasjonalSak.ifNull(false)) {
+            showIf(saksbehandlerValg.underTreFemAarsMedlemstidNasjonalSak) {
                 paragraph {
                     text(
                         bokmal { + "For at du skal ha rett til alderspensjon med gjenlevenderett må avdøde ha vært medlem i folketrygden eller ha mottatt pensjon eller uføretrygd de siste " + fritekst(
@@ -210,7 +211,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGjRettAPUnder3aarEOS_001
-            showIf(saksbehandlerValg.underTreFemAarsMedlemstidEOESSak.ifNull(false)) {
+            showIf(saksbehandlerValg.underTreFemAarsMedlemstidEOESSak) {
                 Under3Eller5Aar(EOSLand)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
@@ -219,7 +220,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagAPGjRettUnder3aarAvtale_001
-            showIf(saksbehandlerValg.underTrefemAarsMedlemstidAvtalesak.ifNull(false)) {
+            showIf(saksbehandlerValg.underTrefemAarsMedlemstidAvtalesak) {
                 Under3Eller5Aar(Avtaleland)
                 derforHarDuIkkeGjenlevenderett(
                     initiertAvBrukerEllerVerge = initiertAvBrukerEllerVerge,
@@ -228,7 +229,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGjRettAPUnder20aar_001
-            showIf(saksbehandlerValg.under20AarBotid.ifNull(false)) {
+            showIf(saksbehandlerValg.under20AarBotid) {
                 paragraph {
                     text(
                         bokmal { + "For at du skal ha rett til å få utbetalt alderspensjon med gjenlevenderett når du bor i " },
@@ -251,7 +252,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
             }
 
             // avslagGJRettAPGiftUnder5aarSøknad_001 / avslagGjRettAPVilkårGift5aarNav_001
-            showIf(saksbehandlerValg.ekteskapUnderFemAar.ifNull(false)) {
+            showIf(saksbehandlerValg.ekteskapUnderFemAar) {
                 paragraph {
                     text(
                         bokmal { +"For å ha rettigheter som gift må du og avdøde ha vært gift i minst fem år eller ha felles barn." },
@@ -286,7 +287,7 @@ object AvslagPaaGjenlevenderettIAlderspensjon : RedigerbarTemplate<AvslagPaaGjen
                 }
             }
 
-            showIf(saksbehandlerValg.samboerUtenFellesBarn.ifNull(false)) {
+            showIf(saksbehandlerValg.samboerUtenFellesBarn) {
                 // avslagGjRettAPVilkårSamboMFB_001 / avslagGjRettAPVilkårSamboMFBNav_001
                 paragraph {
                     text(

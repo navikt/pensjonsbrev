@@ -40,6 +40,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.*
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
@@ -1770,7 +1771,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            showIf(saksbehandlerValg.barnetilleggInfo.ifNull(false)) {
+            showIf(saksbehandlerValg.barnetilleggInfo) {
                 title1 {
                     text(
                         bokmal { +"Du kan ha rett til barnetillegg" },

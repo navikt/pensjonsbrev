@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -149,7 +150,7 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                 }
             }
 
-            showIf(saksbehandlerValg.opphoerMedTilbakekreving.ifNull(false)) {
+            showIf(saksbehandlerValg.opphoerMedTilbakekreving) {
                 paragraph {
                     text(
                         bokmal {

@@ -17,10 +17,10 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -154,7 +154,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     }
                 }
             }
-            showIf(saksbehandlerValg.kaffemaskinensTilgjengelighet.ifNull(false)) {
+            showIf(saksbehandlerValg.kaffemaskinensTilgjengelighet) {
                 title1 {
                     text(
                         bokmal { + "Kaffemaskinens tilgjengelighet" },
@@ -166,7 +166,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     )
                 }
             }
-            showIf(saksbehandlerValg.kontorplantenTorlill.ifNull(false)) {
+            showIf(saksbehandlerValg.kontorplantenTorlill) {
                 title1 {
                     text(
                         bokmal { + "Kontorplanten TorLill" },

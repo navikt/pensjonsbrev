@@ -61,6 +61,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -268,7 +269,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 includePhrase(BetydningForUtbetaling(regelverkType, pesysData.beloepEndring))
             }
 
-            showIf(saksbehandlerValg.aarligKontrollEPS.ifNull(false)) {
+            showIf(saksbehandlerValg.aarligKontrollEPS) {
                 // SaerSatsInfoAarligKontrollEps
                 paragraph {
                     text(

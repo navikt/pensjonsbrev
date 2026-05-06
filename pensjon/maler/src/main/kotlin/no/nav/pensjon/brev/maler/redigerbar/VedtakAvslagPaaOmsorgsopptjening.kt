@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
@@ -104,7 +105,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
-            showIf(saksbehandlerValg.omsorgsarbeidFoer1992.ifNull(false)) {
+            showIf(saksbehandlerValg.omsorgsarbeidFoer1992) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter forskriften til folketrygdloven paragraf 3-16 fjerdeledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for en syk, en funksjonshemmet eller en eldre person." },
@@ -121,7 +122,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
-            showIf(saksbehandlerValg.omsorgsarbeidEtter69Aar.ifNull(false)) {
+            showIf(saksbehandlerValg.omsorgsarbeidEtter69Aar) {
                 paragraph {
                     text(
                         bokmal {
@@ -171,7 +172,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
 
-                showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22Timer.ifNull(false)) {
+                showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22Timer) {
                     paragraph {
                         text(
                             bokmal {
@@ -262,7 +263,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
 
-                showIf(saksbehandlerValg.privatAFPavslaat.ifNull(false)) {
+                showIf(saksbehandlerValg.privatAFPavslaat) {
                     paragraph {
                         text(
                             bokmal {
@@ -281,7 +282,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     }
                 }
 
-                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992.ifNull(false)) {
+                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
                     paragraph {
                         text(
                             bokmal {
@@ -331,7 +332,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         )
                     }
 
-                    showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen.ifNull(false)) {
+                    showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
                         paragraph {
                             text(
                                 bokmal {
@@ -369,7 +370,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         }
                     }
 
-                    showIf(saksbehandlerValg.brukerFoedtFoer1948.ifNull(false)) {
+                    showIf(saksbehandlerValg.brukerFoedtFoer1948) {
                         paragraph {
                             text(
                                 bokmal { +"Du er født tidligere enn 1948 og vilkårene for å få pensjonsopptjening for omsorg for barn under 7 år før 1992 er derfor ikke oppfylt." },

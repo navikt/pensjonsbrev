@@ -7,9 +7,9 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
+import no.nav.pensjon.brev.template.dsl.showIf
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_AVSLAG_MANGLENDE_DOK
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.UforeAvslagEnkelDto
@@ -64,7 +64,7 @@ object UforeAvslagManglendeDok : RedigerbarTemplate<UforeAvslagEnkelDto> {
                         "og varsla deg om at søknaden din ville bli avslått dersom vi ikkje fekk dei innan fristen." })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )
