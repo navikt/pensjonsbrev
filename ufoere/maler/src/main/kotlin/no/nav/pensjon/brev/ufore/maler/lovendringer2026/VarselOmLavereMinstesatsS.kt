@@ -137,7 +137,7 @@ object VarselOmLavereMinstesatsS : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
             paragraph {
                 text(
                     bokmal { + "Dette er kun et varsel. Mener du vi har feil opplysninger om saken din, kan du melde fra til oss før vi fatter et vedtak. Fristen for å komme med tilbakemeldinger er 2 uker fra du får dette brevet. Du kan skrive til oss på $KONTAKT_URL eller ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE." },
-                    nynorsk { + "Dette er berre eit varsel. Meiner du vi har feil opplysningar om saka di, kan du melde frå til oss før vi fattar eit vedtak. Fristen for å komme med tilbakemeldingar er 2 veker frå du får dette brevet. Du kan skrive til oss på $KONTAKT_URL eller ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE." },
+                    nynorsk { + "Dette er berre eit varsel. Meiner du vi har feil opplysningar om saka di, kan du melde frå til oss før vi fattar eit vedtak. Fristen for å kome med tilbakemeldingar er 2 veker frå du får dette brevet. Du kan skrive til oss på $KONTAKT_URL eller ringje oss på telefon $NAV_KONTAKTSENTER_TELEFON_UFORE." },
                 )
             }
 
