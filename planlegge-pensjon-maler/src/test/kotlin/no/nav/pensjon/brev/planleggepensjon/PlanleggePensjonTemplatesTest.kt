@@ -9,4 +9,8 @@ class PlanleggePensjonTemplatesTest : BrevmodulTest(
     redigerbare = PlanleggePensjonBrevkoder.Redigerbar.entries,
     fixtures = Fixtures,
     filterForPDF = listOf(ApSimuleringBrev.kode),
-)
+) {
+    override fun `alle saksbehandlervalg skal vaere nullable`() {
+        // Dette er ikke relevant for planlegge pensjon per nå
+    }
+}

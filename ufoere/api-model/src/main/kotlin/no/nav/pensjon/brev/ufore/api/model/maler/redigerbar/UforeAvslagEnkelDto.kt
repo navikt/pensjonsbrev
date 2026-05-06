@@ -13,7 +13,7 @@ data class UforeAvslagEnkelDto(
 
     data class Saksbehandlervalg(
         @DisplayText("Bruk vurdering fra vilkårsvedtak")
-        val VisVurderingFraVilkarvedtak: Boolean,
+        val VisVurderingFraVilkarvedtak: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagPendata(

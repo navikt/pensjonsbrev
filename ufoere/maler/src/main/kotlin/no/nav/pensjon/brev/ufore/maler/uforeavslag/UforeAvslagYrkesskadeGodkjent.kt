@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -59,7 +60,7 @@ object UforeAvslagYrkesskadeGodkjent : RedigerbarTemplate<UforeAvslagEnkelDto> {
                             "Du har ein godkjent yrkesskade eller yrkessjukdom, dette finn du i vedtaket ditt av " + fritekst("dato") + ". " })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) })

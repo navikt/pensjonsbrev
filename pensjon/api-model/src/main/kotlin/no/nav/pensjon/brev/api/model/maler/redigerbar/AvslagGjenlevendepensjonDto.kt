@@ -13,7 +13,7 @@ data class AvslagGjenlevendepensjonDto(
 ) : RedigerbarBrevdata<AvslagGjenlevendepensjonDto.SaksbehandlerValg, AvslagGjenlevendepensjonDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Velg folketrygdloven paragraf:")
-        val folketrygdlovenParagraf: FolketrygdlovenParagraf,
+        val folketrygdlovenParagraf: FolketrygdlovenParagraf?,
     ) : SaksbehandlerValgBrevdata {
         enum class FolketrygdlovenParagraf {
             @DisplayText("$ 17-2 første eller tredjeledd")

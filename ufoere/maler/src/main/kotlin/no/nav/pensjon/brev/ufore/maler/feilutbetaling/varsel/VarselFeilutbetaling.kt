@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.LocalizedFormatter
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -146,7 +147,7 @@ object VarselFeilutbetaling : RedigerbarTemplate<VarselFeilutbetalingUforeDto> {
                 )
             }
 
-            showIf(saksbehandlerValg.rentetillegg) {
+            showIf(saksbehandlerValg.rentetillegg.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Rentetillegg " },

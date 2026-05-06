@@ -15,9 +15,9 @@ data class OmsorgEgenManuellDto(
 ) : VedleggData, RedigerbarBrevdata<OmsorgEgenManuellDto.SaksbehandlerValg, OmsorgEgenManuellDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("År egenerklæring omsorgspoeng")
-        val aarEgenerklaringOmsorgspoeng: Year,
+        val aarEgenerklaringOmsorgspoeng: Year?,
         @DisplayText("År innvilget omsorgspoeng")
-        val aarInnvilgetOmsorgspoeng: Year,
+        val aarInnvilgetOmsorgspoeng: Year?,
         ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

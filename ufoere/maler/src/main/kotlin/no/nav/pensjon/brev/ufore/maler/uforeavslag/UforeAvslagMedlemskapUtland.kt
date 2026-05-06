@@ -254,7 +254,7 @@ object UforeAvslagMedlemskapUtland : RedigerbarTemplate<UforeAvslagUtlandDto> {
                 }
             }
 
-            showIf( saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger.ifNull(false)) {
                 title1 {
                     text(bokmal { +"Supplerende stønad for uføre flyktninger" })
                 }

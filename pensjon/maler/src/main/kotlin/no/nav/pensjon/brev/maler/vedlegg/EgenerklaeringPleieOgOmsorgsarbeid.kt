@@ -55,7 +55,9 @@ val egenerklaeringPleieOgOmsorgsarbeidManuell = createAttachment<LangBokmalNynor
     },
     includeSakspart = true
 ) {
-    vedlegg(pesysData.returadresse, saksbehandlerValg.aarEgenerklaringOmsorgspoeng.format())
+    ifNotNull(saksbehandlerValg.aarEgenerklaringOmsorgspoeng) { aarEgenerklaringOmsorgspoeng ->
+        vedlegg(pesysData.returadresse, aarEgenerklaringOmsorgspoeng.format())
+    }
 }
 
 private fun OutlineOnlyScope<LangBokmalNynorskEnglish, *>.vedlegg(returadresse: Expression<ReturAdresse>, aarEgenerklaering: Expression<String>) {

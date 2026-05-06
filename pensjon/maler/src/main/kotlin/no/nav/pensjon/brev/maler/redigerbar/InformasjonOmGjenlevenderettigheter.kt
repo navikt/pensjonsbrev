@@ -32,6 +32,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.notNull
@@ -75,7 +76,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 )
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
-                showIf(saksbehandlerValg.infoOmstillingsstoenad) {
+                showIf(saksbehandlerValg.infoOmstillingsstoenad.ifNull(false)) {
                     title2 {
                         text(
                             bokmal { +"Når du har gradert uføretrygd, kan du ha rett til omstillingsstønad" },
@@ -129,7 +130,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                         }
                     }
                 }
-                showIf(saksbehandlerValg.infoVilkaarSkiltGjenlevende) {
+                showIf(saksbehandlerValg.infoVilkaarSkiltGjenlevende.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal { +"Har du tidligere vært gift med avdøde, og ikke har giftet deg igjen, kan du ha rett til omstillingsstønad. Da må dere ha vært gift i minst 25 år eller i minst 15 år hvis dere hadde barn sammen." },
@@ -219,7 +220,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)) {
-                showIf(saksbehandlerValg.infoOmstillingsstoenad) {
+                showIf(saksbehandlerValg.infoOmstillingsstoenad.ifNull(false)) {
                     title2 {
                         text(
                             bokmal { +"Hvor mye kan du få i omstillingsstønad?" },
@@ -243,7 +244,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad) {
+                showIf(saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad.ifNull(false)) {
                     title2 {
                         text(
                             bokmal { +"Hvordan søker du?" },
@@ -287,14 +288,15 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                 }
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP)
-                and (saksbehandlerValg.infoOmstillingsstoenad
-                    or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad
-                    or saksbehandlerValg.infoVilkaarSkiltGjenlevende
+                    and (saksbehandlerValg.infoOmstillingsstoenad.ifNull(false)
+                    or saksbehandlerValg.infoHvordanSoekeOmstillingsstoenad.ifNull(false)
+                    or saksbehandlerValg.infoVilkaarSkiltGjenlevende.ifNull(false)
                 )) {
                 includePhrase(Felles.DuKanLeseMer)
             }
             showIf(pesysData.sakstype.isOneOf(UFOREP, ALDER)
-                    and saksbehandlerValg.gjenlevendeHarBarnUnder18MedAvdoed) {
+                    and saksbehandlerValg.gjenlevendeHarBarnUnder18MedAvdoed.ifNull(false)
+            ) {
                 title2 {
                     text(
                         bokmal { +"For deg som har barn under 18 år" },
@@ -322,7 +324,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
             }
 
             showIf(pesysData.gjenlevendesAlder.lessThan(67).and(pesysData.gjenlevendesAlder.greaterThanOrEqual(61))) {
-                showIf(saksbehandlerValg.gjenlevenderHarEllerKanHaAFPIOffentligSektor) {
+                showIf(saksbehandlerValg.gjenlevenderHarEllerKanHaAFPIOffentligSektor.ifNull(false)) {
                     title2 {
                         text(
                             bokmal { +"AFP i offentlig sektor og rettigheter som gjenlevende" },
@@ -339,7 +341,7 @@ object InformasjonOmGjenlevenderettigheter : RedigerbarTemplate<InformasjonOmGje
                     }
                 }
 
-                showIf(saksbehandlerValg.gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull) {
+                showIf(saksbehandlerValg.gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull.ifNull(false)) {
                     title2 {
                         text(
                             bokmal { +"AFP i privat sektor og rettigheter som gjenlevende" },

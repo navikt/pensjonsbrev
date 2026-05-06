@@ -21,28 +21,28 @@ data class InformasjonOmGjenlevenderettigheterDto(
     data class SaksbehandlerValg(
 
         @DisplayText("Hvis gradert uføretrygd, info omstillingsstønad")
-        val infoOmstillingsstoenad: Boolean,
+        val infoOmstillingsstoenad: Boolean?,
 
         @DisplayText("Hvis gradert uføretrygd, info søke omstillingsstønad")
-        val infoHvordanSoekeOmstillingsstoenad: Boolean,
+        val infoHvordanSoekeOmstillingsstoenad: Boolean?,
 
         @DisplayText("Hvis gradert uføretrygd, info vilkår skilt gjenlevende")
-        val infoVilkaarSkiltGjenlevende: Boolean,
+        val infoVilkaarSkiltGjenlevende: Boolean?,
 
         @DisplayText("Gjenlevende har barn under 18 år sammen med avdøde")
-        val gjenlevendeHarBarnUnder18MedAvdoed: Boolean,
+        val gjenlevendeHarBarnUnder18MedAvdoed: Boolean?,
 
         @DisplayText("Gjenlevende har eller kan ha AFP i offentlig sektor")
-        val gjenlevenderHarEllerKanHaAFPIOffentligSektor: Boolean,
+        val gjenlevenderHarEllerKanHaAFPIOffentligSektor: Boolean?,
 
         @DisplayText("Gjenlevende har AFP privat og uttaksgrad på AP satt til 0")
-        val gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull: Boolean,
+        val gjenlevevendeHarAfpOgUttaksgradPaaApSattTilNull: Boolean?,
 
         @DisplayText("Vilkår for gjenlevendeytelsen")
         val vilkarForGjenlevendeytelsen: VilkarForGjenlevendeytelsen?,
 
         @DisplayText("Hvor bor bruker")
-        val hvorBorBruker: HvorBorBruker?
+        val hvorBorBruker: HvorBorBruker?,
     ) : SaksbehandlerValgBrevdata
 
     enum class HvorBorBruker {

@@ -25,7 +25,7 @@ data class UforeAvslagUtlandDto(
         val visVedtakFraAndreLand: Boolean = false,
 
         @DisplayText("Supplerende stønad til uføre flyktninger")
-        val visSupplerendeStonadUforeFlykninger: Boolean,
+        val visSupplerendeStonadUforeFlykninger: Boolean?,
 
         ) : SaksbehandlerValgBrevdata
 

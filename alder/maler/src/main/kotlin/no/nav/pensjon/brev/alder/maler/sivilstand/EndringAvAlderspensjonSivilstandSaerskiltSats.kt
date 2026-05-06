@@ -268,7 +268,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
                 includePhrase(BetydningForUtbetaling(regelverkType, pesysData.beloepEndring))
             }
 
-            showIf(saksbehandlerValg.aarligKontrollEPS) {
+            showIf(saksbehandlerValg.aarligKontrollEPS.ifNull(false)) {
                 // SaerSatsInfoAarligKontrollEps
                 paragraph {
                     text(
@@ -369,7 +369,7 @@ object EndringAvAlderspensjonSivilstandSaerskiltSats :
             }
 
             // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-            showIf(saksbehandlerValg.feilutbetaling) {
+            showIf(saksbehandlerValg.feilutbetaling.ifNull(false)) {
                 includePhrase(FeilutbetalingAP)
             }
 

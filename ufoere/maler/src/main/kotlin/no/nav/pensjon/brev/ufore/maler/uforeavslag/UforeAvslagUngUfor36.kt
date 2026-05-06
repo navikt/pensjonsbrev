@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -65,7 +66,7 @@ object UforeAvslagUngUfor36 : RedigerbarTemplate<UforeAvslagUforetidspunkt26Dto>
                     nynorsk { +"Søkjer du etter at du fylte 36 år, må du har jobba mindre enn 50 prosent etter du fylte 26 år. Du har jobba meir enn 50 prosent over ein lengre periode etter at du fylte 26 år. " })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

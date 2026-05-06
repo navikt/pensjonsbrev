@@ -14,7 +14,7 @@ data class VarselTilbakekrevingAvFeilutbetaltBeloepDto(
 
     data class SaksbehandlerValg(
         @DisplayText("Hvis aktuelt å ilegge rentetillegg")
-        val hvisAktueltAaIleggeRentetillegg: Boolean
+        val hvisAktueltAaIleggeRentetillegg: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(val sakstype: Sakstype) : FagsystemBrevdata

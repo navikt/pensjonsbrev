@@ -13,9 +13,9 @@ data class UforeAvslagSupplerendeStonadEnkelDto(
 
     data class Saksbehandlervalg(
         @DisplayText("Bruk vurdering fra vilkårsvedtak")
-        val VisVurderingFraVilkarvedtak: Boolean,
+        val VisVurderingFraVilkarvedtak: Boolean?,
         @DisplayText("Supplerende stønad til uføre flyktninger")
-        val visSupplerendeStonadUforeFlykninger: Boolean,
+        val visSupplerendeStonadUforeFlykninger: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagPendata(

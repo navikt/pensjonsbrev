@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -68,85 +69,87 @@ object OpphoerGjenlevendepensjon : RedigerbarTemplate<OpphoerGjenlevendepensjonD
                     }
                 )
 
-                showIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(gifterSeg)
-                ) {
-                    val dato = fritekst("dato")
-                    text(
-                        bokmal { +"Vi viser til at du giftet deg " + dato + "." },
-                        nynorsk { +"Vi viser til at du har gifta deg " + dato + "." },
-                        english { +"We refer to your marriage of " + dato + "." }
+                ifNotNull(saksbehandlerValg.folketrygdlovenAlternativ) { folketrygdlovenAlternativ ->
+                    showIf(
+                        folketrygdlovenAlternativ.equalTo(gifterSeg)
+                    ) {
+                        val dato = fritekst("dato")
+                        text(
+                            bokmal { +"Vi viser til at du giftet deg " + dato + "." },
+                            nynorsk { +"Vi viser til at du har gifta deg " + dato + "." },
+                            english { +"We refer to your marriage of " + dato + "." }
+                        )
+                    }.orShowIf(
+                        folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
+                    ) {
+                        val dato = fritekst("dato")
+                        text(
+                            bokmal {
+                                +"Registrert partnerskap er i folketrygdloven likestilt med ekteskap. "
+                                +"Vi viser til at du inngikk partnerskap " + dato + "."
+                            },
+                            nynorsk {
+                                +"Registrert partnarskap er i folketrygdlova likestilt med ekteskap. "
+                                +"Vi viser til at du har inngjekk partnarskap " + dato + "."
+                            },
+                            english {
+                                +"According to the National Insurance Act, registered partnerships are equivalent to marriage. "
+                                +"We refer to your registered partnership of " + dato + "."
+                            }
+                        )
+                    }.orShowIf(
+                        folketrygdlovenAlternativ.isOneOf(
+                            erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn
+                        )
                     )
-                }.orShowIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.equalTo(inngaaPartnerskap)
-                ) {
-                    val dato = fritekst("dato")
-                    text(
-                        bokmal {
-                            +"Registrert partnerskap er i folketrygdloven likestilt med ekteskap. "
-                            +"Vi viser til at du inngikk partnerskap " + dato + "."
-                        },
-                        nynorsk {
-                            +"Registrert partnarskap er i folketrygdlova likestilt med ekteskap. "
-                            +"Vi viser til at du har inngjekk partnarskap " + dato + "."
-                        },
-                        english {
-                            +"According to the National Insurance Act, registered partnerships are equivalent to marriage. "
-                            +"We refer to your registered partnership of " + dato + "."
+                    {
+                        val datoSamboerskap = fritekst("dato for samboerskap")
+                        val datoFellesbarn = fritekst("dato for fødsel av fellesbarn")
+                        text(
+                            bokmal {
+                                +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
+                                +"Vi har lagt til grunn at dere fra "
+                            },
+                            nynorsk {
+                                +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
+                                +"Vi har lagt til grunn at dere frå "
+                            },
+                            english {
+                                +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children. "
+                                +"We have based our decision on our finding that from "
+                            }
+                        )
+                        showIf(folketrygdlovenAlternativ.isOneOf(blirSamboerOgHarFellesBarn)) {
+                            text(bokmal { +datoSamboerskap }, nynorsk { +datoSamboerskap }, english { +datoSamboerskap })
+                        }.orShow {
+                            text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
                         }
-                    )
-                }.orShowIf(
-                    saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(
-                        erErSamboerOgFellesBarn, blirSamboerOgHarFellesBarn
-                    )
-                )
-                {
-                    val datoSamboerskap = fritekst("dato for samboerskap")
-                    val datoFellesbarn = fritekst("dato for fødsel av fellesbarn")
-                    text(
-                        bokmal {
-                            +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere fra "
-                        },
-                        nynorsk {
-                            +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere frå "
-                        },
-                        english {
-                            +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children. "
-                            +"We have based our decision on our finding that from "
-                        }
-                    )
-                    showIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerOgHarFellesBarn)) {
-                        text(bokmal { +datoSamboerskap }, nynorsk { +datoSamboerskap }, english { +datoSamboerskap })
-                    }.orShow {
-                        text(bokmal { +datoFellesbarn }, nynorsk { +datoFellesbarn }, english { +datoFellesbarn })
+                        text(
+                            bokmal { +" er samboere med felles barn." },
+                            nynorsk { +" er sambuarar med felles barn." },
+                            english { +" you are cohabiting and have children in common." }
+                        )
+                    }.orShowIf(folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
+                        val dato = fritekst("dato for fødsel av fellesbarn")
+                        text(
+                            bokmal {
+                                +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
+                                +"Vi har lagt til grunn at dere tidligere har vært gift med hverandre og er samboere fra " + dato + "."
+                            },
+                            nynorsk {
+                                +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
+                                +"Vi har lagt til grunn at de tidlegare har vore gifte med kvarandre og er sambuarar frå " + dato + "."
+                            },
+                            english {
+                                +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children in common. "
+                                +"We have based our decision on you having previously been married to each other and that you started cohabiting from " + dato + "."
+                            }
+                        )
                     }
-                    text(
-                        bokmal { +" er samboere med felles barn." },
-                        nynorsk { +" er sambuarar med felles barn." },
-                        english { +" you are cohabiting and have children in common." }
-                    )
-                }.orShowIf(saksbehandlerValg.folketrygdlovenAlternativ.isOneOf(blirSamboerTidligereGift)) {
-                    val dato = fritekst("dato for fødsel av fellesbarn")
-                    text(
-                        bokmal {
-                            +"Folketrygdloven likestiller samboerskap med ekteskap når samboerne tidligere har vært gift, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at dere tidligere har vært gift med hverandre og er samboere fra " + dato + "."
-                        },
-                        nynorsk {
-                            +"Folketrygdlova likestiller sambuarskap med ekteskap når sambuarane tidlegare har vore gifte, eller har eller har hatt felles barn. "
-                            +"Vi har lagt til grunn at de tidlegare har vore gifte med kvarandre og er sambuarar frå " + dato + "."
-                        },
-                        english {
-                            +"The National Insurance Act considers cohabiting to be equivalent to marriage when the cohabitants previously have been married or have/have had children in common. "
-                            +"We have based our decision on you having previously been married to each other and that you started cohabiting from " + dato + "."
-                        }
-                    )
                 }
             }
 
-            showIf(saksbehandlerValg.opphoerMedTilbakekreving) {
+            showIf(saksbehandlerValg.opphoerMedTilbakekreving.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal {

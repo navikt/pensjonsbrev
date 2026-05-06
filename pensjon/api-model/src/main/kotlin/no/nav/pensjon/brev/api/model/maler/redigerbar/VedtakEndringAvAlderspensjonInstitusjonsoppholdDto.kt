@@ -17,19 +17,19 @@ data class VedtakEndringAvAlderspensjonInstitusjonsoppholdDto(
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Alderspensjon under opphold i institusjon")
-        val alderspensjonUnderOppholdIInstitusjon: Boolean,
+        val alderspensjonUnderOppholdIInstitusjon: Boolean?,
         @DisplayText("Alderspensjon under soning")
-        val alderspensjonUnderSoning: Boolean,
+        val alderspensjonUnderSoning: Boolean?,
         @DisplayText("Alderspensjon ved varetektsfengsling")
-        val alderspensjonVedVaretektsfengsling: Boolean,
+        val alderspensjonVedVaretektsfengsling: Boolean?,
         @DisplayText("Alderspensjon redusert")
-        val alderspensjonRedusert: Boolean,
+        val alderspensjonRedusert: Boolean?,
         @DisplayText("Alderspensjon stanset")
-        val alderspensjonStanset: Boolean,
+        val alderspensjonStanset: Boolean?,
         @DisplayText("Informasjon om sivilstand ved institusjonsopphold")
-        val informasjonOmSivilstandVedInstitusjonsopphold: Boolean,
+        val informasjonOmSivilstandVedInstitusjonsopphold: Boolean?,
         @DisplayText("Hvis reduksjon tilbake i tid")
-        val hvisReduksjonTilbakeITid: Boolean,
+        val hvisReduksjonTilbakeITid: Boolean?,
         @DisplayText("Hvis etterbetaling")
         val etterbetaling: Boolean?,
     ) : SaksbehandlerValgBrevdata

@@ -187,7 +187,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 }
             }.orShowIf(pesysData.beregnetPensjonPerManedVedVirk.antallBeregningsperioderPensjon.greaterThan(1)) {
                 // selectable, 1
-                showIf(saksbehandlerValg.alderspensjonUnderOppholdIInstitusjon) {
+                showIf(saksbehandlerValg.alderspensjonUnderOppholdIInstitusjon.ifNull(false)) {
                     // meldingInstOppholdRedu_001
                     paragraph {
                         val fritekst = fritekst("Dato fom")
@@ -216,7 +216,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     }
                 }
 
-                showIf(saksbehandlerValg.alderspensjonUnderSoning) {
+                showIf(saksbehandlerValg.alderspensjonUnderSoning.ifNull(false)) {
                     // meldingSoning_001
                     paragraph {
                         val fritekst = fritekst("dato fom")
@@ -228,7 +228,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     }
                 }
 
-                showIf(saksbehandlerValg.alderspensjonVedVaretektsfengsling) {
+                showIf(saksbehandlerValg.alderspensjonVedVaretektsfengsling.ifNull(false)) {
                     // meldingVaretekt_001
                     paragraph {
                         val fritekst = fritekst("dato fom")
@@ -240,7 +240,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     }
                 }
 
-                showIf(saksbehandlerValg.alderspensjonRedusert) {
+                showIf(saksbehandlerValg.alderspensjonRedusert.ifNull(false)) {
                     // infoBrukerFengselRedusertAP_001
                     paragraph {
                         text(
@@ -260,7 +260,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     }
                 }
 
-                showIf(saksbehandlerValg.alderspensjonStanset) {
+                showIf(saksbehandlerValg.alderspensjonStanset.ifNull(false)) {
                     // infoBrukerFengselStansAP_001
                     paragraph {
                         text(
@@ -279,7 +279,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                     }
                 }
 
-                showIf(saksbehandlerValg.informasjonOmSivilstandVedInstitusjonsopphold) {
+                showIf(saksbehandlerValg.informasjonOmSivilstandVedInstitusjonsopphold.ifNull(false)) {
                     // infoBrukerInst_001
                     paragraph {
                         text(
@@ -335,7 +335,7 @@ object VedtakEndringAvAlderspensjonInstitusjonsopphold : RedigerbarTemplate<Vedt
                 }
             }
 
-            showIf(saksbehandlerValg.hvisReduksjonTilbakeITid) {
+            showIf(saksbehandlerValg.hvisReduksjonTilbakeITid.ifNull(false)) {
                 // feilutbetalingAP_001
                 title1 {
                     text(

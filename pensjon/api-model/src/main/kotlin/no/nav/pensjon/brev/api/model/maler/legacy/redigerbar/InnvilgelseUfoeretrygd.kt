@@ -18,9 +18,9 @@ data class InnvilgelseUfoeretrygdDto(
 
     data class Saksbehandlervalg(
         @DisplayText("Info om rett til barnetillegg")
-        val barnetilleggInfo: Boolean,
+        val barnetilleggInfo: Boolean?,
         @DisplayText("Refusjon utland")
-        val refusjon: Boolean,
+        val refusjon: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

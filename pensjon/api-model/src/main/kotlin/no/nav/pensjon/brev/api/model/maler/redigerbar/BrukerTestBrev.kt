@@ -17,9 +17,9 @@ data class BrukerTestBrevDto(
         @DisplayText("Den beste kaken er")
         val denBesteKaken: DenBesteKaken?,
         @DisplayText("Kaffemaskinens tilgjengelighet")
-        val kaffemaskinensTilgjengelighet: Boolean,
+        val kaffemaskinensTilgjengelighet: Boolean?,
         @DisplayText("Kontorplanten TorLill")
-        val kontorplantenTorlill: Boolean,
+        val kontorplantenTorlill: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     enum class UtsiktenFraKontoret {

@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -62,7 +63,7 @@ object UforeAvslagUngUfor26 : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { +"For å få uføretrygda berekna med rett som ung ufør, er det eit krav at du blei ufør før du fylte 26 år på grunn av ei alvorleg og varig sjukdom eller skade, som er tydeleg dokumentert." })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

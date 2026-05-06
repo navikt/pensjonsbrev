@@ -96,69 +96,71 @@ object VedtakEndringAvUttaksgradStansIkkeInitiertAvBrukerEllerVerge :
                 )
             }
             // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt., men valgene gjenbrukes i alle cases, så det går fint.
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
-                // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
-                // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                showIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12." },
-                            english { + "This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
-                        )
-                    }
-                }.orShowIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
-                    // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+            ifNotNull(saksbehandlerValg.aarsak) { aarsak ->
+                showIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2011)) { // radiobutton i doksys
+                    // endrUtaksgradAP2011_001 - Uføretrygd er innvilget eller uføregrad er økt
                     // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven § 19-11." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova § 19-11." },
-                            english { + "This decision was made pursuant to the provisions of § 19-11 of the National Insurance Act." }
-                        )
-                    }
-                }
-            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) { // radiobuttons
-                // avslagAP2016TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19." },
-                            english { + "This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act." }
-                        )
-                    }
-                }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
-                    // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
-                    paragraph {
-                        text(
-                            bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
-                            english { + "This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
-                        )
-                    }
-                }
-            }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
-                    // avslagAP2025TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
-                    showIf(saksbehandlerValg.aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                    showIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                         paragraph {
                             text(
-                                bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13." },
-                                nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13." },
-                                english { + "This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act." }
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12 og 22-12." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12 og 22-12." },
+                                english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12 and 22-12 of the National Insurance Act." }
                             )
                         }
-                    }.orShowIf(saksbehandlerValg.aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                    }.orShowIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                        // avslagAP2011TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+                        // TODO Saksbehandlervalg under data-styring. Kan føre til at valg ikke har noen effekt.
+                        paragraph {
+                            text(
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven § 19-11." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova § 19-11." },
+                                english { +"This decision was made pursuant to the provisions of § 19-11 of the National Insurance Act." }
+                            )
+                        }
+                    }
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2016)) { // radiobuttons
+                    // avslagAP2016TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+                    showIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                        paragraph {
+                            text(
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-11, 19-15, 20-15 og 20-19." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-11, 19-15, 20-15 og 20-19." },
+                                english { +"This decision was made pursuant to the provisions of §§ 19-11, 19-15, 20-15 and 20-19 of the National Insurance Act." }
+                            )
+                        }
+                    }.orShowIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
+                        // endrUtaksgradAP2016_001 - Uføretrygd er innvilget eller uføregrad er økt
+                        paragraph {
+                            text(
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 og 22-12." },
+                                english { +"This decision was made pursuant to the provisions of §§ 19-10, 19-12, 19-15, 20-14, 20-16, 20-19 and 22-12 of the National Insurance Act." }
+                            )
+                        }
+                    }
+                }.orShowIf(pesysData.alderspensjonVedVirk.regelverkType.equalTo(AlderspensjonRegelverkType.AP2025)) { // radiobuttons
+                    // avslagAP2025TidligUttakHjemmel_001 - Pensjonsopptjeningen er endret
+                    showIf(aarsak.equalTo(Aarsak.pensjonsopptjeningenErEndret)) {
+                        paragraph {
+                            text(
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-15 og 22-13." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-15 og 22-13." },
+                                english { +"This decision was made pursuant to the provisions of §§ 20-15 and 22-13 of the National Insurance Act." }
+                            )
+                        }
+                    }.orShowIf(aarsak.isOneOf(Aarsak.ufoeregradErOekt, Aarsak.ufoeretrygdErInnvilget)) {
                         // endrUtaksgradAP2025_001 - Uføretrygd er innvilget eller uføregrad er økt
                         paragraph {
                             text(
-                                bokmal { + "Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16." },
-                                nynorsk { + "Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16." },
-                                english { + "This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act." }
+                                bokmal { +"Vedtaket er gjort etter folketrygdloven §§ 20-14 og 20-16." },
+                                nynorsk { +"Vedtaket er gjort etter folketrygdlova §§ 20-14 og 20-16." },
+                                english { +"This decision was made pursuant to the provisions of §§ 20-14 and 20-16 of the National Insurance Act." }
                             )
                         }
                     }
                 }
+            }
 
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgMulighetTilAaKlage))

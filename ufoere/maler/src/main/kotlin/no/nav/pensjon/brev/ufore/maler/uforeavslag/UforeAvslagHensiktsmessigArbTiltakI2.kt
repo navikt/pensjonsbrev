@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -67,7 +68,7 @@ object UforeAvslagHensiktsmessigArbTiltakI2 : RedigerbarTemplate<UforeAvslagEnke
                     nynorsk { +"Du kan berre la vere å prøve ut tiltak dersom det er klare grunnar til at du ikkje bør gjennomføre dette, eller tiltak ikkje er føremålstenlege. Unntaksregelen er streng, og det skal mykje til for å ikkje måtte gjennomføre tiltak. " })
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

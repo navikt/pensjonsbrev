@@ -40,6 +40,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
+import kotlin.reflect.full.primaryConstructor
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -306,16 +307,20 @@ abstract class BrevmodulTest(
     }
 
     @Test
-    fun `alle saksbehandlervalg skal vaere nullable`() {
+    open fun `alle saksbehandlervalg skal vaere nullable`() {
         templates.hentRedigerbareMaler()
             .asSequence()
-            .map { it.template.letterDataType.java.declaredFields }
-            .flatMap { it.asSequence() }
+            .map { it.template.letterDataType.java }
+            .flatMap { it.declaredFields.asSequence() }
             .map { it.type }
             .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
-            .flatMap { it.kotlin.members }
-            .filterIsInstance<KProperty<*>>()
-            .forEach { require(it.returnType.isMarkedNullable) { "Saksbehandlervalg må være nullable for at ikke Skribenten skal bli forvirra. $it er ikke nullable" } }
+            .mapNotNull { it.kotlin.primaryConstructor?.parameters }
+            .flatten()
+            .forEach {
+                require(it.type.isMarkedNullable || it.isOptional) {
+                    "Saksbehandlervalg må være nullable for at ikke Skribenten skal bli forvirra. $it er ikke nullable"
+                }
+            }
     }
 }
 

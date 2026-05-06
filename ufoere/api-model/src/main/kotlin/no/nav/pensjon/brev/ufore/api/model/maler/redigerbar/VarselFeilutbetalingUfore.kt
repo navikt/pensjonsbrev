@@ -13,6 +13,6 @@ data class VarselFeilutbetalingUforeDto(
 
     data class Saksbehandlervalg(
         @DisplayText("Vurdert rentetillegg")
-        val rentetillegg: Boolean,
+        val rentetillegg: Boolean?,
     ) : SaksbehandlerValgBrevdata
 }

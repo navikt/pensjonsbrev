@@ -12,7 +12,7 @@ data class VarselRevurderingAvPensjonDto(
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<VarselRevurderingAvPensjonDto.SaksbehandlerValg, VarselRevurderingAvPensjonDto.PesysData> {
     data class SaksbehandlerValg(
-        @DisplayText("Tittelvalg") val tittelValg: TittelValg
+        @DisplayText("Tittelvalg") val tittelValg: TittelValg?,
     ) : SaksbehandlerValgBrevdata{
         enum class TittelValg {
             @DisplayText("Revurdering av rett") RevurderingAvRett,

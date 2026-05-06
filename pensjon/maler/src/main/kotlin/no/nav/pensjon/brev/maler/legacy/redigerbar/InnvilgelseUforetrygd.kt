@@ -1726,7 +1726,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
             }
 
-            showIf(bosattUtland and saksbehandlerValg.refusjon){
+            showIf(bosattUtland and saksbehandlerValg.refusjon.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { +"En utenlandsk myndighet krever refusjon" },
@@ -1770,7 +1770,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
-            showIf(saksbehandlerValg.barnetilleggInfo) {
+            showIf(saksbehandlerValg.barnetilleggInfo.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { +"Du kan ha rett til barnetillegg" },

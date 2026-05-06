@@ -11,6 +11,6 @@ data class ForespoerselOmDokumentasjonAvBotidINorgeDto(
 ) : RedigerbarBrevdata<ForespoerselOmDokumentasjonAvBotidINorgeDto.SaksbehandlerValg, EmptyFagsystemdata> {
     data class SaksbehandlerValg(
         @DisplayText("Opplyst om botid")
-        val opplystOmBotid: Boolean
+        val opplystOmBotid: Boolean?,
     ) : SaksbehandlerValgBrevdata
 }

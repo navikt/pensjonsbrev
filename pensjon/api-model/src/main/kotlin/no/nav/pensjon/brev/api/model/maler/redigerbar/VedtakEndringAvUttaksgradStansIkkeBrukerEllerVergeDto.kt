@@ -14,7 +14,7 @@ data class VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto(
 ) : RedigerbarBrevdata<VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.SaksbehandlerValg, VedtakEndringAvUttaksgradStansIkkeBrukerEllerVergeDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Årsak")
-        val aarsak: Aarsak
+        val aarsak: Aarsak?,
     ) : SaksbehandlerValgBrevdata {
         enum class Aarsak {
             @DisplayText("Uføretrygd er innvilget")

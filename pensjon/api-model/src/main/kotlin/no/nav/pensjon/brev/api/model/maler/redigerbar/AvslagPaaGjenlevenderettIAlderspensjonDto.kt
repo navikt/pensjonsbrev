@@ -19,27 +19,27 @@ data class AvslagPaaGjenlevenderettIAlderspensjonDto(
 ) : RedigerbarBrevdata<AvslagPaaGjenlevenderettIAlderspensjonDto.SaksbehandlerValg, AvslagPaaGjenlevenderettIAlderspensjonDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Samboer uten felles barn")
-        val samboerUtenFellesBarn: Boolean,
+        val samboerUtenFellesBarn: Boolean?,
         @DisplayText("Avdød navn")
-        val avdoedNavn: String,
+        val avdoedNavn: String?,
         @DisplayText("Under ett års medlemstid EØS eller avtaleland")
-        val underEttAarsMedlemstidEOESEllerAvtaleland: Boolean,
+        val underEttAarsMedlemstidEOESEllerAvtaleland: Boolean?,
         @DisplayText("Under tre/fem års medlemstid nasjonal sak")
-        val underTreFemAarsMedlemstidNasjonalSak: Boolean,
+        val underTreFemAarsMedlemstidNasjonalSak: Boolean?,
         @DisplayText("Under tre/fem års medlemstid EØS-sak")
-        val underTreFemAarsMedlemstidEOESSak: Boolean,
+        val underTreFemAarsMedlemstidEOESSak: Boolean?,
         @DisplayText("Under tre/fem års medlemstid avtalesak")
-        val underTrefemAarsMedlemstidAvtalesak: Boolean,
+        val underTrefemAarsMedlemstidAvtalesak: Boolean?,
         @DisplayText("Under 20 år botid")
-        val under20AarBotid: Boolean,
+        val under20AarBotid: Boolean?,
         @DisplayText("Ekteskap under fem år")
-        val ekteskapUnderFemAar: Boolean,
+        val ekteskapUnderFemAar: Boolean?,
         @DisplayText("Hjemmel EØS")
-        val hjemmelEOES: Boolean,
+        val hjemmelEOES: Boolean?,
         @DisplayText("Hjemmel avtaleland")
-        val hjemmelAvtaleland: Boolean,
+        val hjemmelAvtaleland: Boolean?,
         @DisplayText("Inkluder tekst om trygdetid")
-        val harTrygdetid: Boolean,
+        val harTrygdetid: Boolean?,
     ) : SaksbehandlerValgBrevdata
     data class PesysData(
         val alderspensjonVedVirk: AlderspensjonVedVirk,

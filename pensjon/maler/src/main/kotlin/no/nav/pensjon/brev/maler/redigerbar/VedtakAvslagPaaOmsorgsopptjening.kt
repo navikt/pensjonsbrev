@@ -29,6 +29,7 @@ import no.nav.pensjon.brev.template.Language.English
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -103,7 +104,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
 
             includePhrase(Vedtak.BegrunnelseOverskrift)
 
-            showIf(saksbehandlerValg.omsorgsarbeidFoer1992) {
+            showIf(saksbehandlerValg.omsorgsarbeidFoer1992.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter forskriften til folketrygdloven paragraf 3-16 fjerdeledd om godskriving av pensjonspoeng (omsorgspoeng) for omsorgsarbeid for en syk, en funksjonshemmet eller en eldre person." },
@@ -120,7 +121,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
-            showIf(saksbehandlerValg.omsorgsarbeidEtter69Aar) {
+            showIf(saksbehandlerValg.omsorgsarbeidEtter69Aar.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal {
@@ -141,7 +142,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
-            showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder or saksbehandlerValg.omsorgsarbeidMindreEnn22Timer or saksbehandlerValg.omsorgsarbeidMindreEnn6Maaneder) {
+            showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder.ifNull(false) or saksbehandlerValg.omsorgsarbeidMindreEnn22Timer.ifNull(false) or saksbehandlerValg.omsorgsarbeidMindreEnn6Maaneder.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter folketrygdloven § 3-16 første led bokstav b og forskriften til § 3-16." },
@@ -170,7 +171,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
 
-                showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22Timer) {
+                showIf(saksbehandlerValg.omsorgsarbeidMindreEnn22Timer.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -193,7 +194,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.omsorgsarbeidMindreEnn6Maaneder) {
+                }.orShowIf(saksbehandlerValg.omsorgsarbeidMindreEnn6Maaneder.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -218,7 +219,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                             }
                         )
                     }
-                }.orShowIf(saksbehandlerValg.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder) {
+                }.orShowIf(saksbehandlerValg.omsorgsarbeidMindreEnn22TimerOgMindreEnn6Maaneder.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -252,7 +253,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                 }
             }
 
-            showIf(saksbehandlerValg.privatAFPavslaat or saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992 or saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen or saksbehandlerValg.brukerFoedtFoer1948) {
+            showIf(saksbehandlerValg.privatAFPavslaat.ifNull(false) or saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992.ifNull(false) or saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen.ifNull(false) or saksbehandlerValg.brukerFoedtFoer1948.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { +"Vedtaket er gjort etter AFP-tilskottsloven § 6 og forskrift til denne bestemmelsen." },
@@ -261,7 +262,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     )
                 }
 
-                showIf(saksbehandlerValg.privatAFPavslaat) {
+                showIf(saksbehandlerValg.privatAFPavslaat.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -280,7 +281,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     }
                 }
 
-                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992) {
+                showIf(saksbehandlerValg.omsorgsarbeidForBarnUnder7aarFoer1992.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -315,7 +316,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                     }
                 }
 
-                showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen or saksbehandlerValg.brukerFoedtFoer1948) {
+                showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen.ifNull(false) or saksbehandlerValg.brukerFoedtFoer1948.ifNull(false)) {
                     paragraph {
                         text(
                             bokmal {
@@ -330,7 +331,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         )
                     }
 
-                    showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen) {
+                    showIf(saksbehandlerValg.omsorgsopptjeningenGodskrevetEktefellen.ifNull(false)) {
                         paragraph {
                             text(
                                 bokmal {
@@ -368,7 +369,7 @@ object VedtakAvslagPaaOmsorgsopptjening : RedigerbarTemplate<VedtakAvslagPaaOmso
                         }
                     }
 
-                    showIf(saksbehandlerValg.brukerFoedtFoer1948) {
+                    showIf(saksbehandlerValg.brukerFoedtFoer1948.ifNull(false)) {
                         paragraph {
                             text(
                                 bokmal { +"Du er født tidligere enn 1948 og vilkårene for å få pensjonsopptjening for omsorg for barn under 7 år før 1992 er derfor ikke oppfylt." },

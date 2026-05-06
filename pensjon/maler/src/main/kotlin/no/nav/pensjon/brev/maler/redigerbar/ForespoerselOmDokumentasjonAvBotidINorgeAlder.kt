@@ -12,6 +12,7 @@ import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -53,7 +54,7 @@ object ForespoerselOmDokumentasjonAvBotidINorgeAlder : RedigerbarTemplate<Foresp
                 text(
                     bokmal { + " e.l) for " + felles.bruker.fulltNavn() + " med fødselsnummer " + felles.bruker.foedselsnummer.value + ". " },
                 )
-                showIf(saksbehandlerValg.opplystOmBotid) {
+                showIf(saksbehandlerValg.opplystOmBotid.ifNull(false)) {
                     val dato = fritekst("mm.dd.år")
                     text(
                         bokmal { + "Vedkommende har opplyst at " + fritekst("han/hun") + " var sist bosatt i deres kommune fra " + dato + " til " + dato + "." },

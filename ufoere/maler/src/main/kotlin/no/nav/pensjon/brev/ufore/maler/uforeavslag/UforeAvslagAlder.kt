@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -81,7 +82,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { +"Dersom du ikkje oppfyller eitt av dei to vilkåra over, kan du likevel få uføretrygd dersom du ikkje har rett til heil alderspensjon. " } )
             }
 
-            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+            showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                 paragraph {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )

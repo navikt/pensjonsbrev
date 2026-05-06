@@ -18,7 +18,7 @@ data class VedtakStansAlderspensjonFlyttingMellomLandDto(
 
     data class SaksbehandlerValg(
         @DisplayText("Hvis reduksjon tilbake i tid")
-        val feilutbetaling: Boolean
+        val feilutbetaling: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

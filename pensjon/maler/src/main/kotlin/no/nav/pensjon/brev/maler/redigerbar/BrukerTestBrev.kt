@@ -17,6 +17,7 @@ import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
@@ -153,7 +154,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     }
                 }
             }
-            showIf(saksbehandlerValg.kaffemaskinensTilgjengelighet) {
+            showIf(saksbehandlerValg.kaffemaskinensTilgjengelighet.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Kaffemaskinens tilgjengelighet" },
@@ -165,7 +166,7 @@ object BrukerTestBrev : RedigerbarTemplate<BrukerTestBrevDto> {
                     )
                 }
             }
-            showIf(saksbehandlerValg.kontorplantenTorlill) {
+            showIf(saksbehandlerValg.kontorplantenTorlill.ifNull(false)) {
                 title1 {
                     text(
                         bokmal { + "Kontorplanten TorLill" },

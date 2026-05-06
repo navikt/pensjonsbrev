@@ -214,7 +214,7 @@ object VedtakStansAlderspensjonFlyttingMellomLand : RedigerbarTemplate<VedtakSta
                 )
             }
 
-            showIf(saksbehandlerValg.feilutbetaling) { includePhrase(FeilutbetalingAP) }
+            showIf(saksbehandlerValg.feilutbetaling.ifNull(false)) { includePhrase(FeilutbetalingAP) }
 
             // skattAPstans
             title1 {

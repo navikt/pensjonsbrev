@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -104,7 +105,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
             }
 
             paragraph {
-                showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak) {
+                showIf(saksbehandlerValg.VisVurderingFraVilkarvedtak.ifNull(false)) {
                     text(bokmal { +redigerbarData(pesysData.vurdering) },
                         nynorsk { +redigerbarData(pesysData.vurdering) } )
                 }
@@ -136,7 +137,7 @@ object UforeAvslagMedlemskap : RedigerbarTemplate<UforeAvslagSupplerendeStonadEn
                     nynorsk { + "Vedtaket har vi gjort etter folketrygdlova § 12-2. " })
             }
 
-            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger) {
+            showIf(saksbehandlerValg.visSupplerendeStonadUforeFlykninger.ifNull(false)) {
                 title1 {
                     text(bokmal { +"Supplerende stønad til uføre flyktninger " },
                         nynorsk { +"Supplerande stønad til uføre flyktningar " })

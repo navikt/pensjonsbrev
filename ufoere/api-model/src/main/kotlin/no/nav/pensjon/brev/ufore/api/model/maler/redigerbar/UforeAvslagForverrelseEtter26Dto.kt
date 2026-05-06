@@ -15,9 +15,9 @@ data class UforeAvslagForverrelseEtter26Dto(
 
     data class Saksbehandlervalg(
         @DisplayText("Bruk vurdering fra vilkårsvedtak")
-        val VisVurderingFraVilkarvedtak: Boolean,
+        val VisVurderingFraVilkarvedtak: Boolean?,
         @DisplayText("Forverrelse etter 26 år")
-        val visForverrelseEtter26: Boolean,
+        val visForverrelseEtter26: Boolean?,
     ) : SaksbehandlerValgBrevdata
 
     data class UforeAvslagPendata(

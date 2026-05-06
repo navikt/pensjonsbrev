@@ -25,9 +25,9 @@ data class InnvilgelseAvAlderspensjonTrygdeavtaleDto(
 
     data class SaksbehandlerValg(
         @DisplayText("Tittel - Ny beregning av innvilget alderspensjon. Ingen endring av uttaksgraden")
-        val nyBeregningAvInnvilgetAP: Boolean,
+        val nyBeregningAvInnvilgetAP: Boolean?,
         @DisplayText("Slutthandling medfører: Innvilgelse av alderspensjon eller økt uttaksgrad")
-        val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean,
+        val medfoererInnvilgelseAvAPellerOektUttaksgrad: Boolean?,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
     ) : SaksbehandlerValgBrevdata

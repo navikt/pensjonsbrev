@@ -175,7 +175,7 @@ object VarselTilbakekrevingAvFeilutbetaltBeloep : RedigerbarTemplate<VarselTilba
                 )
             }
 
-            showIf(saksbehandlerValg.hvisAktueltAaIleggeRentetillegg) {
+            showIf(saksbehandlerValg.hvisAktueltAaIleggeRentetillegg.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { +"Hvis du bevisst har gitt oss feil eller mangelfull informasjon eller opptrådt grovt uaktsomt, kan vi beregne et rentetillegg på ti prosent av beløpet vi krever tilbakebetalt. Dette går fram av folketrygdloven § 22-17a." },
