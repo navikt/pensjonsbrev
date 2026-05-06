@@ -88,22 +88,6 @@ object LavereMinstesats {
                             }
                         }
                     }
-                    showIf(data.endringNettoGjenlevendetillegg) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Nytt gjenlevendetillegg" },
-                                    nynorsk { +"Nytt gjenlevendetillegg" },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                    nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                )
-                            }
-                        }
-                    }
                     showIf(data.endringReduksjonsprosent) {
                         row {
                             cell {
@@ -238,26 +222,6 @@ object LavereMinstesats {
                         nynorsk {
                             +"Regelverksendringane fører til at du får ei endra utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. " +
                                     "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
-                        },
-                    )
-                }
-            }
-            showIf(data.endringNettoGjenlevendetillegg) {
-                title1 {
-                    text(
-                        bokmal { +"Endring i gjenlevendetillegg" },
-                        nynorsk { +"Endring i gjenlevendetillegg" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Regelverksendringene fører til at gjenlevendetillegg i uføretrygden din endres. Ny beregning av gjenlevendetillegget (før skatt) er " +
-                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
-                        },
-                        nynorsk {
-                            +"Regelverksendringane fører til at gjenlevendetillegg i uføretrygda di vert endra. Ny berekning av gjenlevendetillegget (før skatt) er " +
-                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
                         },
                     )
                 }
