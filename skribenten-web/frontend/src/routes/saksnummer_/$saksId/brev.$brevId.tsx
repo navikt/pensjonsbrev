@@ -202,18 +202,17 @@ function RedigerBrev({
 
   // Tracks the latest server-known letter and saksbehandlerValg for event handlers
   // and mutation callbacks. These refs do not affect rendering.
-  const lastBrevRef = useRef(brev);
   const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
   const previousValgRef = useRef(brev.saksbehandlerValg);
-  if (lastBrevRef.current !== brev) {
-    lastBrevRef.current = brev;
-    lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
-    previousValgRef.current = brev.saksbehandlerValg;
-  }
 
   const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
+
+  useEffect(() => {
+    lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
+    previousValgRef.current = brev.saksbehandlerValg;
+  }, [brev.redigertBrev, brev.saksbehandlerValg]);
 
   useEffect(
     () => () => {
