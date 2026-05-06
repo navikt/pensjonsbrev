@@ -12,6 +12,7 @@ import {
   collectAllIds,
   collectNewIds,
   findLastInsertedFocus,
+  hasAnyTekstvalgToggledOn,
   InsertedTekstValgHighlightProvider,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import {
@@ -199,7 +200,18 @@ function RedigerBrev({
 
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  const initialIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
+  // Snapshots tracking the latest server-known letter and saksbehandlerValg.
+  // Updated synchronously when `brev` changes (initial load, save, Tilbakestill) using the
+  // "store information from previous renders" pattern: https://react.dev/reference/react/useState#storing-information-from-previous-renders
+  const lastBrevRef = useRef(brev);
+  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
+  const previousValgRef = useRef(brev.saksbehandlerValg);
+  if (lastBrevRef.current !== brev) {
+    lastBrevRef.current = brev;
+    lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
+    previousValgRef.current = brev.saksbehandlerValg;
+  }
+
   const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
   const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
@@ -259,11 +271,11 @@ function RedigerBrev({
       });
       if (!previousIds || !responseWasApplied) return;
 
-      const initialIds = initialIdsRef.current;
+      const lastSeenIds = lastSeenIdsRef.current;
       const newIds = new Set<number>();
       for (const id of collectNewIds(previousIds, response.redigertBrev)) {
-        // Skip ids that were already in the letter when it was opened
-        if (!initialIds.has(id)) newIds.add(id);
+        // Ignore ids that already existed in the letter before this save.
+        if (!lastSeenIds.has(id)) newIds.add(id);
       }
       if (newIds.size === 0) return;
 
@@ -300,10 +312,15 @@ function RedigerBrev({
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
-        previousIdsRef.current = collectAllIds(editorState.redigertBrev);
+        const updatedValg = form.getValues().saksbehandlerValg;
+        // Only highlight if a tekstvalg was toggled ON — not on toggle-off or overstyring edits.
+        if (hasAnyTekstvalgToggledOn(previousValgRef.current, updatedValg)) {
+          previousIdsRef.current = collectAllIds(editorState.redigertBrev);
+        }
+        previousValgRef.current = updatedValg;
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
-          saksbehandlerValg: form.getValues().saksbehandlerValg,
+          saksbehandlerValg: updatedValg,
         });
       }
     });

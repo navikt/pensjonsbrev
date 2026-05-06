@@ -3,6 +3,7 @@ import { createContext, type ReactNode, useContext } from "react";
 import { isTable } from "~/Brevredigering/LetterEditor/actions/common";
 import { type Focus } from "~/Brevredigering/LetterEditor/model/state";
 import { isItemList, isTextContent } from "~/Brevredigering/LetterEditor/model/utils";
+import { type SaksbehandlerValg } from "~/types/brev";
 import {
   type AnyBlock,
   type Cell,
@@ -94,6 +95,27 @@ export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedLetter
   const newIds = new Set<number>();
   for (const id of allIds) if (!seenIds.has(id)) newIds.add(id);
   return newIds;
+};
+
+// Checks if any tekstvalg toggle went from OFF to ON between two saksbehandlerValg snapshots.
+export const hasAnyTekstvalgToggledOn = (
+  before: SaksbehandlerValg | null | undefined,
+  after: SaksbehandlerValg | null | undefined,
+): boolean => {
+  if (!after) return false;
+  for (const key of Object.keys(after)) {
+    const current = after[key];
+    const previous = before?.[key];
+    if (current === true && previous !== true) return true;
+    if (current && typeof current === "object" && !Array.isArray(current)) {
+      const previousGroup =
+        previous && typeof previous === "object" && !Array.isArray(previous)
+          ? (previous as SaksbehandlerValg)
+          : undefined;
+      if (hasAnyTekstvalgToggledOn(previousGroup, current as SaksbehandlerValg)) return true;
+    }
+  }
+  return false;
 };
 
 const lengthOfText = (textContent: TextContent): number => {
