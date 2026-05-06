@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.EndretBarnetilleggUfoeretrygdD
 import no.nav.pensjon.brev.api.model.maler.legacy.EndretUforetrygdPGAOpptjeningLegacyDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors
+import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDto
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
@@ -78,6 +79,8 @@ import no.nav.pensjon.brev.fixtures.alder.createEndringAvUttaksgradAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createEndringPgaOpptjeningAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createInnvilgelseAvAlderspensjonAutoDto
 import no.nav.pensjon.brev.fixtures.alder.createOpplysningerBruktIBeregningenAlderAP2025EndringPgaOpptjeningDto
+import no.nav.pensjon.brev.fixtures.legacy.createOpplysningerOmBeregningGPUtlandDto
+import no.nav.pensjon.brev.fixtures.legacy.createOversiktOverPensjonensStoerrelseGjenlevendepensjonDto
 import no.nav.pensjon.brev.fixtures.createAvslagUfoeretrygdDto
 import no.nav.pensjon.brev.fixtures.createEgenerklaeringOmsorgsarbeidDto
 import no.nav.pensjon.brev.fixtures.createEksempelbrevRedigerbartDto
@@ -152,7 +155,6 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsRed
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
-import no.nav.pensjon.brev.maler.legacy.redigerbar.InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -282,7 +284,8 @@ object Fixtures : LetterDataFactory {
         OrienteringOmRettigheterUfoereDto::class -> createOrienteringOmRettigheterUfoereDto() as T
         OversiktOverFeilutbetalingPEDto::class -> createOversiktOverFeilutbetalingPEDto() as T
         PEgruppe10::class -> createPEgruppe10() as T
-        OpplysningerOmBeregningenGPUtlandDto::class -> createOpplysningerOmBeregningDto() as T
+        OpplysningerOmBeregningenGPUtlandDto::class -> createOpplysningerOmBeregningGPUtlandDto() as T
+        OversiktOverPensjonensStoerrelseGjenlevendepensjonDto::class -> createOversiktOverPensjonensStoerrelseGjenlevendepensjonDto() as T
         else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
     }
 }
