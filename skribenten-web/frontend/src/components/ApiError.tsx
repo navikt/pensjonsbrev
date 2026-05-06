@@ -37,7 +37,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
       return (
         <HStack align="center" justify="center" marginBlock="space-12">
           <Alert
-            css={{ width: "100%", maxWidth: "512px" }}
+            css={{ width: "100%", maxWidth: "512px", overflowWrap: "anywhere" }}
             data-cy="functional-error-alert"
             size="medium"
             variant="error"
@@ -55,7 +55,7 @@ export function ApiError({ error, title }: { error: unknown; title: string }) {
     return (
       <HStack align="center" justify="center" marginBlock="space-12">
         <HStack maxWidth="512px" width="100%">
-          <Alert size="small" variant="error">
+          <Alert css={{ overflowWrap: "anywhere" }} data-cy="generic-error-alert" size="small" variant="error">
             <Heading level="2" size="small">
               {title}
             </Heading>
