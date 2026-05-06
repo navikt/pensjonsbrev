@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template.dsl
 
 import no.nav.pensjon.brev.template.*
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.expression.notNull
 
 sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> : TemplateGlobalScope<LetterData> {
@@ -64,6 +65,5 @@ sealed interface ControlStructureScope<Lang : LanguageSupport, LetterData : Any,
 }
 
 @JvmName("showIfNotNull")
-fun <Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> ControlStructureScope<Lang, LetterData, C, Scope>.showIf(predicate: Expression<Boolean?>, showIf: Scope.() -> Unit) = ifNotNull(predicate) { pred ->
-    showIf(pred, showIf)
-}
+fun <Lang : LanguageSupport, LetterData : Any, C : Element<Lang>, Scope : ControlStructureScope<Lang, LetterData, C, Scope>> ControlStructureScope<Lang, LetterData, C, Scope>.showIf(predicate: Expression<Boolean?>, showIf: Scope.() -> Unit) =
+    showIf(predicate.ifNull(false), showIf)
