@@ -17,6 +17,7 @@ jobs:
     name: build
     permissions:
       contents: read
+      packages: read
       id-token: write
     runs-on: ubuntu-latest
     steps:
@@ -28,10 +29,14 @@ jobs:
           node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: "npm"
+          cache-dependency-path: ${{ inputs.workingDir }}/bff/package-lock.json
 
       - name: Install frontend
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
       - name: Build frontend
         working-directory: ${{ inputs.workingDir }}/frontend
@@ -45,7 +50,7 @@ jobs:
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
       - name: Build bff
         working-directory: ${{ inputs.workingDir }}/bff

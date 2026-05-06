@@ -16,7 +16,8 @@
     "jsxImportSource": "@emotion/react",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+    "types": ["node"]
   },
   "include": ["src", "test", "cypress", "cypress.config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
