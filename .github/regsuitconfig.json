@@ -11,7 +11,7 @@
     },
     "reg-publish-gcs-plugin": {
       "bucketName": "no-nav-pensjonsbrev-reg-suit",
-      "pathPrefix": "pdf-visual/test"
+      "pathPrefix": "pdf-visual"
     },
     "reg-notify-github-with-api-plugin": {
       "owner": "navikt",
