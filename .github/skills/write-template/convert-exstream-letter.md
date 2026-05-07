@@ -67,7 +67,7 @@ After populating from the CSV, **stop and ask the user to confirm the metadata w
 |---|---|
 | Object name | Situation-describing `PascalCase` (e.g. `DelvisEksportAvGjenlevendepensjon`). The `…Legacy` suffix only appears on older `PEgruppeN`-based templates — do not add it for new conversions that built a fresh Dto in Step 1. |
 | `letterDataType` | `<YourDto>::class`. |
-| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `SKILL.md` (unique, ≤ 50 chars, immutable, never deleted). Reuse the CSV's `brevkodeIBrevsystem` verbatim when the converter produced the entry from a Pesys brev. |
+| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` (or the module's local brevkode registry) — same rules as `SKILL.md` (unique, ≤ 50 chars, immutable, never deleted). **Do not reuse the CSV's `brevkodeIBrevsystem` even when the original Pesys brevkode is currently absent from the brevbaker registry** — the legacy Exstream brevkode is owned by Pesys, and the brevbaker code is a fresh, situation-describing identifier. The CSV's `dekode` is what you mirror into the situation name; record the CSV's `brevkodeIBrevsystem` in a KDoc on the template object for traceability instead. |
 | `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. Not in the CSV. |
 | `title { text(…) }` | Usually the same wording as the Exstream overskrift — lift it from the first outline paragraph if the converter left it blank. |
 
