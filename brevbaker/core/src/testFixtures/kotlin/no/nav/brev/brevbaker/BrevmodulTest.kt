@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -39,6 +40,7 @@ import org.junit.jupiter.params.provider.MethodSource
 import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
+import kotlin.reflect.KParameter
 import kotlin.reflect.KProperty
 import kotlin.reflect.full.primaryConstructor
 
@@ -308,7 +310,7 @@ abstract class BrevmodulTest(
 
     @Test
     open fun `alle saksbehandlervalg skal vaere nullable`() {
-        templates.hentRedigerbareMaler()
+        val ikkeredigerbareFelt = templates.hentRedigerbareMaler()
             .asSequence()
             .map { it.template.letterDataType.java }
             .flatMap { it.declaredFields.asSequence() }
@@ -316,11 +318,9 @@ abstract class BrevmodulTest(
             .filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }
             .mapNotNull { it.kotlin.primaryConstructor?.parameters }
             .flatten()
-            .forEach {
-                require(it.type.isMarkedNullable || it.isOptional) {
-                    "Saksbehandlervalg må være nullable for at ikke Skribenten skal bli forvirra. $it er ikke nullable"
-                }
-            }
+            .filterNot { it.type.isMarkedNullable || it.isOptional }
+            .toList()
+        assertThat(ikkeredigerbareFelt).withFailMessage { "Saksbehandlervalg må være nullable for at ikke Skribenten skal bli forvirra. Følgende valg er ikke nullable: ${ikkeredigerbareFelt.joinToString(System.lineSeparator())}" }.isEqualTo(emptyList<KParameter>())
     }
 }
 
