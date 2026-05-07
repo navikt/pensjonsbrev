@@ -12,7 +12,7 @@ import {
   collectAllIds,
   collectNewIds,
   findLastInsertedFocus,
-  hasAnyTekstvalgToggledOn,
+  hasAnyTekstvalgBeenToggledOn,
   InsertedTekstValgHighlightProvider,
 } from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import {
@@ -312,7 +312,7 @@ function RedigerBrev({
       if (isValid) {
         const updatedValg = form.getValues().saksbehandlerValg;
         // Only highlight if a tekstvalg was toggled ON — not on toggle-off or overstyring edits.
-        if (hasAnyTekstvalgToggledOn(previousValgRef.current, updatedValg)) {
+        if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
           previousIdsRef.current = collectAllIds(editorState.redigertBrev);
         }
         previousValgRef.current = updatedValg;

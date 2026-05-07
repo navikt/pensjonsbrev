@@ -97,8 +97,8 @@ export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedLetter
   return newIds;
 };
 
-// Checks if any tekstvalg toggle went from OFF to ON between two saksbehandlerValg snapshots.
-export const hasAnyTekstvalgToggledOn = (
+// Checks if any tekstvalg has been toggled from OFF to ON between two saksbehandlerValg snapshots.
+export const hasAnyTekstvalgBeenToggledOn = (
   before: SaksbehandlerValg | null | undefined,
   after: SaksbehandlerValg | null | undefined,
 ): boolean => {
