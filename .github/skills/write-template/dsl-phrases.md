@@ -10,7 +10,7 @@
 |---|---|---|
 | `OutlinePhrase<Lang>` | `OutlineScope` (i.e. inside `outline { … }`) | titles, paragraphs, lists, tables, nested `showIf`, further `includePhrase` — up to a whole letter section |
 | `ParagraphPhrase<Lang>` | `ParagraphScope` (inside `paragraph { … }`) | text, lists, tables, form fields — but **no titles** |
-| `TextOnlyPhrase<Lang>` | `TextScope` (inside `item { … }`, `cell { … }`) and `ParagraphScope` | inline text with formatting (`FontType.BOLD`, etc.), `newLine()` |
+| `TextOnlyPhrase<Lang>` | `TextScope` (inside `item { … }`, `cell { … }`) and `ParagraphScope` | inline text with formatting (`FontType.BOLD`, etc.), `newline()` |
 | `PlainTextOnlyPhrase<Lang>` | `PlainTextScope` (inside `title { }`, `title1/2/3`, `column { }`) and any text scope | ren tekst only, no formatting |
 
 The picking rule is simple: **find the deepest scope you need to include in, and pick the phrase that fits there.** A phrase that supports more languages than the template is fine — only the language branches the template declares are emitted.

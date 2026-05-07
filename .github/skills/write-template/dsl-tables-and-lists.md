@@ -80,7 +80,7 @@ paragraph {
 ```
 
 - `header { column { … } }` is `PlainTextScope` — only ren tekst (no `TextOnlyPhrase` formatting).
-- `row { cell { … } }` is `TextScope` — `text(...)`, `includePhrase(TextOnly | PlainTextOnly)`, `eval(...)`, `newLine()`.
+- `row { cell { … } }` is `TextScope` — `text(...)`, `includePhrase(TextOnly | PlainTextOnly)`, `eval(...)`, `newline()`.
 - `eval(expression.format())` is the shorthand for emitting a single formatted expression in a cell.
 
 ### Column alignment — NAV letter standard
