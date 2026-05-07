@@ -50,7 +50,7 @@ The skeleton will have, at minimum:
 | `letterDataType` | `<YourDto>::class`. |
 | `displayTitle` | Situation-describing Bokmål — see `SKILL.md` *displayTitle* conventions. |
 | `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. |
-| `distribusjonstype` / `brevtype` | `LetterMetadata.Distribusjonstype.{VEDTAK|VIKTIG|ANNET}` and `LetterMetadata.Brevtype.{VEDTAKSBREV|INFORMASJONSBREV}` — **infer from content, then ask the user to confirm** (same pattern as `kategori`/`brevkontekst`/`sakstyper` in `write-redigerbar-template.md`). |
+| `distribusjonstype` / `brevtype` | `LetterMetadata.Distribusjonstype.{VEDTAK|VIKTIG|ANNET}` and `LetterMetadata.Brevtype.{VEDTAKSBREV|INFORMASJONSBREV}` — **infer from the letter content, then stop and ask the user to confirm with a one-line justification before continuing** (same pattern as `kategori`/`brevkontekst`/`sakstyper` in `write-redigerbar-template.md`). |
 | `title { text(…) }` | Usually the same wording as the Exstream overskrift — lift it from the first outline paragraph if the converter left it blank. |
 
 While transcribing the body, replace every `pe.foo_bar_baz()` call (which referenced the discarded `PEgruppeN` selector block) with the corresponding selector chain on the new Dto, e.g. `pesysData.beregning.tilleggspensjon.netto`.
