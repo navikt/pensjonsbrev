@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto
+import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
@@ -85,6 +86,9 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         // Vedlegg "Opplysninger om beregningen" (PE_GP_Utland_opplysninger_om_beregningen_HORISONT).
         // Nullable så bestiller kan utelate vedlegget når det ikke er relevant.
         val opplysningerOmBeregningen: OpplysningerOmBeregningenGPUtlandDto? = null,
+        // Vedlegg "Oversikt over pensjonens størrelse" (PE_GP_Nasj_Utland_oversikt_over_pensjonen_pensjon_HORISONT).
+        // Nullable så bestiller kan utelate vedlegget når det ikke er relevant.
+        val oversiktOverPensjonensStoerrelse: OversiktOverPensjonensStoerrelseGjenlevendepensjonDto? = null,
     ) : FagsystemBrevdata
 
     data class Beregning(

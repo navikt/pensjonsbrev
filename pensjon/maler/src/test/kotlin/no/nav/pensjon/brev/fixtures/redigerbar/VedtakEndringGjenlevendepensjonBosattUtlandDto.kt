@@ -13,6 +13,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.UtbetalingAlternativ
 import no.nav.pensjon.brev.fixtures.legacy.createOpplysningerOmBeregningGPUtlandDto
+import no.nav.pensjon.brev.fixtures.legacy.createOversiktOverPensjonensStoerrelseGjenlevendepensjonDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
 
@@ -52,6 +53,7 @@ fun createVedtakEndringGjenlevendepensjonBosattUtlandDto() =
             ),
             sivilstand = Sivilstand.SAMBOER_3_2,
             opplysningerOmBeregningen = createOpplysningerOmBeregningGPUtlandDto(),
+            oversiktOverPensjonensStoerrelse = createOversiktOverPensjonensStoerrelseGjenlevendepensjonDto(),
         ),
     )
 
