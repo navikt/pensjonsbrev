@@ -40,7 +40,7 @@ const KvittertBrevContentSuccess = (props: { saksId: string; brev: BrevInfo; jou
     props.brev.distribusjonstype === Distribusjonstype.LOKALPRINT && props.brev.status.type !== "Attestering";
 
   return (
-    <ExpansionCard.Content data-cy={`journalpostId-${props.journalpostId}`}>
+    <ExpansionCard.Content data-testid={`journalpostId-${props.journalpostId}`}>
       <VStack align="start" gap="space-16">
         <Oppsummeringspar
           size="small"

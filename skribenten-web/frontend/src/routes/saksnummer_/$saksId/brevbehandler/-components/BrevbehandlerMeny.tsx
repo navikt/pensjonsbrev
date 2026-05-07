@@ -259,7 +259,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
             <Box asChild borderRadius="4">
               <Button
                 aria-label="Endre mottaker"
-                data-cy="toggle-endre-mottaker-modal"
+                data-testid="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
                 onClick={() => {
                   trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
@@ -341,7 +341,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
       )}
       {erLaast && (
         <RadioGroup
-          data-cy="brevbehandler-distribusjonstype"
+          data-testid="brevbehandler-distribusjonstype"
           description={
             <HStack align="center" gap="space-20">
               <BodyShort color="text-neutral" size="small" weight="semibold">

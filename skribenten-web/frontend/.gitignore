@@ -12,8 +12,9 @@ dist
 dist-ssr
 *.local
 
-cypress/downloads
-cypress/screenshots
+# Playwright
+playwright-report
+test/e2e-report
 
 # Editor directories and files
 .vscode/*
@@ -25,6 +26,3 @@ cypress/screenshots
 *.njsproj
 *.sln
 *.sw?
-
-# Cypress
-cypress/downloads/*
