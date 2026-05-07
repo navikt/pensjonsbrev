@@ -14,7 +14,7 @@ RUN curl -sSLO "https://github.com/typst/typst/releases/download/v${TYPST_VERSIO
 
 # --- Stage 2: Final Runtime
 FROM --platform=linux/amd64 gcr.io/distroless/java25-debian13:nonroot
-ENV PATH=":/app/typst/:${PATH}"
+ENV PATH="/app/typst/:${PATH}"
 ENV TZ="Europe/London"
 
 EXPOSE 8080
