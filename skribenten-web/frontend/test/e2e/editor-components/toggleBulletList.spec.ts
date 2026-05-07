@@ -1,62 +1,67 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { SpraakKode } from "~/types/apiTypes";
+import { type Content, type EditedLetter, type Item } from "~/types/brevbakerTypes";
+
+import {
+  nyBrevInfo,
+  nyBrevResponse,
+  nyItem,
+  nyItemList,
+  nyLiteral,
+  nyParagraphBlock,
+  nyRedigertBrev,
+  nySignatur,
+} from "../../utils/brevredigeringTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-function makeBrevResponse(redigertBrev: object) {
-  return {
-    info: {
-      id: 1,
-      brevkode: "BREV1",
-      brevtittel: "Brev 1",
-      opprettet: "2024-01-01",
-      sistredigert: "2024-01-01",
-      sistredigertAv: { id: "Z123", navn: "Z entotre" },
-      opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
-      distribusjonstype: "SENTRALPRINT",
-      mottaker: null,
-      avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
-      spraak: "NB",
-      journalpostId: null,
-      vedtaksId: null,
-      brevtype: "INFORMASJONSBREV",
-      saksId: "22981081",
-    },
-    redigertBrev,
-    redigertBrevHash: "hash1",
-    saksbehandlerValg: {},
-    propertyUsage: null,
-    valgteVedlegg: null,
-  };
+const editorInfo = nyBrevInfo({
+  brevkode: "BREV1",
+  brevtittel: "Brev 1",
+  opprettet: "2024-01-01",
+  sistredigert: "2024-01-01",
+  sistredigertAv: { id: "Z123", navn: "Z entotre" },
+  opprettetAv: { id: "Z123", navn: "Z entotre" },
+  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
+  spraak: SpraakKode.Bokmaal,
+  sadsId: "22981081",
+});
+
+function makeBrevResponse(redigertBrev: EditedLetter) {
+  return nyBrevResponse({ info: editorInfo, redigertBrev });
 }
 
-function makeLiteral(id: number, text: string) {
+function makeLiteral(id: number, text: string, parentId: number | null = null) {
+  return { ...nyLiteral({ id, text }), parentId };
+}
+
+function makeItem(id: number, text: string): Item {
   return {
-    id,
+    ...nyItem({ id, content: [makeLiteral(id * 10 + 1, text, id)] }),
     parentId: null,
-    type: "LITERAL",
-    text,
-    editedText: text,
-    fontType: "PLAIN",
-    editedFontType: null,
-    tags: [],
   };
 }
 
-function makeItem(id: number, text: string) {
-  return { id, parentId: null, content: [makeLiteral(id * 10 + 1, text)], deletedContent: [] };
-}
-
-function makeItemList(id: number, items: object[]) {
-  return { id, parentId: null, type: "ITEM_LIST", items, deletedItems: [] };
-}
-
-function makeBlock(id: number, content: object[]) {
-  return { id, parentId: null, editable: true, content, deletedContent: [], type: "PARAGRAPH" };
-}
-
-function makeLetter(blocks: object[]) {
+function makeItemList(id: number, items: Item[]) {
   return {
+    ...nyItemList({
+      id,
+      items: items.map((item) => ({ ...item, parentId: id })),
+    }),
+    parentId: null,
+  };
+}
+
+function makeBlock(id: number, content: Content[]) {
+  return nyParagraphBlock({
+    id,
+    content: content.map((entry) => ({ ...entry, parentId: id })),
+  });
+}
+
+function makeLetter(blocks: ReturnType<typeof makeBlock>[]) {
+  return nyRedigertBrev({
     title: {
       text: [makeLiteral(1, "Test")],
       deletedContent: [],
@@ -68,15 +73,14 @@ function makeLetter(blocks: object[]) {
       dokumentDato: "2024-03-15",
     },
     blocks,
-    signatur: {
+    signatur: nySignatur({
       hilsenTekst: "Hilsen",
       saksbehandlerRolleTekst: "Saksbehandler",
       saksbehandlerNavn: "Ole",
       attesterendeSaksbehandlerNavn: "",
       navAvsenderEnhet: "Nav",
-    },
-    deletedBlocks: [],
-  };
+    }),
+  });
 }
 
 async function setupBrevRoute(page: Page, brevResponse: object) {

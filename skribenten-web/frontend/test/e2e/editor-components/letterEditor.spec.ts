@@ -1,292 +1,152 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { SpraakKode } from "~/types/apiTypes";
 import { type EditedLetter, type LiteralValue } from "~/types/brevbakerTypes";
 
+import {
+  nyBrevInfo,
+  nyBrevResponse,
+  nyItem,
+  nyItemList,
+  nyLiteral,
+  nyParagraphBlock,
+  nyRedigertBrev,
+  nySignatur,
+  nyTitle1Block,
+  nyTitle2Block,
+  nyVariable,
+} from "../../utils/brevredigeringTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-const exampleLetter1 = {
+const baseSakspart = {
+  gjelderNavn: "Test Testeson",
+  gjelderFoedselsnummer: "12345678910",
+  saksnummer: "1234",
+  dokumentDato: "2024-03-15",
+};
+
+const baseSignatur = nySignatur({
+  hilsenTekst: "Med vennlig hilsen",
+  saksbehandlerRolleTekst: "Saksbehandler",
+  saksbehandlerNavn: "Ole Saksbehandler",
+  attesterendeSaksbehandlerNavn: "",
+  navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
+});
+
+const editorInfo = nyBrevInfo({
+  brevkode: "BREV1",
+  brevtittel: "Brev 1",
+  opprettet: "2024-01-01",
+  sistredigert: "2024-01-01",
+  sistredigertAv: { id: "Z123", navn: "Z entotre" },
+  opprettetAv: { id: "Z123", navn: "Z entotre" },
+  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
+  spraak: SpraakKode.Bokmaal,
+  sadsId: "22981081",
+});
+
+function literal(id: number, parentId: number | null, text: string) {
+  return { ...nyLiteral({ id, text }), parentId };
+}
+
+function variable(id: number, parentId: number | null, text: string) {
+  return { ...nyVariable({ id, text }), parentId };
+}
+
+const exampleLetter1 = nyRedigertBrev({
   title: {
-    text: [
-      {
-        id: 1,
-        parentId: null,
-        type: "LITERAL",
-        text: "Informasjon om saksbehandlingstiden vår",
-        editedText: null,
-        fontType: "PLAIN",
-        editedFontType: null,
-        tags: [],
-      },
-    ],
+    text: [literal(1, null, "Informasjon om saksbehandlingstiden vår")],
     deletedContent: [],
   },
-  sakspart: {
-    gjelderNavn: "Test Testeson",
-    gjelderFoedselsnummer: "12345678910",
-    saksnummer: "1234",
-    dokumentDato: "2024-03-15",
-  },
+  sakspart: baseSakspart,
   blocks: [
-    {
+    nyParagraphBlock({
       id: 1,
-      parentId: null,
-      editable: true,
       content: [
-        {
-          id: 11,
-          parentId: 1,
-          text: "Denne blokken[CP1-1] ",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-        {
-          id: 12,
-          parentId: 1,
-          text: "VARIABLE-MED-LITT-LENGDE",
-          type: "VARIABLE",
-          fontType: "PLAIN",
-        },
-        {
-          id: 13,
-          parentId: 1,
-          text: "Er laget for å teste piltaster vertikalt i samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at markøren beveger seg til nærmeste side av variabelen.",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
+        literal(11, 1, "Denne blokken[CP1-1] "),
+        variable(12, 1, "VARIABLE-MED-LITT-LENGDE"),
+        literal(
+          13,
+          1,
+          "Er laget for å teste piltaster vertikalt i samme avsnitt[CP1-2]. Vi vil teste [CP1-3] at markøren beveger seg til nærmeste side av variabelen.",
+        ),
       ],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
-    {
+    }),
+    nyParagraphBlock({
       id: 2,
-      parentId: null,
-      editable: true,
       content: [
-        {
-          id: 21,
-          parentId: 2,
-          text: "[CP2-1]Her vil vi teste at piltast opp/ned",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-        {
-          id: 22,
-          parentId: 2,
-          text: "ØVRE-VARIABLE",
-          type: "VARIABLE",
-          fontType: "PLAIN",
-        },
-        {
-          id: 23,
-          parentId: 2,
-          text: "funker mellom avsnitt",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
+        literal(21, 2, "[CP2-1]Her vil vi teste at piltast opp/ned"),
+        variable(22, 2, "ØVRE-VARIABLE"),
+        literal(23, 2, "funker mellom avsnitt"),
       ],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
-    {
+    }),
+    nyParagraphBlock({
       id: 3,
-      parentId: null,
-      editable: true,
       content: [
-        {
-          id: 31,
-          parentId: 3,
-          text: "[CP2-2]Her vil vi",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-        {
-          id: 32,
-          parentId: 3,
-          text: "NEDRE-VARIABLE",
-          type: "VARIABLE",
-          fontType: "PLAIN",
-        },
-        {
-          id: 33,
-          parentId: 3,
-          text: " teste at pil opp/ned krysser avsnitt [CP2-3]",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
+        literal(31, 3, "[CP2-2]Her vil vi"),
+        variable(32, 3, "NEDRE-VARIABLE"),
+        literal(33, 3, " teste at pil opp/ned krysser avsnitt [CP2-3]"),
       ],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
-    {
+    }),
+    nyTitle1Block({
       id: 4,
-      parentId: null,
-      editable: true,
-      content: [
-        {
-          id: 41,
-          parentId: 4,
-          text: "Tittel over punktliste",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-      ],
-      deletedContent: [],
-      type: "TITLE1",
-    },
-    {
+      content: [literal(41, 4, "Tittel over punktliste")],
+    }),
+    nyParagraphBlock({
       id: 5,
-      parentId: null,
-      editable: true,
       content: [
         {
-          id: 51,
+          ...nyItemList({
+            id: 51,
+            items: [
+              {
+                ...nyItem({
+                  id: 511,
+                  content: [
+                    literal(
+                      5111,
+                      511,
+                      "Punkt 1. Dette er et veldig langt punkt kun av den grunn at vi ønsker helst, mest sannsynlig, at denne skal brekke over to linjer[CP3-1]",
+                    ),
+                  ],
+                }),
+                parentId: 51,
+              },
+              {
+                ...nyItem({
+                  id: 512,
+                  content: [literal(5121, 512, "Punkt 2. Migrere brev[CP3-2]")],
+                }),
+                parentId: 51,
+              },
+              {
+                ...nyItem({
+                  id: 513,
+                  content: [literal(-5131, 513, "Punkt 3. Øk budsjettet[CP3-3]")],
+                }),
+                parentId: 51,
+              },
+            ],
+          }),
           parentId: 5,
-          items: [
-            {
-              id: 511,
-              parentId: 51,
-              content: [
-                {
-                  id: 5111,
-                  parentId: 511,
-                  text: "Punkt 1. Dette er et veldig langt punkt kun av den grunn at vi ønsker helst, mest sannsynlig, at denne skal brekke over to linjer[CP3-1]",
-                  type: "LITERAL",
-                  fontType: "PLAIN",
-                  editedFontType: null,
-                  tags: [],
-                },
-              ],
-            },
-            {
-              id: 512,
-              parentId: 51,
-              content: [
-                {
-                  id: 5121,
-                  parentId: 512,
-                  text: "Punkt 2. Migrere brev[CP3-2]",
-                  type: "LITERAL",
-                  fontType: "PLAIN",
-                  editedFontType: null,
-                  tags: [],
-                },
-              ],
-            },
-            {
-              id: 513,
-              parentId: 51,
-              content: [
-                {
-                  id: -5131,
-                  parentId: 513,
-                  text: "Punkt 3. Øk budsjettet[CP3-3]",
-                  type: "LITERAL",
-                  fontType: "PLAIN",
-                  editedFontType: null,
-                  tags: [],
-                },
-              ],
-            },
-          ],
-          type: "ITEM_LIST",
         },
       ],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
-    {
+    }),
+    nyTitle2Block({
       id: 6,
-      parentId: null,
-      editable: true,
-      content: [
-        {
-          id: 61,
-          parentId: 6,
-          text: "Tittel under punktliste",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-      ],
-      deletedContent: [],
-      type: "TITLE2",
-    },
-    {
+      content: [literal(61, 6, "Tittel under punktliste")],
+    }),
+    nyParagraphBlock({
       id: 7,
-      parentId: null,
-      editable: true,
-      content: [
-        {
-          id: 71,
-          parentId: 7,
-          text: "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]",
-          type: "LITERAL",
-          fontType: "PLAIN",
-          editedFontType: null,
-          tags: [],
-        },
-      ],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
+      content: [literal(71, 7, "Siste avsnitt for å teste at pil ned tar oss til end of line.[CP4-1]")],
+    }),
   ],
-  signatur: {
-    hilsenTekst: "Med vennlig hilsen",
-    saksbehandlerRolleTekst: "Saksbehandler",
-    saksbehandlerNavn: "Ole Saksbehandler",
-    attesterendeSaksbehandlerNavn: "",
-    navAvsenderEnhet: "Nav Familie- og pensjonsytelser Porsgrunn",
-  },
-  deletedBlocks: [],
-} as EditedLetter;
+  signatur: baseSignatur,
+}) as EditedLetter;
 
-function makeBrevResponse(redigertBrev: object) {
-  return {
-    info: {
-      id: 1,
-      brevkode: "BREV1",
-      brevtittel: "Brev 1",
-      opprettet: "2024-01-01",
-      sistredigert: "2024-01-01",
-      sistredigertAv: { id: "Z123", navn: "Z entotre" },
-      opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: {
-        type: "UnderRedigering",
-        redigeresAv: { id: "Z123", navn: "Z entotre" },
-      },
-      distribusjonstype: "SENTRALPRINT",
-      mottaker: null,
-      avsenderEnhet: {
-        enhetNr: "0001",
-        navn: "NAV Familie- og pensjonsytelser",
-      },
-      spraak: "NB",
-      journalpostId: null,
-      vedtaksId: null,
-      brevtype: "INFORMASJONSBREV",
-      saksId: "22981081",
-    },
-    redigertBrev,
-    redigertBrevHash: "hash1",
-    saksbehandlerValg: {},
-    propertyUsage: null,
-    valgteVedlegg: null,
-  };
+function makeBrevResponse(redigertBrev: EditedLetter) {
+  return nyBrevResponse({ info: editorInfo, redigertBrev });
 }
 
 async function setupBrevRoute(page: Page, brevResponse: object) {

@@ -1,51 +1,45 @@
 import { expect, type Page, test } from "@playwright/test";
 
+import { SpraakKode } from "~/types/apiTypes";
+import { type EditedLetter } from "~/types/brevbakerTypes";
+
+import {
+  nyBrevInfo,
+  nyBrevResponse,
+  nyLiteral,
+  nyParagraphBlock,
+  nyRedigertBrev,
+  nySignatur,
+  nyTitle1Block,
+  nyTitle2Block,
+  nyTitle3Block,
+} from "../../utils/brevredigeringTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
-function makeBrevResponse(redigertBrev: object) {
-  return {
-    info: {
-      id: 1,
-      brevkode: "BREV1",
-      brevtittel: "Brev 1",
-      opprettet: "2024-01-01",
-      sistredigert: "2024-01-01",
-      sistredigertAv: { id: "Z123", navn: "Z entotre" },
-      opprettetAv: { id: "Z123", navn: "Z entotre" },
-      status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
-      distribusjonstype: "SENTRALPRINT",
-      mottaker: null,
-      avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
-      spraak: "NB",
-      journalpostId: null,
-      vedtaksId: null,
-      brevtype: "INFORMASJONSBREV",
-      saksId: "22981081",
-    },
-    redigertBrev,
-    redigertBrevHash: "hash1",
-    saksbehandlerValg: {},
-    propertyUsage: null,
-    valgteVedlegg: null,
-  };
+const editorInfo = nyBrevInfo({
+  brevkode: "BREV1",
+  brevtittel: "Brev 1",
+  opprettet: "2024-01-01",
+  sistredigert: "2024-01-01",
+  sistredigertAv: { id: "Z123", navn: "Z entotre" },
+  opprettetAv: { id: "Z123", navn: "Z entotre" },
+  status: { type: "UnderRedigering", redigeresAv: { id: "Z123", navn: "Z entotre" } },
+  avsenderEnhet: { enhetNr: "0001", navn: "NAV Familie- og pensjonsytelser" },
+  spraak: SpraakKode.Bokmaal,
+  sadsId: "22981081",
+});
+
+function makeBrevResponse(redigertBrev: EditedLetter) {
+  return nyBrevResponse({ info: editorInfo, redigertBrev });
 }
 
-function makeLiteral(id: number, text: string) {
-  return {
-    id,
-    parentId: null,
-    type: "LITERAL",
-    text,
-    editedText: text,
-    fontType: "PLAIN",
-    editedFontType: null,
-    tags: [],
-  };
+function makeLiteral(id: number, parentId: number | null, text: string) {
+  return { ...nyLiteral({ id, text }), parentId };
 }
 
-const typographyLetter = {
+const typographyLetter = nyRedigertBrev({
   title: {
-    text: [makeLiteral(1, "Test Typography")],
+    text: [makeLiteral(1, null, "Test Typography")],
     deletedContent: [],
   },
   sakspart: {
@@ -55,48 +49,31 @@ const typographyLetter = {
     dokumentDato: "2024-03-15",
   },
   blocks: [
-    {
+    nyTitle1Block({
       id: 10,
-      parentId: null,
-      editable: true,
-      content: [makeLiteral(11, "Dette er en title1 block")],
-      deletedContent: [],
-      type: "TITLE1",
-    },
-    {
+      content: [makeLiteral(11, 10, "Dette er en title1 block")],
+    }),
+    nyTitle2Block({
       id: 20,
-      parentId: null,
-      editable: true,
-      content: [makeLiteral(21, "Dette er en title2 block")],
-      deletedContent: [],
-      type: "TITLE2",
-    },
-    {
+      content: [makeLiteral(21, 20, "Dette er en title2 block")],
+    }),
+    nyTitle3Block({
       id: 30,
-      parentId: null,
-      editable: true,
-      content: [makeLiteral(31, "Dette er en title3 block")],
-      deletedContent: [],
-      type: "TITLE3",
-    },
-    {
+      content: [makeLiteral(31, 30, "Dette er en title3 block")],
+    }),
+    nyParagraphBlock({
       id: 40,
-      parentId: null,
-      editable: true,
-      content: [makeLiteral(41, "Dette er en paragraph block")],
-      deletedContent: [],
-      type: "PARAGRAPH",
-    },
+      content: [makeLiteral(41, 40, "Dette er en paragraph block")],
+    }),
   ],
-  signatur: {
+  signatur: nySignatur({
     hilsenTekst: "Med vennlig hilsen",
     saksbehandlerRolleTekst: "Saksbehandler",
     saksbehandlerNavn: "Ole",
     attesterendeSaksbehandlerNavn: "",
     navAvsenderEnhet: "Nav",
-  },
-  deletedBlocks: [],
-};
+  }),
+});
 
 async function setupBrevRoute(page: Page, brevResponse: object) {
   await setupSakStubs(page);
