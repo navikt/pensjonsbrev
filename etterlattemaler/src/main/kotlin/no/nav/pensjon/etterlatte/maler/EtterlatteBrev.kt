@@ -47,6 +47,13 @@ data class OmstillingsstoenadBeregning(
     val erYrkesskade: Boolean = false,
 ) : VedleggData, BrevDTO
 
+data class OmstillingsstoenadBeregningRedigerbartVedlegg(
+    val innhold: List<Element> = emptyList(),
+    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning? = null,
+    val erInnvilgelsesAar: Boolean = false,
+
+) : RedigerbartUtfallBrevDTO
+
 data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
     val virkningsdato: LocalDate,
     val beregningsperioder: List<OmstillingsstoenadBeregningsperiode>,

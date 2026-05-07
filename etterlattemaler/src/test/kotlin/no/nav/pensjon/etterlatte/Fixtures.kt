@@ -34,6 +34,7 @@ import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetsplik
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAktivitetspliktInformasjon6mndDto
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadAvslagRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInformasjonDoedsfallDto
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInnhentingAvOpplysningerDTO
 import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadInntektsjusteringVedtakDTO
@@ -59,6 +60,7 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.ManueltBrevDTO
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.maler.andre.TomMal
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.avslag.BarnepensjonAvslagRedigerbartUtfallDTO
@@ -158,6 +160,8 @@ object Fixtures : LetterDataFactory {
             OmstillingsstoenadAktivitetspliktInformasjon6mndInnholdDTO::class -> createOmstillingsstoenadAktivitetspliktInformasjon6mndDto() as T
             OmstillingsstoenadVarselAktivitetspliktDTO::class -> createOmstillingsstoenadVarselAktivitetspliktDTO() as T
             OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO::class -> createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() as T
+            OmstillingsstoenadBeregningRedigerbartVedlegg::class ->
+                createOmstillingsstoenadBeregningRedigerbartVedlegg() as T
 
             // Inntektsjustering
             AarligInntektsjusteringVedtakDTO::class -> createOmstillingsstoenadInntektsjusteringVedtakDTO() as T
