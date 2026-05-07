@@ -40,17 +40,33 @@ val netto: Kroner,
 
 ## Step 2 — Fill in the template TODOs
 
-The skeleton will have, at minimum:
+### Look up the brevkode in `brevdata-map.csv` first
+
+Most metadata is *already known* — the original Pesys brevkode (`brevkodeIBrevsystem`, e.g. `PE_GP_04_027`) is **always** the leading underscore-prefix of the converter's output filename (e.g. `PE_GP_04_027_vedtak_innvilgelse_gp_utland.kt` → `PE_GP_04_027`), and that key is **always** present as a row in [`pensjonsbrev-utils/exstreamConverter/docs/brevdata-map.csv`](../../../../pensjonsbrev-utils/exstreamConverter/docs/brevdata-map.csv). Read that row before touching the template.
+
+Field-by-field mapping from the CSV row to the brevbaker template:
+
+| CSV column | Brevbaker target | How to read it |
+|---|---|---|
+| `redigerbart` | Template type | `true` → `RedigerbarTemplate<…>`; `false` → `AutobrevTemplate<…>`. This is the **definitive** source — do not second-guess it from the body content. |
+| `dekode` | `displayTitle` | Use as-is, or trim a trailing `(automatisk)` for autobrev. Verify against `SKILL.md` *displayTitle* conventions. |
+| `sprak` | `languages(…)` | Pipe-separated list (`NB\|NN\|EN`) maps directly to `languages(Bokmal, Nynorsk, English)` in declaration order. |
+| `dokumentkategori` | `LetterMetadata.brevtype` | `VB` → `VEDTAKSBREV`; `B` / `IB` → `INFORMASJONSBREV`. (`SED` / `E_BLANKETT` are unusual — treat as a flag to ask before continuing.) |
+| `brevkategori` | `LetterMetadata.distribusjonstype` (autobrev) **and** `kategori` (redigerbar) | Distribusjonstype: `VEDTAK` → `VEDTAK`; `VARSEL` / `INNHENTE_OPPL` → `VIKTIG`; everything else → `ANNET`. Kategori (redigerbar only): `VARSEL` → `VARSEL`, `INNHENTE_OPPL` → `INNHENTE_OPPLYSNINGER`, `INFORMASJON` → `INFORMASJONSBREV`. The CSV's `VEDTAK` is too coarse — pick the specific `VEDTAK_*` enum value (e.g. `VEDTAK_ENDRING_OG_REVURDERING`, `VEDTAK_EKSPORT`, `VEDTAK_FLYTTE_MELLOM_LAND`) by reading the letter body. |
+| `brevkontekst` | `brevkontekst` (redigerbar only) | Maps directly: `VEDTAK` → `Brevkontekst.VEDTAK`, `SAK` → `Brevkontekst.SAK`, `ALLTID` → `Brevkontekst.ALLE`. Empty → infer per `write-redigerbar-template.md`. |
+
+`sakstyper` (redigerbar only) is **not** in the CSV — derive from the letter's domain as documented in `write-redigerbar-template.md`.
+
+After populating from the CSV, **stop and ask the user to confirm the metadata with a one-line justification per field** (same pattern as `write-redigerbar-template.md`). Mention any field where you had to pick a `VEDTAK_*` sub-kategori from the letter content rather than read it directly from the row.
+
+### Remaining TODOs (judgement / convention)
 
 | TODO | What to supply |
 |---|---|
 | Object name | Situation-describing `PascalCase` (e.g. `DelvisEksportAvGjenlevendepensjon`). The `…Legacy` suffix only appears on older `PEgruppeN`-based templates — do not add it for new conversions that built a fresh Dto in Step 1. |
-| `AutobrevTemplate<// TODO>` / `RedigerbarTemplate<// TODO>` | The Dto type built in Step 1. |
-| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `SKILL.md` (unique, ≤ 50 chars, immutable, never deleted). |
 | `letterDataType` | `<YourDto>::class`. |
-| `displayTitle` | Situation-describing Bokmål — see `SKILL.md` *displayTitle* conventions. |
-| `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. |
-| `distribusjonstype` / `brevtype` | `LetterMetadata.Distribusjonstype.{VEDTAK|VIKTIG|ANNET}` and `LetterMetadata.Brevtype.{VEDTAKSBREV|INFORMASJONSBREV}` — **infer from the letter content, then stop and ask the user to confirm with a one-line justification before continuing** (same pattern as `kategori`/`brevkontekst`/`sakstyper` in `write-redigerbar-template.md`). |
+| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `SKILL.md` (unique, ≤ 50 chars, immutable, never deleted). Reuse the CSV's `brevkodeIBrevsystem` verbatim when the converter produced the entry from a Pesys brev. |
+| `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. Not in the CSV. |
 | `title { text(…) }` | Usually the same wording as the Exstream overskrift — lift it from the first outline paragraph if the converter left it blank. |
 
 While transcribing the body, replace every `pe.foo_bar_baz()` call (which referenced the discarded `PEgruppeN` selector block) with the corresponding selector chain on the new Dto, e.g. `pesysData.beregning.tilleggspensjon.netto`.
@@ -81,6 +97,8 @@ Add a selector for the list (`List<PeriodeArsak>` or whatever the real type is) 
 
 ## Step 4 — Convert `<FRITEKST: …>` markers
 
+**Only relevant when the CSV row has `redigerbart=true`.** Autobrev letters never contain `<FRITEKST: …>` markers — skip this step.
+
 Exstream placeholders for caseworker free-text come through as literal strings inside `+"…"`:
 
 ```kotlin
@@ -100,11 +118,10 @@ Rules:
 - If a short inline choice is embedded (e.g. `<FRITEKST: tre/fem>` inside a longer sentence), convert just that fragment to `fritekst("tre/fem")` and concatenate with the literal text around it.
 - **When the `<FRITEKST: …>` wraps a *fork* between named alternatives** (e.g. *"Alt. 1 Informasjon om skatt … / Alt. 2 Kildeskatt …"* — where the caseworker is instructed to pick one and delete the rest), prefer a `Saksbehandlervalg` enum with `showIf` over `fritekst(…)`. An enum makes the choice a typed Skribenten form input instead of relying on the caseworker to hand-delete alternatives, and removes the risk of shipping both alternatives in the rendered letter.
 
-**Three consequences:**
+**Two consequences:**
 
-1. `fritekst` is only available inside a `RedigerbarTemplate` (see `write-redigerbar-template.md`). If the converter emitted `AutobrevTemplate` but the source has `<FRITEKST: …>` markers, **the template type is wrong** — convert to `RedigerbarTemplate` before continuing, and add the `Saksbehandlervalg` / fagsystem-data Dto split.
-2. The converter duplicates the Bokmål FRITEKST string into the Nynorsk and English branches. After wrapping in `fritekst(…)`, the prompt string is shared across languages — the surrounding text around the `fritekst(…)` call is what must be translated.
-3. The prompt passed to `fritekst(…)` is the instruction shown to the caseworker. Drop the `FRITEKST:` prefix and angle brackets; keep the descriptive imperative (*"Forklar kort hvilke inntekter som er endret"*).
+1. The converter duplicates the Bokmål FRITEKST string into the Nynorsk and English branches. After wrapping in `fritekst(…)`, the prompt string is shared across languages — the surrounding text around the `fritekst(…)` call is what must be translated.
+2. The prompt passed to `fritekst(…)` is the instruction shown to the caseworker. Drop the `FRITEKST:` prefix and angle brackets; keep the descriptive imperative (*"Forklar kort hvilke inntekter som er endret"*).
 
 ## Step 5 — Restore tables that were flattened to adjacent `text(…)` calls
 
