@@ -7,6 +7,7 @@ import no.nav.brev.brevbaker.renderTestPDF
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.Fixtures
+import no.nav.pensjon.etterlatte.fixtures.createOmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.redigerbar.OmstillingsstoenadVedleggBeregningRedigerbartUtfall
@@ -17,20 +18,25 @@ import org.junit.jupiter.api.Test
 internal class OmstillingsstoenadVedleggBeregningRedigerbartUtfallTest {
 
     @Test
-    fun pdftest() {
-        LetterTestImpl(
-            TomMalInformasjonsbrev.template,
-            Fixtures.create<ManueltBrevMedTittelDTO>(),
+    fun testHtml() {
+        val argument: OmstillingsstoenadBeregningRedigerbartVedlegg = createOmstillingsstoenadBeregningRedigerbartVedlegg()
+
+        val letter = LetterTestImpl(
+            OmstillingsstoenadVedleggBeregningRedigerbartUtfall.template,
+            argument,
             Language.Bokmal,
             Fixtures.felles
-        ).renderTestPDF(EtterlatteBrevKode.TOM_MAL_INFORMASJONSBREV.name)
+        )
+        letter.renderTestHtml(EtterlatteBrevKode.OMSTILLINGSSTOENAD_VEDLEGG_BEREGNING_UTFALL.name)
     }
 
     @Test
-    fun testHtml() {
+    fun testHtmlMedBeregningsdata() {
+        val argument: OmstillingsstoenadBeregningRedigerbartVedlegg = createOmstillingsstoenadBeregningRedigerbartVedlegg()
+
         val letter = LetterTestImpl(
             OmstillingsstoenadVedleggBeregningRedigerbartUtfall.template,
-            Fixtures.create< OmstillingsstoenadBeregningRedigerbartVedlegg>(),
+            argument,
             Language.Bokmal,
             Fixtures.felles
         )
