@@ -44,8 +44,8 @@ object UforetrygdLovendringer2026Fraser {
             }
             paragraph {
                 text(
-                    bokmal { +"Stortinget har vedtatt at" },
-                    nynorsk { +"Stortinget har vedteke at" }
+                    bokmal { +"Stortinget har vedtatt at:" },
+                    nynorsk { +"Stortinget har vedteke at:" }
                 )
                 list {
                     item {
@@ -97,18 +97,18 @@ object UforetrygdLovendringer2026Fraser {
         }
     }
 
-    object HoyereMinstesatsIFU : OutlinePhrase<LangBokmalNynorsk>() {
+    object OktMinsteIFU : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
-                    bokmal { +"Varsel om høyere minstesats for inntekt før uførhet (IFU)" },
-                    nynorsk { +"Varsel om høgare minstesats for inntekt før uførhet (IFU)" },
+                    bokmal { +"Varsel om økning av minste inntekt før uførhet (IFU)" },
+                    nynorsk { +"Varsel om auke av minste inntekt før uførhet (IFU)" },
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Stortinget har vedtatt at" },
-                    nynorsk { +"Stortinget har vedteke at" }
+                    bokmal { +"Stortinget har vedtatt at:" },
+                    nynorsk { +"Stortinget har vedteke at:" }
                 )
                 list {
                     item {
@@ -118,13 +118,13 @@ object UforetrygdLovendringer2026Fraser {
                     }
                     item {
                         text(
-                            bokmal { +"Minstesats for inntekt før uførhet økes, og kan ikke lenger være lavere enn 3,5 G." },
-                            nynorsk { +"Minstesats for inntekt før uførhet aukar, og kan ikkje lenger vere lågare enn 3,5 G." })
+                            bokmal { +"Minste IFU økes, og kan ikke lenger være lavere enn 3,5 G." },
+                            nynorsk { +"Minste IFU aukar, og kan ikkje lenger vere lågare enn 3,5 G." })
                     }
                     item {
                         text(
-                            bokmal { +"Endringen fører til at sivilstand ikke lenger påvirker minstesats for IFU." },
-                            nynorsk { +"Endringa fører til at sivilstand ikkje lenger påverkar minstesats for IFU." })
+                            bokmal { +"Endringen fører til at sivilstand ikke lenger påvirker minste IFU." },
+                            nynorsk { +"Endringa fører til at sivilstand ikkje lenger påverkar minste IFU." })
                     }
                 }
             }
@@ -136,8 +136,8 @@ object UforetrygdLovendringer2026Fraser {
             }
             paragraph {
                 text(
-                    bokmal { +"Du får en høyere IFU fordi du har eller har hatt ektefelle/samboer og har minstesats for IFU i 2026." },
-                    nynorsk { +"Du får ein høgare IFU fordi du har eller har hatt ektefelle/sambuar og har minstesats for IFU i 2026." },
+                    bokmal { +"Du får en høyere IFU fordi du har eller har hatt ektefelle/samboer og har minste IFU i 2026." },
+                    nynorsk { +"Du får ein høgare IFU fordi du har eller har hatt ektefelle/sambuar og har minste IFU i 2026." },
                 )
             }
             title2 {
@@ -148,8 +148,8 @@ object UforetrygdLovendringer2026Fraser {
             }
             paragraph {
                 text(
-                    bokmal { +"Minste IFU er en sats vi setter for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet." },
-                    nynorsk { +"Minste IFU er ein sats vi set for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet." },
+                    bokmal { +"Minste IFU bruker vi for å sikre et inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet." },
+                    nynorsk { +"Minste IFU brukar vi for å sikre eit inntektsgrunnlag for deg som har hatt lite eller ingen inntekt før uførhet." },
                 )
             }
             paragraph {
@@ -160,13 +160,13 @@ object UforetrygdLovendringer2026Fraser {
                 list {
                     item {
                         text(
-                            bokmal { +"uføregrad" },
-                            nynorsk { +"uføregrad" })
+                            bokmal { +"Uføregrad" },
+                            nynorsk { +"Uføregrad" })
                     }
                     item {
                         text(
-                            bokmal { +"reduksjonsprosent" },
-                            nynorsk { +"reduksjonsprosent" })
+                            bokmal { +"Reduksjonsprosent" },
+                            nynorsk { +"Reduksjonsprosent" })
                     }
                     item {
                         text(
