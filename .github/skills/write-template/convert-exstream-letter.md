@@ -11,6 +11,8 @@ The converter produces a single file with two sections:
 1. **Selector block at the top** — extension functions on `Expression<PEgruppeN>` prefixed with a copy-into-`LegacySelectors` comment. Chains of `.safe{…}.safe{…}.ifNull(fallback)` that navigate the legacy Pesys data model with null-safety. **Discard for new conversions** — see Step 1.
 2. **Template skeleton** — a `@TemplateModelHelpers object … : AutobrevTemplate<…>` stub with `// TODO` placeholders for metadata, and an `outline { … }` body that mirrors the Exstream source structure with trace comments.
 
+The body may also contain `includePhrase(TBU…_Generated)` / `includePhrase(TBU…_Generated(pe))` calls. Those phrases are **not** in the letter file — they live as standalone Kotlin files in [`pensjonsbrev-utils/exstreamConverter/out/phrases/`](../../../../pensjonsbrev-utils/exstreamConverter/out/phrases) (one `TBUxxxx_Generated.kt` per Exstream `TBU` block, ~300 of them). Open the matching file to see what content the phrase contributes — you need this to translate selectors to your new Dto (Step 2), to spot phrases that should be replaced by an inlined paragraph or a hand-authored phrase, and to decide which phrases to dedupe into a shared `OutlinePhrase` / `ParagraphPhrase` (Step 7). Phrases that take a `pe: Expression<PEgruppeN>` parameter still read through the legacy mega-class — when you migrate the letter to a fresh Dto, port the phrase's selectors at the same time (or inline the phrase into the letter).
+
 The manual pass has seven steps. Work through them in order; each later step assumes the earlier ones have been done.
 
 ## Step 1 — Build a data-minimised, traceable Dto
