@@ -5,8 +5,7 @@ FROM --platform=linux/amd64 debian:trixie-slim AS assets
 ARG TYPST_VERSION=0.14.2
 ARG TYPST_HASH="a6044cbad2a954deb921167e257e120ac0a16b20339ec01121194ff9d394996d"
 RUN apt-get update && apt-get install -y --no-install-recommends \
-        curl xz-utils ca-certificates fonts-noto-core \
-    && rm -rf /var/lib/apt/lists/*
+        curl xz-utils ca-certificates fonts-noto-core
 WORKDIR /typst
 RUN curl -sSLO "https://github.com/typst/typst/releases/download/v${TYPST_VERSION}/typst-x86_64-unknown-linux-musl.tar.xz" \
     && echo "${TYPST_HASH}  typst-x86_64-unknown-linux-musl.tar.xz" | sha256sum -c - \
