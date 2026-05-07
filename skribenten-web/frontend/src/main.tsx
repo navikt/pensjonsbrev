@@ -14,7 +14,16 @@ import { routeTree } from "./routeTree.gen";
 
 enablePatches();
 
-const queryClient = new QueryClient();
+// Disable staggered retries in tests to speed them up
+const isBrowserAutomation = typeof navigator !== "undefined" && navigator.webdriver;
+const queryClient = new QueryClient({
+  defaultOptions: isBrowserAutomation
+    ? {
+        queries: { retry: false },
+        mutations: { retry: false },
+      }
+    : undefined,
+});
 
 // Set up a Router instance
 const router = createRouter({

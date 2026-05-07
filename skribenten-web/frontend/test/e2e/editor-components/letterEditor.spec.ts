@@ -394,12 +394,12 @@ async function getCaretDebugInfo(page: Page) {
 }
 
 async function move(page: Page, key: string, times: number) {
-  const before = process.env.IS_UI_MODE ? await getCaretDebugInfo(page) : null;
+  const before = process.env.E2E_UI_MODE ? await getCaretDebugInfo(page) : null;
   for (let i = 0; i < times; i++) {
     await page.keyboard.press(key);
   }
-  const after = process.env.IS_UI_MODE ? await getCaretDebugInfo(page) : null;
-  if (process.env.IS_UI_MODE) console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
+  const after = process.env.E2E_UI_MODE ? await getCaretDebugInfo(page) : null;
+  if (process.env.E2E_UI_MODE) console.info(`${key} x${times}`, "\nbefore", before, "\nafter", after);
 }
 
 async function assertCaret(
@@ -418,7 +418,7 @@ async function assertCaret(
     return selection?.rangeCount ? selection.getRangeAt(0).startOffset : -1;
   });
 
-  if (process.env.IS_UI_MODE) {
+  if (process.env.E2E_UI_MODE) {
     console.info("ASSERT");
     console.info("focused:", await focused.allTextContents());
     console.info(await getCaretDebugInfo(page));

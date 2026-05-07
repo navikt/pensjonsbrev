@@ -25,11 +25,17 @@ test.describe("ApiError - overflow", () => {
       });
     });
 
+    const response = page.waitForResponse(
+      (r) =>
+        r.url().includes("/bff/skribenten-backend/sak/123456/brev") &&
+        r.request().method() === "GET" &&
+        r.status() === 422,
+    );
     await page.goto("/saksnummer/123456/brevvelger?brevId=1");
+    await response;
 
     const alert = page.locator('[data-testid="functional-error-alert"]');
-    // TanStack Query retries 3 times by default (total wait ~7s), so we need a generous timeout
-    await expect(alert).toBeVisible({ timeout: 15000 });
+    await expect(alert).toBeVisible();
 
     const overflows = await alert.evaluate((el) => el.scrollWidth > el.clientWidth);
     expect(overflows).toBe(false);
@@ -48,11 +54,17 @@ test.describe("ApiError - overflow", () => {
       });
     });
 
+    const response = page.waitForResponse(
+      (r) =>
+        r.url().includes("/bff/skribenten-backend/sak/123456/brev") &&
+        r.request().method() === "GET" &&
+        r.status() === 500,
+    );
     await page.goto("/saksnummer/123456/brevvelger?brevId=1");
+    await response;
 
     const alert = page.locator('[data-testid="generic-error-alert"]');
-    // TanStack Query retries 3 times by default (total wait ~7s), so we need a generous timeout
-    await expect(alert).toBeVisible({ timeout: 15000 });
+    await expect(alert).toBeVisible();
 
     const overflows = await alert.evaluate((el) => el.scrollWidth > el.clientWidth);
     expect(overflows).toBe(false);

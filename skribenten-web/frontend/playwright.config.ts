@@ -2,9 +2,9 @@ import { defineConfig, devices } from "@playwright/test";
 
 const isUI = process.argv.includes("--ui");
 if (isUI) {
-  process.env.IS_UI_MODE = "true";
+  process.env.E2E_UI_MODE = "true";
 }
-const isUiMode = process.env.IS_UI_MODE === "true";
+const isUiMode = process.env.E2E_UI_MODE === "true";
 
 export default defineConfig({
   testDir: "./test/e2e",
