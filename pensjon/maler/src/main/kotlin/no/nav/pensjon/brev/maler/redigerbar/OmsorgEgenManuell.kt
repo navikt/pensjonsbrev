@@ -40,15 +40,13 @@ object OmsorgEgenManuell : RedigerbarTemplate<OmsorgEgenManuellDto> {
             includePhrase(OmsorgEgenerklaeringTittel)
         }
         outline {
-            ifNotNull(saksbehandlerValg.aarInnvilgetOmsorgspoeng) { aarInnvilgetOmsorgspoeng ->
-                ifNotNull(saksbehandlerValg.aarEgenerklaringOmsorgspoeng) { aarEgenerklaringOmsorgspoeng ->
-                    includePhrase(
-                        OmsorgEgenerklaeringOutline(
-                            aarEgenerklaringOmsorgspoeng = aarEgenerklaringOmsorgspoeng.format(),
-                            aarInnvilgetOmsorgspoeng = aarInnvilgetOmsorgspoeng.format(),
-                        )
+            ifNotNull(saksbehandlerValg.aarInnvilgetOmsorgspoeng, saksbehandlerValg.aarEgenerklaringOmsorgspoeng) { aarInnvilgetOmsorgspoeng, aarEgenerklaringOmsorgspoeng ->
+                includePhrase(
+                    OmsorgEgenerklaeringOutline(
+                        aarEgenerklaringOmsorgspoeng = aarEgenerklaringOmsorgspoeng.format(),
+                        aarInnvilgetOmsorgspoeng = aarInnvilgetOmsorgspoeng.format(),
                     )
-                }
+                )
             }
         }
         includeAttachment(egenerklaeringPleieOgOmsorgsarbeidManuell, argument)
