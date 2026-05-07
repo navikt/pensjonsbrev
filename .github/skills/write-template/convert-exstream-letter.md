@@ -2,11 +2,7 @@
 
 **Scope:** taking the Kotlin output of the automated Exstream-to-brevbaker converter and turning it into a compilable, idiomatic brevbaker template. The converter gets you ~80% there — this skill catalogues the ~20% that requires human judgement.
 
-**Read first:** [`write-template.md`](write-template.md). Everything there (Dto design, language branches, concatenation, conditionals, phrases, registration, verify) applies to the converted template. This skill only documents the **deltas** introduced by the converter output.
-
-## Where converted letters live
-
-Legacy (Exstream-originated) templates go under `pensjon/maler/src/main/kotlin/no/nav/pensjon/brev/maler/legacy/` — autobrev directly under `legacy/`, redigerbar under `legacy/redigerbar/`. Follow existing neighbours (e.g. `EndretUforetrygdPGAOpptjeningLegacy.kt`, `InnvilgelseUforetrygd.kt`) for package and imports.
+**Read first:** [`SKILL.md`](SKILL.md). Everything there (Dto design, language branches, concatenation, conditionals, phrases, registration, verify) applies to the converted template. This skill only documents the **deltas** introduced by the converter output.
 
 ## Pipeline overview
 
@@ -28,7 +24,7 @@ To build it:
 
 1. List every selector used in the template body (and every reachable subfield through chained `.foo()` calls in the discarded selector block — that block is the easiest inventory of what the letter reads).
 2. For each, look up the original `PE_…` variable in `pensjonsbrev-utils/exstreamConverter/src/main/resources/pe_xml_mappinger(in).csv`. Both the variable name (`Name` column) and the `rtv-brev brev …` path (`Layout` column) go into the comment, verbatim from the CSV — preserve any typos / casing differences (e.g. `BeregningYtelseomp` vs `BeregningYtelsesKomp`) since the mapping team will grep the CSV with these exact strings.
-3. Group fields into nested data classes that mirror the rendering structure (e.g. `PesysData`, `AvdoedData`, `BrukerData`, `Beregning`, …). Sub-classes are siblings of `PesysData` inside the Dto — the KSP selector tree mirrors **declaration nesting**, not field reachability (see `write-template.md` *Sibling nesting vs. field-reachability*).
+3. Group fields into nested data classes that mirror the rendering structure (e.g. `PesysData`, `AvdoedData`, `BrukerData`, `Beregning`, …). Sub-classes are siblings of `PesysData` inside the Dto — the KSP selector tree mirrors **declaration nesting**, not field reachability (see `SKILL.md` *Sibling nesting vs. field-reachability*).
 4. Collapse legacy oddities: `FF_GetArrayElement_Boolean(<list>, 1)` reads to a single `Boolean` if the letter only ever uses index 1 — note the original `FF_…` call in the comment.
 5. Place the Dto under `<module>/api-model/.../maler/legacy/redigerbar/<Situation>Dto.kt` (or `.../legacy/<Situation>Dto.kt` for autobrev).
 
@@ -50,9 +46,9 @@ The skeleton will have, at minimum:
 |---|---|
 | Object name | Situation-describing `PascalCase` (e.g. `DelvisEksportAvGjenlevendepensjon`). The `…Legacy` suffix only appears on older `PEgruppeN`-based templates — do not add it for new conversions that built a fresh Dto in Step 1. |
 | `AutobrevTemplate<// TODO>` / `RedigerbarTemplate<// TODO>` | The Dto type built in Step 1. |
-| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `write-template.md` (unique, ≤ 50 chars, immutable, never deleted). |
+| `override val kode` | A new entry in `Pesysbrevkoder.AutoBrev` / `.Redigerbar` — same rules as `SKILL.md` (unique, ≤ 50 chars, immutable, never deleted). |
 | `letterDataType` | `<YourDto>::class`. |
-| `displayTitle` | Situation-describing Bokmål — see `write-template.md` *displayTitle* conventions. |
+| `displayTitle` | Situation-describing Bokmål — see `SKILL.md` *displayTitle* conventions. |
 | `isSensitiv` | Only set `true` if the brev contains health / sensitive personal information; otherwise `false`. |
 | `distribusjonstype` / `brevtype` | `LetterMetadata.Distribusjonstype.{VEDTAK|VIKTIG|ANNET}` and `LetterMetadata.Brevtype.{VEDTAKSBREV|INFORMASJONSBREV}` — **infer from content, then ask the user to confirm** (same pattern as `kategori`/`brevkontekst`/`sakstyper` in `write-redigerbar-template.md`). |
 | `title { text(…) }` | Usually the same wording as the Exstream overskrift — lift it from the first outline paragraph if the converter left it blank. |
@@ -122,7 +118,7 @@ paragraph {
 }
 ```
 
-These were **table cells** in Exstream: label | brutto | netto. Kept as adjacent `text(…)` calls they concatenate (`"Grunnpensjon1 000 kr1 500 kr"` — see *Neighbouring text blocks are concatenated* in `write-template.md`). The fix is to author them as a real brevbaker `table { … }` with one `row { cell { … } cell { … } cell { … } }` per label (or a `forEach` over the underlying data).
+These were **table cells** in Exstream: label | brutto | netto. Kept as adjacent `text(…)` calls they concatenate (`"Grunnpensjon1 000 kr1 500 kr"` — see *Spacing — adjacent fragments concatenate verbatim* in [`dsl-text-and-formatting.md`](dsl-text-and-formatting.md#spacing--adjacent-fragments-concatenate-verbatim)). The fix is to author them as a real brevbaker `table { … }` with one `row { cell { … } cell { … } cell { … } }` per label (or a `forEach` over the underlying data).
 
 Heuristic: **if a `paragraph { }` contains more than one `text(…)` call and no joining prose between them, it is a collapsed table — rebuild it.**
 
@@ -143,14 +139,14 @@ The converter emits defensive, verbose DSL that mirrors Exstream's decision tree
 
 - **Merge nested `showIf`** into single calls with `and`: `showIf(A) { showIf(B) { … } }` → `showIf(A and B) { … }`.
 - **Replace counter flags with `forEach`**: `showIf(pe.teller_periodisering().greaterThan(0)) { … }` blocks typically mean "for each period". Rewrite as `forEach(pe.perioder()) { periode -> … }` and drop the counter selector.
-- **Deduplicate repeated blocks into phrases.** The converter unrolls shared structures — in the canonical example, the *"Pensjonen din er endret fordi / endr_vedtakhistorikk / endr_regel / …"* list appears once for the periodised path and once for the non-periodised path. Extract to an `OutlinePhrase`/`ParagraphPhrase` (see `write-template.md` *Phrases*) and include it twice.
+- **Deduplicate repeated blocks into phrases.** The converter unrolls shared structures — in the canonical example, the *"Pensjonen din er endret fordi / endr_vedtakhistorikk / endr_regel / …"* list appears once for the periodised path and once for the non-periodised path. Extract to an `OutlinePhrase`/`ParagraphPhrase` (see [`dsl-phrases.md`](dsl-phrases.md)) and include it twice.
 - **Boolean selectors are predicates.** Calls like `pe.…_tpinnvilget()` already return `Expression<Boolean>` and can be used directly in `showIf(…)` — no `.equalTo(true)` needed. Strip if the converter emitted it.
 - **Drop the trace comments** (`//[PE_GP_04_001_…]`) once the paragraph is verified to match the Exstream source. They are useful for the first-pass review, noise afterwards.
 - **Collapse identical IF-arms** where Exstream had one `showIf(brutto != netto) { … }` and another `showIf(brutto = netto) { … }` that render identical content except for one column. Express as a single structure that omits the brutto column using `showIf` inside the row.
 
 ## Register and verify
 
-Register the new template in `ProductionTemplates` — the converter does not do this. Then follow the Verify section of [`write-template.md`](write-template.md#verify).
+Register the new template in `ProductionTemplates` — the converter does not do this. Then follow the Verify section of [`SKILL.md`](SKILL.md#verify).
 
 ### Verify preconditions (when the letter introduces a new Dto)
 
@@ -160,7 +156,7 @@ Most converted letters introduce a new Dto under `<module>/api-model/src/…`. T
 2. `./gradlew :<module>:api-model:publishToMavenLocal`
 3. `./gradlew :<module>:maler:build` to run KSP and regenerate `…DtoSelectors` under `build/generated/ksp/`.
 
-Symptoms you skipped this: `Unresolved reference 'XDto'` on the import line (api-model not published) or `Unresolved reference 'XDtoSelectors'` on selector imports (KSP hasn't run yet). See `write-template.md` *Build after the first commit of a new Dto or template* for the full diagnostic table. **Revert the version bumps before committing** unless you are also publishing a new api-model release.
+Symptoms you skipped this: `Unresolved reference 'XDto'` on the import line (api-model not published) or `Unresolved reference 'XDtoSelectors'` on selector imports (KSP hasn't run yet). See `SKILL.md` *Build after the first commit of a new Dto or template* for the full diagnostic table. **Revert the version bumps before committing** unless you are also publishing a new api-model release.
 
 Visual regression: when possible, run `AllTemplatesTest` / the module's `BrevmodulTest` and compare the rendered PDF with the original Exstream output. Wording should match exactly; layout is allowed to differ within brevbaker's styling. See [`README.md`](../../../README.md#oppdatere-latex-malavhengigheter) for the PDF-image diff script if you need to verify large letters byte-by-byte.
 

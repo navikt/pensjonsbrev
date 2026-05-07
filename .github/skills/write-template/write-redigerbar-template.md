@@ -1,8 +1,8 @@
 # Skill: Write a redigerbar template (Kotlin DSL body)
 
-**Parent recipe:** step 4 of [*Add a new redigerbar brev*](../../../AGENTS.md#add-a-new-redigerbar-caseworker-editable-brev) in `AGENTS.md`.
+**Parent recipe:** the *Add a new letter template* row of [Task recipes (skills)](../../../AGENTS.md#task-recipes-skills) in `AGENTS.md`.
 
-**Scope:** this skill covers only the deltas between `AutobrevTemplate` and `RedigerbarTemplate`. Start with [`write-template.md`](write-template.md) for Dto design, the template object skeleton, languages, registration, fixtures and the verify step. The DSL building blocks (scopes, text, conditionals, tables/lists, phrases, attachments) are split into focused sub-skills:
+**Scope:** this skill covers only the deltas between `AutobrevTemplate` and `RedigerbarTemplate`. Start with [`SKILL.md`](SKILL.md) for Dto design, the template object skeleton, languages, registration, fixtures and the verify step. The DSL building blocks (scopes, text, conditionals, tables/lists, phrases, attachments) are split into focused sub-skills:
 
 - [`dsl-scopes.md`](dsl-scopes.md) — scope hierarchy
 - [`dsl-text-and-formatting.md`](dsl-text-and-formatting.md) — text composition and formatters
@@ -19,11 +19,11 @@ All apply unchanged to redigerbar templates.
 2. **Three extra overrides** on the template object: `kategori`, `brevkontekst`, `sakstyper` — these drive Skribenten's brevvelger.
 3. **One extra text source** in the DSL: `fritekst("initial text")`, declared as an extension on `RedigerbarTemplate` and therefore only available here.
 
-Everything else (languages, scopes, phrases, registration in `AllTemplates`, common mistakes) is unchanged — consult `write-template.md`.
+Everything else (languages, scopes, phrases, registration in `AllTemplates`, common mistakes) is unchanged — consult `SKILL.md`.
 
 ## Prerequisites — read first
 
-On top of `write-template.md`'s prerequisites, read **one current redigerbar template in the same module** that is structurally similar. Good starting points:
+On top of `SKILL.md`'s prerequisites, read **one current redigerbar template in the same module** that is structurally similar. Good starting points:
 
 - Straightforward, three languages, no saksbehandlerValg: `pensjon/maler/.../redigerbar/BekreftelsePaaPensjon.kt`
 - Rich saksbehandlerValg + conditional sections: `pensjon/maler/.../redigerbar/VedtakEndringAvAlderspensjonInstitusjonsopphold.kt`
@@ -42,7 +42,7 @@ data class XDto(
     data class Saksbehandlervalg(
         // One property per caseworker form input shown in Skribenten.
         // Booleans → checkbox; enums → dropdown; strings → text field.
-        // Every field MUST be annotated with @DisplayText("...") — this is the
+        // Every field and enum value MUST be annotated with @DisplayText("...") — this is the
         // human-readable label rendered next to the input in Skribenten's
         // ModelEditor.
         @DisplayText("Har barnetillegg")
@@ -59,7 +59,7 @@ data class XDto(
 }
 ```
 
-- All the Dto design rules from `write-template.md` apply to both nested classes (non-nullable by default, no defaults on required fields, group related fields).
+- All the Dto design rules from `SKILL.md` apply to both nested classes (non-nullable by default, no defaults on required fields, group related fields).
 - **Every `Saksbehandlervalg` property must carry a `@DisplayText("...")` annotation** (`no.nav.pensjon.brevbaker.api.model.DisplayText`). The string is the label Skribenten renders next to the form input — write it in Norwegian, sentence case, describing the choice from the saksbehandler's perspective (e.g. `@DisplayText("Har barnetillegg")`, not the field name). Examples: see `VedtakEndringAvAlderspensjonInstitusjonsoppholdDto.SaksbehandlerValg`.
 - Empty shortcuts when a side is not needed: `EmptySaksbehandlerValg`, `EmptyFagsystemdata`, or `EmptyRedigerbarBrevdata` for the whole thing.
 - Generated selectors expose the split: `XDtoSelectors.saksbehandlerValg.harBarnetillegg`, `XDtoSelectors.pesysData.virkDatoFom`. The property names become the selector names — choose them deliberately.
@@ -78,7 +78,7 @@ object X : RedigerbarTemplate<XDto> {
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),
         letterMetadata = LetterMetadata(/* displayTitle, distribusjonstype, brevtype */),
-    ) { /* DSL body — see write-template.md */ }
+    ) { /* DSL body — see SKILL.md */ }
 }
 ```
 
@@ -177,7 +177,7 @@ A redigerbar brevkode that has reached production may be referenced by rows in S
 
 ## Verify
 
-Verification is the parent Golden Path's job — run the module's `:integrationTest` and the cross-module `AllTemplatesTest`. See [`../../AGENTS.md`](../../../AGENTS.md#8-verify).
+Verification is the parent Golden Path's job — run the module's `:integrationTest` and the cross-module `AllTemplatesTest`. See [`SKILL.md`](SKILL.md#verify).
 
 
 

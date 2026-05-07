@@ -95,7 +95,7 @@ ifNotNull(primaerAdresse) { adresse ->
 }
 ```
 
-If you find yourself nesting `ifNotNull` heavily, that's usually a Dto smell — group fields that are required together into a single nested data class, so the impossible state is unrepresentable. See [`write-template.md`](write-template.md#information-model-design-the-dto).
+If you find yourself nesting `ifNotNull` heavily, that's usually a Dto smell — group fields that are required together into a single nested data class, so the impossible state is unrepresentable. See [`SKILL.md`](SKILL.md#information-model-design-the-dto).
 
 ## `forEach` — iterate over an `Expression<Collection<T>>`
 
