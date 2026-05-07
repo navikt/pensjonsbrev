@@ -65,7 +65,7 @@ object InfoAldersovergangEps62AarAuto : AutobrevTemplate<InfoAldersovergangEps62
                     }.orShow {
                         text(bokmal { +"AFPen" })
                     }
-                    text(bokmal { +" din ikke lenger bli beregnet med denne satsen. Dette skal vi nå vurdere, og du vil få et nytt vedtak fra oss." })
+                    text(bokmal { +" din ikke lenger bli beregnet med denne satsen." })
                 }
 
                 title2 {
