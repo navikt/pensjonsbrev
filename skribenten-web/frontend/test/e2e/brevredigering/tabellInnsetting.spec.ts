@@ -6,6 +6,8 @@ import { AUTOSAVE_TIMER } from "~/components/ManagedLetterEditor/autosave_timer"
 import { nyBrevResponse, nyRedigertBrev } from "../../utils/brevredigeringTestUtils";
 import { setupSakStubs } from "../utils/helpers";
 
+// Playwright Chromium always reports a Windows userAgent (isMac=false in the app),
+// so the app's undo shortcut is always Ctrl+Z in tests regardless of host OS.
 const undoShortcut = "Control+z";
 
 test.describe.configure({ mode: "serial" });
