@@ -212,6 +212,11 @@ jobs:
             gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main/actual \
             --recursive \
             --delete-unmatched-destination-objects
+          gcloud storage rsync \
+            brevbaker/pdf-bygger/build/test_visual/png \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main/expected \
+            --recursive \
+            --delete-unmatched-destination-objects
 
   deployPdfByggerToDev:
     name: "Deploy pdf-bygger to dev"
