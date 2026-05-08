@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM gcr.io/distroless/java25-debian13:nonroot
+FROM gcr.io/distroless/java25-debian13
 COPY --exclude=*brevbaker-*.jar build/install/brevbaker/lib /app/lib
 COPY build/install/brevbaker/lib/brevbaker-*.jar /app/lib
 EXPOSE 8080
