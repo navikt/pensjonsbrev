@@ -1,8 +1,8 @@
 {
   "collection": "frontend",
-  "version": "2026.04.20-194821-8b2cb9f",
+  "version": "2026.05.07-200232-fd4e9e8",
   "scope": "repo",
-  "source_sha": "8b2cb9f",
+  "source_sha": "fd4e9e8",
   "installed_at": "2026-04-22T11:42:30Z",
   "files": [
     {
@@ -23,7 +23,7 @@
     },
     {
       "path": ".github/agents/forfatter.agent.md",
-      "hash": "f638bd5c234f329b"
+      "hash": "4e55f4d189619dcb"
     },
     {
       "path": ".github/agents/forfatter.metadata.json",
@@ -31,7 +31,7 @@
     },
     {
       "path": ".github/agents/nav-pilot.agent.md",
-      "hash": "3179adb5db9ae3af"
+      "hash": "71eaa207ac601d66"
     },
     {
       "path": ".github/agents/nav-pilot.metadata.json",
@@ -55,7 +55,7 @@
     },
     {
       "path": ".github/skills/nav-deep-interview/",
-      "hash": "42e9aab52e591ef0"
+      "hash": "eeb3399ecd4e352c"
     },
     {
       "path": ".github/skills/nav-architecture-review/",
@@ -83,11 +83,12 @@
     },
     {
       "path": ".github/instructions/docker.instructions.md",
-      "hash": "32db7a2f8aaab2ac"
+      "hash": "32db7a2f8aaab2ac",
+      "status": "ignored"
     },
     {
       "path": ".github/prompts/aksel-component.prompt.md",
-      "hash": "9da00ddfc10aefc4"
+      "hash": "9119d15db318622d"
     }
   ]
 }
