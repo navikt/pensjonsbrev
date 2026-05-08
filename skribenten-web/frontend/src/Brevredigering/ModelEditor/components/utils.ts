@@ -49,7 +49,7 @@
  * @param field - The field type definition to check
  * @returns true if the field is nullable or a Boolean scalar type
  */
-import { type FieldType } from "~/types/brevbakerTypes";
+import { type FieldType, type ObjectTypeSpecifications } from "~/types/brevbakerTypes";
 
 export function convertFieldToReadableLabel(field: string) {
   const lastFragment = field.split(".").at(-1) ?? "";
@@ -109,3 +109,34 @@ export function getFieldDefaultValue<T = unknown>(
 export const isBooleanField = (field: FieldType) => field.type === "scalar" && field.kind === "BOOLEAN";
 
 export const isFieldNullableOrBoolean = (field: FieldType) => field.nullable || isBooleanField(field);
+
+export function getDefaultValueForField(field: FieldType, types: ObjectTypeSpecifications | undefined): unknown {
+  if (field.nullable) {
+    return null;
+  }
+
+  switch (field.type) {
+    case "array":
+      return [];
+    case "object": {
+      const objectSpec = types?.[field.typeName];
+      if (!objectSpec) {
+        return undefined;
+      }
+
+      const defaultObject = Object.entries(objectSpec).reduce<Record<string, unknown>>((acc, [key, childField]) => {
+        const value = getDefaultValueForField(childField, types);
+        if (value !== undefined) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {});
+
+      return Object.keys(defaultObject).length > 0 ? defaultObject : undefined;
+    }
+    case "scalar":
+      return field.kind === "BOOLEAN" ? false : undefined;
+    case "enum":
+      return undefined;
+  }
+}
