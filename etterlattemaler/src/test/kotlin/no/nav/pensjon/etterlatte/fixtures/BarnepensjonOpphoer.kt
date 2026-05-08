@@ -4,6 +4,7 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallData
 import java.time.LocalDate
 import java.time.Month
 
@@ -19,5 +20,7 @@ fun createBarnepensjonOpphoerDTO() = BarnepensjonOpphoerDTO(
 )
 
 fun createBarnepensjonOpphoerRedigerbartUtfallDTO() = BarnepensjonOpphoerRedigerbartUtfallDTO(
-    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+    data = BarnepensjonOpphoerRedigerbartUtfallData(
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+    )
 )

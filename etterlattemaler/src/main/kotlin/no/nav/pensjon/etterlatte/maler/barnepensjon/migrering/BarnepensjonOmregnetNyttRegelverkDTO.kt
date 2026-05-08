@@ -6,11 +6,15 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 
-data class BarnepensjonOmregnetNyttRegelverkDTO(
+data class BarnepensjonOmregnetNyttRegelverkData(
     val utbetaltFoerReform: Kroner,
     val utbetaltEtterReform: Kroner,
     val erForeldreloes: Boolean,
     val erBosattUtlandet: Boolean,
+)
+
+data class BarnepensjonOmregnetNyttRegelverkDTO(
+    override val data: BarnepensjonOmregnetNyttRegelverkData,
 ) : RedigerbartUtfallBrevDTO
 
 data class BarnepensjonOmregnetNyttRegelverkFerdigData(

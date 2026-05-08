@@ -3,6 +3,7 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallData
 
 fun createBarnepensjonVarsel() = BarnepensjonVarselDTO(
     innhold = createPlaceholderForRedigerbartInnhold(),
@@ -14,8 +15,10 @@ fun createBarnepensjonVarsel() = BarnepensjonVarselDTO(
 )
 
 fun createBarnepensjonVarselRedigerbartUtfall() = BarnepensjonVarselRedigerbartUtfallDTO(
-    automatiskBehandla = false,
-    erBosattUtlandet = false,
+    data = BarnepensjonVarselRedigerbartUtfallData(
+        automatiskBehandla = false,
+        erBosattUtlandet = false,
+    )
 )
 
 

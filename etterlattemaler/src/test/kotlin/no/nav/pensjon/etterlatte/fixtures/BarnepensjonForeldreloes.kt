@@ -17,6 +17,7 @@ import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarData
 import java.time.LocalDate
 import java.time.Month
 
@@ -147,20 +148,22 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
     val andreDoed = vilkaarligMaaned.minusMonths(3).atDay(1)
 
     return BarnepensjonForeldreloesRedigerbarDTO(
-        virkningsdato = foersteDoed.plusMonths(1).atDay(1),
-        sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
-        sisteBeregningsperiodeDatoFom = siste.datoFOM,
-        erGjenoppretting = false,
-        harUtbetaling = true,
-        erEtterbetaling = true,
-        flerePerioder = true,
-        vedtattIPesys = false,
-        forskjelligAvdoedPeriode = ForskjelligAvdoedPeriode(
-            foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
-            senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
-            senereVirkningsdato = andreDoed.plusMonths(1)
+        data = BarnepensjonForeldreloesRedigerbarData(
+            virkningsdato = foersteDoed.plusMonths(1).atDay(1),
+            sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
+            sisteBeregningsperiodeDatoFom = siste.datoFOM,
+            erGjenoppretting = false,
+            harUtbetaling = true,
+            erEtterbetaling = true,
+            flerePerioder = true,
+            vedtattIPesys = false,
+            forskjelligAvdoedPeriode = ForskjelligAvdoedPeriode(
+                foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
+                senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
+                senereVirkningsdato = andreDoed.plusMonths(1)
 
-        ),
-        erSluttbehandling = false
+            ),
+            erSluttbehandling = false,
+        )
     )
 }

@@ -20,18 +20,23 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.aktivitetsgrad
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.halvtGrunnbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.nasjonalEllerUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.redusertEtterInntekt
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.utbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDataSelectors.aktivitetsgrad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDataSelectors.utbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDataSelectors.redusertEtterInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDataSelectors.nasjonalEllerUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDataSelectors.halvtGrunnbeloep
 
-data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
+data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdData(
     val aktivitetsgrad: Aktivitetsgrad,
     val utbetaling: Boolean,
     val redusertEtterInntekt: Boolean,
     val nasjonalEllerUtland: NasjonalEllerUtland,
     val halvtGrunnbeloep: Kroner
+)
+
+data class OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdDTO(
+    override val data: OmstillingsstoenadAktivitetspliktInformasjon10mndInnholdData,
 ) : RedigerbartUtfallBrevDTO
 
 
@@ -59,7 +64,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
         }
 
         outline {
-            showIf(not(utbetaling)) {
+            showIf(not(data.utbetaling)) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget omstillingsstønad. Denne er i dag redusert etter en forventet " +
@@ -81,7 +86,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(redusertEtterInntekt.and(utbetaling)) {
+            showIf(data.redusertEtterInntekt.and(data.utbetaling)) {
                 paragraph {
                     text(
                         bokmal { +"Omstillingsstønaden din er redusert etter en forventet arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner i år. LEGG TIL ETTER KRONER HVIS INNVILGET FRA FEBRUAR-AUGUST: fra <måned> og ut året." },
@@ -89,7 +94,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                         english { +"Your adjustment allowance is reduced based on your income from employment of NOK <FORVENTET INNTEKT TOTALT, AVRUNDET> this year. LEGG TIL ETTER BELØP HVIS INNVILGET FRA FEBRUAR-AUGUST: from <måned> until the end of this year." },
                     )
                 }
-            }.orShowIf(utbetaling) {
+            }.orShowIf(data.utbetaling) {
                 paragraph {
                     text(
                         bokmal { +"Omstillingsstønaden din er i dag ikke redusert etter arbeidsinntekt eller annen inntekt som er likestilt med arbeidsinntekt." },
@@ -115,7 +120,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 )
             }
 
-            showIf(not(utbetaling)) {
+            showIf(not(data.utbetaling)) {
                 paragraph {
                     text(
                         bokmal { +"Siden du ikke mottar omstillingsstønad i dag, kan du se bort fra kravet om aktivitet. Det er imidlertid viktig at du melder fra hvis situasjonen din endrer seg. Aktivitetsplikt og din mulighet for å motta omstillingsstønad kan da vurderes." },
@@ -125,7 +130,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(utbetaling) {
+            showIf(data.utbetaling) {
                 paragraph {
                     text(
                         bokmal { +"Det er registrert i omstillingsstønaden din at du FYLL INN OM SITUASJONEN TIL BRUKER, F.EKS. er i 80 prosent arbeid/er under utdanning/er registrert hos Nav som reell arbeidssøker." },
@@ -135,7 +140,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.notEqualTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
+            showIf(data.aktivitetsgrad.notEqualTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and data.utbetaling) {
                 paragraph {
                     text(
                         bokmal { +"For å motta omstillingsstønad videre bør du øke aktiviteten din. Se “Hvordan oppfylle aktivitetsplikten?”.  Hvis du ikke foretar deg noen av de andre aktivitetene som er nevnt, bør du melde deg som reell arbeidssøker hos Nav. Dette innebærer at du bekrefter at du vil stå som arbeidssøker, er aktivt med å søke jobber, samt deltar på de kurs som Nav tilbyr. Du kan lese mer om å være arbeidssøker på ${Constants.REGISTRER_ARBEIDSSOKER}." },
@@ -160,7 +165,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                     )
                 }
 
-                showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT)) {
+                showIf(data.aktivitetsgrad.equalTo(Aktivitetsgrad.OVER_50_PROSENT)) {
                     paragraph {
                         text(
                             bokmal { +"Hvis du jobber minst 50 prosent eller deltar i annen aktivitet med mål om å komme i arbeid, og mener du kan forsørge deg selv med den inntekten du har i nåværende stillingsprosent (uten å regne med omstillingsstønad), må du sende oss informasjon om dette." },
@@ -171,7 +176,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 }
             }
 
-            showIf(aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and utbetaling) {
+            showIf(data.aktivitetsgrad.equalTo(Aktivitetsgrad.AKKURAT_100_PROSENT) and data.utbetaling) {
                 paragraph {
                     text(
                         bokmal { +"Er du fortsatt i full jobb eller annen aktivitet med sikte på å komme i arbeid, fyller du aktivitetskravet og vil få omstillingsstønad som før." },
@@ -196,7 +201,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                     english { +"You will find more information about how to notify us in the section “You must notify us about any changes”." },
                 )
             }
-            showIf(utbetaling) {
+            showIf(data.utbetaling) {
                 paragraph {
                     text(
                         bokmal {
@@ -238,12 +243,12 @@ object OmstillingsstoenadAktivitetspliktInformasjon10mndInnhold :
                 )
             }
 
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt, halvtGrunnbeloep))
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(nasjonalEllerUtland, true.expr()))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(data.redusertEtterInntekt, data.halvtGrunnbeloep))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(data.nasjonalEllerUtland, true.expr()))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseUnntakFraAktivitetsplikt)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.TrengerDuHjelpTilAaFaaNyJobb)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.HarDuHelseutfordringer)
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(nasjonalEllerUtland))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(data.nasjonalEllerUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
     }

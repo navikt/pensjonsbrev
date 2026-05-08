@@ -11,6 +11,7 @@ import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkFerdigData
 import java.time.LocalDate
@@ -18,10 +19,12 @@ import java.time.Month
 
 fun createBarnepensjonOmregnetNyttRegelverkDTO() =
     BarnepensjonOmregnetNyttRegelverkDTO(
-        utbetaltFoerReform = Kroner(1337),
-        utbetaltEtterReform = Kroner(31337),
-        erForeldreloes = false,
-        erBosattUtlandet = true,
+        data = BarnepensjonOmregnetNyttRegelverkData(
+            utbetaltFoerReform = Kroner(1337),
+            utbetaltEtterReform = Kroner(31337),
+            erForeldreloes = false,
+            erBosattUtlandet = true,
+        )
     )
 
 fun createBarnepensjonOmregnetNyttRegelverkFerdigDTO() =

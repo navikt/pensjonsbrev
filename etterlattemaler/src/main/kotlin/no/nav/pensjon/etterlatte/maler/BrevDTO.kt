@@ -15,4 +15,6 @@ interface FerdigstillingBrevDTO : BrevDTO {
     val data: Any
 }
 
-interface RedigerbartUtfallBrevDTO : AutobrevData
+interface RedigerbartUtfallBrevDTO : AutobrevData {
+    val data: Any
+}

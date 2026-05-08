@@ -20,8 +20,9 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageFerdigDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDTOSelectors.data as innholdData
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.klage.AvvistKlageInnholdDataSelectors.sakType
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
@@ -56,9 +57,9 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
 
             includePhrase(Felles.DuHarRettTilAaKlage)
 
-            showIf(data.sakType.equalTo(SakType.BARNEPENSJON)) {
+            showIf(data.innholdData.sakType.equalTo(SakType.BARNEPENSJON)) {
                 includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(true.expr(), data.bosattUtland))
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(true.expr(), data.innholdData.bosattUtland))
             } orShow {
                 includePhrase(OmstillingsstoenadFellesFraser.DuHarRettTilInnsyn)
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
@@ -66,9 +67,9 @@ object AvvistKlageFerdigstilling : EtterlatteTemplate<AvvistKlageFerdigDTO>, Hov
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.innholdData.bosattUtland)
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), data.innholdData.bosattUtland.not())
     }
 }

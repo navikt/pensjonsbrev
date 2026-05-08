@@ -13,6 +13,7 @@ import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingRedigerbartUtfallData
 import java.time.LocalDate
 import java.time.Month
 
@@ -128,10 +129,12 @@ fun createBarnepensjonRevurderingDTO(): BarnepensjonRevurderingDTO {
 }
 
 fun createBarnepensjonRevurderingRedigerbartUtfallDTO() = BarnepensjonRevurderingRedigerbartUtfallDTO(
-    harUtbetaling = true,
-    feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
-    brukerUnder18Aar = true,
-    bosattUtland = false,
-    frivilligSkattetrekk = false,
-    erEtterbetaling = false
+    data = BarnepensjonRevurderingRedigerbartUtfallData(
+        harUtbetaling = true,
+        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        brukerUnder18Aar = true,
+        bosattUtland = false,
+        frivilligSkattetrekk = false,
+        erEtterbetaling = false,
+    )
 )

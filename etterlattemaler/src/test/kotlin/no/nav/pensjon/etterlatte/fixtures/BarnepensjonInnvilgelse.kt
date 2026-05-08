@@ -14,6 +14,7 @@ import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTO
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallData
 import java.time.LocalDate
 import java.time.Month
 
@@ -88,15 +89,17 @@ fun createBarnepensjonInnvilgelseDTO(): BarnepensjonInnvilgelseDTO {
 }
 
 fun createBarnepensjonInnvilgelseRedigerbartUtfallDTO() = BarnepensjonInnvilgelseRedigerbartUtfallDTO(
-    virkningsdato = LocalDate.of(2020, Month.JANUARY, 1),
-    avdoed = Avdoed(
-        navn = "Avdoed Avdoedesen",
-        doedsdato = vilkaarligDato.minusMonths(1),
-    ),
-    sisteBeregningsperiodeDatoFom = LocalDate.of(2020, Month.JANUARY, 1),
-    sisteBeregningsperiodeBeloep = Kroner(1000),
-    erEtterbetaling = true,
-    harFlereUtbetalingsperioder = false,
-    erGjenoppretting = false,
-    harUtbetaling = true
+    data = BarnepensjonInnvilgelseRedigerbartUtfallData(
+        virkningsdato = LocalDate.of(2020, Month.JANUARY, 1),
+        avdoed = Avdoed(
+            navn = "Avdoed Avdoedesen",
+            doedsdato = vilkaarligDato.minusMonths(1),
+        ),
+        sisteBeregningsperiodeDatoFom = LocalDate.of(2020, Month.JANUARY, 1),
+        sisteBeregningsperiodeBeloep = Kroner(1000),
+        erEtterbetaling = true,
+        harFlereUtbetalingsperioder = false,
+        erGjenoppretting = false,
+        harUtbetaling = true,
+    )
 )

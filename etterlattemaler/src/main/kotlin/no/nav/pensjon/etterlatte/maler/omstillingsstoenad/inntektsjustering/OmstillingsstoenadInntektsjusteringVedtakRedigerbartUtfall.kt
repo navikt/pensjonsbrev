@@ -13,12 +13,17 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.inntektsbeloep
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDataSelectors.inntektsbeloep
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDataSelectors.inntektsaar
+
+data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallData(
+    val inntektsbeloep: Kroner,
+    val inntektsaar: Int,
+)
 
 data class OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallDTO(
-    val inntektsbeloep: Kroner,
-    val inntektsaar: Int
+    override val data: OmstillingsstoenadVedtakInntektsjusteringRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -55,26 +60,26 @@ object OmstillingsstoenadInntektsjusteringVedtakRedigerbartUtfall : EtterlatteTe
 
                 paragraph {
                     text(
-                        bokmal { +"Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntekt i innvilga måneder i "+inntektsaar.format()+"." },
-                        nynorsk { +"Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer inntekt i innvilga månader i "+inntektsaar.format()+"." },
-                        english { +"You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income in granted months in "+inntektsaar.format()+"." },
+                        bokmal { +"Du har ikke meldt om endring i inntekten for neste kalenderår. Vi har derfor basert beregningen på inntektsopplysningene du oppga for inneværende kalenderår. Inntekten er justert til å reflektere inntekt i innvilga måneder i "+data.inntektsaar.format()+"." },
+                        nynorsk { +"Du har ikkje meldt om endring i inntekta for neste kalenderår. Vi har difor basert utrekninga vår på inntektsopplysningane du har oppgitt for inneverande kalenderår. Inntekta er justert slik at ho reflekterer inntekt i innvilga månader i "+data.inntektsaar.format()+"." },
+                        english { +"You have not notified us of any changes in your income for the next calendar year. Therefore we have based the calculation on the income information you provided for the current calendar year. Income is adjusted to reflect income in granted months in "+data.inntektsaar.format()+"." },
                     )
                 }
 
-                showIf(inntektsbeloep.notEqualTo(0)){
+                showIf(data.inntektsbeloep.notEqualTo(0)){
                     paragraph {
                         text(
-                            bokmal { +"Vi har lagt til grunn at du har "+inntektsbeloep.format() + " som forventet inntekt i innvilgede måneder i  "+inntektsaar.format()+"." },
-                            nynorsk { +"Vi har lagt til grunn at du har "+inntektsbeloep.format() + " som forventa inntekt i innvilga månader i "+inntektsaar.format()+"." },
-                            english { +"We have assumed a basis of "+inntektsbeloep.format() + " in expected income for the granted months in "+inntektsaar.format()+"." },
+                            bokmal { +"Vi har lagt til grunn at du har "+data.inntektsbeloep.format() + " som forventet inntekt i innvilgede måneder i  "+data.inntektsaar.format()+"." },
+                            nynorsk { +"Vi har lagt til grunn at du har "+data.inntektsbeloep.format() + " som forventa inntekt i innvilga månader i "+data.inntektsaar.format()+"." },
+                            english { +"We have assumed a basis of "+data.inntektsbeloep.format() + " in expected income for the granted months in "+data.inntektsaar.format()+"." },
                         )
                     }
                 }.orShow {
                     paragraph {
                         text(
-                            bokmal { +"Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter i innvilgede måneder i "+inntektsaar.format()+"." },
-                            nynorsk { +"Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter i innvilga månader i "+inntektsaar.format()+"." },
-                            english { +"We have assumed that you will have no income from which the adjustment allowance will be reduced in granted months in "+inntektsaar.format()+"." },
+                            bokmal { +"Vi har lagt til grunn at du ikke har inntekt som omstillingsstønaden skal reduseres etter i innvilgede måneder i "+data.inntektsaar.format()+"." },
+                            nynorsk { +"Vi har lagt til grunn at du ikkje har inntekt som omstillingsstønaden skal reduserast etter i innvilga månader i "+data.inntektsaar.format()+"." },
+                            english { +"We have assumed that you will have no income from which the adjustment allowance will be reduced in granted months in "+data.inntektsaar.format()+"." },
                         )
                     }
                 }

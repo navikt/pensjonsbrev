@@ -4,6 +4,7 @@ import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerRedigerbartUtfallData
 import java.time.LocalDate
 
 fun createOmstillingsstoenadOpphoerDTO() =
@@ -19,5 +20,7 @@ fun createOmstillingsstoenadOpphoerDTO() =
 
 fun createOmstillingsstoenadpphoerRedigerbartUtfallDTO() =
     OmstillingsstoenadOpphoerRedigerbartUtfallDTO(
-        feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL
+        data = OmstillingsstoenadOpphoerRedigerbartUtfallData(
+            feilutbetaling = FeilutbetalingType.FEILUTBETALING_MED_VARSEL,
+        )
     )

@@ -18,19 +18,20 @@ import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadEtterbetaling
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.etterbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.inntekt
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.inntektsAar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.mottattInntektendringAutomatisk
 import java.time.LocalDate
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.etterbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.inntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.inntektsAar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingRedigerbartUtfallDataSelectors.mottattInntektendringAutomatisk
 
-data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
+data class OmstillingsstoenadRevurderingRedigerbartUtfallData(
     val beregning: OmstillingsstoenadBeregningRevurderingRedigertbartUtfall,
     val erEndret: Boolean,
     val erEtterbetaling: Boolean,
@@ -41,6 +42,10 @@ data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
     val inntekt: Kroner,
     val inntektsAar: Int,
     val mottattInntektendringAutomatisk: LocalDate?
+)
+
+data class OmstillingsstoenadRevurderingRedigerbartUtfallDTO(
+    override val data: OmstillingsstoenadRevurderingRedigerbartUtfallData,
 ): RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -66,30 +71,30 @@ object OmstillingsstoenadRevurderingRedigerbartUtfall:
         outline {
             includePhrase(
                 OmstillingsstoenadRevurderingFraser.RevurderingVedtak(
-                    erEndret,
-                    beregning,
-                    etterbetaling.notNull(),
-                    harFlereUtbetalingsperioder,
-                    harUtbetaling,
+                    data.erEndret,
+                    data.beregning,
+                    data.etterbetaling.notNull(),
+                    data.harFlereUtbetalingsperioder,
+                    data.harUtbetaling,
                 ),
             )
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(
                 OmstillingsstoenadRevurderingFraser.UtfallRedigerbart(
-                    erEtterbetaling,
-                    feilutbetaling,
-                    inntekt,
-                    inntektsAar,
-                    mottattInntektendringAutomatisk
+                    data.erEtterbetaling,
+                    data.feilutbetaling,
+                    data.inntekt,
+                    data.inntektsAar,
+                    data.mottattInntektendringAutomatisk
                 )
             )
-            showIf(harUtbetaling) {
-                includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(erEtterbetaling))
+            showIf(data.harUtbetaling) {
+                includePhrase(OmstillingsstoenadRevurderingFraser.UtbetalingMedEtterbetaling(data.erEtterbetaling))
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselRevurdering)
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselRevurdering)
             }
         }

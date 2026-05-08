@@ -2,6 +2,7 @@ package no.nav.pensjon.etterlatte.fixtures
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagDTO
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagData
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallData
 
 fun createOmstillingsstoenadAvslagDTO() =
     OmstillingstoenadAvslagDTO(
@@ -11,7 +12,9 @@ fun createOmstillingsstoenadAvslagDTO() =
 
 fun createOmstillingsstoenadAvslagRedigerbartUtfallDTO() =
     OmstillingstoenadAvslagRedigerbartUtfallDTO(
-        avdoedNavn = "Ola Nordmann",
-        erSluttbehandling = true,
-        tidligereFamiliepleier = false,
+        data = OmstillingstoenadAvslagRedigerbartUtfallData(
+            avdoedNavn = "Ola Nordmann",
+            erSluttbehandling = true,
+            tidligereFamiliepleier = false,
+        )
     )
