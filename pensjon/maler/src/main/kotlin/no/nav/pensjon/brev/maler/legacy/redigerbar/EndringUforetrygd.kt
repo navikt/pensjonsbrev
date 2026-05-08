@@ -544,6 +544,15 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         nynorsk { +"For at du skal få innvilga rett som ung ufør, må du vere alvorleg og varig sjuk før du fylte 26 år. Uføretidspunktet ditt er sett til " + uforetidspunkt.format() + ". Du er innvilga rett som ung ufør. Det betyr at uføretrygda di blir berekna etter reglar som gjeld ung ufør." },
                     )
                 }
+
+                showIf(mottarMinsteytelse) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du får minsteytelsen som ung ufør som hovedregel bare så lenge du bor i Norge. Hvis du flytter ut av Norge og mister medlemskapet i folketrygden, er det opptjeningen din i folketrygden som bestemmer hvor mye du får i uføretrygd. Hvis du flytter tilbake til Norge får du tilbake minsteytelsen som ung ufør." },
+                            nynorsk { +"Du får minsteyting som ung ufør som hovudregel berre så lenge du bur i Noreg. Dersom du flyttar ut av Noreg og mistar medlemskapen i folketrygda, er det oppteninga di i folketrygda som avgjer kor mykje du får i uføretrygd. Dersom du flyttar tilbake til Noreg, får du tilbake minsteyting som ung ufør." },
+                        )
+                    }
+                }
             }
 
             showIf(((yrkesskadegradFraVilkar).equalTo(uforegradFraBeregning) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and kravarsak.isNotAnyOf("soknad_bt", "instopphold"))) {
