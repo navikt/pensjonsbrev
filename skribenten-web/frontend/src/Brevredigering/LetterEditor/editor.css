@@ -117,3 +117,7 @@
   animation: inserted-flash-bg 2s ease-out 1;
   border-radius: var(--ax-radius-2);
 }
+
+.inserted-flash-block .inserted-flash-text {
+  animation: none;
+}
