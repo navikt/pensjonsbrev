@@ -97,14 +97,18 @@ export const collectNewIds = (seenIds: ReadonlySet<number>, letter: EditedLetter
   return newIds;
 };
 
-// Checks if any tekstvalg has been toggled from OFF to ON between two saksbehandlerValg snapshots.
+// Checks if any tekstvalg has been toggled from OFF to ON, or a radio-button tekstvalg changed value,
+// between two saksbehandlerValg snapshots.
 export const hasAnyTekstvalgBeenToggledOn = (
   before: SaksbehandlerValg | null | undefined,
   after: SaksbehandlerValg | null | undefined,
 ): boolean => {
   if (!after) return false;
   for (const key of Object.keys(after)) {
-    if (after[key] === true && before?.[key] !== true) return true;
+    const afterValue = after[key];
+    const beforeValue = before?.[key];
+    if (afterValue === true && beforeValue !== true) return true;
+    if (typeof afterValue === "string" && afterValue !== beforeValue) return true;
   }
   return false;
 };
