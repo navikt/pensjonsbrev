@@ -2,17 +2,17 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad
 
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.innholdForhaandsvarsel
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innholdForhaandsvarsel as innholdForhaansvarselRevurdering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.innholdForhaandsvarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.data as dataOpphoer
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.data as dataRevurdering
 
 
 @TemplateModelHelpers
@@ -28,7 +28,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering: AttachmentTempla
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(innholdForhaansvarselRevurdering)
+        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarsel)
 
         includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
         includePhrase(Felles.HvaSkjerVidereIDinSak)
@@ -47,7 +47,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer: AttachmentTemplate<L
         includeSakspart = false
     ) {
 
-    konverterElementerTilBrevbakerformat(innholdForhaandsvarselOpphoer)
+    konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarsel)
 
     includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
     includePhrase(Felles.HvaSkjerVidereIDinSak)

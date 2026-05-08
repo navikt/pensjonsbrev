@@ -13,11 +13,15 @@ data class BarnepensjonOmregnetNyttRegelverkDTO(
     val erBosattUtlandet: Boolean,
 ) : RedigerbartUtfallBrevDTO
 
-data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
-    override val innhold: List<Element>,
+data class BarnepensjonOmregnetNyttRegelverkFerdigData(
     val beregning: BarnepensjonBeregning,
     val frivilligSkattetrekk: Boolean,
     val erEtterbetaling: Boolean,
     val erUnder18Aar: Boolean,
     val erBosattUtlandet: Boolean,
+)
+
+data class BarnepensjonOmregnetNyttRegelverkFerdigDTO(
+    override val innhold: List<Element>,
+    override val data: BarnepensjonOmregnetNyttRegelverkFerdigData,
 ) : FerdigstillingBrevDTO

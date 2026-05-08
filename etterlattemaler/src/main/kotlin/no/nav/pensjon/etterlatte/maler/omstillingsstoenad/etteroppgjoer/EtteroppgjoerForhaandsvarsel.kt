@@ -36,7 +36,7 @@ data class EtteroppgjoerUtbetalingDTO(
 
 data class EtteroppgjoerForhaandsvarselBrevDTO(
     override val innhold: List<Element>,
-    val data: EtteroppgjoerForhaandsvarselDTO
+    override val data: EtteroppgjoerForhaandsvarselDTO
 ) : FerdigstillingBrevDTO
 
 enum class EtteroppgjoerResultatType {

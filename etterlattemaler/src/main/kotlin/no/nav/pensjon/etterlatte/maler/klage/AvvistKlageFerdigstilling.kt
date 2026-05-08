@@ -28,7 +28,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 
 data class AvvistKlageFerdigDTO(
     override val innhold: List<Element>,
-    val data: AvvistKlageInnholdDTO,
+    override val data: AvvistKlageInnholdDTO,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers

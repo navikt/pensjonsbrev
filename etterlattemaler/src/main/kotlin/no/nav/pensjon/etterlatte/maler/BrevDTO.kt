@@ -11,6 +11,8 @@ interface BrevDTO : AutobrevData {
     val innhold: List<Element>
 }
 
-interface FerdigstillingBrevDTO : BrevDTO
+interface FerdigstillingBrevDTO : BrevDTO {
+    val data: Any
+}
 
 interface RedigerbartUtfallBrevDTO : AutobrevData
