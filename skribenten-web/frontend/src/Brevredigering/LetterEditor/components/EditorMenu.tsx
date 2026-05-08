@@ -77,7 +77,7 @@ export const EditorMenu = ({ undo, redo, canUndo, canRedo, setVilTilbakestilleMa
           <Tooltip content={tooltipText.tilbakestill}>
             <Button
               data-color="danger"
-              data-cy="tilbakestill-mal-button"
+              data-testid="tilbakestill-mal-button"
               icon={<ArrowCirclepathReverseIcon fontSize="1.5rem" title="Tilbakestill mal" />}
               onClick={() => setVilTilbakestilleMal(true)}
               size="small"

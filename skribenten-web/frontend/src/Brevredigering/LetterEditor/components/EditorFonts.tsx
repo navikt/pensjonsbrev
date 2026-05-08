@@ -50,14 +50,14 @@ const FontButton = (props: {
   onClick: () => void;
   text: ReactNode;
   disabled?: boolean;
-  dataCy: string;
+  "data-testid": string;
   tooltip: string;
 }) => {
   return (
     <Tooltip content={props.tooltip}>
       <Button
         color="text-neutral"
-        data-cy={props.dataCy}
+        data-testid={props["data-testid"]}
         disabled={props.disabled}
         onClick={props.onClick}
         size="small"

@@ -30,7 +30,7 @@ import {
   type Title3Block,
   type VariableValue,
 } from "~/types/brevbakerTypes";
-import type { Nullable } from "~/types/Nullable";
+import { type Nullable } from "~/types/Nullable";
 
 export const nyBrevResponse = ({
   info = nyBrevInfo({}),

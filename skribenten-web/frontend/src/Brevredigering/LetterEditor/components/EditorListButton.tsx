@@ -26,14 +26,14 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
     ) : (
       <BulletListIcon fontSize="1.5rem" title="punktliste-ikon" />
     );
-  const dataCy = listType === ListType.NUMMERERT_LISTE ? "editor-number-list" : "editor-bullet-list";
+  const dataTestId = listType === ListType.NUMMERERT_LISTE ? "editor-number-list" : "editor-bullet-list";
   const tooltip = listType === ListType.NUMMERERT_LISTE ? tooltipText.numberList : tooltipText.bulletList;
 
   return (
     <Tooltip content={tooltip}>
       <Button
         color="text-neutral"
-        data-cy={dataCy}
+        data-testid={dataTestId}
         disabled={freeze || editorState.focus.blockIndex < 0}
         icon={icon}
         onClick={() => {
