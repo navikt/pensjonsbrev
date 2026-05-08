@@ -5,8 +5,6 @@ services:
     build: ./brevbaker/pdf-bygger
     environment:
       - JAVA_TOOL_OPTIONS=-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork #used for Apple M1 compatability
-      - PDF_COMPILE_TIMEOUT_SECONDS=200
-      - PDF_BYGGER_COMPILE_TMP_DIR=/tmp
     ports:
       - "8081:8080"
       - "5016:5016"

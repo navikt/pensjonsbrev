@@ -1,4 +1,4 @@
-import { expect } from "vitest";
+import { describe, expect, test } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { newParagraph } from "~/Brevredigering/LetterEditor/actions/common";

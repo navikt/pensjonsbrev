@@ -10,6 +10,7 @@ name: "deploy: skribenten-web"
 
 permissions:
   contents: read
+  packages: read
   id-token: write
 
 jobs:

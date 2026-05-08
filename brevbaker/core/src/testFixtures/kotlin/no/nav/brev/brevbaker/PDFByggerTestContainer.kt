@@ -1,6 +1,8 @@
 package no.nav.brev.brevbaker
 
+import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.images.PullPolicy
 import org.testcontainers.utility.DockerImageName
@@ -30,12 +32,14 @@ object PDFByggerTestContainer {
         return GenericContainer(DockerImageName.parse(fullImageName))
             .withImagePullPolicy(pullPolicy)
             .withExposedPorts(PORT)
-            .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
+            .withLogConsumer(Slf4jLogConsumer(LoggerFactory.getLogger("pdf-bygger")))
             .withEnv(
                 "JAVA_TOOL_OPTIONS",
                 "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5016 -Djdk.lang.Process.launchMechanism=vfork"
             )
+            // bakover-ompatibilitet med pdf-bygger (brukt i integrasjonstester i brevbaker på github actions).
             .withEnv("PDF_BYGGER_COMPILE_TMP_DIR", "/tmp")
+            .withEnv("PDF_COMPILE_TIMEOUT_SECONDS", "200")
             .waitingFor(Wait.forHttp("/isReady").forStatusCode(200))
             .withReuse(REUSE_CONTAINER)
     }

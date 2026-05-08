@@ -18,10 +18,10 @@ import no.nav.pensjon.brev.ufore.maler.info.Honnorkort
 import no.nav.pensjon.brev.ufore.maler.info.InfoEndretUforetrygdPgaInntekt
 import no.nav.pensjon.brev.ufore.maler.info.InfobrevLovendringer2026
 import no.nav.pensjon.brev.ufore.maler.innhentingopplysninger.*
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFU
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar
-import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmHoyereMinstesatsForIFURedigerbar
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFU
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosent
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereMinstesats
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosent
 import no.nav.pensjon.brev.ufore.maler.lovendringer2026.VarselOmLavereReduksjonsprosentRedigerbar
@@ -34,8 +34,8 @@ object UfoereTemplates : AllTemplates {
         InfobrevLovendringer2026,
         VarselOmLavereMinstesats,
         VarselOmLavereReduksjonsprosent,
-        VarselOmHoyereMinstesatsForIFU,
-        VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosent,
+        VarselOmOktMinsteIFU,
+        VarselOmOktMinsteIFUOgLavereReduksjonsprosent,
     )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
@@ -95,8 +95,8 @@ object UfoereTemplates : AllTemplates {
         Honnorkort,
         VarselOmLavereMinstesatsS,
         VarselOmLavereReduksjonsprosentRedigerbar,
-        VarselOmHoyereMinstesatsForIFURedigerbar,
-        VarselOmHoyereMinstesatsForIFUOgLavereReduksjonsprosentRedigerbar,
+        VarselOmOktMinsteIFURedigerbar,
+        VarselOmOktMinsteIFUOgLavereReduksjonsprosentRedigerbar,
     )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf()

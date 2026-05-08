@@ -1,4 +1,4 @@
-import { expect } from "vitest";
+import { describe, expect, it } from "vitest";
 
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { text } from "~/Brevredigering/LetterEditor/actions/common";

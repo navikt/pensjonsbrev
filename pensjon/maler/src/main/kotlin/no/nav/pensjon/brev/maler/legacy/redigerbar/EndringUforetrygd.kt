@@ -510,8 +510,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
                 paragraph {
                     text(
-                        bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Utbetalingen din endres derfor til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Utbetalinga av uføretrygda di blir derfor endra til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format() + " gonger grunnbeløpet i folketrygda." },
+                        bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Utbetalingen din endres derfor til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp." },
+                        nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Utbetalinga av uføretrygda di blir derfor endra til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda." },
                     )
                 }
             }
@@ -816,18 +816,6 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopOkt = false AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BelopRedusert = false AND PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1) = "false" AND PE_Vedtaksdata_Kravhode_KravArsakType <> "sivilstandsendring") THEN      INCLUDE ENDIF
-            // showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and FUNKSJON_PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat(1).equalTo("false") and kravarsak.notEqualTo("sivilstandsendring"))){
-            // TODO: dette ser aldri ut til å ha blitt vist, pga resultat = "false"-sjekk. Skal det være med?
-            showIf((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()) and kravarsak.notEqualTo("sivilstandsendring"))) {
-                paragraph {
-                    text(
-                        bokmal { +"Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
-                        nynorsk { +"Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
-                    )
-                }
-            }
-
             showIf(pesysData.nyeOpphorteBarnetillegg.isEmpty()) {
                 paragraph {
                     showIf(barnetilleggInnvilget) {
@@ -979,21 +967,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
             showIf(instoppholdtype.equalTo("reduksjon_fo")) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring." },
-                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring." },
+                        bokmal { +"Uføretrygden din er redusert fordi du er under straffegjennomføring. " },
+                        nynorsk { +"Uføretrygda di er redusert fordi du er under straffegjennomføring. " },
                     )
-
-                    showIf(((pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphreduksjonsperiodeliste_instopphreduksjonsperiode_forsorgeransvar()))) {
-                        text(
-                            bokmal { +" " },
-                            nynorsk { +" " },
-                        )
-                    }
 
                     showIf((pe.ut_forsorgeransvar_siste_er_true())) {
                         text(
                             bokmal { +"Da du forsørger barn" },
-                            nynorsk { +" Da du forsørgjer barn" },
+                            nynorsk { +"Da du forsørgjer barn" },
                         )
                     }
 
@@ -1012,7 +993,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                     }
                     text(
                         bokmal { +"Utbetalingen din er redusert fra andre måned etter at straffegjennomføring tok til. Når straffegjennomføring er avsluttet, vil vi ikke lenger redusere uføretrygden din. " },
-                        nynorsk { +" Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
+                        nynorsk { +"Utbetalinga di er redusert frå den andre månaden etter at straffegjennomføringa tok til. Når straffegjennomføringa er avslutta, vil vi ikkje lenger redusere uføretrygda di. " },
                     )
 
                     showIf(ektefelletilleggInnvilget) {
@@ -1331,12 +1312,15 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         bokmal { +"Vi bruker en fastsatt prosentandel når vi justerer uføretrygden din ut fra inntekt. Denne prosentandelen kaller vi kompensasjonsgrad. " },
                         nynorsk { +"Vi bruker ein fastsett prosentdel når vi justerer uføretrygda di ut frå inntekt. Denne prosentdelen kallar vi kompensasjonsgrad. " },
                     )
+                }
+                paragraph {
                     text(
                         bokmal { +"For deg utgjør kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er bare den delen av inntekten din som overstiger " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygden din ut fra. Det betyr at et beløp som tilsvarer " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av den inntekten du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner trekkes fra uføretrygden din. " },
                         nynorsk { +"For deg utgjer kompensasjonsgraden " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent. Det er berre den delen av inntekta di som overstig " + pe.ut_inntektsgrense_faktisk().format() + " kroner, som vi justerer uføretrygda di ut frå. Det betyr at eit beløp som svarer til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_kompensasjonsgrad().format() + " prosent av inntekta du har over " + pe.ut_inntektsgrense_faktisk().format() + " kroner blir trekt frå uføretrygda di. " },
                     )
-
-                    showIf(gjenlevendetilleggInnvilget) {
+                }
+                showIf(gjenlevendetilleggInnvilget) {
+                    paragraph {
                         text(
                             bokmal { +"Tjener du mer enn inntektsgrensen din, reduserer vi gjenlevendetillegget ditt med samme prosent som vi reduserer uføretrygden din med." },
                             nynorsk { +"Tener du meir enn inntektsgrensa di, reduserer vi attlevandetillegget ditt med same prosent som vi reduserer uføretrygda di med." },
@@ -1470,14 +1454,14 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 showIf(barnetilleggInnvilget) {
                     paragraph {
                         text(
-                            bokmal { +"Endringer i inntekten din" },
-                            nynorsk { +"Endringar i inntekta di" },
+                            bokmal { +"Endringer i inntekten din " },
+                            nynorsk { +"Endringar i inntekta di " },
                         )
 
                         showIf(barnetilleggFellesInnvilget) {
                             text(
-                                bokmal { +" og til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
-                                nynorsk { +" og til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
+                                bokmal { +"og til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " },
+                                nynorsk { +"og til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " },
                             )
                         }
 

@@ -13,7 +13,7 @@ function SelectEnhet() {
       name="enhetsId"
       render={({ field, fieldState }) => (
         <Select
-          data-cy="avsenderenhet-select"
+          data-testid="avsenderenhet-select"
           error={fieldState.error?.message}
           label="Avsenderenhet"
           size="small"

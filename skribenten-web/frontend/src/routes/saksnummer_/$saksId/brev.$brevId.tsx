@@ -9,6 +9,13 @@ import { z } from "zod";
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
+  collectAllIds,
+  collectNewIds,
+  findLastInsertedFocus,
+  hasAnyTekstvalgBeenToggledOn,
+  InsertedTekstValgHighlightProvider,
+} from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
+import {
   SaksbehandlerValgModelEditor,
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
@@ -191,7 +198,30 @@ function RedigerBrev({
     count?: number;
   } | null>(null);
 
-  const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
+
+  // Tracks the latest server-known letter and saksbehandlerValg for event handlers
+  // and mutation callbacks. These refs do not affect rendering.
+  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(brev.redigertBrev));
+  const previousValgRef = useRef(brev.saksbehandlerValg);
+
+  const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
+
+  useEffect(() => {
+    lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
+    previousValgRef.current = brev.saksbehandlerValg;
+  }, [brev.redigertBrev, brev.saksbehandlerValg]);
+
+  useEffect(
+    () => () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    },
+    [],
+  );
 
   const navigateToBrevbehandler = () =>
     navigate({
@@ -211,16 +241,50 @@ function RedigerBrev({
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
-    mutationFn: (values) =>
-      oppdaterBrev({
+    mutationFn: (values) => {
+      // Mark the editor as saving so onSaveSuccess will apply the response
+      // (it ignores responses while the editor is DIRTY).
+      setEditorState((previousState) => ({ ...previousState, saveStatus: "SAVE_PENDING" }));
+      return oppdaterBrev({
         saksId: Number.parseInt(saksId, 10),
         brevId: brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
         },
-      }),
-    onSuccess: onSaveSuccess,
+      });
+    },
+    onSuccess: (response) => {
+      const previousIds = previousIdsRef.current;
+      previousIdsRef.current = null;
+
+      onSaveSuccess(response);
+
+      // The editor went DIRTY while the request was in flight (user typed);
+      // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
+      let responseWasApplied = true;
+      setEditorState((current) => {
+        responseWasApplied = current.saveStatus !== "DIRTY";
+        return current;
+      });
+      if (!previousIds || !responseWasApplied) return;
+
+      const lastSeenIds = lastSeenIdsRef.current;
+      const newIds = new Set<number>();
+      for (const id of collectNewIds(previousIds, response.redigertBrev)) {
+        // Ignore ids that already existed in the letter before this save.
+        if (!lastSeenIds.has(id)) newIds.add(id);
+      }
+      if (newIds.size === 0) return;
+
+      setHighlightedIds(newIds);
+      const focus = findLastInsertedFocus(response.redigertBrev, newIds);
+      if (focus) {
+        setEditorState((s) => ({ ...s, focus }));
+      }
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+      highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
+    },
   });
 
   const defaultValuesModelEditor = useMemo(
@@ -246,9 +310,15 @@ function RedigerBrev({
   const onTekstValgAndOverstyringChange = () => {
     form.trigger().then((isValid) => {
       if (isValid) {
+        const updatedValg = form.getValues().saksbehandlerValg;
+        // Only highlight if a tekstvalg was toggled ON — not on toggle-off or overstyring edits.
+        if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
+          previousIdsRef.current = collectAllIds(editorState.redigertBrev);
+        }
+        previousValgRef.current = updatedValg;
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
-          saksbehandlerValg: form.getValues().saksbehandlerValg,
+          saksbehandlerValg: updatedValg,
         });
       }
     });
@@ -336,7 +406,9 @@ function RedigerBrev({
                   <UnderskriftTextField of="Saksbehandler" />
                 </VStack>
               </Box>
-              <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+              <InsertedTekstValgHighlightProvider ids={highlightedIds}>
+                <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+              </InsertedTekstValgHighlightProvider>
             </HGrid>
             <Box
               asChild

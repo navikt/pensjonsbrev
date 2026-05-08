@@ -13,6 +13,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.testing.*
 import io.ktor.server.util.*
 import no.nav.pensjon.brev.skribenten.MockPrincipal
+import no.nav.pensjon.brev.skribenten.fagsystem.Behandlingsnummer
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.PenClient
 import no.nav.pensjon.brev.skribenten.initADGroups
@@ -68,12 +69,12 @@ class AuthorizeAnsattSakTilgangTest {
 
     private val creds = BasicAuthCredentials("test", "123")
 
-    private fun lagPdlService(adressebeskyttelser: Map<Pair<Pid, Pdl.Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
-        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
+    private fun lagPdlService(adressebeskyttelser: Map<Pair<Pid, Behandlingsnummer?>, List<Pdl.Gradering>> = mapOf()) = object : PdlServiceStub() {
+        override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?) =
             adressebeskyttelser[Pair(ident, behandlingsnummer)]
                 ?: notYetStubbed("Mangler stub for adressebeskyttelse for fødselsnummer $ident og behandlingsnummer $behandlingsnummer")
 
-        override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?): Pdl.PersonContext =
+        override suspend fun hentBrukerContext(ident: Pid, behandlingsnummer: Behandlingsnummer?): Pdl.PersonContext =
             notYetStubbed("Mangler stub for hentBrukerContext")
 
     }
@@ -224,7 +225,7 @@ class AuthorizeAnsattSakTilgangTest {
     @Test
     fun `svarer med internal server error om hentAdressebeskyttelse feiler`() = basicAuthTestApplication(
         pdlService = object : PdlServiceStub() {
-            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Pdl.Behandlingsnummer?) =
+            override suspend fun hentAdressebeskyttelse(ident: Pid, behandlingsnummer: Behandlingsnummer?) =
                 throw PdlServiceException("En feil", HttpStatusCode.InternalServerError)
         }
     ) { client ->
@@ -249,7 +250,7 @@ class AuthorizeAnsattSakTilgangTest {
         assertEquals(HttpStatusCode.NotFound, response.status)
     }
 
-    private fun behandlingsnummer(): Pdl.Behandlingsnummer? = Pen.finnBehandlingsnummer(Sakstype("Sakstype123"))
+    private fun behandlingsnummer(): Behandlingsnummer? = null
 
     private fun successResponse(saksId: String) =
         "Fikk tilgang til den strengt bevoktede saken: $saksId"

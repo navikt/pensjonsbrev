@@ -2,9 +2,8 @@ import "./editor.css";
 
 import { Box, Heading, VStack } from "@navikt/ds-react";
 import { applyPatches } from "immer";
-import { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
+import React, { createContext, type Dispatch, type SetStateAction, useCallback, useContext, useState } from "react";
 
-import { DebugPanel } from "~/Brevredigering/LetterEditor/components/DebugPanel";
 import { applyAction, type CallbackReceiver } from "~/Brevredigering/LetterEditor/lib/actions";
 import TilbakestillMalModal from "~/components/TilbakestillMalModal";
 import { useDragSelectUnifier } from "~/hooks/useDragSelectUnifier";
@@ -16,8 +15,11 @@ import { ContentGroup } from "./components/ContentGroup";
 import { EditorMenu } from "./components/EditorMenu";
 import { SakspartView } from "./components/SakspartView";
 import { SignaturView } from "./components/SignaturView";
+import { isTekstValgHighlighted, useInsertedTekstValgHighlight } from "./InsertedTekstValgHighlight";
 import { type LetterEditorState } from "./model/state";
 import { useEditorKeyboardShortcuts } from "./utils";
+
+const DebugPanel = React.lazy(() => import("./components/DebugPanel"));
 
 export const LetterEditor = ({
   freeze,
@@ -35,6 +37,7 @@ export const LetterEditor = ({
   const letter = editorState.redigertBrev;
   const blocks = letter.blocks;
   const editorKeyboardShortcuts = useEditorKeyboardShortcuts(setEditorState);
+  const highlightedIds = useInsertedTekstValgHighlight();
 
   const [editorRoot, setEditorRoot] = useState<HTMLDivElement | null>(null);
   const editorRootRef = useCallback((el: HTMLDivElement | null) => setEditorRoot(el), []);
@@ -124,7 +127,12 @@ export const LetterEditor = ({
               ref={editorRootRef}
             >
               {blocks.map((block, blockIndex) => (
-                <div className={block.type} key={blockIndex}>
+                <div
+                  className={
+                    isTekstValgHighlighted(highlightedIds, block) ? `${block.type} inserted-flash-block` : block.type
+                  }
+                  key={blockIndex}
+                >
                   <ContentGroup literalIndex={{ blockIndex, contentIndex: 0 }} />
                 </div>
               ))}

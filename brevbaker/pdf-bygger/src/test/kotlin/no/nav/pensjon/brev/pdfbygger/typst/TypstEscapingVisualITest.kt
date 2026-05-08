@@ -52,7 +52,7 @@ class TypstEscapingVisualITest {
 
     private fun renderTestPdf(testName: String, pdfRequest: PDFRequest) {
         runBlocking {
-            val result = pdfByggerService.producePDF(pdfRequest, shouldRetry = false, useTypst = true)
+            val result = pdfByggerService.producePDF(pdfRequest)
             writeTestPDF(testName, result.bytes, Path.of("build/test_visual/pdf"))
         }
     }

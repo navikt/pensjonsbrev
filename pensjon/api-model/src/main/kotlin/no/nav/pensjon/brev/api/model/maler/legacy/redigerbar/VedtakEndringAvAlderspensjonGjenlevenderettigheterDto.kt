@@ -20,11 +20,11 @@ data class VedtakEndringAvAlderspensjonGjenlevenderettigheterDto(
 ) : RedigerbarBrevdata<VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.SaksbehandlerValg, VedtakEndringAvAlderspensjonGjenlevenderettigheterDto.PesysData> {
     data class SaksbehandlerValg(
         @DisplayText("Omregnet til enslig i samme vedtak")
-        val omregnetTilEnsligISammeVedtak: Boolean,
+        val omregnetTilEnsligISammeVedtak: Boolean?,
         @DisplayText("Hvis bruker under 67 år og avdøde har redusert trygdetid/poengår")
-        val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
+        val brukerUnder67OgAvdoedeHarRedusertTrygdetidEllerPoengaar: Boolean?,
         @DisplayText("Hvis avdøde har redusert trygdetid/poengår")
-        val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean,
+        val avdoedeHarRedusertTrygdetidEllerPoengaar: Boolean?,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
     ) : SaksbehandlerValgBrevdata

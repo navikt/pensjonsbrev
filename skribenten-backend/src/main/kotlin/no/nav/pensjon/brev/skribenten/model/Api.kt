@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.skribenten.db.Hash
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.SpraakKode
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -169,7 +170,7 @@ object Api {
     }
 
     data class SakContext(
-        val sak: Pen.SakSelection,
+        val sak: Fagsak,
         val brevmalKoder: List<String>,
     )
 

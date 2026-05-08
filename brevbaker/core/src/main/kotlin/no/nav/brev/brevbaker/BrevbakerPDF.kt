@@ -6,8 +6,6 @@ import no.nav.brev.brevbaker.template.toScope
 import no.nav.pensjon.brev.PDFRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
-import no.nav.pensjon.brev.api.model.FeatureToggle
-import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.toCode
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -15,14 +13,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMarkup
 internal class BrevbakerPDF(
     private val pdfByggerService: PDFByggerService,
     private val pdfVedleggAppender: PDFVedleggAppender,
-    private val typstToggleAuto: FeatureToggle? = null,
-    private val typstToggleRedigerbar: FeatureToggle? = null,
 ) {
     suspend fun renderPDF(letter: Letter<BrevbakerBrevdata>, redigertBrev: LetterMarkup? = null): LetterResponse =
         renderCompleteMarkup(letter, redigertBrev).let { markup ->
-            val erRedigerbartBrev = redigertBrev != null
-            val toggle = if (erRedigerbartBrev) typstToggleRedigerbar else typstToggleAuto
-            val useTypst = toggle?.let { FeatureToggleSingleton.isEnabled(it) } ?: false
             pdfByggerService.producePDF(
                 PDFRequest(
                     letterMarkup = markup.letterMarkup,
@@ -31,8 +24,6 @@ internal class BrevbakerPDF(
                     brevtype = letter.template.letterMetadata.brevtype,
                     pdfVedlegg = Letter2Markup.renderPDFTitlesOnly(letter.toScope(), letter.template)
                 ),
-                shouldRetry = !erRedigerbartBrev,
-                useTypst = useTypst,
             )
         }.let { pdf ->
             pdfVedleggAppender.leggPaaVedlegg(

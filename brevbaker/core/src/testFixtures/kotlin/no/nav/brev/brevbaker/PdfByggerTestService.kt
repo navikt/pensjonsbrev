@@ -35,11 +35,8 @@ class PdfByggerTestService(private val pdfByggerUrl: String = PDFByggerTestConta
         }
     }
 
-    override suspend fun producePDF(pdfRequest: PDFRequest, shouldRetry: Boolean, useTypst: Boolean): PDFCompilationOutput =
+    override suspend fun producePDF(pdfRequest: PDFRequest): PDFCompilationOutput =
         httpClient.post("$pdfByggerUrl/produserBrev") {
-            url {
-                if (useTypst) parameters.append("typst", "true")
-            }
             contentType(ContentType.Application.Json)
             setBody(objectmapper.writeValueAsBytes(pdfRequest))
         }.body()
