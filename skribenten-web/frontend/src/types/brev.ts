@@ -14,7 +14,7 @@ export type OpprettBrevRequest = {
 };
 
 export type SaksbehandlerValg = {
-  [key: string]: SaksbehandlerValg | number | boolean | string | null;
+  [key: string]: SaksbehandlerValg | SaksbehandlerValg[] | number | boolean | string | null;
 };
 
 export type BrevResponse = {
