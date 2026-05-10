@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -1563,6 +1565,14 @@ object Innvilgelse {
         val uforetidspunkt: Expression<LocalDate>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val foedselsdato = pe.personsak.foedselsdato
+            val erMndEtterFoedsel =
+                (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
+                    .or(
+                        (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
+                    )
+            val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
+
             title1 {
                 text(
                     bokmal { +"Dette er uføretidspunktet ditt" },
@@ -1573,22 +1583,22 @@ object Innvilgelse {
             showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
+                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
+                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
+                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
+                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
+                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
                     )
                 }
             }
