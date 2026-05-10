@@ -410,6 +410,7 @@ object Innvilgelse {
         val pe: Expression<PEgruppe10>,
         val yrkesskadeResultat: Expression<String>,
         val ungUforResultat: Expression<String>,
+        val innvilgetEtter12_2_tredjeledd: Expression<Boolean>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
@@ -460,9 +461,15 @@ object Innvilgelse {
             showIf(pe.vedtaksbrev_vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_inngangunntak().equalTo("halv_minpen_ufp_ut")) {
                 paragraph {
                     text(
-                        bokmal { +"Du var medlem i folketrygden på uføretidspunktet og har tjent opp rett til minst halvparten av full minsteytelse for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden." },
-                        nynorsk { +"Du var medlem i folketrygda på uføretidspunktet og har tent opp rett til minst halvparten av full minsteyting for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygda." },
+                        bokmal { +"Du var medlem i folketrygden på uføretidspunktet og har tjent opp rett til minst halvparten av full minsteytelse for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden. " },
+                        nynorsk { +"Du var medlem i folketrygda på uføretidspunktet og har tent opp rett til minst halvparten av full minsteyting for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygda. " },
                     )
+                    showIf(innvilgetEtter12_2_tredjeledd) {
+                        text(
+                            bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i § 12-2 tredje ledd. Denne regelen sier at du ikke får beregnet fremtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
+                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i § 12-2 tredje ledd. Denne regelen seier at du ikkje får berekna framtidig trygdetid, jf. folketrygdlova § 12-2 fjerde ledd. " },
+                        )
+                    }
                 }
             }
         }

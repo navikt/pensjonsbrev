@@ -20,7 +20,9 @@ data class InnvilgelseUfoeretrygdUtlandDto(
         val barnetilleggInfo: Boolean,
         @DisplayText("Refusjon")
         val refusjon: Boolean,
-    ) : SaksbehandlerValgBrevdata
+        @DisplayText("Innvilget etter 12-2 3.ledd")
+        val innvilget_etter_12_2_tredjeledd: Boolean,
+        ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
         val pe: PEgruppe10,
