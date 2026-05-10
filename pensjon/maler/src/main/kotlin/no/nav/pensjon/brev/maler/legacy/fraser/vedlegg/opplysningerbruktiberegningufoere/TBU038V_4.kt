@@ -49,14 +49,6 @@ data class TBU038V_4(
                     )
                 }
             }
-            //[TBU038V_4]
-
-            paragraph {
-                text (
-                    bokmal { + "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp." },
-                    nynorsk { + "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda." },
-                )
-            }
         }
     }
 }
