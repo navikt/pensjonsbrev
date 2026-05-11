@@ -57,18 +57,12 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
     createAttachment<LangBokmalEnglish, OversiktOverPensjonensStoerrelseGjenlevendepensjonDto>(
         title = {
             text(
-                bokmal { +"Oversikt over pensjonens størrelse" },
-                english { +"Summary of the pension's size" },
+                bokmal { +"Oversikt over pensjonens størrelse fra " + pesysData.virkningFom.format() },
+                english { +"Summary of the pension's size from " + pesysData.virkningFom.format() },
             )
         },
         includeSakspart = false,
     ) {
-        paragraph {
-            text(
-                bokmal { +"Oversikt over pensjonens størrelse fra " + pesysData.virkningFom.format() },
-                english { +"Summary of the pension's size from " + pesysData.virkningFom.format() },
-            )
-        }
         paragraph {
             text(
                 bokmal {
@@ -86,7 +80,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
 
         showIf(pesysData.beregningPerioder.size().greaterThan(1)) {
             forEach(pesysData.beregningPerioder) { periode ->
-                paragraph {
+                title2 {
                     text(
                         bokmal { +"Den månedlige pensjonen i perioden " + periode.virkDatoFom.format() + " - " + periode.virkDatoTom.format() },
                         english { +"The monthly pension from " + periode.virkDatoFom.format() + " to " + periode.virkDatoTom.format() },

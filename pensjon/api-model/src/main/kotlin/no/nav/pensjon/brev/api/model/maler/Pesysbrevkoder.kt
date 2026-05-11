@@ -94,7 +94,8 @@ object Pesysbrevkoder {
         GP_AVSLAG_GJENLEVENDEPENSJON_UTLAND,
         UT_VEDTAK_OM_LAVERE_MINSTESATS_2026,
         GP_INNVILGELSE_BOSATT_NORGE_ETTER_UTLAND,
-        GP_VEDTAK_ENDRING_BOSATT_UTLAND;
+        GP_VEDTAK_ENDRING_BOSATT_UTLAND,
+        UP_AVSLAG_UFOEREPENSJON;
 
         override fun kode(): String = this.name
     }
