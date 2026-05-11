@@ -433,16 +433,7 @@ object Innvilgelse {
                 }
             }
 
-            showIf(((pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
-                paragraph {
-                    text(
-                        bokmal { +"Du er innvilget flyktningstatus fra Utlendingsdirektoratet, og oppfyller derfor vilkåret om medlemskap i folketrygden. " },
-                        nynorsk { +"Du er innvilga flyktningstatus frå Utlendingsdirektoratet, og oppfyller derfor vilkåret om medlemskap i folketrygda." },
-                    )
-                }
-            }
-
-            showIf(((yrkesskadeResultat).equalTo("oppfylt") and not((pe.grunnlag_persongrunnlagsliste_brukerflyktning())) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
+            showIf(yrkesskadeResultat.equalTo("oppfylt") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, og oppfyller derfor vilkåret om medlemskap i folketrygden." },
@@ -451,7 +442,7 @@ object Innvilgelse {
                 }
             }
 
-            showIf((ungUforResultat.equalTo("oppfylt") and (yrkesskadeResultat).notEqualTo("oppfylt") and not((pe.grunnlag_persongrunnlagsliste_brukerflyktning())) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
+            showIf(ungUforResultat.equalTo("oppfylt") and yrkesskadeResultat.notEqualTo("oppfylt") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()) {
                 paragraph {
                     text(
                         bokmal { +"Du ble ufør før du fylte 26 år. Du var medlem i folketrygden, og hadde vært det i minst ett år før du søkte om uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden." },
