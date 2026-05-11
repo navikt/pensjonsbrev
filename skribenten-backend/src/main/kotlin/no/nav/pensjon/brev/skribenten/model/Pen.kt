@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto
-import no.nav.pensjon.brev.skribenten.model.Pdl.Behandlingsnummer.*
 import no.nav.pensjon.brev.skribenten.serialize.Sakstype
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
@@ -13,16 +12,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 object Pen {
-    // TODO: Denne bør på sikt flyttes ut herifra
-    private val behandlingsnummerMap = mapOf(
-        "ALDER" to B280,
-        "BARNEP" to B359,
-        "GJENLEV" to B222,
-        "UFOREP" to B255
-    )
-
-    fun finnBehandlingsnummer(sakstype: ISakstype) = behandlingsnummerMap[sakstype.kode]
-
     data class SakSelection(
         val saksId: SaksId,
         val foedselsdato: LocalDate,

@@ -69,6 +69,32 @@ class EndreMottakerHandlerTest : BrevredigeringHandlerTestBase() {
     }
 
     @Test
+    suspend fun `annenMottakerNavn i redigertBrev kommer fra pesysData om det ikke er overstyrt`() {
+        penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.medAnnenMottakerNavn("Pesys Mottaker"))
+
+        val brev = opprettBrev()
+        assertThat(brev).isSuccess {
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
+        }
+    }
+
+    @Test
+    suspend fun `annenMottakerNavn i redigertBrev som kommer fra pesysData blir overstyrt`() {
+        penService.pesysBrevdata = brevdataResponseData.copy(felles = brevdataResponseData.felles.medAnnenMottakerNavn("Pesys Mottaker"))
+
+        val brev = opprettBrev().resultOrFail()
+        assertThat(brev.redigertBrev.sakspart.annenMottakerNavn).isEqualTo("Pesys Mottaker")
+
+        val (samhandlerId, samhandlerNavn) = samhandlerService.navn.entries.first()
+        val nyMottaker = Dto.Mottaker.samhandler(samhandlerId)
+
+        assertThat(endreMottaker(brev.info.id, nyMottaker)).isSuccess()
+        assertThat(hentBrev(brev.info.id)).isSuccess {
+            assertThat(it.redigertBrev.sakspart.annenMottakerNavn).isEqualTo(samhandlerNavn)
+        }
+    }
+
+    @Test
     suspend fun `kan ikke endre mottaker når brevet er reservert av annen bruker`() {
         val brev = opprettBrev(reserverForRedigering = true).resultOrFail()
 

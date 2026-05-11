@@ -646,7 +646,7 @@ object EndringAvAlderspensjonSivilstand : RedigerbarTemplate<EndringAvAlderspens
                 }
 
                 // Selectable - Hvis reduksjon tilbake i tid - feilutbetalingAP
-                showIf(saksbehandlerValg.feilutbetaling) {
+                showIf(saksbehandlerValg.feilutbetaling.ifNull(false)) {
                     includePhrase(FeilutbetalingAP)
                 }
 

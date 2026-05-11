@@ -160,13 +160,6 @@ object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<Innvilge
                 }
             }
 
-            paragraph {
-                text (
-                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
-                    nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
-                )
-            }
-
             title1 {
                 text (
                     bokmal { + "Begrunnelse for vedtaket" },

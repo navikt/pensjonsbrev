@@ -12,6 +12,10 @@ import { MergeTarget } from "~/Brevredigering/LetterEditor/actions/merge";
 import { logPastedClipboard } from "~/Brevredigering/LetterEditor/actions/paste";
 import TableView from "~/Brevredigering/LetterEditor/components/TableView";
 import { Text } from "~/Brevredigering/LetterEditor/components/Text";
+import {
+  isTekstValgHighlighted,
+  useInsertedTekstValgHighlight,
+} from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { useEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
 import { applyAction } from "~/Brevredigering/LetterEditor/lib/actions";
 import { type Focus, type LiteralIndex } from "~/Brevredigering/LetterEditor/model/state";
@@ -46,10 +50,12 @@ import { updateFocus } from "../actions/cursorPosition";
 import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
+  adjacentTableEntryFocus,
   determineTableCellDeleteAction,
   exitTable,
   isAtLastTableCell,
   nextTableFocus,
+  verticalTableStep,
 } from "../services/tableCaretUtils";
 import { isMac } from "../utils";
 
@@ -190,6 +196,8 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   const pasteViaKeyboardRef = useRef(false);
   const pasteViaContextMenuRef = useRef(false);
   const { freeze, editorState, setEditorState, undo, redo } = useEditor();
+  const highlightedIds = useInsertedTekstValgHighlight();
+  const isInserted = isTekstValgHighlighted(highlightedIds, content);
 
   const shouldBeFocused = hasFocus(editorState.focus, literalIndex);
 
@@ -367,11 +375,45 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowUp = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "up");
+        if (next === "exit") {
+          setEditorState(exitTable("backward"));
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
+        }
+        return;
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
+    }
+
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "up");
+      if (tableEntry) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnFirstVisualLine = caretCoordinates.top <= elementRect.top + 1;
+
+        if (!isOnFirstVisualLine) return;
+
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
+      }
     }
 
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedHigher(element);
@@ -390,14 +432,49 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
   };
 
   const handleArrowDown = (event: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (event.shiftKey) return;
+
+    const f = editorState.focus;
+
+    if (isTableCellIndex(f)) {
+      const block = editorState.redigertBrev.blocks[f.blockIndex];
+      const content = block.content[f.contentIndex];
+
+      if (isTable(content)) {
+        event.preventDefault();
+        const next = verticalTableStep(f, content, "down");
+        if (next === "exit") {
+          setEditorState(exitTable("forward"));
+        } else {
+          setEditorState((prev) => ({ ...prev, focus: next }));
+        }
+        return;
+      }
+    }
+
     const element = contentEditableReference.current;
     const caretCoordinates = getCaretRect();
 
-    if (element === null || caretCoordinates === undefined || event.shiftKey) {
+    if (element === null || caretCoordinates === undefined) {
       return;
     }
 
+    if (isBlockContentIndex(f) && f.blockIndex !== TITLE_INDEX) {
+      const tableEntry = adjacentTableEntryFocus(f, editorState.redigertBrev.blocks, "down");
+      if (tableEntry) {
+        const elementRect = element.getBoundingClientRect();
+        const isOnLastVisualLine = caretCoordinates.bottom >= elementRect.bottom - 1;
+
+        if (!isOnLastVisualLine) return;
+
+        event.preventDefault();
+        setEditorState((prev) => ({ ...prev, focus: tableEntry }));
+        return;
+      }
+    }
+
     const shouldDoItOurselves = !areAnyContentEditableSiblingsPlacedLower(element);
+
     if (shouldDoItOurselves) {
       const next = findOnLineBelow(element);
 
@@ -599,6 +676,14 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
     if (e.key === "ArrowUp") {
       handleArrowUp(e);
     }
+    if (e.altKey && e.shiftKey && (e.key === "ArrowUp" || e.key === "ArrowDown")) {
+      if (isTableCellIndex(editorState.focus)) {
+        e.preventDefault();
+        e.stopPropagation();
+        applyAction(Actions.moveTableRow, setEditorState, e.key === "ArrowUp" ? "up" : "down");
+        return;
+      }
+    }
   };
 
   const handleOnMouseDown = (e: React.MouseEvent) => {
@@ -671,9 +756,10 @@ export function EditableText({ literalIndex, content }: { literalIndex: LiteralI
      */
     <span
       // contentEditable='plaintext-only' blocks rich text content and prevents unhandled native
-      // bold/italic/underline formatting from interfering with Skribenten-styling. However, Cypress
-      // and jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
+      // bold/italic/underline formatting from interfering with Skribenten-styling. However,
+      // jsdom/happy-dom do not handle 'plaintext-only' well, and browser native formatting
       // shortcuts and pasting can be blocked/overridden in event handlers.
+      className={isInserted ? "inserted-flash-text" : undefined}
       contentEditable={!freeze}
       css={{
         ...(erFritekst && {

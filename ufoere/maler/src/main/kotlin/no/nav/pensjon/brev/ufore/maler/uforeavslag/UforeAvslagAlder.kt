@@ -105,7 +105,7 @@ object UforeAvslagAlder : RedigerbarTemplate<UforeAvslagEnkelDto> {
                     nynorsk { +"Vedtaket har vi gjort etter folketrygdlova § 12-4." })
             }
 
-            includePhrase(Felles.HvaSkjerNa)
+            includePhrase(Felles.DetteKanDuGjoreNa)
             includePhrase(Felles.RettTilAKlageLang)
             includePhrase(Felles.RettTilInnsynRefVedlegg)
             includePhrase(Felles.HarDuSporsmal)

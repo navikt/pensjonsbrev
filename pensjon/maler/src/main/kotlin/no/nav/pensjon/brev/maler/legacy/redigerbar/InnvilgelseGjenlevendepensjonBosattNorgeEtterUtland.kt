@@ -9,7 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.redigerbar.InnvilgelseGjenlevendepens
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.navKontaktsenterPensjon
-import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenGjenlevendepensjonBokmalEnglish
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -114,6 +114,6 @@ object InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland : RedigerbarTemplate<
                 )
             }
         }
-        includeAttachment(vedleggFolketrygdenGjenlevendepensjonBokmalEnglish)
+        includeAttachment(vedleggFolketrygdenBokmalEnglish)
     }
 }

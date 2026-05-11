@@ -8,23 +8,40 @@ import no.nav.pensjon.brev.template.dsl.text
 
 class Felles {
 
-    object HvaSkjerNa : OutlinePhrase<LangBokmalNynorsk>() {
+    object DetteKanDuGjoreNa : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
-                    bokmal { + "Hva skjer nå?" },
-                    nynorsk { + "Kva skjer no?" },
+                    bokmal { + "Dette kan du gjøre nå" },
+                    nynorsk { + "Dette kan du gjere no" }
                 )
             }
             paragraph {
-                text(bokmal { +
-                    "Har du fått arbeidsavklaringspenger, får du ikke lenger disse når vi avslår søknaden din om uføretrygd. " +
-                    "Kontakt din veileder på ditt lokale Nav-kontor for å høre om du trenger mer avklaring, eller om det er andre pengestøtter fra Nav som kan være aktuelle for deg. " +
-                    "Din veileder har fått beskjed om at vi har avslått søknaden din. " },
+                text(
+                    bokmal { +
+                    "Hvis du har fått arbeidsavklaringspenger, vil du som hovedregel ikke lenger få dette når vi avslår søknaden din om uføretrygd."},
+                    nynorsk { + "Dersom du har fått arbeidsavklaringspengar, vil du som hovudregel ikkje lenger få dette når vi avslår søknaden din om uføretrygd." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Det er viktig at du tar kontakt med veilederen din på ditt lokale Nav-kontor for å undersøke om du trenger mer avklaring og kan fortsette å få arbeidsavklaringspenger. Du kan også få hjelp til å forstå avslaget."},
+                    nynorsk { + "Det er viktig at du tar kontakt med rettleiaren din på ditt lokale Nav-kontor for å undersøke om du treng meir avklaring og kan fortsette å få arbeidsavklaringspengar. Du kan også få hjelp til å forstå avslaget." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +
+                    "Veileder kan også hjelpe deg å finne ut om det er andre pengestøtter fra Nav som kan være aktuelle for deg."},
                     nynorsk { +
-                    "Har du fått arbeidsavklaringspengar, får du ikkje lenger desse når vi avslår søknaden din om uføretrygd. " +
-                    "Kontakt din rettleiar på ditt lokale Nav-kontor for å høyre om du treng meir avklaring, eller om det finst andre pengestøttar frå Nav som kan vere aktuelle for deg. " +
-                    "Din rettleiar har fått beskjed om at vi har avslått søknaden din. " }
+                    "Rettleiar kan også hjelpe deg å finne ut om det er andre pengestøttar frå Nav som kan vere aktuelle for deg." }
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Ditt lokale Nav-kontor har fått beskjed om at vi har avslått søknaden din."},
+                    nynorsk { +"Ditt lokale Nav-kontor har fått beskjed om at vi har avslått søknaden din." }
                 )
             }
         }

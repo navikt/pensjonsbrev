@@ -105,6 +105,10 @@ object BrevredigeringFacadeFactory {
                 slettBrevPolicy = slettBrevPolicy,
             ),
             brevreservasjonPolicy = brevreservasjonPolicy,
+            diffBrev = DiffBrevHandler(
+                brevmalService = brevmalService,
+                brevdataService = brevdataService,
+            ),
         )
     }
 }

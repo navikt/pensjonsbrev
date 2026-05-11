@@ -229,6 +229,7 @@ private fun createFacade(
     tilbakestillBrev: BrevredigeringHandler<TilbakestillBrevHandler.Request, Dto.Brevredigering> = handlerStub(),
     sendBrev: BrevredigeringHandler<SendBrevHandler.Request, Dto.SendBrevResult> = handlerStub(),
     brevreservasjonPolicy: BrevreservasjonPolicy = BrevreservasjonPolicy(),
+    diffBrev: BrevredigeringHandler<DiffBrevHandler.Request, DiffBrevHandler.Response> = handlerStub(),
 ): BrevredigeringFacade {
     return BrevredigeringFacade(
         opprettBrev = opprettBrev,
@@ -246,6 +247,7 @@ private fun createFacade(
         endreValgteVedlegg = endreValgteVedlegg,
         sendBrev = sendBrev,
         slettBrev = handlerStub(),
+        diffBrev = diffBrev,
     )
 }
 

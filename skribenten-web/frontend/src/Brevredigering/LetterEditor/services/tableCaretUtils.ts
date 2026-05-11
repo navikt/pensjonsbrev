@@ -1,9 +1,11 @@
 import { type Draft, produce } from "immer";
 
 import {
+  type AnyBlock,
   type Cell,
   PARAGRAPH,
   type ParagraphBlock,
+  type Table,
   TITLE1,
   TITLE2,
   TITLE3,
@@ -13,7 +15,7 @@ import {
 } from "~/types/brevbakerTypes";
 
 import { addElements, isTable, newLiteral, newRow } from "../actions/common";
-import { type Focus, type LetterEditorState } from "../model/state";
+import { type Focus, type LetterEditorState, type TableCellIndex } from "../model/state";
 import { isEmptyContentList, isTableCellIndex } from "../model/utils";
 import { getCursorOffset } from "./caretUtils";
 
@@ -69,6 +71,120 @@ export function nextTableFocus(editorState: LetterEditorState, direction: "forwa
     cellContentIndex: 0,
     cursorPosition: 0,
   };
+}
+
+export function getValidVerticalTableFocus(
+  currentFocus: Extract<Focus, { rowIndex: number; cellIndex: number; cellContentIndex: number }>,
+  table: Table,
+  targetRowIndex: number,
+) {
+  const targetCellCount =
+    targetRowIndex === -1 ? (table.header?.colSpec?.length ?? 0) : (table.rows[targetRowIndex]?.cells?.length ?? 0);
+
+  if (targetCellCount <= 0) {
+    return {
+      ...currentFocus,
+      rowIndex: targetRowIndex,
+      cellIndex: 0,
+      cellContentIndex: 0,
+      cursorPosition: 0,
+    };
+  }
+
+  return {
+    ...currentFocus,
+    rowIndex: targetRowIndex,
+    cellIndex: Math.min(currentFocus.cellIndex, targetCellCount - 1),
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+/**
+ * One ArrowUp/ArrowDown step inside a table.
+ * Returns the next focus, or "exit" when the caller should hand off to {@link exitTable}.
+ */
+export function verticalTableStep(focus: TableCellIndex, table: Table, direction: "up" | "down"): Focus | "exit" {
+  if (direction === "up") {
+    if (focus.rowIndex > 0) return getValidVerticalTableFocus(focus, table, focus.rowIndex - 1);
+    if (focus.rowIndex === 0) return getValidVerticalTableFocus(focus, table, -1);
+    return "exit";
+  }
+
+  if (focus.rowIndex === -1 && table.rows.length > 0) return getValidVerticalTableFocus(focus, table, 0);
+  if (focus.rowIndex >= 0 && focus.rowIndex < table.rows.length - 1) {
+    return getValidVerticalTableFocus(focus, table, focus.rowIndex + 1);
+  }
+  return "exit";
+}
+
+/**
+ * Builds a {@link TableCellIndex} that lands on the header (row -1) of the given table coordinates.
+ * Used when ArrowDown crosses from plain text into a following table.
+ */
+export function tableHeaderEntry(blockIndex: number, contentIndex: number): Focus {
+  return { blockIndex, contentIndex, rowIndex: -1, cellIndex: 0, cellContentIndex: 0, cursorPosition: 0 };
+}
+
+/**
+ * Builds a {@link TableCellIndex} that lands on the last body row of the given table.
+ * Used when ArrowUp crosses from plain text into a preceding table.
+ */
+export function tableTailEntry(blockIndex: number, contentIndex: number, table: Table): Focus {
+  return {
+    blockIndex,
+    contentIndex,
+    rowIndex: table.rows.length - 1,
+    cellIndex: 0,
+    cellContentIndex: 0,
+    cursorPosition: 0,
+  };
+}
+
+/**
+ * When focus is on plain block content next to a table, returns the focus to
+ * use when ArrowUp/ArrowDown should cross into that table. Returns undefined
+ * when there is no adjacent table to enter.
+ *
+ * The caller is responsible for verifying the caret is on the appropriate
+ * visual line (first for "up", last for "down") before applying the focus.
+ */
+export function adjacentTableEntryFocus(
+  focus: { blockIndex: number; contentIndex: number },
+  blocks: AnyBlock[],
+  direction: "up" | "down",
+): Focus | undefined {
+  const block = blocks[focus.blockIndex];
+  if (!block) return undefined;
+
+  if (direction === "up") {
+    const prevContent = focus.contentIndex > 0 ? block.content[focus.contentIndex - 1] : undefined;
+    if (isTable(prevContent)) {
+      return tableTailEntry(focus.blockIndex, focus.contentIndex - 1, prevContent);
+    }
+    if (focus.contentIndex === 0 && focus.blockIndex > 0) {
+      const prevBlock = blocks[focus.blockIndex - 1];
+      const lastContentInPrevBlock =
+        prevBlock.content.length > 0 ? prevBlock.content[prevBlock.content.length - 1] : undefined;
+      if (isTable(lastContentInPrevBlock)) {
+        return tableTailEntry(focus.blockIndex - 1, prevBlock.content.length - 1, lastContentInPrevBlock);
+      }
+    }
+    return undefined;
+  }
+
+  const nextContent = block.content[focus.contentIndex + 1];
+  if (isTable(nextContent)) {
+    return tableHeaderEntry(focus.blockIndex, focus.contentIndex + 1);
+  }
+  if (focus.contentIndex >= block.content.length - 1 && focus.blockIndex + 1 < blocks.length) {
+    const nextBlock = blocks[focus.blockIndex + 1];
+    const firstContentInNextBlock = nextBlock.content[0];
+    if (isTable(firstContentInNextBlock)) {
+      return tableHeaderEntry(focus.blockIndex + 1, 0);
+    }
+  }
+  return undefined;
 }
 
 /**
@@ -129,7 +245,19 @@ export const exitTable = (direction: "forward" | "backward") =>
       if (f.blockIndex + 1 < blocks.length) {
         const nextBlock = blocks[f.blockIndex + 1];
         if (nextBlock.content.length > 0) {
-          draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          const nextContent = nextBlock.content[0];
+          if (isTable(nextContent)) {
+            draft.focus = {
+              blockIndex: f.blockIndex + 1,
+              contentIndex: 0,
+              rowIndex: -1,
+              cellIndex: 0,
+              cellContentIndex: 0,
+              cursorPosition: 0,
+            };
+          } else {
+            draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
+          }
           return;
         }
         // If next block is an empty paragraph, insert a blank literal so it can receive focus
@@ -141,12 +269,6 @@ export const exitTable = (direction: "forward" | "backward") =>
         // Otherwise, focus the (empty) next block
         draft.focus = { blockIndex: f.blockIndex + 1, contentIndex: 0, cursorPosition: 0 };
         return;
-      }
-      // 3) End of document: append an empty literal after the table
-      const inserted = insertBlankLiteralIfEmptyBlock(block, f.contentIndex + 1);
-      if (inserted) {
-        draft.focus = { blockIndex: f.blockIndex, contentIndex: f.contentIndex + 1, cursorPosition: 0 };
-        draft.saveStatus = "DIRTY";
       }
       return;
     }
@@ -161,7 +283,19 @@ export const exitTable = (direction: "forward" | "backward") =>
       const prevBlock = blocks[f.blockIndex - 1];
       if (prevBlock.content.length > 0) {
         const last = prevBlock.content.length - 1;
-        draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: last, cursorPosition: 0 };
+        const lastContent = prevBlock.content[last];
+        if (isTable(lastContent)) {
+          draft.focus = {
+            blockIndex: f.blockIndex - 1,
+            contentIndex: last,
+            rowIndex: lastContent.rows.length - 1,
+            cellIndex: 0,
+            cellContentIndex: 0,
+            cursorPosition: 0,
+          };
+        } else {
+          draft.focus = { blockIndex: f.blockIndex - 1, contentIndex: last, cursorPosition: 0 };
+        }
         return;
       }
       // If previous block is empty paragraph, insert a blank literal for focus

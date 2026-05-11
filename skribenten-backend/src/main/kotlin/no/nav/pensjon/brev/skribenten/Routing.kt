@@ -44,7 +44,7 @@ fun Application.configureRouting(
     val brevmetadataService = BrevmetadataServiceHttp(servicesConfig.getConfig("brevmetadata"))
     val samhandlerService = SamhandlerServiceHttp(servicesConfig.getConfig("samhandlerProxy"), authService, cache)
     val navansattService = NavansattServiceHttp(servicesConfig.getConfig("navansatt"), authService, cache)
-    val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService)
+    val legacyBrevService = LegacyBrevServiceImpl(brevmetadataService, safService, penClient, navansattService, pensjonPersonDataService)
     val norg2Service = Norg2ServiceHttp(servicesConfig.getConfig("norg2"), cache)
     val p1Service = P1ServiceImpl(penClient)
 

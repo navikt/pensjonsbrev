@@ -227,11 +227,13 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           const varighetSekunder = Math.round((Date.now() - attesteringStartTime.current) / 1000);
           trackEvent("tid brukt i attestering", {
             brevId: props.brev.info.id,
+            brevkode: props.brev.info.brevkode,
             varighetSekunder,
             varighetMinutter: Math.round(varighetSekunder / 60),
           });
           trackEvent("brev attestert", {
             brevId: props.brev.info.id,
+            brevkode: props.brev.info.brevkode,
           });
           navigate({
             to: "/saksnummer/$saksId/attester/$brevId/forhandsvisning",

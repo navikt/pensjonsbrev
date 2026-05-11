@@ -25,7 +25,7 @@ data class InnvilgelseAvAlderspensjonDto(
 
     data class SaksbehandlerValg(
         @DisplayText("Virkningstidspunktet er senere enn ønsket uttakstidspunkt")
-        val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean,
+        val kravVirkDatoFomSenereEnnOensketUttakstidspunkt: Boolean?,
         @DisplayText("Hvis etterbetaling av pensjon")
         val etterbetaling: Boolean?,
         @DisplayText("Bruk vanlig skattetrekk")

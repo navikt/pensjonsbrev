@@ -1,6 +1,5 @@
 package no.nav.brev.brevbaker
 
-import no.nav.brev.brevbaker.template.render.Letter2Markup
 import no.nav.pensjon.brev.api.FeatureToggleService
 import no.nav.pensjon.brev.api.model.FeatureToggle
 import no.nav.pensjon.brev.api.model.FeatureToggleSingleton
@@ -164,7 +163,6 @@ abstract class BrevmodulTest(
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
             pdfByggerService = PdfByggerTestService(),
-            useTypst = false
         )
     }
 
@@ -187,7 +185,6 @@ abstract class BrevmodulTest(
             filnavn(brevkode, spraak),
             path = Path.of("build", "test_pdf_typst"),
             pdfByggerService = PdfByggerTestService(),
-            useTypst = true
         )
     }
 

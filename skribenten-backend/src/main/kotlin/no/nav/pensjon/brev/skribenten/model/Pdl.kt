@@ -10,13 +10,6 @@ object Pdl {
         UGRADERT,
     }
 
-    enum class Behandlingsnummer {
-        B222,
-        B255,
-        B280,
-        B359,
-    }
-
     data class PersonContext(
         val adressebeskyttelse: Boolean,
         val doedsdato: LocalDate?,

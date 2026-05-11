@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.fraser
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language.*
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
@@ -19,9 +18,9 @@ object TBU5005_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
         }
         paragraph {
             text(
-                bokmal { + "For å ha rett til barnetillegg fra 1. juli 2020" },
-                nynorsk { + "For å ha rett til barnetillegg frå 1. juli 2020" },
-                english { + "In order to be entitled to child supplement from 1 July 2020" },
+                bokmal { + "For å ha rett til barnetillegg" },
+                nynorsk { + "For å ha rett til barnetillegg" },
+                english { + "In order to be entitled to child supplement" },
             )
             list {
                 item {
@@ -40,9 +39,9 @@ object TBU5005_Generated : OutlinePhrase<LangBokmalNynorskEnglish>() {
                 }
             }
             text(
-                bokmal { + "Dette går frem av folketrygdloven § 12-15 som gjelder fra 1. juli 2020." },
-                nynorsk { + "Dette går fram av folketrygdlova § 12-15 som gjeld frå 1. juli 2020." },
-                english { + "This is in accordance with the regulations of § 12-15 of the National Insurance Act, which apply from 1 July 2020." },
+                bokmal { + "Dette går frem av folketrygdloven § 12-15." },
+                nynorsk { + "Dette går fram av folketrygdlova § 12-15." },
+                english { + "This is in accordance with the regulations of § 12-15 of the National Insurance Act." },
             )
         }
     }

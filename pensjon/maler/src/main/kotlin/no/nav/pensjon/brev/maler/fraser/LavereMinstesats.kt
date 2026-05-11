@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.maler.fraser
 
 import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -70,68 +71,52 @@ object LavereMinstesats {
                                 )
                             }
                         }
-                        showIf(data.endringNettoBarnetillegg) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Nytt barnetillegg" },
-                                        nynorsk { +"Nytt barnetillegg" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
-                                    )
-                                }
+                    }
+                    showIf(data.endringNettoBarnetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Nytt barnetillegg" },
+                                    nynorsk { +"Nytt barnetillegg" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                    nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                )
                             }
                         }
-                        showIf(data.endringNettoGjenlevendetillegg) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Nytt gjenlevendetillegg" },
-                                        nynorsk { +"Nytt gjenlevendetillegg" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                        nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
-                                    )
-                                }
+                    }
+                    showIf(data.endringReduksjonsprosent) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny reduksjonsprosent" },
+                                    nynorsk { +"Ny reduksjonsprosent" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.reduksjonsprosent.format() + " prosent" },
+                                    nynorsk { +data.reduksjonsprosent.format() + " prosent" },
+                                )
                             }
                         }
-                        showIf(data.endringReduksjonsprosent) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Ny reduksjonsprosent" },
-                                        nynorsk { +"Ny reduksjonsprosent" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +data.reduksjonsprosent.format() + " prosent" },
-                                        nynorsk { +data.reduksjonsprosent.format() + " prosent" },
-                                    )
-                                }
+                    }
+                    showIf(data.harMinstesats) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Ny minstesats" },
+                                    nynorsk { +"Ny minstesats" },
+                                )
                             }
-                        }
-                        showIf(data.harMinstesats) {
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Ny minstesats" },
-                                        nynorsk { +"Ny minstesats" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +"2,329 G" },
-                                        nynorsk { +"2,329 G" },
-                                    )
-                                }
+                            cell {
+                                text(
+                                    bokmal { +"2,329 G" },
+                                    nynorsk { +"2,329 G" },
+                                )
                             }
                         }
                     }
@@ -187,7 +172,7 @@ object LavereMinstesats {
             }
             paragraph {
                 text(
-                    bokmal { +"Lovendringen gjelder for deg som fikk uførepensjonen din omregnet til uføretrygd i 2015. Endringen fører til at alle gifte og samboene nå får lik minstesats." },
+                    bokmal { +"Lovendringen gjelder for deg som fikk uførepensjonen din omregnet til uføretrygd i 2015. Endringen fører til at alle gifte og samboende nå får lik minstesats." },
                     nynorsk { +"Lovendringa gjeld for deg som fekk uførepensjonen din omrekna til uføretrygd i 2015. Endringa fører til at alle gifte og sambuande no får lik minstesats." },
                 )
             }
@@ -241,26 +226,6 @@ object LavereMinstesats {
                     )
                 }
             }
-            showIf(data.endringNettoGjenlevendetillegg) {
-                title1 {
-                    text(
-                        bokmal { +"Endring i gjenlevendetillegg" },
-                        nynorsk { +"Endring i gjenlevendetillegg" },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Regelverksendringene fører til at gjenlevendetillegg i uføretrygden din endres. Ny beregning av gjenlevendetillegget (før skatt) er " +
-                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
-                        },
-                        nynorsk {
-                            +"Regelverksendringane fører til at gjenlevendetillegg i uføretrygda di vert endra. Ny berekning av gjenlevendetillegget (før skatt) er " +
-                                    data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() + "."
-                        },
-                    )
-                }
-            }
             paragraph {
                 text(
                     bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
@@ -270,24 +235,29 @@ object LavereMinstesats {
 
             title1 {
                 text(
-                    bokmal { +"Dette kan du gjøre nå" },
-                    nynorsk { +"Dette kan du gjere no" },
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
                 )
             }
             paragraph {
                 text(
-                    bokmal {
-                        +"Du har rett til å klage på vedtaket, selv om endringen i uføretrygden din skyldes endringer i lovverket. " +
-                                "Mener du vi har feil opplysninger om saken din, kan du også klage på vedtaket."
-                    },
-                    nynorsk {
-                        +"Du har rett til å klage på vedtaket, sjølv om endringa i uføretrygda di kjem av endringar i lovverket. " +
-                                "Meiner du at vi har feil opplysningar om saka di, kan du òg klage på vedtaket."
-                    },
+                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
+                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
+                            "${Constants.KLAGE_URL}." },
                 )
             }
-
-            includePhrase(Felles.RettTilAAKlage)
+            paragraph {
+                text(
+                    bokmal { +"I vedlegget " },
+                    nynorsk { +"I vedlegget " },
+                )
+                namedReference(vedleggDineRettigheterOgPlikterUfoere)
+                text(
+                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
+                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
+                )
+            }
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }

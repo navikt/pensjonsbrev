@@ -12,11 +12,11 @@ import no.nav.pensjon.brev.skribenten.auth.SakKey
 import no.nav.pensjon.brev.skribenten.brevredigering.application.BrevredigeringFacade
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevService
 import no.nav.pensjon.brev.skribenten.fagsystem.BrevmalService
+import no.nav.pensjon.brev.skribenten.fagsystem.Fagsak
 import no.nav.pensjon.brev.skribenten.fagsystem.FagsakService
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.P1ServiceImpl
 import no.nav.pensjon.brev.skribenten.model.Api
 import no.nav.pensjon.brev.skribenten.model.JournalpostId
-import no.nav.pensjon.brev.skribenten.model.Pen
 import no.nav.pensjon.brev.skribenten.model.VedtaksId
 import no.nav.pensjon.brev.skribenten.principal
 import no.nav.pensjon.brev.skribenten.services.*
@@ -42,7 +42,7 @@ fun Route.sakRoute(
         }
 
         get {
-            val sak: Pen.SakSelection = call.attributes[SakKey]
+            val sak: Fagsak = call.attributes[SakKey]
             val vedtaksId: VedtaksId? = call.request.queryParameters["vedtaksId"]?.let { VedtaksId(it.toLong()) }
             val hasAccessToEblanketter = principal().isInGroup(ADGroups.pensjonUtland)
             val brevmetadata = if (vedtaksId != null) {
@@ -64,10 +64,10 @@ fun Route.sakRoute(
 
         get("/brukerstatus") {
             coroutineScope {
-                val sak: Pen.SakSelection = call.attributes[SakKey]
+                val sak: Fagsak = call.attributes[SakKey]
                 val erSkjermet = async { skjermingService.hentSkjerming(sak.pid) ?: false }
                 val harVerge = async { pensjonRepresentasjonService.harVerge(sak.pid) ?: false }
-                val person = pdlService.hentBrukerContext(sak.pid, Pen.finnBehandlingsnummer(sak.sakType))
+                val person = pdlService.hentBrukerContext(sak.pid, sak.behandlingsnummer)
                 if (person != null) {
                     call.respond(
                         Api.BrukerStatus(
@@ -116,7 +116,7 @@ fun Route.sakRoute(
             val adresse = pensjonPersonDataService.hentKontaktadresse(sak.pid)
 
             if (adresse != null) {
-                call.respond(adresse)
+                call.respond(adresseTilDto(adresse))
             } else {
                 call.respond(HttpStatusCode.NotFound)
             }
@@ -138,5 +138,41 @@ fun Route.sakRoute(
         }
 
         sakBrev(brevmalService, p1Service, brevredigeringFacade, dto2ApiService)
+    }
+}
+
+private fun adresseTilDto(adresse: KontaktAdresseResponseDto) = KontaktAdresseDto(
+    adresseString = adresse.adresseString,
+    adresselinjer = adresse.adresselinjer,
+    type = when (adresse.type) {
+        KontaktAdresseResponseDto.Adressetype.MATRIKKELADRESSE -> KontaktAdresseDto.Adressetype.MATRIKKELADRESSE
+        KontaktAdresseResponseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.POSTADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.POSTBOKSADRESSE -> KontaktAdresseDto.Adressetype.POSTBOKSADRESSE
+        KontaktAdresseResponseDto.Adressetype.REGOPPSLAG_ADRESSE -> KontaktAdresseDto.Adressetype.REGOPPSLAG_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UKJENT_BOSTED -> KontaktAdresseDto.Adressetype.UKJENT_BOSTED
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE
+        KontaktAdresseResponseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT -> KontaktAdresseDto.Adressetype.UTENLANDSK_ADRESSE_I_FRITT_FORMAT
+        KontaktAdresseResponseDto.Adressetype.VEGADRESSE -> KontaktAdresseDto.Adressetype.VEGADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_PERSON_POSTADRESSE
+        KontaktAdresseResponseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE -> KontaktAdresseDto.Adressetype.VERGE_SAMHANDLER_POSTADRESSE
+    }
+)
+
+data class KontaktAdresseDto(
+    val adresseString: String,
+    val adresselinjer: List<String>,
+    val type: Adressetype
+) {
+    enum class Adressetype {
+        MATRIKKELADRESSE,
+        POSTADRESSE_I_FRITT_FORMAT,
+        POSTBOKSADRESSE,
+        REGOPPSLAG_ADRESSE,
+        UKJENT_BOSTED,
+        UTENLANDSK_ADRESSE,
+        UTENLANDSK_ADRESSE_I_FRITT_FORMAT,
+        VEGADRESSE,
+        VERGE_PERSON_POSTADRESSE,
+        VERGE_SAMHANDLER_POSTADRESSE,
     }
 }

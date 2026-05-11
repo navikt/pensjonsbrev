@@ -43,6 +43,7 @@ class NavansattServiceHttp(config: Config, authService: AuthService, private val
                 disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             }
         }
+        installRetry(logger)
         callIdAndOnBehalfOfClient(navansattScope, authService)
     }
 

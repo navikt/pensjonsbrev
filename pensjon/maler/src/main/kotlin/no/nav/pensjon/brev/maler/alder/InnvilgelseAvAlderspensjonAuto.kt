@@ -26,6 +26,7 @@ import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAu
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.erEOSLand
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.erForstegangsbehandletNorgeUtland
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.faktiskBostedsland
+import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.fremtidigSamboer
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.fullTrygdetid
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.harFlereBeregningsperioder
 import no.nav.pensjon.brev.api.model.maler.alderApi.InnvilgelseAvAlderspensjonAutoDtoSelectors.inngangOgEksportVurdering
@@ -137,6 +138,19 @@ object InnvilgelseAvAlderspensjonAuto : AutobrevTemplate<InnvilgelseAvAlderspens
                         )
                     }
                 }
+                showIf(fremtidigSamboer) {
+                    paragraph {
+                        text(
+                            bokmal { +"I søknaden har du skrevet at du har samboer. Etter folketrygdloven regnes dere likevel som enslige fordi dere har bodd sammen i mindre enn 12 av de siste 18 månedene. " +
+                                    "Du får derfor pensjon som enslig. Når du har vært samboer i 12 måneder, får du et nytt vedtak der dere vurderes som samboere." },
+                            nynorsk { +"I søknaden har du skrive at du har sambuar. Etter folketrygdlova blir de likevel rekna som einslege fordi de har budd saman i mindre enn 12 av dei siste 18 månadane. " +
+                                    "Du får derfor pensjon som einsleg. Når du har vore sambuar i 12 månader, får du eit nytt vedtak der de blir vurderte som sambuarar." },
+                            english { +"You have stated that you have a cohabitant. According to the National Insurance Act, you are still considered single because you have lived together for less than 12 of the past 18 months. " +
+                                    "You therefore receive a pension as if you were single. When you have lived together for 12 months, you will receive a new decision in which you are assessed as cohabitants." }
+                        )
+                    }
+                }
+
 
                 showIf(alderspensjonVedVirk.privatAFPErBrukt) { includePhrase(AfpPrivatErBrukt(alderspensjonVedVirk.uttaksgrad)) }
 

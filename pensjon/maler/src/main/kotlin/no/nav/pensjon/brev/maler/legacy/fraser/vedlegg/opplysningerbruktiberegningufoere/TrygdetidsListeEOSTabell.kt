@@ -4,9 +4,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetideosland
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidfomeos
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagEOSSelectors.trygdetidtomeos
-
 import no.nav.pensjon.brev.template.Expression
-import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
+import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -15,8 +14,8 @@ import no.nav.pensjon.brev.template.dsl.text
 
 data class TrygdetidsListeEOSTabell(
     val trygdetidsgrunnlagListeEOS: Expression<List<TrygdetidsgrunnlagEOS>>
-): OutlinePhrase<LangBokmalNynorskEnglish>(){
-    override fun OutlineOnlyScope<LangBokmalNynorskEnglish, Unit>.template() {
+): OutlinePhrase<LangBokmalNynorsk>(){
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         paragraph {
             table(
                 header = {
@@ -24,21 +23,18 @@ data class TrygdetidsListeEOSTabell(
                         text(
                             bokmal { + "Land" },
                             nynorsk { + "Land" },
-                            english { + "Country" },
                         )
                     }
                     column {
                         text(
                             bokmal { + "Fra og med" },
                             nynorsk { + "Frå og med" },
-                            english { + "From (and including)" },
                         )
                     }
                     column {
                         text(
                             bokmal { + "Til og med" },
                             nynorsk { + "Til og med" },
-                            english { + "To (and including)" },
                         )
                     }
                 }
@@ -49,7 +45,6 @@ data class TrygdetidsListeEOSTabell(
                             text(
                                 bokmal { + trygdetidEOS.trygdetideosland.ifNull("") },
                                 nynorsk { + trygdetidEOS.trygdetideosland.ifNull("") },
-                                english { + trygdetidEOS.trygdetideosland.ifNull("") },
                             )
                         }
                         cell {
@@ -57,7 +52,6 @@ data class TrygdetidsListeEOSTabell(
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
-                                    english { + it.format() },
                                 )
                             }
                         }
@@ -66,7 +60,6 @@ data class TrygdetidsListeEOSTabell(
                                 text(
                                     bokmal { + it.format() },
                                     nynorsk { + it.format() },
-                                    english { + it.format() },
                                 )
                             }
                         }

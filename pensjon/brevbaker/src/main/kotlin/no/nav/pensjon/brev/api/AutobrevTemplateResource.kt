@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.api
 
 import no.nav.brev.brevbaker.Brevbaker
 import no.nav.brev.brevbaker.PDFByggerService
-import no.nav.pensjon.brev.BrevbakerFeatureToggles
 import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.LetterResponse
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
@@ -16,7 +15,7 @@ class AutobrevTemplateResource<Kode : Brevkode<Kode>, out T : BrevTemplate<Autob
     templates: Set<T>,
     pdfByggerService: PDFByggerService,
     ) : TemplateResource<Kode, T, BestillBrevRequest<Kode>>, TemplateLibrary<Kode, T> by TemplateLibraryImpl(templates) {
-    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl, typstToggleAuto = BrevbakerFeatureToggles.typstAutobrev.toggle)
+    private val brevbaker = Brevbaker(pdfByggerService, PDFVedleggAppenderImpl)
     private val letterFactory: LetterFactory<Kode> = LetterFactory(emptySet())
 
     override suspend fun renderPDF(brevbestilling: BestillBrevRequest<Kode>): LetterResponse =

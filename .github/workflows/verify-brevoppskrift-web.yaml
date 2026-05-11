@@ -11,6 +11,7 @@ on:
 
 permissions:
   contents: read
+  packages: read
 
 jobs:
   verify:
@@ -18,7 +19,7 @@ jobs:
     secrets: inherit
     with:
       workingDir: brevoppskrift-web
-      cypress: false
+      runTests: false
 
   "klarTilMerge":
     name: "Klar til merge"

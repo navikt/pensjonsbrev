@@ -26,6 +26,7 @@ data class KontaktAdresseResponseDto(
     val adresseString: String,
     val adresselinjer: List<String>,
     val type: Adressetype,
+    val vergePid: Pid? = null,
 ){
     @Suppress("unused")
     enum class Adressetype {

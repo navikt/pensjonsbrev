@@ -3,14 +3,17 @@ package no.nav.pensjon.brev.skribenten.fagsystem.pesys
 import io.ktor.http.*
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import no.nav.pensjon.brev.skribenten.Features
 import no.nav.pensjon.brev.skribenten.auth.PrincipalInContext
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataDto.DokumentkategoriCode.SED
 import no.nav.pensjon.brev.skribenten.model.*
 import no.nav.pensjon.brev.skribenten.model.Api.BestillOgRedigerBrevResponse.FailureType.*
 import no.nav.pensjon.brev.skribenten.services.EnhetId
 import no.nav.pensjon.brev.skribenten.services.JournalpostLoadingResult.*
+import no.nav.pensjon.brev.skribenten.services.KontaktAdresseResponseDto
 import no.nav.pensjon.brev.skribenten.services.Navansatt
 import no.nav.pensjon.brev.skribenten.services.NavansattService
+import no.nav.pensjon.brev.skribenten.services.PensjonPersonDataService
 import no.nav.pensjon.brev.skribenten.services.SafService
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Pid
 import org.slf4j.LoggerFactory
@@ -26,6 +29,7 @@ class LegacyBrevServiceImpl(
     private val safService: SafService,
     private val penClient: PenClient,
     private val navansattService: NavansattService,
+    private val pensjonPersonDataService: PensjonPersonDataService,
 ) : LegacyBrevService {
     private val logger = LoggerFactory.getLogger(LegacyBrevServiceImpl::class.java)
 
@@ -135,7 +139,19 @@ class LegacyBrevServiceImpl(
                         saksbehandlerid = PrincipalInContext.require().navIdent.id,
                         kravtype = null, // TODO sett. Brukes dette for notater i det hele tatt?
                         land = landkode.takeIf { isEblankett },
-                        mottaker = if (isEblankett || isNotat) null else idTSSEkstern ?: gjelderPid.value,
+                        mottaker = when {
+                            isEblankett || isNotat -> null
+                            idTSSEkstern != null -> idTSSEkstern
+                            Features.vergeForExstream.isEnabled() -> {
+                                val adresse = pensjonPersonDataService.hentKontaktadresse(gjelderPid)
+                                if (adresse?.type == KontaktAdresseResponseDto.Adressetype.VERGE_PERSON_POSTADRESSE && adresse.vergePid != null) {
+                                    adresse.vergePid.value
+                                } else {
+                                    gjelderPid.value
+                                }
+                            }
+                            else -> gjelderPid.value
+                        },
                         sensitivt = false
                     ),
                     vedtaksInformasjon = vedtaksId?.id?.toString()

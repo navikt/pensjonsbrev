@@ -5,8 +5,7 @@ public abstract interface class no/nav/brev/brevbaker/AllTemplates {
 }
 
 public final class no/nav/brev/brevbaker/Brevbaker {
-	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/brev/brevbaker/PDFVedleggAppender;Lno/nav/pensjon/brev/api/model/FeatureToggle;Lno/nav/pensjon/brev/api/model/FeatureToggle;)V
-	public synthetic fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/brev/brevbaker/PDFVedleggAppender;Lno/nav/pensjon/brev/api/model/FeatureToggle;Lno/nav/pensjon/brev/api/model/FeatureToggle;ILkotlin/jvm/internal/DefaultConstructorMarker;)V
+	public fun <init> (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/brev/brevbaker/PDFVedleggAppender;)V
 	public final fun renderHTML (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brev/api/model/LetterResponse;
 	public final fun renderLetterMarkup (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
 	public final fun renderLetterMarkupWithDataUsage (Lno/nav/pensjon/brev/template/Letter;)Lno/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage;
@@ -33,13 +32,11 @@ public final class no/nav/brev/brevbaker/HttpStatusCodes : java/lang/Enum {
 }
 
 public abstract interface class no/nav/brev/brevbaker/PDFByggerService {
-	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;ZZLkotlin/coroutines/Continuation;)Ljava/lang/Object;
-	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;ZZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
+	public abstract fun producePDF (Lno/nav/pensjon/brev/PDFRequest;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 	public fun validateResponse (ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
 public final class no/nav/brev/brevbaker/PDFByggerService$DefaultImpls {
-	public static synthetic fun producePDF$default (Lno/nav/brev/brevbaker/PDFByggerService;Lno/nav/pensjon/brev/PDFRequest;ZZLkotlin/coroutines/Continuation;ILjava/lang/Object;)Ljava/lang/Object;
 	public static fun validateResponse (Lno/nav/brev/brevbaker/PDFByggerService;ILkotlin/jvm/functions/Function1;Lkotlin/jvm/functions/Function1;Lkotlin/coroutines/Continuation;)Ljava/lang/Object;
 }
 
