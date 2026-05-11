@@ -17,11 +17,11 @@ data class TBU038V_2(
 ): OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
-        showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") ){
+        showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().notEqualTo("folketrygd") ) {
             paragraph {
-                text (
-                    bokmal { + "Inntektene som er uthevet er valgt siden dette gir det beste resultatet for deg." },
-                    nynorsk { + "Inntektene som er utheva, er valde sidan dette gir det beste resultatet for deg." },
+                text(
+                    bokmal { +"Inntektene som er uthevet er valgt siden dette gir det beste resultatet for deg." },
+                    nynorsk { +"Inntektene som er utheva, er valde sidan dette gir det beste resultatet for deg." },
                 )
             }
 
@@ -33,8 +33,8 @@ data class TBU038V_2(
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgOmsorg()) {
                 paragraph {
                     text(
-                        bokmal { + "*) Markerer år med omsorgsopptjening og militær eller sivil førstegangstjeneste. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel. Dersom inntekten i året før militær eller sivil førstegangstjeneste tok til er høyere, benyttes denne inntekten." },
-                        nynorsk { + "*) Markerer år med omsorgsopptening og militær eller sivil førstegongsteneste. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel. Dersom inntekta i året før militær eller sivil førstegongsteneste tok til, er høgare, blir denne inntekta brukt." },
+                        bokmal { +"*) Markerer år med omsorgsopptjening og militær eller sivil førstegangstjeneste. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel. Dersom inntekten i året før militær eller sivil førstegangstjeneste tok til er høyere, benyttes denne inntekten." },
+                        nynorsk { +"*) Markerer år med omsorgsopptening og militær eller sivil førstegongsteneste. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel. Dersom inntekta i året før militær eller sivil førstegongsteneste tok til, er høgare, blir denne inntekta brukt." },
                     )
                 }
             }
@@ -46,8 +46,8 @@ data class TBU038V_2(
             showIf(pe.harOpptjeningUTMedOmsorgOgIkkeFoerstegangstjeneste()) {
                 paragraph {
                     text(
-                        bokmal { + "*) Markerer år med omsorgsopptjening. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel." },
-                        nynorsk { + "*) Markerer år med omsorgsopptening. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel." },
+                        bokmal { +"*) Markerer år med omsorgsopptjening. Det skal ses bort fra år med pensjonsopptjening på grunnlag av omsorgsarbeid dersom dette er en fordel." },
+                        nynorsk { +"*) Markerer år med omsorgsopptening. Ein skal sjå bort frå år med pensjonsopptening på grunnlag av omsorgsarbeid dersom dette er ein fordel." },
                     )
                 }
             }
@@ -55,17 +55,18 @@ data class TBU038V_2(
             showIf(pe.harOpptjeningUTMedFoerstegangstjenesteOgIkkeOmsorg()) {
                 paragraph {
                     text(
-                        bokmal { + "*) Markerer år med militær eller sivil førstegangstjeneste. Dersom inntekten i året før tjenesten tok til er høyere, benyttes denne inntekten." },
-                        nynorsk { + "*) Markerer år med militær eller sivil førstegongsteneste. Dersom inntekta i året før tenesta tok til, er høgare, blir denne inntekta brukt." },
+                        bokmal { +"*) Markerer år med militær eller sivil førstegangstjeneste. Dersom inntekten i året før tjenesten tok til er høyere, benyttes denne inntekten." },
+                        nynorsk { +"*) Markerer år med militær eller sivil førstegongsteneste. Dersom inntekta i året før tenesta tok til, er høgare, blir denne inntekta brukt." },
                     )
                 }
             }
-        }
-        paragraph {
-            text (
-                bokmal { + "**) Inntekten er justert etter endringer i folketrygdens grunnbeløp." },
-                nynorsk { + "**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda." },
-            )
+
+            paragraph {
+                text(
+                    bokmal { +"**) Inntekten er justert etter endringer i folketrygdens grunnbeløp." },
+                    nynorsk { +"**) Gjennomsnittleg norsk inntekt justert etter endringar i grunnbeløpet i folketrygda." },
+                )
+            }
         }
     }
 }
