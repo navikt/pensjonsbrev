@@ -1572,7 +1572,7 @@ object Innvilgelse {
     data class Uforetidspunkt(
         val pe: Expression<PEgruppe10>,
         val uforetidspunkt: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             val foedselsdato = pe.personsak.foedselsdato
             val erMndEtterFoedsel =
@@ -1592,29 +1592,35 @@ object Innvilgelse {
             showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 50 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 50 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
-                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + visUforetidspunkt + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
-                        nynorsk { +"Du blei ufør i " + visUforetidspunkt + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
                     )
                 }
             }
             paragraph {
                 text(
-                    bokmal { +"Dette er uføretidspunktet ditt, og avgjør hvilke inntektsår vi legger til grunn for beregningen din." },
-                    nynorsk { +"Dette er uføretidspunktet ditt, og det avgjer kva inntektsår vi legg til grunn for berekninga di." },
+                    bokmal { +"Vi ser på hvordan helseutfordringene påvirker inntektsevnen din og om de fører til at inntektsevnen blir varig nedsatt. " },
+                    nynorsk { +"Vi ser på korleis helseutfordringane påverkar inntektsevna di og om dei fører til at inntektsevna blir varig sett ned. " },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Uføretidspunktet ditt er blant annet avgjørende for vurderingen av om du har rett til uføretrygd og for hvilke år som legges til grunn for beregningen av uføretrygden din. " },
+                    nynorsk { +"Uføretidspunktet ditt er mellom anna avgjerande for vurderinga av om du har rett til uføretrygd og for kva år som blir lagt til grunn for utrekninga av uføretrygda di. " },
                 )
             }
         }
