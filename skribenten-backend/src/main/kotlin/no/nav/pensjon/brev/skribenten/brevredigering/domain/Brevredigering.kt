@@ -218,7 +218,12 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
-        val saksbehandlerValgSpec = modelSpec.types[modelSpec.letterModelTypeName]?.get("saksbehandlerValg")
+        val types = modelSpec.types[modelSpec.letterModelTypeName]
+        val typesSaksbehandlerValg = types?.get("saksbehandlerValg")
+        if (types != null && typesSaksbehandlerValg == null) {
+            throw IllegalStateException("Model specification for brevkode $brevkode mangler saksbehandlerValg eller saksbehandlerValg er ikke et objekt")
+        }
+        val saksbehandlerValgSpec = typesSaksbehandlerValg
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
