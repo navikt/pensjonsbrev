@@ -208,7 +208,7 @@ jobs:
         run: |
           gcloud storage rsync \
             brevbaker/pdf-bygger/build/test_visual/png \
-            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual2/main/expected \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual2/main \
             --recursive \
             --delete-unmatched-destination-objects
 
