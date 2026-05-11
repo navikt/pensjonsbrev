@@ -1,7 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -344,6 +346,15 @@ object Innvilgelse {
                     text(
                         bokmal { +"Du er innvilget rettighet som ung ufør fordi du ble alvorlig og varig syk før du fylte 26 år. Dette betyr at uføretrygden din vil bli beregnet etter regler som gjelder ung ufør." },
                         nynorsk { +"Du er innvilga rett som ung ufør fordi du blei alvorleg og varig sjuk før du fylte 26 år. Dette betyr at uføretrygda di vil bli rekna ut etter reglar som gjeld ung ufør." },
+                    )
+                }
+            }
+
+            showIf(ungUforResultat.equalTo("oppfylt") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) {
+                paragraph {
+                    text(
+                        bokmal { +"Du får minsteytelsen som ung ufør som hovedregel bare så lenge du bor i Norge. Hvis du flytter ut av Norge og mister medlemskapet i folketrygden, er det opptjeningen din i folketrygden som bestemmer hvor mye du får i uføretrygd. Hvis du flytter tilbake til Norge får du tilbake minsteytelsen som ung ufør." },
+                        nynorsk { +"Du får minsteyting som ung ufør som hovudregel berre så lenge du bur i Noreg. Dersom du flyttar ut av Noreg og mistar medlemskapen i folketrygda, er det oppteninga di i folketrygda som avgjer kor mykje du får i uføretrygd. Dersom du flyttar tilbake til Noreg, får du tilbake minsteyting som ung ufør." },
                     )
                 }
             }
@@ -1561,8 +1572,16 @@ object Innvilgelse {
     data class Uforetidspunkt(
         val pe: Expression<PEgruppe10>,
         val uforetidspunkt: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val foedselsdato = pe.personsak.foedselsdato
+            val erMndEtterFoedsel =
+                (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
+                    .or(
+                        (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
+                    )
+            val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
+
             title1 {
                 text(
                     bokmal { +"Dette er uføretidspunktet ditt" },
@@ -1573,29 +1592,35 @@ object Innvilgelse {
             showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 50 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 50 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
                     )
                 }
             }
             paragraph {
                 text(
-                    bokmal { +"Dette er uføretidspunktet ditt, og avgjør hvilke inntektsår vi legger til grunn for beregningen din." },
-                    nynorsk { +"Dette er uføretidspunktet ditt, og det avgjer kva inntektsår vi legg til grunn for berekninga di." },
+                    bokmal { +"Vi ser på hvordan helseutfordringene påvirker inntektsevnen din og om de fører til at inntektsevnen blir varig nedsatt. " },
+                    nynorsk { +"Vi ser på korleis helseutfordringane påverkar inntektsevna di og om dei fører til at inntektsevna blir varig sett ned. " },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Uføretidspunktet ditt er blant annet avgjørende for vurderingen av om du har rett til uføretrygd og for hvilke år som legges til grunn for beregningen av uføretrygden din. " },
+                    nynorsk { +"Uføretidspunktet ditt er mellom anna avgjerande for vurderinga av om du har rett til uføretrygd og for kva år som blir lagt til grunn for utrekninga av uføretrygda di. " },
                 )
             }
         }
