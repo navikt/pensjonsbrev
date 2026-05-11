@@ -449,23 +449,6 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                     }
                 }
 
-                //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
-                showIf(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) {
-                    //[TBU010V]
-
-                    row {
-                        cell {
-                            text(
-                                bokmal { + "Du er innvilget flyktningstatus fra UDI" },
-                                nynorsk { + "Du er innvilga flyktningstatus frå UDI" },
-                            )
-                        }
-                        cell {
-                            includePhrase(Ja)
-                        }
-                    }
-                }
-
                 //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "folketrygd"
                 showIf(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")){
                     //[TBU010V]
