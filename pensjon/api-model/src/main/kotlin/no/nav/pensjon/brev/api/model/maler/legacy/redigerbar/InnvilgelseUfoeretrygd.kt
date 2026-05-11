@@ -19,7 +19,7 @@ data class InnvilgelseUfoeretrygdDto(
         @DisplayText("Info om rett til barnetillegg")
         val barnetilleggInfo: Boolean,
         @DisplayText("Innvilget etter 12-2 3.ledd")
-        val innvilget_etter_12_2_tredjeledd: Boolean,
+        val innvilgetEtter12_2Tredjeledd: Boolean = false,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

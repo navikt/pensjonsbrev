@@ -21,7 +21,7 @@ data class InnvilgelseUfoeretrygdUtlandDto(
         @DisplayText("Refusjon")
         val refusjon: Boolean,
         @DisplayText("Innvilget etter 12-2 3.ledd")
-        val innvilget_etter_12_2_tredjeledd: Boolean,
+        val innvilgetEtter12_2Tredjeledd: Boolean = false,
         ) : SaksbehandlerValgBrevdata
 
     data class PesysData(

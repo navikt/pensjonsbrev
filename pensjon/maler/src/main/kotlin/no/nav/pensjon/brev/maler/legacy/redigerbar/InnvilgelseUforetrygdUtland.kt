@@ -12,7 +12,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretr
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.barnetilleggInfo
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.innvilget_etter_12_2_tredjeledd
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.innvilgetEtter12_2Tredjeledd
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.refusjon
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.saksbehandlerValg
@@ -186,7 +186,7 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
                     pe = pe,
                     yrkesskadeResultat = yrkesskadeResultat,
                     ungUforResultat = ungUforResultat,
-                    innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilget_etter_12_2_tredjeledd
+                    innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilgetEtter12_2Tredjeledd
                 )
             )
 
