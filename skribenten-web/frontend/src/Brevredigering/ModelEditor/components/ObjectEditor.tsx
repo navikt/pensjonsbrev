@@ -1,7 +1,7 @@
 import { css } from "@emotion/react";
-import { BodyShort, Box, ErrorMessage, Label, Switch, VStack } from "@navikt/ds-react";
-import { useEffect, useState } from "react";
-import { useFormContext, useWatch } from "react-hook-form";
+import { Switch } from "@navikt/ds-react";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 import { useModelSpecification } from "~/api/brev-queries";
 import { EnumEditor } from "~/Brevredigering/ModelEditor/components/EnumEditor";
@@ -11,7 +11,7 @@ import {
   getFieldDefaultValue,
   isFieldNullableOrBoolean,
 } from "~/Brevredigering/ModelEditor/components/utils";
-import { type FieldType, type ObjectTypeSpecifications } from "~/types/brevbakerTypes";
+import { type FieldType } from "~/types/brevbakerTypes";
 
 export const FieldEditor = ({
   prependedName,
@@ -51,7 +51,11 @@ export const FieldEditor = ({
       );
     }
     case "array": {
-      return <ArrayEditor brevkode={brevkode} field={field} fieldType={fieldType} prependedName={prependedName} />;
+      return (
+        <div>
+          Dette brevet kan ikke bestilles fra Skribenten per nå. Hvis dette er simuleringsbrev, må du gå via kalkulator.
+        </div>
+      );
     }
     case "enum": {
       return (
@@ -146,155 +150,4 @@ function ToggleableObjectEditor({
       )}
     </>
   );
-}
-
-function ArrayEditor({
-  prependedName,
-  brevkode,
-  field,
-  fieldType,
-}: {
-  prependedName?: string;
-  brevkode: string;
-  field: string;
-  fieldType: FieldType & { type: "array" };
-}) {
-  const fieldName = prependedName ? `${prependedName}.${field}` : field;
-  const { specification: types } = useModelSpecification(brevkode, (s) => s.types);
-
-  return <ReadOnlyArray fieldName={fieldName} fieldType={fieldType} types={types} />;
-}
-
-function ReadOnlyArray({
-  fieldName,
-  fieldType,
-  types,
-}: {
-  fieldName: string;
-  fieldType: FieldType & { type: "array" };
-  types: ObjectTypeSpecifications | undefined;
-}) {
-  const { control, formState, getFieldState, register } = useFormContext();
-  const value = useWatch({ control, name: fieldName });
-  const fieldState = getFieldState(fieldName, formState);
-  const label = fieldType.displayText ?? convertFieldToReadableLabel(fieldName);
-
-  useEffect(() => {
-    register(fieldName, {
-      required: fieldType.nullable ? false : "Må oppgis",
-      validate: (value) => fieldType.nullable || Array.isArray(value) || "Må oppgis",
-    });
-  }, [fieldName, fieldType.nullable, register]);
-
-  const values = Array.isArray(value) ? value : [];
-
-  return (
-    <Box borderColor="neutral-subtle" borderWidth="1" padding="space-12" style={{ borderRadius: "var(--ax-radius-8)" }}>
-      <VStack gap="space-8">
-        <Label size="small">{label}</Label>
-        {fieldState.error?.message && <ErrorMessage size="small">{fieldState.error.message}</ErrorMessage>}
-        {values.length === 0 ? (
-          <BodyShort size="small">Ingen verdier</BodyShort>
-        ) : (
-          <VStack gap="space-12">
-            {values.map((_, index) => (
-              <ReadOnlyField
-                fieldName={`${fieldName}.${index}`}
-                fieldType={fieldType.items}
-                key={`${fieldName}.${index}`}
-                label={`${label} ${index + 1}`}
-                types={types}
-              />
-            ))}
-          </VStack>
-        )}
-      </VStack>
-    </Box>
-  );
-}
-
-function ReadOnlyField({
-  fieldName,
-  fieldType,
-  label,
-  types,
-}: {
-  fieldName: string;
-  fieldType: FieldType;
-  label?: string;
-  types: ObjectTypeSpecifications | undefined;
-}) {
-  const { control, formState, getFieldState, register, unregister } = useFormContext();
-  const value = useWatch({ control, name: fieldName });
-  const fieldState = getFieldState(fieldName, formState);
-  const displayLabel = label ?? fieldType.displayText ?? convertFieldToReadableLabel(fieldName);
-
-  // Only register actual leaves (scalar/enum). Container types (object/array) are not
-  // registered as leaves so we don't shadow the leaf registrations of their children.
-  const isLeaf = fieldType.type === "scalar" || fieldType.type === "enum";
-  useEffect(() => {
-    if (!isLeaf) {
-      return;
-    }
-    register(fieldName, {
-      validate: (v) => fieldType.nullable || (v !== null && v !== undefined && v !== "") || "Må oppgis",
-    });
-    return () => unregister(fieldName, { keepValue: true, keepDefaultValue: true });
-  }, [fieldName, fieldType.nullable, isLeaf, register, unregister]);
-
-  switch (fieldType.type) {
-    case "object": {
-      const objectSpec = types?.[fieldType.typeName];
-      if (!objectSpec || value === null || value === undefined) {
-        return <ReadOnlyValue error={fieldState.error?.message} label={displayLabel} value={value} />;
-      }
-
-      return (
-        <Box
-          borderColor="neutral-subtle"
-          borderWidth="1"
-          padding="space-12"
-          style={{ borderRadius: "var(--ax-radius-8)" }}
-        >
-          <VStack gap="space-8">
-            <Label size="small">{displayLabel}</Label>
-            {Object.entries(objectSpec).map(([field, childField]) => (
-              <ReadOnlyField
-                fieldName={`${fieldName}.${field}`}
-                fieldType={childField}
-                key={`${fieldName}.${field}`}
-                types={types}
-              />
-            ))}
-          </VStack>
-        </Box>
-      );
-    }
-    case "array":
-      return <ReadOnlyArray fieldName={fieldName} fieldType={fieldType} types={types} />;
-    case "enum":
-    case "scalar":
-      return (
-        <ReadOnlyValue error={fieldState.error?.message} label={displayLabel} value={formatReadOnlyValue(value)} />
-      );
-  }
-}
-
-function ReadOnlyValue({ label, value, error }: { label: string; value: unknown; error?: string }) {
-  return (
-    <div>
-      <Label size="small">{label}</Label>
-      <BodyShort size="small">
-        {value === null || value === undefined || value === "" ? "Ikke oppgitt" : String(value)}
-      </BodyShort>
-      {error && <ErrorMessage size="small">{error}</ErrorMessage>}
-    </div>
-  );
-}
-
-function formatReadOnlyValue(value: unknown): unknown {
-  if (typeof value === "boolean") {
-    return value ? "Ja" : "Nei";
-  }
-  return value;
 }

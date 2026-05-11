@@ -7,7 +7,7 @@ import { useModelSpecification } from "~/api/brev-queries";
 import { type FieldType, type LetterModelSpecification, type PropertyUsage } from "~/types/brevbakerTypes";
 
 import { FieldEditor } from "./components/ObjectEditor";
-import { getDefaultValueForField, isFieldNullableOrBoolean } from "./components/utils";
+import { isBooleanField, isFieldNullableOrBoolean } from "./components/utils";
 
 export const useModelSpecificationForm = (brevkode: string) => {
   const brevKodeSpecification = useModelSpecification(brevkode, (s) => s);
@@ -124,8 +124,7 @@ export const SaksbehandlerValgModelEditor = (props: {
   fieldsToRender: "required" | "optional";
   submitOnChange?: () => void;
 }) => {
-  const { getValues, register } = useFormContext();
-  const { specification: types } = useModelSpecification(props.brevkode, (s) => s.types);
+  const { register } = useFormContext();
   const fieldsWithElements = createFormElementsFromSpecification({
     specificationFormElements: props.specificationFormElements,
     brevkode: props.brevkode,
@@ -134,12 +133,9 @@ export const SaksbehandlerValgModelEditor = (props: {
 
   if (props.fieldsToRender === "required") {
     for (const field of fieldsWithElements.requiredFields) {
-      const value = getDefaultValueForField(field.fieldType, types);
-      const fieldName = `saksbehandlerValg.${field.field}`;
       if (!field.fieldType.nullable) {
-        register(fieldName, {
-          validate: requiredFieldValidation(field.fieldType),
-          ...(value !== undefined && getValues(fieldName) === undefined ? { value } : {}),
+        register(`saksbehandlerValg.${field.field}`, {
+          required: "Obligatorisk: du må velge et alternativ",
         });
       }
     }
@@ -152,10 +148,8 @@ export const SaksbehandlerValgModelEditor = (props: {
      * og derfor må de registreres i form-et med false som verdi.
      */
     for (const field of fieldsWithElements.optionalFields) {
-      const value = getDefaultValueForField(field.fieldType, types);
-      const fieldName = `saksbehandlerValg.${field.field}`;
-      if (value !== undefined && getValues(fieldName) === undefined) {
-        register(fieldName, { value });
+      if (isBooleanField(field.fieldType)) {
+        register(`saksbehandlerValg.${field.field}`, { value: false });
       }
     }
   }
@@ -166,15 +160,6 @@ export const SaksbehandlerValgModelEditor = (props: {
     </VStack>
   );
 };
-
-function requiredFieldValidation(fieldType: FieldType) {
-  if (fieldType.type === "array") {
-    return (value: unknown) => Array.isArray(value) || "Obligatorisk: du må velge et alternativ";
-  }
-
-  return (value: unknown) =>
-    (value !== null && value !== undefined && value !== "") || "Obligatorisk: du må velge et alternativ";
-}
 
 function findSaksbehandlerValgTypeName(modelSpecification: LetterModelSpecification): string {
   const saksbehandlerValgModelSpec =
