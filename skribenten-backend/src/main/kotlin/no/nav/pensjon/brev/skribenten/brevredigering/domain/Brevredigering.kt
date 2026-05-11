@@ -222,20 +222,16 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        if (saksbehandlerValgSpec != null) {
-            saksbehandlerValg = SaksbehandlerValg().apply {
-                putAll(saksbehandlerValg)
-                saksbehandlerValgSpec.entries.forEach {
-                    val fieldType = it.value
-                    if (fieldType.nullable) {
-                        put(it.key, null)
-                    } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
-                        put(it.key, false)
-                    }
+        saksbehandlerValg = SaksbehandlerValg().apply {
+            putAll(saksbehandlerValg)
+            saksbehandlerValgSpec?.entries?.forEach {
+                val fieldType = it.value
+                if (fieldType.nullable) {
+                    put(it.key, null)
+                } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
+                    put(it.key, false)
                 }
             }
-        } else {
-            throw IllegalStateException("Model specification for brevkode $brevkode mangler saksbehandlerValg eller saksbehandlerValg er ikke et objekt")
         }
     }
 
