@@ -30,6 +30,9 @@ COPY containerFiles/fonts /app/typst/fonts
 COPY --exclude=*pdf-bygger-*.jar build/install/pdf-bygger/lib /app/lib
 COPY build/install/pdf-bygger/lib/pdf-bygger-*.jar /app/lib
 
+EXPOSE 8081
+# for å trigge bygg
+
 WORKDIR /app
 
 ENTRYPOINT ["java", "-cp", "/app/lib/*", "no.nav.pensjon.brev.pdfbygger.PdfByggerAppKt"]
