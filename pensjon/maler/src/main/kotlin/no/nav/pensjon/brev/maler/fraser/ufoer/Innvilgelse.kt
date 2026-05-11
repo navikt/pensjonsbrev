@@ -2,7 +2,6 @@ package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
-import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
@@ -1562,7 +1561,7 @@ object Innvilgelse {
     data class Uforetidspunkt(
         val pe: Expression<PEgruppe10>,
         val uforetidspunkt: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
                 text(
