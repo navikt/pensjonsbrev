@@ -22,8 +22,8 @@ data class TBU039V_TBU044V_1(
 
         paragraph {
             text(
-                bokmal { + "I utgangspunktet fasetter vi trygdetiden din ut fra faktisk og fremtidig trygdetid. Er ytelsen innvilget etter unntaksregelen § 12-2 tredje ledd, så får du ikke fremtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
-                nynorsk { + "I utgangspunktet fasetter vi trygdetida di ut fra faktisk og framtidig trygdetid. Er ytelsen innvilga etter unntaksregelen § 12-2 tredje ledd, så får du ikkje framtidig trygdetid, jf. folketrygdlova § 12-2 fjerde ledd. " },
+                bokmal { + "I utgangspunktet fastsetter vi trygdetiden din ut fra faktisk og fremtidig trygdetid. Er ytelsen innvilget etter unntaksregelen § 12-2 tredje ledd, så får du ikke fremtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
+                nynorsk { + "I utgangspunktet fastsetter vi trygdetida di ut fra faktisk og framtidig trygdetid. Er ytelsen innvilga etter unntaksregelen § 12-2 tredje ledd, så får du ikkje framtidig trygdetid, jf. folketrygdlova § 12-2 fjerde ledd. " },
             )
 
             text(
