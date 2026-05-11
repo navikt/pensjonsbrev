@@ -207,7 +207,7 @@ jobs:
       - name: Update main baseline on GCS
         run: |
           gcloud storage rsync \
-            brevbaker/pdf-bygger/build/test_visual/png \
+            brevbaker/pdf-bygger/build/test_visual/png/actual \
             gs://no-nav-pensjonsbrev-reg-suit/pdf-visual2/main \
             --recursive \
             --delete-unmatched-destination-objects
