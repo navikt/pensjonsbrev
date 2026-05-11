@@ -636,6 +636,12 @@ object Innvilgelse {
                             nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Fram til dette kjem du til å få arbeidsavklaringspengar." },
                         )
                     }
+                    paragraph {
+                        text(
+                            bokmal { +"Du må huske å sende meldekort ut inneværende måned." },
+                            nynorsk { +"Du må hugse å sende meldekort ut inneverande månad." },
+                        )
+                    }
                 }
             }
 
