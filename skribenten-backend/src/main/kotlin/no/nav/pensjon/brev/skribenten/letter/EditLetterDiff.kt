@@ -1,19 +1,10 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.pensjon.brev.skribenten.common.diff.EditScript
-import no.nav.pensjon.brev.skribenten.common.diff.shortestEditScript
 
-interface EditLetterDiff<Token : Any> {
+interface EditLetterTokenizer<Token : Any> {
     fun tokenize(letter: Edit.Letter): List<Token>
-    fun generateDiffSegments(editScript: EditScript<Token>): Pair<List<DiffSegment>, List<DiffSegment>>
-
-    fun diff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<DiffSegment>> =
-        generateDiffSegments(
-            shortestEditScript(
-                old = tokenize(old),
-                new = tokenize(new),
-            )
-        )
+    fun <R> parseTokens(editScript: EditScript<Token>, producer: DiffProducer<R>): R
 }
 
 sealed class ContentIndex {

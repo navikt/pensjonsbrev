@@ -47,4 +47,12 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
         }
         return result
     }
+
+    inline fun <reified E : T> forEachIndexed(action: (Int, E, EditOperation<E>?) -> Unit) {
+        var index = 0
+        while (true) {
+            val (token, edit) = consumeIf<E>() ?: break
+            action(index++, token, edit)
+        }
+    }
 }

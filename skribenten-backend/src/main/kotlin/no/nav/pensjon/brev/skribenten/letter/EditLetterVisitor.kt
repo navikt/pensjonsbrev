@@ -11,6 +11,7 @@ import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Literal
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.NewLine
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.Variable
 
+// TODO Flytt til passende sted
 val Letter.literals: List<Literal>
     get() = object : EditLetterVisitor<Literal>(this) {
         override fun visit(content: Literal) = emit(content)

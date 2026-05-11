@@ -10,7 +10,7 @@ import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.PARAGRAPH
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.skribenten.letter.EditLetterWordDiff.Token
+import no.nav.pensjon.brev.skribenten.letter.EditLetterWordTokenizer.Token
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
