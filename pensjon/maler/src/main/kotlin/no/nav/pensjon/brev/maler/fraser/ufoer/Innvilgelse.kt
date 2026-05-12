@@ -474,6 +474,7 @@ object Innvilgelse {
     data class UnntaksregelMedlemskapUtland(
         val pe: Expression<PEgruppe10>,
         val oppfyltvedsammenlegging: Expression<Boolean>,
+        val yrkesskadeResultat: Expression<String>,
         val innvilgetEtter12_2_andreledd: Expression<Boolean> = false.expr(),
         val innvilgetEtter12_2_tredjeledd: Expression<Boolean> = false.expr(),
     ) : OutlinePhrase<LangBokmalNynorsk>() {
@@ -497,6 +498,15 @@ object Innvilgelse {
                         bokmal { +"Du oppfyller unntaksregel om medlemskap" },
                         nynorsk { +"Du oppfyller unntaksregel om medlemskap" },
                     )
+                }
+
+                showIf(yrkesskadeResultat.equalTo("oppfylt")) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, og oppfyller derfor vilkåret om medlemskap i folketrygden." },
+                            nynorsk { +"Du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom, og oppfyller derfor vilkåret om medlemskap i folketrygda." },
+                        )
+                    }
                 }
 
                 showIf(innvilgetEtter12_2_andreledd) {

@@ -187,7 +187,6 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
                     pe = pe,
                     oppfyltvedsammenlegging = oppfyltvedsammenlegging,
                     yrkesskadeResultat = yrkesskadeResultat,
-                    ungUforResultat = ungUforResultat,
                     innvilgetEtter12_2_andreledd = saksbehandlerValg.innvilgetEtter12_2Andreledd,
                     innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilgetEtter12_2Tredjeledd
                 )
