@@ -30,7 +30,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlyttingUtlandDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
+    override val featureToggle = FeatureToggles.brevmalUtDelvisEksport.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_DELVIS_EKSPORT_AV_UFORETRYGD
     override val kategori = Brevkategori.VEDTAK_EKSPORT
