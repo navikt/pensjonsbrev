@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object LavereMinstesats {
@@ -190,7 +191,7 @@ object LavereMinstesats {
                     )
                 }
             }
-            showIf(data.avkortetPgaRedusertTrygdetid) {
+            showIf(data.avkortetPgaRedusertTrygdetid and data.harMinstesats) {
                 paragraph {
                     text(
                         bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. Derfor er minstesatsen din lavere enn 2,329 G." },
