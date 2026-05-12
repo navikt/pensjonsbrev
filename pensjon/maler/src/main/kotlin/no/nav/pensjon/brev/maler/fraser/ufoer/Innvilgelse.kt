@@ -477,7 +477,7 @@ object Innvilgelse {
         val yrkesskadeResultat: Expression<String>,
         val innvilgetEtter12_2_andreledd: Expression<Boolean> = false.expr(),
         val innvilgetEtter12_2_tredjeledd: Expression<Boolean> = false.expr(),
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(oppfyltvedsammenlegging){
                 title1 {
