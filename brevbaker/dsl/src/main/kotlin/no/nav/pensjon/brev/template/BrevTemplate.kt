@@ -11,7 +11,6 @@ import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.template.Expression.Literal
-import no.nav.pensjon.brev.template.dsl.LiteralOrExpressionBuilder
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
