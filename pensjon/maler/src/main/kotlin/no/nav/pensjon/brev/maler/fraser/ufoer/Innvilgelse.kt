@@ -549,7 +549,7 @@ object Innvilgelse {
                     paragraph {
                         text(
                             bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i § 12-2 tredje ledd. Denne regelen sier at du ikke får beregnet fremtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
-                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i § 12-2 tredje ledd. Denne regelen seier at du ikkje får berekna framtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
+                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i § 12-2 tredje ledd. Denne regelen seier at du ikkje får berekna framtidig trygdetid, jf. folketrygdlova § 12-2 fjerde ledd. " },
                         )
                     }
                     paragraph {
