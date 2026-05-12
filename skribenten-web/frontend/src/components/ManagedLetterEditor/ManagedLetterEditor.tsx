@@ -5,10 +5,10 @@ import { useEffect } from "react";
 import { oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
-import { type EditedLetter } from "~/types/brevbakerTypes";
 
 import { AUTOSAVE_TIMER } from "./autosave_timer";
 
@@ -17,16 +17,25 @@ import { AUTOSAVE_TIMER } from "./autosave_timer";
  *
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
-const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
+const ManagedLetterEditor = (props: {
+  brev: BrevResponse;
+  freeze: boolean;
+  error: boolean;
+  showDebug?: boolean;
+  saveDirtyLetter?: (editorState: LetterEditorState) => Promise<BrevResponse>;
+}) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  const { mutate, isError } = useMutation<BrevResponse, AxiosError, EditedLetter>({
-    mutationFn: (redigertBrev: EditedLetter) => {
-      setEditorState((previousState) => ({
-        ...Actions.cursorPosition(previousState, getCursorOffset()),
+  const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+    mutationFn: (state) => {
+      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
+      setEditorState(() => ({
+        ...stateWithCursor,
         saveStatus: "SAVE_PENDING",
       }));
-      return oppdaterBrevtekst(props.brev.info.id, redigertBrev);
+      return (
+        props.saveDirtyLetter?.(stateWithCursor) ?? oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev)
+      );
     },
     onSuccess: (response) => onSaveSuccess(response),
   });
@@ -34,7 +43,7 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
-        mutate(editorState.redigertBrev);
+        mutate(editorState);
       }
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timoutId);

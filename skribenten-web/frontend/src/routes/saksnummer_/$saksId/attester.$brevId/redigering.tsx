@@ -10,6 +10,10 @@ import { z } from "zod";
 
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
+import {
+  createSaksbehandlerValgHistoryEntry,
+  type SaksbehandlerValgHistorySnapshot,
+} from "~/Brevredigering/LetterEditor/history";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -45,6 +49,9 @@ const vedtakSidemenySchema = z.object({
 });
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
+type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
+  historySnapshot?: SaksbehandlerValgHistorySnapshot;
+};
 
 const VedtakWrapper = () => {
   const { saksId, brevId } = Route.useParams();
@@ -153,10 +160,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
 
   const defaultValuesModelEditor = useMemo(
     () => ({
-      saksbehandlerValg: { ...props.brev.saksbehandlerValg },
+      saksbehandlerValg: { ...editorState.saksbehandlerValg },
       attestantSignatur: "",
     }),
-    [props.brev.saksbehandlerValg],
+    [editorState.saksbehandlerValg],
   );
 
   const form = useForm<VedtakSidemenyFormData>({
@@ -164,7 +171,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     defaultValues: defaultValuesModelEditor,
   });
 
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) =>
       oppdaterBrev({
         saksId: Number.parseInt(props.saksId, 10),
@@ -174,7 +181,22 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
           saksbehandlerValg: values.saksbehandlerValg,
         },
       }),
-    onSuccess: onSaveSuccess,
+    onSuccess: (response, variables) => {
+      const historySnapshot = variables.historySnapshot;
+      onSaveSuccess(
+        response,
+        historySnapshot
+          ? {
+              createHistoryEntry: () =>
+                createSaksbehandlerValgHistoryEntry(historySnapshot, {
+                  redigertBrev: response.redigertBrev,
+                  redigertBrevHash: response.redigertBrevHash,
+                  saksbehandlerValg: response.saksbehandlerValg,
+                }),
+            }
+          : undefined,
+      );
+    },
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
@@ -185,7 +207,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         request: requestData,
       }),
 
-    onSuccess: onSaveSuccess,
+    onSuccess: (response) => onSaveSuccess(response),
     onError: (err) => {
       const reason = (err as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason;
 
@@ -288,12 +310,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               <VStack>
                 <BrevmalAlternativer
                   brevkode={props.brev.info.brevkode}
-                  submitOnChange={() =>
+                  submitOnChange={() => {
                     oppdaterBrevMutation.mutate({
                       redigertBrev: editorState.redigertBrev,
                       saksbehandlerValg: form.getValues("saksbehandlerValg"),
-                    })
-                  }
+                      historySnapshot: {
+                        redigertBrev: editorState.redigertBrev,
+                        redigertBrevHash: editorState.redigertBrevHash,
+                        saksbehandlerValg: editorState.saksbehandlerValg,
+                      },
+                    });
+                  }}
                   withTitle
                 />
               </VStack>
@@ -302,7 +329,23 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <ManagedLetterEditor brev={props.brev} error={error} freeze={freeze} showDebug={showDebug} />
+            <ManagedLetterEditor
+              brev={props.brev}
+              error={error}
+              freeze={freeze}
+              saveDirtyLetter={(state) =>
+                oppdaterBrev({
+                  saksId: Number.parseInt(props.saksId, 10),
+                  brevId: props.brev.info.id,
+                  frigiReservasjon: false,
+                  request: {
+                    redigertBrev: state.redigertBrev,
+                    saksbehandlerValg: state.saksbehandlerValg,
+                  },
+                })
+              }
+              showDebug={showDebug}
+            />
             {/* Modal som ikke tar opp plass i DOM her */}
             <ReservertBrevError
               doRetry={props.doReload}

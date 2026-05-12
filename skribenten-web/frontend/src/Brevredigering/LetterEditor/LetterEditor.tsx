@@ -54,8 +54,16 @@ export const LetterEditor = ({
   const undo = useCallback(() => {
     if (!canUndo) return;
     setEditorState((current) => {
-      const { inversePatches } = current.history.entries[current.history.entryPointer];
-      const previous = applyPatches(current, inversePatches);
+      const entry = current.history.entries[current.history.entryPointer];
+      const previous =
+        entry.type === "SAKSBEHANDLER_VALG"
+          ? {
+              ...current,
+              redigertBrev: entry.before.redigertBrev,
+              redigertBrevHash: entry.before.redigertBrevHash,
+              saksbehandlerValg: entry.before.saksbehandlerValg,
+            }
+          : applyPatches(current, entry.inversePatches);
       return {
         ...previous,
         saveStatus: "DIRTY",
@@ -71,8 +79,16 @@ export const LetterEditor = ({
     if (!canRedo) return;
     setEditorState((current) => {
       const nextPointer = current.history.entryPointer + 1;
-      const { patches } = current.history.entries[nextPointer];
-      const next = applyPatches(current, patches);
+      const entry = current.history.entries[nextPointer];
+      const next =
+        entry.type === "SAKSBEHANDLER_VALG"
+          ? {
+              ...current,
+              redigertBrev: entry.after.redigertBrev,
+              redigertBrevHash: entry.after.redigertBrevHash,
+              saksbehandlerValg: entry.after.saksbehandlerValg,
+            }
+          : applyPatches(current, entry.patches);
       return {
         ...next,
         saveStatus: "DIRTY",

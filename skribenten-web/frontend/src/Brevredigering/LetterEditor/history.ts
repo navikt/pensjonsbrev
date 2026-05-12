@@ -1,13 +1,33 @@
 import { type Patch } from "immer";
 
+import { type SaksbehandlerValg } from "~/types/brev";
+import { type EditedLetter } from "~/types/brevbakerTypes";
+
 export type PatchKind = "TEXT_UPDATE";
 
-export interface HistoryEntry {
+export type SaksbehandlerValgHistorySnapshot = {
+  redigertBrev: EditedLetter;
+  redigertBrevHash: string;
+  saksbehandlerValg: SaksbehandlerValg;
+};
+
+export interface PatchHistoryEntry {
+  type: "PATCH";
   patches: Patch[];
   inversePatches: Patch[];
   kind?: PatchKind;
   timestamp?: number;
 }
+
+export interface SaksbehandlerValgHistoryEntry {
+  type: "SAKSBEHANDLER_VALG";
+  before: SaksbehandlerValgHistorySnapshot;
+  after: SaksbehandlerValgHistorySnapshot;
+  timestamp?: number;
+}
+
+export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgHistoryEntry;
+
 export interface History {
   entries: HistoryEntry[];
   entryPointer: number;
@@ -29,11 +49,24 @@ function getHistoryEntryPatchKind(patches: Patch[]): PatchKind | undefined {
   return undefined;
 }
 
-function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): HistoryEntry {
+function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): PatchHistoryEntry {
   return {
+    type: "PATCH",
     patches,
     inversePatches,
     kind: getHistoryEntryPatchKind(patches),
+    timestamp: Date.now(),
+  };
+}
+
+export function createSaksbehandlerValgHistoryEntry(
+  before: SaksbehandlerValgHistorySnapshot,
+  after: SaksbehandlerValgHistorySnapshot,
+): SaksbehandlerValgHistoryEntry {
+  return {
+    type: "SAKSBEHANDLER_VALG",
+    before,
+    after,
     timestamp: Date.now(),
   };
 }
@@ -43,6 +76,8 @@ function updateHistory(history: History, newHistoryEntry: HistoryEntry): History
 
   const shouldMerge =
     lastHistoryEntry &&
+    lastHistoryEntry.type === "PATCH" &&
+    newHistoryEntry.type === "PATCH" &&
     newHistoryEntry.kind === "TEXT_UPDATE" &&
     lastHistoryEntry.kind === "TEXT_UPDATE" &&
     lastHistoryEntry.timestamp != null &&
@@ -78,6 +113,10 @@ function updateHistory(history: History, newHistoryEntry: HistoryEntry): History
 export function addToHistory(history: History, patches: Patch[], inversePatches: Patch[]): History {
   const newEntry = createHistoryEntry(patches, inversePatches);
 
+  return addHistoryEntry(history, newEntry);
+}
+
+export function addHistoryEntry(history: History, newEntry: HistoryEntry): History {
   const baseEntries =
     history.entryPointer < history.entries.length - 1
       ? history.entries.slice(0, history.entryPointer + 1)

@@ -14,13 +14,18 @@ import { attesteringBrevKeys, getBrev } from "~/api/brev-queries";
 import { hentPdfForBrev } from "~/api/sak-api-endpoints";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { normalizeDeletedArrays } from "~/Brevredigering/LetterEditor/actions/common";
+import { addHistoryEntry, type HistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { type BrevResponse } from "~/types/brev";
+
+type SaveSuccessOptions = {
+  createHistoryEntry?: (previousState: LetterEditorState, response: BrevResponse) => HistoryEntry | null;
+};
 
 interface ManagedLetterEditorContextValue {
   editorState: LetterEditorState;
   setEditorState: Dispatch<SetStateAction<LetterEditorState>>;
-  onSaveSuccess: (response: BrevResponse) => void;
+  onSaveSuccess: (response: BrevResponse, options?: SaveSuccessOptions) => void;
 }
 
 const nullsToUndefined = (obj: unknown) =>
@@ -33,7 +38,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
   const [editorState, setEditorState] = useState<LetterEditorState>(Actions.create(props.brev));
 
   const onSaveSuccess = useCallback(
-    (response: BrevResponse) => {
+    (response: BrevResponse, options?: SaveSuccessOptions) => {
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       queryClient.setQueryData(attesteringBrevKeys.id(response.info.id), response);
       //vi resetter queryen slik at når saksbehandler går tilbake til brevbehandler vil det hentes nyeste data
@@ -41,10 +46,16 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
+          const historyEntry = options?.createHistoryEntry?.(previousState, response);
           const keepHistory = _.isEqual(
             normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
             normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
           );
+          const history = historyEntry
+            ? addHistoryEntry(previousState.history, historyEntry)
+            : keepHistory
+              ? previousState.history
+              : { entries: [], entryPointer: -1 };
           return {
             ...previousState,
             redigertBrev: response.redigertBrev,
@@ -52,7 +63,7 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
             saksbehandlerValg: response.saksbehandlerValg,
             info: response.info,
             saveStatus: "SAVED",
-            history: keepHistory ? previousState.history : { entries: [], entryPointer: -1 },
+            history,
           };
         } else {
           return previousState;
