@@ -55,11 +55,13 @@ const ManagedLetterEditor = (props: {
         ...previousState,
         redigertBrev: props.brev.redigertBrev,
         redigertBrevHash: props.brev.redigertBrevHash,
+        saksbehandlerValg: props.brev.saksbehandlerValg,
       }));
     }
   }, [
     props.brev.redigertBrev,
     props.brev.redigertBrevHash,
+    props.brev.saksbehandlerValg,
     editorState.redigertBrevHash,
     setEditorState,
     editorState.saveStatus,
