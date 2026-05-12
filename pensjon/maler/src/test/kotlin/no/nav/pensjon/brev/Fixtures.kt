@@ -16,6 +16,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.AvslagUfoeretrygdDt
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.EndringUfoeretrygdFlyttingUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.OmregningUfoerepensjonTilUfoeretrygdDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheterDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringAvUttaksgradDto
@@ -135,6 +136,7 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonD
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseAvAlderspensjonTrygdeavtaleDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createInnvilgelseUfoeretrygdUtlandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOmsorgManuellDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOpplysningerOmAvdoedBruktIBeregningDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createOrienteringOmSaksbehandlingstidDto
@@ -233,6 +235,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmFjerningAvOmsorgsopptjeningDto::class -> createVedtakOmFjerningAvOmsorgsopptjeningDto() as T
             VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             InnvilgelseUfoeretrygdDto::class -> createInnvilgelseUfoeretrygdDto() as T
+            InnvilgelseUfoeretrygdUtlandDto::class -> createInnvilgelseUfoeretrygdUtlandDto() as T
             EndringUfoeretrygdDto::class -> createEndringUfoeretrygdDto() as T
             EndringUfoeretrygdFlyttingUtlandDto::class -> createEndringUfoeretrygdFlyttingUtlandDto() as T
             OmregningUfoerepensjonTilUfoeretrygdDto::class -> createOmregningUfoerepensjonTilUfoeretrygdDto() as T

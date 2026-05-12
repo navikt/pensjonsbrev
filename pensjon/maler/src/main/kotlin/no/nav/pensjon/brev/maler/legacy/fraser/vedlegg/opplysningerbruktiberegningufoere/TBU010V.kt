@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
 import no.nav.pensjon.brev.maler.legacy.*
@@ -32,6 +34,14 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                 ifNotNull(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt()){ uforetidspunkt ->
                     //[TBU010V]
 
+                    val foedselsdato = pe.personsak.foedselsdato
+                    val erMndEtterFoedsel =
+                        (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
+                            .or(
+                                (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
+                            )
+                    val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
+
                     row {
                         cell {
                             text(
@@ -41,8 +51,8 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                         }
                         cell {
                             text(
-                                bokmal { + uforetidspunkt.format() },
-                                nynorsk { + uforetidspunkt.format() },
+                                bokmal { + visUforetidspunkt },
+                                nynorsk { + visUforetidspunkt },
                             )
                         }
 
@@ -435,23 +445,6 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                                 bokmal { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr" },
                                 nynorsk { + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format(false) + " kr" },
                             )
-                        }
-                    }
-                }
-
-                //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
-                showIf(pe.grunnlag_persongrunnlagsliste_brukerflyktning()) {
-                    //[TBU010V]
-
-                    row {
-                        cell {
-                            text(
-                                bokmal { + "Du er innvilget flyktningstatus fra UDI" },
-                                nynorsk { + "Du er innvilga flyktningstatus frå UDI" },
-                            )
-                        }
-                        cell {
-                            includePhrase(Ja)
                         }
                     }
                 }

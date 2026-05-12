@@ -107,10 +107,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             includePhrase(TBU039V_TBU044V_1(pe))
 
             showIf(
-                 (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40)
-                        and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
-                        or (pe.vedtaksdata_kravhode_boddarbeidutland()
-                        and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning()))
+                 (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())
                         and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
                 ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistenor }.safe { trygdetidsgrunnlag }) { trygdetidsliste ->
                     includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
@@ -144,7 +141,6 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         showIf(pe.ut_trygdetid()
                 and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_redusertframtidigtrygdetid()
-                and not(pe.grunnlag_persongrunnlagsliste_brukerflyktning())
                 and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("folketrygd")) {
             includePhrase(TBU047V)
         }

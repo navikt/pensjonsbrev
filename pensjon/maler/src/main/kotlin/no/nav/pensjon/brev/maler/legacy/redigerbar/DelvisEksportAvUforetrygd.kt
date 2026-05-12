@@ -159,12 +159,6 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
                     nynorsk { + "Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di i " + fritekst("måned og år") + "." },
                 )
             }
-            paragraph {
-                text (
-                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
-                    nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
-                )
-            }
 
             title1 {
                 text (
@@ -237,70 +231,6 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
                     text (
                         bokmal { + " Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
                         nynorsk { + "Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
-                    )
-                }
-            }
-
-            //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
-            showIf(((pe.grunnlag_persongrunnlagsliste_brukerflyktning()))){
-                //[TBU2116NN, TBU2116]
-
-                paragraph {
-                    text (
-                        bokmal { + "Du fikk vedtak om uføretrygd " + fritekst("Dato") + ", med full trygdetid fordi du har flyktningstatus. Denne fordelen har du bare rett til så lenge du er medlem av folketrygden. Uføretrygden " },
-                        nynorsk { + "Du fekk vedtak om uføretrygd " + fritekst("Dato") + ", med full trygdetid fordi du har flyktningstatus. Denne fordelen har du berre rett til så lenge du er medlem av folketrygda. Uføretrygda " },
-                    )
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) THEN      INCLUDE ENDIF
-                    showIf((not(barnetilleggFellesInnvilget) and not(barnetilleggSerkullInnvilget))){
-                        text (
-                            bokmal { + "din " },
-                            nynorsk { + "di " },
-                        )
-                    }
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf((barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget)){
-                        text (
-                            bokmal { + "og barnetillegget ditt " },
-                            nynorsk { + "og barnetillegget ditt " },
-                        )
-                    }
-                    text (
-                        bokmal { + "er nå beregnet uten denne fordelen. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese mer om den nye beregningen din i «Opplysninger om beregningen»." },
-                        nynorsk { + "er no berekna utan denne fordelen. " + fritekst("Utfyllende begrunnelse") + ". Du kan lese meir om den nye berekninga di i «Opplysningar om berekninga»." },
-                    )
-                }
-            }
-
-            //IF(FF_GetArrayElement_Boolean(PE_Grunnlag_Persongrunnlagsliste_BrukerFlyktning) = true) THEN      INCLUDE ENDIF
-            showIf(((pe.grunnlag_persongrunnlagsliste_brukerflyktning()))){
-                //[TBU2117NN, TBU2117]
-
-                paragraph {
-                    text (
-                        bokmal { + "Hvis du flytter tilbake til Norge vil vi gjøre en ny vurdering av uføretrygden" },
-                        nynorsk { + "Dersom du flyttar tilbake til Noreg, vil vi vurdere uføretrygda " },
-                    )
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = false AND PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = false) THEN      INCLUDE ENDIF
-                    showIf((not(barnetilleggFellesInnvilget) and not(barnetilleggSerkullInnvilget))){
-                        text (
-                            bokmal { + " din" },
-                            nynorsk { + "di " },
-                        )
-                    }
-
-                    //IF(PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggFelles_BTFBinnvilget = true OR PE_Vedtaksdata_BeregningsData_Beregning_BeregningYtelseKomp_BarnetilleggSerkull_BTSBinnvilget = true) THEN      INCLUDE ENDIF
-                    showIf((barnetilleggFellesInnvilget or barnetilleggSerkullInnvilget)){
-                        text (
-                            bokmal { + " og barnetillegget ditt" },
-                            nynorsk { + "og barnetillegget ditt " },
-                        )
-                    }
-                    text (
-                        bokmal { + ". Du kan derfor miste fordeler du hadde før du flyttet ut av Norge." },
-                        nynorsk { + "på nytt. Du kan derfor miste fordelar du hadde før du flytta ut av Noreg." },
                     )
                 }
             }

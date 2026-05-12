@@ -3,23 +3,26 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDto
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.hjemler
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.PesysDataSelectors.pe
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.SaksbehandlervalgSelectors.barnetilleggInfo
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.SaksbehandlervalgSelectors.innvilgetEtter12_2Tredjeledd
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDto
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.dineRettigheterOgPlikterUfore
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.hjemler
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.maanedligUfoeretrygdFoerSkatt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.nyeAvslagBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.nyeInnvilgedeBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.oifuVedVirkningstidspunkt
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.PesysDataSelectors.pe
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.barnetilleggInfo
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.innvilgetEtter12_2Tredjeledd
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.SaksbehandlervalgSelectors.refusjon
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.pesysData
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.InnvilgelseUfoeretrygdUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_KONTAKTSENTER_TELEFON
+import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERETRYGD_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse
+import no.nav.pensjon.brev.maler.fraser.ufoer.Innvilgelse.UnntaksregelMedlemskap
 import no.nav.pensjon.brev.maler.fraser.ufoer.Ufoeretrygd
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -40,11 +43,11 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import java.time.LocalDate
 
 @TemplateModelHelpers
-object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
+object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUtlandDto> {
 
     override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
 
-    override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD
+    override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_UTLAND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
     override val sakstyper = setOf(Sakstype.UFOREP)
@@ -76,6 +79,7 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
         val ungUforResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_unguforresultat()
         val kravarsak = pe.vedtaksdata_kravhode_kravarsaktype()
+        val avtaletypeEos = pe.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype().equalTo("eos_nor")
 
         val beregningsvilkarYrkesskadegrad = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_yrkesskadegrad()
         val yrkesskadeResultat = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()
@@ -141,26 +145,12 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 totalNettoUforeberegning = totalNettoUforeberegning,
             ))
 
-             paragraph {
-                text (
-                    bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Du får din første utbetaling i " + fritekst("måned og år") + "." },
-                    nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Du får den første utbetalinga di i " + fritekst("Månad og år") + "." },
-                )
-            }
 
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                title1 {
-                    text (
-                        bokmal { + "Dette er en foreløpig beregning" },
-                        nynorsk { + "Dette er ei førebels berekning" },
-                    )
-                }
-                paragraph {
-                    text (
-                        bokmal { + "Fordi du har jobbet eller bodd i et annet EØS-land, er dette en foreløpig beregning basert på trygdetiden du har opparbeidet deg i Norge. Vi venter på informasjon fra " + fritekst("land") + ". Når vi har fått den informasjonen vi trenger, sender vi deg et vedtak med en endelig beregning av uføretrygden din. Der vil du se den totale summen du får utbetalt fra både Norge og eventuelt " + fritekst("land") + "." },
-                        nynorsk { + "Fordi du har jobba eller budd i eit anna EØS-land, er dette ei førebels berekning basert på trygdetida du har opparbeidd deg i Noreg. Vi ventar på informasjon frå " + fritekst("land") + ". Når vi har fått den informasjonen vi treng, sender vi deg eit vedtak med ei endeleg berekning av uføretrygda di. Der vil du sjå den totale summen du får betalt ut frå både Noreg og eventuelt " + fritekst("land") + "." },
-                    )
-                }
+            paragraph {
+                text (
+                    bokmal { + "Uføretrygden blir utbetalt senest den 20. hver måned. Mottar du uføretrygden på en utenlandsk bankkonto kan utbetalingen bli forsinket. Du får din første utbetaling så snart som mulig." },
+                    nynorsk { + "Uføretrygda blir betalt ut seinast den 20. kvar månad. Får du uføretrygda på ein utanlandsk bankkonto, kan utbetalinga bli forseinka. Du får den første utbetalinga di så snart som mogleg." },
+                )
             }
 
             includePhrase(Innvilgelse.BegrunnelseForVedtaket(
@@ -174,8 +164,8 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             paragraph {
                 text(
-                    bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(true)) + "." },
+                    bokmal { +"Vedtaket er gjort etter folketrygdloven " + pesysData.hjemler.format(HjemmelFormatter(false)) + " og EØS-avtalens bestemmelser om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45." },
+                    nynorsk { +"Vedtaket er gjort etter folketrygdlova " + pesysData.hjemler.format(HjemmelFormatter(false)) + " og EØS-avtala sine føresegner om trygd i forordning 883/2004 artikkel 6, artikkel 7 og artikkel 45." },
                 )
             }
 
@@ -191,12 +181,29 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            includePhrase(Innvilgelse.UnntaksregelMedlemskap(
-                pe = pe,
-                yrkesskadeResultat = yrkesskadeResultat,
-                ungUforResultat = ungUforResultat,
-                innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilgetEtter12_2Tredjeledd,
-            ))
+            includePhrase(
+                UnntaksregelMedlemskap(
+                    pe = pe,
+                    yrkesskadeResultat = yrkesskadeResultat,
+                    ungUforResultat = ungUforResultat,
+                    innvilgetEtter12_2_tredjeledd = saksbehandlerValg.innvilgetEtter12_2Tredjeledd
+                )
+            )
+
+            showIf(oppfyltvedsammenlegging){
+                title1 {
+                    text (
+                        bokmal { +"Du oppfyller vilkår om medlemskap gjennom sammenlegging"},
+                        nynorsk { +"Du oppfyller vilkår om medlemskap gjennom samanslåing" },
+                    )
+                }
+                paragraph {
+                    text (
+                        bokmal { + "Et vilkår for rett til uføretrygd er at du har vært medlem i folketrygden de siste " + pe.aars_trygdetid() + " årene fram til uføretidspunktet. Dette vilkåret kan oppfylles ved å regne med trygdeperioder i andre EØS-land. Du fyller dette vilkåret gjennom sammenlegging med " + fritekst("land") + " tid." },
+                        nynorsk { + "Eit vilkår for rett til uføretrygd er at du har vore medlem i folketrygda dei siste " + pe.aars_trygdetid() + " åra fram til uføretidspunktet. Dette vilkåret kan oppfyllast ved å rekne med trygdeperiodar i andre EØS-land. Du fyller dette vilkåret gjennom samanslåing med " + fritekst("land") + " tid." },
+                    )
+                }
+            }
 
             includePhrase(Innvilgelse.YrkesskadeEllerYrkessykdom(
                 pe = pe,
@@ -205,17 +212,55 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 yrkesskadeResultat = yrkesskadeResultat,
             ))
 
+            title1 {
+                text (
+                    bokmal { + "Uføretrygd for deg som er bosatt i utlandet" },
+                    nynorsk { + "Uføretrygd for deg som er busett i utlandet" },
+                )
+            }
+            showIf( oppfyltvedsammenlegging) {
+                paragraph {
+                    text(
+                        bokmal { +"Du må som hovedregel være bosatt i Norge for å ha rett til uføretrygd. Etter reglene i " + fritekst("trygdeavtale") + " mellom Norge og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan imidlertid uføretrygden din utbetales helt eller delvis selv om du ikke bor i Norge." },
+                        nynorsk { +"Du må som hovudregel vere busett i Noreg for å ha rett til uføretrygd. Etter reglane i " + fritekst("Trygdeavtale") + " mellom Noreg og " + pe.grunnlag_persongrunnlagsliste_trygdeavtaler_bostedslandbeskrivelse() + " kan likevel uføretrygda di betalast ut heilt eller delvis sjølv om du ikkje bur i Noreg." },
+                    )
+                }
+            }
+
+            showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_fortsattmedlemskap_minst20arbotid()) {
+                paragraph {
+                    text(
+                        bokmal { +"Du har rett til uføretrygd fordi du har minst 20 års samlet botid i Norge i perioden etter fylte 16 år." },
+                        nynorsk { +"Du har rett til uføretrygd fordi du har minst 20 års samla butid i Noreg i perioden etter at du fylte 16 år." },
+                    )
+                }
+            }
+
+            showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_minsttrearsfmnorge()){
+                paragraph {
+                    text (
+                        bokmal { + "Du har rett til uføretrygd fordi du har hatt minst ett år med inntekt i Norge over folketrygdens grunnbeløp." },
+                        nynorsk { + "Du har rett til uføretrygd fordi du har hatt minst ett år med inntekt i Noreg over grunnbeløpet i folketrygda." },
+                    )
+                }
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Uføretrygden din er beregnet på grunnlag av at du er bosatt i " + fritekst("land") + ". Hvis du flytter til et annet land må du gi beskjed til Nav. Uføretrygden din kan da bli beregnet på nytt." },
+                    nynorsk { +"Uføretrygda di er rekna ut på grunnlag av at du er busett i " + fritekst("land") + ". Viss du flyttar til eit anna land, må du melde frå til Nav. Uføretrygda di kan då bli rekna ut på nytt." },
+                )
+            }
+
             includePhrase(Innvilgelse.Virkningstidspunkt(
                 pe = pe,
                 virkningbegrunnelseStdbegr_22_12_1_5 = virkningbegrunnelseStdbegr_22_12_1_5,
             ))
 
-            includePhrase(
-                Innvilgelse.Uforetidspunkt(
-                    pe = pe,
-                    uforetidspunkt = uforetidspunkt,
-                )
-            )
+            includePhrase(Innvilgelse.Uforetidspunkt(
+                pe = pe,
+                uforetidspunkt = uforetidspunkt,
+            ))
 
             includePhrase(Innvilgelse.FastsattUforegrad(
                 ifuBegrunnelse = ifuBegrunnelse,
@@ -229,24 +274,6 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                paragraph {
-                    text (
-                        bokmal { + "Dette skjer videre med søknaden din" },
-                        nynorsk { + "Dette skjer vidare med søknaden din" },
-                    )
-                }
-            }
-
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                paragraph {
-                    text (
-                        bokmal { + "Når vi mottar vedtak fra " + fritekst("land") + ", vil vi fatte et vedtak med en endelig beregning. Du mottar da et samlet vedtak fra Norge og " + fritekst("land") + "." },
-                        nynorsk { + "Når vi får vedtak frå " + fritekst("land") + ", kjem vi til å gjere eit vedtak med ei endeleg berekning. Du får då eit samla vedtak frå Noreg og " + fritekst("land") + "." },
-                    )
-                }
-            }
-
             includePhrase(Innvilgelse.KombinereUforetrygdOgInntekt(
                 pe = pe,
                 uforegrad = uforegrad,
@@ -254,7 +281,42 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 beregningsvilkarUforegrad = beregningsvilkarUforegrad,
             ))
 
+            paragraph {
+                text (
+                    bokmal { + "Inntektsgrensen gjelder bare for den norske uføretrygden din. Har du spørsmål om inntektsgrensen i et annet land, må du kontakte trygdemyndighetene i det landet det gjelder." },
+                    nynorsk { + "Inntektsgrensa gjeld berre for den norske uføretrygda di. Har du spørsmål om inntektsgrensa i eit anna land, må du kontakte trygdestyresmaktene i det landet det gjeld." },
+                )
+            }
+
             includePhrase(Innvilgelse.MeldeFraOmInntekt)
+
+            paragraph {
+                text (
+                    bokmal { +"Hvis du ikke har mulighet til å logge deg på $NAV_URL, må du sende opplysninger om eventuell arbeidsinntekt i posten. Ved arbeid i andre land enn Norge, må du i tillegg sende oss skatteligning når denne er mottatt det påfølgende året."},
+                    nynorsk { +"Dersom du ikkje har moglegheit til å logge deg på $NAV_URL, må du sende opplysningar om eventuell arbeidsinntekt i posten. Ved arbeid i andre land enn Noreg, må du i tillegg sende oss skatteligning når denne er mottatt det påfølgjande året." },
+                )
+            }
+            paragraph {
+                text (
+                    bokmal { + "Adresse:" },
+                    nynorsk { + "Adresse:" },
+                )
+                newline()
+                text (
+                    bokmal { + "Nav Arbeid og ytelser Oslo" },
+                    nynorsk { + "Nav Arbeid og ytelser Oslo" },
+                )
+                newline()
+                text (
+                    bokmal { + "Postboks 6600 Etterstad," },
+                    nynorsk { + "Postboks 6600 Etterstad," },
+                )
+                newline()
+                text (
+                    bokmal { + "NO-0607 Oslo" },
+                    nynorsk { + "NO-0607 Oslo" },
+                )
+            }
 
             includePhrase(Innvilgelse.InstitusjonReduksjon(
                 pe = pe,
@@ -301,22 +363,41 @@ object InnvilgelseUforetrygd : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 uforegrad = uforegrad,
             ))
 
-            showIf(kravGjelder.equalTo("f_bh_med_utl")){
-                includePhrase(Ufoeretrygd.BeregningenDinKanBliEndret)
+            showIf(saksbehandlerValg.refusjon){
+                title1 {
+                    text(
+                        bokmal { +"En utenlandsk myndighet krever refusjon" },
+                        nynorsk { +"Eit utanlandsk organ krev refusjon" },
+                    )
+                }
+                paragraph {
+                    text (
+                        bokmal { + fritekst("land") + " har varslet Nav at de kan ha utbetalt for mye penger til deg. De har mulighet til å kreve dette tilbake i etterbetalingen av den norske uføretrygden din. Vi vil holde tilbake etterbetalingen inntil vi har fått svar fra " + fritekst("land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("nasjonalitet") + " myndigheter." },
+                        nynorsk { + fritekst("land") + " har varsla Nav at dei kan ha betalt ut for mykje pengar til deg. Dei har høve til å krevje dette tilbake i etterbetalinga av den norske uføretrygda di. Vi vil halde tilbake etterbetalinga inntil vi har fått svar frå " + fritekst("land") + ". Har du spørsmål om dette, kan du ta kontakt med " + fritekst("nasjonalitet") + " styresmakter." },
+                    )
+                }
+                paragraph {
+                    showIf(avtaletypeEos) {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter EØS-forordningen 987/2009 artikkel 72." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter EØS-forordninga 987/2009 artikkel 72." },
+                        )
+                    }.orShow {
+                        text(
+                            bokmal { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                            nynorsk { +"Denne retten har " + fritekst("land") + " etter " + fritekst("avtaletype") + "." },
+                        )
+                    }
+                }
             }
 
             includePhrase(Ufoeretrygd.AvslagBarnetillegg(pesysData.nyeAvslagBarnetillegg))
-
-            includePhrase(Innvilgelse.Honnoerkort(
-                uforegrad = uforegrad,
-            ))
 
             includePhrase(Ufoeretrygd.MeldeFraOmEndringer)
             includePhrase(Innvilgelse.RettTilBarnetillegg(barnetilleggInfo = saksbehandlerValg.barnetilleggInfo))
             includePhrase(Felles.RettTilAAKlage)
             includePhrase(Felles.RettTilInnsyn(vedleggDineRettigheterOgPlikterUfoere))
             includePhrase(Ufoeretrygd.SjekkUtbetalingene)
-            includePhrase(Ufoeretrygd.Skattekort)
             includePhrase(Ufoeretrygd.SkattForDegSomBorIUtlandet(not(bosattUtland)))
             includePhrase(Felles.HarDuSpoersmaal(UFOERETRYGD_URL, NAV_KONTAKTSENTER_TELEFON, utland = bosattUtland))
         }

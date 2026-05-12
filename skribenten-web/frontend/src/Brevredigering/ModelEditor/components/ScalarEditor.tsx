@@ -110,7 +110,7 @@ const SwitchField = (props: { prependName?: string; field: string; fieldType: TS
         render={({ field }) => (
           <Switch
             {...field}
-            checked={field.value}
+            checked={field.value ?? false}
             onChange={(v) => {
               field.onChange(v.target.checked);
               props.onSubmit?.();

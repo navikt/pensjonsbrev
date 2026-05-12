@@ -71,6 +71,37 @@ class TilbakestillBrevHandlerTest : BrevredigeringHandlerTestBase() {
             })
         }
     }
+    @Test
+    suspend fun `kan tilbakestille brev som ikke har saksbehandlervalg`() {
+        val saksbehandlerValg = Api.GeneriskBrevdata()
+        val brev = opprettBrev(saksbehandlerValg = saksbehandlerValg).resultOrFail()
+
+        // Oppdater brevet
+        oppdaterBrev(
+            brevId = brev.info.id,
+            nyeSaksbehandlerValg = Api.GeneriskBrevdata(),
+            nyttRedigertbrev = brev.redigertBrev.copy(
+                blocks = brev.redigertBrev.blocks + Paragraph(
+                    2,
+                    true,
+                    listOf(Literal(1, "original text", Edit.ParagraphContent.Text.FontType.PLAIN, "and blue pill"))
+                )
+            ),
+        ).resultOrFail()
+
+        // Set up model specification for tilbakestill
+        brevbakerService.modelSpecificationResultat = TemplateModelSpecification(
+            types = mapOf(),
+            letterModelTypeName = null,
+        )
+
+        val tilbakestilt = tilbakestillBrev(brevId = brev.info.id)
+
+        assertThat(tilbakestilt).isSuccess {
+            assertThat(it.redigertBrev).isEqualTo(letter.toEdit())
+            assertThat(it.saksbehandlerValg).isEqualTo(Api.GeneriskBrevdata())
+        }
+    }
 
     @Test
     suspend fun `kan ikke tilbakestille brev som ikke eksisterer`() {
