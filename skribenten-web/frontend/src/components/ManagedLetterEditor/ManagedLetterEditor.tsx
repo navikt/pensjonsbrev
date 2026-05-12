@@ -1,5 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
+import _ from "lodash";
 import { useEffect } from "react";
 
 import { oppdaterBrevtekst } from "~/api/brev-queries";
@@ -33,6 +34,9 @@ const ManagedLetterEditor = (props: {
         ...stateWithCursor,
         saveStatus: "SAVE_PENDING",
       }));
+      if (_.isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
+        return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
+      }
       return (
         props.saveDirtyLetter?.(stateWithCursor) ?? oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev)
       );
