@@ -4,6 +4,7 @@ package no.nav.pensjon.brev.maler.legacy.vedlegg
 
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.vedtaksbrev
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.GrunnlagSelectors.persongrunnlagsliste
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.trygdetidsgrunnlaglistebilateral
@@ -13,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetids
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlageos.TrygdetidsgrunnlagListeEOSSelectors.trygdetidsgrunnlageos
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.trygdetidsgrunnlagnorge.TrygdetidsgrunnlagListeNorSelectors.trygdetidsgrunnlag
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.VedtaksbrevSelectors.grunnlag
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.vedlegg.opplysningerbruktiberegningufoere.*
 import no.nav.pensjon.brev.model.format
@@ -34,6 +36,14 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
         includeSakspart = false,
     ) {
         val pe = argument
+
+        val foedselsdato = pe.personsak.foedselsdato
+        val erMndEtterFoedsel = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt().safe {
+            (month equalTo (foedselsdato.month + 1) and (year equalTo foedselsdato.year))
+                .or(
+                    (foedselsdato.month equalTo 12) and (month equalTo 1) and (year equalTo (foedselsdato.year + 1))
+                )
+        }.ifNull(false)
 
         title2 {
             text(
@@ -104,17 +114,17 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         // Dette er trygdetiden din
         showIf(pe.ut_trygdetid()) {
-            includePhrase(TBU039V_TBU044V_1(pe))
+            includePhrase(TBU039V_TBU044V_1(pe, erMndEtterFoedsel))
 
-            showIf(
-                 (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())
-                        and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
+            showIf(not(erMndEtterFoedsel)
+                    and (pe.ut_sum_fattnorge_framtidigttnorge_div_12().lessThan(40) or pe.vedtaksdata_kravhode_boddarbeidutland())
+                    and pe.grunnlag_persongrunnlagsliste_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom().notNull()) {
                 ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglistenor }.safe { trygdetidsgrunnlag }) { trygdetidsliste ->
                     includePhrase(TrygdetidListeNorTabell(trygdetidsliste))
                 }
             }
 
-            showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().greaterThan(0)){
+            showIf(not(erMndEtterFoedsel) and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_trygdetid_fatteos().greaterThan(0)){
                 ifNotNull(pe.safe { vedtaksbrev }.safe { grunnlag }.safe { persongrunnlagsliste }.getOrNull().safe { trygdetidsgrunnlaglisteeos }.safe { trygdetidsgrunnlageos }){
                     includePhrase(TBU045V_1)
                     includePhrase(TrygdetidsListeEOSTabell(it))
@@ -122,8 +132,8 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
             }
         }
 
-        showIf(
-            pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
+        showIf(not(erMndEtterFoedsel)
+                    and pe.vedtaksdata_kravhode_kravarsaktype().notEqualTo("soknad_bt")
                     and ((pe.pebrevkode().equalTo("PE_UT_04_101") or pe.pebrevkode().equalTo("PE_UT_04_114"))
                     or (pe.pebrevkode().notEqualTo("PE_UT_05_100")
                     and pe.pebrevkode().notEqualTo("PE_UT_07_100")
