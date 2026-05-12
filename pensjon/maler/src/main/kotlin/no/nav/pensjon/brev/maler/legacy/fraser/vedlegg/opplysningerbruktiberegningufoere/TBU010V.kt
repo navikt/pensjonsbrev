@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors
 import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.fraser.common.BroekText
 import no.nav.pensjon.brev.maler.fraser.common.Ja
+import no.nav.pensjon.brev.maler.fraser.ufoer.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
@@ -35,11 +36,7 @@ data class TBU010V(val pe: Expression<PEgruppe10>) : OutlinePhrase<LangBokmalNyn
                     //[TBU010V]
 
                     val foedselsdato = pe.personsak.foedselsdato
-                    val erMndEtterFoedsel =
-                        (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
-                            .or(
-                                (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
-                            )
+                    val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
                     val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
 
                     row {

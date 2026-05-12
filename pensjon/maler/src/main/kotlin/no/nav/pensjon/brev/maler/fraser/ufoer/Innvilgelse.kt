@@ -1579,11 +1579,7 @@ object Innvilgelse {
     ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             val foedselsdato = pe.personsak.foedselsdato
-            val erMndEtterFoedsel =
-                (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
-                    .or(
-                        (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
-                    )
+            val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
             val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
 
             title1 {
