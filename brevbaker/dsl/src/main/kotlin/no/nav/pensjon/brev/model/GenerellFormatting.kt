@@ -12,8 +12,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Telefonnummer
 
 @JvmName("formatTelefonnummerStandard")
 fun Telefonnummer.format() =
-    "([0-9][0-9])".toRegex().replace(value, "$1" +
-            "").trim()
+    "([0-9][0-9])".toRegex().replace(value, "$1 ").trim()
 
 @JvmName("formatFoedselsnummerStandard")
 fun Foedselsnummer.format() =

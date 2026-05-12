@@ -584,7 +584,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                         Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
                 },
                 english {
-                    +"If you think that the information we have taken as the base for the calculation contains errors, please contact us by phone " +
+                    +"If you think that the information we have taken as the base for the calculation contains errors, please contact us by phone +47 " +
                         Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
                 },
             )
@@ -1632,7 +1632,6 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
         }
     }
 }
-// endregion
 
 
 

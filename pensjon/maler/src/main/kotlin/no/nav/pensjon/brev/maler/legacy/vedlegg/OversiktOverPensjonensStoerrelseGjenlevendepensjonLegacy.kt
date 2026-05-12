@@ -67,13 +67,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
             text(
                 bokmal {
                     +"Nedenfor følger en oversikt over de månedlige pensjonsbeløpene. " +
-                        "Hvis det har vært endringer i grunnbeløpet eller i noen av opplysningene som ligger til grunn for beregningen i perioden, " +
-                        "kan dette føre til en endring i størrelsen på pensjonen. Årsaken til endringen vil framgå i tabellen."
+                            "Hvis det har vært endringer i grunnbeløpet eller i noen av opplysningene som ligger til grunn for beregningen i perioden, " +
+                            "kan dette føre til en endring i størrelsen på pensjonen. Årsaken til endringen vil framgå i tabellen."
                 },
                 english {
                     +"A summary of the monthly pension amounts follows below. " +
-                        "If there have been changes in the basic amount or in some of the information on which the calculation for the period is based, " +
-                        "this may result in a change in the amount of pension. The reason for the change will appear in the table."
+                            "If there have been changes in the basic amount or in some of the information on which the calculation for the period is based, " +
+                            "this may result in a change in the amount of pension. The reason for the change will appear in the table."
                 },
             )
         }
@@ -90,11 +90,11 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                     text(
                         bokmal {
                             +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + periode.grunnbeloep.format(denominator = false) +
-                                " kroner. Forventet årlig inntekt benyttet i beregningen er " + periode.forventetAarligInntekt.format(denominator = false) + " kroner."
+                                    " kroner. Forventet årlig inntekt benyttet i beregningen er " + periode.forventetAarligInntekt.format(denominator = false) + " kroner."
                         },
                         english {
-                            +"The National Insurance basic amount (G) used in the calculation is " + periode.grunnbeloep.format(denominator = false) +
-                                " NOK. Future annual income used in the calculation is " + periode.forventetAarligInntekt.format(denominator = false) + " NOK."
+                            +"The National Insurance basic amount (G) used in the calculation is NOK " + periode.grunnbeloep.format(denominator = false) +
+                                    ". Future annual income used in the calculation is NOK " + periode.forventetAarligInntekt.format(denominator = false) + "."
                         },
                     )
                 }
@@ -158,13 +158,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.grunnpensjon.brutto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.grunnpensjon.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.grunnpensjon.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -174,13 +174,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.tilleggspensjon.brutto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.tilleggspensjon.brutto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.tilleggspensjon.brutto.format(denominator = false) },
                                         )
                                     }
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.tilleggspensjon.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -191,13 +191,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.saertillegg.brutto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.saertillegg.brutto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.saertillegg.brutto.format(denominator = false) },
                                         )
                                     }
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.saertillegg.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.saertillegg.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -213,13 +213,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.fasteUtgifter.brutto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.fasteUtgifter.brutto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.fasteUtgifter.brutto.format(denominator = false) },
                                         )
                                     }
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.fasteUtgifter.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -230,13 +230,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.familietillegg.brutto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.familietillegg.brutto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.familietillegg.brutto.format(denominator = false) },
                                         )
                                     }
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.familietillegg.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.familietillegg.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -246,13 +246,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.brutto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.brutto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.netto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.netto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -278,7 +278,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.grunnpensjon.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -288,7 +288,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.tilleggspensjon.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -299,7 +299,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.saertillegg.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.saertillegg.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -315,7 +315,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.fasteUtgifter.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -326,7 +326,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                     cell {
                                         text(
                                             bokmal { +periode.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                            english { +periode.ytelser.familietillegg.netto.format(denominator = false) + " NOK" },
+                                            english { +"NOK " + periode.ytelser.familietillegg.netto.format(denominator = false) },
                                         )
                                     }
                                 }
@@ -336,7 +336,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 cell {
                                     text(
                                         bokmal { +periode.ytelser.netto.format(denominator = false) + " kr" },
-                                        english { +periode.ytelser.netto.format(denominator = false) + " NOK" },
+                                        english { +"NOK " + periode.ytelser.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -356,11 +356,11 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
             text(
                 bokmal {
                     +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + pesysData.beregning.grunnbeloep.format(denominator = false) +
-                        " kroner. Forventet årlig inntekt benyttet i beregningen er " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + " kroner."
+                            " kroner. Forventet årlig inntekt benyttet i beregningen er " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + " kroner."
                 },
                 english {
                     +"The National Insurance basic amount (G) used in the calculation is " + pesysData.beregning.grunnbeloep.format(denominator = false) +
-                        " NOK. Future annual income used in the calculation is " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + " NOK."
+                            " NOK. Future annual income used in the calculation is NOK " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + "."
                 },
             )
         }
@@ -423,13 +423,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.grunnpensjon.brutto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.brutto.format(denominator = false) },
                             )
                         }
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) },
                             )
                         }
                     }
@@ -439,13 +439,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.tilleggspensjon.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.tilleggspensjon.brutto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -456,13 +456,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.saertillegg.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.saertillegg.brutto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.saertillegg.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -478,13 +478,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.fasteUtgifter.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.fasteUtgifter.brutto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -495,13 +495,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.familietillegg.brutto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.familietillegg.brutto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.familietillegg.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -511,13 +511,13 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.brutto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.brutto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.brutto.format(denominator = false) },
                             )
                         }
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.netto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.netto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.netto.format(denominator = false) },
                             )
                         }
                     }
@@ -543,7 +543,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) },
                             )
                         }
                     }
@@ -553,7 +553,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -564,7 +564,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -580,7 +580,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -591,7 +591,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                             cell {
                                 text(
                                     bokmal { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                    english { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " NOK" },
+                                    english { +"NOK " + pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -601,7 +601,7 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         cell {
                             text(
                                 bokmal { +pesysData.beregning.ytelser.netto.format(denominator = false) + " kr" },
-                                english { +pesysData.beregning.ytelser.netto.format(denominator = false) + " NOK" },
+                                english { +"NOK " + pesysData.beregning.ytelser.netto.format(denominator = false) },
                             )
                         }
                     }

@@ -252,14 +252,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -270,14 +270,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.brutto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + tp.brutto.format(denominator = false) },
+                                        bokmal { +tp.brutto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + tp.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + tp.netto.format(denominator = false) },
+                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -289,14 +289,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.brutto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + st.brutto.format(denominator = false) },
+                                        bokmal { +st.brutto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + st.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + st.netto.format(denominator = false) },
+                                        bokmal { +st.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -311,14 +311,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.brutto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + fu.brutto.format(denominator = false) },
+                                        bokmal { +fu.brutto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + fu.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + fu.netto.format(denominator = false) },
+                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -330,14 +330,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.brutto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + ft.brutto.format(denominator = false) },
+                                        bokmal { +ft.brutto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + ft.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + ft.netto.format(denominator = false) },
+                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -351,14 +351,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.brutto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -420,8 +420,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -432,8 +432,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + tp.netto.format(denominator = false) },
+                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -445,8 +445,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + st.netto.format(denominator = false) },
+                                        bokmal { +st.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -461,8 +461,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + fu.netto.format(denominator = false) },
+                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -474,8 +474,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + "kr" },
-                                        english { +"NOK" + ft.netto.format(denominator = false) },
+                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
+                                        english { +"NOK " + ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -489,8 +489,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + "kr" },
-                                    english { +"NOK" + pesysData.beregning.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
+                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) },
                                 )
                             }
                         }

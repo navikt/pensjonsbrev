@@ -18,7 +18,7 @@ class VedtakEndringGjenlevendepensjonBosattUtlandTest {
         LetterTestImpl(
             VedtakEndringGjenlevendepensjonBosattUtland.template,
             Fixtures.create<VedtakEndringGjenlevendepensjonBosattUtlandDto>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.felles
         ).renderTestPDF("GP_VEDTAK_ENDRING_BOSATT_UTLAND")
     }
@@ -28,7 +28,7 @@ class VedtakEndringGjenlevendepensjonBosattUtlandTest {
         LetterTestImpl(
             VedtakEndringGjenlevendepensjonBosattUtland.template,
             Fixtures.create<VedtakEndringGjenlevendepensjonBosattUtlandDto>(),
-            Language.English,
+            Language.Bokmal,
             Fixtures.felles
         ).renderTestHtml("GP_VEDTAK_ENDRING_BOSATT_UTLAND")
     }
