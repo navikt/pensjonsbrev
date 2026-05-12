@@ -21,11 +21,10 @@ val simuleringVedlegg = createAttachment<LangBokmal, Simuleringsinformasjon>(
     includeSakspart = false,
 ) {
     ifNotNull(maanedligAlderspensjonForKnekkpunkter) { knekkpunkter ->
-        // Show table for vedGradertUttak if defined, otherwise for vedHeltUttak
         ifNotNull(knekkpunkter.vedGradertUttak) { gradertUttak ->
             ifNotNull(gradertUttaksalder) { alder ->
                 title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
+                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år (gradert uttak)" })
                 }
             }.orShow {
                 title1 {
@@ -33,17 +32,17 @@ val simuleringVedlegg = createAttachment<LangBokmal, Simuleringsinformasjon>(
                 }
             }
             includePhrase(AlderspensjonTabell(gradertUttak))
-        }.orShow {
-            ifNotNull(heltUttaksalder) { alder ->
-                title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år" })
-                }
-            }.orShow {
-                title1 {
-                    text(bokmal { +"Din estimerte månedlige pensjon før skatt ved helt uttak" })
-                }
-            }
-            includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak))
         }
+
+        ifNotNull(heltUttaksalder) { alder ->
+            title1 {
+                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved " + alder.aar.format() + " år (helt uttak)" })
+            }
+        }.orShow {
+            title1 {
+                text(bokmal { +"Din estimerte månedlige pensjon før skatt ved helt uttak" })
+            }
+        }
+        includePhrase(AlderspensjonTabell(knekkpunkter.vedHeltUttak))
     }
 }

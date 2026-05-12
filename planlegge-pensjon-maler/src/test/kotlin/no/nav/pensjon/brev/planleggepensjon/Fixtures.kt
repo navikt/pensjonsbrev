@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyAutobrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
+import no.nav.pensjon.brev.planleggepensjon.simulering.Alderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simuleringsinformasjon
@@ -43,7 +44,11 @@ object Fixtures : LetterDataFactory {
 
     private fun createLagreSimuleringDto() =
         ApSimuleringDto(
-            alderspensjonListe = emptyList(),
+            alderspensjonListe = listOf(
+                Alderspensjon(alderAar = 62, beloep = Kroner(18500), gjenlevendetillegg = null),
+                Alderspensjon(alderAar = 67, beloep = Kroner(25000), gjenlevendetillegg = null),
+                Alderspensjon(alderAar = 70, beloep = Kroner(29133), gjenlevendetillegg = Kroner(3000)),
+            ),
             livsvarigOffentligAfpListe = emptyList(),
             tidsbegrensetOffentligAfp = null,
             privatAfpListe = emptyList(),
@@ -54,10 +59,17 @@ object Fixtures : LetterDataFactory {
         )
 
     private fun createSimuleringsinformasjon() = Simuleringsinformasjon(
-        gradertUttaksalder = null,
+        gradertUttaksalder = Alder(aar = 62, maaneder = 0),
         heltUttaksalder = Alder(aar = 67, maaneder = 0),
         maanedligAlderspensjonForKnekkpunkter = SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
-            vedGradertUttak = null,
+            vedGradertUttak = createSimuleringV1MaanedligAlderspensjon().copy(
+                beloep = Kroner(18500),
+                inntektspensjonBeloep = Kroner(1200),
+                grunnpensjonBeloep = Kroner(9000),
+                tilleggspensjonBeloep = Kroner(3100),
+                pensjonstillegg = Kroner(2800),
+                garantipensjonBeloep = Kroner(2400),
+            ),
             vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
             vedNormertPensjonsalder = createSimuleringV1MaanedligAlderspensjon(),
         ),
