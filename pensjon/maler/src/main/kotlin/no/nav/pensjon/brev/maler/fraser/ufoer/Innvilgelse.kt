@@ -518,8 +518,8 @@ object Innvilgelse {
                     }
                     paragraph {
                         text(
-                            bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i §12-2 andre ledd, du ble ufør før du fylte 26 år og da var medlem av folketrygden eller avtaleland, eller du ble ufør etter fylte 16 år har vært medlem av folketrygden eller avtaleland med unntak av maksimum fem år. " },
-                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i §12-2 andre ledd, du blei ufør før du fylte 26 år og da var medlem av folketrygda eller avtaleland, eller du blei ufør etter fylte 16 år har vært medlem av folketrygda eller avtaleland med unntak av maksimum fem år. " },
+                            bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i §12-2 andre ledd, du ble ufør før du fylte 26 år og da var medlem av folketrygden eller avtaleland, eller du ble ufør etter fylte 16 år og har vært medlem av folketrygden eller avtaleland med unntak av maksimum fem år. " },
+                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i §12-2 andre ledd, du blei ufør før du fylte 26 år og da var medlem av folketrygda eller avtaleland, eller du blei ufør etter fylte 16 år og har vært medlem av folketrygda eller avtaleland med unntak av maksimum fem år. " },
                         )
                     }
                     paragraph {
