@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.maler.fraser.ufoer.erUforetidspunktMaanedEtterFoedsel
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 
@@ -39,10 +40,7 @@ val vedleggOpplysningerBruktIBeregningUTLegacy =
 
         val foedselsdato = pe.personsak.foedselsdato
         val erMndEtterFoedsel = pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_uforetidspunkt().safe {
-            (month equalTo (foedselsdato.month + 1) and (year equalTo foedselsdato.year))
-                .or(
-                    (foedselsdato.month equalTo 12) and (month equalTo 1) and (year equalTo (foedselsdato.year + 1))
-                )
+            erUforetidspunktMaanedEtterFoedsel(this, foedselsdato)
         }.ifNull(false)
 
         title2 {
