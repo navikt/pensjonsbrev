@@ -181,7 +181,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt uten punktliste").click();
       await page.getByTestId("editor-bullet-list").click();
-      await expect(page.locator("ul")).toHaveCount(2);
+      await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(2);
     });
 
@@ -197,7 +197,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("li")).toHaveCount(1);
       await page.getByText("Avsnitt uten punktliste").click();
       await page.getByTestId("editor-bullet-list").click();
-      await expect(page.locator("ul")).toHaveCount(2);
+      await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(2);
     });
 
@@ -214,7 +214,7 @@ test.describe("toggle bullet-list", () => {
       await expect(page.locator("li")).toHaveCount(2);
       await page.getByText("Avsnitt uten punktliste").click();
       await page.getByTestId("editor-bullet-list").click();
-      await expect(page.locator("ul")).toHaveCount(3);
+      await expect(page.locator("ul")).toHaveCount(1);
       await expect(page.locator("li")).toHaveCount(3);
       await expect(page.getByText("Avsnitt uten punktliste")).toBeVisible();
     });

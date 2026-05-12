@@ -175,7 +175,9 @@ const mergeAdjacentListsInBlock = (
 };
 
 /**
- * If end/start with a same-type list, merge them all into one paragraph with one list.
+ * If the current block ends/starts with a same-type list in adjacent blocks, merge them all
+ * into one paragraph with one list. Only activates when the current block contains nothing
+ * but this list — blocks with mixed content (text + lists) are left untouched.
  */
 const mergeListWithAdjacentBlocks = (
   draft: Draft<LetterEditorState>,
