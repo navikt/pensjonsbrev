@@ -233,7 +233,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
 
   useEffect(() => {
-    form.reset(defaultValuesModelEditor);
+    form.reset({
+      ...defaultValuesModelEditor,
+      attestantSignatur: form.getValues("attestantSignatur"),
+    });
   }, [defaultValuesModelEditor, form]);
 
   useEffect(() => {
