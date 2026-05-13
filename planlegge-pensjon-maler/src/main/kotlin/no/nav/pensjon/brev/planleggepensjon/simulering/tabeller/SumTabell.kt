@@ -2,6 +2,8 @@ package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
+import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kompensasjonstillegg
+import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kronetillegg
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.livsvarig
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.basispensjonBeloep
@@ -72,7 +74,10 @@ data class SumTabell(
                                 alderspensjon.basispensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.restpensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
-                        val sumPensjon = sumAlderspensjon + privatAfp.livsvarig
+                        val sumPensjon = sumAlderspensjon +
+                                privatAfp.kompensasjonstillegg +
+                                privatAfp.kronetillegg +
+                                privatAfp.livsvarig
                         text(bokmal { +sumPensjon.format() }, fontType = BOLD)
                     }
                 }
