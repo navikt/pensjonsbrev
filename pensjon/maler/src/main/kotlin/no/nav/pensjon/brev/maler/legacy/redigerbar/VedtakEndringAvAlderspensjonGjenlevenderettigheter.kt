@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
+import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
@@ -73,6 +74,7 @@ import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.isOneOf
 import no.nav.pensjon.brev.template.dsl.expression.lessThan
 import no.nav.pensjon.brev.template.dsl.expression.not
@@ -150,8 +152,13 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // innvilgetGjRettAPIngenEndr_001
-            showIf(not(virkDatoFomEtter2023) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(ENDR_OKT)) {
+            // innvilgetGjRettAPIngenEndr_001 SKAL OGSÅ GJELDE 1967
+            showIf(((pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and not(virkDatoFomEtter2023))
+                    or pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967))
+                    and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                    and pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
+                    and pesysData.ytelseskomponentInformasjon.beloepEndring.notEqualTo(ENDR_OKT)
+            ) {
                 paragraph {
                     val fritekst = fritekst("skriv inn aktuell ytelseskomponent")
                     text(
@@ -162,8 +169,14 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // innvilgetGjRettAPIngenEndr2_001
-            showIf(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016) and (brukerFoedtEtter1944.not() or virkDatoFomEtter2023.not())) {
+            // innvilgetGjRettAPIngenEndr2_001 1967 og dont care about virkfom
+            showIf(
+                (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
+                    and (brukerFoedtEtter1944.not()
+                    or virkDatoFomEtter2023.not()))
+                or(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
+                    and brukerFoedtEtter1944.not())
+            ) {
                 paragraph {
                     text(
                         bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, men du vil ikke få høyere alderspensjon enn den du har tjent opp selv." },
@@ -173,8 +186,13 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // innvilgetGjRettAPEndr_001
-            showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT) and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget) and not(virkDatoFomEtter2023)) {
+            // innvilgetGjRettAPEndr_001 1967 og dont care about virkfom
+            showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
+                    and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)
+                    and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
+                    and ((virkDatoFomEtter2023.not() and pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016))
+                    or pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967))
+            ) {
                 paragraph {
                     text(
                         bokmal { + "Vi har derfor beregnet pensjonen din på nytt ut fra din egen og avdødes pensjonsopptjening, og det gir deg en høyere alderspensjon enn den du har tjent opp selv." },
