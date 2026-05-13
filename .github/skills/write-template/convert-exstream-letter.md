@@ -162,6 +162,11 @@ The converter emits defensive, verbose DSL that mirrors Exstream's decision tree
 - **Boolean selectors are predicates.** Calls like `pe.…_tpinnvilget()` already return `Expression<Boolean>` and can be used directly in `showIf(…)` — no `.equalTo(true)` needed. Strip if the converter emitted it.
 - **Drop the trace comments** (`//[PE_GP_04_001_…]`) once the paragraph is verified to match the Exstream source. They are useful for the first-pass review, noise afterwards.
 - **Collapse identical IF-arms** where Exstream had one `showIf(brutto != netto) { … }` and another `showIf(brutto = netto) { … }` that render identical content except for one column. Express as a single structure that omits the brutto column using `showIf` inside the row.
+- **Share types across letter families.** When converting a second letter that mirrors a converted sibling (e.g. an *endring*-variant of an *innvilgelse*) and you discover that the two Dtos have byte-identical inner data classes / enums (`Beregning`, `YtelsesKomponent`, `SivilstandGruppe`, …), lift them into a single top-level `object` in api-model — for example `object AfpOffentligSektor { enum class Sivilstand { … }; data class Beregning(…); data class YtelsesKomponent(…) }`. Reference as `AfpOffentligSektor.Beregning` from each Dto. This:
+  * keeps the namespace tidy (the data classes are not loose at top-level of `model.afp`),
+  * unblocks moving the corresponding `OutlinePhrase` / `ParagraphPhrase` / `TableScope<_, Unit>` helpers into a shared `fraser/` file, because the phrase can take `Expression<AfpOffentligSektor.Beregning>` regardless of which letter Dto contains it,
+  * is a Kotlin-source-breaking change but **JSON shape unchanged** — only the import path moves.
+  Selectors are still generated: KSP emits `AfpOffentligSektorSelectors.BeregningSelectors.brutto` etc., so phrases and templates use them the same way as before. Bump api-model version and `publishToMavenLocal` after the refactor.
 
 ## Register and verify
 
