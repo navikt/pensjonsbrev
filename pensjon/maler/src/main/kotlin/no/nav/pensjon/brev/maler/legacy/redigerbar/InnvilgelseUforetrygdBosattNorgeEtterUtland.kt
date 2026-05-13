@@ -33,7 +33,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object InnvilgelseUforetrygdBosattNorgeEtterUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
+    override val featureToggle = FeatureToggles.brevmalUtBosattNorgeEtterUtland.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_INNVILGELSE_UFOERETRYGD_NORGE_UTLAND
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
