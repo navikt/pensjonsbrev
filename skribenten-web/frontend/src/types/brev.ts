@@ -13,15 +13,9 @@ export type OpprettBrevRequest = {
   vedtaksId: Nullable<number>;
 };
 
-export type SaksbehandlerValgValue =
-  | number
-  | boolean
-  | string
-  | null
-  | SaksbehandlerValgValue[]
-  | { [key: string]: SaksbehandlerValgValue };
-
-export type SaksbehandlerValg = { [key: string]: SaksbehandlerValgValue };
+export type SaksbehandlerValg = {
+  [key: string]: SaksbehandlerValg | SaksbehandlerValg[] | number | boolean | string | null;
+};
 
 export type BrevResponse = {
   info: BrevInfo;
