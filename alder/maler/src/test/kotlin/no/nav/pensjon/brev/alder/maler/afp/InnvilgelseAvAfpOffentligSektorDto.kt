@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOversiktOverPensjonenAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.Beregning
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.Ektefelletillegg
@@ -111,5 +112,6 @@ fun createInnvilgelseAvAfpOffentligSektorDto(): InnvilgelseAvAfpOffentligSektorD
                 ),
                 harOmsorgspoeng = true,
             ),
+            oversiktOverPensjonen = createOversiktOverPensjonenAfpDto(),
         ),
     )

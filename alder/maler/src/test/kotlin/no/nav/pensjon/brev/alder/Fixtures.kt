@@ -33,6 +33,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkatt
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAFPOffentligDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createHvordanPensjonenErBeregnetAfpOffentligDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerOmBeregningenAfpDto
+import no.nav.pensjon.brev.alder.maler.vedlegg.createOversiktOverPensjonenAfpDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createMaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderAP2025Dto
 import no.nav.pensjon.brev.alder.maler.vedlegg.createOpplysningerBruktIBeregningAlderDto
@@ -64,6 +65,7 @@ import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAFPOffentligDto
 import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDto
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAP2025Dto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattAlderspensjonDto
 import no.nav.pensjon.brev.alder.model.vedlegg.MaanedligPensjonFoerSkattDto
@@ -131,6 +133,7 @@ object Fixtures : LetterDataFactory {
         MaanedligPensjonFoerSkattAFPOffentligDto::class -> createMaanedligPensjonFoerSkattAFPOffentligDto() as T
         HvordanPensjonenErBeregnetAfpOffentligDto::class -> createHvordanPensjonenErBeregnetAfpOffentligDto() as T
         OpplysningerOmBeregningenAfpDto::class -> createOpplysningerOmBeregningenAfpDto() as T
+        OversiktOverPensjonenAfpDto::class -> createOversiktOverPensjonenAfpDto() as T
         MaanedligPensjonFoerSkattAP2025Dto::class -> createMaanedligPensjonFoerSkattAP2025Dto() as T
         MaanedligPensjonFoerSkattAlderspensjonDto::class -> createMaanedligPensjonFoerSkattAlderspensjonDto() as T
         OpplysningerBruktIBeregningen::class -> createOpplysningerBruktIBeregningen() as T
