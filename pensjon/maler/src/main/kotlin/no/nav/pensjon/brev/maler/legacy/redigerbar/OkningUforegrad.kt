@@ -91,6 +91,12 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             val instopphanvendt = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instopphanvendt()
             val instoppholdtype = pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_instoppholdtype()
 
+            val kunBt = btInnvilget and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget)
+            val kunGt = not(btInnvilget) and not(ektefelletilleggInnvilget) and gjenlevendetilleggInnvilget
+            val kunEt = ektefelletilleggInnvilget and not(btInnvilget) and not(gjenlevendetilleggInnvilget)
+            val btOgGt = btInnvilget and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget)
+            val btOgEt = btInnvilget and ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget)
+
             val ifuinntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifuinntekt()
             val ifubegrunnelse = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ifubegrunnelse()
             val ieuinntekt = pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_ieuinntekt()
@@ -254,79 +260,43 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
-            showIf((not(ektefelletilleggInnvilget) and not(btInnvilget) and not(gjenlevendetilleggInnvilget) and not(instopphanvendt))){
+            showIf(not(instopphanvendt)) {
                 paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per måned før skatt." } ,
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd per månad før skatt." },
+                    text(
+                        bokmal { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd" },
+                        nynorsk { +"Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd" },
+                    )
+                    showIf(kunBt) {
+                        text(bokmal { +" og barnetillegg" }, nynorsk { +" og barnetillegg" })
+                    }.orShowIf(kunGt) {
+                        text(bokmal { +" og gjenlevendetillegg" }, nynorsk { +" og attlevandetillegg" })
+                    }.orShowIf(btOgGt) {
+                        text(bokmal { +", barne- og gjenlevendetillegg" }, nynorsk { +", barne- og attlevandetillegg" })
+                    }.orShowIf(kunEt) {
+                        text(bokmal { +" og ektefelletillegg" }, nynorsk { +" og ektefelletillegg" })
+                    }.orShowIf(btOgEt) {
+                        text(bokmal { +", barne- og ektefelletillegg" }, nynorsk { +", barne- og ektefelletillegg" })
+                    }
+                    text(
+                        bokmal { +" per måned før skatt." },
+                        nynorsk { +" per månad før skatt." },
                     )
                 }
-            }
-
-            showIf(((btInnvilget) and not(ektefelletilleggInnvilget) and not(gjenlevendetilleggInnvilget) and not(instopphanvendt))){
-                paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og barnetillegg per månad før skatt." },
-                    )
-                }
-            }
-
-            showIf((not(ektefelletilleggInnvilget) and not(btInnvilget) and gjenlevendetilleggInnvilget and not(instopphanvendt))){
-                paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og gjenlevendetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og attlevandetillegg per månad før skatt." },
-                    )
-                }
-            }
-
-            showIf(((btInnvilget) and gjenlevendetilleggInnvilget and not(ektefelletilleggInnvilget) and not(instopphanvendt))){
-                paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og gjenlevendetillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og attlevandetillegg per månad før skatt." },
-                    )
-                }
-            }
-
-            showIf((ektefelletilleggInnvilget and not(gjenlevendetilleggInnvilget) and not(btInnvilget) and not(instopphanvendt))){
-                paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd og ektefelletillegg per månad før skatt." },
-                    )
-                }
-            }
-
-            showIf((ektefelletilleggInnvilget and (btInnvilget) and not(gjenlevendetilleggInnvilget) and not(instopphanvendt))){
-                paragraph {
-                    text (
-                        bokmal { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per måned før skatt." },
-                        nynorsk { + "Du får " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " i uføretrygd, barne- og ektefelletillegg per månad før skatt." },
-                    )
-                }
-            }
-
-            showIf((instoppholdtype.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_true() and instopphanvendt)){
+            }.orShowIf(instoppholdtype.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_true()){
                 paragraph {
                     text (
                         bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men den kommer ikke til utbetaling fordi du er under straffegjennomføring." },
                         nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men ho blir ikkje betalt ut fordi du er under straffegjennomføring." },
                     )
                 }
-            }
-
-            showIf((instoppholdtype.equalTo("reduksjon_hs") and instopphanvendt)){
+            }.orShowIf(instoppholdtype.equalTo("reduksjon_hs")){
                 paragraph {
                     text (
                         bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
                         nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
                     )
                 }
-            }
-
-            showIf((instoppholdtype.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_false() and instopphanvendt)){
+            }.orShowIf(instoppholdtype.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_false()){
                 paragraph {
                     text (
                         bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + pe.vedtaksdata_beregningsdata_beregningufore_totalnetto().format() + " kroner." },
@@ -335,6 +305,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
+            // TODO: Ny tekst for utland (som i innvilgelseUtland
             //IF(PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) = "" OR PE_Grunnlag_Persongrunnlagsliste_PersonBostedsland(1) = "nor") THEN      INCLUDE ENDIF
             showIf(bostedutland) {
                 paragraph {
@@ -422,7 +393,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
             }
 
             showIf((pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("oppfylt") or pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat().equalTo("ikke_oppfylt"))){
-                paragraph {
+                title1 {
                     text (
                         bokmal { + "Uførhet som skyldes yrkesskade eller yrkessykdom" },
                         nynorsk { + "Uførleik som kjem av yrkesskade eller yrkessjukdom" },
@@ -555,8 +526,6 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad < PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Yrkesskadegrad > 0 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Ytelsesgrunnlag_BeregningsgrunnlagYrkesskadeBest = true AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeBegrunnelse) = "stdbegr_12_17_1_o_3" AND FF_GetArrayElement_String(PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Vilkar_YrkesskadeResultat) = "oppfylt" AND PE_Vedtaksbrev_Vedtaksdata_Kravhode_BrukerKonvertertUP = false) THEN      INCLUDE ENDIF
             showIf((yrkesskadegradFraBeregning.lessThan(uforegradFraBeregning) and yrkesskadegradFraBeregning.greaterThan(0) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_beregningsgrunnlagyrkesskadebest() and (yrkesskadebegrunnelse).equalTo("stdbegr_12_17_1_o_3") and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_yrkesskaderesultat()).equalTo("oppfylt") and not(pe.vedtaksbrev_vedtaksdata_kravhode_brukerkonvertertup()))){
-                //[TBU3731NN, TBU3731]
-
                 paragraph {
                     text (
                         bokmal { + "Deler av uføretrygden din vil fortsatt bli beregnet etter særbestemmelser, noe som gir deg en høyere uføretrygd." },
@@ -831,7 +800,6 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 text(bokmal { + "." }, nynorsk { + "." })
             }
 
-            //PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100
             showIf(uforegradFraBeregning.equalTo(100)){
                 title1 {
                     text (
@@ -839,9 +807,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "Skal du kombinere uføretrygd og inntekt?" },
                     )
                 }
-            }
-
-            showIf((uforegradFraBeregning.greaterThan(0) and uforegradFraBeregning.lessThan(100))){
+            }.orShow{
                 title1 {
                     text (
                         bokmal { + "For deg som kombinerer uføretrygd og inntekt" },
@@ -866,6 +832,7 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                 }
             }
 
+            //TODO: 60.000 gjelder ikke lengre
             //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Uforegrad = 100 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense <> PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Grunnbelop AND PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_AvkortningsInformasjon_Belopsgrense = 60000) THEN      INCLUDE ENDIF
             showIf((uforegradFraBeregning.equalTo(100) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().notEqualTo(pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop()) and pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_avkortningsinformasjon_belopsgrense().equalTo(60000))){
                 paragraph {
