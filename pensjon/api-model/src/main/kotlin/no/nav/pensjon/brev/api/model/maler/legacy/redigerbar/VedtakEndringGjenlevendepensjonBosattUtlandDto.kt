@@ -23,9 +23,9 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
     override val saksbehandlerValg: Saksbehandlervalg,
     override val pesysData: PesysData,
 ) : RedigerbarBrevdata<
-    VedtakEndringGjenlevendepensjonBosattUtlandDto.Saksbehandlervalg,
-    VedtakEndringGjenlevendepensjonBosattUtlandDto.PesysData,
-> {
+        VedtakEndringGjenlevendepensjonBosattUtlandDto.Saksbehandlervalg,
+        VedtakEndringGjenlevendepensjonBosattUtlandDto.PesysData,
+        > {
 
     /**
      * Saksbehandler-styrte valg. Hver av `<FRITEKST: VELG ETT AV ALTERNATIVENE …>`-blokkene
@@ -51,24 +51,40 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
     ) : SaksbehandlerValgBrevdata
 
     enum class AarsakEndring {
+        @DisplayText("Økning av inntekt")
         OEKNING_AV_INNTEKT,
+
+        @DisplayText("Reduksjon av inntekt")
         REDUKSJON_AV_INNTEKT,
+
+        @DisplayText("Endring i sivilstand")
         SAMBOER_12_AV_18_MAANEDER,
     }
 
     enum class ForventetInntektNivaa {
+        @DisplayText("Under halv G")
         UNDER_HALV_G,
+
+        @DisplayText("Over halv G")
         OVER_HALV_G,
+
+        @DisplayText("Redusert til null")
         REDUSERT_TIL_NULL,
     }
 
     enum class SkattAlternativ {
+        @DisplayText("Inkluder informasjon om skatt")
         INFORMASJON_OM_SKATT,
+
+        @DisplayText("Inkluder informasjon om kildeskatt")
         KILDESKATT,
     }
 
     enum class UtbetalingAlternativ {
+        @DisplayText("Inkluder avsnitt om etterbetaling")
         ETTERBETALING,
+
+        @DisplayText("Inkluder avsnitt om feilutbetaling")
         FEILUTBETALING,
     }
 
