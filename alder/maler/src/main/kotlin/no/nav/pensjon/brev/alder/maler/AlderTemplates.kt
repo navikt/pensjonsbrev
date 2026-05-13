@@ -15,6 +15,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergings
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfp
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061Utland
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6270
@@ -108,6 +109,7 @@ object AlderTemplates : AllTemplates {
             InfoAldersovergangEps62AarAuto,
             InfoAldersovergang67AarAuto,
             InfoFyller67AarSaerskiltSats,
+            VedtakAfpEtteroppgjoerIngenEndringAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,
             VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,

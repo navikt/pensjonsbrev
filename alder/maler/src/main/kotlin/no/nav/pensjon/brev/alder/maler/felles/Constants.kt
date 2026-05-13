@@ -22,6 +22,7 @@ object Constants {
     const val UFOERETRYGD_URL = "$NAV_URL/uforetrygd"
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
+    const val AFP_ETTEROPPGJOER_URL = "$NAV_URL/afp-etteroppgjor"
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val FORSOERGINGSTILLEGG_URL = "$NAV_URL/forsorgingstillegg"
     const val PERSONVERNERKLAERING_URL = "$NAV_URL/personvernerklaering"
