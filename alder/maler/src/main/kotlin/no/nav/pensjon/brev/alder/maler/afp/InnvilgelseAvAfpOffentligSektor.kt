@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggHvordanPensjonenErBeregnetAfpOffentlig
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmAfp
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOpplysningerOmBeregningenAfp
@@ -824,6 +825,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
             pesysData.oversiktOverPensjonen,
         )
         includeAttachment(vedleggInformasjonOmAfp)
+        includeAttachment(vedleggFolketrygden)
     }
 }
 
