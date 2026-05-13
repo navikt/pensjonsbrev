@@ -11,17 +11,17 @@ data class ApSimuleringDto(
     @DisplayText("placeholder")
     val alderspensjonListe: List<Alderspensjon>,
     @DisplayText("placeholder")
-    val livsvarigOffentligAfpListe: List<LivsvarigOffentligAfp>,
+    val livsvarigOffentligAfpListe: List<LivsvarigOffentligAfp>?,
     @DisplayText("placeholder")
     val tidsbegrensetOffentligAfp: TidsbegrensetOffentligAfp?,
     @DisplayText("placeholder")
-    val privatAfpListe: List<PrivatAfp>,
+    val privatAfpListe: List<PrivatAfp>?,
     @DisplayText("placeholder")
-    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat,
+    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
     @DisplayText("placeholder")
     val trygdetid: Trygdetid?,
     @DisplayText("placeholder")
-    val pensjonsgivendeInntektListe: List<AarligBeloep>,
+    val pensjonsgivendeInntektListe: List<AarligBeloep>?,
     @DisplayText("Simuleringsinformasjon")
     val simuleringsinformasjon: Simuleringsinformasjon?
 ) : SaksbehandlerValgBrevdata
