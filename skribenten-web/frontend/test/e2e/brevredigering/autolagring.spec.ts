@@ -131,6 +131,55 @@ test.describe("autolagring", () => {
     await expect(page.getByText("Lagret")).toBeVisible();
   });
 
+  test("angrer og gjør om regenerert brevtekst fra saksbehandlervalg", async ({ page }) => {
+    const oppdatertBrev = JSON.parse(JSON.stringify(brev));
+    oppdatertBrev.redigertBrev.blocks[0].content[3].text = "Supplerende stønad";
+    oppdatertBrev.saksbehandlerValg = {
+      ...brev.saksbehandlerValg,
+      ytelse: "Supplerende stønad",
+    };
+    oppdatertBrev.info.sistredigert = hurtiglagreTidspunkt;
+
+    await page.route(
+      (url: URL) => url.pathname.includes("/sak/123456/brev/1") && url.search.includes("frigiReservasjon"),
+      async (route) => {
+        if (route.request().method() === "PUT") {
+          await route.fulfill({ json: oppdatertBrev });
+        } else {
+          await route.fallback();
+        }
+      },
+    );
+
+    await page.goto("/saksnummer/123456/brev/1");
+    await expect(page.getByText("Lagret")).toBeVisible();
+    await expect(page.locator("span", { hasText: "alderspensjon" })).toBeVisible();
+
+    await page.getByText("Overstyring").click();
+    await expect(page.getByLabel("Ytelse")).toBeVisible();
+
+    const savePromise = page.waitForResponse(
+      (resp) =>
+        resp.url().includes("/sak/123456/brev/1") &&
+        resp.url().includes("frigiReservasjon") &&
+        resp.request().method() === "PUT",
+    );
+    await page.getByLabel("Ytelse").fill("Supplerende stønad");
+    await savePromise;
+
+    await expect(page.locator("span", { hasText: "Supplerende stønad" })).toBeVisible();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad");
+
+    await page.getByRole("button", { name: "Angre (Undo)" }).click();
+    await expect(page.locator("span", { hasText: "alderspensjon" })).toBeVisible();
+    await expect(page.locator("span", { hasText: "Supplerende stønad" })).not.toBeVisible();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("alderspensjon");
+
+    await page.getByRole("button", { name: "Gjør om (Redo)" }).click();
+    await expect(page.locator("span", { hasText: "Supplerende stønad" })).toBeVisible();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Supplerende stønad");
+  });
+
   test("autolagrer når nullable tekst felter tømmes", async ({ page }) => {
     let capturedBody: Record<string, unknown> | undefined;
 
