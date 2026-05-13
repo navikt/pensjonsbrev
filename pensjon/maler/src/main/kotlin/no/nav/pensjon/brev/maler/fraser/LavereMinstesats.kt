@@ -186,8 +186,8 @@ object LavereMinstesats {
             showIf(!data.harMinstesats) {
                 paragraph {
                     text(
-                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Dette gir deg en høyere uføretrygd. Din egenopptjening er kroner " + data.egenopptjentUforetrygd.format() + ". " },
-                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Dette gir deg ei høgare uføretrygd. Eigenoppteninga di er kroner " + data.egenopptjentUforetrygd.format() + ". " },
+                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Din egenopptjening er kroner " + data.egenopptjentUforetrygd.format() + ". " },
+                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Eigenoppteninga di er kroner " + data.egenopptjentUforetrygd.format() + ". " },
                     )
                 }
             }
