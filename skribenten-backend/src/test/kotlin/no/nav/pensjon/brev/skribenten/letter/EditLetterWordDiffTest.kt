@@ -279,4 +279,30 @@ class EditLetterWordDiffTest {
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 11)), deletes)
     }
 
+    @Test
+    fun `inserted block before existing block with changed word uses correct blockIndex per side`() {
+        // New has an extra block at index 0; the shared block with the changed word is at index 1 in new but 0 in old.
+        val old = editedLetter {
+            paragraph { literal(text = "hello world") }
+            paragraph { literal(text = "foo bar") }
+        }
+        val new = editedLetter {
+            paragraph { literal(text = "EXTRA") }
+            paragraph { literal(text = "hello goodbye") }
+            paragraph { literal(text = "foo bar") }
+        }
+        val (inserts, deletes) = wordDiff.diff(old, new)
+        assertEquals(
+            listOf(
+                DiffSegment(BlockContentIndex(0, 0), 0, 5),   // "EXTRA" in new block 0
+                DiffSegment(BlockContentIndex(1, 0), 6, 13),  // "goodbye" in new block 1
+            ),
+            inserts,
+        )
+        assertEquals(
+            listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)),  // "world" in old block 0
+            deletes,
+        )
+    }
+
 }

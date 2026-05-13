@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.skribenten.letter
 
+import no.nav.pensjon.brev.skribenten.common.diff.Change
 import no.nav.pensjon.brev.skribenten.common.diff.shortestEditScript
 import no.nav.pensjon.brev.skribenten.letter.EditLetterWordTokenizer.Token
 
@@ -20,7 +21,10 @@ class EditLetterWordDiff {
             when (change) {
                 is Change.Delete -> deletes.add(DiffSegment(change.old.index, change.old.startOffset, change.old.endOffset))
                 is Change.Insert -> inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
-                is Change.Replace -> inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                is Change.Replace -> {
+                    inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                    deletes.add(DiffSegment(change.old.index, change.old.startOffset, change.old.endOffset))
+                }
             }
         }
 

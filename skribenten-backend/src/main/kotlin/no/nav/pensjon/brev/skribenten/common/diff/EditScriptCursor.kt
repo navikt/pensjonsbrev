@@ -9,6 +9,7 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
     val hasNext: Boolean get() = currentIndex < tokens.size
 
     fun peek(): T? = tokens.getOrNull(currentIndex)
+    fun peekEdit(): EditOperation<T>? = edits[currentIndex]
 
     fun consume(): Pair<T, EditOperation<T>?> = Pair(tokens[currentIndex], edits[currentIndex++]).also {
         require(it.second == null || it.second?.value == it.first) {
@@ -46,13 +47,5 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
             result.addAll(action(index++, token, edit))
         }
         return result
-    }
-
-    inline fun <reified E : T> forEachIndexed(action: (Int, E, EditOperation<E>?) -> Unit) {
-        var index = 0
-        while (true) {
-            val (token, edit) = consumeIf<E>() ?: break
-            action(index++, token, edit)
-        }
     }
 }
