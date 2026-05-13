@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.Ek
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.YtelsesKomponent
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.PesysData
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.SivilstandGruppe
+import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
@@ -42,6 +43,23 @@ fun createInnvilgelseAvAfpOffentligSektorDto(): InnvilgelseAvAfpOffentligSektorD
                 familietillegg = null,
                 barnetilleggSerkull = false,
                 barnetilleggFelles = false,
+            ),
+            hvordanPensjonenErBeregnet = HvordanPensjonenErBeregnetAfpOffentligDto(
+                grunnbeloep = Kroner(124_028),
+                trygdetid = 38,
+                brukerErFlyktning = false,
+                ektefelleInntektOver2G = false,
+                ektefelleMottarPensjon = false,
+                tilleggspensjon = HvordanPensjonenErBeregnetAfpOffentligDto.Tilleggspensjon(
+                    sluttpoengtallUtenOk = 5.32,
+                    poengaarUtenOk = 38,
+                    poengaarUtenOke91 = 15,
+                    poengaarUtenOkf92 = 23,
+                ),
+                saertilleggInnvilget = false,
+                ektefelletillegg = HvordanPensjonenErBeregnetAfpOffentligDto.Ektefelletillegg(
+                    fribeloep = Kroner(124_028),
+                ),
             ),
         ),
     )

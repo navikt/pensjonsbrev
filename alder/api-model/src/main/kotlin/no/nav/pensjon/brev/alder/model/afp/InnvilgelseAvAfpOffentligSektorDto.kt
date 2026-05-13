@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.model.afp
 
+import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -73,6 +74,9 @@ data class InnvilgelseAvAfpOffentligSektorDto(
         val avsenderEnhet: String,
 
         val beregning: Beregning,
+
+        // Data til vedlegget «Hvordan pensjonen er beregnet» (PE_AF_hvordan_pensjonen_beregnes).
+        val hvordanPensjonenErBeregnet: HvordanPensjonenErBeregnetAfpOffentligDto,
     ) : FagsystemBrevdata
 
     /**
