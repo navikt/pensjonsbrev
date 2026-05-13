@@ -19,7 +19,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VarselOmLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<EmptyRedigerbarBrevdata> {
 
-    override val featureToggle = FeatureToggles.varselhoyereminstesatsifuoglaverereduksjonsprosent.toggle
+    override val featureToggle = FeatureToggles.varseloktminsteifuoglaverereduksjonsprosent.toggle
 
     override val kode = Ufoerebrevkoder.Redigerbar.UT_S_VARSEL_LAVERE_REDUKSJONSPROSENT
     override val kategori = Brevkategori.VARSEL

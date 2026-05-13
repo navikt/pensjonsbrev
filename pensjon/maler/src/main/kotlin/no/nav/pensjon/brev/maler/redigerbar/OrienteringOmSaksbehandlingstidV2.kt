@@ -14,6 +14,7 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.expression.ifNull
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -63,7 +64,7 @@ object OrienteringOmSaksbehandlingstidV2 : RedigerbarTemplate<OrienteringOmSaksb
                 )
             }
 
-            showIf(saksbehandlerValg.soeknadOversendesTilUtlandet) {
+            showIf(saksbehandlerValg.soeknadOversendesTilUtlandet.ifNull(false)) {
                 paragraph {
                     text(
                         bokmal { + "Søknaden din vil også bli oversendt utlandet fordi du har opplyst at du har bodd/arbeidet i et land Norge har trygdeavtale med." },

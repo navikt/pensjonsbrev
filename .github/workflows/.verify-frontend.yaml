@@ -7,8 +7,8 @@ on:
         description: "Working directory"
         required: true
         type: string
-      cypress:
-        description: "Run cypress tests"
+      runTests:
+        description: "Run tests"
         required: true
         type: boolean
 
@@ -17,6 +17,7 @@ jobs:
     name: Verify bff tests, lint and typescript errors
     permissions:
       contents: read
+      packages: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -27,11 +28,14 @@ jobs:
           node-version-file: ".tool-versions"
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
+          cache: "npm"
+          cache-dependency-path: ${{ inputs.workingDir }}/bff/package-lock.json
+
       - name: Install bff dependencies
         working-directory: ${{ inputs.workingDir }}/bff
         run: npm ci
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
       - name: Run Biome lint
         working-directory: ${{ inputs.workingDir }}/bff
@@ -49,74 +53,69 @@ jobs:
     name: Verify frontend tests, lint and typescript errors
     permissions:
       contents: read
+      packages: read
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           persist-credentials: false
-
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: ".tool-versions"
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
           cache: "npm"
           cache-dependency-path: ${{ inputs.workingDir }}/frontend/package-lock.json
-
-      - name: Cache Cypress binary
-        if: ${{ inputs.cypress }}
-        uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
 
       - name: Install dependencies
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ github.token }}
 
-      - name: Install Cypress binary
-        if: ${{ inputs.cypress }}
-        working-directory: ${{ inputs.workingDir }}/frontend
-        run: npx cypress install
-
-      - name: Run Biome lint
+      - name: Lint code and config
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run lint
 
-      - name: Run stylelint
+      - name: Lint css
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run stylelint
 
-      - name: Check for typescript errors
+      - name: Check types
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run check-types
 
-      - name: Run tests
-        if: ${{ inputs.cypress }}
+      - name: Run unit tests
+        if: ${{ inputs.runTests }}
         working-directory: ${{ inputs.workingDir }}/frontend
         run: npm run test
 
-      - name: Cypress run component tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
+      - name: Cache test runner browser
+        if: ${{ inputs.runTests }}
+        id: playwright-cache
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
         with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: true
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ hashFiles(format('{0}/frontend/package-lock.json', inputs.workingDir)) }}
 
-      - name: Cypress run e2e tests
-        if: ${{ inputs.cypress }}
-        uses: cypress-io/github-action@783cb3f07983868532cabaedaa1e6c00ff4786a8 # v7.1.9
-        with:
-          working-directory: ${{ inputs.workingDir }}/frontend
-          install: false
-          browser: chrome
-          component: false
-          build: npm run build
-          start: 'npm run preview -- --port 5173'
+      - name: Install e2e test runner and browser
+        if: ${{ inputs.runTests && steps.playwright-cache.outputs.cache-hit != 'true' }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx playwright install --with-deps chromium
 
-      - name: Upload failed Cypress screenshots
-        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7.0.0
-        if: ${{ failure() && inputs.cypress}}
+      - name: Install system deps for cached test runner browser
+        if: ${{ inputs.runTests && steps.playwright-cache.outputs.cache-hit == 'true' }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx playwright install-deps chromium
+
+      - name: Run e2e tests
+        if: ${{ inputs.runTests }}
+        working-directory: ${{ inputs.workingDir }}/frontend
+        run: npx playwright test
+
+      - name: Upload e2e artifacts
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: ${{ inputs.runTests && failure() }}
         with:
-          name: cypress-screenshots
-          path: ${{ inputs.workingDir }}/frontend/cypress/screenshots
+          name: playwright-artifacts
+          path: ${{ inputs.workingDir }}/frontend/test/e2e-report/

@@ -39,7 +39,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
+    override val featureToggle = FeatureToggles.brevmalUtOkningUforegrad.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_OKNING_UFOREGRAD
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -365,13 +365,6 @@ object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
                         nynorsk { + "Uføretrygda blir utbetalt seinast den 20. i kvar månad. Du får den første utbetalinga di med nytt beløp i " + fritekst("Månad og år") + "." },
                     )
                 }
-            }
-
-            paragraph {
-                text (
-                    bokmal { + "I dette brevet forklarer vi hvilke rettigheter og plikter du har. Det er derfor viktig at du leser hele brevet." },
-                    nynorsk { + "I dette brevet forklarer vi kva rettar og plikter du har. Det er derfor viktig at du les heile brevet." },
-                )
             }
 
             title1 {

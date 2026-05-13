@@ -136,38 +136,23 @@ data class TBU011V_TBU016V(val pe: Expression<PEgruppe10>): OutlinePhrase<LangBo
                 }
             }
 
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos") THEN      INCLUDE ENDIF
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))){
-                //[TBU011V-TBU016V]
-
                 paragraph {
                     text (
-                        bokmal { + "Når vi beregner uføretrygden din, bruker vi gjennomsnittsinntekten i de tre beste av de fem siste årene før du ble ufør. Inntekt opptil seks ganger folketrygdens grunnbeløp (G) blir tatt med i beregningen. Uføretrygden utgjør 66 prosent av beregningsgrunnlaget. Du finner størrelsen på grunnbeløpet på $GRUNNBELOEP_URL." },
-                        nynorsk { + "Når vi bereknar uføretrygda di, bruker vi gjennomsnittsinntekta i dei tre beste av dei fem siste åra før du blei ufør. Inntekt opptil seks gonger grunnbeløpet i folketrygda (G) blir teke med i berekninga. Uføretrygda utgjer 66 prosent av berekningsgrunnlaget. Du finn storleiken på grunnbeløpet på $GRUNNBELOEP_URL." },
+                        bokmal { + "Uføretrygden din blir beregnet ut fra pensjonsgivende inntekt (inntekt som gir opptjening i folketrygden). " },
+                        nynorsk { + "Uføretrygda di blir berekna ut frå pensjonsgivande inntekt (inntekt som gir opptjening i folketrygda). " },
                     )
                 }
-            }
-
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos") THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))){
-                //[TBU011V-TBU016V]
-
                 paragraph {
                     text (
-                        bokmal { + "Du hadde inntekt i utlandet i minst ett av de fem siste årene før du ble ufør. Vi bruker ikke denne inntekten når vi beregner uføretrygden din. For å kompensere for dette, erstatter vi disse årene med et gjennomsnitt av årene du har hatt inntekt i Norge i denne femårsperioden. Du kan se hvilke år vi har brukt i tabellen " + quoted("Inntekt lagt til grunn for beregning av uføretrygden din") +"." },
-                        nynorsk { + "Du hadde inntekt i utlandet i minst eitt av dei fem siste åra før du blei ufør. Vi bruker ikkje denne inntekta når vi bereknar uføretrygda di. For å kompensere for dette erstattar vi desse åra med eit gjennomsnitt av åra du har hatt inntekt i Noreg i denne femårsperioden. Du kan sjå kva år vi har brukt, i tabellen " + quoted("Inntekt lagd til grunn for berekning av uføretrygda di") +"." },
+                        bokmal { + "Når du har hatt arbeidsinntekt i ett eller flere EØS-land i løpet av de fem siste årene før uføretidspunktet, fastsetter vi beregningsgrunnlaget ut fra hvor mange av disse fem årene du har hatt arbeidsinntekt i et EØS-land. " },
+                        nynorsk { + "Når du har hatt arbeidsinntekt i eitt eller fleire EØS-land i løpet av dei fem siste åra før uføretidspunktet, fastset vi berekningsgrunnlaget ut frå kor mange av desse fem åra du har hatt arbeidsinntekt i eit EØS-land. " },
                     )
                 }
-            }
-
-            //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_BeregningsMetode = "eos") THEN      INCLUDE ENDIF
-            showIf((pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_beregningsmetode().equalTo("eos"))){
-                //[TBU011V-TBU016V]
-
                 paragraph {
                     text (
-                        bokmal { + "Når vi beregner gjennomsnittet bruker vi bare de årene du hadde inntekt i Norge i femårsperioden. Hvis du hadde inntekt i Norge og i utlandet samme år, bruker vi den inntekten som er best for deg." },
-                        nynorsk { + "Når vi bereknar gjennomsnittet, bruker vi berre dei åra du hadde inntekt i Noreg i femårsperioden. Dersom du hadde inntekt i Noreg og i utlandet same året, bruker vi den inntekta som er best for deg." },
+                        bokmal { + "Dersom du mangler pensjonsgivende inntekt i Norge i ett eller flere av årene som skal brukes i beregningen, kan inntekten for disse årene settes til et gjennomsnitt av inntekten i årene der du har pensjonsgivende inntekt. Du kan se hvilke år vi har brukt i tabellen «Inntekt lagt til grunn for beregning av uføretrygden din». " },
+                        nynorsk { + "Dersom du manglar pensjonsgivande inntekt i Noreg i eitt eller fleire av åra som skal brukast i berekninga, kan inntekta for desse åra setjast til eit gjennomsnitt av inntekta i åra der du har pensjonsgivande inntekt. Du kan sjå kva år vi har brukt i tabellen «Inntekt lagd til grunn for berekning av uføretrygda di». " },
                     )
                 }
             }

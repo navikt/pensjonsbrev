@@ -46,7 +46,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           name={`innvilgedePensjoner.${index}.institusjon.land` as const}
         />
         <TextField
-          data-cy={`innvilget-${index}-institusjonsnavn`}
+          data-testid={`innvilget-${index}-institusjonsnavn`}
           error={institusjonErrors?.institusjonsnavn?.message}
           label="Institusjon"
           size="small"
@@ -54,7 +54,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           css={{ marginBottom: "var(--ax-space-8)" }}
         />
         <TextField
-          data-cy={`innvilget-${index}-pin`}
+          data-testid={`innvilget-${index}-pin`}
           error={institusjonErrors?.pin?.message}
           label="PIN"
           size="small"
@@ -62,7 +62,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           css={{ marginBottom: "var(--ax-space-8)" }}
         />
         <TextField
-          data-cy={`innvilget-${index}-saksnummer`}
+          data-testid={`innvilget-${index}-saksnummer`}
           error={institusjonErrors?.saksnummer?.message}
           label={`Saks${SOFT_HYPHEN}nummer`}
           size="small"
@@ -74,7 +74,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           name={`innvilgedePensjoner.${index}.institusjon.datoForVedtak` as const}
           render={({ field: dateField, fieldState }) => (
             <ManagedDatePicker
-              data-cy={`innvilget-${index}-datoForVedtak`}
+              data-testid={`innvilget-${index}-datoForVedtak`}
               dateField={dateField}
               fieldState={fieldState}
               label="Vedtaksdato"
@@ -90,7 +90,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           name={`innvilgedePensjoner.${index}.pensjonstype` as const}
           render={({ field: radioField, fieldState }) => (
             <RadioGroup
-              data-cy={`innvilget-${index}-pensjonstype`}
+              data-testid={`innvilget-${index}-pensjonstype`}
               error={fieldState.error?.message}
               legend="Pensjonstype"
               onChange={(val) => radioField.onChange(val || null)}
@@ -114,7 +114,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
           name={`innvilgedePensjoner.${index}.datoFoersteUtbetaling` as const}
           render={({ field: dateField, fieldState }) => (
             <ManagedDatePicker
-              data-cy={`innvilget-${index}-datoFoersteUtbetaling`}
+              data-testid={`innvilget-${index}-datoFoersteUtbetaling`}
               dateField={dateField}
               fieldState={fieldState}
               label="Dato"
@@ -127,7 +127,7 @@ export const P1InnvilgetTabRow = memo(({ index, landListe, control, register }: 
       <Table.DataCell className={`cell-seamless ${rowErrors?.utbetalt ? "p1-cell-error" : ""}`}>
         <Textarea
           className="p1-seamless-textarea"
-          data-cy={`innvilget-${index}-utbetalt`}
+          data-testid={`innvilget-${index}-utbetalt`}
           error={rowErrors?.utbetalt?.message}
           hideLabel
           label={`Brutto${SOFT_HYPHEN}beløp og hyppighet`}

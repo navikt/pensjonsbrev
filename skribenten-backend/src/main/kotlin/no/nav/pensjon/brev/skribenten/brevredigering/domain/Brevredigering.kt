@@ -218,24 +218,25 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
     }
 
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) {
-        val saksbehandlerValgSpec = modelSpec.types[modelSpec.letterModelTypeName]?.get("saksbehandlerValg")
+        val types = modelSpec.types[modelSpec.letterModelTypeName]
+        val typesSaksbehandlerValg = types?.get("saksbehandlerValg")
+        if (types != null && typesSaksbehandlerValg == null) {
+            throw IllegalStateException("Model specification for brevkode $brevkode mangler saksbehandlerValg eller saksbehandlerValg er ikke et objekt")
+        }
+        val saksbehandlerValgSpec = typesSaksbehandlerValg
             ?.let { if (it is TemplateModelSpecification.FieldType.Object) it.typeName else null }
             ?.let { modelSpec.types[it] }
 
-        if (saksbehandlerValgSpec != null) {
-            saksbehandlerValg = SaksbehandlerValg().apply {
-                putAll(saksbehandlerValg)
-                saksbehandlerValgSpec.entries.forEach {
-                    val fieldType = it.value
-                    if (fieldType.nullable) {
-                        put(it.key, null)
-                    } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
-                        put(it.key, false)
-                    }
+        saksbehandlerValg = SaksbehandlerValg().apply {
+            putAll(saksbehandlerValg)
+            saksbehandlerValgSpec?.entries?.forEach {
+                val fieldType = it.value
+                if (fieldType.nullable) {
+                    put(it.key, null)
+                } else if (fieldType is TemplateModelSpecification.FieldType.Scalar && fieldType.kind == TemplateModelSpecification.FieldType.Scalar.Kind.BOOLEAN) {
+                    put(it.key, false)
                 }
             }
-        } else {
-            throw IllegalStateException("Model specification for brevkode $brevkode mangler saksbehandlerValg eller saksbehandlerValg er ikke et objekt")
         }
     }
 

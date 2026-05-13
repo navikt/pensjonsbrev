@@ -61,7 +61,6 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.Persongrun
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagAvdodSelectors.trygdetidsgrunnlaglistebilateral
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagAvdodSelectors.trygdetidsgrunnlaglisteeos
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagAvdodSelectors.trygdetidsgrunnlaglistenor
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.brukerflyktning
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.instopphfasteutgifterperiodeliste
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.instopphreduksjonsperiodeliste
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.grunnlag.PersongrunnlagSelectors.personbostedsland
@@ -125,8 +124,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaks
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.vilkarsvedtaklist
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.VedtaksdataSelectors.virkningfom
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningantallperioder
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningsresultattilrevurderingtotalnetto
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregningufore
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.BeregningsDataSelectors.beregninguforeperiode
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopgammelbtfb
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.beregningsdata.beregningufore.BarnetilleggFellesYKSelectors.belopnybtfb
@@ -324,8 +323,8 @@ import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaks
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskadebegrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarSelectors.yrkesskaderesultat
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.beregningsvilkar
-import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarvirkningfom
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkar
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.VilkarsVedtakSelectors.vilkarvirkningfom
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ieubegrunnelse
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ieuinntekt
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.vedtaksbrev.vedtaksdata.vilkarsvedtaklist.vilkarsvedtak.beregningsvilkar.BeregningsVilkarSelectors.ifubegrunnelse
@@ -374,7 +373,6 @@ fun Expression<PEgruppe10>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglisteb
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistebilateral_trygdetidsgrunnlagbilateral_trygdetidfombilateral(): Expression<LocalDate?> = vedtaksbrev.safe{ grunnlag }.safe{ persongrunnlagavdod }.getOrNull().safe{ trygdetidsgrunnlaglistebilateral }.safe{ trygdetidsgrunnlagbilateral }.getOrNull().safe{ trygdetidfombilateral }
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag(): Expression<List<Trygdetidsgrunnlag>> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagavdod }.getOrNull().safe{ trygdetidsgrunnlaglistenor }.safe{ trygdetidsgrunnlag }.ifNull(emptyList())
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagavdod_trygdetidsgrunnlaglistenor_trygdetidsgrunnlag_trygdetidfom(): Expression<LocalDate?> = vedtaksbrev.safe{ grunnlag }.safe{ persongrunnlagavdod }.getOrNull().safe{ trygdetidsgrunnlaglistenor }.safe{ trygdetidsgrunnlag} .getOrNull().safe{ trygdetidfom }
-fun Expression<PEgruppe10>.grunnlag_persongrunnlagsliste_brukerflyktning(): Expression<Boolean> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ brukerflyktning }.ifNull(false)
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagsliste_personbostedsland(): Expression<String> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ personbostedsland }.ifNull("")
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaleland(): Expression<String> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ trygdeavtaler }.safe{ avtaleland }.ifNull("")
 fun Expression<PEgruppe10>.grunnlag_persongrunnlagsliste_trygdeavtaler_avtaletype(): Expression<String> = vedtaksbrev.safe { grunnlag }.safe{ persongrunnlagsliste }.getOrNull().safe{ trygdeavtaler }.safe{ avtaletype }.ifNull("")

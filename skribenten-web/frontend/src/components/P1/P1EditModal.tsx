@@ -175,7 +175,7 @@ export const P1EditModal = ({ brevId, saksId, open, onClose }: P1EditingModalPro
       <Modal
         aria-label="Rediger vedlegg P1"
         className="p1-modal"
-        data-cy="p1-edit-modal"
+        data-testid="p1-edit-modal"
         onClose={handleCancel}
         open={open}
         size="medium"
