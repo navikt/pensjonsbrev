@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.alder.model.afp
 
 import no.nav.pensjon.brev.alder.model.vedlegg.HvordanPensjonenErBeregnetAfpOffentligDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto
+import no.nav.pensjon.brev.alder.model.vedlegg.OversiktOverPensjonenAfpDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
@@ -68,15 +70,17 @@ data class InnvilgelseAvAfpOffentligSektorDto(
         // dem kun som 6 grupperinger for "Du må også melde fra hvis"-listen.
         val sivilstand: SivilstandGruppe,
 
-        // PE_Kontaktinformasjon_NavNAvsenderEnhet
-        // (rtv-brev brev Kontaktinformasjon NavNAvsenderEnhet)
-        // Avsendernavn brukt i signatur ("Med vennlig hilsen …").
-        val avsenderEnhet: String,
-
         val beregning: Beregning,
 
         // Data til vedlegget «Hvordan pensjonen er beregnet» (PE_AF_hvordan_pensjonen_beregnes).
         val hvordanPensjonenErBeregnet: HvordanPensjonenErBeregnetAfpOffentligDto,
+
+        // Data til vedlegget «Opplysninger om beregningen» (PE_AF_opplysninger_om_beregningen_MR71).
+        val opplysningerOmBeregningen: OpplysningerOmBeregningenAfpDto,
+
+        // Data til vedlegget «Oversikt over pensjonens størrelse» (PE_AF_oversikt_over_pensjonen_MR71).
+        // null når antallPerioder == 1 (vedlegget skal kun produseres ved flere perioder).
+        val oversiktOverPensjonen: OversiktOverPensjonenAfpDto?,
     ) : FagsystemBrevdata
 
     /**

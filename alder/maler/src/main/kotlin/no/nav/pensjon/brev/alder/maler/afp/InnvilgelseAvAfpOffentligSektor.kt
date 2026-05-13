@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggHvordanPensjonenErBeregnetAfpOffentlig
+import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOpplysningerOmBeregningenAfp
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
@@ -12,13 +13,13 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.Yt
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto.SivilstandGruppe
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.pesysData
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.afpPensjonsgrad
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.avsenderEnhet
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.beregning
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.beregningVirkDatoFom
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.etterbetaling
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.flerePerioder
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.framtidigArligInntekt
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.grunnbeloep
+import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.opplysningerOmBeregningen
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.hvordanPensjonenErBeregnet
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.kravMottattDato
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.sivilstand
@@ -810,6 +811,10 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
         includeAttachment(
             vedleggHvordanPensjonenErBeregnetAfpOffentlig,
             pesysData.hvordanPensjonenErBeregnet,
+        )
+        includeAttachment(
+            vedleggOpplysningerOmBeregningenAfp,
+            pesysData.opplysningerOmBeregningen,
         )
     }
 }
