@@ -4,19 +4,16 @@ import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
-import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
-import no.nav.pensjon.brev.planleggepensjon.simulering.AlderspensjonSelectors.alderAar
-import no.nav.pensjon.brev.planleggepensjon.simulering.AlderspensjonSelectors.beloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
-import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.alderspensjonListe
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simuleringsinformasjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -35,34 +32,35 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
     override val template: LetterTemplate<*, ApSimuleringBrevDto> = createTemplate(
         languages = languages(Language.Bokmal),
         letterMetadata = LetterMetadata(
-            displayTitle = "Simulering av alderspensjon", //TODO Riktig navn på brevet - journalpost tittel i dokumentoversikten
-            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET, //TODO Distribusjonstype.VIKTIG?
+            displayTitle = "Beregning av alderspensjon og AFP i privat sektor",
+            distribusjonstype = LetterMetadata.Distribusjonstype.ANNET,
             brevtype = LetterMetadata.Brevtype.INFORMASJONSBREV
         )
     ) {
         title {
-            text(bokmal { +"Her er tittelen som skal stå inne i brevet" })
+            text(bokmal { +"Beregning av pensjon" })
         }
 
         outline {
+            title1 {
+                text(bokmal { +"Beregning av alderspensjon og AFP i privat sektor" })
+            }
+
             paragraph {
                 text(
-                    bokmal { +
-                    "Du har bedt oss om å simulere din alderspensjon. " },
+                    bokmal {
+                        +"Du har fått en foreløpig beregning av alderspensjon og AFP i privat sektor. "
+                        +"Se vedlegg for beløp og detaljer om beregningen. "
+                        +"Kontakt Nav hvis du har spørsmål."
+                    },
                 )
             }
 
-            paragraph {
-                list{
-                    forEach(saksbehandlerValg.alderspensjonListe)
-                    {
-                        item {
-                            text(bokmal { + "Alderspensjon ved " + it.alderAar.format() + " år: " + it.beloep.format() })
-                        }
-                    }
-                }
-            }
-
         }
+
+        includeAttachmentIfNotNull(
+            simuleringVedlegg,
+            saksbehandlerValg.simuleringsinformasjon,
+        )
     }
 }

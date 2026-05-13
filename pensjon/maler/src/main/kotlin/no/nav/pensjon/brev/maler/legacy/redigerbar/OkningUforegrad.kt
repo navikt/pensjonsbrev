@@ -39,7 +39,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object OkningUforegrad : RedigerbarTemplate<InnvilgelseUfoeretrygdDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
+    override val featureToggle = FeatureToggles.brevmalUtOkningUforegrad.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_OKNING_UFOREGRAD
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING

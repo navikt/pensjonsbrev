@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering
 
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
@@ -20,7 +21,9 @@ data class ApSimuleringDto(
     @DisplayText("placeholder")
     val trygdetid: Trygdetid?,
     @DisplayText("placeholder")
-    val pensjonsgivendeInntektListe: List<AarligBeloep>
+    val pensjonsgivendeInntektListe: List<AarligBeloep>,
+    @DisplayText("Simuleringsinformasjon")
+    val simuleringsinformasjon: Simuleringsinformasjon?
 ) : SaksbehandlerValgBrevdata
 
 data class Alderspensjon(
@@ -122,4 +125,73 @@ data class Alder(
     val aar: Int,
     @DisplayText("placeholder")
     val maaneder: Int
+)
+
+data class Simuleringsinformasjon(
+    @DisplayText("Gradert uttaksalder")
+    val gradertUttaksalder: Alder?,
+    @DisplayText("Helt uttaksalder")
+    val heltUttaksalder: Alder?,
+    @DisplayText("Månedlig alderspensjon for knekkpunkter")
+    val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?
+) : VedleggData
+
+data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
+    @DisplayText("Ved gradert uttak")
+    val vedGradertUttak: SimuleringV1MaanedligAlderspensjon?,
+    @DisplayText("Ved helt uttak")
+    val vedHeltUttak: SimuleringV1MaanedligAlderspensjon,
+    @DisplayText("Ved normert pensjonsalder")
+    val vedNormertPensjonsalder: SimuleringV1MaanedligAlderspensjon
+)
+
+data class SimuleringV1MaanedligAlderspensjon(
+    @DisplayText("Beløp")
+    val beloep: Kroner,
+    @DisplayText("Inntektspensjon beløp")
+    val inntektspensjonBeloep: Kroner?,
+    @DisplayText("Delingstall")
+    val delingstall: Double?,
+    @DisplayText("Pensjonsbeholdning før uttak")
+    val pensjonsbeholdningFoerUttakBeloep: Kroner?,
+    @DisplayText("Pensjonsbeholdning etter uttak")
+    val pensjonsbeholdningEtterUttakBeloep: Kroner?,
+    @DisplayText("Sluttpoengtall")
+    val sluttpoengtall: Double?,
+    @DisplayText("Poengår t.o.m. 1991")
+    val poengaarTom1991: Int?,
+    @DisplayText("Poengår f.o.m. 1992")
+    val poengaarFom1992: Int?,
+    @DisplayText("Forholdstall")
+    val forholdstall: Double?,
+    @DisplayText("Grunnpensjon beløp")
+    val grunnpensjonBeloep: Kroner?,
+    @DisplayText("Tilleggspensjon beløp")
+    val tilleggspensjonBeloep: Kroner?,
+    @DisplayText("Pensjonstillegg")
+    val pensjonstillegg: Kroner?,
+    @DisplayText("Skjermingstillegg")
+    val skjermingstillegg: Kroner?,
+    @DisplayText("Kapittel 19 andel")
+    val kapittel19Andel: Double?,
+    @DisplayText("Kapittel 19 trygdetid")
+    val kapittel19Trygdetid: Int?,
+    @DisplayText("Basispensjon beløp")
+    val basispensjonBeloep: Kroner?,
+    @DisplayText("Restpensjon beløp")
+    val restpensjonBeloep: Kroner?,
+    @DisplayText("Gjenlevendetillegg")
+    val gjenlevendetillegg: Kroner?,
+    @DisplayText("Minste pensjonsnivå sats")
+    val minstePensjonsnivaaSats: Double?,
+    @DisplayText("Kapittel 20 andel")
+    val kapittel20Andel: Double?,
+    @DisplayText("Kapittel 20 trygdetid")
+    val kapittel20Trygdetid: Int?,
+    @DisplayText("Garantipensjon beløp")
+    val garantipensjonBeloep: Kroner?,
+    @DisplayText("Garantipensjon sats")
+    val garantipensjonSats: Double?,
+    @DisplayText("Garantitillegg beløp")
+    val garantitilleggBeloep: Kroner?
 )
