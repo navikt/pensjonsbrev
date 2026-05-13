@@ -22,10 +22,10 @@ val opptjeningVedlegg = createAttachment<LangBokmal, Simuleringsinformasjon>(
         ifNotNull(knekkpunkter.vedGradertUttak) { alderspensjon ->
             includePhrase(OpptjeningKapittel19Tabell(alderspensjon))
             includePhrase(OpptjeningKapittel20Tabell(alderspensjon))
-        }.orShow {
-            includePhrase(OpptjeningKapittel19Tabell(knekkpunkter.vedHeltUttak))
-            includePhrase(OpptjeningKapittel20Tabell(knekkpunkter.vedHeltUttak))
         }
+        includePhrase(OpptjeningKapittel19Tabell(knekkpunkter.vedHeltUttak))
+        includePhrase(OpptjeningKapittel20Tabell(knekkpunkter.vedHeltUttak))
+
     }
 }
 

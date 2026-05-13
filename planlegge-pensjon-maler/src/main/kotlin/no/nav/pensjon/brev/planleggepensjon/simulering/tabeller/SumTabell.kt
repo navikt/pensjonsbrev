@@ -4,14 +4,12 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.livsvarig
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.basispensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantipensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantitilleggBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.gjenlevendetillegg
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.grunnpensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.inntektspensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.pensjonstillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.restpensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.skjermingstillegg
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.tilleggspensjonBeloep
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -49,8 +47,6 @@ data class SumTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
-                                alderspensjon.basispensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.restpensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         text(bokmal { +sumAlderspensjon.format() })
                     }
@@ -69,8 +65,6 @@ data class SumTabell(
                                 alderspensjon.garantipensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
-                                alderspensjon.basispensjonBeloep.ifNull(Kroner(0)) +
-                                alderspensjon.restpensjonBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
                         val sumPensjon = sumAlderspensjon + privatAfp.livsvarig
                         text(bokmal { +sumPensjon.format() }, fontType = BOLD)
