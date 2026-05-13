@@ -133,7 +133,11 @@ data class Simuleringsinformasjon(
     @DisplayText("Helt uttaksalder")
     val heltUttaksalder: Alder?,
     @DisplayText("Månedlig alderspensjon for knekkpunkter")
-    val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?
+    val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?,
+    @DisplayText("Privat AFP ved gradert uttak")
+    val privatAfpVedGradertUttak: PrivatAfp?,
+    @DisplayText("Privat AFP ved helt uttak")
+    val privatAfpVedHeltUttak: PrivatAfp?
 ) : VedleggData
 
 data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
@@ -172,8 +176,8 @@ data class SimuleringV1MaanedligAlderspensjon(
     val pensjonstillegg: Kroner?,
     @DisplayText("Skjermingstillegg")
     val skjermingstillegg: Kroner?,
-    @DisplayText("Kapittel 19 andel")
-    val kapittel19Andel: Double?,
+    @DisplayText("Kapittel 19 andelsbrøk teller")
+    val kapittel19AndelTeller: Int?,
     @DisplayText("Kapittel 19 trygdetid")
     val kapittel19Trygdetid: Int?,
     @DisplayText("Basispensjon beløp")
@@ -184,14 +188,20 @@ data class SimuleringV1MaanedligAlderspensjon(
     val gjenlevendetillegg: Kroner?,
     @DisplayText("Minste pensjonsnivå sats")
     val minstePensjonsnivaaSats: Double?,
-    @DisplayText("Kapittel 20 andel")
-    val kapittel20Andel: Double?,
+    @DisplayText("Minste pensjonsnivå beløp")
+    val minstePensjonsnivaaBeloep: Kroner?,
+    @DisplayText("Kapittel 20 andelsbrøk teller")
+    val kapittel20AndelTeller: Int?,
     @DisplayText("Kapittel 20 trygdetid")
     val kapittel20Trygdetid: Int?,
     @DisplayText("Garantipensjon beløp")
     val garantipensjonBeloep: Kroner?,
+    @DisplayText("Garantipensjonsnivå beløp")
+    val garantipensjonsnivaaBeloep: Kroner?,
     @DisplayText("Garantipensjon sats")
     val garantipensjonSats: Double?,
     @DisplayText("Garantitillegg beløp")
-    val garantitilleggBeloep: Kroner?
+    val garantitilleggBeloep: Kroner?,
+    @DisplayText("Grunnbeløp")
+    val grunnbeloep: Kroner?
 )
