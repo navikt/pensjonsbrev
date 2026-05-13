@@ -208,6 +208,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         brevType,
         klarStatus,
         erKlar: isKlar,
+        enhetsId,
       });
 
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
@@ -229,6 +230,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
         brevId: response.id,
         brevkode: response.brevkode,
         distribusjonstype: distribusjonstype === Distribusjonstype.SENTRALPRINT ? "sentralprint" : "lokalprint",
+        enhetsId,
       });
       queryClient.setQueryData(hentAlleBrevInfoForSak.queryKey(props.saksId), (currentBrevInfo: BrevInfo[]) =>
         currentBrevInfo.map((brevInfo) => (brevInfo.id === response.id ? response : brevInfo)),
@@ -262,7 +264,7 @@ const ActiveBrev = (props: { saksId: string; brev: BrevInfo }) => {
                 data-testid="toggle-endre-mottaker-modal"
                 icon={<PencilIcon />}
                 onClick={() => {
-                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId });
+                  trackEvent("endre mottaker klikket", { kontekst: "brevbehandler", saksId: props.saksId, enhetsId });
                   åpneModal();
                 }}
                 size="xsmall"

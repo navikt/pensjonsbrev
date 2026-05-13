@@ -338,6 +338,7 @@ function RedigerBrev({
             brevkode: brev.info.brevkode,
             varighetSekunder,
             varighetMinutter: Math.round(varighetSekunder / 60),
+            enhetsId,
           });
           navigateDone?.();
         },
