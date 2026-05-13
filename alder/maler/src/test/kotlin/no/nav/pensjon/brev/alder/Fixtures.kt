@@ -6,6 +6,7 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createEndringAvAlderspensjonFordiDuFyller75AarAutoDto
 import no.nav.pensjon.brev.alder.maler.aldersovergang.createMaanedligPensjonFoerSkattAFPDto
@@ -40,6 +41,7 @@ import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDt
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.aldersovergang.*
 import no.nav.pensjon.brev.alder.model.aldersovergang.omregning.OmregningAlderUfore2016Dto
@@ -99,6 +101,7 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             InnvilgelseAvAfpAutoDto::class -> createInnvilgelseAvAfpAutoDto() as T
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
+            InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
             InfoAldersovergangEps60AarAutoDto::class -> InfoAldersovergangEps60AarAutoDto(ytelse = Ytelse.ALDER) as T
             InfoAldersovergangEps62AarAutoDto::class -> InfoAldersovergangEps62AarAutoDto(ytelse = YtelseType.ALDER) as T
