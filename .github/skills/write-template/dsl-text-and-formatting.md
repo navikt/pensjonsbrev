@@ -115,7 +115,38 @@ bokmal { +"Du får " + beloep.format() + " før skatt." }
 
 **Related Dto rule:** if a field represents money, type it as `Kroner` — not `Int` — so the selector's `.format()` carries the unit. Using `Int` forces every call site to append `" kroner"` manually, which drifts as soon as a second language branch is added.
 
-## Inline word-level conditionals — `ifElse`
+## Heading levels
+
+Letters have four heading levels, from largest to smallest:
+
+| Level | DSL | Where | Typical use |
+|---|---|---|---|
+| H1 | `title { }` | Once per template, at `TemplateRootScope` (also once per attachment) | The letter / attachment main title (e.g. "Vedtak om alderspensjon"). |
+| H2 | `title1 { }` | `OutlineScope` | Major sections of the letter body. |
+| H3 | `title2 { }` | `OutlineScope` | Subsections inside an H2. |
+| H4 | `title3 { }` | `OutlineScope` | Rare. Sub-subsections — only when H3 already carries real structure. |
+
+Rules:
+
+- **Never skip a level.** Use `title1` before reaching for `title2`; use `title2` before `title3`. Skipping levels breaks the document outline (used by screen readers and PDF bookmarks).
+- **One `title { }` per template.** It's the letter heading and is rendered with the letterhead — not a body section.
+- **All title-scopes are `PlainTextScope`.** No `paragraph`, no `BOLD`, no nested control flow that changes scope. Use `text(bokmal { ... }, nynorsk { ... })` only.
+- **Don't simulate headings with bold paragraphs.** A bold first line is not a heading — it has no outline level, no spacing, and no a11y semantics. Use the right `titleN` scope.
+- **Attachments restart the hierarchy** at their own `title { }` — the attachment's H1 — and may use `title1`/`title2`/`title3` for inner sections independently of the parent letter.
+
+```kotlin
+createTemplate(...) {
+    title { text(bokmal { +"Vedtak om alderspensjon" }, ...) }   // H1
+    outline {
+        title1 { text(bokmal { +"Begrunnelse" }, ...) }          // H2
+        paragraph { text(bokmal { +"..." }, ...) }
+        title2 { text(bokmal { +"Trygdetid" }, ...) }            // H3
+        paragraph { text(bokmal { +"..." }, ...) }
+    }
+}
+```
+
+
 
 Use `ifElse` for **single-word or short-phrase** variants inside a sentence (singular/plural, gendered noun, …):
 
