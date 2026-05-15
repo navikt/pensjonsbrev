@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.skribenten.common.diff.Change
 import no.nav.pensjon.brev.skribenten.common.diff.shortestEditScript
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.PARAGRAPH
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
@@ -144,29 +145,46 @@ class EditLetterWordTokenizerTest {
 
     // --- parseTokens ---
 
-    private fun recordChanges(old: List<Token>, new: List<Token>): List<Pair<ContentIndex, Change<*>>> {
-        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<Pair<ContentIndex, Change<*>>>> {
-            private val changes = mutableListOf<Pair<ContentIndex, Change<*>>>()
+    private sealed class ProducerCall {
+        data class Block(val blockIndex: Int, val change: Change<DiffProducer.BlockInfo>) : ProducerCall()
+        data class ItemList(val blockIndex: Int, val contentIndex: Int, val change: Change<DiffProducer.ItemListInfo>) : ProducerCall()
+        data class Item(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val change: Change<DiffProducer.ItemInfo>) : ProducerCall()
+        data class Table(val blockIndex: Int, val contentIndex: Int, val change: Change<DiffProducer.TableInfo>) : ProducerCall()
+        data class Row(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val change: Change<DiffProducer.RowInfo>) : ProducerCall()
+        data class Cell(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int, val change: Change<DiffProducer.CellInfo>) : ProducerCall()
+        data class TextSegment(val change: Change<DiffProducer.TextSegment>) : ProducerCall()
+    }
+
+    private fun recordCalls(old: List<Token>, new: List<Token>): List<ProducerCall> {
+        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<ProducerCall>> {
+            private val calls = mutableListOf<ProducerCall>()
             override fun block(blockIndex: Int, change: Change<DiffProducer.BlockInfo>) {
-                changes.add(ContentIndex.BlockIndex(blockIndex) to change)
+                calls.add(ProducerCall.Block(blockIndex, change))
             }
             override fun itemList(blockIndex: Int, contentIndex: Int, change: Change<DiffProducer.ItemListInfo>) {
-                changes.add(BlockContentIndex(blockIndex, contentIndex) to change)
+                calls.add(ProducerCall.ItemList(blockIndex, contentIndex, change))
+            }
+            override fun item(blockIndex: Int, contentIndex: Int, itemIndex: Int, change: Change<DiffProducer.ItemInfo>) {
+                calls.add(ProducerCall.Item(blockIndex, contentIndex, itemIndex, change))
+            }
+            override fun table(blockIndex: Int, contentIndex: Int, change: Change<DiffProducer.TableInfo>) {
+                calls.add(ProducerCall.Table(blockIndex, contentIndex, change))
+            }
+            override fun row(blockIndex: Int, contentIndex: Int, rowIndex: Int, change: Change<DiffProducer.RowInfo>) {
+                calls.add(ProducerCall.Row(blockIndex, contentIndex, rowIndex, change))
+            }
+            override fun cell(blockIndex: Int, contentIndex: Int, rowIndex: Int, cellIndex: Int, change: Change<DiffProducer.CellInfo>) {
+                calls.add(ProducerCall.Cell(blockIndex, contentIndex, rowIndex, cellIndex, change))
             }
             override fun textSegment(change: Change<DiffProducer.TextSegment>) {
-                val index = when (change) {
-                    is Change.Insert -> change.new.index
-                    is Change.Delete -> change.old.index
-                    is Change.Replace -> change.new.index
-                }
-                changes.add(index to change)
+                calls.add(ProducerCall.TextSegment(change))
             }
-            override fun build() = changes.toList()
+            override fun build() = calls.toList()
         })
     }
 
     @Test
-    fun `parseTokens inserted block calls block with BlockIndex and Change Insert`() {
+    fun `parseTokens inserted block calls block producer`() {
         val old = listOf<Token>()
         val new = listOf(
             Token.Block(null, PARAGRAPH),
@@ -175,15 +193,15 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ContentIndex.BlockIndex(0) to Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH)),
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5)),
+                ProducerCall.Block(0, Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5))),
             ),
-            recordChanges(old, new),
+            recordCalls(old, new),
         )
     }
 
     @Test
-    fun `parseTokens deleted block calls block with BlockIndex and Change Delete`() {
+    fun `parseTokens deleted block calls block producer`() {
         val old = listOf(
             Token.Block(null, PARAGRAPH),
             Token.Text.Literal(null, FontType.PLAIN),
@@ -192,16 +210,16 @@ class EditLetterWordTokenizerTest {
         val new = listOf<Token>()
         assertEquals(
             listOf(
-                ContentIndex.BlockIndex(0) to Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH)),
-                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5)),
+                ProducerCall.Block(0, Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
+                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5))),
             ),
-            recordChanges(old, new),
+            recordCalls(old, new),
         )
     }
 
     @Test
-    fun `parseTokens unchanged block does not call block but changed word still produces textSegment`() {
-        val tokens = listOf(
+    fun `parseTokens unchanged block does not call block producer but changed word still calls textSegment`() {
+        val old = listOf(
             Token.Block(null, PARAGRAPH),
             Token.Text.Literal(null, FontType.PLAIN),
             Token.Word("hello"),
@@ -215,15 +233,15 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13)),
-                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11)),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13))),
+                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11))),
             ),
-            recordChanges(tokens, new),
+            recordCalls(old, new),
         )
     }
 
     @Test
-    fun `parseTokens inserted itemList calls itemList with BlockContentIndex and Change Insert`() {
+    fun `parseTokens inserted itemList calls itemList producer`() {
         val old = listOf(
             Token.Block(null, PARAGRAPH),
         )
@@ -236,10 +254,129 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE)),
-                ItemContentIndex(0, 0, 0, 0) to Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5)),
+                ProducerCall.ItemList(0, 0, Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE))),
+                ProducerCall.Item(0, 0, 0, Change.Insert(DiffProducer.ItemInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5))),
             ),
-            recordChanges(old, new),
+            recordCalls(old, new),
+        )
+    }
+
+    @Test
+    fun `parseTokens inserted item in unchanged itemList calls item producer`() {
+        val old = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.ItemList(null, Listetype.PUNKTLISTE),
+            Token.Item(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("hello"),
+        )
+        val new = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.ItemList(null, Listetype.PUNKTLISTE),
+            Token.Item(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("hello"),
+            Token.Item(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("world"),
+        )
+        assertEquals(
+            listOf(
+                ProducerCall.Item(0, 0, 1, Change.Insert(DiffProducer.ItemInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5))),
+            ),
+            recordCalls(old, new),
+        )
+    }
+
+    @Test
+    fun `parseTokens inserted table calls table, cell, row and cell producers`() {
+        val old = listOf(
+            Token.Block(null, PARAGRAPH),
+        )
+        val new = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.Table(null),
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("header"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
+        )
+        assertEquals(
+            listOf(
+                ProducerCall.Table(0, 0, Change.Insert(DiffProducer.TableInfo(null))),
+                ProducerCall.Cell(0, 0, -1, 0, Change.Insert(DiffProducer.CellInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6))),
+                ProducerCall.Row(0, 0, 0, Change.Insert(DiffProducer.RowInfo(null))),
+                ProducerCall.Cell(0, 0, 0, 0, Change.Insert(DiffProducer.CellInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4))),
+            ),
+            recordCalls(old, new),
+        )
+    }
+
+    @Test
+    fun `parseTokens inserted row in unchanged table calls row and cell producers`() {
+        val tableHeaderAndFirstRow = listOf(
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("col"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
+        )
+        val old = listOf(Token.Block(null, PARAGRAPH), Token.Table(null)) + tableHeaderAndFirstRow
+        val new = old + listOf(
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("extra"),
+        )
+        assertEquals(
+            listOf(
+                ProducerCall.Row(0, 0, 1, Change.Insert(DiffProducer.RowInfo(null))),
+                ProducerCall.Cell(0, 0, 1, 0, Change.Insert(DiffProducer.CellInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5))),
+            ),
+            recordCalls(old, new),
+        )
+    }
+
+    @Test
+    fun `parseTokens inserted cell in unchanged row calls cell producer`() {
+        val old = listOf(
+            Token.Block(null, PARAGRAPH),
+            Token.Table(null),
+            Token.TableHeader(null),
+            Token.ColumnSpec(null, LEFT, 1),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("col"),
+            Token.Row(null),
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("body"),
+        )
+        val new = old + listOf(
+            Token.Cell(null),
+            Token.Text.Literal(null, FontType.PLAIN),
+            Token.Word("extra"),
+        )
+        assertEquals(
+            listOf(
+                ProducerCall.Cell(0, 0, 0, 1, Change.Insert(DiffProducer.CellInfo(null))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5))),
+            ),
+            recordCalls(old, new),
         )
     }
 }
