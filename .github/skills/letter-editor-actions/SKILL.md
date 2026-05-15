@@ -1,95 +1,95 @@
 ---
 name: letter-editor-actions
-description: Skriv/refaktorer LetterEditor-actions trygt med fokus/ID/deleted-invarianter
+description: Write/refactor LetterEditor actions safely with focus/ID/deleted invariants
 applies_to:
   - skribenten-web/frontend/src/Brevredigering/LetterEditor/actions/**
 ---
 
 # LetterEditor Actions Skill
 
-Bruk denne skillen når du endrer filer i `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions`.
+Use this skill when changing files in `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions`.
 
-Målet er å holde action-logikk trygg og konsistent for:
-- fokus-adressering (`Focus`/`LiteralIndex`)
-- historikk (`withPatches`)
-- ID/deleted-array bokføring (`deletedContent`, `deletedItems`, `deletedBlocks`)
-- innholdsinvarianter for tekst, lister og tabeller
+The goal is to keep action logic safe and consistent for:
+- focus addressing (`Focus`/`LiteralIndex`)
+- history handling (`withPatches`)
+- ID/deleted-array bookkeeping (`deletedContent`, `deletedItems`, `deletedBlocks`)
+- content invariants for text, lists, and tables
 
 ## Golden rules
 
-1. Bruk alltid `Action<LetterEditorState, ...>` + `withPatches(...)` for nye actions.
-2. Sett `draft.saveStatus = "DIRTY"` kun når action faktisk endrer brevmodellen.
-3. Oppdater `draft.focus` deterministisk etter mutasjon; aldri la fokus peke på slettet innhold.
-4. Guard tidlig med type/index-sjekker (`isValidIndex`, `isItemContentIndex`, `isTableCellIndex`, osv.).
-5. Sørg for gyldig sluttstruktur: en blokk/item/celle som blir tom må normalt få inn `newLiteral()`.
-6. Bevar semantikk for eksisterende ID-er og `deleted*`-arrayer ved flytt/splitt/merge.
+1. Always use `Action<LetterEditorState, ...>` + `withPatches(...)` for new actions.
+2. Set `draft.saveStatus = "DIRTY"` only when the action actually changes the letter model.
+3. Update `draft.focus` deterministically after mutation; never leave focus pointing at deleted content.
+4. Guard early with type/index checks (`isValidIndex`, `isItemContentIndex`, `isTableCellIndex`, etc.).
+5. Ensure valid end structure: if a block/item/cell becomes empty, it should normally receive `newLiteral()`.
+6. Preserve semantics for existing IDs and `deleted*` arrays during move/split/merge.
 
-## Utility-first: foretrukne byggeklosser
+## Utility-first: preferred building blocks
 
-Foretrekk helpers i `actions/common.ts` før egen mutasjonslogikk:
-- `removeElements(...)`: fjerner og oppdaterer `deleted*` korrekt.
-- `addElements(...)`: setter inn og rydder `deleted*`, samt prøver literal-merge ved grense.
-- `findAdjoiningContent(...)`: finn sammenhengende segmenter i stedet for manuell loop.
-- `splitLiteralAtOffset(...)`: standardisert literal-splitt med korrekt `editedText`-håndtering.
-- `new*`-konstruktører: opprett nye noder konsistent (`newLiteral`, `newItem`, `newItemList`, `newParagraph`, `newRow`, ...).
+Prefer helpers in `actions/common.ts` before writing custom mutation logic:
+- `removeElements(...)`: removes and updates `deleted*` correctly.
+- `addElements(...)`: inserts and cleans `deleted*`, and attempts literal merge at boundaries.
+- `findAdjoiningContent(...)`: finds contiguous segments instead of manual looping.
+- `splitLiteralAtOffset(...)`: standardized literal split with correct `editedText` behavior.
+- `new*` constructors: create new nodes consistently (`newLiteral`, `newItem`, `newItemList`, `newParagraph`, `newRow`, ...).
 
-## Tabellspesifikke regler
+## Table-specific rules
 
-Tabell-actions må ivareta disse invariantene:
-- Ingen to tabeller direkte etter hverandre i samme blokk uten separator-literal.
-- Siste blokk i brevet skal ikke ende i tabell uten trailing literal (caret-target).
-- Etter rad/kolonne-operasjoner skal fokus peke på gyldig celle/headerposisjon.
+Table actions must preserve these invariants:
+- No two tables adjacent in the same block without a separator literal.
+- The last block in the letter should not end with a table without a trailing literal (caret target).
+- After row/column operations, focus must point to a valid cell/header location.
 
-Eksisterende normalisering:
+Existing normalization:
 - `normalizeTableSeparators` / `applyTableSeparatorNormalization` i `actions/common.ts`
-- brukes ved last (`create`) og etter `deleteSelection`.
+- used on load (`create`) and after `deleteSelection`.
 
-Direkte `splice(...)` er kun akseptabelt der vi per i dag ikke har parent-nivå `deleted*`-tracking for strukturen som muteres (for eksempel deler av tabell-header/rad-celler). Kommenter eksplisitt hvorfor.
+Direct `splice(...)` is only acceptable where we currently do not have parent-level `deleted*` tracking for the mutated structure (for example parts of table headers/row cells). Comment explicitly why.
 
-## Refaktormønster (før/etter)
+## Refactor pattern (before/after)
 
-### 1) Fjerning/innsetting i parent-content
+### 1) Removal/insertion in parent content
 
 ```ts
-// Foretrukket
+// Preferred
 removeElements(index, count, parent);
 addElements(elements, at, parent.content, parent.deletedContent);
 ```
 
-Unngå manuell `splice` når parent har `deleted*`-array som skal vedlikeholdes.
+Avoid manual `splice` when the parent has a `deleted*` array that must be maintained.
 
-### 2) Splitting av literal rundt cursor
+### 2) Splitting a literal around the cursor
 
 ```ts
 const tail = splitLiteralAtOffset(literal, offset);
 addElements([tail], insertAt, parent.content, parent.deletedContent);
 ```
 
-Unngå ad hoc slicing som dupliserer `editedText`/`text`-regler.
+Avoid ad hoc slicing that duplicates `editedText`/`text` rules.
 
-## Prioriterte DRY/refaktor-targets
+## Prioritized DRY/refactor targets
 
 1. `actions/switchFontType.ts`
-   - TODO i filen peker på gjenbruk av `addElements`/`removeElements`.
-   - Ekstraher felles “split/replace literal-segment + focus update” brukt i både block- og itemList-gren.
+   - The TODO in the file points to reuse of `addElements`/`removeElements`.
+   - Extract shared “split/replace literal segment + focus update” logic used in both block and itemList branches.
 2. `actions/deleteSelection.ts`
-   - Kommentar markerer duplisert logikk rundt tekstfjerning i parent.
-   - Samle felles flyt til én helper for “remove between start/end in text parent” med tydelige typeguards.
+   - A comment marks duplicated logic around text removal in parent containers.
+   - Consolidate into one helper for “remove between start/end in text parent” with clear type guards.
 3. `actions/paste.ts`
-   - `ensureLiteralAtIndex` bruker direkte `textContents.splice(...)`.
-   - Vurder helper som uttrykker samme intensjon gjennom eksisterende util-mønster der mulig.
+   - `ensureLiteralAtIndex` uses direct `textContents.splice(...)`.
+   - Consider a helper that expresses the same intent using existing utility patterns where possible.
 4. `actions/table.ts`
-   - Flere steder bruker direkte `splice` for kolonner/celler.
-   - Hold som eksplisitt unntak inntil strukturen får egne `deleted*`-arrayer; sentraliser eventuelt disse operasjonene i én intern helper for mindre duplisering.
+   - Several places use direct `splice` for columns/cells.
+   - Keep as explicit exceptions until the structure gets dedicated `deleted*` arrays; optionally centralize these operations in one internal helper to reduce duplication.
 5. `actions/merge.ts`
-   - Flere TODO-er rundt generalisering av itemList-case.
-   - Ekstraher “break out of single empty list item” og “merge into neighboring list” til navngitte helpers.
+   - Multiple TODOs around generalizing itemList behavior.
+   - Extract “break out of single empty list item” and “merge into neighboring list” into named helpers.
 
-## Sjekkliste før du er ferdig
+## Checklist before finishing
 
-- [ ] Endringen følger `withPatches`-mønster.
-- [ ] Fokus er gyldig etter alle grener.
-- [ ] `saveStatus` settes kun ved reell endring.
-- [ ] `deleted*`-arrayer holdes konsistente.
-- [ ] Tomme container-tilfeller håndteres (`newLiteral()` ved behov).
-- [ ] Tabellseparator-invarianter er fortsatt oppfylt.
+- [ ] The change follows the `withPatches` pattern.
+- [ ] Focus is valid after all branches.
+- [ ] `saveStatus` is set only on real model changes.
+- [ ] `deleted*` arrays remain consistent.
+- [ ] Empty container cases are handled (`newLiteral()` when needed).
+- [ ] Table-separator invariants are still satisfied.
