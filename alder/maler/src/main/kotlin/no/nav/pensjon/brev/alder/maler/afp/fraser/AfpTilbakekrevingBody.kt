@@ -75,18 +75,18 @@ object AfpTilbakekrevingBody {
             }
             paragraph {
                 text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format() },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format() },
+                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
+                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragberegnetai.format() },
-                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragberegnetai.format() },
+                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragberegnetai.format(denominator = false) + " kr" },
+                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragberegnetai.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertafp.format() },
-                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertafp.format() },
+                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertafp.format(denominator = false) + " kr" },
+                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertafp.format(denominator = false) + " kr" },
                 )
             }
         }
@@ -106,16 +106,16 @@ object AfpTilbakekrevingBody {
             paragraph {
                 text(
                     bokmal {
-                        +"Inntektsfradraget i AFP for den nye inntekten på " + fradragberegnetai.format() +
-                            " beregnes slik: " + iiap.format() + " (ny beregnet inntekt) / " +
-                            tpiberegnet.format() + " (tidligere arbeidsinntekt*) x " + fullafp.format() +
-                            " (full AFP)."
+                        +"Inntektsfradraget i AFP for den nye inntekten på " + fradragberegnetai.format(denominator = false) +
+                            " kr beregnes slik: " + iiap.format(denominator = false) + " kr (ny beregnet inntekt) / " +
+                            tpiberegnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                            fullafp.format(denominator = false) + " kr (full AFP)."
                     },
                     nynorsk {
-                        +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragberegnetai.format() +
-                            " blir berekna slik: " + iiap.format() + " (ny berekna inntekt) / " +
-                            tpiberegnet.format() + " (tidlegare arbeidsinntekt*) x " + fullafp.format() +
-                            " (full AFP)."
+                        +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragberegnetai.format(denominator = false) +
+                            " kr blir berekna slik: " + iiap.format(denominator = false) + " kr (ny berekna inntekt) / " +
+                            tpiberegnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                            fullafp.format(denominator = false) + " kr (full AFP)."
                     },
                 )
                 newline()
@@ -158,18 +158,18 @@ object AfpTilbakekrevingBody {
             }
             paragraph {
                 text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format() },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format() },
+                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
+                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertafp.format() },
-                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertafp.format() },
+                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertafp.format(denominator = false) + " kr" },
+                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertafp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"= For mye utbetalt AFP: " + formyebetalt.format() },
-                    nynorsk { +"= For mykje utbetalt AFP: " + formyebetalt.format() },
+                    bokmal { +"= For mye utbetalt AFP: " + formyebetalt.format(denominator = false) + " kr" },
+                    nynorsk { +"= For mykje utbetalt AFP: " + formyebetalt.format(denominator = false) + " kr" },
                 )
             }
         }

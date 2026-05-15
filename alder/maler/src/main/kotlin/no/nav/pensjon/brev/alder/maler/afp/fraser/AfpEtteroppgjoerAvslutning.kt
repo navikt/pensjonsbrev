@@ -1,12 +1,8 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
-import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_OFFENTLIG_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.KLAGE_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.KONTAKT_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_AAPNINGSTID
-import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
@@ -17,21 +13,21 @@ import no.nav.pensjon.brev.template.dsl.text
  *   * Dine plikter (meldeplikt, tilbakekreving)
  *   * Du har rett til å klage
  *   * Du har rett til innsyn
- *   * Har du spørsmål? (med lenke til etteroppgjør-info)
+ *   * Har du spørsmål? — bruker felles [HarDuSpoersmaal.afpEtteroppgjoer]
  *
  * Brevene som har identisk klage-seksjon (PE_AF_04_102, PE_AF_04_106) inkluderer
  * hele [AfpEtteroppgjoerAvslutning]. Brev hvor klage-seksjonen har annen ordlyd
  * (f.eks. PE_AF_04_100 som har en ekstra «Du kan som nevnt sende inn
  * dokumentasjon»-paragraf) kan i stedet komponere fra sub-frasene
- * [DinePlikter], [DuHarRettTilInnsyn] og [HarDuSporsmal], og inline sin egen
- * klage-seksjon med TODO-merknad for faglig gjennomgang.
+ * [DinePlikter], [DuHarRettTilInnsyn] og [HarDuSpoersmaal.afpEtteroppgjoer],
+ * og inline sin egen klage-seksjon med TODO-merknad for faglig gjennomgang.
  */
 object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
         includePhrase(DinePlikter)
         includePhrase(DuHarRettTilAaKlageSeksUker)
         includePhrase(DuHarRettTilInnsyn)
-        includePhrase(HarDuSporsmal)
+        includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
     }
 
     /** Tittel «Dine plikter» + meldeplikt- og tilbakekrevingsparagrafene. */
@@ -132,34 +128,6 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                 text(
                     bokmal { +"Du har rett til å se dokumentene i saken din." },
                     nynorsk { +"Du har rett til å sjå dokumenta i saka di." },
-                )
-            }
-        }
-    }
-
-    /** Tittel «Har du spørsmål?» + kontaktinformasjonsparagraf. */
-    object HarDuSporsmal : OutlinePhrase<LangBokmalNynorsk>() {
-        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            title1 {
-                text(
-                    bokmal { +"Har du spørsmål?" },
-                    nynorsk { +"Har du spørsmål?" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du finner mer informasjon på $AFP_OFFENTLIG_URL#etteroppgjor. På $KONTAKT_URL " +
-                            "kan du chatte eller skrive til oss. Hvis du ikke finner svar på $NAV_URL, kan du " +
-                            "ringe oss på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, hverdager " +
-                            "$NAV_KONTAKTSENTER_AAPNINGSTID."
-                    },
-                    nynorsk {
-                        +"Du finn meir informasjon på $AFP_ETTEROPPGJOER_URL. På $KONTAKT_URL kan du " +
-                            "chatte eller skrive til oss. Om du ikkje finn svar på $NAV_URL, kan du ringe oss " +
-                            "på telefon $NAV_KONTAKTSENTER_TELEFON_PENSJON, kvardagar " +
-                            "$NAV_KONTAKTSENTER_AAPNINGSTID."
-                    },
                 )
             }
         }

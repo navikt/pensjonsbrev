@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEoFase2AutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto
@@ -54,6 +55,7 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
@@ -124,6 +126,7 @@ object Fixtures : LetterDataFactory {
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
             VedtakAfpEtteroppgjoerEoFase2AutoDto::class -> createVedtakAfpEtteroppgjoerEoFase2AutoDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingAutoDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingAutoDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
             VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingAutoDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T

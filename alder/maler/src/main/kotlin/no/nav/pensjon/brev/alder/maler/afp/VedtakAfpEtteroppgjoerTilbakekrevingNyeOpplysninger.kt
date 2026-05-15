@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
@@ -312,7 +313,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
                 )
             }
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn)
-            includePhrase(AfpEtteroppgjoerAvslutning.HarDuSporsmal)
+            includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)
         }
         includeAttachment(vedleggFolketrygden)
     }
