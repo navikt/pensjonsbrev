@@ -154,6 +154,35 @@ Whether your letter needs any of these is a content decision — do not add them
 - **Hold each phrase to one responsibility** — separate `RettTilAaKlage`, `RettTilInnsyn`, `HarDuSpoersmaal` instead of one big `KlageOgInnsynOgSpoersmaal`.
 - **Promotion threshold** — author inline first; promote to a phrase class only when the same wording reaches ≥ 2 templates. A phrase used by exactly one template adds indirection without saving anything.
 
+## Composite phrases — expose the parts as well as the whole
+
+When a multi-section phrase (typically the closing or opening of a letter) is reused across templates but one template needs to diverge on a single section, structure the parent as an `OutlinePhrase` that *composes* named sub-`OutlinePhrase` objects rather than inlining the whole title/paragraph stream. Default callers still `includePhrase(Parent)`; the diverging caller composes from the sub-phrases and inlines its own variant.
+
+```kotlin
+object Avslutning : OutlinePhrase<LangBokmalNynorsk>() {
+    override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+        includePhrase(DinePlikter)
+        includePhrase(Klage)
+        includePhrase(Innsyn)
+        includePhrase(Spoersmaal)
+    }
+    object DinePlikter : OutlinePhrase<LangBokmalNynorsk>() { /* tittel + paragrafer */ }
+    object Klage       : OutlinePhrase<LangBokmalNynorsk>() { /* … */ }
+    object Innsyn      : OutlinePhrase<LangBokmalNynorsk>() { /* … */ }
+    object Spoersmaal  : OutlinePhrase<LangBokmalNynorsk>() { /* … */ }
+}
+
+// Diverging caller — compose the unchanged parts, inline only the variant.
+includePhrase(Avslutning.DinePlikter)
+title1 { text(bokmal { +"Du har rett til å klage" }, nynorsk { +"Du har rett til å klage" }) }
+// TODO: avviker fra Avslutning.Klage — avklar med fag.
+paragraph { /* avvikende ordlyd */ }
+includePhrase(Avslutning.Innsyn)
+includePhrase(Avslutning.Spoersmaal)
+```
+
+Pick the granularity at title boundaries — one sub-phrase per `title1` section is usually the right unit. Only split when there is a real second caller for a fragment; do not pre-split speculatively.
+
 ## Common mistakes
 
 - Picking the wrong phrase type for the scope — `OutlinePhrase` cannot be included in `paragraph { }`, etc.
