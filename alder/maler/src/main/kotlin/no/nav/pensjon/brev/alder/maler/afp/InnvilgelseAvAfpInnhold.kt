@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
@@ -463,22 +464,7 @@ data class InnvilgelseAvAfpInnhold(
                 english { +"Your rights" },
             )
         }
-        paragraph {
-            text(
-                bokmal {
-                    +"Du har som hovedregel rett til å se sakens dokumenter etter bestemmelsene i forvaltningsloven " +
-                        "paragraf 18."
-                },
-                nynorsk {
-                    +"Du har som hovudregel rett til å sjå saksdokumenta etter føresegnene i forvaltingslova " +
-                        "paragraf 18."
-                },
-                english {
-                    +"As a main rule, you are entitled to see all case documents pursuant to section 18 of the " +
-                        "Public Administration Act."
-                },
-            )
-        }
+        includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
 
         // Klagerett.
         paragraph {

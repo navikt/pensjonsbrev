@@ -4,6 +4,7 @@ import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
@@ -47,6 +48,7 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgP
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
+import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
@@ -116,6 +118,7 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandDto::class -> createEndringAvAlderspensjonSivilstandDto() as T
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             InnvilgelseAvAfpAutoDto::class -> createInnvilgelseAvAfpAutoDto() as T
+            AvslagAfpPrivatDto::class -> createAvslagAfpPrivatDto() as T
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
             VedtakAfpEtteroppgjoerEoFase2AutoDto::class -> createVedtakAfpEtteroppgjoerEoFase2AutoDto() as T

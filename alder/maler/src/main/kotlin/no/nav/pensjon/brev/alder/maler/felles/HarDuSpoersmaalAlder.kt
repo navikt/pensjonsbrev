@@ -41,6 +41,7 @@ data class HarDuSpoersmaal(val merInformasjonUrl: String) : OutlinePhrase<LangBo
     companion object {
         val alder = HarDuSpoersmaal(Constants.PENSJON_URL)
         val gjenlevendepensjon = HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL)
+        val afpPrivat = HarDuSpoersmaal(Constants.AFP_PRIVAT_URL)
     }
 }
 
