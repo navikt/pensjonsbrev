@@ -9,8 +9,9 @@ import { z } from "zod";
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
 import {
-  createSaksbehandlerValgHistoryEntry,
-  type SaksbehandlerValgHistorySnapshot,
+  createTekstvalgHistoryEntry,
+  createTekstvalgSnapshotFromEditorState,
+  createTekstvalgSnapshotFromResponse,
 } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,
@@ -182,7 +183,7 @@ interface RedigerBrevSidemenyFormData {
 }
 
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: SaksbehandlerValgHistorySnapshot;
+  historySnapshot?: ReturnType<typeof createTekstvalgSnapshotFromEditorState>;
 };
 
 function RedigerBrev({
@@ -275,11 +276,7 @@ function RedigerBrev({
         historySnapshot
           ? {
               createHistoryEntry: () =>
-                createSaksbehandlerValgHistoryEntry(historySnapshot, {
-                  redigertBrev: response.redigertBrev,
-                  redigertBrevHash: response.redigertBrevHash,
-                  saksbehandlerValg: response.saksbehandlerValg,
-                }),
+                createTekstvalgHistoryEntry(historySnapshot, createTekstvalgSnapshotFromResponse(response)),
             }
           : undefined,
       );
@@ -309,6 +306,7 @@ function RedigerBrev({
       if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
       highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
     },
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   const defaultValuesModelEditor = useMemo(
@@ -343,11 +341,7 @@ function RedigerBrev({
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
-          historySnapshot: {
-            redigertBrev: editorState.redigertBrev,
-            redigertBrevHash: editorState.redigertBrevHash,
-            saksbehandlerValg: editorState.saksbehandlerValg,
-          },
+          historySnapshot: createTekstvalgSnapshotFromEditorState(editorState),
         });
       }
     });
@@ -394,9 +388,11 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = oppdaterBrevMutation.isPending;
+  const freeze = oppdaterBrevMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
 
   const error = oppdaterBrevMutation.isError;
+
+  // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (

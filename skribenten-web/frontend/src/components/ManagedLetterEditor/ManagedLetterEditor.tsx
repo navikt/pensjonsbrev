@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import { useEffect } from "react";
 
 import { oppdaterBrevtekst } from "~/api/brev-queries";
@@ -34,14 +34,16 @@ const ManagedLetterEditor = (props: {
         ...stateWithCursor,
         saveStatus: "SAVE_PENDING",
       }));
-      if (_.isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
+      if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
       }
-      return (
-        props.saveDirtyLetter?.(stateWithCursor) ?? oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev)
-      );
+      if (!props.saveDirtyLetter) {
+        throw new Error("saveDirtyLetter is required when saksbehandlerValg has changed");
+      }
+      return props.saveDirtyLetter(stateWithCursor);
     },
     onSuccess: (response) => onSaveSuccess(response),
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   useEffect(() => {

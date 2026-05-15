@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import _ from "lodash";
+import isEqual from "lodash/isEqual";
 import {
   createContext,
   type Dispatch,
@@ -46,8 +46,12 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
         if (previousState.saveStatus !== "DIRTY") {
+          // For normal text saves, if the backend unexpectedly changes redigertBrev,
+          // PATCH history may no longer match, so history is reset.
+          // For tekstvalg saves, backend regeneration is expected; undo/redo is preserved
+          // via a dedicated before/after snapshot entry.
           const historyEntry = options?.createHistoryEntry?.(previousState, response);
-          const keepHistory = _.isEqual(
+          const keepHistory = isEqual(
             normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
             normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
           );

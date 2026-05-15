@@ -48,15 +48,18 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const canUndo = editorState.history.entryPointer >= 0;
-  const canRedo = editorState.history.entryPointer < editorState.history.entries.length - 1;
+  const canUndo = editorState.saveStatus !== "SAVE_PENDING" && editorState.history.entryPointer >= 0;
+  const canRedo =
+    editorState.saveStatus !== "SAVE_PENDING" &&
+    editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
     if (!canUndo) return;
     setEditorState((current) => {
+      if (current.saveStatus === "SAVE_PENDING") return current;
       const entry = current.history.entries[current.history.entryPointer];
       const previous =
-        entry.type === "SAKSBEHANDLER_VALG"
+        entry.type === "TEKSTVALG"
           ? {
               ...current,
               redigertBrev: entry.before.redigertBrev,
@@ -78,10 +81,11 @@ export const LetterEditor = ({
   const redo = useCallback(() => {
     if (!canRedo) return;
     setEditorState((current) => {
+      if (current.saveStatus === "SAVE_PENDING") return current;
       const nextPointer = current.history.entryPointer + 1;
       const entry = current.history.entries[nextPointer];
       const next =
-        entry.type === "SAKSBEHANDLER_VALG"
+        entry.type === "TEKSTVALG"
           ? {
               ...current,
               redigertBrev: entry.after.redigertBrev,

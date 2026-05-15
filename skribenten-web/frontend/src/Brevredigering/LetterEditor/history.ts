@@ -5,11 +5,35 @@ import { type EditedLetter } from "~/types/brevbakerTypes";
 
 export type PatchKind = "TEXT_UPDATE";
 
-export type SaksbehandlerValgHistorySnapshot = {
+export type TekstvalgHistorySnapshot = {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
 };
+
+export function createTekstvalgSnapshotFromEditorState(state: {
+  redigertBrev: EditedLetter;
+  redigertBrevHash: string;
+  saksbehandlerValg: SaksbehandlerValg;
+}): TekstvalgHistorySnapshot {
+  return {
+    redigertBrev: structuredClone(state.redigertBrev),
+    redigertBrevHash: state.redigertBrevHash,
+    saksbehandlerValg: structuredClone(state.saksbehandlerValg),
+  };
+}
+
+export function createTekstvalgSnapshotFromResponse(response: {
+  redigertBrev: EditedLetter;
+  redigertBrevHash: string;
+  saksbehandlerValg: SaksbehandlerValg;
+}): TekstvalgHistorySnapshot {
+  return {
+    redigertBrev: structuredClone(response.redigertBrev),
+    redigertBrevHash: response.redigertBrevHash,
+    saksbehandlerValg: structuredClone(response.saksbehandlerValg),
+  };
+}
 
 export interface PatchHistoryEntry {
   type: "PATCH";
@@ -19,14 +43,14 @@ export interface PatchHistoryEntry {
   timestamp?: number;
 }
 
-export interface SaksbehandlerValgHistoryEntry {
-  type: "SAKSBEHANDLER_VALG";
-  before: SaksbehandlerValgHistorySnapshot;
-  after: SaksbehandlerValgHistorySnapshot;
+export interface TekstvalgHistoryEntry {
+  type: "TEKSTVALG";
+  before: TekstvalgHistorySnapshot;
+  after: TekstvalgHistorySnapshot;
   timestamp?: number;
 }
 
-export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgHistoryEntry;
+export type HistoryEntry = PatchHistoryEntry | TekstvalgHistoryEntry;
 
 export interface History {
   entries: HistoryEntry[];
@@ -59,12 +83,12 @@ function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): PatchHis
   };
 }
 
-export function createSaksbehandlerValgHistoryEntry(
-  before: SaksbehandlerValgHistorySnapshot,
-  after: SaksbehandlerValgHistorySnapshot,
-): SaksbehandlerValgHistoryEntry {
+export function createTekstvalgHistoryEntry(
+  before: TekstvalgHistorySnapshot,
+  after: TekstvalgHistorySnapshot,
+): TekstvalgHistoryEntry {
   return {
-    type: "SAKSBEHANDLER_VALG",
+    type: "TEKSTVALG",
     before,
     after,
     timestamp: Date.now(),

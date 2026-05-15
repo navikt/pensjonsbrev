@@ -11,8 +11,10 @@ import { z } from "zod";
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import {
-  createSaksbehandlerValgHistoryEntry,
-  type SaksbehandlerValgHistorySnapshot,
+  createTekstvalgHistoryEntry,
+  createTekstvalgSnapshotFromEditorState,
+  createTekstvalgSnapshotFromResponse,
+  type TekstvalgHistorySnapshot,
 } from "~/Brevredigering/LetterEditor/history";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -50,7 +52,7 @@ const vedtakSidemenySchema = z.object({
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: SaksbehandlerValgHistorySnapshot;
+  historySnapshot?: TekstvalgHistorySnapshot;
 };
 
 const VedtakWrapper = () => {
@@ -141,7 +143,7 @@ const VedtakWrapper = () => {
 
 const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => void }) => {
   const navigate = useNavigate({ from: Route.fullPath });
-  const { editorState, onSaveSuccess } = useManagedLetterEditorContext();
+  const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
   const attesteringStartTime = useRef(Date.now());
 
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
@@ -172,15 +174,17 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   });
 
   const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
-    mutationFn: (values) =>
-      oppdaterBrev({
+    mutationFn: (values) => {
+      setEditorState((s) => ({ ...s, saveStatus: "SAVE_PENDING" }));
+      return oppdaterBrev({
         saksId: Number.parseInt(props.saksId, 10),
         brevId: props.brev.info.id,
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
         },
-      }),
+      });
+    },
     onSuccess: (response, variables) => {
       const historySnapshot = variables.historySnapshot;
       onSaveSuccess(
@@ -188,15 +192,12 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         historySnapshot
           ? {
               createHistoryEntry: () =>
-                createSaksbehandlerValgHistoryEntry(historySnapshot, {
-                  redigertBrev: response.redigertBrev,
-                  redigertBrevHash: response.redigertBrevHash,
-                  saksbehandlerValg: response.saksbehandlerValg,
-                }),
+                createTekstvalgHistoryEntry(historySnapshot, createTekstvalgSnapshotFromResponse(response)),
             }
           : undefined,
       );
     },
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   const attesterMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
@@ -229,8 +230,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
     );
   };
 
-  const freeze = oppdaterBrevMutation.isPending || attesterMutation.isPending;
+  const freeze =
+    oppdaterBrevMutation.isPending || attesterMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+  // TODO: disable BrevmalAlternativer during SAVE_PENDING
 
   useEffect(() => {
     form.reset({
@@ -317,11 +320,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     oppdaterBrevMutation.mutate({
                       redigertBrev: editorState.redigertBrev,
                       saksbehandlerValg: form.getValues("saksbehandlerValg"),
-                      historySnapshot: {
-                        redigertBrev: editorState.redigertBrev,
-                        redigertBrevHash: editorState.redigertBrevHash,
-                        saksbehandlerValg: editorState.saksbehandlerValg,
-                      },
+                      historySnapshot: createTekstvalgSnapshotFromEditorState(editorState),
                     });
                   }}
                   withTitle
