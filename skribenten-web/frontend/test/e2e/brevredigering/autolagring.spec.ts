@@ -424,5 +424,6 @@ test.describe("autolagring", () => {
     saveResolve?.();
 
     await expect(page.getByRole("button", { name: "Angre (Undo)" })).toBeEnabled();
+    await expect(page.getByLabel("Ytelse")).toHaveValue("Uføretrygd");
   });
 });

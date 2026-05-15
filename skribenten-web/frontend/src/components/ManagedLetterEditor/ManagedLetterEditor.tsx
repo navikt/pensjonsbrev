@@ -34,6 +34,7 @@ const ManagedLetterEditor = (props: {
         ...stateWithCursor,
         saveStatus: "SAVE_PENDING",
       }));
+      // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
       if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
         return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
       }

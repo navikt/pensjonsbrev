@@ -48,8 +48,9 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const canUndo = editorState.saveStatus !== "SAVE_PENDING" && editorState.history.entryPointer >= 0;
+  const canUndo = !freeze && editorState.saveStatus !== "SAVE_PENDING" && editorState.history.entryPointer >= 0;
   const canRedo =
+    !freeze &&
     editorState.saveStatus !== "SAVE_PENDING" &&
     editorState.history.entryPointer < editorState.history.entries.length - 1;
 
@@ -62,9 +63,9 @@ export const LetterEditor = ({
         entry.type === "TEKSTVALG"
           ? {
               ...current,
-              redigertBrev: entry.before.redigertBrev,
+              redigertBrev: structuredClone(entry.before.redigertBrev),
               redigertBrevHash: entry.before.redigertBrevHash,
-              saksbehandlerValg: entry.before.saksbehandlerValg,
+              saksbehandlerValg: structuredClone(entry.before.saksbehandlerValg),
             }
           : applyPatches(current, entry.inversePatches);
       return {
@@ -88,9 +89,9 @@ export const LetterEditor = ({
         entry.type === "TEKSTVALG"
           ? {
               ...current,
-              redigertBrev: entry.after.redigertBrev,
+              redigertBrev: structuredClone(entry.after.redigertBrev),
               redigertBrevHash: entry.after.redigertBrevHash,
-              saksbehandlerValg: entry.after.saksbehandlerValg,
+              saksbehandlerValg: structuredClone(entry.after.saksbehandlerValg),
             }
           : applyPatches(current, entry.patches);
       return {

@@ -89,8 +89,16 @@ export function createTekstvalgHistoryEntry(
 ): TekstvalgHistoryEntry {
   return {
     type: "TEKSTVALG",
-    before,
-    after,
+    before: {
+      redigertBrev: structuredClone(before.redigertBrev),
+      redigertBrevHash: before.redigertBrevHash,
+      saksbehandlerValg: structuredClone(before.saksbehandlerValg),
+    },
+    after: {
+      redigertBrev: structuredClone(after.redigertBrev),
+      redigertBrevHash: after.redigertBrevHash,
+      saksbehandlerValg: structuredClone(after.saksbehandlerValg),
+    },
     timestamp: Date.now(),
   };
 }

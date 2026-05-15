@@ -179,6 +179,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       return oppdaterBrev({
         saksId: Number.parseInt(props.saksId, 10),
         brevId: props.brev.info.id,
+        frigiReservasjon: false,
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
