@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEoFase2Auto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerToleransebeloepAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
@@ -116,6 +117,7 @@ object AlderTemplates : AllTemplates {
             InfoFyller67AarSaerskiltSats,
             VedtakAfpEtteroppgjoerEoFase2Auto,
             VedtakAfpEtteroppgjoerIngenEndringAuto,
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto,
             VedtakAfpEtteroppgjoerTilbakekrevingAuto,
             VedtakAfpEtteroppgjoerToleransebeloepAuto,
             VedtakAldersovergang67AarGarantitilleggAuto,

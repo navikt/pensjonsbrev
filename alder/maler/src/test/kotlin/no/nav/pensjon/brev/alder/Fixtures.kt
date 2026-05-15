@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEoFase2AutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerToleransebeloepAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakEndringAfpOffentligSektorDto
@@ -51,6 +52,7 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakEndringAfpOffentligSektorDto
@@ -118,6 +120,7 @@ object Fixtures : LetterDataFactory {
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
             VedtakAfpEtteroppgjoerEoFase2AutoDto::class -> createVedtakAfpEtteroppgjoerEoFase2AutoDto() as T
             VedtakAfpEtteroppgjoerIngenEndringAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringAutoDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto() as T
             VedtakAfpEtteroppgjoerTilbakekrevingAutoDto::class -> createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto() as T
             VedtakAfpEtteroppgjoerToleransebeloepAutoDto::class -> createVedtakAfpEtteroppgjoerToleransebeloepAutoDto() as T
             VedtakEndringAfpOffentligSektorDto::class -> createVedtakEndringAfpOffentligSektorDto() as T

@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto.Scenario
@@ -35,9 +36,16 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  *    levert av kalleren.
  *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket setter
  *    signaturen selv via fellesAuto.
- *  - Avslutning (Dine plikter, Du har rett til å klage, Du har rett til
- *    innsyn, Har du spørsmål?) er trukket ut til [AfpEtteroppgjoerAvslutning]
- *    siden den deles med PE_AF_04_102.
+ *  - Innledningsparagrafene («Vi viser til ...») og avsluttende
+ *    «Ny beregning … fører til at det ikke blir tilbakekreving» deles med
+ *    PE_AF_04_103 og er trukket ut til
+ *    [AfpEtteroppgjoerInnhold.HarVaertRiktigIntro] og
+ *    [AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving].
+ *  - Vedtaksgrunnlag § 3 d og avslutningen (Dine plikter, klage, innsyn,
+ *    spørsmål) deles med PE_AF_04_102/103/107 — gjenbruker
+ *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk] og
+ *    [AfpEtteroppgjoerAvslutning]. Originalen hadde noen små
+ *    nynorsk-ordlydsavvik mot fellesfrasen som harmoniseres bort her.
  *  - Bokmål/nynorsk-feiljusterte avsnitt (særlig avslutningstekstene som var
  *    konkatenert uten skille i kilden) er manuelt rettet opp.
  */
@@ -62,45 +70,10 @@ object VedtakAfpEtteroppgjoerEoFase2Auto : AutobrevTemplate<VedtakAfpEtteroppgjo
         }
 
         outline {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjøret for " +
-                            oppgjoersAar.format() + " viser at utbetalingen av AFP i " +
-                            oppgjoersAar.format() + " har vært riktig. Etteroppgjøret for " +
-                            oppgjoersAar.format() + " er derfor avsluttet."
-                    },
-                    nynorsk {
-                        +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " +
-                            oppgjoersAar.format() + ". Resultatet av etteroppgjeret for " +
-                            oppgjoersAar.format() + " viser at utbetalinga av AFP i " +
-                            oppgjoersAar.format() + " har vore rett. Etteroppgjeret for " +
-                            oppgjoersAar.format() + " er derfor avslutta."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
-                    },
-                    nynorsk {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivande inntekt)."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.HarVaertRiktigIntro(oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
 
-            title1 {
-                text(
-                    bokmal { +"Inntekten din i " + oppgjoersAar.format() },
-                    nynorsk { +"Inntekta di i " + oppgjoersAar.format() },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             showIf(scenario.equalTo(Scenario.HEL_AFP_ALL_INNTEKT_FOER_UTTAK)) {
                 paragraph {
@@ -163,18 +136,7 @@ object VedtakAfpEtteroppgjoerEoFase2Auto : AutobrevTemplate<VedtakAfpEtteroppgjo
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Ny beregning av etteroppgjøret for " + oppgjoersAar.format() +
-                            " fører til at det ikke blir tilbakekreving."
-                    },
-                    nynorsk {
-                        +"Ny berekning av etteroppgjeret for " + oppgjoersAar.format() +
-                            " fører til at det ikkje blir tilbakekrevjing."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving(oppgjoersAar))
 
             // Avslutning — rettigheter, plikter og kontaktinformasjon (alltid).
             includePhrase(AfpEtteroppgjoerAvslutning)

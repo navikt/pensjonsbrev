@@ -121,6 +121,59 @@ object AfpEtteroppgjoerInnhold {
     }
 
     /**
+     * Innledning til etteroppgjør-fase-2-brev der utbetalingen har vært riktig:
+     * «Vi viser til tidligere brev … har vært riktig … er derfor avsluttet.»
+     * Delt mellom PE_AF_04_103 og PE_AF_04_106.
+     */
+    data class HarVaertRiktigIntro(
+        val oppgjoersAar: Expression<Year>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vi viser til tidligere brev om etteroppgjør av avtalefestet pensjon (AFP) for " +
+                            oppgjoersAar.format() + ". Resultatet av etteroppgjøret for " +
+                            oppgjoersAar.format() + " viser at utbetalingen av AFP i " +
+                            oppgjoersAar.format() + " har vært riktig. Etteroppgjøret for " +
+                            oppgjoersAar.format() + " er derfor avsluttet."
+                    },
+                    nynorsk {
+                        +"Vi viser til tidlegare brev om etteroppgjer av avtalefesta pensjon (AFP) for " +
+                            oppgjoersAar.format() + ". Resultatet av etteroppgjeret for " +
+                            oppgjoersAar.format() + " viser at utbetalinga av AFP i " +
+                            oppgjoersAar.format() + " har vore rett. Etteroppgjeret for " +
+                            oppgjoersAar.format() + " er derfor avslutta."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Avsluttende konklusjonsparagraf: ny beregning fører ikke til tilbakekreving.
+     * Delt mellom PE_AF_04_103 og PE_AF_04_106.
+     */
+    data class NyBeregningFoererIkkeTilTilbakekreving(
+        val oppgjoersAar: Expression<Year>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Ny beregning av etteroppgjøret for " + oppgjoersAar.format() +
+                            " fører til at det ikke blir tilbakekreving."
+                    },
+                    nynorsk {
+                        +"Ny berekning av etteroppgjeret for " + oppgjoersAar.format() +
+                            " fører til at det ikkje blir tilbakekrevjing."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
      * Tittel «Melding om endringer av inntekten» + de to innledende paragrafene
      * som er identiske mellom PE_AF_04_100 og PE_AF_04_102.
      */
