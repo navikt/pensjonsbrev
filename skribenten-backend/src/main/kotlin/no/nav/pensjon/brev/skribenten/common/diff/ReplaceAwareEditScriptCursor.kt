@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.skribenten.common.diff
 
-class ReplaceAwareEditScriptCursor<T : Any>(
-    @PublishedApi internal val insertCursor: EditScriptCursor<T>,
-    @PublishedApi internal val deleteCursor: EditScriptCursor<T>,
-) {
+class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
+    @PublishedApi internal val insertCursor = EditScriptCursor(editScript.new, editScript.inserts)
+    @PublishedApi internal val deleteCursor = EditScriptCursor(editScript.old, editScript.deletes)
+
     val hasNext: Boolean get() = insertCursor.hasNext || deleteCursor.hasNext
     fun peek(): T? = insertCursor.peek() ?: deleteCursor.peek()
 

@@ -8,6 +8,7 @@ interface EditLetterTokenizer<Token : Any> {
 }
 
 sealed class ContentIndex {
+    data class BlockIndex(val blockIndex: Int) : ContentIndex()
     data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex()
     data class ItemContentIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val itemContentIndex: Int) : ContentIndex()
     // rowIndex = -1 addresses the header row

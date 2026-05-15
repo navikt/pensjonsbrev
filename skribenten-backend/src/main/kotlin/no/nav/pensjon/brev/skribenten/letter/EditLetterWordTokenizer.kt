@@ -6,7 +6,6 @@ import no.nav.brev.InterneDataklasser
 import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.common.EqualityBy
 import no.nav.pensjon.brev.skribenten.common.diff.EditScript
-import no.nav.pensjon.brev.skribenten.common.diff.EditScriptCursor
 import no.nav.pensjon.brev.skribenten.common.diff.Change
 import no.nav.pensjon.brev.skribenten.common.diff.ReplaceAwareEditScriptCursor
 import no.nav.pensjon.brev.skribenten.common.diff.map
@@ -48,10 +47,7 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     override fun tokenize(letter: Edit.Letter): List<Token> = Tokenizer(letter).build()
 
     override fun <R> parseTokens(editScript: EditScript<Token>, producer: DiffProducer<R>): R {
-        val cursor = ReplaceAwareEditScriptCursor(
-            EditScriptCursor(editScript.new, editScript.inserts),
-            EditScriptCursor(editScript.old, editScript.deletes),
-        )
+        val cursor = ReplaceAwareEditScriptCursor(editScript)
         cursor.forEachIndexed<Token.Block> { insertBlockIdx, deleteBlockIdx, block, change ->
             if (change != null) {
                 producer.block(insertBlockIdx, change.map { DiffProducer.BlockInfo(it.id, it.type) })

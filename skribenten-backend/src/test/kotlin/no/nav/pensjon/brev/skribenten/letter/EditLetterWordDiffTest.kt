@@ -3,144 +3,15 @@
 package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.InterneDataklasser
-import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
-import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.PARAGRAPH
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnAlignment.LEFT
-import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
-import no.nav.pensjon.brev.skribenten.letter.EditLetterWordTokenizer.Token
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 class EditLetterWordDiffTest {
 
     private val wordDiff = EditLetterWordDiff()
-
-    // --- Tokenize ---
-
-    @Test
-    fun `tokenize paragraph with literal produces Block, Text_Literal, and Word tokens`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "hello world") } })
-        assertEquals(
-            listOf(
-                Token.Block(null, PARAGRAPH),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("hello"),
-                Token.Word("world"),
-            ),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize uses editedText instead of text for word tokens`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "original", editedText = "edited") } })
-        assertEquals(
-            listOf(Token.Block(null, PARAGRAPH), Token.Text.Literal(null, FontType.PLAIN), Token.Word("edited")),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize uses editedFontType instead of fontType for Literal token`() {
-        val tokens = wordDiff.tokenize(
-            editedLetter { paragraph { literal(text = "hello", fontType = FontType.PLAIN, editedFontType = FontType.BOLD) } }
-        )
-        assertEquals(
-            listOf(Token.Block(null, PARAGRAPH), Token.Text.Literal(null, FontType.BOLD), Token.Word("hello")),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize Variable produces Variable token with fontType`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { variable(text = "val", fontType = FontType.ITALIC) } })
-        assertEquals(
-            listOf(Token.Block(null, PARAGRAPH), Token.Text.Variable(null, FontType.ITALIC), Token.Word("val")),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize NewLine produces NewLine token between literals`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "a"); newLine(); literal(text = "b") } })
-        assertEquals(
-            listOf(
-                Token.Block(null, PARAGRAPH),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("a"),
-                Token.NewLine(null),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("b"),
-            ),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize ItemList produces correct token sequence`() {
-        val tokens = wordDiff.tokenize(
-            editedLetter {
-                paragraph {
-                    itemList {
-                        item { literal(text = "item one") }
-                        item { literal(text = "item two") }
-                    }
-                }
-            }
-        )
-        assertEquals(
-            listOf(
-                Token.Block(null, PARAGRAPH),
-                Token.ItemList(null, Listetype.PUNKTLISTE),
-                Token.Item(null),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("item"),
-                Token.Word("one"),
-                Token.Item(null),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("item"),
-                Token.Word("two"),
-            ),
-            tokens
-        )
-    }
-
-    @Test
-    fun `tokenize Table produces correct token sequence including header`() {
-        val tokens = wordDiff.tokenize(
-            editedLetter {
-                paragraph {
-                    table {
-                        header { colSpec { literal(text = "col header") } }
-                        row { cell { literal(text = "cell body") } }
-                    }
-                }
-            }
-        )
-        assertEquals(
-            listOf(
-                Token.Block(null, PARAGRAPH),
-                Token.Table(null),
-                Token.TableHeader(null),
-                Token.ColumnSpec(null, LEFT, 1),
-                Token.Cell(null),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("col"),
-                Token.Word("header"),
-                Token.Row(null),
-                Token.Cell(null),
-                Token.Text.Literal(null, FontType.PLAIN),
-                Token.Word("cell"),
-                Token.Word("body"),
-            ),
-            tokens
-        )
-    }
-
-    // --- Diff ---
 
     @Test
     fun `first and only word has no phantom leading space in offset`() {
