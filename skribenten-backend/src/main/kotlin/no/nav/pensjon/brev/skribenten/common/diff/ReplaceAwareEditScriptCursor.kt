@@ -8,49 +8,31 @@ class ReplaceAwareEditScriptCursor<T : Any>(
     fun peek(): T? = insertCursor.peek() ?: deleteCursor.peek()
 
     inline fun <reified E : T> consumeIf(): Pair<E, Change<E>?>? {
-        val insertIsE = insertCursor.peek() is E
-        val deleteIsE = deleteCursor.peek() is E
-        if (!insertIsE && !deleteIsE) return null
+        val insertPeek = insertCursor.peekBoth<E>()
+        val deletePeek = deleteCursor.peekBoth<E>()
 
         return when {
-            insertIsE && deleteIsE -> {
-                val insertHasEdit = insertCursor.peekEdit() != null
-                val deleteHasEdit = deleteCursor.peekEdit() != null
-                when {
-                    !insertHasEdit && !deleteHasEdit -> {
-                        val (token, _) = insertCursor.consumeIf<E>()!!
-                        deleteCursor.consumeIf<E>()!!
-                        Pair(token, null)
-                    }
-                    insertHasEdit && deleteHasEdit ->
-                        if (insertCursor.peek()!!::class == deleteCursor.peek()!!::class) {
-                            val (newToken, _) = insertCursor.consumeIf<E>()!!
-                            val (oldToken, _) = deleteCursor.consumeIf<E>()!!
-                            Pair(newToken, Change.Replace(oldToken, newToken))
-                        } else {
-                            val (token, _) = insertCursor.consumeIf<E>()!!
-                            Pair(token, Change.Insert(token))
-                        }
-                    insertHasEdit -> {
-                        val (token, _) = insertCursor.consumeIf<E>()!!
-                        Pair(token, Change.Insert(token))
-                    }
-                    else -> {
-                        val (token, _) = deleteCursor.consumeIf<E>()!!
-                        Pair(token, Change.Delete(token))
-                    }
-                }
+            insertPeek?.second != null && deletePeek?.second != null && insertPeek.first::class == deletePeek.first::class -> {
+                insertCursor.requireAndConsume<E>(); deleteCursor.requireAndConsume<E>()
+                Pair(insertPeek.first, Change.Replace(deletePeek.first, insertPeek.first))
             }
-            insertIsE -> {
-                val (token, edit) = insertCursor.consumeIf<E>()!!
-                if (edit != null) Pair(token, Change.Insert(token)) else Pair(token, null)
+            insertPeek?.second != null -> {
+                insertCursor.requireAndConsume<E>()
+                Pair(insertPeek.first, Change.Insert(insertPeek.first))
             }
-            else -> {
-                val (token, edit) = deleteCursor.consumeIf<E>()!!
-                if (edit != null) Pair(token, Change.Delete(token)) else Pair(token, null)
+            deletePeek?.second != null -> {
+                deleteCursor.requireAndConsume<E>()
+                Pair(deletePeek.first, Change.Delete(deletePeek.first))
             }
+            insertPeek != null || deletePeek != null -> {
+                if (insertPeek != null) insertCursor.requireAndConsume<E>()
+                if (deletePeek != null) deleteCursor.requireAndConsume<E>()
+                Pair((insertPeek ?: deletePeek)!!.first, null)
+            }
+            else -> null
         }
     }
+
 
     inline fun <reified E : T> requireAndConsume(): E {
         val result = consumeIf<E>()

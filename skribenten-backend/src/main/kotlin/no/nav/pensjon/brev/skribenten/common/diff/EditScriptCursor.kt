@@ -11,6 +11,12 @@ class EditScriptCursor<T : Any>(private val tokens: List<T>, edits: List<EditOpe
     fun peek(): T? = tokens.getOrNull(currentIndex)
     fun peekEdit(): EditOperation<T>? = edits[currentIndex]
 
+    inline fun <reified E : T> peekBoth(): Pair<E, EditOperation<E>?>? {
+        val token = peek() as? E ?: return null
+        @Suppress("UNCHECKED_CAST")
+        return Pair(token, peekEdit() as EditOperation<E>?)
+    }
+
     fun consume(): Pair<T, EditOperation<T>?> = Pair(tokens[currentIndex], edits[currentIndex++]).also {
         require(it.second == null || it.second?.value == it.first) {
             "Expected edit operation value to match tokens at position ${currentIndex - 1}, but was ${it.second?.value} and ${it.first}"
