@@ -9,7 +9,9 @@ import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simuleringsinformasjon
+import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.forbeholdVedlegg
 import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.simuleringVedlegg
+import no.nav.pensjon.brev.planleggepensjon.simulering.vedlegg.opptjeningVedlegg
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.LetterTemplate
 import no.nav.pensjon.brev.template.RedigerbarTemplate
@@ -62,5 +64,12 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
             simuleringVedlegg,
             saksbehandlerValg.simuleringsinformasjon,
         )
+
+        includeAttachmentIfNotNull(
+            opptjeningVedlegg,
+            saksbehandlerValg.simuleringsinformasjon,
+        )
+
+        includeAttachment(forbeholdVedlegg)
     }
 }
