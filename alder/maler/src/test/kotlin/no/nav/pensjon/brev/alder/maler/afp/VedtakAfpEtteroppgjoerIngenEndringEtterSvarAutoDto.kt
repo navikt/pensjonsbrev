@@ -4,8 +4,7 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtt
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-fun createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto():
-    VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto =
+fun createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(): VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto =
     VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
         oppgjoersAar = Year(2024),
         pgi = Kroner(412_500),

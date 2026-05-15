@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDto
@@ -299,176 +300,19 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 }
             }
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Den arbeidsinntekten du har hatt i perioden med AFP er " + avvik.format() +
-                            " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
-                            "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
-                            "enn toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner, " +
-                            "er pensjonen din beregnet på ny og avregnet mot den pensjonen du allerede " +
-                            "har fått utbetalt i perioden."
-                    },
-                    nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
-                            " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
-                            "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
-                            "enn toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner, " +
-                            "er pensjonen din berekna på nytt og avrekna mot den pensjonen du allereie " +
-                            "har fått utbetalt i perioden."
-                    },
-                )
-            }
-
-            // «Ny pensjonsberegning» — i originalen formatert som en ligning
-            // (A − B = C). Med kun to kolonner (etikett + beløp) ble en ekte
-            // table med tom header for smal og lite leselig; gjengis derfor
-            // som tre linjer i én paragraf (newline mellom linjene).
-            title1 {
-                text(
-                    bokmal { +"Ny pensjonsberegning" },
-                    nynorsk { +"Ny pensjonsberekning" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format() },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format() },
-                )
-                newline()
-                text(
-                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragberegnetai.format() },
-                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragberegnetai.format() },
-                )
-                newline()
-                text(
-                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertafp.format() },
-                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertafp.format() },
-                )
-            }
-
-            paragraph {
-                text(
-                    bokmal {
-                        +"Inntektsfradraget i AFP for den nye inntekten på " + fradragberegnetai.format() +
-                            " beregnes slik: " + iiap.format() + " (ny beregnet inntekt) / " +
-                            tpiberegnet.format() + " (tidligere arbeidsinntekt*) x " + fullafp.format() +
-                            " (full AFP). *Tidligere arbeidsinntekt er beregnet ut fra inntekten din i " +
-                            "årene før du tok ut AFP."
-                    },
-                    nynorsk {
-                        +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragberegnetai.format() +
-                            " blir berekna slik: " + iiap.format() + " (ny berekna inntekt) / " +
-                            tpiberegnet.format() + " (tidlegare arbeidsinntekt*) x " + fullafp.format() +
-                            " (full AFP). *Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra " +
-                            "før du tok ut AFP."
-                    },
-                )
-            }
-
-            // «AFP som er betalt ut for mye» — samme A − B = C-form som
-            // «Ny pensjonsberegning»; gjengis som tre linjer i én paragraf.
-            title1 {
-                text(
-                    bokmal { +"AFP som er betalt ut for mye" },
-                    nynorsk { +"AFP som er betalt ut for mykje" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Dette beløpet er differansen mellom tidligere utbetalt AFP og AFP etter fradrag " +
-                            "for den nye inntekten."
-                    },
-                    nynorsk {
-                        +"Dette beløpet er differansen mellom tidlegare utbetalt AFP og AFP etter frådrag " +
-                            "for den nye inntekta."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format() },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format() },
-                )
-                newline()
-                text(
-                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertafp.format() },
-                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertafp.format() },
-                )
-                newline()
-                text(
-                    bokmal { +"= For mye utbetalt AFP: " + formyebetalt.format() },
-                    nynorsk { +"= For mykje utbetalt AFP: " + formyebetalt.format() },
-                )
-            }
-
-            title1 {
-                text(
-                    bokmal { +"Tilbakebetaling" },
-                    nynorsk { +"Tilbakebetaling" },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Nav sender kravet til Skatteetaten for videre oppfølging. Dette skjer først når " +
-                            "klagefristen på 6 uker er gått ut og vanligvis innen 12 uker."
-                    },
-                    nynorsk {
-                        +"Nav sender kravet til Skatteetaten for vidare oppfølging. Dette skjer først når " +
-                            "klagefristen på 6 veker er gått ut og vanlegvis innan 12 veker."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du vil motta et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
-                            "betales tilbake i løpet av 12 kalendermåneder, og vil trekkes i den månedlige " +
-                            "utbetalingen din av AFP eller alderspensjon fra folketrygden."
-                    },
-                    nynorsk {
-                        +"Du vil få eit eige brev frå Skatteetaten med betalingsinformasjon. Beløpet skal " +
-                            "som hovudregel betalast tilbake i løpet av 12 kalendermånadar, og vil " +
-                            "trekkast i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
-                            "folketrygda."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Etter du har mottatt brevet fra Skatteetaten kan du ta kontakt med dem for å " +
-                            "endre trekkbeløpet."
-                    },
-                    nynorsk {
-                        +"Etter du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
-                            "trekkbeløpet."
-                    },
-                )
-            }
-
+            includePhrase(AfpTilbakekrevingBody.ToleransebeloepOverskrider(avvik, oppgjoersAar))
+            includePhrase(AfpTilbakekrevingBody.NyPensjonsberegningEquation(fullafp, fradragberegnetai, korrigertafp))
+            includePhrase(AfpTilbakekrevingBody.InntektsfradragetFormel(fradragberegnetai, iiap, tpiberegnet, fullafp))
+            includePhrase(AfpTilbakekrevingBody.AfpForMyeEquation(utbetaltafp, korrigertafp, formyebetalt))
+            includePhrase(AfpTilbakekrevingBody.TilbakebetalingSection)
             title1 {
                 text(
                     bokmal { +"Skatteoppgjør" },
                     nynorsk { +"Skatteoppgjer" },
                 )
             }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Nav rapporterer endringen til Skatteetaten. De vil foreta en korrigering av " +
-                            "skatteoppgjøret ditt for " + oppgjoersAar.format() + " basert på denne " +
-                            "endringen av utbetalt AFP."
-                    },
-                    nynorsk {
-                        +"Nav rapporterer endringa til Skatteetaten. Dei vil gjere ei korrigering av " +
-                            "skatteoppgjeret ditt for " + oppgjoersAar.format() + " basert på denne " +
-                            "endringa."
-                    },
-                )
-            }
+            includePhrase(AfpTilbakekrevingBody.SkatteoppgjorParagraph(oppgjoersAar))
+
 
             // Avslutning — Dine plikter / klage / innsyn / Har du spørsmål.
             // Vi komponerer fra sub-frasene i AfpEtteroppgjoerAvslutning der

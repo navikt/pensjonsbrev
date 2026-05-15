@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto
@@ -19,6 +20,8 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -53,6 +56,10 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  *    deles med PE_AF_04_106 og er trukket ut til
  *    [AfpEtteroppgjoerInnhold.HarVaertRiktigIntro] og
  *    [AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving].
+ *  - De fem scenario-forklaringene «Du har lagt fram nye opplysninger …»
+ *    deles med PE_AF_04_104 og er trukket ut til
+ *    [AfpEtteroppgjoerForklaringer]. De parede «Den faktiske
+ *    arbeidsinntekten …»-paragrafene er trukket ut sammen med dem.
  *  - Hjemmelshenvisningen (lov om AFP for SPK § 3 d) gjenbrukes via
  *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk]. Originalen for 103
  *    har samme nynorsk-komma-avvik som 107 mot fellesfrasen, men per
@@ -89,190 +96,27 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto :
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             showIf(scenario.equalTo(Scenario.INGEN_NYE_OPPLYSNINGER)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. " +
-                                "Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å " +
-                                "endre tidligere beregnet arbeidsinntekt før uttak av AFP. " +
-                                "Arbeidsinntekten din blir etter dette satt til " + ifu.format() +
-                                " i samsvar med den tidligere beregningen. Dette beløpet skal holdes " +
-                                "utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
-                        },
-                        nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. " +
-                                "Dokumentasjonen som ligg føre, gir ikkje tilstrekkeleg grunnlag for å " +
-                                "endre tidlegare berekna arbeidsinntekt før uttak av AFP. " +
-                                "Arbeidsinntekta di blir etter dette sett til " + ifu.format() +
-                                " i samsvar med den tidlegare berekninga. Dette beløpet skal haldast " +
-                                "utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(ifu, oppgjoersAar))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_UTTAK_I_AARET)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt en høyere arbeidsinntekt før du tok ut AFP enn " +
-                                "det som er beregnet tidligere. Arbeidsinntekten din er endret i samsvar " +
-                                "med disse opplysningene til " + ifu.format() + ". Dette beløpet skal " +
-                                "holdes utenfor etteroppgjøret for " + oppgjoersAar.format() + "."
-                        },
-                        nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt ei høgare arbeidsinntekt før du tok ut AFP, enn " +
-                                "det som er berekna tidlegare. Arbeidsinntekta di er endra i samsvar med " +
-                                "desse opplysningane til " + ifu.format() + ". Dette beløpet skal haldast " +
-                                "utanfor etteroppgjeret for " + oppgjoersAar.format() + "."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjør differansen mellom din " +
-                                "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekten din før uttak av AFP på " +
-                                ifu.format() + "."
-                        },
-                        nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjer differansen mellom den " +
-                                "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekta di før uttak av AFP på " +
-                                ifu.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(ifu, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(iiap, oppgjoersAar, pgi, ifu))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_UTTAK_FOER_AARET)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt pensjonsgivende inntekt som er opptjent før " +
-                                "uttak av AFP. Arbeidsinntekten som stammer fra tidligere arbeid, er " +
-                                "satt til " + ifu.format() + ". Dette beløpet skal holdes utenfor " +
-                                "etteroppgjøret av AFP for " + oppgjoersAar.format() + "."
-                        },
-                        nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt pensjonsgivande inntekt som er opptent før " +
-                                "uttak av AFP. Arbeidsinntekta som stammar frå tidlegare arbeid, er " +
-                                "sett til " + ifu.format() + ". Dette beløpet skal haldast utanfor " +
-                                "etteroppgjeret av AFP for " + oppgjoersAar.format() + "."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjør differansen mellom din " +
-                                "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekten din før uttak av AFP på " +
-                                ifu.format() + "."
-                        },
-                        nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjer differansen mellom den " +
-                                "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekta di før uttak av AFP på " +
-                                ifu.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(ifu, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(iiap, oppgjoersAar, pgi, ifu))
             }
 
             showIf(scenario.equalTo(Scenario.IFU_OG_IEO_REGISTRERT)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " +
-                                "i perioder hvor du ikke samtidig har hatt rett til AFP. " +
-                                "Arbeidsinntekten din for denne perioden er endret i samsvar med disse " +
-                                "opplysningene til henholdsvis " + ifu.format() + " for perioden før " +
-                                "uttak av AFP og " + ieo.format() + " for perioden etter opphør av AFP. " +
-                                "Disse beløpene skal holdes utenfor etteroppgjøret for " +
-                                oppgjoersAar.format() + "."
-                        },
-                        nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " +
-                                "i periodar der du ikkje samtidig har hatt rett til AFP. Arbeidsinntekta " +
-                                "di for denne perioden er endra i samsvar med desse opplysningane til " +
-                                "høvesvis " + ifu.format() + " for perioden før uttak av AFP og " +
-                                ieo.format() + " for perioden etter opphør av AFP tok slutt. Desse " +
-                                "beløpa skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                "."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjør differansen mellom din " +
-                                "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og summen av arbeidsinntektene før uttak av AFP på " +
-                                ifu.format() + " og etter opphør av AFP på " + ieo.format() + "."
-                        },
-                        nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjer differansen mellom den " +
-                                "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og summen av arbeidsinntektene før uttak av AFP på " +
-                                ifu.format() + " og etter at AFP tok slutt, på " + ieo.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(ifu, ieo, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(iiap, oppgjoersAar, pgi, ifu, ieo))
             }
 
             showIf(scenario.equalTo(Scenario.KUN_IEO_REGISTRERT)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger har du hatt en høyere arbeidsinntekt enn tidligere beregnet " +
-                                "etter opphøret av AFP. Arbeidsinntekten din for denne perioden er " +
-                                "endret i samsvar med disse opplysningene til " + ieo.format() + ". " +
-                                "Dette beløpet skal holdes utenfor etteroppgjøret for " +
-                                oppgjoersAar.format() + "."
-                        },
-                        nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar har du hatt ei høgare arbeidsinntekt enn tidlegare berekna " +
-                                "etter at AFP tok slutt. Arbeidsinntekta di for denne perioden er endra " +
-                                "i samsvar med desse opplysningane til " + ieo.format() + ". Dette " +
-                                "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                "."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Den faktiske arbeidsinntekten i den perioden du har mottatt AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjør differansen mellom din " +
-                                "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekten din etter opphøret av AFP på " +
-                                ieo.format() + "."
-                        },
-                        nynorsk {
-                            +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
-                                iiap.format() + ". Dette beløpet utgjer differansen mellom den " +
-                                "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
-                                pgi.format() + " og arbeidsinntekta di etter at AFP tok slutt, på " +
-                                ieo.format() + "."
-                        },
-                    )
-                }
+                includePhrase(AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(ieo, oppgjoersAar))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(iiap, oppgjoersAar, pgi, ieo))
             }
 
             paragraph {

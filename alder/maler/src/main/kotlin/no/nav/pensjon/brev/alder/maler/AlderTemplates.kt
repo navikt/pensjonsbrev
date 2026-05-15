@@ -21,6 +21,7 @@ import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEoFase2Auto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingAuto
+import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerToleransebeloepAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakEndringAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.adhoc.gjenlevenderett2027.VarselGjpForlengetArskull6061
@@ -140,6 +141,7 @@ object AlderTemplates : AllTemplates {
             InnvilgelseAvAfp,
             InnvilgelseAvAfpOffentligSektor,
             VedtakEndringAfpOffentligSektor,
+            VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger,
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,
