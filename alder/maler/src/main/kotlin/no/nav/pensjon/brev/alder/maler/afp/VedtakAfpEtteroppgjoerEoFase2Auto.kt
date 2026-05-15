@@ -99,14 +99,14 @@ object VedtakAfpEtteroppgjoerEoFase2Auto : AutobrevTemplate<VedtakAfpEtteroppgjo
                     text(
                         bokmal {
                             +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger i saken er " + ifu.format() + " kroner opptjent i perioden " +
+                                "opplysninger i saken er " + ifu.format() + " opptjent i perioden " +
                                 "før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " +
                                 "pensjonen overstiger ikke toleransebeløpet som i " + oppgjoersAar.format() +
                                 " var 15 000 kroner."
                         },
                         nynorsk {
                             +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar i saka er " + ifu.format() + " kroner opptente i perioden " +
+                                "opplysningar i saka er " + ifu.format() + " opptente i perioden " +
                                 "før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " +
                                 "pensjonen, overstig ikkje toleransebeløpet som i " + oppgjoersAar.format() +
                                 " var 15 000 kroner."
@@ -120,14 +120,14 @@ object VedtakAfpEtteroppgjoerEoFase2Auto : AutobrevTemplate<VedtakAfpEtteroppgjo
                     text(
                         bokmal {
                             +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger er " + ifu.format() + " kroner opptjent i perioden før du " +
+                                "opplysninger er " + ifu.format() + " opptjent i perioden før du " +
                                 "tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " +
                                 "pensjonen, svarer til det som tidligere har vært lagt til grunn ved " +
                                 "utbetalingen av AFP."
                         },
                         nynorsk {
                             +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar er " + ifu.format() + " kroner opptente i perioden før du " +
+                                "opplysningar er " + ifu.format() + " opptente i perioden før du " +
                                 "tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " +
                                 "pensjonen, svarer til det som tidlegare har vore lagt til grunn ved " +
                                 "utbetalinga av AFP."
