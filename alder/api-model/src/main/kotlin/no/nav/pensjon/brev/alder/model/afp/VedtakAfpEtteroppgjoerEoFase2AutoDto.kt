@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.model.afp
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 /**
  * Vedtak — AFP etteroppgjør EO fase 2 (autobrev).
@@ -22,7 +23,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
  */
 data class VedtakAfpEtteroppgjoerEoFase2AutoDto(
     // PE_Vedtaksdata_Oppgjorsar
-    val oppgjoersAar: Int,
+    val oppgjoersAar: Year,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
     // Inntekt opptjent før uttak av AFP. Vises kun i tekstvariantene for

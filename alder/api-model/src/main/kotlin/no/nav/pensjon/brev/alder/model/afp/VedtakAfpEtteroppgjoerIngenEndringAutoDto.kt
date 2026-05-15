@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.model.afp
 
 import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 /**
  * Vedtak — ingen endring (andre avvik) — AFP etteroppgjør (autobrev).
@@ -19,7 +20,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     // (rtv-brev brev Vedtaksdata Oppgjorsar)
-    val oppgjoersAar: Int,
+    val oppgjoersAar: Year,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
     // (rtv-brev brev Grunnlag Persongrunnlagsliste Persongrunnlag AFPEOGrunnlag PGI)
