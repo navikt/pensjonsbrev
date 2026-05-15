@@ -41,6 +41,7 @@ function Brevbehandler() {
       trackEvent("tid brukt i brevbehandler", {
         varighetSekunder,
         varighetMinutter: Math.round(varighetSekunder / 60),
+        enhetsId,
       });
     };
   }, []);
