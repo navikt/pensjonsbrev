@@ -12,12 +12,12 @@ Use this skill when changing files in `skribenten-web/frontend/src/Brevredigerin
 The goal is to keep action logic safe and consistent for:
 - focus addressing (`Focus`/`LiteralIndex`)
 - history handling (`withPatches`)
-- ID/deleted-array bookkeeping (`deletedContent`, `deletedItems`, `deletedBlocks`)
+- ID/deleted-array bookkeeping (`deletedContent`, `deletedItems`, `deletedBlocks`, `deletedRows`)
 - content invariants for text, lists, and tables
 
 ## Golden rules
 
-1. Always use `Action<LetterEditorState, ...>` + `withPatches(...)` for new actions.
+1. Use `Action<LetterEditorState, ...>` + `withPatches(...)` for actions that mutate the letter model. Focus-only actions (for example `cursorPosition`/`updateFocus`) can use plain `produce(...)`.
 2. Set `draft.saveStatus = "DIRTY"` only when the action actually changes the letter model.
 3. Update `draft.focus` deterministically after mutation; never leave focus pointing at deleted content.
 4. Guard early with type/index checks (`isValidIndex`, `isItemContentIndex`, `isTableCellIndex`, etc.).
@@ -41,10 +41,10 @@ Table actions must preserve these invariants:
 - After row/column operations, focus must point to a valid cell/header location.
 
 Existing normalization:
-- `normalizeTableSeparators` / `applyTableSeparatorNormalization` i `actions/common.ts`
+- `normalizeTableSeparators` / `applyTableSeparatorNormalization` in `actions/common.ts`
 - used on load (`create`) and after `deleteSelection`.
 
-Direct `splice(...)` is only acceptable where we currently do not have parent-level `deleted*` tracking for the mutated structure (for example parts of table headers/row cells). Comment explicitly why.
+Direct `splice(...)` can be acceptable for insertion-only changes that do not remove/move/reintroduce existing IDs (for example separator literals added by `applyTableSeparatorNormalization`). For deletions/moves in structures with `deleted*` tracking, use helpers (`removeElements`/`addElements`) or update `deleted*` explicitly. Comment exceptions explicitly.
 
 ## Refactor pattern (before/after)
 
