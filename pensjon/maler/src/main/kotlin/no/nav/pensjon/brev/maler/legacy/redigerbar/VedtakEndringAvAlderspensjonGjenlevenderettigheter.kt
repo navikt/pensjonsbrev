@@ -173,8 +173,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                     and (brukerFoedtEtter1944.not()
                     or virkDatoFomEtter2023.not()))
-                or(pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967)
-                    and brukerFoedtEtter1944.not())
+                    or (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP1967) and brukerFoedtEtter1944.not())
             ) {
                 paragraph {
                     text(
