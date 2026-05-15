@@ -1,6 +1,5 @@
 package no.nav.pensjon.brev.maler.legacy.redigerbar
 
-import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP1967
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2011
 import no.nav.pensjon.brev.api.model.AlderspensjonRegelverkType.AP2016
@@ -169,7 +168,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // innvilgetGjRettAPIngenEndr2_001 1967 og dont care about virkfom
+            // innvilgetGjRettAPIngenEndr2_001
             showIf(
                 (pesysData.alderspensjonVedVirk.regelverkType.isOneOf(AP2011, AP2016)
                     and (brukerFoedtEtter1944.not()
@@ -186,7 +185,7 @@ object VedtakEndringAvAlderspensjonGjenlevenderettigheter :
                 }
             }
 
-            // innvilgetGjRettAPEndr_001 1967 og dont care about virkfom
+            // innvilgetGjRettAPEndr_001
             showIf(pesysData.alderspensjonVedVirk.gjenlevenderettAnvendt
                     and pesysData.ytelseskomponentInformasjon.beloepEndring.equalTo(ENDR_OKT)
                     and not(pesysData.alderspensjonVedVirk.gjenlevendetilleggKap19Innvilget)
