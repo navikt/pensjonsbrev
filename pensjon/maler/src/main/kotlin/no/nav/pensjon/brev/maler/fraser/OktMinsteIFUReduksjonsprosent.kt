@@ -151,8 +151,8 @@ object OktMinsteIFUReduksjonsprosent {
                         }
                         cell {
                             text(
-                                bokmal { +data.etterbetalingJuli.ifNull(Kroner(0)).format() },
-                                nynorsk { +data.etterbetalingJuli.ifNull(Kroner(0)).format() },
+                                bokmal { +data.etterbetalingJuli.format() },
+                                nynorsk { +data.etterbetalingJuli.format() },
                             )
                         }
                     }
