@@ -7,6 +7,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 /**
@@ -38,7 +39,7 @@ data class InnvilgelseAvAfpOffentligSektorDto(
 
         // PE_Vedtaksdata_BeregningsData_Beregning_AFPpensjonsgrad
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning AFPpensjonsgrad)
-        val afpPensjonsgrad: Int,
+        val afpPensjonsgrad: Percent,
 
         // PE_Vedtaksdata_BeregningsData_Beregning_Grunnbelop
         // (rtv-brev brev Vedtaksdata BeregningsData Beregning Grunnbelop)

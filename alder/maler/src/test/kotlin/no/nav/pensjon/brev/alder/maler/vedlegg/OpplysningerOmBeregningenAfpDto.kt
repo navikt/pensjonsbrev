@@ -6,12 +6,13 @@ import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.A
 import no.nav.pensjon.brev.alder.model.vedlegg.OpplysningerOmBeregningenAfpDto.SivilstandKategori
 import no.nav.pensjon.brev.alder.model.vedlegg.Pensjonspoeng
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 fun createOpplysningerOmBeregningenAfpDto() =
     OpplysningerOmBeregningenAfpDto(
         beregningVirkDatoFom = LocalDate.of(2026, 3, 1),
-        afpPensjonsgrad = 100,
+        afpPensjonsgrad = Percent(100),
         tidligereArbeidsinntekt = Kroner(450_000),
         framtidigArligInntekt = Kroner(50_000),
         ektefelletilleggInntektBruktIAvkortning = Kroner(75_000),

@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.model.vedlegg
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
 /**
@@ -20,7 +21,7 @@ data class OpplysningerOmBeregningenAfpDto(
     val beregningVirkDatoFom: LocalDate,
 
     // PE_Vedtaksdata_BeregningsData_Beregning_AFPpensjonsgrad
-    val afpPensjonsgrad: Int,
+    val afpPensjonsgrad: Percent,
 
     // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo1_SPT_Poengrekke_PoengarUtenOKTPI
     val tidligereArbeidsinntekt: Kroner,
