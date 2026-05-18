@@ -2,17 +2,17 @@ package no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon
 
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
-import no.nav.pensjon.brev.template.Language
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innholdForhaandsvarsel as innholdForhaansvarselOpphoer
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.innholdForhaandsvarsel as innholdForhaansvarselRevurdering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.data as dataOpphoer
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTOSelectors.data as dataRevurdering
 
 
 @TemplateModelHelpers
@@ -28,7 +28,7 @@ val forhaandsvarselFeilutbetalingBarnepensjonRevurdering: AttachmentTemplate<Lan
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(innholdForhaansvarselRevurdering)
+        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarselRevurdering)
 
         includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
         includePhrase(Felles.HvaSkjerVidereIDinSak)
@@ -47,7 +47,7 @@ val forhaandsvarselFeilutbetalingBarnepensjonOpphoer: AttachmentTemplate<LangBok
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(innholdForhaansvarselOpphoer)
+        konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarselOpphoer)
 
         includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
         includePhrase(Felles.HvaSkjerVidereIDinSak)

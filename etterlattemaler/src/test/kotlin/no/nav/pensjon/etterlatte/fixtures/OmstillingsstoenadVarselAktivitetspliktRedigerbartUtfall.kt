@@ -1,6 +1,9 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallData
 
 
-fun createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() = OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(true)
+fun createOmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO() = OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(
+    data = OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallData(er12MndVarsel = true)
+)

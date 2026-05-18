@@ -1,25 +1,49 @@
 package no.nav.pensjon.etterlatte.fixtures
 
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
-import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.BeregningsMetode
+import no.nav.pensjon.etterlatte.maler.IntBroek
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
+import no.nav.pensjon.etterlatte.maler.Periode
+import no.nav.pensjon.etterlatte.maler.Trygdetid
+import no.nav.pensjon.etterlatte.maler.TrygdetidType
+import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakDTO
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.inntektsjustering.AarligInntektsjusteringVedtakData
 import java.time.LocalDate
 
 fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteringVedtakDTO(
     innhold = createPlaceholderForRedigerbartInnhold(),
-    beregning =
-    OmstillingsstoenadBeregning(
-        innhold = createPlaceholderForRedigerbartInnhold(),
-        virkningsdato = LocalDate.of(2025, 1, 1),
-        beregningsperioder =
-        listOf(
-            OmstillingsstoenadBeregningsperiode(
+    data = AarligInntektsjusteringVedtakData(
+        beregning = OmstillingsstoenadBeregning(
+            innhold = createPlaceholderForRedigerbartInnhold(),
+            virkningsdato = LocalDate.of(2025, 1, 1),
+            beregningsperioder = listOf(
+                OmstillingsstoenadBeregningsperiode(
+                    datoFOM = LocalDate.of(2025, 1, 1),
+                    datoTOM = null,
+                    inntekt = Kroner(500000),
+                    oppgittInntekt = Kroner(600000),
+                    fratrekkInnAar = Kroner(100000),
+                    innvilgaMaaneder = 12,
+                    grunnbeloep = Kroner(118620),
+                    utbetaltBeloep = Kroner(9000),
+                    restanse = Kroner(300),
+                    ytelseFoerAvkorting = Kroner(22000),
+                    trygdetid = 40,
+                    sanksjon = false,
+                    erFakeSanksjon = false,
+                    institusjon = false,
+                ),
+            ),
+            sisteBeregningsperiode = OmstillingsstoenadBeregningsperiode(
                 datoFOM = LocalDate.of(2025, 1, 1),
                 datoTOM = null,
                 inntekt = Kroner(500000),
                 oppgittInntekt = Kroner(600000),
                 fratrekkInnAar = Kroner(100000),
-                innvilgaMaaneder = 12,
+                innvilgaMaaneder = 10,
                 grunnbeloep = Kroner(118620),
                 utbetaltBeloep = Kroner(9000),
                 restanse = Kroner(300),
@@ -29,62 +53,43 @@ fun createOmstillingsstoenadInntektsjusteringVedtakDTO() = AarligInntektsjusteri
                 erFakeSanksjon = false,
                 institusjon = false,
             ),
-        ),
-        sisteBeregningsperiode =
-        OmstillingsstoenadBeregningsperiode(
-            datoFOM = LocalDate.of(2025, 1, 1),
-            datoTOM = null,
-            inntekt = Kroner(500000),
-            oppgittInntekt = Kroner(600000),
-            fratrekkInnAar = Kroner(100000),
-            innvilgaMaaneder = 10,
-            grunnbeloep = Kroner(118620),
-            utbetaltBeloep = Kroner(9000),
-            restanse = Kroner(300),
-            ytelseFoerAvkorting = Kroner(22000),
-            trygdetid = 40,
-            sanksjon = false,
-            erFakeSanksjon = false,
-            institusjon = false,
-        ),
-        sisteBeregningsperiodeNesteAar = null,
-        trygdetid =
-        Trygdetid(
-            trygdetidsperioder =
-            listOf(
-                Trygdetidsperiode(
-                    datoFOM = LocalDate.of(2004, 1, 1),
-                    datoTOM = LocalDate.of(2024, 1, 1),
-                    land = "Norge",
-                    landkode = "NOR",
-                    opptjeningsperiode = Periode(20, 0, 0),
-                    type = TrygdetidType.FAKTISK,
+            sisteBeregningsperiodeNesteAar = null,
+            trygdetid = Trygdetid(
+                trygdetidsperioder = listOf(
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2004, 1, 1),
+                        datoTOM = LocalDate.of(2024, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(20, 0, 0),
+                        type = TrygdetidType.FAKTISK,
+                    ),
+                    Trygdetidsperiode(
+                        datoFOM = LocalDate.of(2024, 1, 1),
+                        datoTOM = LocalDate.of(2044, 1, 1),
+                        land = "Norge",
+                        landkode = "NOR",
+                        opptjeningsperiode = Periode(20, 0, 0),
+                        type = TrygdetidType.FREMTIDIG,
+                    ),
                 ),
-                Trygdetidsperiode(
-                    datoFOM = LocalDate.of(2024, 1, 1),
-                    datoTOM = LocalDate.of(2044, 1, 1),
-                    land = "Norge",
-                    landkode = "NOR",
-                    opptjeningsperiode = Periode(20, 0, 0),
-                    type = TrygdetidType.FREMTIDIG,
-                ),
+                beregnetTrygdetidAar = 40,
+                prorataBroek = IntBroek(20, 150),
+                beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
+                beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
+                mindreEnnFireFemtedelerAvOpptjeningstiden = false,
+                navnAvdoed = "Elvis Presley",
             ),
-            beregnetTrygdetidAar = 40,
-            prorataBroek = IntBroek(20, 150),
-            beregningsMetodeFraGrunnlag = BeregningsMetode.NASJONAL,
-            beregningsMetodeAnvendt = BeregningsMetode.NASJONAL,
-            mindreEnnFireFemtedelerAvOpptjeningstiden = false,
-            navnAvdoed = "Elvis Presley",
+            oppphoersdato = LocalDate.of(2024, 12, 1),
+            opphoerNesteAar = false,
+            erYrkesskade = false,
         ),
-        oppphoersdato = LocalDate.of(2024, 12, 1),
-        opphoerNesteAar = false,
-        erYrkesskade = false,
+        omsRettUtenTidsbegrensning = false,
+        tidligereFamiliepleier = false,
+        inntektsaar = 2025,
+        harUtbetaling = true,
+        endringIUtbetaling = false,
+        virkningstidspunkt = LocalDate.of(2024, 1, 1),
+        bosattUtland = false,
     ),
-    omsRettUtenTidsbegrensning = false,
-    tidligereFamiliepleier = false,
-    inntektsaar = 2025,
-    harUtbetaling = true,
-    endringIUtbetaling = false,
-    virkningstidspunkt = LocalDate.of(2024,1,1),
-    bosattUtland = false,
 )

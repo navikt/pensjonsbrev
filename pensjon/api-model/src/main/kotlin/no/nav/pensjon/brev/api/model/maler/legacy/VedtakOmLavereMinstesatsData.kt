@@ -27,4 +27,4 @@ data class VedtakOmLavereMinstesatsData(
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )
 
-enum class Tillegg(val bokmal: String, val nynorsk: String) { BT("Barnetillegg", "Barnetillegg"), GJT("Gjenlevendetillegg", "Gjenlevandetillegg") }
+enum class Tillegg(val bokmal: String, val nynorsk: String) { BT("Barnetillegg", "Barnetillegg"), GJT("Gjenlevendetillegg", "Attlevandetillegg") }

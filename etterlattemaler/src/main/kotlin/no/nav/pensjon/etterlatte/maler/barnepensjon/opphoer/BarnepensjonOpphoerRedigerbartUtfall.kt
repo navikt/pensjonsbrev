@@ -12,13 +12,18 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTOSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerRedigerbartUtfallDataSelectors.feilutbetaling
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 
-data class BarnepensjonOpphoerRedigerbartUtfallDTO(
+data class BarnepensjonOpphoerRedigerbartUtfallData(
     val feilutbetaling: FeilutbetalingType
+)
+
+data class BarnepensjonOpphoerRedigerbartUtfallDTO(
+    override val data: BarnepensjonOpphoerRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -43,7 +48,7 @@ object BarnepensjonOpphoerRedigerbartUtfall : EtterlatteTemplate<BarnepensjonOpp
         outline {
             includePhrase(Vedtak.BegrunnelseForVedtaket)
             includePhrase(BarnepensjonFellesFraser.FyllInn)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_4RG_UTEN_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUnder4RGUtenVarselOpphoer)
             }
         }

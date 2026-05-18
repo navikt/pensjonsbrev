@@ -22,21 +22,26 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer
 import java.time.LocalDate
 
-data class OmstillingsstoenadOpphoerDTO(
-    override val innhold: List<Element>,
+data class OmstillingsstoenadOpphoerData(
     val innholdForhaandsvarsel: List<Element>,
     val virkningsdato: LocalDate,
     val bosattUtland: Boolean,
-    val feilutbetaling: FeilutbetalingType
-): VedleggData, FerdigstillingBrevDTO
+    val feilutbetaling: FeilutbetalingType,
+)
+
+data class OmstillingsstoenadOpphoerDTO(
+    override val innhold: List<Element>,
+    override val data: OmstillingsstoenadOpphoerData,
+) : VedleggData, FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerDTO>, Hovedmal {
@@ -61,16 +66,16 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         outline {
             paragraph {
                 text(
-                    bokmal { +"Omstillingsstønaden din opphører fra " + virkningsdato.format() + "." },
-                    nynorsk { +"Omstillingsstønaden din fell bort frå og med " + virkningsdato.format() + "." },
-                    english { +"Your adjustment allowance will terminate on: " + virkningsdato.format() + "." },
+                    bokmal { +"Omstillingsstønaden din opphører fra " + data.virkningsdato.format() + "." },
+                    nynorsk { +"Omstillingsstønaden din fell bort frå og med " + data.virkningsdato.format() + "." },
+                    english { +"Your adjustment allowance will terminate on: " + data.virkningsdato.format() + "." },
                 )
             }
             konverterElementerTilBrevbakerformat(innhold)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingMedVarselOpphoer)
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
                 includePhrase(OmstillingsstoenadRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
             includePhrase(Felles.DuHarRettTilAaKlage)
@@ -79,11 +84,11 @@ object OmstillingsstoenadOpphoer : EtterlatteTemplate<OmstillingsstoenadOpphoerD
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
 
-        includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
+        includeAttachment(forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer, this.argument, data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }
 }

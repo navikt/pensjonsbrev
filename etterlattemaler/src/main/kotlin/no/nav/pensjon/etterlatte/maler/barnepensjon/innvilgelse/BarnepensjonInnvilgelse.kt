@@ -17,17 +17,18 @@ import no.nav.pensjon.etterlatte.maler.BarnepensjonBeregning
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.brukerUnder18Aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erGjenoppretting
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.erMigrertYrkesskade
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.frivilligSkattetrekk
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDTOSelectors.kunNyttRegelverk
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.datoVedtakOmgjoering
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.erGjenoppretting
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.erMigrertYrkesskade
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.frivilligSkattetrekk
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseDataSelectors.kunNyttRegelverk
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
@@ -41,8 +42,7 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSom
 import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.informasjonTilDegSomMottarBarnepensjonUtland
 import java.time.LocalDate
 
-data class BarnepensjonInnvilgelseDTO(
-    override val innhold: List<Element>,
+data class BarnepensjonInnvilgelseData(
     val beregning: BarnepensjonBeregning,
     val bosattUtland: Boolean,
     val brukerUnder18Aar: Boolean,
@@ -54,6 +54,11 @@ data class BarnepensjonInnvilgelseDTO(
     val kunNyttRegelverk: Boolean,
     val erSluttbehandling: Boolean = false,
     val datoVedtakOmgjoering: LocalDate? = null,
+)
+
+data class BarnepensjonInnvilgelseDTO(
+    override val innhold: List<Element>,
+    override val data: BarnepensjonInnvilgelseData,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -70,14 +75,14 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
     ) {
         title {
 
-            ifNotNull(datoVedtakOmgjoering) {
+            ifNotNull(data.datoVedtakOmgjoering) {
                 text(
                     bokmal { +"Vi har omgjort vedtaket om omstillingsstønad av " + it.format() },
                     nynorsk { +"Vi har gjort om vedtaket om omstillingsstønad av " + it.format() },
                     english { +"We have reversed our decision regarding the adjustment allowance on " + it.format() },
                 )
             }
-            .orShowIf(erGjenoppretting) {
+            .orShowIf(data.erGjenoppretting) {
                 text(
                     bokmal { +"Du er innvilget barnepensjon på nytt" },
                     nynorsk { +"Du er innvilga barnepensjon på ny" },
@@ -95,30 +100,30 @@ object BarnepensjonInnvilgelse : EtterlatteTemplate<BarnepensjonInnvilgelseDTO>,
         outline {
             konverterElementerTilBrevbakerformat(innhold)
 
-            showIf(harUtbetaling) {
-                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(erEtterbetaling, bosattUtland, frivilligSkattetrekk))
+            showIf(data.harUtbetaling) {
+                includePhrase(BarnepensjonFellesFraser.UtbetalingAvBarnepensjon(data.erEtterbetaling, data.bosattUtland, data.frivilligSkattetrekk))
             }
-            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(erMigrertYrkesskade))
+            includePhrase(BarnepensjonFellesFraser.HvorLengeKanDuFaaBarnepensjon(data.erMigrertYrkesskade))
             includePhrase(BarnepensjonFellesFraser.MeldFraOmEndringer)
             includePhrase(Felles.DuHarRettTilAaKlage)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.brukerUnder18Aar, data.bosattUtland))
         }
 
         // Beregning av barnepensjon nytt og gammelt regelverk
-        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, beregning, kunNyttRegelverk.not())
+        includeAttachment(beregningAvBarnepensjonGammeltOgNyttRegelverk, data.beregning, data.kunNyttRegelverk.not())
 
         // Beregning av barnepensjon nytt regelverk
-        includeAttachment(beregningAvBarnepensjonNyttRegelverk, beregning, kunNyttRegelverk)
+        includeAttachment(beregningAvBarnepensjonNyttRegelverk, data.beregning, data.kunNyttRegelverk)
 
         // Vedlegg under 18 år
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, brukerUnder18Aar.and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, brukerUnder18Aar.and(bosattUtland))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetNasjonal, data.brukerUnder18Aar.and(data.bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomHandlerPaaVegneAvBarnetUtland, data.brukerUnder18Aar.and(data.bosattUtland))
 
         // Vedlegg over 18 år
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, brukerUnder18Aar.not().and(bosattUtland.not()))
-        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, brukerUnder18Aar.not().and(bosattUtland))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonNasjonal, data.brukerUnder18Aar.not().and(data.bosattUtland.not()))
+        includeAttachment(informasjonTilDegSomMottarBarnepensjonUtland, data.brukerUnder18Aar.not().and(data.bosattUtland))
 
-        includeAttachment(dineRettigheterOgPlikterBosattUtland, bosattUtland)
-        includeAttachment(dineRettigheterOgPlikterNasjonal, bosattUtland.not())
+        includeAttachment(dineRettigheterOgPlikterBosattUtland, data.bosattUtland)
+        includeAttachment(dineRettigheterOgPlikterNasjonal, data.bosattUtland.not())
     }
 }

@@ -160,11 +160,6 @@ object UforetrygdLovendringer2026Fraser {
                 list {
                     item {
                         text(
-                            bokmal { +"Uføregrad" },
-                            nynorsk { +"Uføregrad" })
-                    }
-                    item {
-                        text(
                             bokmal { +"Reduksjonsprosent" },
                             nynorsk { +"Reduksjonsprosent" })
                     }

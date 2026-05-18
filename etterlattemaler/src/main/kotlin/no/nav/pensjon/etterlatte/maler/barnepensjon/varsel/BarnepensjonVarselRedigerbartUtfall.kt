@@ -16,13 +16,18 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTOSelectors.automatiskBehandla
-import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTOSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDataSelectors.automatiskBehandla
+import no.nav.pensjon.etterlatte.maler.barnepensjon.varsel.BarnepensjonVarselRedigerbartUtfallDataSelectors.erBosattUtlandet
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.gjenoppstaatt.ForhaandsvarselGjenoppstaattFraser
 
-data class BarnepensjonVarselRedigerbartUtfallDTO(
+data class BarnepensjonVarselRedigerbartUtfallData(
     val automatiskBehandla: Boolean,
     val erBosattUtlandet: Boolean,
+)
+
+data class BarnepensjonVarselRedigerbartUtfallDTO(
+    override val data: BarnepensjonVarselRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -59,9 +64,9 @@ object BarnepensjonVarselRedigerbartUtfall : EtterlatteTemplate<BarnepensjonVars
                     english { +" Advance notice regarding approval of new children’s pensions" },
                 )
             }
-            showIf(automatiskBehandla) {
-                includePhrase(Automatisk(erBosattUtlandet))
-            }.orShow { includePhrase(Manuelt(erBosattUtlandet)) }
+            showIf(data.automatiskBehandla) {
+                includePhrase(Automatisk(data.erBosattUtlandet))
+            }.orShow { includePhrase(Manuelt(data.erBosattUtlandet)) }
             paragraph {
                 text(
                     bokmal { +"Hvis du har andre ytelser fra Nav, Lånekassen, andre tjenestepensjonsordninger eller fra andre land enn Norge, må du selv undersøke hvilke konsekvenser barnepensjon fra folketrygden vil ha for deg." },

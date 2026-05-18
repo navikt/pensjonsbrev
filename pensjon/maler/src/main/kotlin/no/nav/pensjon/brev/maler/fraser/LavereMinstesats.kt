@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object LavereMinstesats {
@@ -135,11 +136,13 @@ object LavereMinstesats {
                     },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
-                    nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
-                )
+            showIf(sumUtOgTillegg.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
+                    )
+                }
             }
             paragraph {
                 text(
