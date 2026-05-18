@@ -8,9 +8,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.innholdForhaandsvarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.innholdForhaandsvarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.opphoer.OmstillingsstoenadOpphoerDTOSelectors.data as dataOpphoer
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.data as dataRevurdering
 
@@ -28,7 +28,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering: AttachmentTempla
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarsel)
+        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarselRevurdering)
 
         includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
         includePhrase(Felles.HvaSkjerVidereIDinSak)
@@ -47,7 +47,7 @@ val forhaandsvarselFeilutbetalingOmstillingsstoenadOpphoer: AttachmentTemplate<L
         includeSakspart = false
     ) {
 
-    konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarsel)
+    konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarselOpphoer)
 
     includePhrase(Felles.SlikUttalerDuDegOmstillingsstoenad)
     includePhrase(Felles.HvaSkjerVidereIDinSak)
