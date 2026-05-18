@@ -16,7 +16,7 @@ data class VedtakOmLavereMinstesatsData(
     val nyMinstesats: Kroner,
     val avkortetPgaRedusertTrygdetid: Boolean,
     val harGradertUfoeretrygd: Boolean,
-    val tillegg: Collection<Tillegg>,
+    val tillegg: Collection<UTTillegg>,
     val endringNettoUforetrygdUtenTillegg: Boolean,
     val endringNettoBarnetillegg: Boolean,
     val endringNettoGjenlevendetillegg: Boolean,
@@ -26,5 +26,3 @@ data class VedtakOmLavereMinstesatsData(
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )
-
-enum class Tillegg(val bokmal: String, val nynorsk: String) { BT("Barnetillegg", "Barnetillegg"), GJT("Gjenlevendetillegg", "Gjenlevandetillegg") }

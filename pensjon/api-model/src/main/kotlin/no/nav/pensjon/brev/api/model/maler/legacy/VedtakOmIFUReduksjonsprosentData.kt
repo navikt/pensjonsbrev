@@ -11,23 +11,19 @@ data class VedtakOmIFUReduksjonsprosentData(
     val nettoGjenlevendetillegg: Kroner?,
     val etterbetalingJuli: Kroner,
     val reduksjonsprosent: Double,
-    val bunnfradrag: Kroner,
     val inntektstak: Kroner,
     val ifu: Kroner,
-    val tillegg: Collection<Tillegg>,
+    val tillegg: Collection<UTTillegg>,
     val endringNettoUforetrygdUtenTillegg: Boolean,
     val endringNettoBarnetillegg: Boolean,
     val endringNettoGjenlevendetillegg: Boolean,
     val endringReduksjonsprosent: Boolean,
-    val endringBunnfradrag: Boolean,
     val endringInntektstak: Boolean,
     val endringIfu: Boolean,
-    val hjemmeltekst: String,
+    val hjemler: Set<String>,
+    val visOktMinusteIFU: Boolean,
+    val visReduksjonsprosent: Boolean,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
 )
-{
-    enum class Tillegg(val bokmal: String, val nynorsk: String) { BT("Barnetillegg", "Barnetillegg"), GJT("Gjenlevendetillegg", "Attlevandetillegg") }
-}
-

@@ -1,8 +1,9 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -27,18 +28,16 @@ object OktMinsteIFUReduksjonsprosent {
         val nettoGjenlevendetillegg: Expression<Kroner?>,
         val etterbetalingJuli: Expression<Kroner>,
         val reduksjonsprosent: Expression<Double>,
-        val bunnfradrag: Expression<Kroner>,
         val inntektstak: Expression<Kroner>,
         val ifu: Expression<Kroner>,
         val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
         val endringNettoBarnetillegg: Expression<Boolean>,
         val endringNettoGjenlevendetillegg: Expression<Boolean>,
         val endringReduksjonsprosent: Expression<Boolean>,
-        val endringBunnfradrag: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
         val endringIfu: Expression<Boolean>,
-        val tillegg: Expression<Collection<Tillegg>>,
-        val hjemmeltekst: Expression<String>,
+        val tillegg: Expression<Collection<UTTillegg>>,
+        val hjemler: Expression<Set<String>>,
         val visOktMinsteIFU: Expression<Boolean>,
         val visReduksjonsprosent: Expression<Boolean>,
     )
@@ -344,8 +343,8 @@ object OktMinsteIFUReduksjonsprosent {
             }
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemmeltekst + "." },
+                    bokmal { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +"Vedtaket har vi gjort etter " + data.hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
 
