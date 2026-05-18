@@ -149,9 +149,15 @@ import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringAvAlderspensjo
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakEndringVedFlyttingMellomLandDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsAutoDto
 import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereMinstesatsRedigerbarDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createOmOktMinsteIFULavereReduksjonsprosentAutoDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmLavereReduksjonsprosentAutoDto
+import no.nav.pensjon.brev.fixtures.redigerbar.createVedtakOmOktMinsteIFUAutoDto
 import no.nav.pensjon.brev.fixtures.ufoere.createVarselSaksbehandlingstidAutoDto
 import no.nav.pensjon.brev.maler.example.EksempelRedigerbartDto
 import no.nav.pensjon.brev.maler.example.LetterExampleDto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.createVedtakEndringAvUttaksgradDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvAlderspensjonFordiOpptjeningErEndretDto
 import no.nav.pensjon.brev.maler.redigerbar.createVedtakEndringAvUttaksgradStansBrukerEllerVergeDto
@@ -243,6 +249,9 @@ object Fixtures : LetterDataFactory {
             AvslagGjenlevendepensjonDto::class -> createAvslagGjenlevendepensjonDto() as T
             AvslagGjenlevendepensjonUtlandDto::class -> createAvslagGjenlevendepensjonUtlandDto() as T
             VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
+            VedtakOmOktMinsteIFUAuto::class -> createVedtakOmOktMinsteIFUAutoDto() as T
+            VedtakOmOktMinsteIFULavereReduksjonsprosentAuto::class -> createOmOktMinsteIFULavereReduksjonsprosentAutoDto() as T
+            VedtakOmLavereReduksjonsprosentAuto::class -> createVedtakOmLavereReduksjonsprosentAutoDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
             InnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto::class -> createInnvilgelseGjenlevendepensjonBosattNorgeEtterUtlandDto() as T
             HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
