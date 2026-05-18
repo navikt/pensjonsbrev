@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.Alder
 import no.nav.pensjon.brev.planleggepensjon.simulering.Alderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDto
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDto
+import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonForKnekkpunkter
@@ -73,32 +74,51 @@ object Fixtures : LetterDataFactory {
             vedHeltUttak = createSimuleringV1MaanedligAlderspensjon(),
             vedNormertPensjonsalder = createSimuleringV1MaanedligAlderspensjon(),
         ),
+        privatAfpVedGradertUttak = PrivatAfp(
+            alderAar = 62,
+            aarligBeloep = Kroner(48000),
+            kompensasjonstillegg = Kroner(1200),
+            kronetillegg = Kroner(800),
+            livsvarig = Kroner(2000),
+            maanedligBeloep = Kroner(4000),
+        ),
+        privatAfpVedHeltUttak = PrivatAfp(
+            alderAar = 67,
+            aarligBeloep = Kroner(60000),
+            kompensasjonstillegg = Kroner(1500),
+            kronetillegg = Kroner(1000),
+            livsvarig = Kroner(2500),
+            maanedligBeloep = Kroner(5000),
+        ),
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(
         beloep = Kroner(29133),
         inntektspensjonBeloep = Kroner(1982),
-        delingstall = 15.33,
-        pensjonsbeholdningFoerUttakBeloep = Kroner(500000),
-        pensjonsbeholdningEtterUttakBeloep = Kroner(0),
-        sluttpoengtall = null,
-        poengaarTom1991 = null,
-        poengaarFom1992 = null,
-        forholdstall = null,
+        delingstall = 16.26,
+        pensjonsbeholdningFoerUttakBeloep = Kroner(1092923),
+        pensjonsbeholdningEtterUttakBeloep = Kroner(604923),
+        sluttpoengtall = 4.73,
+        poengaarTom1991 = 4,
+        poengaarFom1992 = 36,
+        forholdstall = 1.137,
         grunnpensjonBeloep = Kroner(14017),
         tilleggspensjonBeloep = Kroner(4872),
         pensjonstillegg = Kroner(4872),
         skjermingstillegg = null,
-        kapittel19Andel = null,
-        kapittel19Trygdetid = null,
+        kapittel19AndelTeller = 1,
+        kapittel19Trygdetid = 40,
         basispensjonBeloep = null,
         restpensjonBeloep = null,
         gjenlevendetillegg = null,
         minstePensjonsnivaaSats = null,
-        kapittel20Andel = null,
-        kapittel20Trygdetid = null,
+        minstePensjonsnivaaBeloep = Kroner(279933),
+        kapittel20AndelTeller = 9,
+        kapittel20Trygdetid = 40,
         garantipensjonBeloep = Kroner(3390),
+        garantipensjonsnivaaBeloep = Kroner(224248),
         garantipensjonSats = null,
-        garantitilleggBeloep = null,
+        garantitilleggBeloep = Kroner(34223),
+        grunnbeloep = Kroner(130160),
     )
 }
