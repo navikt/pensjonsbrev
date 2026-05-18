@@ -25,7 +25,7 @@ private fun createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU: Boolean, vis
         endringInntektstak = visReduksjonsprosent,
         endringIfu = visOktMinsteIFU,
         hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
-        visOktMinusteIFU = visOktMinsteIFU,
+        visOktMinsteIFU = visOktMinsteIFU,
         visReduksjonsprosent = visReduksjonsprosent,
         pe = createPEgruppe10(),
         maanedligUfoeretrygdFoerSkatt = createMaanedligUfoeretrygdFoerSkattDto(),

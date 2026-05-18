@@ -21,7 +21,7 @@ data class VedtakOmIFUReduksjonsprosentData(
     val endringInntektstak: Boolean,
     val endringIfu: Boolean,
     val hjemler: Set<String>,
-    val visOktMinusteIFU: Boolean,
+    val visOktMinsteIFU: Boolean,
     val visReduksjonsprosent: Boolean,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,

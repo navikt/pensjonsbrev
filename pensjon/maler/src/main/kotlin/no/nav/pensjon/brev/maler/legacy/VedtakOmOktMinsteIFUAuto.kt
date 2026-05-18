@@ -21,7 +21,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDa
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.pe
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.reduksjonsprosent
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.tillegg
-import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.visOktMinusteIFU
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.visOktMinsteIFU
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.visReduksjonsprosent
 import no.nav.pensjon.brev.maler.fraser.OktMinsteIFUReduksjonsprosent
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -75,7 +75,7 @@ object VedtakOmOktMinsteIFUAuto : AutobrevTemplate<VedtakOmIFUReduksjonsprosentA
                         endringIfu = data.endringIfu,
                         tillegg = data.tillegg,
                         hjemler = data.hjemler,
-                        visOktMinsteIFU = data.visOktMinusteIFU,
+                        visOktMinsteIFU = data.visOktMinsteIFU,
                         visReduksjonsprosent = data.visReduksjonsprosent,
                     )
                 )
