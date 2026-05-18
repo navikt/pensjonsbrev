@@ -310,131 +310,22 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
                 )
             }
 
-            // Hadde AFP hele året — hele inntekten regnes som opptjent samtidig med AFP.
-            showIf(periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har lagt til grunn at hele denne inntekten er opptjent samtidig som du har mottatt AFP." },
-                        nynorsk { +"Vi har lagt til grunn at heile denne inntekta er opptent samtidig som du har fått AFP." },
-                    )
-                }
-            }
-
-            // AFP startet i året — fordeling før/etter uttak.
-            showIf(periode.equalTo(Periode.UTTAK_I_AARET)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Fordi du har tatt ut AFP fra " + uttaksdato.format() + " benytter vi en " +
-                                "standardberegning for å beregne fordelingen av inntekten din før og etter " +
-                                "AFP-uttaket. Denne beregningen kan endres dersom du kan dokumentere en " +
-                                "annen fordeling av inntekten."
-                        },
-                        nynorsk {
-                            +"Fordi du har teke ut AFP frå " + uttaksdato.format() + ", nyttar vi ei " +
-                                "standardberekning for å rekne ut fordelinga av inntekta di før og etter " +
-                                "AFP-uttaket. Denne berekninga kan endrast dersom du kan dokumentere ei " +
-                                "anna fordeling av inntekta."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vi har lagt til grunn at " + ifu.format() + " er opptjent før du tok ut AFP. " +
-                                "Dette beløpet skal holdes utenfor etteroppgjøret for " +
-                                oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være " +
-                                "opptjent i den perioden du har mottatt AFP, er beregnet til " +
-                                iiap.format() + "."
-                        },
-                        nynorsk {
-                            +"Vi har lagt til grunn at " + ifu.format() + " er opptente før du tok ut AFP. " +
-                                "Dette beløpet skal haldast utanfor etteroppgjeret for " +
-                                oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
-                                "opptent i den perioden du har fått AFP, er berekna til " +
-                                iiap.format() + "."
-                        },
-                    )
-                }
-            }
-
-            // AFP opphørte i året — fordeling under/etter AFP.
-            showIf(periode.equalTo(Periode.OPPHOER_I_AARET)) {
-                ifNotNull(opphorsdato) { opphor ->
-                    paragraph {
-                        text(
-                            bokmal {
-                                +"Fordi AFP har opphørt fra " + opphor.format() + " benytter vi " +
-                                    "en standardberegning for å beregne fordelingen av inntekten din i " +
-                                    "perioder med og uten AFP. Denne beregningen kan endres dersom du kan " +
-                                    "dokumentere en annen fordeling av inntekten."
-                            },
-                            nynorsk {
-                                +"Fordi AFP er avslutta frå " + opphor.format() + ", nyttar vi " +
-                                    "ei standardberekning for å rekne ut fordelinga av inntekta di i periodar " +
-                                    "med og utan AFP. Denne berekninga kan endrast dersom du kan dokumentere " +
-                                    "ei anna fordeling av inntekta."
-                            },
-                        )
-                    }
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vi har lagt til grunn at " + ieo.format() + " er opptjent etter at du gikk " +
-                                "over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette " +
-                                "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
-                                ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
-                                "har mottatt AFP, er beregnet til " + iiap.format() + "."
-                        },
-                        nynorsk {
-                            +"Vi har lagt til grunn at " + ieo.format() + " er opptente etter at du gjekk " +
-                                "over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette " +
-                                "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
-                                ". Den delen av inntekta som blir rekna for å vere opptent i den perioden " +
-                                "du har fått AFP, er berekna til " + iiap.format() + "."
-                        },
-                    )
-                }
-            }
-
-            // Både uttak og opphør i samme år.
-            showIf(periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Fordi du ikke har hatt rett til AFP hele året benytter vi en " +
-                                "standardberegning for å beregne fordelingen av inntekten din i perioder " +
-                                "med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom " +
-                                "du kan dokumentere en annen fordeling av inntekten."
-                        },
-                        nynorsk {
-                            +"Fordi du ikkje har hatt rett til AFP heile året, nyttar vi ei " +
-                                "standardberekning for å rekne ut fordelinga av inntekta di i periodar med " +
-                                "og utan AFP i det aktuelle året. Denne berekninga kan endrast dersom du " +
-                                "kan dokumentere ei anna fordeling av inntekta."
-                        },
-                    )
-                }
-                paragraph {
-                    text(
-                        bokmal {
-                            +"Vi har lagt til grunn at du tjente " + ifu.format() + " før du tok ut AFP og " +
-                                ieo.format() + " etter at du gikk over fra AFP til annen pensjon, " +
-                                "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
-                                "etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i " +
-                                "den perioden du har mottatt AFP, er beregnet til " + iiap.format() + "."
-                        },
-                        nynorsk {
-                            +"Vi har lagt til grunn at du tente " + ifu.format() + " før du tok ut AFP, og " +
-                                ieo.format() + " etter at du gjekk over frå AFP til annan pensjon, " +
-                                "eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor " +
-                                "etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i " +
-                                "den perioden du har fått AFP, er berekna til " + iiap.format() + "."
-                        },
-                    )
-                }
-            }
+            // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
+            // Delt med PE_AF_04_101 (etterbetaling). Se phrase for detaljer.
+            includePhrase(
+                AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
+                    erHelAfpHeleAaret = periode.equalTo(Periode.HEL_AFP_HELE_AARET),
+                    erUttakIAaret = periode.equalTo(Periode.UTTAK_I_AARET),
+                    erOpphoerIAaret = periode.equalTo(Periode.OPPHOER_I_AARET),
+                    erUttakOgOpphoerIAaret = periode.equalTo(Periode.UTTAK_OG_OPPHOER_I_AARET),
+                    uttaksdato = uttaksdato,
+                    opphorsdato = opphorsdato,
+                    oppgjoersAar = oppgjoersAar,
+                    ifu = ifu,
+                    ieo = ieo,
+                    iiap = iiap,
+                ),
+            )
 
             paragraph {
                 text(
@@ -461,46 +352,7 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
 
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
 
-            title1 {
-                text(
-                    bokmal { +"Du har rett til å klage" },
-                    nynorsk { +"Du har rett til å klage" },
-                )
-            }
-            // TODO: Klage-seksjonen avviker fra PE_AF_04_102 / [AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker]
-            //  — 04_100 har en ekstra «Du kan som nevnt sende inn dokumentasjon»-paragraf, og selve
-            //  klage-paragrafen har annen ordlyd (referer ikke til ${'$'}KLAGE_URL). Avklar med fag om de
-            //  to brevene skal harmoniseres.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du kan som nevnt sende inn dokumentasjon på inntekter som du mener skal holdes " +
-                            "utenfor etteroppgjøret. Nav vil foreta et nytt etteroppgjør dersom du har sendt " +
-                            "ny dokumentasjon for inntekt innen fristen på fire uker. Du vil da motta et " +
-                            "nytt vedtak."
-                    },
-                    nynorsk {
-                        +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast " +
-                            "utanfor etteroppgjeret. Nav vil gjennomføre eit nytt etteroppgjer dersom du har " +
-                            "sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få " +
-                            "eit nytt vedtak."
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
-                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra du " +
-                            "mottar dette brevet."
-                    },
-                    nynorsk {
-                        +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
-                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får " +
-                            "dette brevet."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageMedDokumentasjonsfrist)
 
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilInnsyn)
             includePhrase(HarDuSpoersmaal.afpEtteroppgjoer)

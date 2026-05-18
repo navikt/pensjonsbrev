@@ -3,11 +3,11 @@ package no.nav.pensjon.brev.alder.maler.afp
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDto.Scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDtoSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEoFase2AutoDtoSelectors.scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto.Scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.ifu
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.oppgjoersAar
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.scenario
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -28,7 +28,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * lagt fram nye opplysninger om inntekt før AFP-uttak, og ny beregning viser
  * at det ikke skal tilbakekreves noe. Forklaringen til brukeren avhenger av
  * et av tre gjensidig utelukkende scenarier
- * (se [VedtakAfpEtteroppgjoerEoFase2AutoDto.Scenario]).
+ * (se [VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto.Scenario]).
  *
  * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
  *  - De tre `showIf`-blokkene som beskriver scenariene var i originalen
@@ -50,9 +50,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  *    konkatenert uten skille i kilden) er manuelt rettet opp.
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerEoFase2Auto : AutobrevTemplate<VedtakAfpEtteroppgjoerEoFase2AutoDto> {
+object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto> {
 
-    override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_ETTEROPPGJOER_EO_FASE2_AUTO
+    override val kode = Aldersbrevkoder.AutoBrev.PE_AFP_ETTEROPPGJOER_INGEN_ENDR_NYE_OPPL_AUTO
 
     override val template = createTemplate(
         languages = languages(Bokmal, Nynorsk),

@@ -16,11 +16,11 @@ import no.nav.pensjon.brev.template.dsl.text
  *   * Har du spørsmål? — bruker felles [HarDuSpoersmaal.afpEtteroppgjoer]
  *
  * Brevene som har identisk klage-seksjon (PE_AF_04_102, PE_AF_04_106) inkluderer
- * hele [AfpEtteroppgjoerAvslutning]. Brev hvor klage-seksjonen har annen ordlyd
- * (f.eks. PE_AF_04_100 som har en ekstra «Du kan som nevnt sende inn
- * dokumentasjon»-paragraf) kan i stedet komponere fra sub-frasene
- * [DinePlikter], [DuHarRettTilInnsyn] og [HarDuSpoersmaal.afpEtteroppgjoer],
- * og inline sin egen klage-seksjon med TODO-merknad for faglig gjennomgang.
+ * hele [AfpEtteroppgjoerAvslutning]. Fase-1-brev hvor klage-seksjonen i tillegg
+ * inviterer til å sende ny dokumentasjon innen fire uker (PE_AF_04_100,
+ * PE_AF_04_101) komponerer fra sub-frasene [DinePlikter],
+ * [DuHarRettTilAaKlageMedDokumentasjonsfrist], [DuHarRettTilInnsyn] og
+ * [HarDuSpoersmaal.afpEtteroppgjoer].
  */
 object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
     override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -109,6 +109,54 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                         +"Dersom du meiner at vedtaket er feil, kan du klage innan seks veker frå den datoen " +
                             "då du fekk vedtaket. Klaga skal vere skriftleg. Du finn skjema og informasjon på " +
                             "$KLAGE_URL."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Tittel «Du har rett til å klage» + dokumentasjonsfrist-preamble + standard
+     * seks-ukers-klagefrist-paragraf med litt annen ordlyd (refererer ikke til
+     * `$KLAGE_URL`). Brukes av fase-1-vedtak hvor bruker fortsatt har frist til
+     * å sende inn ny dokumentasjon — i dag PE_AF_04_100 (toleransebeløp) og
+     * PE_AF_04_101 (etterbetaling fase 1).
+     */
+    object DuHarRettTilAaKlageMedDokumentasjonsfrist : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Du har rett til å klage" },
+                    nynorsk { +"Du har rett til å klage" },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Du kan som nevnt sende inn dokumentasjon på inntekter som du mener skal holdes " +
+                            "utenfor etteroppgjøret. Nav vil foreta et nytt etteroppgjør dersom du har sendt " +
+                            "ny dokumentasjon for inntekt innen fristen på fire uker. Du vil da motta et " +
+                            "nytt vedtak."
+                    },
+                    nynorsk {
+                        +"Du kan som nemnt sende inn dokumentasjon på inntekter som du meiner skal haldast " +
+                            "utanfor etteroppgjeret. Nav vil gjennomføre eit nytt etteroppgjer dersom du har " +
+                            "sendt ny dokumentasjon for inntekt innan fristen på fire veker. Du vil då få " +
+                            "eit nytt vedtak."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du mener at det er andre forhold ved vedtaket som ikke er riktig, har du " +
+                            "anledning til å klage på vedtaket. Fristen for å klage er seks uker fra du " +
+                            "mottar dette brevet."
+                    },
+                    nynorsk {
+                        +"Dersom du meiner at det er andre forhold ved vedtaket som ikkje er rette, har du " +
+                            "høve til å klage på vedtaket. Fristen for å klage er seks veker frå du får " +
+                            "dette brevet."
                     },
                 )
             }

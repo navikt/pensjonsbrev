@@ -10,7 +10,9 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
+import java.time.LocalDate
 
 /**
  * Felles innhold som går igjen i AFP etteroppgjør-vedtaksbrev (offentlig sektor /
@@ -344,16 +346,351 @@ object AfpEtteroppgjoerInnhold {
                     bokmal {
                         +"Dersom du har arbeidet med fordrevne fra Ukraina og mottatt pensjonistlønn etter " +
                             "særskilt sats kan inntekten for dette arbeidet unntas fra inntektsavkorting. " +
-                            "Det samme gjelder feriepenger for arbeid utført etter 1. april 2022. Reglene " +
-                            "om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om " +
-                            "kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
+                            "Det samme gjelder feriepenger for arbeid utført etter 1. april 2022."
                     },
                     nynorsk {
                         +"Dersom du har arbeidd med fordrivne frå Ukraina og motteke pensjonistlønn etter " +
                             "særskilt sats kan inntekta for dette arbeidet unntakas frå inntektsavkorting. " +
-                            "Det same gjeld feriepengar for slikt arbeid utført etter 1. april 2022. " +
-                            "Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift " +
+                            "Det same gjeld feriepengar for slikt arbeid utført etter 1. april 2022."
+                    },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal {
+                        +"Reglene om inntekter fra arbeid med fordrevne fra Ukraina finnes i forskrift om " +
+                            "kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
+                    },
+                    nynorsk {
+                        +"Reglane om inntekter frå arbeid med fordrivne frå Ukraina finst i forskrift " +
                             "om kombinasjon av AFP og arbeidsinntekt § 2 tredje ledd."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
+     * Fordeling av pensjonsgivende inntekt på periodene med og uten AFP.
+     * Brukes i etterbetalingsbrev (PE_AF_04_101) og toleransebeløpsbrev
+     * (PE_AF_04_107) som begge har en 4-veis Periode-diskriminator. Phrasen
+     * tar én `Expression<Boolean>` per case slik at hvert brev kan koble sin
+     * lokale `Periode`-enum til riktig gren uten å dele en felles type.
+     *
+     * Komma-bare nynorsk-forskjeller mellom de to brevene er bevart i én
+     * versjon (med komma etter datoselektoren), og «AFP er avslutta» er valgt
+     * over «AFP tok slutt» i OPPHOER_I_AARET-paragrafens IEO-tekst.
+     */
+    data class IfuIeoFordelingPerPeriode(
+        val erHelAfpHeleAaret: Expression<Boolean>,
+        val erUttakIAaret: Expression<Boolean>,
+        val erOpphoerIAaret: Expression<Boolean>,
+        val erUttakOgOpphoerIAaret: Expression<Boolean>,
+        val uttaksdato: Expression<LocalDate>,
+        val opphorsdato: Expression<LocalDate?>,
+        val oppgjoersAar: Expression<Year>,
+        val ifu: Expression<Kroner>,
+        val ieo: Expression<Kroner>,
+        val iiap: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(erHelAfpHeleAaret) {
+                paragraph {
+                    text(
+                        bokmal { +"Vi har lagt til grunn at hele denne inntekten er opptjent samtidig som du har mottatt AFP." },
+                        nynorsk { +"Vi har lagt til grunn at heile denne inntekta er opptent samtidig som du har fått AFP." },
+                    )
+                }
+            }
+            showIf(erUttakIAaret) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Fordi du har tatt ut AFP fra " + uttaksdato.format() + " benytter vi en " +
+                                "standardberegning for å beregne fordelingen av inntekten din før og etter " +
+                                "AFP-uttaket. Denne beregningen kan endres dersom du kan dokumentere en " +
+                                "annen fordeling av inntekten."
+                        },
+                        nynorsk {
+                            +"Fordi du har teke ut AFP frå " + uttaksdato.format() + ", nyttar vi ei " +
+                                "standardberekning for å rekne ut fordelinga av inntekta di før og etter " +
+                                "AFP-uttaket. Denne berekninga kan endrast dersom du kan dokumentere ei " +
+                                "anna fordeling av inntekta."
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vi har lagt til grunn at " + ifu.format() + " er opptjent før du tok ut AFP. " +
+                                "Dette beløpet skal holdes utenfor etteroppgjøret for " +
+                                oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være " +
+                                "opptjent i den perioden du har mottatt AFP, er beregnet til " +
+                                iiap.format() + "."
+                        },
+                        nynorsk {
+                            +"Vi har lagt til grunn at " + ifu.format() + " er opptente før du tok ut AFP. " +
+                                "Dette beløpet skal haldast utanfor etteroppgjeret for " +
+                                oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
+                                "opptent i den perioden du har fått AFP, er berekna til " +
+                                iiap.format() + "."
+                        },
+                    )
+                }
+            }
+            showIf(erOpphoerIAaret) {
+                ifNotNull(opphorsdato) { opphor ->
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Fordi AFP har opphørt fra " + opphor.format() + " benytter vi en " +
+                                    "standardberegning for å beregne fordelingen av inntekten din i " +
+                                    "perioder med og uten AFP. Denne beregningen kan endres dersom du kan " +
+                                    "dokumentere en annen fordeling av inntekten."
+                            },
+                            nynorsk {
+                                +"Fordi AFP er avslutta frå " + opphor.format() + ", nyttar vi ei " +
+                                    "standardberekning for å rekne ut fordelinga av inntekta di i periodar " +
+                                    "med og utan AFP. Denne berekninga kan endrast dersom du kan " +
+                                    "dokumentere ei anna fordeling av inntekta."
+                            },
+                        )
+                    }
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vi har lagt til grunn at " + ieo.format() + " er opptjent etter at du gikk " +
+                                "over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette " +
+                                "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
+                                ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
+                                "har mottatt AFP, er beregnet til " + iiap.format() + "."
+                        },
+                        nynorsk {
+                            +"Vi har lagt til grunn at " + ieo.format() + " er opptente etter at du gjekk " +
+                                "over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette " +
+                                "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
+                                ". Den delen av inntekta som blir rekna for å vere opptent i den perioden " +
+                                "du har fått AFP, er berekna til " + iiap.format() + "."
+                        },
+                    )
+                }
+            }
+            showIf(erUttakOgOpphoerIAaret) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Fordi du ikke har hatt rett til AFP hele året benytter vi en " +
+                                "standardberegning for å beregne fordelingen av inntekten din i perioder " +
+                                "med og uten AFP i det aktuelle året. Denne beregningen kan endres dersom " +
+                                "du kan dokumentere en annen fordeling av inntekten."
+                        },
+                        nynorsk {
+                            +"Fordi du ikkje har hatt rett til AFP heile året, nyttar vi ei " +
+                                "standardberekning for å rekne ut fordelinga av inntekta di i periodar med " +
+                                "og utan AFP i det aktuelle året. Denne berekninga kan endrast dersom du " +
+                                "kan dokumentere ei anna fordeling av inntekta."
+                        },
+                    )
+                }
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vi har lagt til grunn at du tjente " + ifu.format() + " før du tok ut AFP og " +
+                                ieo.format() + " etter at du gikk over fra AFP til annen pensjon, " +
+                                "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
+                                "etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i " +
+                                "den perioden du har mottatt AFP, er beregnet til " + iiap.format() + "."
+                        },
+                        nynorsk {
+                            +"Vi har lagt til grunn at du tente " + ifu.format() + " før du tok ut AFP og " +
+                                ieo.format() + " etter at du gjekk over frå AFP til annan pensjon, " +
+                                "eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor " +
+                                "etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i " +
+                                "den perioden du har fått AFP, er berekna til " + iiap.format() + "."
+                        },
+                    )
+                }
+            }
+        }
+    }
+
+    /**
+     * Hele «Ny pensjonsberegning»-blokken som avslutter etterbetalingsbrevene
+     * PE_AF_04_101 (fase 1, forhåndsvarsel) og PE_AF_04_105 (fase 2, etter
+     * svar). Inneholder:
+     *  1. `title1` "Ny pensjonsberegning"
+     *  2. Periodevariert intro («Nedenfor følger en beregning …»)
+     *  3. 4-radig beregningsblokk (gjengitt som linjer med `newline()` — en
+     *     ekte to-kolonne `table` ble for smal og lite leselig) + sub-linje
+     *     med formelforklaringen for inntektsfradraget + asterisk-fotnote.
+     *  4. "For lite utbetalt AFP" oppsummeringslinje.
+     *
+     * Brevene har hver sin Periode-enum, så phrasen tar én `Expression<Boolean>`
+     * per case (hele året / uttak i året / opphør i året / uttak og opphør i
+     * året).
+     */
+    data class NyPensjonsberegningEtterbetalingBlokk(
+        val erHeleAaret: Expression<Boolean>,
+        val erUttakIAaret: Expression<Boolean>,
+        val erOpphoerIAaret: Expression<Boolean>,
+        val erUttakOgOpphoerIAaret: Expression<Boolean>,
+        val uttaksdato: Expression<LocalDate>,
+        val opphorsdato: Expression<LocalDate?>,
+        val oppgjoersAar: Expression<Year>,
+        val fullafp: Expression<Kroner>,
+        val fradragberegnetai: Expression<Kroner>,
+        val iiap: Expression<Kroner>,
+        val tpiberegnet: Expression<Kroner>,
+        val korrigertafp: Expression<Kroner>,
+        val utbetaltafp: Expression<Kroner>,
+        val forlitebetalt: Expression<Kroner>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            title1 {
+                text(
+                    bokmal { +"Ny pensjonsberegning" },
+                    nynorsk { +"Ny pensjonsberekning" },
+                )
+            }
+
+            showIf(erHeleAaret) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                oppgjoersAar.format() + ":"
+                        },
+                        nynorsk {
+                            +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                oppgjoersAar.format() + ":"
+                        },
+                    )
+                }
+            }
+            showIf(erUttakIAaret) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                "perioden " + uttaksdato.format() + " til 31. desember " +
+                                oppgjoersAar.format() + ":"
+                        },
+                        nynorsk {
+                            +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                "perioden " + uttaksdato.format() + " til 31. desember " +
+                                oppgjoersAar.format() + ":"
+                        },
+                    )
+                }
+            }
+            showIf(erOpphoerIAaret) {
+                ifNotNull(opphorsdato) { opphor ->
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                    "perioden 1. januar " + oppgjoersAar.format() + " til " +
+                                    opphor.format() + ":"
+                            },
+                            nynorsk {
+                                +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                    "perioden 1. januar " + oppgjoersAar.format() + " til " +
+                                    opphor.format() + ":"
+                            },
+                        )
+                    }
+                }
+            }
+            showIf(erUttakOgOpphoerIAaret) {
+                ifNotNull(opphorsdato) { opphor ->
+                    paragraph {
+                        text(
+                            bokmal {
+                                +"Nedenfor følger en beregning som viser hva du skulle ha fått utbetalt i " +
+                                    "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
+                            },
+                            nynorsk {
+                                +"Nedanfor følgjer ei berekning som viser kva du skulle ha fått utbetalt i " +
+                                    "perioden " + uttaksdato.format() + " til " + opphor.format() + ":"
+                            },
+                        )
+                    }
+                }
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
+                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
+                )
+                newline()
+                text(
+                    bokmal { +"Inntektsfradraget i AFP for den nye inntekten: " + fradragberegnetai.format(denominator = false) + " kr" },
+                    nynorsk { +"Inntektsfrådraget i AFP for den nye inntekta: " + fradragberegnetai.format(denominator = false) + " kr" },
+                )
+                newline()
+                text(
+                    bokmal {
+                        +iiap.format(denominator = false) + " kr (ny beregnet inntekt) / " +
+                            tpiberegnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                            fullafp.format(denominator = false) + " kr (full AFP)"
+                    },
+                    nynorsk {
+                        +iiap.format(denominator = false) + " kr (ny berekna inntekt) / " +
+                            tpiberegnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                            fullafp.format(denominator = false) + " kr (full AFP)"
+                    },
+                )
+                newline()
+                text(
+                    bokmal { +"AFP etter fradrag for den nye inntekten: " + korrigertafp.format(denominator = false) + " kr" },
+                    nynorsk { +"AFP etter frådrag for den nye inntekta: " + korrigertafp.format(denominator = false) + " kr" },
+                )
+                newline()
+                text(
+                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
+                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
+                )
+                newline()
+                text(
+                    bokmal { +"*Tidligere arbeidsinntekt er beregnet ut fra inntekten din i årene før du tok ut AFP." },
+                    nynorsk { +"*Tidlegare arbeidsinntekt er berekna ut frå inntekta di i åra før du tok ut AFP." },
+                )
+            }
+
+            paragraph {
+                text(
+                    bokmal { +"For lite utbetalt AFP: " + forlitebetalt.format(denominator = false) + " kr" },
+                    nynorsk { +"For lite utbetalt AFP: " + forlitebetalt.format(denominator = false) + " kr" },
+                )
+            }
+        }
+    }
+
+    /**
+     * Forbehold om mulig refusjonskrav fra andre samordningspliktige
+     * pensjonsordninger ved etterbetaling av AFP. Brukes i PE_AF_04_101
+     * (fase 1) og PE_AF_04_105 (fase 2 etter svar). 105 hadde opprinnelig
+     * "mulig" (singular); harmonisert til 101s "mulige" / nynorsk "moglege"
+     * (plural).
+     */
+    object RefusjonskravForbehold : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Hvis du har rett til annen samordningspliktig pensjon, må vi ta forbehold om " +
+                            "mulige refusjonskrav fra andre pensjonsordninger i etterbetalingen av AFP. Ny " +
+                            "samordning mellom to eller flere pensjoner tilbake i tid kan føre til at den " +
+                            "aktuelle etterbetalingen av AFP blir vesentlig redusert eller faller helt bort."
+                    },
+                    nynorsk {
+                        +"Dersom du har rett til annan samordningspliktig pensjon, må vi ta atterhald om " +
+                            "moglege refusjonskrav frå andre pensjonsordningar i etterbetalinga av AFP. Ny " +
+                            "samordning mellom to eller fleire pensjonar tilbake i tid kan føre til at " +
+                            "den aktuelle etterbetalinga av AFP blir vesentleg redusert eller fell heilt " +
+                            "bort."
                     },
                 )
             }

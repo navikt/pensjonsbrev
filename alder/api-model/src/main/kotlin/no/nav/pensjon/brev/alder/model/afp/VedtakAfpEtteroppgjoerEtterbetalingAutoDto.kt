@@ -6,24 +6,27 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 /**
- * Vedtak — AFP etteroppgjør med etterbetaling (autobrev).
+ * Vedtak — AFP etteroppgjør med etterbetaling, fase 1 / varsel (autobrev).
  *
- * Konvertert fra Exstream-malen `PE_AF_04_105`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når bruker
- * har lagt fram nye dokumenterte opplysninger om inntekten i oppgjørsåret,
- * avviket mellom forventet og faktisk pensjonsgivende inntekt overstiger
- * toleransebeløpet, og det derfor blir **etterbetaling** av for lite
- * utbetalt AFP — motsatt finansiell retning av `PE_AF_04_107`
- * (tilbakekreving).
+ * Konvertert fra Exstream-malen `PE_AF_04_101`. Brevet sendes etter et
+ * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når avviket
+ * mellom forventet og faktisk pensjonsgivende inntekt overstiger
+ * toleransebeløpet og resulterer i **for lite utbetalt** AFP. Brevet
+ * inviterer bruker til å sende inn dokumentasjon innen fire uker dersom
+ * inntektsgrunnlaget er feil. Hvis ingen dokumentasjon kommer innen
+ * fristen, blir etterbetalingen gjennomført automatisk; hvis ny
+ * dokumentasjon mottas, sendes [VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto]
+ * (PE_AF_04_105) etter behandling.
  *
- * Hvilken forklaring som vises bestemmes av to diskriminatorer:
- *   * [Scenario] — fem gjensidig utelukkende inntektsvarianter (se under).
- *     Originalen kombinerte rådata for IFUregistrert / IEOregistrert og
- *     uttaksdato mot 01.02 i `showIf`-blokker; her er logikken løftet ut
- *     av malen (skill-step 7).
- *   * [NyPensjonsberegningPeriode] — fire perioder for «Ny pensjonsberegning
- *     …»-introen. Originalen brukte rådata for uttaksdato vs. 01.02 og
- *     opphorsdato vs. 31.12 i overlappende `showIf`-blokker.
+ * Motsatt finansiell retning av [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto]
+ * (PE_AF_04_107 — fase 1 for-mye-betalt).
+ *
+ * Hvilken periodevariant av forklaringen om inntektsfordeling som vises
+ * bestemmes av [Periode] — samme inndeling som
+ * [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode]. Originalen brukte
+ * fire overlappende `showIf`-blokker over rådata for uttaksdato /
+ * opphorsdato; her er logikken løftet ut av malen til en diskriminator
+ * levert av kalleren (jf. skill-step 7).
  */
 data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
@@ -34,28 +37,27 @@ data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
     val forlitebetalt: Kroner,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
+    // Samlet pensjonsgivende inntekt fra Skatteetaten for oppgjørsåret.
     val pgi: Kroner,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-    // Inntekt opptjent før uttak av AFP. Vises i alle scenarier unntatt
-    // [Scenario.KUN_IEO_OVERSTYRT].
+    // Inntekt opptjent før uttak av AFP. Brukes i [Periode.UTTAK_I_AARET]
+    // og [Periode.UTTAK_OG_OPPHOER_I_AARET].
     val ifu: Kroner,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    // Inntekt opptjent etter opphør av AFP. Vises i scenariene
-    // [Scenario.IFU_OG_IEO_OVERSTYRT] og [Scenario.KUN_IEO_OVERSTYRT].
+    // Inntekt opptjent etter opphør av AFP. Brukes i
+    // [Periode.OPPHOER_I_AARET] og [Periode.UTTAK_OG_OPPHOER_I_AARET].
     val ieo: Kroner,
 
     // PE_Vedtaksdata_APFEO_IIAP
     // Inntekt antatt opptjent i perioden med AFP.
     val iiap: Kroner,
 
-    // PE_Vedtaksdata_AFPEO_AFP_avvik
-    // Forskjellen mellom forventet og faktisk pensjonsgivende inntekt;
-    // overstiger toleransebeløpet (15 000 kr). Beløpet er positivt og
-    // omtales som "lavere" i teksten — bruker har hatt mindre inntekt
-    // enn forventet, og skal derfor ha etterbetaling.
-    val avvik: Kroner,
+    // PE_Vedtaksdata_AFPEO_fpiberegnet
+    // Forventet pensjonsgivende inntekt som ble lagt til grunn ved
+    // utbetalingen av pensjon — vises i toleransebeløp-paragrafen.
+    val fpiberegnet: Kroner,
 
     // PE_Vedtaksdata_AFPEO_fullafp
     val fullafp: Kroner,
@@ -67,6 +69,8 @@ data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
     val korrigertafp: Kroner,
 
     // PE_Vedtaksdata_AFPEO_tpiberegnet
+    // Tidligere arbeidsinntekt som ble lagt til grunn ved utbetaling av
+    // pensjon; nevneren i formelen for inntektsfradraget.
     val tpiberegnet: Kroner,
 
     // PE_Vedtaksdata_AFPEO_utbetaltafp
@@ -77,52 +81,28 @@ data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato
     // Nullbart fordi Exstream-originalen sjekker mot DateValue("") for
-    // pågående AFP. Vises bare i to av periode-variantene.
+    // pågående AFP. Brukes i [Periode.OPPHOER_I_AARET] og
+    // [Periode.UTTAK_OG_OPPHOER_I_AARET].
     val opphorsdato: LocalDate?,
 
-    val scenario: Scenario,
-
-    val periode: NyPensjonsberegningPeriode,
+    val periode: Periode,
 ) : AutobrevData {
 
     /**
-     * Hvilken inntektsforklaring som skal vises. Fem gjensidig utelukkende
-     * varianter; merk at 105 — i motsetning til 104 (tilbakekreving) — ikke
-     * har en `INGEN_OVERSTYRING_HEL_AFP`-variant.
+     * Periodevariant av forklaringen. Samme inndeling som
+     * [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode] (PE_AF_04_107).
      */
-    enum class Scenario {
-        // IFUregistrert = "" AND IEOregistrert = "" AND uttaksdato >= 01.02
-        INGEN_OVERSTYRING_UTTAK_I_AARET,
+    enum class Periode {
+        // Uttak < 01.02 AND (Opphor >= 31.12 OR Opphor tom) — AFP løp hele året.
+        HEL_AFP_HELE_AARET,
 
-        // IFUregistrert != "" AND IEOregistrert = "" AND uttaksdato >= 01.02
-        IFU_OVERSTYRT_UTTAK_I_AARET,
+        // Uttak >= 01.02 AND (Opphor >= 31.12 OR Opphor tom) — uttak i året, AFP løper videre.
+        UTTAK_I_AARET,
 
-        // IFUregistrert != "" AND IEOregistrert = "" AND uttaksdato <= 01.01
-        IFU_OVERSTYRT_HEL_AFP,
+        // Uttak < 01.02 AND Opphor < 31.12 — AFP fra årets start, opphor i året.
+        OPPHOER_I_AARET,
 
-        // IFUregistrert != "" AND IEOregistrert != ""
-        IFU_OG_IEO_OVERSTYRT,
-
-        // IFUregistrert = "" AND IEOregistrert != ""
-        KUN_IEO_OVERSTYRT,
-    }
-
-    /**
-     * Periodevariant av «Ny pensjonsberegning …»-introen. Fire varianter
-     * basert på om uttak skjedde før eller i året (vs. 01.02) og om opphør
-     * skjedde i året eller etter (vs. 31.12 / tom dato).
-     */
-    enum class NyPensjonsberegningPeriode {
-        // Uttak < 01.02 AND (opphor >= 31.12 OR opphor tom) — AFP løp hele året.
-        HELE_AARET,
-
-        // Uttak >= 01.02 AND (opphor >= 31.12 OR opphor tom) — uttak i året, AFP løper videre.
-        UTTAK_I_AARET_LOEPENDE,
-
-        // Uttak < 01.02 AND opphor < 31.12 — AFP fra årets start, opphor i året.
-        UTTAK_FOER_AARET_OPPHOR_I_AARET,
-
-        // Uttak >= 01.02 AND opphor < 31.12 — både uttak og opphor i året.
-        UTTAK_OG_OPPHOR_I_AARET,
+        // Uttak >= 01.02 AND Opphor < 31.12 — både uttak og opphør i året.
+        UTTAK_OG_OPPHOER_I_AARET,
     }
 }

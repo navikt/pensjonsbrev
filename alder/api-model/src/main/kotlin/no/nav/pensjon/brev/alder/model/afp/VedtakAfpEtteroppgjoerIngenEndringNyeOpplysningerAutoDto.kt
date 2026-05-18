@@ -21,7 +21,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
  *   * `GRADERT_AFP_INNTEKT_SVARER_TIL_FORVENTET` — `0 < UtbetaltAFP < fullAFP
  *      AND PGI <= IFU + FPIberegnet + 15 000`
  */
-data class VedtakAfpEtteroppgjoerEoFase2AutoDto(
+data class VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,
 

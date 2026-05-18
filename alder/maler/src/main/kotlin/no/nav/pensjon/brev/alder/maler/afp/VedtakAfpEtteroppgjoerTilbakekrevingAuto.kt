@@ -51,7 +51,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  *    Logikken er løftet ut av malen til [Periode]-diskriminatoren.
  *  - Den hardkodede teksten "som i 2024 var 15 000 kroner" er erstattet med
  *    "i {oppgjørsår} var 15 000 kroner" (samme tilpasning som i
- *    [VedtakAfpEtteroppgjoerEoFase2Auto] / `_ToleransebeloepAuto`).
+ *    [VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto] / `_ToleransebeloepAuto`).
  *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket setter
  *    signaturen selv via fellesAuto.
  *  - «Ny pensjonsberegning» og «AFP som er betalt ut for mye» er i originalen
