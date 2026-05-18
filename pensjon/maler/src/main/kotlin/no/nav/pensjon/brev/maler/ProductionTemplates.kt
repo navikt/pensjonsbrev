@@ -20,7 +20,9 @@ import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFUAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmOktMinsteIFULavereReduksjonsprosentAuto
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagGjenlevendepensjonUtland
 import no.nav.pensjon.brev.maler.legacy.redigerbar.AvslagUfoerepensjon
@@ -119,6 +121,8 @@ object ProductionTemplates : AllTemplates {
         HvilendeRettVarselOpphoer,
         VedtakOmLavereMinstesatsAuto,
         VedtakOmOktMinsteIFUAuto,
+        VedtakOmLavereReduksjonsprosentAuto,
+        VedtakOmOktMinsteIFULavereReduksjonsprosentAuto,
     )
 
     private val redigerbare: Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> = setOf(
