@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
@@ -59,6 +60,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_AVSLAG
+
+    override val featureToggle = FeatureToggles.avslagAfpPrivat.toggle
 
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
 

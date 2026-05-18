@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.*
@@ -51,6 +52,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffentligSektorDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AF_INNVILGELSE_OFFENTLIG
+
+    override val featureToggle = FeatureToggles.innvilgelseAvAfpOffentligSektor.toggle
 
     override val kategori = Brevkategori.FOERSTEGANGSBEHANDLING
 

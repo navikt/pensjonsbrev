@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmAfp
@@ -63,6 +64,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffentligSektorDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AF_VEDTAK_ENDRING_OFFENTLIG
+
+    override val featureToggle = FeatureToggles.vedtakEndringAfpOffentligSektor.toggle
 
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
 
