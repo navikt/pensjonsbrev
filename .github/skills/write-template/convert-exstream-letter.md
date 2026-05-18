@@ -159,20 +159,9 @@ The converter emits defensive, verbose DSL that mirrors Exstream's decision tree
 - **Merge nested `showIf`** into single calls with `and`: `showIf(A) { showIf(B) { … } }` → `showIf(A and B) { … }`.
 - **Replace counter flags with `forEach`**: `showIf(pe.teller_periodisering().greaterThan(0)) { … }` blocks typically mean "for each period". Rewrite as `forEach(pe.perioder()) { periode -> … }` and drop the counter selector.
 - **Deduplicate repeated blocks into phrases.** The converter unrolls shared structures — in the canonical example, the *"Pensjonen din er endret fordi / endr_vedtakhistorikk / endr_regel / …"* list appears once for the periodised path and once for the non-periodised path. Extract to an `OutlinePhrase`/`ParagraphPhrase` (see [`dsl-phrases.md`](dsl-phrases.md)) and include it twice.
-- **Sibling-letter near-match extraction.** When a letter being converted shares most of its body with an already-converted sibling but diverges in a sentence or two, do not parameterise the diff with `Expression`-based `showIf` — the variant is statically known per caller, so that is the wrong axis. Instead:
-   1. Diff the two Exstream sources paragraph by paragraph.
-   2. Extract every run of identical consecutive content into a shared phrase in the relevant/closest `fraser/` folder.
-   3. Inline the differing paragraph(s) in each caller with its original wording, and add a `// TODO` comment naming the sibling and the variant so fag can later decide whether to harmonise.
-   4. If a section header is shared but its body diverges, split the parent phrase into one sub-phrase per `title1` section so callers can compose around the diverging part (see [`dsl-phrases.md`](dsl-phrases.md#composite-phrases--expose-the-parts-as-well-as-the-whole)).
-- **Nullable selectors and `.format()`.** The converter happily emits `pe.someNullableDate().format()`. For nullable selectors this yields `Expression<String?>`, which cannot be concatenated with `+`. Wrap the surrounding paragraph in `ifNotNull(expr) { v -> … v.format() … }`; don't reach for `.ifNull("")` to silence the type error (it prints an empty string instead of skipping the sentence).
 - **Boolean selectors are predicates.** Calls like `pe.…_tpinnvilget()` already return `Expression<Boolean>` and can be used directly in `showIf(…)` — no `.equalTo(true)` needed. Strip if the converter emitted it.
 - **Drop the trace comments** (`//[PE_GP_04_001_…]`) once the paragraph is verified to match the Exstream source. They are useful for the first-pass review, noise afterwards.
 - **Collapse identical IF-arms** where Exstream had one `showIf(brutto != netto) { … }` and another `showIf(brutto = netto) { … }` that render identical content except for one column. Express as a single structure that omits the brutto column using `showIf` inside the row.
-- **Share types across letter families.** When converting a second letter that mirrors a converted sibling (e.g. an *endring*-variant of an *innvilgelse*) and you discover that the two Dtos have byte-identical inner data classes / enums (`Beregning`, `YtelsesKomponent`, `SivilstandGruppe`, …), lift them into a single top-level `object` in api-model — for example `object AfpOffentligSektor { enum class Sivilstand { … }; data class Beregning(…); data class YtelsesKomponent(…) }`. Reference as `AfpOffentligSektor.Beregning` from each Dto. This:
-  * keeps the namespace tidy (the data classes are not loose at top-level of `model.afp`),
-  * unblocks moving the corresponding `OutlinePhrase` / `ParagraphPhrase` / `TableScope<_, Unit>` helpers into a shared `fraser/` file, because the phrase can take `Expression<AfpOffentligSektor.Beregning>` regardless of which letter Dto contains it,
-  * is a Kotlin-source-breaking change but **JSON shape unchanged** — only the import path moves.
-  Selectors are still generated: KSP emits `AfpOffentligSektorSelectors.BeregningSelectors.brutto` etc., so phrases and templates use them the same way as before. Bump api-model version and `publishToMavenLocal` after the refactor.
 
 ## Register and verify
 

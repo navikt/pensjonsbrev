@@ -65,7 +65,6 @@ The Dto is the contract with the bestiller system. Design it *before* writing DS
 - **Non-nullable by default.** The DSL is null-safe — a nullable field forces you to handle the null branch in every `bokmal/nynorsk/english` block. If the brev cannot be produced without the value, require it.
 - **Group fields that are required together.** If A only makes sense when B is present, nest them in a data class so the impossible state is unrepresentable.
 - **No defaults on required fields.** A silent default becomes a silent production bug.
-- **Use the domain primitive types in `BrevbakerType`, not their underlying scalars** (`Kroner`, `Year`, `Months`, `Days`, `Percent`, `Telefonnummer`, `Foedselsnummer`, …). Each has a localised `.format()` overload. A raw `Int`/`String` selector compiles but pushes unit handling and language switching to every call site.
 
 ```kotlin
 data class MittBrevDto(

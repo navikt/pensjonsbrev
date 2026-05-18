@@ -51,7 +51,7 @@ The compiler error `Unresolved reference: paragraph` (or `text`, `title1`, `colu
 
 ## Notes
 
-- Headings have four levels: `title` (H1, once at template root) → `title1` (H2) → `title2` (H3) → `title3` (H4). Never skip a level, never simulate with bold paragraphs — see [`dsl-text-and-formatting.md`](dsl-text-and-formatting.md#heading-levels).
+- Use `title1`/`title2`/`title3` (not Markdown-style `#`) for section headings inside `outline`.
 - Adjacent text fragments in the same text run concatenate without a separator — see [`dsl-text-and-formatting.md`](dsl-text-and-formatting.md).
 - `newline()` exists but is sparingly used (typically for stacking address lines inside a single paragraph). For ordinary prose breaks, open a new `paragraph { }`.
 - Attachments are themselves a self-contained tree starting at `OutlineScope` — see [`dsl-attachments.md`](dsl-attachments.md).
