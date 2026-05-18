@@ -87,59 +87,35 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
         private fun consumeText(insertIndex: ContentIndex, deleteContentIndex: ContentIndex) {
             data class RangeState(
                 private val contentIndex: ContentIndex,
+                private val textLength: Int = 0,
                 private val current: DiffProducer.TextSegment? = null,
                 private val completed: List<DiffProducer.TextSegment> = emptyList(),
             ) {
-                fun extend(wordStart: Int, newLength: Int, textLength: Int, word: String): RangeState =
-                    if (current?.endOffset == textLength)
-                        copy(current = current.copy(endOffset = newLength, text = current.text + " " + word))
+                private fun spaceLength() = if (textLength == 0) 0 else 1
+
+                fun extend(word: String): RangeState {
+                    val wordStart = textLength + spaceLength()
+                    val newLength = wordStart + word.length
+                    return if (current?.endOffset == textLength)
+                        copy(textLength = newLength, current = current.copy(endOffset = newLength, text = current.text + " " + word))
                     else
-                        copy(
-                            current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word),
-                            completed = completed + listOfNotNull(current),
-                        )
+                        copy(textLength = newLength, current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word), completed = completed + listOfNotNull(current))
+                }
+
+                fun skip(word: String): RangeState =
+                    copy(textLength = textLength + spaceLength() + word.length)
 
                 fun segments(): List<DiffProducer.TextSegment> = completed + listOfNotNull(current)
             }
 
             data class State(
-                val insertTextLength: Int = 0,
-                val deleteTextLength: Int = 0,
                 val inserts: RangeState = RangeState(insertIndex),
                 val deletes: RangeState = RangeState(deleteContentIndex),
             ) {
-                private fun insertSpaceLength() = if (insertTextLength == 0) 0 else 1
-                private fun deleteSpaceLength() = if (deleteTextLength == 0) 0 else 1
-
-                fun insert(word: Token.Word): State {
-                    val wordStart = insertTextLength + insertSpaceLength()
-                    val newLength = wordStart + word.word.length
-                    return copy(insertTextLength = newLength, inserts = inserts.extend(wordStart, newLength, insertTextLength, word.word))
-                }
-
-                fun delete(word: Token.Word): State {
-                    val wordStart = deleteTextLength + deleteSpaceLength()
-                    val newLength = wordStart + word.word.length
-                    return copy(deleteTextLength = newLength, deletes = deletes.extend(wordStart, newLength, deleteTextLength, word.word))
-                }
-
-                fun replace(oldWord: Token.Word, newWord: Token.Word): State {
-                    val insertWordStart = insertTextLength + insertSpaceLength()
-                    val insertNewLength = insertWordStart + newWord.word.length
-                    val deleteWordStart = deleteTextLength + deleteSpaceLength()
-                    val deleteNewLength = deleteWordStart + oldWord.word.length
-                    return copy(
-                        insertTextLength = insertNewLength,
-                        deleteTextLength = deleteNewLength,
-                        inserts = inserts.extend(insertWordStart, insertNewLength, insertTextLength, newWord.word),
-                        deletes = deletes.extend(deleteWordStart, deleteNewLength, deleteTextLength, oldWord.word),
-                    )
-                }
-
-                fun noChange(word: Token.Word): State = copy(
-                    insertTextLength = insertTextLength + insertSpaceLength() + word.word.length,
-                    deleteTextLength = deleteTextLength + deleteSpaceLength() + word.word.length,
-                )
+                fun insert(word: Token.Word): State = copy(inserts = inserts.extend(word.word))
+                fun delete(word: Token.Word): State = copy(deletes = deletes.extend(word.word))
+                fun replace(oldWord: Token.Word, newWord: Token.Word): State = insert(newWord).delete(oldWord)
+                fun noChange(word: Token.Word): State = copy(inserts = inserts.skip(word.word), deletes = deletes.skip(word.word))
 
                 fun changes() =
                     inserts.segments().map { Change.Insert(it) } +
