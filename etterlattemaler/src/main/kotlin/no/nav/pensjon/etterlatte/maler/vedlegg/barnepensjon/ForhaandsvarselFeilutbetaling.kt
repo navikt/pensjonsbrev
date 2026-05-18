@@ -6,9 +6,9 @@ import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.innholdForhaandsvarsel
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselOpphoer
 import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDataSelectors.innholdForhaandsvarsel
+import no.nav.pensjon.etterlatte.maler.barnepensjon.revurdering.BarnepensjonRevurderingDataSelectors.innholdForhaandsvarsel as innholdForhaandsvarselRevurdering
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.data as dataOpphoer
@@ -28,7 +28,7 @@ val forhaandsvarselFeilutbetalingBarnepensjonRevurdering: AttachmentTemplate<Lan
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarsel)
+        konverterElementerTilBrevbakerformat(dataRevurdering.innholdForhaandsvarselRevurdering)
 
         includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
         includePhrase(Felles.HvaSkjerVidereIDinSak)
@@ -47,7 +47,7 @@ val forhaandsvarselFeilutbetalingBarnepensjonOpphoer: AttachmentTemplate<LangBok
         includeSakspart = false
     ) {
 
-        konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarsel)
+        konverterElementerTilBrevbakerformat(dataOpphoer.innholdForhaandsvarselOpphoer)
 
         includePhrase(Felles.SlikUttalerDuDegBarnepensjon)
         includePhrase(Felles.HvaSkjerVidereIDinSak)
