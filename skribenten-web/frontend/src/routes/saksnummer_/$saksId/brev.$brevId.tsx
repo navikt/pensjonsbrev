@@ -260,6 +260,7 @@ function RedigerBrev({
       return oppdaterBrev({
         saksId: Number.parseInt(saksId, 10),
         brevId: brev.info.id,
+        frigiReservasjon: false,
         request: {
           redigertBrev: values.redigertBrev,
           saksbehandlerValg: values.saksbehandlerValg,
