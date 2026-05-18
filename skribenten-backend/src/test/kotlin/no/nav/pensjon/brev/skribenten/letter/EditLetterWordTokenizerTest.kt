@@ -9,6 +9,9 @@ import no.nav.pensjon.brev.skribenten.common.diff.shortestEditScript
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableRowIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.Block.Type.PARAGRAPH
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
@@ -143,41 +146,37 @@ class EditLetterWordTokenizerTest {
         )
     }
 
+
     // --- parseTokens ---
 
-    private sealed class ProducerCall {
-        data class Block(val blockIndex: Int, val change: Change<DiffProducer.BlockInfo>) : ProducerCall()
-        data class ItemList(val blockIndex: Int, val contentIndex: Int, val change: Change<DiffProducer.ItemListInfo>) : ProducerCall()
-        data class Item(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val change: Change<DiffProducer.ItemInfo>) : ProducerCall()
-        data class Table(val blockIndex: Int, val contentIndex: Int, val change: Change<DiffProducer.TableInfo>) : ProducerCall()
-        data class Row(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val change: Change<DiffProducer.RowInfo>) : ProducerCall()
-        data class Cell(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int, val change: Change<DiffProducer.CellInfo>) : ProducerCall()
-        data class TextSegment(val change: Change<DiffProducer.TextSegment>) : ProducerCall()
-    }
-
-    private fun recordCalls(old: List<Token>, new: List<Token>): List<ProducerCall> {
-        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<ProducerCall>> {
-            private val calls = mutableListOf<ProducerCall>()
-            override fun block(blockIndex: Int, change: Change<DiffProducer.BlockInfo>) {
-                calls.add(ProducerCall.Block(blockIndex, change))
+    private fun recordCalls(old: List<Token>, new: List<Token>): List<Pair<ContentIndex, Change<*>>> {
+        return tokenizer.parseTokens(shortestEditScript(old, new), object : DiffProducer<List<Pair<ContentIndex, Change<*>>>> {
+            private val calls = mutableListOf<Pair<ContentIndex, Change<*>>>()
+            override fun block(index: ContentIndex.BlockIndex, change: Change<DiffProducer.BlockInfo>) {
+                calls.add(index to change)
             }
-            override fun itemList(blockIndex: Int, contentIndex: Int, change: Change<DiffProducer.ItemListInfo>) {
-                calls.add(ProducerCall.ItemList(blockIndex, contentIndex, change))
+            override fun itemList(index: BlockContentIndex, change: Change<DiffProducer.ItemListInfo>) {
+                calls.add(index to change)
             }
-            override fun item(blockIndex: Int, contentIndex: Int, itemIndex: Int, change: Change<DiffProducer.ItemInfo>) {
-                calls.add(ProducerCall.Item(blockIndex, contentIndex, itemIndex, change))
+            override fun item(index: ItemIndex, change: Change<DiffProducer.ItemInfo>) {
+                calls.add(index to change)
             }
-            override fun table(blockIndex: Int, contentIndex: Int, change: Change<DiffProducer.TableInfo>) {
-                calls.add(ProducerCall.Table(blockIndex, contentIndex, change))
+            override fun table(index: BlockContentIndex, change: Change<DiffProducer.TableInfo>) {
+                calls.add(index to change)
             }
-            override fun row(blockIndex: Int, contentIndex: Int, rowIndex: Int, change: Change<DiffProducer.RowInfo>) {
-                calls.add(ProducerCall.Row(blockIndex, contentIndex, rowIndex, change))
+            override fun row(index: TableRowIndex, change: Change<DiffProducer.RowInfo>) {
+                calls.add(index to change)
             }
-            override fun cell(blockIndex: Int, contentIndex: Int, rowIndex: Int, cellIndex: Int, change: Change<DiffProducer.CellInfo>) {
-                calls.add(ProducerCall.Cell(blockIndex, contentIndex, rowIndex, cellIndex, change))
+            override fun cell(index: TableCellIndex, change: Change<DiffProducer.CellInfo>) {
+                calls.add(index to change)
             }
             override fun textSegment(change: Change<DiffProducer.TextSegment>) {
-                calls.add(ProducerCall.TextSegment(change))
+                val index = when (change) {
+                    is Change.Insert -> change.new.index
+                    is Change.Delete -> change.old.index
+                    is Change.Replace -> change.new.index
+                }
+                calls.add(index to change)
             }
             override fun build() = calls.toList()
         })
@@ -193,8 +192,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.Block(0, Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello"))),
+                ContentIndex.BlockIndex(0) to Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH)),
+                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello")),
             ),
             recordCalls(old, new),
         )
@@ -210,8 +209,8 @@ class EditLetterWordTokenizerTest {
         val new = listOf<Token>()
         assertEquals(
             listOf(
-                ProducerCall.Block(0, Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello"))),
+                ContentIndex.BlockIndex(0) to Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH)),
+                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello")),
             ),
             recordCalls(old, new),
         )
@@ -233,8 +232,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13, "goodbye"))),
-                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11, "world"))),
+                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13, "goodbye")),
+                BlockContentIndex(0, 0) to Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11, "world")),
             ),
             recordCalls(old, new),
         )
@@ -254,9 +253,9 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.ItemList(0, 0, Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE))),
-                ProducerCall.Item(0, 0, 0, Change.Insert(DiffProducer.ItemInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "hello"))),
+                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE)),
+                ContentIndex.ItemIndex(0, 0, 0) to Change.Insert(DiffProducer.ItemInfo(null)),
+                ItemContentIndex(0, 0, 0, 0) to Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "hello")),
             ),
             recordCalls(old, new),
         )
@@ -283,8 +282,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.Item(0, 0, 1, Change.Insert(DiffProducer.ItemInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5, "world"))),
+                ContentIndex.ItemIndex(0, 0, 1) to Change.Insert(DiffProducer.ItemInfo(null)),
+                ItemContentIndex(0, 0, 1, 0) to Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5, "world")),
             ),
             recordCalls(old, new),
         )
@@ -310,12 +309,12 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.Table(0, 0, Change.Insert(DiffProducer.TableInfo(null))),
-                ProducerCall.Cell(0, 0, -1, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6, "header"))),
-                ProducerCall.Row(0, 0, 0, Change.Insert(DiffProducer.RowInfo(null))),
-                ProducerCall.Cell(0, 0, 0, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4, "body"))),
+                BlockContentIndex(0, 0) to Change.Insert(DiffProducer.TableInfo(null)),
+                ContentIndex.TableCellIndex(0, 0, -1, 0) to Change.Insert(DiffProducer.CellInfo(null)),
+                TableCellContentIndex(0, 0, -1, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6, "header")),
+                ContentIndex.TableRowIndex(0, 0, 0) to Change.Insert(DiffProducer.RowInfo(null)),
+                ContentIndex.TableCellIndex(0, 0, 0, 0) to Change.Insert(DiffProducer.CellInfo(null)),
+                TableCellContentIndex(0, 0, 0, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4, "body")),
             ),
             recordCalls(old, new),
         )
@@ -343,9 +342,9 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.Row(0, 0, 1, Change.Insert(DiffProducer.RowInfo(null))),
-                ProducerCall.Cell(0, 0, 1, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5, "extra"))),
+                ContentIndex.TableRowIndex(0, 0, 1) to Change.Insert(DiffProducer.RowInfo(null)),
+                ContentIndex.TableCellIndex(0, 0, 1, 0) to Change.Insert(DiffProducer.CellInfo(null)),
+                TableCellContentIndex(0, 0, 1, 0, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5, "extra")),
             ),
             recordCalls(old, new),
         )
@@ -373,8 +372,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.Cell(0, 0, 0, 1, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5, "extra"))),
+                ContentIndex.TableCellIndex(0, 0, 0, 1) to Change.Insert(DiffProducer.CellInfo(null)),
+                TableCellContentIndex(0, 0, 0, 1, 0) to Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5, "extra")),
             ),
             recordCalls(old, new),
         )

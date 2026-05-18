@@ -2,6 +2,11 @@ package no.nav.pensjon.brev.skribenten.letter
 
 import no.nav.brev.Listetype
 import no.nav.pensjon.brev.skribenten.common.diff.Change
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellIndex
+import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableRowIndex
 
 interface DiffProducer<R> {
     data class BlockInfo(val id: Int?, val type: Edit.Block.Type)
@@ -12,12 +17,12 @@ interface DiffProducer<R> {
     data class CellInfo(val id: Int?)
     data class TextSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int, val text: String)
 
-    fun block(blockIndex: Int, change: Change<BlockInfo>) {}
-    fun itemList(blockIndex: Int, contentIndex: Int, change: Change<ItemListInfo>) {}
-    fun item(blockIndex: Int, contentIndex: Int, itemIndex: Int, change: Change<ItemInfo>) {}
-    fun table(blockIndex: Int, contentIndex: Int, change: Change<TableInfo>) {}
-    fun row(blockIndex: Int, contentIndex: Int, rowIndex: Int, change: Change<RowInfo>) {}
-    fun cell(blockIndex: Int, contentIndex: Int, rowIndex: Int, cellIndex: Int, change: Change<CellInfo>) {}
+    fun block(index: BlockIndex, change: Change<BlockInfo>) {}
+    fun itemList(index: BlockContentIndex, change: Change<ItemListInfo>) {}
+    fun item(index: ItemIndex, change: Change<ItemInfo>) {}
+    fun table(index: BlockContentIndex, change: Change<TableInfo>) {}
+    fun row(index: TableRowIndex, change: Change<RowInfo>) {}
+    fun cell(index: TableCellIndex, change: Change<CellInfo>) {}
     fun textSegment(change: Change<TextSegment>) {}
 
     fun build(): R
