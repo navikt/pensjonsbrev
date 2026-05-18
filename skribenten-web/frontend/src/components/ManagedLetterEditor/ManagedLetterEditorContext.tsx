@@ -31,6 +31,23 @@ interface ManagedLetterEditorContextValue {
 const nullsToUndefined = (obj: unknown) =>
   JSON.parse(JSON.stringify(obj, (_, value) => (value === null ? undefined : value)));
 
+const resolveHistoryAfterSave = (
+  previousState: LetterEditorState,
+  response: BrevResponse,
+  historyEntry: HistoryEntry | null | undefined,
+): LetterEditorState["history"] => {
+  if (historyEntry != null) {
+    return addHistoryEntry(previousState.history, historyEntry);
+  }
+
+  const redigertBrevUnchanged = isEqual(
+    normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
+    normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
+  );
+
+  return redigertBrevUnchanged ? previousState.history : { entries: [], entryPointer: -1 };
+};
+
 const ManagedLetterEditorContext = createContext<ManagedLetterEditorContextValue | null>(null);
 
 export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; children: ReactNode }) => {
@@ -45,33 +62,21 @@ export const ManagedLetterEditorContextProvider = (props: { brev: BrevResponse; 
       //istedenfor at saksbehandler ser på cachet versjon uten at dem vet det kommer et ny en
       queryClient.resetQueries({ queryKey: hentPdfForBrev.queryKey(props.brev.info.id) });
       setEditorState((previousState) => {
-        if (previousState.saveStatus !== "DIRTY") {
-          // For normal text saves, if the backend unexpectedly changes redigertBrev,
-          // PATCH history may no longer match, so history is reset.
-          // For tekstvalg saves, backend regeneration is expected; undo/redo is preserved
-          // via a dedicated before/after snapshot entry.
-          const historyEntry = options?.createHistoryEntry?.(previousState, response);
-          const keepHistory = isEqual(
-            normalizeDeletedArrays(nullsToUndefined(previousState.redigertBrev)),
-            normalizeDeletedArrays(nullsToUndefined(response.redigertBrev)),
-          );
-          const history = historyEntry
-            ? addHistoryEntry(previousState.history, historyEntry)
-            : keepHistory
-              ? previousState.history
-              : { entries: [], entryPointer: -1 };
-          return {
-            ...previousState,
-            redigertBrev: response.redigertBrev,
-            redigertBrevHash: response.redigertBrevHash,
-            saksbehandlerValg: response.saksbehandlerValg,
-            info: response.info,
-            saveStatus: "SAVED",
-            history,
-          };
-        } else {
+        if (previousState.saveStatus === "DIRTY") {
           return previousState;
         }
+
+        const historyEntry = options?.createHistoryEntry?.(previousState, response);
+
+        return {
+          ...previousState,
+          redigertBrev: response.redigertBrev,
+          redigertBrevHash: response.redigertBrevHash,
+          saksbehandlerValg: response.saksbehandlerValg,
+          info: response.info,
+          saveStatus: "SAVED",
+          history: resolveHistoryAfterSave(previousState, response, historyEntry),
+        };
       });
     },
     [queryClient, props.brev.info.id],
