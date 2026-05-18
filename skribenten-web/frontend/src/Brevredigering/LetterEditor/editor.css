@@ -14,12 +14,12 @@
 }
 
 .letter-title {
-  margin-bottom: "var(--ax-space-28)";
-  font-weight: "700";
-  letter-spacing: "0.108px";
-  line-height: "1.875rem"; /* Effektiv linjehøyde */
+  margin-bottom: var(--ax-space-20);
+  font-weight: 700;
+  letter-spacing: 0.108px;
+  line-height: 1.875rem; /* Effektiv linjehøyde */
   > span {
-    line-height: "1.625rem"; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
+    line-height: 1.625rem; /* Indre linjehøyde, dvs. høyde på boksen til VARIABLE o.l. */
   }
 }
 
