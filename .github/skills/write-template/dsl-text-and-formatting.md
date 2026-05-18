@@ -115,7 +115,52 @@ bokmal { +"Du får " + beloep.format() + " før skatt." }
 
 **Related Dto rule:** if a field represents money, type it as `Kroner` — not `Int` — so the selector's `.format()` carries the unit. Using `Int` forces every call site to append `" kroner"` manually, which drifts as soon as a second language branch is added.
 
-## Inline word-level conditionals — `ifElse`
+## Inline bold (or any single `FontType`) mid-sentence
+
+A `text(...)` call carries one `FontType` for the whole call. To bold a fragment in the middle of a sentence, split into adjacent `text(...)` calls inside the same `paragraph`:
+
+```kotlin
+paragraph {
+    text(bokmal { +"prefix " },  nynorsk { +"prefiks " })
+    text(bokmal { +"highlight" }, nynorsk { +"utheving" }, BOLD)
+    text(bokmal { +" suffix." }, nynorsk { +" suffiks." })
+}
+```
+
+Adjacent `text(...)` calls concatenate verbatim (same rule as *Spacing — adjacent fragments concatenate verbatim*), so leading/trailing spaces belong on the literals. Each language branch must appear in each sibling call.
+
+## Heading levels
+
+Letters have four heading levels, from largest to smallest:
+
+| Level | DSL | Where | Typical use |
+|---|---|---|---|
+| H1 | `title { }` | Once per template, at `TemplateRootScope` (also once per attachment) | The letter / attachment main title (e.g. "Vedtak om alderspensjon"). |
+| H2 | `title1 { }` | `OutlineScope` | Major sections of the letter body. |
+| H3 | `title2 { }` | `OutlineScope` | Subsections inside an H2. |
+| H4 | `title3 { }` | `OutlineScope` | Rare. Sub-subsections — only when H3 already carries real structure. |
+
+Rules:
+
+- **Never skip a level.** Use `title1` before reaching for `title2`; use `title2` before `title3`. Skipping levels breaks the document outline (used by screen readers and PDF bookmarks).
+- **One `title { }` per template.** It's the letter heading and is rendered with the letterhead — not a body section.
+- **All title-scopes are `PlainTextScope`.** No `paragraph`, no `BOLD`, no nested control flow that changes scope. Use `text(bokmal { ... }, nynorsk { ... })` only.
+- **Don't simulate headings with bold paragraphs.** A bold first line is not a heading — it has no outline level, no spacing, and no a11y semantics. Use the right `titleN` scope.
+- **Attachments restart the hierarchy** at their own `title { }` — the attachment's H1 — and may use `title1`/`title2`/`title3` for inner sections independently of the parent letter.
+
+```kotlin
+createTemplate(...) {
+    title { text(bokmal { +"Vedtak om alderspensjon" }, ...) }   // H1
+    outline {
+        title1 { text(bokmal { +"Begrunnelse" }, ...) }          // H2
+        paragraph { text(bokmal { +"..." }, ...) }
+        title2 { text(bokmal { +"Trygdetid" }, ...) }            // H3
+        paragraph { text(bokmal { +"..." }, ...) }
+    }
+}
+```
+
+
 
 Use `ifElse` for **single-word or short-phrase** variants inside a sentence (singular/plural, gendered noun, …):
 
@@ -141,6 +186,8 @@ For larger structural variations (a whole sentence or block), use `showIf` / `or
 | Symbol | Import |
 |---|---|
 | `Kroner` | `no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner` (nested, **not** top-level) |
+| `Year` / `Months` / `Days` / `Percent` | `no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year` etc. (nested, **not** top-level) |
+| `BOLD` (and other `FontType` values) | `no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD` — deeply nested; import the constant by its short name. |
 | no-arg `.format()` for `Kroner` / `Telefonnummer` / `Foedselsnummer` | `no.nav.pensjon.brev.model.format` — separate from the generic `expression.format`. Without it, the no-arg call fails with *"No value passed for parameter 'formatter'"*. |
 | Predicate operators (`and`, `or`, `not`, `equalTo`, …) | individual imports under `no.nav.pensjon.brev.template.dsl.expression.…` |
 | `quoted()` | `no.nav.pensjon.brev.template.dsl.expression.quoted` |
@@ -151,5 +198,8 @@ For larger structural variations (a whole sentence or block), use `showIf` / `or
 - Calling `.toString()` on an `Expression` — throws at runtime; use `.format()`.
 - Appending `" kroner"` / `" kr"` / `" NOK"` after `Expression<Kroner>.format()` — see *Order of preference for Kroner* above.
 - Typing a money field as `Int` instead of `Kroner` in the Dto — forces every call site to append the unit manually.
+- Typing a year as `Int` instead of `Year`, a percentage as `Double` instead of `Percent`, or a count of months as `Int` instead of `Months` — all of these have localised `.format()` overloads under `BrevbakerType`; raw scalars compile but lose the language-aware formatter and the type signal in the Dto.
+- Calling `.format()` directly on a nullable expression and concatenating — `Expression<T?>.format()` returns `Expression<String?>`, and `+` requires `Expression<String>`. Unwrap with `ifNotNull(expr) { v -> +"… " + v.format() + " …" }` instead of `.ifNull("")` (which silently prints empty). See [`dsl-control-structures.md`](dsl-control-structures.md#ifnotnull--null-safe-access-with-binding).
+- Trying to bold a fragment inside a single `text(...)` — `text(...)` carries one `FontType` for the whole call. Split into sibling `text(...)` calls as shown in *Inline bold (or any single `FontType`) mid-sentence* above.
 - Missing/extra space between concatenated fragments — adjacency does not insert whitespace.
 - Silently editing user-supplied wording. If the user handed over exact text, render it verbatim; ask before changing.
