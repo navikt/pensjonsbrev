@@ -30,8 +30,9 @@ const ManagedLetterEditor = (props: {
   const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
     mutationFn: (state) => {
       const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
-      setEditorState(() => ({
-        ...stateWithCursor,
+
+      setEditorState((previousState) => ({
+        ...previousState,
         saveStatus: "SAVE_PENDING",
       }));
       // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
