@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -14,7 +15,6 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.etteroppgjoer.EtteroppgjoerForhaandsvarselBrevDTOSelectors.data
@@ -43,6 +43,7 @@ enum class EtteroppgjoerResultatType {
     TILBAKEKREVING,
     ETTERBETALING,
     INGEN_ENDRING_MED_UTBETALING,
+    INGEN_ENDRING_UTEN_UTBETALING
 }
 
 data class EtteroppgjoerForhaandsvarselDTO(
@@ -81,7 +82,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
     ) {
         title {
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING).or(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_UTEN_UTBETALING))) {
                 text(
                     bokmal { +"Informasjon om etteroppgjør av omstillingsstønad for " + data.etteroppgjoersAar.format() },
                     nynorsk { +"Informasjon om etteroppgjer av omstillingsstønad for " + data.etteroppgjoersAar.format() },
@@ -103,7 +104,7 @@ object EtteroppgjoerForhaandsvarsel : EtterlatteTemplate<EtteroppgjoerForhaandsv
             konverterElementerTilBrevbakerformat(innhold)
 
             // Ingen endring
-            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING)) {
+            showIf(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_MED_UTBETALING).or(data.resultatType.equalTo(EtteroppgjoerResultatType.INGEN_ENDRING_UTEN_UTBETALING))) {
                 title2 {
                     text(
                         bokmal { +"Etteroppgjøret for " + data.etteroppgjoersAar.format() + " er nå avsluttet" },

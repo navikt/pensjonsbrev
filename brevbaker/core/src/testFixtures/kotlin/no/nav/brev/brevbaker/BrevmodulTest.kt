@@ -40,6 +40,7 @@ import java.nio.file.Path
 import java.util.stream.Collectors
 import java.util.stream.IntStream
 import kotlin.reflect.KProperty
+import kotlin.reflect.jvm.jvmErasure
 
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -67,12 +68,29 @@ abstract class BrevmodulTest(
 
     @Test
     fun `alle redigerbare brev har displaytext for alle saksbehandlervalg`() {
-        templates.hentRedigerbareMaler().map { mal ->
-            val clazz = mal.template.letterDataType.java
+        templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
             val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
-            saksbehandlervalg.flatMap { it.members }.filter { it is KProperty<*> }.forEach { field ->
+            saksbehandlervalg.flatMap { it.members }.filterIsInstance<KProperty<*>>().forEach { field ->
                 val hasDisplayText = field.annotations.filterIsInstance<DisplayText>().any()
                 assertTrue(hasDisplayText, "Alle saksbehandlervalg må ha displaytext, ${field.name} i klasse ${clazz.name} mangler det")
+            }
+        }
+    }
+    @Test
+    fun `alle enumverdier brukt i saksbehandlervalg i redigerbare brev har displaytext`() {
+        templates.hentRedigerbareMaler().map { it.template.letterDataType.java }.forEach { clazz ->
+            val saksbehandlervalg = clazz.declaredFields.map { it.type }.filter { field -> SaksbehandlerValgBrevdata::class.java.isAssignableFrom(field) }.map { it.kotlin }
+            saksbehandlervalg
+                .asSequence()
+                .flatMap { it.members }
+                .filterIsInstance<KProperty<*>>()
+                .map { it.returnType.jvmErasure.java }
+                .filter { it.isEnum }
+                .flatMap { it.declaredFields.asSequence() }
+                .filter { it.isEnumConstant }
+                .forEach { declared ->
+                    val hasDisplayText = declared.annotations.filterIsInstance<DisplayText>().any()
+                    assertTrue(hasDisplayText, "Alle enums brukt i saksbehandlervalg må ha displaytext for alle verdier, enum-verdien ${declared.name} i klasse ${clazz.name} mangler det")
             }
         }
     }

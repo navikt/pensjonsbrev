@@ -130,6 +130,7 @@ const SendBrevModal = (props: { saksId: string; brevId: string; åpen: boolean; 
         brevId: Number(props.brevId),
         brevkode: cachedBrevData?.info.brevkode,
         type: "attestering",
+        enhetsId: cachedBrevData?.info.avsenderEnhet.enhetNr,
       });
       setBrevResult(props.brevId, {
         status: "success",

@@ -6,7 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
 import no.nav.pensjon.brev.api.model.vedlegg.DineRettigheterOgPlikterUforeDto
 import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
-import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.DisplayText
 import java.time.LocalDate
@@ -19,8 +18,6 @@ data class InnvilgelseUfoeretrygdDto(
     data class Saksbehandlervalg(
         @DisplayText("Info om rett til barnetillegg")
         val barnetilleggInfo: Boolean,
-        @DisplayText("Refusjon utland")
-        val refusjon: Boolean,
     ) : SaksbehandlerValgBrevdata
 
     data class PesysData(
