@@ -20,18 +20,23 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAktivitetspliktFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.aktivitetsgrad
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.halvtGrunnbeloep
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.nasjonalEllerUtland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.redusertEtterInntekt
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.utbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDataSelectors.aktivitetsgrad
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDataSelectors.utbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDataSelectors.redusertEtterInntekt
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDataSelectors.nasjonalEllerUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.aktivitetsplikt.OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDataSelectors.halvtGrunnbeloep
 
-data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
+data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdData(
     val aktivitetsgrad: Aktivitetsgrad,
     val utbetaling: Boolean,
     val redusertEtterInntekt: Boolean,
     val nasjonalEllerUtland: NasjonalEllerUtland,
     val halvtGrunnbeloep: Kroner
+)
+
+data class OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdDTO(
+    override val data: OmstillingsstoenadAktivitetspliktInformasjon4mndInnholdData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -58,7 +63,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
         }
 
         outline {
-            showIf(utbetaling) {
+            showIf(data.utbetaling) {
                 paragraph {
                     text(
                         bokmal { +"Du mottar omstillingsstønad. Du får utbetalt <beløp> kroner per måned før skatt." },
@@ -67,7 +72,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     )
                 }
 
-                showIf(redusertEtterInntekt) {
+                showIf(data.redusertEtterInntekt) {
                     paragraph {
                         text(
                             bokmal { +"Omstillingsstønaden din er redusert etter en forventet arbeidsinntekt på <FORVENTET INNTEKT TOTALT, AVRUNDET> kroner i år. LEGG TIL ETTER KRONER HVIS INNVILGET FRA FEBRUAR-AUGUST: fra <måned> og ut året." },
@@ -120,7 +125,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                 )
             }
 
-            showIf(not(utbetaling)){
+            showIf(not(data.utbetaling)){
                 paragraph {
                     text(
                         bokmal { +"Siden du ikke mottar omstillingsstønad i dag, kan du se bort fra kravet om aktivitet. Det er imidlertid viktig at du melder fra hvis situasjonen din endrer seg. Aktivitetsplikt og din mulighet for å motta omstillingsstønad kan da vurderes." },
@@ -141,11 +146,11 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
             }
 
             showIf(
-                aktivitetsgrad.isOneOf(
+                data.aktivitetsgrad.isOneOf(
                     Aktivitetsgrad.UNDER_50_PROSENT,
                     Aktivitetsgrad.IKKE_I_AKTIVITET
-                ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)
-                and utbetaling
+                ) and data.nasjonalEllerUtland.equalTo(NasjonalEllerUtland.UTLAND)
+                and data.utbetaling
             ) {
                 paragraph {
                     text(
@@ -179,11 +184,11 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
             }
 
             showIf(
-                aktivitetsgrad.isOneOf(
+                data.aktivitetsgrad.isOneOf(
                     Aktivitetsgrad.UNDER_50_PROSENT,
                     Aktivitetsgrad.IKKE_I_AKTIVITET
-                ) and nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)
-                and utbetaling
+                ) and data.nasjonalEllerUtland.equalTo(NasjonalEllerUtland.NASJONAL)
+                and data.utbetaling
             ) {
                 paragraph {
                     text(
@@ -226,10 +231,10 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
             }
 
             showIf(
-                aktivitetsgrad.isOneOf(
+                data.aktivitetsgrad.isOneOf(
                     Aktivitetsgrad.OVER_50_PROSENT,
                     Aktivitetsgrad.AKKURAT_100_PROSENT
-                ) and utbetaling
+                ) and data.utbetaling
             ) {
                 paragraph {
                     text(
@@ -258,7 +263,7 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
                     english { +"You will find more information about how to notify us in the section “You must notify us about any changes”." },
                 )
             }
-            showIf(utbetaling) {
+            showIf(data.utbetaling) {
                 paragraph {
                     text(
                         bokmal {
@@ -302,12 +307,12 @@ object OmstillingsstoenadAktivitetspliktInformasjon4mndInnhold :
 
 
 
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(redusertEtterInntekt, halvtGrunnbeloep))
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(nasjonalEllerUtland, false.expr()))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesInfoOmInntektsendring(data.redusertEtterInntekt, data.halvtGrunnbeloep))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseAktivitetsplikt(data.nasjonalEllerUtland, false.expr()))
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.FellesOppfyllelseUnntakFraAktivitetsplikt)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.TrengerDuHjelpTilAaFaaNyJobb)
             includePhrase(OmstillingsstoenadAktivitetspliktFraser.HarDuHelseutfordringer)
-            includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(nasjonalEllerUtland))
+            includePhrase(OmstillingsstoenadAktivitetspliktFraser.DuMaaMeldeFraOmEndringer(data.nasjonalEllerUtland))
             includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
         }
     }

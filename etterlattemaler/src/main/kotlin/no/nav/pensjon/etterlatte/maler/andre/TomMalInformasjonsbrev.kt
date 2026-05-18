@@ -12,8 +12,9 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTO
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDTOSelectors.tittel
+import no.nav.pensjon.etterlatte.maler.ManueltBrevMedTittelDataSelectors.tittel
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
 
 @TemplateModelHelpers
@@ -29,7 +30,7 @@ object TomMalInformasjonsbrev : EtterlatteTemplate<ManueltBrevMedTittelDTO>, Hov
         ),
     ) {
         title {
-            ifNotNull(tittel) { tittel ->
+            ifNotNull(data.tittel) { tittel ->
                 text(
                     bokmal { +tittel },
                     nynorsk { +tittel },

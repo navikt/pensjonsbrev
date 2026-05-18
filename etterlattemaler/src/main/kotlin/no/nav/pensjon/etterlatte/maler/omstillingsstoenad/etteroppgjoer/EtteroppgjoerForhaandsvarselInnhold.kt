@@ -40,7 +40,7 @@ data class EtteroppgjoerForhaandsvarselInnholfDTO(
 }
 
 data class EtteroppgjoerForhaandsvarselRedigerbartBrevDTO(
-    val data: EtteroppgjoerForhaandsvarselInnholfDTO
+    override val data: EtteroppgjoerForhaandsvarselInnholfDTO
 ) : RedigerbartUtfallBrevDTO
 
 

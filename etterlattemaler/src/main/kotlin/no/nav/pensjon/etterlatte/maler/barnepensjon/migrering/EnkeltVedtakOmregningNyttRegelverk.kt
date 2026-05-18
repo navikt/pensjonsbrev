@@ -10,8 +10,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltEtterReform
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.utbetaltFoerReform
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.utbetaltEtterReform
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.utbetaltFoerReform
 
 
 @TemplateModelHelpers
@@ -91,15 +92,15 @@ object EnkeltVedtakOmregningNyttRegelverk : EtterlatteTemplate<BarnepensjonOmreg
             }
             paragraph {
                 text(
-                    bokmal { +"Du fikk " + utbetaltFoerReform.format()
+                    bokmal { +"Du fikk " + data.utbetaltFoerReform.format()
                             + " per måned i pensjon til 31. desember 2023. " +
-                            "Du får " + utbetaltEtterReform.format() + " før skatt per måned fra 1. januar 2024." },
-                    nynorsk { +"Du fekk " + utbetaltFoerReform.format()
+                            "Du får " + data.utbetaltEtterReform.format() + " før skatt per måned fra 1. januar 2024." },
+                    nynorsk { +"Du fekk " + data.utbetaltFoerReform.format()
                             + " per månad i pensjon til 31. desember 2023. " +
-                            "Du får " + utbetaltEtterReform.format() + " før skatt per månad frå 1. januar 2024." },
-                    english { +"You were receiving " + utbetaltFoerReform.format()
+                            "Du får " + data.utbetaltEtterReform.format() + " før skatt per månad frå 1. januar 2024." },
+                    english { +"You were receiving " + data.utbetaltFoerReform.format()
                             + " per month until 31 December 2023." +
-                            "The gross (pre-tax) amount you will receive is " + utbetaltEtterReform.format()
+                            "The gross (pre-tax) amount you will receive is " + data.utbetaltEtterReform.format()
                             + " per month starting 1 January 2024." },
                 )
             }

@@ -35,7 +35,7 @@ import java.time.LocalDate
 
 data class TilbakekrevingBrevDTO(
     override val innhold: List<Element>,
-    val data: TilbakekrevingBrevData,
+    override val data: TilbakekrevingBrevData,
 ) : FerdigstillingBrevDTO
 
 data class TilbakekrevingBrevData(
