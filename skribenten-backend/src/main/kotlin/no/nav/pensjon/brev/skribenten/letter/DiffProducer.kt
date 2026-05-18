@@ -10,10 +10,9 @@ interface DiffProducer<R> {
     data class TableInfo(val id: Int?)
     data class RowInfo(val id: Int?)
     data class CellInfo(val id: Int?)
-    data class TextSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int)
+    data class TextSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int, val text: String)
 
     fun block(blockIndex: Int, change: Change<BlockInfo>) {}
-    // TODO: These contentIndex parameters don't make sense as it is because we don't know if they are relative to the old or new version of the letter.
     fun itemList(blockIndex: Int, contentIndex: Int, change: Change<ItemListInfo>) {}
     fun item(blockIndex: Int, contentIndex: Int, itemIndex: Int, change: Change<ItemInfo>) {}
     fun table(blockIndex: Int, contentIndex: Int, change: Change<TableInfo>) {}

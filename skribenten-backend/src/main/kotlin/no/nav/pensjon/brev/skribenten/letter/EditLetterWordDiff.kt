@@ -13,6 +13,9 @@ class EditLetterWordDiff {
     fun diff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<DiffSegment>> =
         tokenizer.parseTokens(shortestEditScript(tokenizer.tokenize(old), tokenizer.tokenize(new)), SplitDiffProducer())
 
+    fun unifiedDiff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<UnifiedDeleteSegment>> =
+        tokenizer.parseTokens(shortestEditScript(tokenizer.tokenize(old), tokenizer.tokenize(new)), UnifiedDiffProducer())
+
     private class SplitDiffProducer : DiffProducer<Pair<List<DiffSegment>, List<DiffSegment>>> {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<DiffSegment>()
@@ -24,6 +27,24 @@ class EditLetterWordDiff {
                 is Change.Replace -> {
                     inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
                     deletes.add(DiffSegment(change.old.index, change.old.startOffset, change.old.endOffset))
+                }
+            }
+        }
+
+        override fun build() = Pair(inserts.toList(), deletes.toList())
+    }
+
+    private class UnifiedDiffProducer : DiffProducer<Pair<List<DiffSegment>, List<UnifiedDeleteSegment>>> {
+        private val inserts = mutableListOf<DiffSegment>()
+        private val deletes = mutableListOf<UnifiedDeleteSegment>()
+
+        override fun textSegment(change: Change<DiffProducer.TextSegment>) {
+            when (change) {
+                is Change.Delete -> deletes.add(UnifiedDeleteSegment(change.old.index, change.old.startOffset, change.old.endOffset, change.old.text))
+                is Change.Insert -> inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                is Change.Replace -> {
+                    inserts.add(DiffSegment(change.new.index, change.new.startOffset, change.new.endOffset))
+                    deletes.add(UnifiedDeleteSegment(change.old.index, change.old.startOffset, change.old.endOffset, change.old.text))
                 }
             }
         }

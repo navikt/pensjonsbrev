@@ -194,7 +194,7 @@ class EditLetterWordTokenizerTest {
         assertEquals(
             listOf(
                 ProducerCall.Block(0, Change.Insert(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -211,7 +211,7 @@ class EditLetterWordTokenizerTest {
         assertEquals(
             listOf(
                 ProducerCall.Block(0, Change.Delete(DiffProducer.BlockInfo(null, PARAGRAPH))),
-                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -233,8 +233,8 @@ class EditLetterWordTokenizerTest {
         )
         assertEquals(
             listOf(
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13))),
-                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 13, "goodbye"))),
+                ProducerCall.TextSegment(Change.Delete(DiffProducer.TextSegment(BlockContentIndex(0, 0), 6, 11, "world"))),
             ),
             recordCalls(old, new),
         )
@@ -256,7 +256,7 @@ class EditLetterWordTokenizerTest {
             listOf(
                 ProducerCall.ItemList(0, 0, Change.Insert(DiffProducer.ItemListInfo(null, Listetype.PUNKTLISTE))),
                 ProducerCall.Item(0, 0, 0, Change.Insert(DiffProducer.ItemInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 0, 0), 0, 5, "hello"))),
             ),
             recordCalls(old, new),
         )
@@ -284,7 +284,7 @@ class EditLetterWordTokenizerTest {
         assertEquals(
             listOf(
                 ProducerCall.Item(0, 0, 1, Change.Insert(DiffProducer.ItemInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(ItemContentIndex(0, 0, 1, 0), 0, 5, "world"))),
             ),
             recordCalls(old, new),
         )
@@ -312,10 +312,10 @@ class EditLetterWordTokenizerTest {
             listOf(
                 ProducerCall.Table(0, 0, Change.Insert(DiffProducer.TableInfo(null))),
                 ProducerCall.Cell(0, 0, -1, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, -1, 0, 0), 0, 6, "header"))),
                 ProducerCall.Row(0, 0, 0, Change.Insert(DiffProducer.RowInfo(null))),
                 ProducerCall.Cell(0, 0, 0, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 0, 0), 0, 4, "body"))),
             ),
             recordCalls(old, new),
         )
@@ -345,7 +345,7 @@ class EditLetterWordTokenizerTest {
             listOf(
                 ProducerCall.Row(0, 0, 1, Change.Insert(DiffProducer.RowInfo(null))),
                 ProducerCall.Cell(0, 0, 1, 0, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 1, 0, 0), 0, 5, "extra"))),
             ),
             recordCalls(old, new),
         )
@@ -374,7 +374,7 @@ class EditLetterWordTokenizerTest {
         assertEquals(
             listOf(
                 ProducerCall.Cell(0, 0, 0, 1, Change.Insert(DiffProducer.CellInfo(null))),
-                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5))),
+                ProducerCall.TextSegment(Change.Insert(DiffProducer.TextSegment(TableCellContentIndex(0, 0, 0, 1, 0), 0, 5, "extra"))),
             ),
             recordCalls(old, new),
         )

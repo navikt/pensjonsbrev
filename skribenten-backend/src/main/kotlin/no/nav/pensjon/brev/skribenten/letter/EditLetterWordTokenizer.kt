@@ -90,12 +90,12 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 private val current: DiffProducer.TextSegment? = null,
                 private val completed: List<DiffProducer.TextSegment> = emptyList(),
             ) {
-                fun extend(wordStart: Int, newLength: Int, textLength: Int): RangeState =
+                fun extend(wordStart: Int, newLength: Int, textLength: Int, word: String): RangeState =
                     if (current?.endOffset == textLength)
-                        copy(current = current.copy(endOffset = newLength))
+                        copy(current = current.copy(endOffset = newLength, text = current.text + " " + word))
                     else
                         copy(
-                            current = DiffProducer.TextSegment(contentIndex, wordStart, newLength),
+                            current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word),
                             completed = completed + listOfNotNull(current),
                         )
 
@@ -114,13 +114,13 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 fun insert(word: Token.Word): State {
                     val wordStart = insertTextLength + insertSpaceLength()
                     val newLength = wordStart + word.word.length
-                    return copy(insertTextLength = newLength, inserts = inserts.extend(wordStart, newLength, insertTextLength))
+                    return copy(insertTextLength = newLength, inserts = inserts.extend(wordStart, newLength, insertTextLength, word.word))
                 }
 
                 fun delete(word: Token.Word): State {
                     val wordStart = deleteTextLength + deleteSpaceLength()
                     val newLength = wordStart + word.word.length
-                    return copy(deleteTextLength = newLength, deletes = deletes.extend(wordStart, newLength, deleteTextLength))
+                    return copy(deleteTextLength = newLength, deletes = deletes.extend(wordStart, newLength, deleteTextLength, word.word))
                 }
 
                 fun replace(oldWord: Token.Word, newWord: Token.Word): State {
@@ -131,8 +131,8 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                     return copy(
                         insertTextLength = insertNewLength,
                         deleteTextLength = deleteNewLength,
-                        inserts = inserts.extend(insertWordStart, insertNewLength, insertTextLength),
-                        deletes = deletes.extend(deleteWordStart, deleteNewLength, deleteTextLength),
+                        inserts = inserts.extend(insertWordStart, insertNewLength, insertTextLength, newWord.word),
+                        deletes = deletes.extend(deleteWordStart, deleteNewLength, deleteTextLength, oldWord.word),
                     )
                 }
 

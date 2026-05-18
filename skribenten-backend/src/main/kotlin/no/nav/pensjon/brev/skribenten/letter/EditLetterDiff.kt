@@ -17,3 +17,5 @@ sealed class ContentIndex {
 
 data class DiffSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int)
 
+data class UnifiedDeleteSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int, val text: String)
+
