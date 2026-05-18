@@ -24,7 +24,7 @@ private fun createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU: Boolean, vis
         endringReduksjonsprosent = visReduksjonsprosent,
         endringInntektstak = visReduksjonsprosent,
         endringIfu = visOktMinsteIFU,
-        hjemler = setOf("§§ 12-13 til 12-16, 12-18 og 22-12"),
+        hjemler = setOf("12-13", "12-16", "12-18", "22-12"),
         visOktMinusteIFU = visOktMinsteIFU,
         visReduksjonsprosent = visReduksjonsprosent,
         pe = createPEgruppe10(),
@@ -32,17 +32,7 @@ private fun createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU: Boolean, vis
         orienteringOmRettigheterUfoere = createOrienteringOmRettigheterUfoereDto(),
     )
 
-fun createVedtakOmLavereReduksjonsprosentAutoDto() =
-    VedtakOmIFUReduksjonsprosentAutoDto(
-        vedtakData = createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU = false, visReduksjonsprosent = true),
-    )
-
-fun createVedtakOmOktMinsteIFUAutoDto() =
-    VedtakOmIFUReduksjonsprosentAutoDto(
-        vedtakData = createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU = true, visReduksjonsprosent = false),
-    )
-
-fun createOmOktMinsteIFULavereReduksjonsprosentAutoDto() =
+fun createVedtakOmIFUReduksjonsprosentAutoDto() =
     VedtakOmIFUReduksjonsprosentAutoDto(
         vedtakData = createVedtakOmIFUReduksjonsprosentData(visOktMinsteIFU = true, visReduksjonsprosent = true),
     )

@@ -38,7 +38,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 @TemplateModelHelpers
 object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksjonsprosentAutoDto> {
 
-    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_LAVERE_REDUKSJONSPROSENT_2026_AUTO
+    override val kode = Pesysbrevkoder.AutoBrev.UT_VEDTAK_REDUKSJONSPROSENT_2026_AUTO
 
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
