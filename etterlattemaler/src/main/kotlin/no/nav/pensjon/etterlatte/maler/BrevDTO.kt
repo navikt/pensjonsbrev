@@ -12,9 +12,9 @@ interface BrevDTO : AutobrevData {
 }
 
 interface FerdigstillingBrevDTO : BrevDTO {
-    val data: Any
+    val data: Any?
 }
 
 interface RedigerbartUtfallBrevDTO : AutobrevData {
-    val data: Any
+    val data: Any?
 }

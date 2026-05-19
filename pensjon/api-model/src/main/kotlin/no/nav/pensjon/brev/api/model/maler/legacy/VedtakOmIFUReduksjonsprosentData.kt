@@ -5,23 +5,24 @@ import no.nav.pensjon.brev.api.model.vedlegg.MaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.api.model.vedlegg.OrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-data class VedtakOmLavereMinstesatsData(
+data class VedtakOmIFUReduksjonsprosentData(
     val nettoUforetrygdUtenTillegg: Kroner,
     val nettoBarnetillegg: Kroner?,
     val nettoGjenlevendetillegg: Kroner?,
-    val egenopptjentUforetrygd: Kroner,
+    val etterbetalingJuli: Kroner,
     val reduksjonsprosent: Double,
-    val harMinstesats: Boolean,
-    val tidligereMinstesats: Kroner,
-    val nyMinstesats: Kroner,
-    val avkortetPgaRedusertTrygdetid: Boolean,
-    val harGradertUfoeretrygd: Boolean,
+    val inntektstak: Kroner,
+    val ifu: Kroner,
     val tillegg: Collection<UTTillegg>,
     val endringNettoUforetrygdUtenTillegg: Boolean,
     val endringNettoBarnetillegg: Boolean,
     val endringNettoGjenlevendetillegg: Boolean,
     val endringReduksjonsprosent: Boolean,
-    val hjemmeltekst: String,
+    val endringInntektstak: Boolean,
+    val endringIfu: Boolean,
+    val hjemler: Set<String>,
+    val visOktMinsteIFU: Boolean,
+    val visReduksjonsprosent: Boolean,
     val pe: PEgruppe10,
     val maanedligUfoeretrygdFoerSkatt: MaanedligUfoeretrygdFoerSkattDto?,
     val orienteringOmRettigheterUfoere: OrienteringOmRettigheterUfoereDto,
