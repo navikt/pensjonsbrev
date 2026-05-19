@@ -33,7 +33,6 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
         }
     }
 
-
     inline fun <reified E : T> requireAndConsume(): E {
         val result = consumeIf<E>()
         require(result != null) { "Expected ${E::class.simpleName} token, got: ${peek()}" }
