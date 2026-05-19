@@ -14,7 +14,7 @@ sealed interface SaksbehandlervalgWrapper<T> {
     class Integer(override val displayText: String, val default: Int?) : SaksbehandlervalgWrapper<Int?> {
         override fun expr(): Expression<Int?> = Expression.Literal(default)
     }
-    class Enum<T : SaksbehandlerValgEnum>(override val displayText: String) : SaksbehandlervalgWrapper<T> {
+    class Enum<T : SaksbehandlerValgEnum>(override val displayText: String, default: T?) : SaksbehandlervalgWrapper<T> {
         override fun expr(): Expression<T> = TODO()
     }
 }
@@ -25,9 +25,8 @@ interface SaksbehandlerValgEnum {
 
 class SBWrapper(val displayText: String) {
     fun bool(default: Boolean = false) = SaksbehandlervalgWrapper.Bool(displayText, default).expr()
-    fun int(default: Int? = null) = SaksbehandlervalgWrapper.Integer(displayText, default)
-    fun <T : SaksbehandlerValgEnum> enum() = SaksbehandlervalgWrapper.Enum<T>(displayText)
+    fun int(default: Int? = null) = SaksbehandlervalgWrapper.Integer(displayText, default).expr()
+    fun <T : SaksbehandlerValgEnum> enum(default: T?) = SaksbehandlervalgWrapper.Enum<T>(displayText, default).expr()
 }
 
 fun <LetterData: RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> RedigerbarTemplate<LetterData>.saksbehandlervalg(displayText: String) = SBWrapper(displayText)
-
