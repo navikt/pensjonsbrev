@@ -14,9 +14,7 @@ import java.time.LocalDate
 
 fun createTomOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
     return OmstillingsstoenadBeregningRedigerbartVedlegg(
-        data = OmstillingsstoenadBeregningRedigerbartVedleggData(
-            innhold = emptyList()
-        )
+        data = null
     )
 }
 

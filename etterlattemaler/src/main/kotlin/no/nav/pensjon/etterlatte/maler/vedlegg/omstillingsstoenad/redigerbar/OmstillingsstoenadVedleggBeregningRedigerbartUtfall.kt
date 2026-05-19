@@ -62,7 +62,9 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
         }
 
         outline {
-            ifNotNull(data.omstillingsstoenadBeregning) { beregning ->
+            ifNotNull(data) { dataNotNull ->
+                val beregning = dataNotNull.omstillingsstoenadBeregning
+                val innvilgelsesAar = dataNotNull.erInnvilgelsesAar
                 val sisteBeregningsperiode = beregning.sisteBeregningsperiode
                 val sisteInntekt = sisteBeregningsperiode.inntekt
                 val sisteOppgittInntekt = sisteBeregningsperiode.oppgittInntekt
@@ -71,7 +73,6 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                 val virkningsdato = beregning.virkningsdato
                 val opphoerNesteAar = beregning.opphoerNesteAar
                 val oppphoersdato = beregning.oppphoersdato
-                val innvilgelsesAar = data.erInnvilgelsesAar
                 val sisteBeregningsperiodeNesteAar = beregning.sisteBeregningsperiodeNesteAar
 
                 showIf(sisteInntekt.greaterThan(0)) {
