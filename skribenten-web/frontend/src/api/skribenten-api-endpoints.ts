@@ -27,7 +27,7 @@ import { type AttestForbiddenReason, parseAttest403 } from "~/utils/parseAttest4
 export const SKRIBENTEN_API_BASE_PATH = "/bff/skribenten-backend";
 
 axios.interceptors.response.use(undefined, (error) => {
-  if (error.response.status === 401) {
+  if (error.response?.status === 401) {
     globalThis.location.assign(error.response.headers.location);
   } else if (error.response?.status === 403) {
     (error as AxiosError & { forbidReason?: AttestForbiddenReason }).forbidReason = parseAttest403(error.response.data);
