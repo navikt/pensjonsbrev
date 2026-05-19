@@ -49,12 +49,12 @@ data class OmstillingsstoenadBeregning(
 
 data class OmstillingsstoenadBeregningRedigerbartVedleggData(
     val innhold: List<Element> = emptyList(),
-    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning? = null,
-    val erInnvilgelsesAar: Boolean = false,
+    val omstillingsstoenadBeregning: OmstillingsstoenadBeregning,
+    val erInnvilgelsesAar: Boolean,
 )
 
 data class OmstillingsstoenadBeregningRedigerbartVedlegg(
-    override val data: OmstillingsstoenadBeregningRedigerbartVedleggData = OmstillingsstoenadBeregningRedigerbartVedleggData(),
+    override val data: OmstillingsstoenadBeregningRedigerbartVedleggData?,
 ) : RedigerbartUtfallBrevDTO
 
 data class OmstillingsstoenadBeregningRevurderingRedigertbartUtfall(
