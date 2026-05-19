@@ -203,7 +203,7 @@ jobs:
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
-          ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}/actual
+          ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
       - name: Update main baseline on GCS
         run: |
           gcloud storage rsync \
