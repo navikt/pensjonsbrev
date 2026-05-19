@@ -18,7 +18,8 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
 
         return when {
             insertPeek?.second != null && deletePeek?.second != null && insertPeek.first::class == deletePeek.first::class -> {
-                insertCursor.requireAndConsume<E>(); deleteCursor.requireAndConsume<E>()
+                insertCursor.requireAndConsume<E>()
+                deleteCursor.requireAndConsume<E>()
                 Replace(deletePeek.first, insertPeek.first)
             }
             insertPeek?.second != null -> {
@@ -53,7 +54,10 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
             when (entry) {
                 is Insert -> insertIndex++
                 is Delete -> deleteIndex++
-                is Replace, is Unchanged -> { insertIndex++; deleteIndex++ }
+                is Replace, is Unchanged -> {
+                    insertIndex++
+                    deleteIndex++
+                }
             }
         }
     }

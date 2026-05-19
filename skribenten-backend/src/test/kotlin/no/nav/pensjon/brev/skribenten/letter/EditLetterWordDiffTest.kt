@@ -108,8 +108,20 @@ class EditLetterWordDiffTest {
     @Test
     fun `changed word in second literal of block uses correct contentIndex and resets offsets`() {
         // Literal(contentIndex=0), NewLine(contentIndex=1), Literal(contentIndex=2)
-        val old = editedLetter { paragraph { literal(text = "first"); newLine(); literal(text = "hello world") } }
-        val new = editedLetter { paragraph { literal(text = "first"); newLine(); literal(text = "hello goodbye") } }
+        val old = editedLetter {
+            paragraph {
+                literal(text = "first")
+                newLine()
+                literal(text = "hello world")
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                literal(text = "first")
+                newLine()
+                literal(text = "hello goodbye")
+            }
+        }
         val (inserts, deletes) = wordDiff.diff(old, new)
         assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 13)), inserts)
         assertEquals(listOf(DiffSegment(BlockContentIndex(0, 2), 6, 11)), deletes)
@@ -126,16 +138,44 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `changed word in second item produces correct itemIndex`() {
-        val old = editedLetter { paragraph { itemList { item { literal(text = "unchanged") }; item { literal(text = "hello world") } } } }
-        val new = editedLetter { paragraph { itemList { item { literal(text = "unchanged") }; item { literal(text = "hello goodbye") } } } }
+        val old = editedLetter {
+            paragraph {
+                itemList {
+                    item { literal(text = "unchanged") }
+                    item { literal(text = "hello world") }
+                }
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                itemList {
+                    item { literal(text = "unchanged") }
+                    item { literal(text = "hello goodbye") }
+                }
+            }
+        }
         val (inserts, _) = wordDiff.diff(old, new)
         assertEquals(listOf(DiffSegment(ItemContentIndex(0, 0, 1, 0), 6, 13)), inserts)
     }
 
     @Test
     fun `changed word in table body cell produces TableCellContentIndex`() {
-        val old = editedLetter { paragraph { table { header { colSpec() }; row { cell { literal(text = "hello world") } } } } }
-        val new = editedLetter { paragraph { table { header { colSpec() }; row { cell { literal(text = "hello goodbye") } } } } }
+        val old = editedLetter {
+            paragraph {
+                table {
+                    header { colSpec() }
+                    row { cell { literal(text = "hello world") } }
+                }
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                table {
+                    header { colSpec() }
+                    row { cell { literal(text = "hello goodbye") } }
+                }
+            }
+        }
         val (inserts, deletes) = wordDiff.diff(old, new)
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 13)), inserts)
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, 0, 0, 0), 6, 11)), deletes)
@@ -143,8 +183,22 @@ class EditLetterWordDiffTest {
 
     @Test
     fun `changed word in table header cell produces TableCellContentIndex with rowIndex -1`() {
-        val old = editedLetter { paragraph { table { header { colSpec { literal(text = "hello world") } }; row { cell() } } } }
-        val new = editedLetter { paragraph { table { header { colSpec { literal(text = "hello goodbye") } }; row { cell() } } } }
+        val old = editedLetter {
+            paragraph {
+                table {
+                    header { colSpec { literal(text = "hello world") } }
+                    row { cell() }
+                }
+            }
+        }
+        val new = editedLetter {
+            paragraph {
+                table {
+                    header { colSpec { literal(text = "hello goodbye") } }
+                    row { cell() }
+                }
+            }
+        }
         val (inserts, deletes) = wordDiff.diff(old, new)
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 13)), inserts)
         assertEquals(listOf(DiffSegment(TableCellContentIndex(0, 0, -1, 0, 0), 6, 11)), deletes)

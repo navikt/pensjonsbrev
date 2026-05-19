@@ -71,7 +71,13 @@ class EditLetterWordTokenizerTest {
 
     @Test
     fun `tokenize NewLine produces NewLine token between literals`() {
-        val tokens = wordDiff.tokenize(editedLetter { paragraph { literal(text = "a"); newLine(); literal(text = "b") } })
+        val tokens = wordDiff.tokenize(editedLetter {
+            paragraph {
+                literal(text = "a")
+                newLine()
+                literal(text = "b")
+            }
+        })
         assertEquals(
             listOf(
                 Token.Block(null, PARAGRAPH),
