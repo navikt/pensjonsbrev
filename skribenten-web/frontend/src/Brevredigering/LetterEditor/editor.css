@@ -3,6 +3,7 @@
   min-width: 480px;
   width: 100%;
   padding: 0 var(--ax-space-48);
+
   /* make scrollbar reach the top with padding-top rathern than margin-top */
   padding-top: var(--ax-space-12);
 
@@ -26,7 +27,6 @@
 .editor-surface,
 .editor-surface * {
   user-select: text;
-  -webkit-user-select: text;
 }
 
 .editor-surface td [data-literal-index],
@@ -83,6 +83,7 @@
   margin-bottom: var(--ax-space-28);
   font-size: 16.5px;
   line-height: 1.5rem;
+
   span {
     line-height: 1.25rem;
   }
@@ -101,8 +102,9 @@
 /* Kort visuell markering av tekst som ble satt inn ved valg av tekstvalg */
 @keyframes inserted-flash-bg {
   0% {
-    background-color: var(--ax-bg-accent-moderate-pressed, rgba(0, 102, 204, 0.18));
+    background-color: var(--ax-bg-accent-moderate-pressed, rgb(0 102 204 / 18%));
   }
+
   100% {
     background-color: transparent;
   }
