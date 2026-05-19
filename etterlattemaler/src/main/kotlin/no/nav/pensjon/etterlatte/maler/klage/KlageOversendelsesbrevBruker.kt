@@ -20,31 +20,36 @@ import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.SakType
-import no.nav.pensjon.etterlatte.maler.fraser.common.mottakersFoedselsnummer
 import no.nav.pensjon.etterlatte.maler.fraser.common.format
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjonExpr
+import no.nav.pensjon.etterlatte.maler.fraser.common.mottakersFoedselsnummer
 import no.nav.pensjon.etterlatte.maler.fraser.common.saksbehandlingstiderUrl
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.bosattIUtlandet
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.harVerge
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.innstillingTekstLinjer
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.klageDato
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.sakType
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.under18Aar
-import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.vedtakDato
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.bosattIUtlandet
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.harVerge
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.innstillingTekstLinjer
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.klageDato
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.sakType
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.under18Aar
+import no.nav.pensjon.etterlatte.maler.klage.KlageOversendelseBrukerDataSelectors.vedtakDato
 import java.time.LocalDate
 
-data class KlageOversendelseBrukerDTO(
+data class KlageOversendelseBrukerData(
     val sakType: SakType,
     val klageDato: LocalDate,
     val vedtakDato: LocalDate,
     val innstillingTekst: String,
     val under18Aar: Boolean,
     val harVerge: Boolean,
-    val bosattIUtlandet: Boolean
-): FerdigstillingBrevDTO {
-    override val innhold: List<Element> = emptyList()
+    val bosattIUtlandet: Boolean,
+) {
     val innstillingTekstLinjer = innstillingTekst.lines()
 }
+
+data class KlageOversendelseBrukerDTO(
+    override val innhold: List<Element> = emptyList(),
+    override val data: KlageOversendelseBrukerData,
+): FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBrukerDTO>, Hovedmal {
@@ -69,9 +74,9 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
         outline {
             paragraph {
                 text(
-                    bokmal { +"Vi har " + klageDato.format() + " fått klagen din på vedtaket om " + sakType.format() + " som ble gjort " + vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. Nav klageinstans skal vurdere saken din på nytt." },
-                    nynorsk { +klageDato.format() + " fekk vi ei klage frå deg på vedtaket om " + sakType.format() + " som blei fatta " + vedtakDato.format() + ". Vi har kome fram til at vi ikkje endrar vedtaket. Nav klageinstans skal vurdere saka di på nytt." },
-                    english { +"We received your appeal on " + klageDato.format() + " concerning our decision about " + sakType.format() + " that was made on " + vedtakDato.format() + ", and we have decided not to change our decision. Nav appeals will reconsider your case." },
+                    bokmal { +"Vi har " + data.klageDato.format() + " fått klagen din på vedtaket om " + data.sakType.format() + " som ble gjort " + data.vedtakDato.format() + ", og har kommet frem til at vi ikke endrer vedtaket. Nav klageinstans skal vurdere saken din på nytt." },
+                    nynorsk { +data.klageDato.format() + " fekk vi ei klage frå deg på vedtaket om " + data.sakType.format() + " som blei fatta " + data.vedtakDato.format() + ". Vi har kome fram til at vi ikkje endrar vedtaket. Nav klageinstans skal vurdere saka di på nytt." },
+                    english { +"We received your appeal on " + data.klageDato.format() + " concerning our decision about " + data.sakType.format() + " that was made on " + data.vedtakDato.format() + ", and we have decided not to change our decision. Nav appeals will reconsider your case." },
                 )
             }
 
@@ -85,9 +90,9 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
 
             paragraph {
                 text(
-                    bokmal { +"Saksbehandlingstiden til Nav klageinstans finner du på " + saksbehandlingstiderUrl(sakType) + "." },
-                    nynorsk { +"Du finn saksbehandlingstida til Nav klageinstans på " + saksbehandlingstiderUrl(sakType) + "." },
-                    english { +"The processing times at Nav appeals can be found online: " + saksbehandlingstiderUrl(sakType) + "." },
+                    bokmal { +"Saksbehandlingstiden til Nav klageinstans finner du på " + saksbehandlingstiderUrl(data.sakType) + "." },
+                    nynorsk { +"Du finn saksbehandlingstida til Nav klageinstans på " + saksbehandlingstiderUrl(data.sakType) + "." },
+                    english { +"The processing times at Nav appeals can be found online: " + saksbehandlingstiderUrl(data.sakType) + "." },
                 )
             }
 
@@ -98,7 +103,7 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
                     english { +"This is the evaluation we sent to Nav appeals" },
                 )
             }
-            formaterTekstlinjer(innstillingTekstLinjer)
+            formaterTekstlinjer(data.innstillingTekstLinjer)
 
             title1 {
                 text(
@@ -110,11 +115,11 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
             paragraph {
                 text(
                     bokmal { +"Har du nye opplysninger eller ønsker å uttale deg, kan du sende oss dette via " +
-                            sakUrl(sakType) + "#klage." },
+                            sakUrl(data.sakType) + "#klage." },
                     nynorsk { +"Dersom du har nye opplysningar eller ønskjer å uttale deg, kan du kontakte oss via " +
-                            sakUrl(sakType) + "#klage." },
+                            sakUrl(data.sakType) + "#klage." },
                     english { +"If you have any new information or have any comments you want to send us, you can send us this via " +
-                            sakUrl(sakType) + "#klage." },
+                            sakUrl(data.sakType) + "#klage." },
                 )
             }
 
@@ -127,23 +132,23 @@ object KlageOversendelsesbrevBruker : EtterlatteTemplate<KlageOversendelseBruker
             }
             paragraph {
                 text(
-                    bokmal { +"Du kan finne svar på " + sakUrl(sakType) + ". På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " },
-                    nynorsk { +"Du kan finne svar på " + sakUrl(sakType) + ". På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " },
-                    english { +"You can find answers online: " + sakUrl(sakType) + ". Feel free to chat with us or write to us here: " + "${Constants.Engelsk.KONTAKT_URL}." },
+                    bokmal { +"Du kan finne svar på " + sakUrl(data.sakType) + ". På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " },
+                    nynorsk { +"Du kan finne svar på " + sakUrl(data.sakType) + ". På ${Constants.KONTAKT_URL} kan du chatte eller skrive til oss. " },
+                    english { +"You can find answers online: " + sakUrl(data.sakType) + ". Feel free to chat with us or write to us here: " + "${Constants.Engelsk.KONTAKT_URL}." },
                 )
             }
             paragraph {
                 text(
                     bokmal { +
-                    "Du kan også kontakte Nav klageinstans på " + sakUrl(sakType) + " eller telefon " + kontakttelefonPensjonExpr(bosattIUtlandet) +
+                    "Du kan også kontakte Nav klageinstans på " + sakUrl(data.sakType) + " eller telefon " + kontakttelefonPensjonExpr(data.bosattIUtlandet) +
                             ", hverdager mellom klokken 09.00-15.00. Hvis du oppgir " +
-                            mottakersFoedselsnummer(harVerge, under18Aar, Language.Bokmal) + ", kan vi lettere gi deg rask hjelp." },
-                    nynorsk { +"Alternativt kan du kontakte Nav klageinstans på " + sakUrl(sakType) + " eller telefon " + kontakttelefonPensjonExpr(bosattIUtlandet) +
+                            mottakersFoedselsnummer(data.harVerge, data.under18Aar, Language.Bokmal) + ", kan vi lettere gi deg rask hjelp." },
+                    nynorsk { +"Alternativt kan du kontakte Nav klageinstans på " + sakUrl(data.sakType) + " eller telefon " + kontakttelefonPensjonExpr(data.bosattIUtlandet) +
                             ", kvardagar mellom klokka 09:00–15:00. Det vil gjere det enklare for oss å gi deg rask og god hjelp om du oppgir " +
-                            mottakersFoedselsnummer(harVerge, under18Aar, Language.Nynorsk) + "." },
-                    english { +"You can also contact Nav Appeals here: " + sakUrl(sakType) + " or by phone " + kontakttelefonPensjonExpr(bosattIUtlandet) +
+                            mottakersFoedselsnummer(data.harVerge, data.under18Aar, Language.Nynorsk) + "." },
+                    english { +"You can also contact Nav Appeals here: " + sakUrl(data.sakType) + " or by phone " + kontakttelefonPensjonExpr(data.bosattIUtlandet) +
                             ", weekdays from 09:00-15:00. If you state " +
-                            mottakersFoedselsnummer(harVerge, under18Aar, Language.English) +
+                            mottakersFoedselsnummer(data.harVerge, data.under18Aar, Language.English) +
                             ", we will be able to provide you with fast and adequate help." },
                 )
             }

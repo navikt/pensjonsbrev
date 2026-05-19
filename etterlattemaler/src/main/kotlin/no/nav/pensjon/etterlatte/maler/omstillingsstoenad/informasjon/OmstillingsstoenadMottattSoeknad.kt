@@ -13,13 +13,18 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.borINorgeEllerIkkeAvtaleland
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.mottattDato
 import java.time.LocalDate
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDataSelectors.borINorgeEllerIkkeAvtaleland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadMottattSoeknadDataSelectors.mottattDato
 
-data class OmstillingsstoenadMottattSoeknadDTO(
+data class OmstillingsstoenadMottattSoeknadData(
     val mottattDato: LocalDate,
     val borINorgeEllerIkkeAvtaleland: Boolean,
+)
+
+data class OmstillingsstoenadMottattSoeknadDTO(
+    override val data: OmstillingsstoenadMottattSoeknadData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -46,12 +51,12 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
             outline {
                 paragraph {
                     text(
-                        bokmal { +"Vi viser til søknaden din som vi mottok " + mottattDato.format() + "." },
-                        nynorsk { +"Vi fekk søknad frå deg " + mottattDato.format() + "." },
-                        english { +"We refer to your application that we received " + mottattDato.format() + "." },
+                        bokmal { +"Vi viser til søknaden din som vi mottok " + data.mottattDato.format() + "." },
+                        nynorsk { +"Vi fekk søknad frå deg " + data.mottattDato.format() + "." },
+                        english { +"We refer to your application that we received " + data.mottattDato.format() + "." },
                     )
                 }
-                showIf(borINorgeEllerIkkeAvtaleland) {
+                showIf(data.borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
                             bokmal { +"Behandlingstid" },
@@ -101,7 +106,7 @@ object OmstillingsstoenadMottattSoeknad : EtterlatteTemplate<OmstillingsstoenadM
                     }
                 }
 
-                showIf(borINorgeEllerIkkeAvtaleland) {
+                showIf(data.borINorgeEllerIkkeAvtaleland) {
                     title2 {
                         text(
                             bokmal { +"Du må melde fra om endringer" },

@@ -13,14 +13,19 @@ import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDataSelectors.borIutland
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.BARNEPENSJON_URL
 
-data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO(
+data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktData(
     val avdoedNavn: String,
     val borIutland: Boolean,
+)
+
+data class BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktDTO(
+    override val data: BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunktData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -90,7 +95,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                         english { +"How to apply" },
                     )
                 }
-                showIf(borIutland.not()) {
+                showIf(data.borIutland.not()) {
                     paragraph {
                         text(
                             bokmal { +"Du finner informasjon og søknad på $BARNEPENSJON_URL." },
@@ -101,7 +106,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                 }
 
 
-                showIf(borIutland) {
+                showIf(data.borIutland) {
                     paragraph {
                         text(
                             bokmal { +"Vi har informasjon om at du bor i utlandet. Du finner informasjon om hvordan du søker på $BARNEPENSJON_URL." },
@@ -148,7 +153,7 @@ object BarnepensjonInformasjonDoedsfallMellomAttenOgTjueVedReformtidspunkt : Ett
                     )
                 }
 
-                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(false.expr(), borIutland))
+                    includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(false.expr(), data.borIutland))
             }
         }
 }

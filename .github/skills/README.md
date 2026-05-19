@@ -19,6 +19,7 @@ Each skill is a single Markdown file describing a focused task, with:
 | [`write-template/SKILL.md`](write-template/SKILL.md) | Author a letter template (Dto design, brevkode rules, template skeleton, fixture wiring, registration). Shared between autobrev and redigerbar. Cross-references the DSL sub-skills below for the DSL body itself. |
 | [`write-template/write-redigerbar-template.md`](write-template/write-redigerbar-template.md) | Deltas on top of `SKILL.md` for `RedigerbarTemplate`: `Saksbehandlervalg`/fagsystem split, Skribenten-visible metadata (`kategori`, `brevkontekst`, `sakstyper`), feature toggle, and the `fritekst(...)` editable placeholder. |
 | [`write-template/convert-exstream-letter.md`](write-template/convert-exstream-letter.md) | Turn the output of the Exstream-to-brevbaker converter into a compilable, idiomatic legacy template. Covers data-minimised Dto design with PESYS traceability comments, `SYS_TableRow`→`forEach`, `<FRITEKST>` conversion, table restoration, and simplification. |
+| [`letter-editor-actions/SKILL.md`](letter-editor-actions/SKILL.md) | Write or refactor LetterEditor actions in `skribenten-web/frontend/src/Brevredigering/LetterEditor/actions` — `withPatches` pattern, focus/index safety, `deleted*` bookkeeping, table/list invariants, utility-first edits, and prioritized DRY refactor targets. |
 
 ### DSL sub-skills (focused references for one DSL topic each)
 

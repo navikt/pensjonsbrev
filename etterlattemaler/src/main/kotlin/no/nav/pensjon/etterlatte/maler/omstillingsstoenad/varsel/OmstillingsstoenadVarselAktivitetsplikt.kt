@@ -1,6 +1,8 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel
 
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.ifElse
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
@@ -15,12 +17,17 @@ import no.nav.pensjon.etterlatte.maler.Hovedmal
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDTOSelectors.innhold
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktDataSelectors.bosattUtland
+
+data class OmstillingsstoenadVarselAktivitetspliktData(
+    val bosattUtland: Boolean,
+)
 
 data class OmstillingsstoenadVarselAktivitetspliktDTO(
     override val innhold: List<Element>,
-    val bosattUtland: Boolean,
+    override val data: OmstillingsstoenadVarselAktivitetspliktData,
 ) : FerdigstillingBrevDTO
 
 @TemplateModelHelpers
@@ -63,7 +70,7 @@ object OmstillingsstoenadVarselAktivitetsplikt : EtterlatteTemplate<Omstillingss
                 }
 
                 paragraph {
-                    val postadresse = ifElse(bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
+                    val postadresse = ifElse(data.bosattUtland, Constants.Utland.POSTADRESSE, Constants.POSTADRESSE)
                     text(
                         bokmal { +"Har du ikke BankID eller annen innloggingsmulighet til vår hjemmeside nav.no, kan du sende brev til " + postadresse + "." },
                         nynorsk { +"Har du ikkje BankID eller andre moglegheiter til å logge på heimesida vår nav.no, må du sende dokumentasjon per post til " + postadresse + "." },

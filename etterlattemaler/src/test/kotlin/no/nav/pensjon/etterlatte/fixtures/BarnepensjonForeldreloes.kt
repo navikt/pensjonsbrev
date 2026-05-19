@@ -15,10 +15,11 @@ import no.nav.pensjon.etterlatte.maler.Trygdetid
 import no.nav.pensjon.etterlatte.maler.TrygdetidType
 import no.nav.pensjon.etterlatte.maler.Trygdetidsperiode
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesData
 import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTO
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarData
 import java.time.LocalDate
 import java.time.Month
-import java.time.YearMonth
 
 fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
     val tt2 = Trygdetid(
@@ -85,50 +86,52 @@ fun createBarnepensjonForeldreloesDTO(): BarnepensjonForeldreloesDTO {
     )
     return BarnepensjonForeldreloesDTO(
         innhold = createPlaceholderForRedigerbartInnhold(),
-        beregning = BarnepensjonBeregning(
-            innhold = createPlaceholderForRedigerbartInnhold(),
-            virkningsdato = vilkaarligDato,
-            antallBarn = 2,
-            grunnbeloep = Kroner(123456),
-            beregningsperioder = listOf(
-                BarnepensjonBeregningsperiode(
+        data = BarnepensjonForeldreloesData(
+            beregning = BarnepensjonBeregning(
+                innhold = createPlaceholderForRedigerbartInnhold(),
+                virkningsdato = vilkaarligDato,
+                antallBarn = 2,
+                grunnbeloep = Kroner(123456),
+                beregningsperioder = listOf(
+                    BarnepensjonBeregningsperiode(
+                        datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
+                        datoTOM = LocalDate.of(2023, Month.JULY, 31),
+                        grunnbeloep = Kroner(123456),
+                        antallBarn = 2,
+                        utbetaltBeloep = Kroner(6234),
+                        harForeldreloessats = true,
+                    )
+                ),
+                sisteBeregningsperiode = BarnepensjonBeregningsperiode(
                     datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
                     datoTOM = LocalDate.of(2023, Month.JULY, 31),
                     grunnbeloep = Kroner(123456),
                     antallBarn = 2,
                     utbetaltBeloep = Kroner(6234),
                     harForeldreloessats = true,
-                )
+                ),
+                trygdetid = listOf(tt1, tt2),
+                bruktTrygdetid = tt2,
+                forskjelligTrygdetid = ForskjelligTrygdetid(
+                    foersteTrygdetid = tt1,
+                    foersteVirkningsdato = LocalDate.of(2023, 11, 1),
+                    senereVirkningsdato = LocalDate.of(2024, 1, 1),
+                    harForskjelligMetode = true,
+                    erForskjellig = true,
+                ),
+                erForeldreloes = true,
+                erYrkesskade = false,
             ),
-            sisteBeregningsperiode = BarnepensjonBeregningsperiode(
-                datoFOM = LocalDate.of(2020, Month.JANUARY, 1),
-                datoTOM = LocalDate.of(2023, Month.JULY, 31),
-                grunnbeloep = Kroner(123456),
-                antallBarn = 2,
-                utbetaltBeloep = Kroner(6234),
-                harForeldreloessats = true,
-            ),
-            trygdetid = listOf(tt1, tt2),
-            bruktTrygdetid = tt2,
-            forskjelligTrygdetid = ForskjelligTrygdetid(
-                foersteTrygdetid = tt1,
-                foersteVirkningsdato = LocalDate.of(2023, 11, 1),
-                senereVirkningsdato = LocalDate.of(2024, 1, 1),
-                harForskjelligMetode = true,
-                erForskjellig = true,
-            ),
-            erForeldreloes = true,
-            erYrkesskade = false,
+            frivilligSkattetrekk = true,
+            bosattUtland = true,
+            brukerUnder18Aar = true,
+            kunNyttRegelverk = true,
+            harUtbetaling = true,
+            erGjenoppretting = false,
+            vedtattIPesys = false,
+            erMigrertYrkesskade = false,
+            erEtterbetaling = false,
         ),
-        frivilligSkattetrekk = true,
-        bosattUtland = true,
-        brukerUnder18Aar = true,
-        kunNyttRegelverk = true,
-        harUtbetaling = true,
-        erGjenoppretting = false,
-        vedtattIPesys = false,
-        erMigrertYrkesskade = false,
-        erEtterbetaling = false
     )
 }
 
@@ -145,20 +148,22 @@ fun createBarnepensjonForeldreloesRedigerbarDTO(): BarnepensjonForeldreloesRedig
     val andreDoed = vilkaarligMaaned.minusMonths(3).atDay(1)
 
     return BarnepensjonForeldreloesRedigerbarDTO(
-        virkningsdato = foersteDoed.plusMonths(1).atDay(1),
-        sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
-        sisteBeregningsperiodeDatoFom = siste.datoFOM,
-        erGjenoppretting = false,
-        harUtbetaling = true,
-        erEtterbetaling = true,
-        flerePerioder = true,
-        vedtattIPesys = false,
-        forskjelligAvdoedPeriode = ForskjelligAvdoedPeriode(
-            foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
-            senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
-            senereVirkningsdato = andreDoed.plusMonths(1)
+        data = BarnepensjonForeldreloesRedigerbarData(
+            virkningsdato = foersteDoed.plusMonths(1).atDay(1),
+            sisteBeregningsperiodeBeloep = siste.utbetaltBeloep,
+            sisteBeregningsperiodeDatoFom = siste.datoFOM,
+            erGjenoppretting = false,
+            harUtbetaling = true,
+            erEtterbetaling = true,
+            flerePerioder = true,
+            vedtattIPesys = false,
+            forskjelligAvdoedPeriode = ForskjelligAvdoedPeriode(
+                foersteAvdoed = Avdoed(navn = "Død Først", doedsdato = foersteDoed.atDay(7)),
+                senereAvdoed = Avdoed(navn = "Senere Død", doedsdato = andreDoed),
+                senereVirkningsdato = andreDoed.plusMonths(1)
 
-        ),
-        erSluttbehandling = false
+            ),
+            erSluttbehandling = false,
+        )
     )
 }

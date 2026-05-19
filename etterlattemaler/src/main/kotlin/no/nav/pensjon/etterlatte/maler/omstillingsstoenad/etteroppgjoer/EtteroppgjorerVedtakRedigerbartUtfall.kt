@@ -24,7 +24,7 @@ class EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO(
 )
 
 class EtteroppgjoerVedtakRedigerbartUtfallBrevDTO(
-    val data: EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO
+    override val data: EtteroppgjoerVedtakRedigerbartUtfallInnholdDTO
 ): RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers

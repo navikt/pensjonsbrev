@@ -29,7 +29,7 @@ import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.innvilgelse.Omstilling
 import java.time.LocalDate
 
 data class OmstillingsstoenadInnvilgelseRedigerbartUtfallDTO(
-    val data: OmstillingsstoenadInnvilgelseRedigerbartUtfallData
+    override val data: OmstillingsstoenadInnvilgelseRedigerbartUtfallData
 ) : RedigerbartUtfallBrevDTO
 
 data class OmstillingsstoenadInnvilgelseRedigerbartUtfallData(

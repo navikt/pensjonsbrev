@@ -18,11 +18,12 @@ import no.nav.pensjon.etterlatte.maler.Element
 import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
 import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
 import no.nav.pensjon.etterlatte.maler.Hovedmal
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.bosattUtland
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.brukerUnder18Aar
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.bosattUtland
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.brukerUnder18Aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.opphoer.BarnepensjonOpphoerDataSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonRevurderingFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
@@ -31,13 +32,17 @@ import no.nav.pensjon.etterlatte.maler.vedlegg.barnepensjon.forhaandsvarselFeilu
 import no.nav.pensjon.etterlatte.maler.vedlegg.klageOgAnke
 import java.time.LocalDate
 
-data class BarnepensjonOpphoerDTO(
-    override val innhold: List<Element>,
+data class BarnepensjonOpphoerData(
     val innholdForhaandsvarsel: List<Element>,
     val brukerUnder18Aar: Boolean,
     val bosattUtland: Boolean,
     val virkningsdato: LocalDate,
-    val feilutbetaling: FeilutbetalingType
+    val feilutbetaling: FeilutbetalingType,
+)
+
+data class BarnepensjonOpphoerDTO(
+    override val innhold: List<Element>,
+    override val data: BarnepensjonOpphoerData,
 ) : VedleggData, FerdigstillingBrevDTO
 @TemplateModelHelpers
 object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedmal {
@@ -61,29 +66,29 @@ object BarnepensjonOpphoer : EtterlatteTemplate<BarnepensjonOpphoerDTO>, Hovedma
         outline {
             paragraph {
                 text(
-                    bokmal { +"Barnepensjonen din opphører fra " + virkningsdato.format() + "." },
-                    nynorsk { +"Barnepensjonen din fell bort frå og med " + virkningsdato.format() + "." },
-                    english { +"Your children's pension will terminate on " + virkningsdato.format() + "." },
+                    bokmal { +"Barnepensjonen din opphører fra " + data.virkningsdato.format() + "." },
+                    nynorsk { +"Barnepensjonen din fell bort frå og med " + data.virkningsdato.format() + "." },
+                    english { +"Your children's pension will terminate on " + data.virkningsdato.format() + "." },
                 )
             }
             konverterElementerTilBrevbakerformat(innhold)
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingMedVarselOpphoer)
             }
-            showIf(feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
+            showIf(data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_UTEN_VARSEL)) {
                 includePhrase(BarnepensjonRevurderingFraser.FeilutbetalingUtenVarselOpphoer)
             }
             includePhrase(Felles.DuHarRettTilAaKlage)
             includePhrase(BarnepensjonFellesFraser.DuHarRettTilInnsyn)
-            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(brukerUnder18Aar, bosattUtland))
+            includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.brukerUnder18Aar, data.bosattUtland))
         }
 
         // Nasjonal
-        includeAttachment(klageOgAnke(bosattUtland = false), bosattUtland.not())
+        includeAttachment(klageOgAnke(bosattUtland = false), data.bosattUtland.not())
 
         // Bosatt utland
-        includeAttachment(klageOgAnke(bosattUtland = true), bosattUtland)
+        includeAttachment(klageOgAnke(bosattUtland = true), data.bosattUtland)
 
-        includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonOpphoer, this.argument, feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
+        includeAttachment(forhaandsvarselFeilutbetalingBarnepensjonOpphoer, this.argument, data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL))
     }
 }

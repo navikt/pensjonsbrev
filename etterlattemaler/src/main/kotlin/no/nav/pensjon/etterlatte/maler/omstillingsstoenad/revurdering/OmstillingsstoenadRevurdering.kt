@@ -1,37 +1,52 @@
 package no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering
 
 import no.nav.pensjon.brev.api.model.maler.VedleggData
-import no.nav.pensjon.brev.template.Language.*
+import no.nav.pensjon.brev.template.Language.Bokmal
+import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.expression.*
+import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
+import no.nav.pensjon.brev.template.dsl.expression.not
+import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.*
+import no.nav.pensjon.etterlatte.maler.Element
+import no.nav.pensjon.etterlatte.maler.FeilutbetalingType
+import no.nav.pensjon.etterlatte.maler.FerdigstillingBrevDTO
+import no.nav.pensjon.etterlatte.maler.Hovedmal
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.erFakeSanksjon
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiodeSelectors.sanksjon
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadRevurderingFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.beregning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.datoVedtakOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erEndret
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erInnvilgelsesaar
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.erOmgjoering
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.feilutbetaling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.informasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.konverterElementerTilBrevbakerformat
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.data
 import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.innhold
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.omsRettUtenTidsbegrensning
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDTOSelectors.tidligereFamiliepleier
-import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.*
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.beregning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.datoVedtakOmgjoering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erEndret
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erInnvilgelsesaar
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.erOmgjoering
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.feilutbetaling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.informasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.omsRettUtenTidsbegrensning
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.revurdering.OmstillingsstoenadRevurderingDataSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.InformasjonOmOmstillingsstoenadData
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.beregningAvOmstillingsstoenad
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.dineRettigheterOgPlikter
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering
+import no.nav.pensjon.etterlatte.maler.vedlegg.omstillingsstoenad.informasjonOmOmstillingsstoenad
 import java.time.LocalDate
 
-data class OmstillingsstoenadRevurderingDTO(
-    override val innhold: List<Element>,
+data class OmstillingsstoenadRevurderingData(
     val innholdForhaandsvarsel: List<Element>,
     val erEndret: Boolean,
     val erOmgjoering: Boolean,
@@ -42,10 +57,15 @@ data class OmstillingsstoenadRevurderingDTO(
     val feilutbetaling: FeilutbetalingType,
     val tidligereFamiliepleier: Boolean = false,
     val bosattUtland: Boolean = false,
-    val erInnvilgelsesaar: Boolean
-): VedleggData, FerdigstillingBrevDTO {
+    val erInnvilgelsesaar: Boolean,
+) {
     val informasjonOmOmstillingsstoenadData = InformasjonOmOmstillingsstoenadData(tidligereFamiliepleier, bosattUtland)
 }
+
+data class OmstillingsstoenadRevurderingDTO(
+    override val innhold: List<Element>,
+    override val data: OmstillingsstoenadRevurderingData,
+): VedleggData, FerdigstillingBrevDTO
 
 @TemplateModelHelpers
 object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevurderingDTO>, Hovedmal {
@@ -67,8 +87,8 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                     nynorsk { +"Vi har " },
                     english { +"We have " },
                 )
-                showIf(erOmgjoering) {
-                    ifNotNull(datoVedtakOmgjoering) {
+                showIf(data.erOmgjoering) {
+                    ifNotNull(data.datoVedtakOmgjoering) {
                         text(
                             bokmal { +"omgjort vedtaket om omstillingsstønad av " + it.format() },
                             nynorsk { +"gjort om vedtaket om omstillingsstønad av " + it.format() },
@@ -76,15 +96,15 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
                         )
                     }
                 }.orShow {
-                    showIf(beregning.sisteBeregningsperiode.sanksjon and
-                            not(beregning.sisteBeregningsperiode.erFakeSanksjon)) {
+                    showIf(data.beregning.sisteBeregningsperiode.sanksjon and
+                            not(data.beregning.sisteBeregningsperiode.erFakeSanksjon)) {
                         text(
                             bokmal { +"stanset" },
                             nynorsk { +"stansa" },
                             english { +"stopped" },
                         )
                     } orShow {
-                        showIf(erEndret or beregning.sisteBeregningsperiode.erFakeSanksjon) {
+                        showIf(data.erEndret or data.beregning.sisteBeregningsperiode.erFakeSanksjon) {
                             text(
                                 bokmal { +"endret" },
                                 nynorsk { +"endra" },
@@ -111,13 +131,13 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
                 includePhrase(
                     OmstillingsstoenadFellesFraser.HvorLengerKanDuFaaOmstillingsstoenad(
-                        beregning,
-                        omsRettUtenTidsbegrensning,
-                        tidligereFamiliepleier,
+                        data.beregning,
+                        data.omsRettUtenTidsbegrensning,
+                        data.tidligereFamiliepleier,
                     ),
                 )
-                showIf(omsRettUtenTidsbegrensning.not()) {
-                    includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(tidligereFamiliepleier))
+                showIf(data.omsRettUtenTidsbegrensning.not()) {
+                    includePhrase(OmstillingsstoenadRevurderingFraser.Aktivitetsplikt(data.tidligereFamiliepleier))
                 }
                 includePhrase(OmstillingsstoenadFellesFraser.MeldFraOmEndringer)
                 includePhrase(OmstillingsstoenadFellesFraser.SpesieltOmInntektsendring)
@@ -128,33 +148,33 @@ object OmstillingsstoenadRevurdering: EtterlatteTemplate<OmstillingsstoenadRevur
 
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = true),
-                beregning,
-                tidligereFamiliepleier.and(erInnvilgelsesaar),
+                data.beregning,
+                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = false),
-                beregning,
-                tidligereFamiliepleier.not().and(erInnvilgelsesaar.not()),
+                data.beregning,
+                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar.not()),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = true, innvilgelsesaar = false),
-                beregning,
-                tidligereFamiliepleier.and(erInnvilgelsesaar.not()),
+                data.beregning,
+                data.tidligereFamiliepleier.and(data.erInnvilgelsesaar.not()),
             )
             includeAttachment(
                 beregningAvOmstillingsstoenad(tidligereFamiliepleier = false, innvilgelsesaar = true),
-                beregning,
-                tidligereFamiliepleier.not().and(erInnvilgelsesaar),
+                data.beregning,
+                data.tidligereFamiliepleier.not().and(data.erInnvilgelsesaar),
             )
 
 
-            includeAttachment(informasjonOmOmstillingsstoenad(), informasjonOmOmstillingsstoenadData)
+            includeAttachment(informasjonOmOmstillingsstoenad(), data.informasjonOmOmstillingsstoenadData)
 
             includeAttachment(dineRettigheterOgPlikter)
             includeAttachment(
                 forhaandsvarselFeilutbetalingOmstillingsstoenadRevurdering,
                 this.argument,
-                feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL),
+                data.feilutbetaling.equalTo(FeilutbetalingType.FEILUTBETALING_MED_VARSEL),
             )
         }
 }
