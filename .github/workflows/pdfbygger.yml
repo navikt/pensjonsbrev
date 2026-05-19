@@ -199,16 +199,17 @@ jobs:
           team: pensjonsbrev
       - name: Run reg-suit
         if: ${{ github.event_name == 'pull_request' }}
-        run: npx reg-suit run --verbose --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
+        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ACTUAL_KEY: ${{ github.event.pull_request.head.sha }}
       - name: Update main baseline on GCS
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
         run: |
           gcloud storage rsync \
             brevbaker/pdf-bygger/build/test_visual/png/actual \
-            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual2/main/actual \
+            gs://no-nav-pensjonsbrev-reg-suit/pdf-visual/main/actual \
             --recursive \
             --delete-unmatched-destination-objects
 
