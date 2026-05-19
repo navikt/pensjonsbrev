@@ -3,10 +3,12 @@ package no.nav.pensjon.brev.ufore.maler.innhentingopplysninger
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.RedigerbarTemplate
+import no.nav.pensjon.brev.template.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
@@ -29,7 +31,6 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
     override val brevkontekst = TemplateDescription.Brevkontekst.SAK
     override val sakstyper = setOf(Sakstype.UFOREP)
 
-
     override val template = createTemplate(
         languages = languages(Bokmal),
         letterMetadata = LetterMetadata(
@@ -39,6 +40,8 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
         ),
     )
     {
+        val ukjentSamboer = saksbehandlervalg("Ukjent samboer").bool(false)
+
         title {
             text (bokmal { + "Du må sende flere opplysninger" })
         }
@@ -47,7 +50,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
                 text(bokmal { +"Vi har mottatt melding om at du har blitt samboer. " })
             }
 
-            showIf(saksbehandlerValg.ukjentSamboer) {
+            showIf(ukjentSamboer) {
                 paragraph {
                     text(bokmal { +"Vi ber om at du sender oss navn og fødselsnummer på din samboer. Vi trenger også informasjon om hvilken dato dere ble samboere. Dersom du og din samboer ikke har samme registrerte bostedsadresser må dere melde flytting til Folkeregisteret. Du kan melde flytting her: ${Constants.SKATTEETATEN_MELD_FLYTTING}" })
                 }

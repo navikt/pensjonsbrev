@@ -10,6 +10,7 @@ import no.nav.pensjon.brev.api.model.maler.Brevkode
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.Expression.Literal
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import no.nav.pensjon.brevbaker.api.model.LanguageCode
@@ -56,6 +57,38 @@ interface RedigerbarTemplate<LetterData : RedigerbarBrevdata<out SaksbehandlerVa
             sakstyper = sakstyper.map { TemplateDescription.Redigerbar.Sakstype(it.kode) }.toSet(),
         )
 }
+
+sealed interface SaksbehandlervalgWrapper<T> {
+    val displayText: String
+    fun expr(): Expression<T>
+
+    class Bool(override val displayText: String, val default: Boolean) : SaksbehandlervalgWrapper<Boolean> {
+        override fun expr(): Expression<Boolean> =
+            TODO()
+//            Expression.UnaryInvoke<Boolean>(
+//            this,
+//            UnaryOperation.Select(simpleSelector)
+//        )
+    }
+    class Integer(override val displayText: String, val default: Int?) : SaksbehandlervalgWrapper<Int> {
+        override fun expr(): Expression<Int> = TODO()
+    }
+    class Enum<T : SaksbehandlerValgEnum>(override val displayText: String) : SaksbehandlervalgWrapper<T> {
+        override fun expr(): Expression<T> = TODO()
+    }
+}
+
+interface SaksbehandlerValgEnum {
+    val displayText: String
+}
+
+class SBWrapper(val displayText: String) {
+    fun bool(default: Boolean = false) = SaksbehandlervalgWrapper.Bool(displayText, default).expr()
+    fun int(default: Int? = null) = SaksbehandlervalgWrapper.Integer(displayText, default)
+    fun <T : SaksbehandlerValgEnum> enum() = SaksbehandlervalgWrapper.Enum<T>(displayText)
+}
+
+fun <LetterData: RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> RedigerbarTemplate<LetterData>.saksbehandlervalg(displayText: String) = SBWrapper(displayText)
 
 sealed interface SpesialkonstruksjonIMal
 
