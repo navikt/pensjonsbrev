@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -36,7 +36,7 @@ object LavereMinstesats {
         val harMinstesats: Expression<Boolean>,
         val tidligereMinstesats: Expression<Kroner>,
         val nyMinstesats: Expression<Kroner>,
-        val tillegg: Expression<Collection<Tillegg>>,
+        val tillegg: Expression<Collection<UTTillegg>>,
         val egenopptjentUforetrygd: Expression<Kroner>,
         val avkortetPgaRedusertTrygdetid: Expression<Boolean>,
         val harGradertUfoeretrygd: Expression<Boolean>,
