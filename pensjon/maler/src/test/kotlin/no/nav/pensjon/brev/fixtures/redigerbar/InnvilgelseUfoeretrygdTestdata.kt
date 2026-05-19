@@ -14,7 +14,7 @@ import java.time.Month
 
 fun createInnvilgelseUfoeretrygdDto() =
     InnvilgelseUfoeretrygdDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(barnetilleggInfo = true, innvilgetEtter12_2Tredjeledd = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdDto.Saksbehandlervalg(barnetilleggInfo = true),
         pesysData = InnvilgelseUfoeretrygdDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),
@@ -62,7 +62,7 @@ fun createInnvilgelseUfoeretrygdDto() =
 
 fun createInnvilgelseUfoeretrygdUtlandDto() =
     InnvilgelseUfoeretrygdUtlandDto(
-        saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Tredjeledd = true),
+        saksbehandlerValg = InnvilgelseUfoeretrygdUtlandDto.Saksbehandlervalg(refusjon = true, barnetilleggInfo = true, innvilgetEtter12_2Andreledd = true, innvilgetEtter12_2Tredjeledd = true),
         pesysData = InnvilgelseUfoeretrygdUtlandDto.PesysData(
             pe = createPEgruppe10(),
             oifuVedVirkningstidspunkt = Kroner(10000),

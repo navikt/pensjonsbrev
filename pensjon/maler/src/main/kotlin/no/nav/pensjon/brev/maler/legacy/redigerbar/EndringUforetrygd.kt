@@ -48,7 +48,7 @@ import java.time.LocalDate
 @TemplateModelHelpers
 object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
 
-    override val featureToggle = FeatureToggles.brevmalUtInnvilgelse.toggle
+    override val featureToggle = FeatureToggles.brevmalUtEndring.toggle
 
     override val kode = Pesysbrevkoder.Redigerbar.UT_ENDRING_UFOERETRYGD
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
@@ -112,6 +112,8 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
         val fasteUtgifterInstopphold = pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter()
 
         val txtOgEllerEktefelle = if (pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_ektefelletillegg_etinnvilget().equals(true)) " og/eller ektefelle" else ""
+
+        val endringIBelopUt = pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()
 
         title {
             showIf(kravarsak.equalTo("soknad_bt") and pesysData.nyeInnvilgedeBarnetillegg.isNotEmpty()) {
@@ -459,7 +461,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")) and (pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))) {
+            showIf((((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")) and endringIBelopUt)) {
                 paragraph {
                     text(
                         bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned. Du får din første utbetaling med nytt beløp i " + fritekst("måned og år") + "." },
@@ -477,7 +479,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf(((not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert())) and ((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")))) {
+            showIf((not(endringIBelopUt) and ((pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("nor") or (pe.grunnlag_persongrunnlagsliste_personbostedsland()).equalTo("")))) {
                 includePhrase(TBU2223_Generated)
             }
 
@@ -500,33 +502,40 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                 }
             }
 
-            showIf((mottarMinsteytelse and kravarsak.equalTo("sivilstandsendring") and (pe.vedtaksdata_beregningsdata_beregningufore_belopokt() or pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))) {
-
-                paragraph {
-                    text(
-                        bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Utbetalingen din endres derfor til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Utbetalinga av uføretrygda di blir derfor endra til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda." },
-                    )
+            showIf(kravarsak.equalTo("sivilstandsendring")) {
+                showIf(not(endringIBelopUt)) {//samme minsteytelse eller egenopptjening
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
+                            nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
+                        )
+                    }
+                }.orShowIf(mottarMinsteytelse) {//har gått fra en minsteytelse til en annen, eller fra egenopptjening til minsteytelse
+                    paragraph {
+                        text(
+                            bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Utbetalingen din endres derfor til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " ganger folketrygdens grunnbeløp." },
+                            nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Utbetalinga av uføretrygda di blir derfor endra til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_sats().format(3) + " gonger grunnbeløpet i folketrygda." },
+                        )
+                    }
                 }
-            }
+                    //har gått fra minsteytelse til egenopptjent(beløpet ville ikke vært redusert hvis det tidligere var egenopptjent)
+                    //dekker resten av mulige caser
+                    .orShowIf( pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed ektefelle", "bormed registrert partner")) {
+                        paragraph {
+                            text(
+                                bokmal { +"Vi har mottatt opplysninger om at du " + fritekst("sivilstandsendring") + ". Du har minsteytelse i uføretrygden din. Den endrede sivilstanden din medfører nå at du får uføretrygd på grunnlag av egen opptjening." },
+                                nynorsk { +"Vi har fått opplysningar om at du " + fritekst("sivilstandsendring") + ". Du har minsteyting i uføretrygda di. Den endra sivilstanden din fører no til at du får uføretrygd på grunnlag av di eiga opptening." },
+                            )
+                        }
+                    }
 
-            showIf(((not(mottarMinsteytelse) or (not(pe.vedtaksdata_beregningsdata_beregningufore_belopokt()) and not(pe.vedtaksdata_beregningsdata_beregningufore_belopredusert()))) and kravarsak.equalTo("sivilstandsendring"))) {
-
-                paragraph {
-                    text(
-                        bokmal { +"Vi har mottatt opplysninger om at sivilstanden din har blitt endret. Dette får ikke betydning for uføretrygden din, og du vil få utbetalt det samme som før." },
-                        nynorsk { +"Vi har fått opplysningar om at sivilstanden din har blitt endra. Dette får ikkje noko å seie for uføretrygda di, og du får utbetalt det same som før." },
-                    )
-                }
-            }
-
-            showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 1-5") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed 3-2") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed_ektefelle") or pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().equalTo("bormed_registrert_partner")) and pe.vedtaksdata_beregningsdata_beregningufore_belopredusert() and not(mottarMinsteytelse) and kravarsak.equalTo("sivilstandsendring"))) {
-
-                paragraph {
-                    text(
-                        bokmal { +"Vi har mottatt opplysninger om at du " + fritekst("sivilstandsendring") + ". Du har minsteytelse i uføretrygden din. Den endrede sivilstanden din medfører nå at du får uføretrygd på grunnlag av egen opptjening." },
-                        nynorsk { +"Vi har fått opplysningar om at du " + fritekst("sivilstandsendring") + ". Du har minsteyting i uføretrygda di. Den endra sivilstanden din fører no til at du får uføretrygd på grunnlag av di eiga opptening." },
-                    )
+                showIf(pesysData.opphortGjenlevendetillegg and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed_ektefelle", "bormed_registrert_partner")) {
+                    paragraph {
+                        text(
+                            bokmal { +"Som en følge av din endrede sivilstand, opphører din rett til gjenlevendetillegg." },
+                            nynorsk { +"Som følgje av den endra sivilstanden din, opphøyrer retten din til attlevandetillegg." },
+                        )
+                    }
                 }
             }
 

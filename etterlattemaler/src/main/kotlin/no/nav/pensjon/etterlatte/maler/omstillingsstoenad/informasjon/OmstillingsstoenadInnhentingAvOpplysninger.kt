@@ -13,10 +13,15 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTOSelectors.borIUtlandet
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingsstoenadInnhentingAvOpplysningerDataSelectors.borIUtlandet
+
+data class OmstillingsstoenadInnhentingAvOpplysningerData(
+    val borIUtlandet: Boolean,
+)
 
 data class OmstillingsstoenadInnhentingAvOpplysningerDTO(
-    val borIUtlandet: Boolean,
+    override val data: OmstillingsstoenadInnhentingAvOpplysningerData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -49,7 +54,7 @@ object OmstillingsstoenadInnhentingAvOpplysninger : EtterlatteTemplate<Omstillin
                         english { +"UTFALL" },
                     )
                 }
-                includePhrase(Felles.HvordanSendeOpplysninger(borIUtlandet))
+                includePhrase(Felles.HvordanSendeOpplysninger(data.borIUtlandet))
                 includePhrase(OmstillingsstoenadFellesFraser.HarDuSpoersmaal)
             }
         }

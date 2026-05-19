@@ -124,6 +124,7 @@ const BrevmalBrevbaker = (props: {
         brevkode: props.letterTemplate.id,
         brevtittel: props.letterTemplate.name,
         brevtype: "brevbaker",
+        enhetsId: response.info.avsenderEnhet.enhetNr,
       });
       queryClient.setQueryData(getBrev.queryKey(response.info.id), response);
       return navigate({

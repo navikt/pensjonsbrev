@@ -531,5 +531,13 @@ object Ufoeretrygd {
     }
 }
 
-
+/**
+ * Sjekker om uføretidspunkt er nøyaktig måneden etter fødselsdato.
+ * Håndterer desember→januar-overgang.
+ */
+fun erUforetidspunktMaanedEtterFoedsel(uforetidspunkt: Expression<LocalDate>, foedselsdato: Expression<LocalDate>): Expression<Boolean> =
+    (uforetidspunkt.month equalTo (foedselsdato.month + 1) and (uforetidspunkt.year equalTo foedselsdato.year))
+        .or(
+            (foedselsdato.month equalTo 12) and (uforetidspunkt.month equalTo 1) and (uforetidspunkt.year equalTo (foedselsdato.year + 1))
+        )
 

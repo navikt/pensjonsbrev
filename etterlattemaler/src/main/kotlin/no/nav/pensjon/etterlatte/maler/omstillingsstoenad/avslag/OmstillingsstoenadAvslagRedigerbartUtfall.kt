@@ -15,14 +15,19 @@ import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
 import no.nav.pensjon.etterlatte.maler.fraser.common.Vedtak
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadAvslagFraser
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.erSluttbehandling
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.tidligereFamiliepleier
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDataSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDataSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.avslag.OmstillingstoenadAvslagRedigerbartUtfallDataSelectors.tidligereFamiliepleier
 
-data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
+data class OmstillingstoenadAvslagRedigerbartUtfallData(
     val avdoedNavn: String,
     val erSluttbehandling: Boolean = false,
-    val tidligereFamiliepleier: Boolean = false
+    val tidligereFamiliepleier: Boolean = false,
+)
+
+data class OmstillingstoenadAvslagRedigerbartUtfallDTO(
+    override val data: OmstillingstoenadAvslagRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -52,9 +57,9 @@ object OmstillingsstoenadAvslagRedigerbartUtfall :
             outline {
                 includePhrase(
                     OmstillingsstoenadAvslagFraser.Vedtak(
-                        erSluttbehandling,
-                        tidligereFamiliepleier,
-                        avdoedNavn
+                        data.erSluttbehandling,
+                        data.tidligereFamiliepleier,
+                        data.avdoedNavn
                     )
                 )
                 includePhrase(Vedtak.BegrunnelseForVedtaket)

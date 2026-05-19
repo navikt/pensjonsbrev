@@ -21,8 +21,9 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggSelectors.erInnvilgelsesAar
-import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggSelectors.omstillingsstoenadBeregning
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggSelectors.data
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.erInnvilgelsesAar
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggDataSelectors.omstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.opphoerNesteAar
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.oppphoersdato
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningSelectors.sisteBeregningsperiode
@@ -61,7 +62,9 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
         }
 
         outline {
-            ifNotNull(omstillingsstoenadBeregning) { beregning ->
+            ifNotNull(data) { dataNotNull ->
+                val beregning = dataNotNull.omstillingsstoenadBeregning
+                val innvilgelsesAar = dataNotNull.erInnvilgelsesAar
                 val sisteBeregningsperiode = beregning.sisteBeregningsperiode
                 val sisteInntekt = sisteBeregningsperiode.inntekt
                 val sisteOppgittInntekt = sisteBeregningsperiode.oppgittInntekt
@@ -70,7 +73,6 @@ object OmstillingsstoenadVedleggBeregningRedigerbartUtfall : EtterlatteTemplate<
                 val virkningsdato = beregning.virkningsdato
                 val opphoerNesteAar = beregning.opphoerNesteAar
                 val oppphoersdato = beregning.oppphoersdato
-                val innvilgelsesAar = erInnvilgelsesAar
                 val sisteBeregningsperiodeNesteAar = beregning.sisteBeregningsperiodeNesteAar
 
                 showIf(sisteInntekt.greaterThan(0)) {
