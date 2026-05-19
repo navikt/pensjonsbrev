@@ -84,55 +84,10 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 }
             }
 
-        private fun consumeText(insertIndex: ContentIndex, deleteContentIndex: ContentIndex) {
-            data class RangeState(
-                private val contentIndex: ContentIndex,
-                private val textLength: Int = 0,
-                private val current: DiffProducer.TextSegment? = null,
-                private val completed: List<DiffProducer.TextSegment> = emptyList(),
-            ) {
-                private fun spaceLength() = if (textLength == 0) 0 else 1
-
-                fun extend(word: String): RangeState {
-                    val wordStart = textLength + spaceLength()
-                    val newLength = wordStart + word.length
-                    return if (current?.endOffset == textLength)
-                        copy(textLength = newLength, current = current.copy(endOffset = newLength, text = current.text + " " + word))
-                    else
-                        copy(textLength = newLength, current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word), completed = completed + listOfNotNull(current))
-                }
-
-                fun skip(word: String): RangeState =
-                    copy(textLength = textLength + spaceLength() + word.length)
-
-                fun segments(): List<DiffProducer.TextSegment> = completed + listOfNotNull(current)
-            }
-
-            data class State(
-                val inserts: RangeState = RangeState(insertIndex),
-                val deletes: RangeState = RangeState(deleteContentIndex),
-            ) {
-                fun insert(word: Token.Word): State = copy(inserts = inserts.extend(word.word))
-                fun delete(word: Token.Word): State = copy(deletes = deletes.extend(word.word))
-                fun replace(oldWord: Token.Word, newWord: Token.Word): State = insert(newWord).delete(oldWord)
-                fun noChange(word: Token.Word): State = copy(inserts = inserts.skip(word.word), deletes = deletes.skip(word.word))
-
-                fun changes() =
-                    inserts.segments().map { Change.Insert(it) } +
-                    deletes.segments().map { Change.Delete(it) }
-            }
-
-            val finalState = cursor.fold<Token.Word, State>(State()) { state, entry ->
-                when (entry) {
-                    is DiffEntry.Insert    -> state.insert(entry.new)
-                    is DiffEntry.Delete    -> state.delete(entry.old)
-                    is DiffEntry.Replace   -> state.replace(entry.old, entry.new)
-                    is DiffEntry.Unchanged -> state.noChange(entry.value)
-                }
-            }
-
-            finalState.changes().forEach { producer.textSegment(it) }
-        }
+        private fun consumeText(insertIndex: ContentIndex, deleteContentIndex: ContentIndex) =
+            cursor.fold(WordDiffCollector(insertIndex, deleteContentIndex), WordDiffCollector::addEntry)
+                .changes()
+                .forEach { producer.textSegment(it) }
 
         private fun consumeItemList(insertContentIdx: Int, deleteContentIdx: Int, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
@@ -258,5 +213,52 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
 
         private fun emitWords(text: String) =
             text.split(' ').forEach { word -> emit(Token.Word(word)) }
+    }
+
+    @ConsistentCopyVisibility
+    private data class WordDiffCollector private constructor(
+        private val inserts: RangeState,
+        private val deletes: RangeState,
+    ) {
+        constructor(insertIndex: ContentIndex, deleteIndex: ContentIndex) :
+                this(RangeState(insertIndex), RangeState(deleteIndex))
+
+        fun addEntry(entry: DiffEntry<Token.Word>): WordDiffCollector = when (entry) {
+            is DiffEntry.Insert    -> copy(inserts = inserts.extend(entry.new.word))
+            is DiffEntry.Delete    -> copy(deletes = deletes.extend(entry.old.word))
+            is DiffEntry.Replace   -> copy(inserts = inserts.extend(entry.new.word), deletes = deletes.extend(entry.old.word))
+            is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word))
+        }
+
+        fun changes(): List<Change<DiffProducer.TextSegment>> =
+            inserts.segments().map { Change.Insert(it) } +
+                    deletes.segments().map { Change.Delete(it) }
+
+        private data class RangeState(
+            private val contentIndex: ContentIndex,
+            private val textLength: Int = 0,
+            private val current: DiffProducer.TextSegment? = null,
+            private val completed: List<DiffProducer.TextSegment> = emptyList(),
+        ) {
+            private fun spaceLength() = if (textLength == 0) 0 else 1
+
+            fun extend(word: String): RangeState {
+                val wordStart = textLength + spaceLength()
+                val newLength = wordStart + word.length
+                return if (current?.endOffset == textLength)
+                    copy(textLength = newLength, current = current.copy(endOffset = newLength, text = current.text + " " + word))
+                else
+                    copy(
+                        textLength = newLength,
+                        current = DiffProducer.TextSegment(contentIndex, wordStart, newLength, word),
+                        completed = completed + listOfNotNull(current),
+                    )
+            }
+
+            fun skip(word: String): RangeState =
+                copy(textLength = textLength + spaceLength() + word.length)
+
+            fun segments(): List<DiffProducer.TextSegment> = completed + listOfNotNull(current)
+        }
     }
 }
