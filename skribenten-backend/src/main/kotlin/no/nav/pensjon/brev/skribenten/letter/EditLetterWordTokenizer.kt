@@ -8,9 +8,6 @@ import no.nav.pensjon.brev.skribenten.common.diff.DiffEntry
 import no.nav.pensjon.brev.skribenten.common.diff.ReplaceAwareEditScriptCursor
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.BlockIndex
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemContentIndex
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.ItemIndex
-import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellContentIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableCellIndex
 import no.nav.pensjon.brev.skribenten.letter.ContentIndex.TableRowIndex
 import no.nav.pensjon.brev.skribenten.letter.Edit.ParagraphContent.Text.FontType
@@ -50,103 +47,113 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
     override fun <R> parseTokens(editScript: EditScript<Token>, producer: DiffProducer<R>): R {
         val cursor = ReplaceAwareEditScriptCursor(editScript)
         cursor.forEachIndexed<Token.Block> { insertBlockIdx, deleteBlockIdx, entry ->
+            val insertBlockIndex = BlockIndex(insertBlockIdx)
+            val deleteBlockIndex = BlockIndex(deleteBlockIdx)
             entry.toChange { DiffProducer.BlockInfo(it.id, it.type) }?.let {
-                producer.block(BlockIndex(insertBlockIdx), it)
+                producer.block(insertBlockIndex, it)
             }
-            BlockParser(insertBlockIdx, deleteBlockIdx, cursor, producer).parse()
+            BlockParser(insertBlockIndex, deleteBlockIndex, cursor, producer).parse()
         }
         require(!cursor.hasNext) { "Not all tokens were consumed, next: ${cursor.peek()}" }
         return producer.build()
     }
 
     private class BlockParser(
-        private val insertBlockIndex: Int,
-        private val deleteBlockIndex: Int,
+        private val insertIndex: BlockIndex,
+        private val deleteIndex: BlockIndex,
         private val cursor: ReplaceAwareEditScriptCursor<Token>,
         private val producer: DiffProducer<*>,
     ) {
         fun parse() =
             cursor.forEachIndexed<Token.BlockContent> { insertPos, deletePos, entry ->
+                val insertContentIndex = insertIndex.withContentIndex(insertPos)
+                val deleteContentIndex = deleteIndex.withContentIndex(deletePos)
+
                 when (entry.token) {
-                    is Token.Text -> consumeText(
-                        BlockContentIndex(insertBlockIndex, insertPos),
-                        BlockContentIndex(deleteBlockIndex, deletePos),
-                    )
+                    is Token.Text -> consumeText(insertContentIndex, deleteContentIndex)
                     is Token.NewLine -> {}
                     is Token.ItemList -> {
                         @Suppress("UNCHECKED_CAST")
-                        consumeItemList(insertPos, deletePos, entry as DiffEntry<Token.ItemList>)
+                        consumeItemList(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.ItemList>)
                     }
                     is Token.Table -> {
                         @Suppress("UNCHECKED_CAST")
-                        consumeTable(insertPos, deletePos, entry as DiffEntry<Token.Table>)
+                        consumeTable(insertContentIndex, deleteContentIndex, entry as DiffEntry<Token.Table>)
                     }
                 }
             }
 
-        private fun consumeText(insertIndex: ContentIndex, deleteContentIndex: ContentIndex) =
-            cursor.fold(WordDiffCollector(insertIndex, deleteContentIndex), WordDiffCollector::addEntry)
+        private fun consumeText(insertIndex: ContentIndex, deleteIndex: ContentIndex) =
+            cursor.fold(WordDiffCollector(insertIndex, deleteIndex), WordDiffCollector::addEntry)
                 .changes()
                 .forEach { producer.textSegment(it) }
 
-        private fun consumeItemList(insertContentIdx: Int, deleteContentIdx: Int, entry: DiffEntry<Token.ItemList>) {
+        private fun consumeItemList(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.ItemList>) {
             entry.toChange { DiffProducer.ItemListInfo(it.id, it.listType) }?.let {
-                producer.itemList(BlockContentIndex(insertBlockIndex, insertContentIdx), it)
+                producer.itemList(insertIndex, it)
             }
             cursor.forEachIndexed<Token.Item> { insertItemIdx, deleteItemIdx, itemEntry ->
+                val insertItemIndex = insertIndex.withItemIndex(insertItemIdx)
+                val deleteItemIndex = deleteIndex.withItemIndex(deleteItemIdx)
                 itemEntry.toChange { DiffProducer.ItemInfo(it.id) }?.let {
-                    producer.item(ItemIndex(insertBlockIndex, insertContentIdx, insertItemIdx), it)
+                    producer.item(insertItemIndex, it)
                 }
                 consumeTextOnlyContent(
-                    makeInsertIndex = { ItemContentIndex(insertBlockIndex, insertContentIdx, insertItemIdx, it) },
-                    makeDeleteIndex = { ItemContentIndex(deleteBlockIndex, deleteContentIdx, deleteItemIdx, it) },
+                    makeInsertIndex = insertItemIndex::withTextContentIndex,
+                    makeDeleteIndex = deleteItemIndex::withTextContentIndex,
                 )
             }
         }
 
-        private fun consumeTable(insertContentIdx: Int, deleteContentIdx: Int, entry: DiffEntry<Token.Table>) {
+        private fun consumeTable(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex, entry: DiffEntry<Token.Table>) {
             entry.toChange { DiffProducer.TableInfo(it.id) }?.let {
-                producer.table(BlockContentIndex(insertBlockIndex, insertContentIdx), it)
+                producer.table(insertIndex, it)
             }
-            consumeTableHeader(insertContentIdx, deleteContentIdx)
+            consumeTableHeader(insertIndex, deleteIndex)
             cursor.forEachIndexed<Token.Row> { insertRowIdx, deleteRowIdx, rowEntry ->
+                val insertRowIndex = insertIndex.withRowIndex(insertRowIdx)
+                val deleteRowIndex = deleteIndex.withRowIndex(deleteRowIdx)
                 rowEntry.toChange { DiffProducer.RowInfo(it.id) }?.let {
-                    producer.row(TableRowIndex(insertBlockIndex, insertContentIdx, insertRowIdx), it)
+                    producer.row(insertRowIndex, it)
                 }
-                consumeRow(insertContentIdx, deleteContentIdx, insertRowIdx, deleteRowIdx)
+                consumeRow(insertRowIndex, deleteRowIndex)
             }
         }
 
-        private fun consumeTableHeader(insertContentIdx: Int, deleteContentIdx: Int) {
+        private fun consumeTableHeader(insertIndex: BlockContentIndex, deleteIndex: BlockContentIndex) {
             cursor.requireAndConsume<Token.TableHeader>()
             cursor.forEachIndexed<Token.ColumnSpec> { insertCellIdx, deleteCellIdx, _ ->
+                val insertCellIndex = insertIndex.withRowIndex(-1).withCellIndex(insertCellIdx)
+                val deleteCellIndex = deleteIndex.withRowIndex(-1).withCellIndex(deleteCellIdx)
                 val cellEntry = cursor.consumeIf<Token.Cell>()
                     ?: error("Expected Token.Cell after Token.ColumnSpec in table header, got: ${cursor.peek()}")
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(TableCellIndex(insertBlockIndex, insertContentIdx, -1, insertCellIdx), it)
+                    producer.cell(insertCellIndex, it)
                 }
-                consumeCell(insertContentIdx, deleteContentIdx, -1, -1, insertCellIdx, deleteCellIdx)
+                consumeCell(insertCellIndex, deleteCellIndex)
             }
         }
 
-        private fun consumeRow(insertContentIdx: Int, deleteContentIdx: Int, insertRowIdx: Int, deleteRowIdx: Int) =
+        private fun consumeRow(insertIndex: TableRowIndex, deleteIndex: TableRowIndex) =
             cursor.forEachIndexed<Token.Cell> { insertCellIdx, deleteCellIdx, cellEntry ->
+                val insertCellIndex = insertIndex.withCellIndex(insertCellIdx)
+                val deleteCellIndex = deleteIndex.withCellIndex(deleteCellIdx)
                 cellEntry.toChange { DiffProducer.CellInfo(it.id) }?.let {
-                    producer.cell(TableCellIndex(insertBlockIndex, insertContentIdx, insertRowIdx, insertCellIdx), it)
+                    producer.cell(insertCellIndex, it)
                 }
-                consumeCell(insertContentIdx, deleteContentIdx, insertRowIdx, deleteRowIdx, insertCellIdx, deleteCellIdx)
+                consumeCell(insertCellIndex, deleteCellIndex)
             }
 
-        private fun consumeCell(insertContentIdx: Int, deleteContentIdx: Int, insertRowIdx: Int, deleteRowIdx: Int, insertCellIdx: Int, deleteCellIdx: Int) =
+        private fun consumeCell(insertIndex: TableCellIndex, deleteIndex: TableCellIndex) =
             consumeTextOnlyContent(
-                makeInsertIndex = { TableCellContentIndex(insertBlockIndex, insertContentIdx, insertRowIdx, insertCellIdx, it) },
-                makeDeleteIndex = { TableCellContentIndex(deleteBlockIndex, deleteContentIdx, deleteRowIdx, deleteCellIdx, it) },
+                makeInsertIndex = insertIndex::withTextContentIndex,
+                makeDeleteIndex = deleteIndex::withTextContentIndex,
             )
 
         private fun consumeTextOnlyContent(makeInsertIndex: (Int) -> ContentIndex, makeDeleteIndex: (Int) -> ContentIndex) =
-            cursor.forEachIndexed<Token.TextContent> { insertPos, deletePos, entry ->
+            cursor.forEachIndexed<Token.TextContent> { insertContentIndex, deleteContentIndex, entry ->
                 when (entry.token) {
-                    is Token.Text -> consumeText(makeInsertIndex(insertPos), makeDeleteIndex(deletePos))
+                    is Token.Text -> consumeText(makeInsertIndex(insertContentIndex), makeDeleteIndex(deleteContentIndex))
                     is Token.NewLine -> {}
                 }
             }

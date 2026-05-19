@@ -8,13 +8,24 @@ interface EditLetterTokenizer<Token : Any> {
 }
 
 sealed class ContentIndex {
-    data class BlockIndex(val blockIndex: Int) : ContentIndex()
-    data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex()
-    data class ItemIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int) : ContentIndex()
+    data class BlockIndex(val blockIndex: Int) : ContentIndex() {
+        fun withContentIndex(contentIndex: Int) = BlockContentIndex(blockIndex, contentIndex)
+    }
+    data class BlockContentIndex(val blockIndex: Int, val contentIndex: Int) : ContentIndex() {
+        fun withItemIndex(itemIndex: Int) = ItemIndex(blockIndex, contentIndex, itemIndex)
+        fun withRowIndex(rowIndex: Int) = TableRowIndex(blockIndex, contentIndex, rowIndex)
+    }
+    data class ItemIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int) : ContentIndex() {
+        fun withTextContentIndex(idx: Int) = ItemContentIndex(blockIndex, contentIndex, itemIndex, idx)
+    }
     data class ItemContentIndex(val blockIndex: Int, val contentIndex: Int, val itemIndex: Int, val itemContentIndex: Int) : ContentIndex()
     // rowIndex = -1 addresses the header row
-    data class TableRowIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int) : ContentIndex()
-    data class TableCellIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int) : ContentIndex()
+    data class TableRowIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int) : ContentIndex() {
+        fun withCellIndex(cellIndex: Int) = TableCellIndex(blockIndex, contentIndex, rowIndex, cellIndex)
+    }
+    data class TableCellIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int) : ContentIndex() {
+        fun withTextContentIndex(idx: Int) = TableCellContentIndex(blockIndex, contentIndex, rowIndex, cellIndex, idx)
+    }
     data class TableCellContentIndex(val blockIndex: Int, val contentIndex: Int, val rowIndex: Int, val cellIndex: Int, val cellContentIndex: Int) : ContentIndex()
 }
 
