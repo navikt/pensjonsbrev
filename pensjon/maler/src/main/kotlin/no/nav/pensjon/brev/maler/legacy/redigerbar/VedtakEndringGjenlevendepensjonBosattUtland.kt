@@ -140,7 +140,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 paragraph {
                     text(
                         bokmal {
-                            +"Pensjonen din blir regulert i forhold til den arbeidsinntekten du har eller forventes å ha." +
+                            +"Pensjonen din blir regulert i forhold til ƒden arbeidsinntekten du har eller forventes å ha." +
                                     " Pensjonen din vil øke fordi du har hatt en reduksjon i forventet arbeidsinntekt." +
                                     " Økning av pensjonen trer i kraft fra og med den måneden arbeidsinntekten din ble endret."
                         },
@@ -157,8 +157,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         english { +"This decision has been made in accordance with Chapter 17 of the National Insurance Act." },
                     )
                 }
-            }.orShow {
-                // SAMBOER_12_AV_18_MAANEDER
+            }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.SAMBOER_12_AV_18_MAANEDER)) {
                 paragraph {
                     text(
                         bokmal {
@@ -188,6 +187,10 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         bokmal { +"Vedtaket er gjort etter bestemmelsene i folketrygdloven kapittel 3." },
                         english { +"This decision has been made in accordance with Chapter 3 of the National Insurance Act." },
                     )
+                }
+            }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.FRITEKST)) {
+                paragraph {
+                    text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") })
                 }
             }
 
@@ -750,8 +753,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                     )
                 }
-            }.orShow {
-                // REDUSERT_TIL_NULL
+            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.REDUSERT_TIL_NULL)) {
                 paragraph {
                     text(
                         bokmal {
@@ -769,6 +771,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                         },
                     )
                 }
+            }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.FRITEKST)) {
+                paragraph { text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") }) }
             }
 
             // Behov for oppfølging — valgfritt avsnitt (Saksbehandlervalg.harBehovForOppfoelging)
@@ -843,8 +847,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShow {
-                    // KILDESKATT
+                }.orShowIf(saksbehandlerValg.skattAlternativ.equalTo(SkattAlternativ.KILDESKATT)) {
                     paragraph {
                         text(
                             bokmal {

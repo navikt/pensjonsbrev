@@ -34,19 +34,19 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
      */
     data class Saksbehandlervalg(
         // Kilde: <FRITEKST: VELG ETT AV ALTERNATIVENE UNDER …> (Alt 1/2/3)
-        @DisplayText("Årsak til endring")
+        @DisplayText("Årsak til endring - velg et alternativ:")
         val aarsakEndring: AarsakEndring,
         // Kilde: <FRITEKST: VELG ET ALTERNATIV …> for forventet inntekt (Alt 1/2/3)
-        @DisplayText("Forventet inntekt")
+        @DisplayText("Forventet inntekt - velg et alternativ:")
         val forventetInntektNivaa: ForventetInntektNivaa,
         // Kilde: <FRITEKST: FORSLAG TEKST - BEHOV FOR OPPFØLGING – inkluder oppfølgingsavsnittet?
-        @DisplayText("Inkluder avsnitt om behov for oppfølging")
+        @DisplayText("Inkluder avsnitt om behov for oppfølging?")
         val harBehovForOppfoelging: Boolean,
         // Kilde: <FRITEKST: fjern overskrifter og de alternativer som ikke passer> for skatt (Alt 1/2)
-        @DisplayText("Skatt")
+        @DisplayText("Inkluder avsnitt om skatt?")
         val skattAlternativ: SkattAlternativ,
         // Kilde: <FRITEKST: Etterbetaling/Feilutbetaling - stryk om det ikke passer> (Alt 1/2)
-        @DisplayText("Etterbetaling eller feilutbetaling")
+        @DisplayText("Inkluder avsnitt om etterbetaling eller feilutbetaling?")
         val utbetalingAlternativ: UtbetalingAlternativ,
     ) : SaksbehandlerValgBrevdata
 
@@ -59,6 +59,9 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
 
         @DisplayText("Endring i sivilstand")
         SAMBOER_12_AV_18_MAANEDER,
+
+        @DisplayText("Fritekst")
+        FRITEKST
     }
 
     enum class ForventetInntektNivaa {
@@ -70,22 +73,31 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
 
         @DisplayText("Redusert til null")
         REDUSERT_TIL_NULL,
+
+        @DisplayText("Fritekst")
+        FRITEKST
     }
 
     enum class SkattAlternativ {
-        @DisplayText("Inkluder informasjon om skatt")
+        @DisplayText("Skatt")
         INFORMASJON_OM_SKATT,
 
-        @DisplayText("Inkluder informasjon om kildeskatt")
+        @DisplayText("Kildeskatt")
         KILDESKATT,
+
+        @DisplayText("Ikke inkluder informasjon om skatt")
+        INGEN_INFORMASJON_OM_SKATT,
     }
 
     enum class UtbetalingAlternativ {
-        @DisplayText("Inkluder avsnitt om etterbetaling")
+        @DisplayText("Etterbetaling")
         ETTERBETALING,
 
-        @DisplayText("Inkluder avsnitt om feilutbetaling")
+        @DisplayText("Feilutbetaling")
         FEILUTBETALING,
+
+        @DisplayText("Ikke inkluder etterbetaling/feilutbetaling")
+        INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING,
     }
 
     data class PesysData(
