@@ -1,7 +1,7 @@
 {
   "core": {
     "workingDir": ".",
-    "actualDir": ".",
+    "actualDir": "./actual",
     "threshold": 0
   },
   "plugins": {
