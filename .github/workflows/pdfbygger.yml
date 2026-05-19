@@ -199,7 +199,7 @@ jobs:
           team: pensjonsbrev
       - name: Run reg-suit
         if: ${{ github.event_name == 'pull_request' }}
-        run: npx reg-suit run --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
+        run: npx reg-suit run --verbose --config $GITHUB_WORKSPACE/.github/regsuitconfig.json
         working-directory: brevbaker/pdf-bygger/build/test_visual/png
         env:
           GITHUB_TOKEN: ${{ github.token }}
