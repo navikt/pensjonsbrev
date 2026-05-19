@@ -10,13 +10,13 @@ class EditLetterWordDiff {
 
     fun tokenize(letter: Edit.Letter): List<Token> = tokenizer.tokenize(letter)
 
-    fun diff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<DiffSegment>> =
+    fun diff(old: Edit.Letter, new: Edit.Letter): SplitDiff =
         tokenizer.parseTokens(shortestEditScript(tokenizer.tokenize(old), tokenizer.tokenize(new)), SplitDiffProducer())
 
-    fun unifiedDiff(old: Edit.Letter, new: Edit.Letter): Pair<List<DiffSegment>, List<UnifiedDeleteSegment>> =
+    fun unifiedDiff(old: Edit.Letter, new: Edit.Letter): UnifiedDiff =
         tokenizer.parseTokens(shortestEditScript(tokenizer.tokenize(old), tokenizer.tokenize(new)), UnifiedDiffProducer())
 
-    private class SplitDiffProducer : DiffProducer<Pair<List<DiffSegment>, List<DiffSegment>>> {
+    private class SplitDiffProducer : DiffProducer<SplitDiff> {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<DiffSegment>()
 
@@ -31,10 +31,10 @@ class EditLetterWordDiff {
             }
         }
 
-        override fun build() = Pair(inserts.toList(), deletes.toList())
+        override fun build() = SplitDiff(inserts.toList(), deletes.toList())
     }
 
-    private class UnifiedDiffProducer : DiffProducer<Pair<List<DiffSegment>, List<UnifiedDeleteSegment>>> {
+    private class UnifiedDiffProducer : DiffProducer<UnifiedDiff> {
         private val inserts = mutableListOf<DiffSegment>()
         private val deletes = mutableListOf<UnifiedDeleteSegment>()
 
@@ -49,6 +49,6 @@ class EditLetterWordDiff {
             }
         }
 
-        override fun build() = Pair(inserts.toList(), deletes.toList())
+        override fun build() = UnifiedDiff(inserts.toList(), deletes.toList())
     }
 }

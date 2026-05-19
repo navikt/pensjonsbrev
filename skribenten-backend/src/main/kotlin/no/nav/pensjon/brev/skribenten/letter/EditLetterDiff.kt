@@ -33,3 +33,7 @@ data class DiffSegment(val index: ContentIndex, val startOffset: Int, val endOff
 
 data class UnifiedDeleteSegment(val index: ContentIndex, val startOffset: Int, val endOffset: Int, val text: String)
 
+data class SplitDiff(val inserts: List<DiffSegment>, val deletes: List<DiffSegment>)
+
+data class UnifiedDiff(val inserts: List<DiffSegment>, val deletes: List<UnifiedDeleteSegment>)
+
