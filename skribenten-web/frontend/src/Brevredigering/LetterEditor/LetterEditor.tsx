@@ -48,11 +48,8 @@ export const LetterEditor = ({
 
   const [vilTilbakestilleMal, setVilTilbakestilleMal] = useState(false);
 
-  const canUndo = !freeze && editorState.saveStatus !== "SAVE_PENDING" && editorState.history.entryPointer >= 0;
-  const canRedo =
-    !freeze &&
-    editorState.saveStatus !== "SAVE_PENDING" &&
-    editorState.history.entryPointer < editorState.history.entries.length - 1;
+  const canUndo = !freeze && editorState.history.entryPointer >= 0;
+  const canRedo = !freeze && editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
     setEditorState((current) => {
