@@ -44,32 +44,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * slik at det blir tilbakekreving av for mye utbetalt AFP. Forklaringen til
  * brukeren har fire periodevarianter avhengig av når AFP er tatt ut / opphørt
  * — se [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode].
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - De fire `showIf`-blokkene for periodevarianter ble i originalen uttrykt
- *    som overlappende rådata-booleans over uttaksdato/opphorsdato/IFU/IEO.
- *    Logikken er løftet ut av malen til [Periode]-diskriminatoren.
- *  - Den hardkodede teksten "som i 2024 var 15 000 kroner" er erstattet med
- *    "i {oppgjørsår} var 15 000 kroner" (samme tilpasning som i
- *    [VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto] / `_ToleransebeloepAuto`).
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket setter
- *    signaturen selv via fellesAuto.
- *  - «Ny pensjonsberegning» og «AFP som er betalt ut for mye» er i originalen
- *    formatert som ligninger (A − B = C). En ekte `table` med tom header og
- *    bare to kolonner ble for smal og lite leselig; gjengis derfor som tre
- *    linjer i én paragraf (newline mellom linjene).
- *  - Avslutningen (Dine plikter / klage / innsyn / spørsmål) gjenbrukes som
- *    sub-fraser fra [AfpEtteroppgjoerAvslutning]. Mindre ordlydsavvik fra
- *    Exstream-originalen ("6 uker" → "seks uker", manglende komma etter
- *    "nav.no" i bokmål under «Har du spørsmål?») harmoniseres mot
- *    fellesfrasen. Klagevedlegget [vedleggFolketrygden] legges ved brevet
- *    (samme som AFP-vedtaksbrevene for offentlig sektor), og den ekstra
- *    paragrafen «I vedlegget får du vite mer om hvordan du går fram.» fra
- *    originalen beholdes rett etter klage-frasen og refererer da til
- *    klagevedlegget.
- *  - Hjemmelshenvisningen (lov om AFP for SPK § 3 d) avviker i nynorsk med
- *    ett komma fra fellesfrasen [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk]
- *    og er derfor inlinet med kommentar.
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerTilbakekrevingAutoDto> {
@@ -314,18 +288,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
             }
             includePhrase(AfpTilbakekrevingBody.SkatteoppgjorParagraph(oppgjoersAar))
 
-
-            // Avslutning — Dine plikter / klage / innsyn / Har du spørsmål.
-            // Vi komponerer fra sub-frasene i AfpEtteroppgjoerAvslutning der
-            // ordlyden er identisk med PE_AF_04_102/106, og inliner klage- og
-            // spørsmålsseksjonen som har små avvik (jf. docstring øverst).
             includePhrase(AfpEtteroppgjoerAvslutning.DinePlikter)
-
-            // Klage- og spørsmålsseksjonene gjenbruker fellesfrasene fra
-            // [AfpEtteroppgjoerAvslutning]. Mindre ordlydsavvik fra
-            // Exstream-originalen ("6 uker" → "seks uker" i bokmål/nynorsk,
-            // og manglende komma etter "nav.no" i bokmål under "Har du
-            // spørsmål?") harmoniseres mot fellesfrasen.
             includePhrase(AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageSeksUker)
             paragraph {
                 text(

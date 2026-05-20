@@ -10,15 +10,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
-/**
- * Vedtak — innvilgelse av avtalefestet pensjon (AFP) i offentlig sektor (gammel AFP).
- *
- * Ported from the Exstream brevkode `PE_AF_04_001`. Den nye, privat-sektor varianten
- * (PE_AF_04_111 / 04_115) finnes i [InnvilgelseAvAfpDto] / [InnvilgelseAvAfpAutoDto].
- *
- * Feltkommentarene refererer til den originale Pesys-modellen (PE_…) slik at
- * mapping-teamet kan slå opp riktig XML-node i `pe_xml_mappinger(in).csv`.
- */
 data class InnvilgelseAvAfpOffentligSektorDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,

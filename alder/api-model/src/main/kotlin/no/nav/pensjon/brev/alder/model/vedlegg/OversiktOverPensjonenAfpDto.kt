@@ -67,10 +67,6 @@ data class OversiktOverPensjonenAfpDto(
         val endringIOpptjeningsgrunnlag: Boolean,
     )
 
-    /**
-     * Beregningskomponenter for én periode. `null` for en komponent betyr at den ikke er
-     * innvilget — erstatter Exstreams parallelle `…innvilget: Boolean`-flagg.
-     */
     data class PeriodeBeregning(
         // PE_…_Brutto
         val brutto: Kroner,

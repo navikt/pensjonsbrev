@@ -5,24 +5,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
-/**
- * Vedtak — ingen endring (innenfor toleransebeløpet) — AFP etteroppgjør (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_100`. Brevet sendes når NAV har gjennomført
- * et AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) og forskjellen
- * mellom forventet og faktisk pensjonsgivende inntekt ikke er større enn det
- * fastsatte toleransebeløpet (15 000 kroner i 2024). Pensjonsberegningen skal
- * derfor ikke endres.
- *
- * Brevet inneholder en periodefordelingstekst som forklarer hvilke beløp som
- * ligger til grunn for opptjent inntekt før, under og etter AFP-uttak. Hvilken
- * av de fire variantene som vises bestemmes av [Periode] — en diskriminator
- * kalleren utleder fra `AFP_Uttaksdato`, `AFP_Opphorsdato` og 01.01 / 31.12 i
- * oppgjørsåret (se skill-step 7: Exstream-betingelsene avledes hos kalleren).
- *
- * Field comments carry the original `PE_…` source path so the mapping team kan
- * grep `pe_xml_mappinger(in).csv` for å finne tilsvarende PESYS-XML-node.
- */
+
 data class VedtakAfpEtteroppgjoerToleransebeloepAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,

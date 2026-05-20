@@ -7,12 +7,7 @@ import java.time.LocalDate
 /**
  * Vedtak — innvilgelse av AFP i privat sektor (autobrev).
  *
- * Ported from the Exstream brevkode `PE_AF_04_115`. The original Exstream brevkode
- * is recorded here for the mapping team; the brevbaker brevkode is
- * `PE_AFP_INNVILGELSE_AUTO` (see Aldersbrevkoder.AutoBrev).
- *
- * Field comments carry the original `PE_…` source path so the mapping team can grep
- * `pe_xml_mappinger(in).csv` to locate the matching PESYS XML node.
+ * Ported from the Exstream brevkode `PE_AF_04_115`.
  */
 data class InnvilgelseAvAfpAutoDto(
     // PE_Vedtaksdata_Kravhode_KravMottatdato
@@ -26,7 +21,6 @@ data class InnvilgelseAvAfpAutoDto(
     // Avledet fra PE_Vedtaksdata_BrukerAlder
     // (rtv-brev brev Vedtaksdata BrukerAlder)
     // Brevet bruker bare predikatet `BrukerAlder < 70`; modellert som scalar
-    // Boolean per convert-exstream-letter skill (samme prinsipp som `bosattINorge`).
     val brukerUnder70Aar: Boolean,
 
     // FF_GetArrayElement_String(PE_Grunnlag_Persongrunnlagsliste_Trygdeavtaler_Bostedsland, 1) == "nor"

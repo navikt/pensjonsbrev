@@ -39,7 +39,7 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
                     nynorsk { +"Dine plikter" },
                 )
             }
-            paragraph {
+            paragraph { // TODO kan denne teksten samstilles med felles variant? Noen ord forskjell.
                 text(
                     bokmal {
                         +"Du har plikt til å melde fra om endringer som har betydning for størrelsen på " +
@@ -84,12 +84,6 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
         }
     }
 
-    /**
-     * Tittel «Du har rett til å klage» + standard seks-ukers-klagefrist-paragraf.
-     * Brukes av brev hvor klage-seksjonen kun består av denne ene paragrafen
-     * (PE_AF_04_102, PE_AF_04_106). PE_AF_04_100 har en annen klage-seksjon med
-     * en ekstra paragraf og inliner derfor sitt eget innhold.
-     */
     object DuHarRettTilAaKlageSeksUker : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -115,13 +109,6 @@ object AfpEtteroppgjoerAvslutning : OutlinePhrase<LangBokmalNynorsk>() {
         }
     }
 
-    /**
-     * Tittel «Du har rett til å klage» + dokumentasjonsfrist-preamble + standard
-     * seks-ukers-klagefrist-paragraf med litt annen ordlyd (refererer ikke til
-     * `$KLAGE_URL`). Brukes av fase-1-vedtak hvor bruker fortsatt har frist til
-     * å sende inn ny dokumentasjon — i dag PE_AF_04_100 (toleransebeløp) og
-     * PE_AF_04_101 (etterbetaling fase 1).
-     */
     object DuHarRettTilAaKlageMedDokumentasjonsfrist : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {

@@ -4,21 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-/**
- * Vedtak — AFP etteroppgjør, ingen endring etter mottatt svar (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_103`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når bruker
- * har lagt fram nye opplysninger om inntekt, og ny beregning viser at
- * avviket fortsatt er innenfor toleransebeløpet slik at det ikke blir
- * tilbakekreving. Hvilken forklaring som vises bestemmes av [Scenario] —
- * originalen brukte fem (delvis overlappende og delvis ikke-konverterbare)
- * `showIf`-blokker over rådata for IFUregistrert / IEOregistrert / uttaksdato.
- * Her er logikken løftet ut av malen til en diskriminator levert av kalleren
- * (jf. skill-step 7).
- *
- * Felt-kommentarene angir originalvariabel og `rtv-brev …`-sti.
- */
 data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     // (rtv-brev brev Vedtaksdata Oppgjorsar)

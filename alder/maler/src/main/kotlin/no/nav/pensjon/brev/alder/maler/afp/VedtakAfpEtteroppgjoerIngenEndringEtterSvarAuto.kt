@@ -20,8 +20,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -37,36 +35,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Forklaringen til brukeren har fem mulige varianter avhengig av hvilke
  * inntektsfelt (IFU/IEO) som er registrert og når AFP ble tatt ut, se
  * [VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto.Scenario].
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - Originalen brukte fem overlappende `showIf`-blokker over rådata
- *    (`IFUregistrert_STRING`, `IEOregistrert_STRING`, `AFP_Uttaksdato` vs.
- *    01.01/01.02). To av blokkene feilet i konverteren (kommentar
- *    "Failed to convert with error: Unexpected character: !"). Logikken er
- *    løftet ut av malen til [Scenario]-diskriminatoren.
- *  - "Den faktiske arbeidsinntekten i den perioden..."-setningen er skilt ut
- *    i en egen paragraf for hvert scenario (jf. lærdom fra PE_AF_04_107).
- *  - Den hardkodede teksten "som i 2024 var på 15 000 kroner" er erstattet
- *    med "i {oppgjørsår} var 15 000 kroner" (samme tilpasning som i
- *    søsterbrevene).
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket
- *    setter signaturen selv via fellesAuto.
- *  - Innledningen («Vi viser til tidligere brev...») og konklusjonen
- *    («Ny beregning ... fører til at det ikke blir tilbakekreving»)
- *    deles med PE_AF_04_106 og er trukket ut til
- *    [AfpEtteroppgjoerInnhold.HarVaertRiktigIntro] og
- *    [AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving].
- *  - De fem scenario-forklaringene «Du har lagt fram nye opplysninger …»
- *    deles med PE_AF_04_104 og er trukket ut til
- *    [AfpEtteroppgjoerForklaringer]. De parede «Den faktiske
- *    arbeidsinntekten …»-paragrafene er trukket ut sammen med dem.
- *  - Hjemmelshenvisningen (lov om AFP for SPK § 3 d) gjenbrukes via
- *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk]. Originalen for 103
- *    har samme nynorsk-komma-avvik som 107 mot fellesfrasen, men per
- *    nyere konvensjon ("bruk fellesfrasen ved små ordlydsavvik")
- *    harmoniseres dette bort.
- *  - Avslutning (Dine plikter / klage / innsyn / spørsmål) gjenbrukes som
- *    fellesfrase [AfpEtteroppgjoerAvslutning].
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto :

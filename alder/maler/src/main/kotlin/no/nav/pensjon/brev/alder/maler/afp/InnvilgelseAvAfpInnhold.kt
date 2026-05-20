@@ -383,12 +383,12 @@ data class InnvilgelseAvAfpInnhold(
                 text(
                     bokmal {
                         +"Du trenger ikke levere skattekort da skatteopplysningene dine sendes elektronisk fra " +
-                            "skatteetaten til Nav. Ta kontakt med skattekontoret ditt hvis du har spørsmål om " +
+                            "Skatteetaten til Nav. Ta kontakt med skattekontoret ditt hvis du har spørsmål om " +
                             "skatt og skattekort."
                     },
                     nynorsk {
                         +"Du treng ikkje levere skattekort då skatteopplysningane dine blir sende elektronisk frå " +
-                            "skatteetaten til Nav. Ta kontakt med skattekontoret ditt dersom du har spørsmål om " +
+                            "Skatteetaten til Nav. Ta kontakt med skattekontoret ditt dersom du har spørsmål om " +
                             "skatt og skattekort."
                     },
                     english {

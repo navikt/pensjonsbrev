@@ -4,19 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-/**
- * Vedtak — ingen endring (andre avvik) — AFP etteroppgjør (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_102`. Brevet sendes når vi har
- * gjennomført etteroppgjør for AFP (offentlig sektor / Statens pensjonskasse)
- * og kommet til at pensjonsberegningen ikke skal endres. Det finnes fire
- * gjensidig utelukkende scenarier som forklarer hvorfor — modellert som
- * [Scenario] (skill-step 7: Exstream-betingelsene avledes hos kalleren slik
- * at malen tar imot en ferdig diskriminator).
- *
- * Field comments carry the original `PE_…` source path so the mapping team kan
- * grep `pe_xml_mappinger(in).csv` for å finne tilsvarende PESYS-XML-node.
- */
 data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     // (rtv-brev brev Vedtaksdata Oppgjorsar)

@@ -16,6 +16,8 @@ object Constants {
     const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
     private val navKontaktsenterPensjon = Telefonnummer("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
+    private val skattKontaktTelefonnummer = Telefonnummer("80080000")
+    val SKATT_KONTAKT_TLF = skattKontaktTelefonnummer.format()
     const val FAMILIEPLEIER_URL = "$NAV_URL/tidligere-familiepleier"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"

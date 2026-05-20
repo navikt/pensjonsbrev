@@ -3,16 +3,6 @@ package no.nav.pensjon.brev.alder.model.vedlegg
 import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-/**
- * Vedlegg «Hvordan pensjonen er beregnet» for AFP i offentlig sektor (gammel AFP).
- *
- * Konvertert fra Exstream-malen `PE_AF_hvordan_pensjonen_beregnes`. Vedlegget
- * forklarer beregningen av grunnpensjon, tilleggspensjon, særtillegg og
- * ektefelletillegg, og brukes i flere AFP-brev (PE_AF_04_001 m.fl.).
- *
- * Felt som peker tilbake til Pesys-modellen er kommentert med original
- * XML-node-sti for sporing til `pe_xml_mappinger(in).csv`.
- */
 data class HvordanPensjonenErBeregnetAfpOffentligDto(
     // PE_Vedtaksdata_BeregningsData_Beregning_Grunnbelop
     val grunnbeloep: Kroner,

@@ -5,26 +5,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
-/**
- * Vedtak — AFP etteroppgjør med etterbetaling (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_105`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når bruker
- * har lagt fram nye dokumenterte opplysninger om inntekten i oppgjørsåret,
- * avviket mellom forventet og faktisk pensjonsgivende inntekt overstiger
- * toleransebeløpet, og det derfor blir **etterbetaling** av for lite
- * utbetalt AFP — motsatt finansiell retning av `PE_AF_04_107`
- * (tilbakekreving).
- *
- * Hvilken forklaring som vises bestemmes av to diskriminatorer:
- *   * [Scenario] — fem gjensidig utelukkende inntektsvarianter (se under).
- *     Originalen kombinerte rådata for IFUregistrert / IEOregistrert og
- *     uttaksdato mot 01.02 i `showIf`-blokker; her er logikken løftet ut
- *     av malen (skill-step 7).
- *   * [NyPensjonsberegningPeriode] — fire perioder for «Ny pensjonsberegning
- *     …»-introen. Originalen brukte rådata for uttaksdato vs. 01.02 og
- *     opphorsdato vs. 31.12 i overlappende `showIf`-blokker.
- */
 data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,
@@ -87,8 +67,7 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
 
     /**
      * Hvilken inntektsforklaring som skal vises. Fem gjensidig utelukkende
-     * varianter; merk at 105 — i motsetning til 104 (tilbakekreving) — ikke
-     * har en `INGEN_OVERSTYRING_HEL_AFP`-variant.
+     * varianter.
      */
     enum class Scenario {
         // IFUregistrert = "" AND IEOregistrert = "" AND uttaksdato >= 01.02

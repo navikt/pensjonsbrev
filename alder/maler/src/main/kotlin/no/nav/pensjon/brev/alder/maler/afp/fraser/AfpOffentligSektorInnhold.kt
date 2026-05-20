@@ -1,6 +1,8 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATTEETATEN_URL
+import no.nav.pensjon.brev.alder.maler.felles.Constants.SKATT_KONTAKT_TLF
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektor
 import no.nav.pensjon.brev.alder.model.afp.AfpOffentligSektorSelectors.BeregningSelectors.afpTillegg
@@ -87,14 +89,14 @@ object AfpOffentligSektorInnhold {
                     bokmal {
                         +"Skattereglene for pensjonsinntekt er ikke de samme som for arbeidsinntekt. Derfor bør du vurdere å søke om " +
                             "nytt skattekort når du starter uttak av pensjon. Endring av skattekort gjøres enklest på Skatteetatens " +
-                            "nettsider www.skatteetaten.no. Har du spørsmål kan du ringe Skatteetaten på telefon 800 80 000. Du trenger " +
+                            "nettsider $SKATTEETATEN_URL. Har du spørsmål kan du ringe Skatteetaten på telefon $SKATT_KONTAKT_TLF. Du trenger " +
                             "ikke levere skattekortet til Nav fordi skatteopplysningene dine sendes elektronisk fra Skatteetaten."
                     },
                     nynorsk {
                         +"Skattereglane for pensjonsinntekt er ikkje dei same som for arbeidsinntekt. Derfor bør du vurdere å søkje om " +
                             "nytt skattekort når du begynner å ta ut pensjon. Skattekortendringar gjer du enklast på nettsidene til " +
-                            "skatteetaten, www.skatteetaten.no. Har du spørsmål, kan du ringje skatteetaten på tlf. 800 80 000. Du treng " +
-                            "ikkje levere skattekortet til Nav ettersom skatteopplysningane dine blir sende elektronisk frå skatteetaten."
+                            "Skatteetaten, $SKATTEETATEN_URL. Har du spørsmål, kan du ringje Skatteetaten på telefon $SKATT_KONTAKT_TLF. Du treng " +
+                            "ikkje levere skattekortet til Nav ettersom skatteopplysningane dine blir sende elektronisk frå Skatteetaten."
                     },
                 )
             }
@@ -765,12 +767,12 @@ object AfpOffentligSektorInnhold {
                 text(
                     bokmal {
                         +"Ved etterbetalinger som gjelder tidligere år, vil Nav trekke 30 prosent som en standardsats. Dersom du " +
-                            "krever at skatteetaten forut for utbetalingen reberegner skatten for de tidligere årene, så må du gi " +
+                            "krever at Skatteetaten forut for utbetalingen reberegner skatten for de tidligere årene, så må du gi " +
                             "beskjed om dette til Nav innen sju dager etter dato for dette brevet."
                     },
                     nynorsk {
                         +"Ved etterbetalingar som gjeld tidlegare år, vil Nav trekkje 30 prosent som ein standardsats. Dersom du " +
-                            "krev at skatteetaten før utbetalinga bereknar om att skatten for dei tidlegare åra, må du gi beskjed " +
+                            "krev at Skatteetaten før utbetalinga bereknar om att skatten for dei tidlegare åra, må du gi beskjed " +
                             "om det til Nav innan sju dagar etter datoen for dette brevet."
                     },
                 )

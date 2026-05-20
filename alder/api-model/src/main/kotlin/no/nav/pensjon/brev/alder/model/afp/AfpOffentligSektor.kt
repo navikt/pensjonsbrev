@@ -44,12 +44,6 @@ object AfpOffentligSektor {
         // PE_SivilstandAnvendt_separert_bormed_3_2
         BOR_MED_SAMBOER,
     }
-
-    /**
-     * Beregningsdetaljer. `null` for bruttobeløpet betyr at komponenten ikke er
-     * innvilget — erstatter Exstreams parallelle `…innvilget: Boolean`-flagg
-     * (per convert-exstream-letter skill, Step 1: gjør umulige tilstander urepresenterbare).
-     */
     data class Beregning(
         // PE_Vedtaksdata_BeregningsData_Beregning_Brutto
         val brutto: Kroner,

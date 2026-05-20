@@ -10,14 +10,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
-/**
- * Vedtak — melding om endring av avtalefestet pensjon (AFP) i offentlig sektor (gammel AFP).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_020`. Brevet er svært likt
- * innvilgelsesvarianten [InnvilgelseAvAfpOffentligSektorDto] (PE_AF_04_001), men
- * mangler vedlegget «Hvordan pensjonen er beregnet» og introduksjonen er en
- * endringsmelding i stedet for en innvilgelse.
- */
+
 data class VedtakEndringAfpOffentligSektorDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,
@@ -60,7 +53,4 @@ data class VedtakEndringAfpOffentligSektorDto(
         // null når antallPerioder == 1 (vedlegget skal kun produseres ved flere perioder).
         val oversiktOverPensjonen: OversiktOverPensjonenAfpDto?,
     ) : FagsystemBrevdata
-
-    // Sivilstandsgrupperinger og Beregning-detaljer ligger i [AfpOffentligSektor]
-    // og deles med [InnvilgelseAvAfpOffentligSektorDto].
 }

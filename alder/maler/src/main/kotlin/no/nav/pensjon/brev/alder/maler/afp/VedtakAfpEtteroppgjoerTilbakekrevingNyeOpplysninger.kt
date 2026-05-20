@@ -52,32 +52,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Forklaringen om hvilke nye inntektsopplysninger som er lagt fram har
  * seks gjensidig utelukkende varianter, se
  * [VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.Scenario].
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - Originalen brukte seks (delvis overlappende) `showIf`-blokker over
- *    rådata for `IFUregistrert_STRING`, `IEOregistrert_STRING` og
- *    `AFP_Uttaksdato`. Flere av blokkene feilet i konverteren med
- *    "Failed to convert with error: Unexpected character: !" og lot
- *    paragrafer stå uguarded i konverter-output. Logikken er løftet ut
- *    av malen til [Scenario]-diskriminatoren basert på `//IF`-kommentarene.
- *  - "Den faktiske arbeidsinntekten ..."-paragrafen er ifølge kilden en
- *    egen paragraf per scenario (jf. lærdom fra PE_AF_04_107).
- *  - Fem av seks scenarier deler ordlyd med PE_AF_04_102 og er trukket
- *    ut til [AfpEtteroppgjoerForklaringer]. Det sjette scenariet
- *    ([Scenario.INGEN_OVERSTYRING_HEL_AFP]) er unikt for 104 og
- *    inlinet her.
- *  - Tilbakekrevings-likningene, tilbakebetaling- og skatteoppgjør-
- *    seksjonene deler ordlyd med PE_AF_04_107 og er trukket ut til
- *    [AfpTilbakekrevingBody].
- *  - Hjemmelshenvisningen i nynorsk er meningsfullt forskjellig fra
- *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk] (annen
- *    setningsstruktur) og holdes derfor inlinet.
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket
- *    setter signaturen selv.
- *  - Den hardkodede "i 2024 var 15 000 kroner" er erstattet med
- *    "i {oppgjørsår} var 15 000 kroner".
- *  - "I vedlegget får du vite mer om hvordan du går fram" etter
- *    klage-paragrafen er beholdt — referer til [vedleggFolketrygden].
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :

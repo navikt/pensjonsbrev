@@ -30,7 +30,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -49,43 +48,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  *
  * Motsatt finansiell retning av [VedtakAfpEtteroppgjoerTilbakekrevingAuto]
  * (PE_AF_04_107) — som er fase 1 for for-mye-betalt.
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - De overlappende `showIf`-blokkene over rådata for uttaksdato/
- *    opphorsdato er løftet ut av malen til en [Periode]-diskriminator
- *    (samme inndeling som i 107).
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket
- *    setter signaturen selv via fellesAuto.
- *  - "kontaktinformasjon.navnavsenderenhet" i intro-paragrafen er
- *    erstattet med "NAV" (samme tilpasning som [AfpEtteroppgjoerInnhold.EtteroppgjoerIntro]).
- *  - Hardkodet "som i 2024 var 15 000 kroner" er erstattet med "i
- *    {oppgjørsår} var 15 000 kroner" (samme tilpasning som i 107/105).
- *  - 4-radig ny pensjonsberegning + "For lite utbetalt AFP" gjengis som
- *    flere `newline()`-separerte linjer i én paragraf (samme idiom som
- *    i 105) — en `table` med to kolonner ble for smal og lite leselig.
- *  - Formelen for inntektsfradraget bruker `.format(denominator = false) + " kr"`
- *    (samme idiom som i 105/107 sin [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody.InntektsfradragetFormel]).
- *  - Merge-feil i kilden rundt linje 244/354/383 er rekonstruert manuelt:
- *    bokmål/nynorsk-paragrafene som hørte sammen er parret riktig.
- *  - Hjemmelshenvisningen avviker fra
- *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk] kun med ett komma i
- *    nynorsk — gjenbrukes da differansen er kosmetisk (samme valg som
- *    105/107).
- *  - Klage-seksjonen («Du har rett til å klage» + dokumentasjonsfrist-
- *    paragraf + standard klage-paragraf) gjenbrukes via
- *    [AfpEtteroppgjoerAvslutning.DuHarRettTilAaKlageMedDokumentasjonsfrist]
- *    — samme tekstblokk brukes i fase-1-brevet PE_AF_04_100.
- *  - Skjema-paragrafen ("På nav.no/afp-offentlig finner du et skjema…")
- *    bruker en annen URL enn fellesfrasen
- *    [AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon] (som peker på
- *    `nav.no/afp-etteroppgjør`). Inlinet med kommentar.
- *  - "Annen inntekt … inntektsprøvd" paragrafen gjenbruker
- *    [AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd] selv om 101
- *    sier "etter uttak av AFP" der frasen sier "etter første uttak av
- *    AFP" — kosmetisk avvik, harmoniseres mot fellesfrasen.
- *  - Covid- og Ukraina-bekreftelseslistene har avvik fra 100 (annen
- *    ordlyd og forskjellig antall punkter), så de er inlinet her med
- *    TODO-merknad for faglig gjennomgang.
+
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerEtterbetalingAutoDto> {

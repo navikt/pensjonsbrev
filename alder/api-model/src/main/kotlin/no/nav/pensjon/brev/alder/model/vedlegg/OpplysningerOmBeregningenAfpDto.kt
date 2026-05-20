@@ -5,17 +5,6 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import java.time.LocalDate
 
-/**
- * Vedlegg «Opplysninger om beregningen» for AFP-brev.
- *
- * Konvertert fra Exstream-malen `PE_AF_opplysninger_om_beregningen_MR71`. Brukes
- * av PE_AF_04_001 (innvilgelse AFP offentlig sektor) og er ment gjenbrukt av
- * andre AFP-brev. Inneholder en oppsummering av opplysningene som er lagt til
- * grunn ved beregningen, samt poengrekken.
- *
- * Felt-kommentarer refererer til original Pesys-modell (PE_…) slik at
- * mapping-teamet kan slå opp riktig XML-node.
- */
 data class OpplysningerOmBeregningenAfpDto(
     // PE_Vedtaksdata_BeregningsData_Beregning_VirkDatoFOM
     val beregningVirkDatoFom: LocalDate,

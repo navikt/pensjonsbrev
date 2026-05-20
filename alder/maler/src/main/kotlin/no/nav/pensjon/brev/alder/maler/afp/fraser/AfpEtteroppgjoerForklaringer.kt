@@ -13,14 +13,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 /**
  * Per-scenario forklaringer om hvilke nye inntektsopplysninger som er lagt fram
- * for AFP etteroppgjør (offentlig sektor / Statens pensjonskasse). Fem
- * gjensidig utelukkende scenarier som deles mellom
- * [no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto]
- * (PE_AF_04_103) — ikke-tilbakekreving — og PE_AF_04_104 — tilbakekreving.
- *
- * Hver scenario-frase består av to paragrafer: selve forklaringen og en
- * paret «Den faktiske arbeidsinntekten …»-paragraf som forteller hvilket
- * beløp som er lagt til grunn som inntekt i AFP-perioden.
+ * for AFP etteroppgjør (offentlig sektor / Statens pensjonskasse).
  */
 object AfpEtteroppgjoerForklaringer {
 

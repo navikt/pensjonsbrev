@@ -6,23 +6,6 @@ import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-/**
- * Vedtak — AFP etteroppgjør med tilbakekreving, fase 2 (redigerbar).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_104`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når bruker
- * har lagt fram nye opplysninger om inntekt, men avviket fortsatt
- * overstiger toleransebeløpet — slik at det blir tilbakekreving av for
- * mye utbetalt AFP. Saksbehandler fyller inn nettobeløp og fradrag for
- * innbetalt skatt som fritekst i Skribenten.
- *
- * Hvilken forklaring som vises bestemmes av [PesysData.scenario].
- * Originalen brukte seks overlappende `showIf`-blokker over rådata for
- * `IFUregistrert_STRING`/`IEOregistrert_STRING` og `AFP_Uttaksdato` vs.
- * 01.01/01.02. Flere av blokkene feilet i konverteren med "Failed to
- * convert with error: Unexpected character: !" (negasjonspredikater).
- * Logikken er løftet ut av malen til [Scenario]-diskriminatoren.
- */
 data class VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,
     override val pesysData: PesysData,

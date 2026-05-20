@@ -517,18 +517,6 @@ object AfpEtteroppgjoerInnhold {
 
     /**
      * Hele «Ny pensjonsberegning»-blokken som avslutter etterbetalingsbrevene
-     * PE_AF_04_101 (fase 1, forhåndsvarsel) og PE_AF_04_105 (fase 2, etter
-     * svar). Inneholder:
-     *  1. `title1` "Ny pensjonsberegning"
-     *  2. Periodevariert intro («Nedenfor følger en beregning …»)
-     *  3. 4-radig beregningsblokk (gjengitt som linjer med `newline()` — en
-     *     ekte to-kolonne `table` ble for smal og lite leselig) + sub-linje
-     *     med formelforklaringen for inntektsfradraget + asterisk-fotnote.
-     *  4. "For lite utbetalt AFP" oppsummeringslinje.
-     *
-     * Brevene har hver sin Periode-enum, så phrasen tar én `Expression<Boolean>`
-     * per case (hele året / uttak i året / opphør i året / uttak og opphør i
-     * året).
      */
     data class NyPensjonsberegningEtterbetalingBlokk(
         val erHeleAaret: Expression<Boolean>,
@@ -668,13 +656,6 @@ object AfpEtteroppgjoerInnhold {
         }
     }
 
-    /**
-     * Forbehold om mulig refusjonskrav fra andre samordningspliktige
-     * pensjonsordninger ved etterbetaling av AFP. Brukes i PE_AF_04_101
-     * (fase 1) og PE_AF_04_105 (fase 2 etter svar). 105 hadde opprinnelig
-     * "mulig" (singular); harmonisert til 101s "mulige" / nynorsk "moglege"
-     * (plural).
-     */
     object RefusjonskravForbehold : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {

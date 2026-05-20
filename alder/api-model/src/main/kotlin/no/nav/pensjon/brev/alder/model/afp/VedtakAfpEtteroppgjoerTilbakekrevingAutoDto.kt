@@ -4,26 +4,6 @@ import no.nav.pensjon.brev.api.model.maler.AutobrevData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
-/**
- * Vedtak — AFP etteroppgjør med tilbakekreving (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_107`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når bruker
- * ikke har lagt fram nye dokumenterte opplysninger om inntekten i
- * oppgjørsåret, avviket mellom forventet og faktisk pensjonsgivende inntekt
- * overstiger toleransebeløpet, og det derfor blir tilbakekreving av for mye
- * utbetalt AFP.
- *
- * Hvilken periodevariant av forklaringen om inntektsfordeling som vises
- * bestemmes av [Periode] — samme inndeling som
- * [VedtakAfpEtteroppgjoerToleransebeloepAutoDto.Periode]. Originalen brukte
- * fire overlappende `showIf`-blokker over rådata for uttaksdato /
- * opphorsdato / IFUBeregnet / IEOBeregnet; her er logikken løftet ut av
- * malen til en diskriminator levert av kalleren (jf. skill-step 7).
- *
- * Felt-kommentarene angir originalvariabel og `rtv-brev …`-sti slik at
- * mappingsteamet kan grepe `pe_xml_mappinger(in).csv`.
- */
 data class VedtakAfpEtteroppgjoerTilbakekrevingAutoDto(
     // PE_Vedtaksdata_Oppgjorsar
     // (rtv-brev brev Vedtaksdata Oppgjorsar)

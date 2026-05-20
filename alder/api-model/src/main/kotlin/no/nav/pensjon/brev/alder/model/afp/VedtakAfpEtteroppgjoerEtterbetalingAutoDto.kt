@@ -7,26 +7,6 @@ import java.time.LocalDate
 
 /**
  * Vedtak — AFP etteroppgjør med etterbetaling, fase 1 / varsel (autobrev).
- *
- * Konvertert fra Exstream-malen `PE_AF_04_101`. Brevet sendes etter et
- * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når avviket
- * mellom forventet og faktisk pensjonsgivende inntekt overstiger
- * toleransebeløpet og resulterer i **for lite utbetalt** AFP. Brevet
- * inviterer bruker til å sende inn dokumentasjon innen fire uker dersom
- * inntektsgrunnlaget er feil. Hvis ingen dokumentasjon kommer innen
- * fristen, blir etterbetalingen gjennomført automatisk; hvis ny
- * dokumentasjon mottas, sendes [VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto]
- * (PE_AF_04_105) etter behandling.
- *
- * Motsatt finansiell retning av [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto]
- * (PE_AF_04_107 — fase 1 for-mye-betalt).
- *
- * Hvilken periodevariant av forklaringen om inntektsfordeling som vises
- * bestemmes av [Periode] — samme inndeling som
- * [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode]. Originalen brukte
- * fire overlappende `showIf`-blokker over rådata for uttaksdato /
- * opphorsdato; her er logikken løftet ut av malen til en diskriminator
- * levert av kalleren (jf. skill-step 7).
  */
 data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
     // PE_Vedtaksdata_Oppgjorsar

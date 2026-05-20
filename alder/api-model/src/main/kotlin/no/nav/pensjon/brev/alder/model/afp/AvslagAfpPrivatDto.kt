@@ -8,11 +8,7 @@ import java.time.LocalDate
 /**
  * Vedtak — avslag på AFP i privat sektor (redigerbar).
  *
- * Konvertert fra Exstream-malen `PE_AF_04_112`. Begrunnelsen for avslaget
- * kommer fra vilkårsvedtaket i PESYS
- * (`PE_Vedtaksdata_VilkarsVedtakList_VilkarsVedtak_Begrunnelse[1]`) — det
- * er ikke et saksbehandlervalg. Brevet kan likevel redigeres i Skribenten
- * ved behov.
+ * Konvertert fra Exstream-malen `PE_AF_04_112`.
  */
 data class AvslagAfpPrivatDto(
     override val saksbehandlerValg: EmptySaksbehandlerValg,

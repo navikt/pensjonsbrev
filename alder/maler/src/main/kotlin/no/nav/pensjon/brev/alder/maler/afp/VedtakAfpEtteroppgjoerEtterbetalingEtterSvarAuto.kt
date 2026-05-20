@@ -52,45 +52,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * og faktisk pensjonsgivende inntekt overstiger toleransebeløpet, slik at
  * det blir **etterbetaling** av for lite utbetalt AFP. Motsatt finansiell
  * retning av [VedtakAfpEtteroppgjoerTilbakekrevingAuto] (PE_AF_04_107).
- *
- * Strukturelt er brevet en kombinasjon av to diskriminatorer:
- *   * [Scenario] — fem inntektsforklaringer, omtrent som i 102/103/104 men
- *     med ordlydsavvik som gjør at de fleste paragrafer må stå inlinet.
- *   * [NyPensjonsberegningPeriode] — fire varianter av introen til
- *     pensjonsberegningstabellen.
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - De overlappende `showIf`-blokkene over rådata for IFUregistrert/
- *    IEOregistrert og uttaksdato/opphorsdato er løftet ut til de to
- *    diskriminatorene over.
- *  - Originalens hardkodede "som i 2024 var 15 000 kroner" er erstattet
- *    med "i {oppgjørsår} var 15 000 kroner" (samme tilpasning som i
- *    [VedtakAfpEtteroppgjoerTilbakekrevingAuto]).
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket
- *    setter signaturen selv via fellesAuto.
- *  - Pensjonsberegningstabellen (kildens linjer 268–289) gjengis som fire
- *    linjer i én paragraf (newline mellom linjene) — samme idiom som i
- *    [VedtakAfpEtteroppgjoerTilbakekrevingAuto] der en ekte `table` med
- *    bare to kolonner ble for smal. Formelforklaringen for inntektsfradraget
- *    er hentet inn som sub-linje under rad 2 (samme formel som i
- *    [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody.InntektsfradragetFormel]).
- *  - Hjemmelshenvisningen (lov om AFP for SPK § 3 d) avviker i nynorsk med
- *    ett komma fra fellesfrasen
- *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk]; gjenbrukes likevel da
- *    differansen er rent kosmetisk.
- *  - Scenario-forklaringene i 105 er stort sett identiske med fellesfrasene
- *    i [AfpEtteroppgjoerForklaringer], men har gjennomgående "forskjellen"
- *    der fellesfrasen bruker "differansen", og "er satt til" der frasen
- *    bare har "er". Scenariene `IFU_OVERSTYRT_UTTAK_I_AARET` og
- *    `IFU_OVERSTYRT_HEL_AFP` gjenbruker forklaringen (sistnevnte avviker
- *    bare med ett komma), og `IFU_OG_IEO_OVERSTYRT` gjenbruker paret «Den
- *    faktiske …»-paragrafen (samme ett-komma-avvik). Resten er inlinet med
- *    kommentar.
- *  - Toleransebeløp-paragrafen avviker fra
- *    [no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody.ToleransebeloepOverskrider]
- *    ved at 105 sier "lavere" (etterbetaling) der 107 sier "høyere"
- *    (tilbakekreving), og en kortere konkluderende setning ("Vi har derfor
- *    beregnet ny pensjon for perioden"). Inlinet.
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto> {

@@ -37,24 +37,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Konvertert fra Exstream-malen `PE_AF_04_100`. Brevet sendes etter et
  * AFP-etteroppgjør (offentlig sektor / Statens pensjonskasse) når forskjellen
  * mellom forventet og faktisk pensjonsgivende inntekt ikke overstiger
- * toleransebeløpet (15 000 kroner i 2024), og pensjonsberegningen derfor ikke
+ * toleransebeløpet, og pensjonsberegningen derfor ikke
  * skal endres.
- *
- * Brevet har fire periodevarianter for inntektsfordelingen (uttak/opphør av
- * AFP i løpet av oppgjørsåret), modellert som
- * [VedtakAfpEtteroppgjoerToleransebeloepAutoDto.Periode]. Mye av innholdet
- * (intro, hjemmel, lister over inntekter som holdes utenfor, covid-19/Ukraina
- * og avslutningen) deles med `VedtakAfpEtteroppgjoerIngenEndringAuto`
- * (PE_AF_04_102) — se [AfpEtteroppgjoerInnhold] og [AfpEtteroppgjoerAvslutning].
- *
- * Konverterte avvik fra kilden:
- *  - De fire `showIf`-blokkene for periodevarianter ble i originalen uttrykt
- *    som overlappende rådata-booleans. Logikken er løftet ut av malen til en
- *    [Periode]-diskriminator, jf. skill-step 7.
- *  - «kontaktinformasjon.navnavsenderenhet» er erstattet med "Nav" (brevbaker
- *    setter avsenderenhet via fellesAuto-mekanismen).
- *  - To `showIf`-blokker i originalen for samme periodescenario er slått
- *    sammen.
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerToleransebeloepAutoDto> {

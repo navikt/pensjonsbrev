@@ -30,19 +30,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * konkludert med at pensjonsberegningen ikke skal endres. Forklaringen til
  * brukeren avhenger av et av fire gjensidig utelukkende scenarier
  * (se [VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario]).
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - De fire `showIf`-blokkene som beskriver scenariene var i originalen
- *    overlappende og brukte rådata. Her uttrykkes valget som én diskriminator
- *    levert av kalleren.
- *  - Originalen hadde ti repeterte `showIf` med identisk gating
- *    (`UtbetaltAFP=0 AND PGI>=TPIberegnet`) for tilleggstekstene under
- *    [Scenario.IKKE_AFP_FULL_INNTEKT]; slått sammen til én blokk.
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket setter
- *    signaturen selv via fellesAuto.
- *  - To "TODO Merge failure"-paragrafer fra konverteringen og flere
- *    bokmål/nynorsk-feiljusterte paragrafer i avslutningen er manuelt rettet
- *    opp ved sammenslåing av tilsvarende språkvarianter.
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerIngenEndringAutoDto> {
