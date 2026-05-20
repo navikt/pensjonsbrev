@@ -3,22 +3,23 @@ package no.nav.pensjon.brev.template
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.dsl.expression.expr
+import kotlin.also
 
 
 internal sealed interface SaksbehandlervalgWrapper<T> {
     val displayText: String
+    val default: T?
     fun expr(scope: TemplateRootScope<*, *>): Expression<T>
-    fun doExpr(scope: TemplateRootScope<*, *>) = expr(scope).also { scope.saksbehandlervalg[displayText] = it }
+    fun doExpr(scope: TemplateRootScope<*, *>) = expr(scope).also { scope.saksbehandlervalg[displayText] = default }
 
-    class Bool(override val displayText: String, val default: Boolean) : SaksbehandlervalgWrapper<Boolean> {
-        override fun expr(scope: TemplateRootScope<*, *>): Expression<Boolean> = false.expr() // Expression.FromScope.Saksbehandlervalg()
+    class Bool(override val displayText: String, override val default: Boolean) : SaksbehandlervalgWrapper<Boolean> {
+        override fun expr(scope: TemplateRootScope<*, *>): Expression<Boolean> = Expression.FromScope.Saksbehandlervalg(displayText, default)
     }
-    class Integer(override val displayText: String, val default: Int?) : SaksbehandlervalgWrapper<Int?> {
-        override fun expr(scope: TemplateRootScope<*, *>): Expression<Int?> = Expression.FromScope.Saksbehandlervalg()
+    class Integer(override val displayText: String, override val default: Int?) : SaksbehandlervalgWrapper<Int?> {
+        override fun expr(scope: TemplateRootScope<*, *>): Expression<Int?> = Expression.FromScope.Saksbehandlervalg(displayText, default)
     }
-    class Enum<T : SaksbehandlerValgEnum>(override val displayText: String, default: T?) : SaksbehandlervalgWrapper<T> {
-        override fun expr(scope: TemplateRootScope<*, *>): Expression<T> = Expression.FromScope.Saksbehandlervalg()
+    class Enum<T : SaksbehandlerValgEnum>(override val displayText: String, override val default: T?) : SaksbehandlervalgWrapper<T?> {
+        override fun expr(scope: TemplateRootScope<*, *>): Expression<T?> = Expression.FromScope.Saksbehandlervalg(displayText, default)
     }
 }
 

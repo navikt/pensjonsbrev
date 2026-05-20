@@ -13,7 +13,7 @@ data class LetterImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlervalg: Map<String, Any> = emptyMap(),
+    override val saksbehandlervalg: Map<String, Any?> = emptyMap(),
 ) : Letter<ParameterType> {
 
     init {
@@ -28,5 +28,5 @@ interface Letter<ParameterType : Any> {
     val argument: ParameterType
     val language: Language
     val felles: BrevbakerFelles
-    val saksbehandlervalg: Map<String, Any>
+    val saksbehandlervalg: Map<String, Any?>
 }
