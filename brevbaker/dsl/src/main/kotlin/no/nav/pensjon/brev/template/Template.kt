@@ -17,6 +17,7 @@ class TemplateRootScope<Lang : LanguageSupport, LetterData : Any> internal const
     val outline: MutableList<OutlineElement<Lang>> = mutableListOf(),
     val attachments: MutableList<IncludeAttachment<Lang, *>> = mutableListOf(),
     val pdfAttachments: MutableList<IncludeAttachmentPDF<Lang, *>> = mutableListOf(),
+    val saksbehandlervalg: MutableMap<String, Any> = mutableMapOf(),
 ) : TemplateGlobalScope<LetterData> {
 
     fun title(init: PlainTextOnlyScope<Lang, LetterData>.() -> Unit) {

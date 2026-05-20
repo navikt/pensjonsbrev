@@ -582,6 +582,14 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Language : 
 	public fun stableHashCode ()I
 }
 
+public final class no/nav/pensjon/brev/template/Expression$FromScope$Saksbehandlervalg : no/nav/pensjon/brev/template/Expression$FromScope {
+	public fun <init> ()V
+	public fun equals (Ljava/lang/Object;)Z
+	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
+	public fun hashCode ()I
+	public fun stableHashCode ()I
+}
+
 public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pensjon/brev/template/Expression {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun equals (Ljava/lang/Object;)Z
@@ -618,12 +626,13 @@ public abstract interface class no/nav/pensjon/brev/template/ExpressionScope {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
+	public abstract fun getSaksbehandlervalg ()Ljava/util/Map;
 	public abstract fun markUsage (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$Companion {
-	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
-	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Ljava/util/Map;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Ljava/util/Map;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {
@@ -739,6 +748,7 @@ public final class no/nav/pensjon/brev/template/LetterTemplate {
 	public final fun getLetterMetadata ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata;
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
+	public final fun getSaksbehandlervalg ()Ljava/util/Map;
 	public final fun getTitle ()Ljava/util/List;
 	public fun hashCode ()I
 	public final fun medEkstraVedlegg (Ljava/util/List;)Lno/nav/pensjon/brev/template/LetterTemplate;
@@ -923,6 +933,25 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/OutlineOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarOutlinePhrase;)V
 	public static fun includePhrase (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/ParagraphOnlyScope;Lno/nav/pensjon/brev/template/RedigerbarParagraphPhrase;)V
 	public static fun redigerbarData-B-HZO-Y (Lno/nav/pensjon/brev/template/RedigerbarTemplate;Lno/nav/pensjon/brev/template/dsl/TemplateGlobalScope;Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public final class no/nav/pensjon/brev/template/SBWrapper {
+	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
+	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SBWrapper;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun enum (Lno/nav/pensjon/brev/template/SaksbehandlerValgEnum;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun getDisplayText ()Ljava/lang/String;
+	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
+	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
+	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SBWrapper;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
+}
+
+public abstract interface class no/nav/pensjon/brev/template/SaksbehandlerValgEnum {
+	public abstract fun getDisplayText ()Ljava/lang/String;
+}
+
+public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
+	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SBWrapper;
 }
 
 public final class no/nav/pensjon/brev/template/SimpleSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
@@ -1376,6 +1405,7 @@ public final class no/nav/pensjon/brev/template/dsl/TemplateRootScope : no/nav/p
 	public fun getFelles ()Lno/nav/pensjon/brev/template/Expression;
 	public final fun getOutline ()Ljava/util/List;
 	public final fun getPdfAttachments ()Ljava/util/List;
+	public final fun getSaksbehandlervalg ()Ljava/util/Map;
 	public final fun getTitle ()Ljava/util/List;
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;)V
 	public final fun includeAttachment (Lno/nav/pensjon/brev/template/AttachmentTemplate;Lno/nav/pensjon/brev/template/Expression;Lno/nav/pensjon/brev/template/Expression;)V

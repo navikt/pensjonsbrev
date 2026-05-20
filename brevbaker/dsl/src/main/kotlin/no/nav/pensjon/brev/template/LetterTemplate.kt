@@ -18,6 +18,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
+    val saksbehandlervalg: Map<String, Any> = emptyMap(),
     val letterMetadata: LetterMetadata,
 ) {
     init {
@@ -47,6 +48,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
                 outline = this.outline,
                 attachments = this.attachments + attachments,
                 pdfAttachments = this.pdfAttachments,
+                saksbehandlervalg = this.saksbehandlervalg,
                 letterMetadata = this.letterMetadata
             )
         }
@@ -101,6 +103,14 @@ sealed class Expression<out Out> : StableHash {
             override fun equals(other: Any?): Boolean = other is Argument<*>
             override fun hashCode(): Int = javaClass.hashCode()
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
+        }
+
+        class Saksbehandlervalg<out Out> @InternKonstruktoer constructor(): FromScope<Out> () {
+            @Suppress("UNCHECKED_CAST")
+            override fun eval(scope: ExpressionScope<*>) = (scope.argument as Out) // TODO: Må sikkert endre denne
+            override fun equals(other: Any?): Boolean = other is Saksbehandlervalg<*>
+            override fun hashCode(): Int = javaClass.hashCode()
+            override fun stableHashCode(): Int = "FromScope.Saksbehandlervalg".hashCode()
         }
 
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {

@@ -41,7 +41,7 @@ class SelectorUsageTest {
         get() = UnaryOperation.Select(aModelSelector).invoke(this)
 
     private fun <T : Any> T.asScope(): RootExpressionScope<T> =
-        RootExpressionScope(this, FellesFactory.felles, Language.Bokmal, SelectorUsage())
+        RootExpressionScope(this, FellesFactory.felles, Language.Bokmal, emptyMap(), SelectorUsage())
 
     private fun assertUsage(
         scope: RootExpressionScope<*>,
@@ -59,7 +59,7 @@ class SelectorUsageTest {
 
     @Test
     fun `markerer et felt som brukt naar parent er null`() {
-        val scope = RootExpressionScope(RotModel(null), FellesFactory.felles, Language.Bokmal, SelectorUsage())
+        val scope = RootExpressionScope(RotModel(null), FellesFactory.felles, Language.Bokmal, emptyMap(), SelectorUsage())
         argument.aModel.testFeltSafe.eval(scope)
         assertThat(scope.selectorUsage!!.propertyUsage).contains(testFeltSelector.usageId())
         assertUsage(scope, testFeltSelector)

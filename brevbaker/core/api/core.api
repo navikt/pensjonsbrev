@@ -71,6 +71,7 @@ public abstract interface class no/nav/pensjon/brev/template/Letter {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
+	public abstract fun getSaksbehandlervalg ()Ljava/util/Map;
 	public abstract fun getTemplate ()Lno/nav/pensjon/brev/template/LetterTemplate;
 }
 

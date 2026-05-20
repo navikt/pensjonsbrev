@@ -176,7 +176,7 @@ abstract class BrevmodulTest(
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles, emptyMap())
 
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
@@ -197,7 +197,7 @@ abstract class BrevmodulTest(
             println("Mal ${template.letterMetadata.displayTitle} med brevkode ${brevkode.kode()} fins ikke på språk ${spraak.javaClass.simpleName.lowercase()}, tester ikke denne")
             return
         }
-        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles)
+        val letter = LetterTestImpl(template, fixtures, spraak, FellesFactory.felles, emptyMap())
 
         letter.renderTestPDF(
             filnavn(brevkode, spraak),
@@ -223,6 +223,7 @@ abstract class BrevmodulTest(
             fixtures,
             spraak,
             FellesFactory.felles,
+            emptyMap()
         ).renderTestHtml(filnavn(brevkode, spraak))
     }
 
@@ -241,6 +242,7 @@ abstract class BrevmodulTest(
                     fixtures,
                     spraak,
                     FellesFactory.felles,
+                    emptyMap()
                 ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_vedlegg")
             }
     }
@@ -260,6 +262,7 @@ abstract class BrevmodulTest(
                     fixtures,
                     spraak,
                     FellesFactory.felles,
+                    emptyMap()
                 ).renderTestHtml("${clazzName}_${spraak.javaClass.simpleName}", "test_alltid_valgbare_vedlegg")
             }
     }

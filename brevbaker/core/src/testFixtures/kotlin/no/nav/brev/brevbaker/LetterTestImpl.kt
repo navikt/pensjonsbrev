@@ -10,4 +10,5 @@ data class LetterTestImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
+    override val saksbehandlervalg: Map<String, Any> = emptyMap(),
 ) : Letter<ParameterType>
