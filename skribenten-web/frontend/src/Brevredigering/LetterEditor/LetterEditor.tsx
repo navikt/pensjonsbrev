@@ -55,9 +55,8 @@ export const LetterEditor = ({
     editorState.history.entryPointer < editorState.history.entries.length - 1;
 
   const undo = useCallback(() => {
-    if (!canUndo) return;
     setEditorState((current) => {
-      if (current.saveStatus === "SAVE_PENDING") return current;
+      if (freeze || current.saveStatus === "SAVE_PENDING" || current.history.entryPointer < 0) return current;
       const entry = current.history.entries[current.history.entryPointer];
       const previous =
         entry.type === "TEKSTVALG"
@@ -77,12 +76,16 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [canUndo, setEditorState]);
+  }, [freeze, setEditorState]);
 
   const redo = useCallback(() => {
-    if (!canRedo) return;
     setEditorState((current) => {
-      if (current.saveStatus === "SAVE_PENDING") return current;
+      if (
+        freeze ||
+        current.saveStatus === "SAVE_PENDING" ||
+        current.history.entryPointer >= current.history.entries.length - 1
+      )
+        return current;
       const nextPointer = current.history.entryPointer + 1;
       const entry = current.history.entries[nextPointer];
       const next =
@@ -103,7 +106,7 @@ export const LetterEditor = ({
         },
       };
     });
-  }, [canRedo, setEditorState]);
+  }, [freeze, setEditorState]);
 
   return (
     <VStack overflowY="hidden">
