@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.api.model.maler.VedleggData
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
+import java.time.Year
 
 /**
  * Vedlegg "Opplysninger om beregningen" for vedtak om gjenlevendepensjon når bruker er bosatt i utland.
@@ -32,7 +33,7 @@ data class OpplysningerOmBeregningenGPUtlandDto(
         OMSORGSPOENG_J,
         OMSORGSPOENG_K,
         OMSORGSPOENG_L,
-        FRAMTIDIG_POENGPOENG,
+        FRAMTIDIG_POENG,
         ANNET,
     }
 
@@ -219,7 +220,7 @@ data class OpplysningerOmBeregningenGPUtlandDto(
 
     data class PoengAar(
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_Poengrekke_Poengtall_Ar_Arstall
-        val aarstall: String,
+        val aarstall: Year,
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_Poengrekke_Poengtall_Ar_PensjonsgivendeInntekt
         val pensjonsgivendeInntekt: Kroner,
         // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo2_SPT_Poengrekke_Poengtall_Ar_GrunnbelopVeiet
