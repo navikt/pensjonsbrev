@@ -129,8 +129,6 @@ data class OversiktOverPensjonensStoerrelseGjenlevendepensjonDto(
      * (tilleggspensjon, særtillegg, faste utgifter, familietillegg).
      */
     data class KomponentValgfri(
-        // PE_Vedtaksdata_BeregningsData_Beregning(Periode)_BeregningYtelseKomp_<Komponent>_<…>innvilget
-        val innvilget: Boolean,
         // PE_Vedtaksdata_BeregningsData_Beregning(Periode)_BeregningYtelseKomp_<Komponent>_<…>brutto
         val brutto: Kroner,
         // PE_Vedtaksdata_BeregningsData_Beregning(Periode)_BeregningYtelseKomp_<Komponent>_<…>netto
