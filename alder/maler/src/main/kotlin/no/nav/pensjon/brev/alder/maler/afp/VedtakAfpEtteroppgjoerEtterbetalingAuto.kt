@@ -251,21 +251,8 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
 
             includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
 
-            // Skjema-paragraf — 101 bruker URL `nav.no/afp-offentlig` der
-            // fellesfrasen [AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon] bruker
-            // `nav.no/afp-etteroppgjør`. Inlinet med kommentar.
-            paragraph {
-                text(
-                    bokmal {
-                        +"På $AFP_OFFENTLIG_URL finner du et skjema som du eller arbeidsgiver kan " +
-                            "benytte ved innsending av dokumentasjon."
-                    },
-                    nynorsk {
-                        +"På $AFP_OFFENTLIG_URL finn du eit skjema som du eller arbeidsgivaren kan " +
-                            "nytte ved innsending av dokumentasjon."
-                    },
-                )
-            }
+            // Skjema-paragraf — delt med PE_AF_04_100 og PE_AF_04_102.
+            includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
 
             // Covid-19-seksjon: tittel + 2 forklarende paragrafer (felles), så
             // 101-spesifikk bekreftelseliste fra arbeidsgiver.
@@ -354,19 +341,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // «Inntekten din i {år}»-tittel + PGI-paragraf.
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende " +
-                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
-                    },
-                    nynorsk {
-                        +"Opplysningar frå Skattedirektoratet viser at du har hatt ei samla " +
-                            "pensjonsgivande inntekt på " + pgi.format() + " i inntektsåret " +
-                            oppgjoersAar.format() + "."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pgi, oppgjoersAar = oppgjoersAar))
 
             // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
             // Delt med PE_AF_04_107 (toleransebeløp). Se phrase for detaljer.

@@ -108,6 +108,31 @@ object AfpEtteroppgjoerInnhold {
         }
     }
 
+    /**
+     * Paragrafen «Opplysninger fra Skatteetaten viser at du har hatt en
+     * samlet pensjonsgivende inntekt på {pgi} i inntektsåret {oppgjørsår}.»
+     * Identisk mellom PE_AF_04_101 og PE_AF_04_102.
+     */
+    data class SamletPgiOpplysning(
+        val pgi: Expression<Kroner>,
+        val oppgjoersAar: Expression<Year>,
+    ) : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende " +
+                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                    },
+                    nynorsk {
+                        +"Opplysningar frå Skatteetaten viser at du har hatt ei samla pensjonsgivande " +
+                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                    },
+                )
+            }
+        }
+    }
+
     /** Avsluttende konklusjonsparagraf: pensjonsberegningen blir derfor ikke endret. */
     data class PensjonsberegningenBlirIkkeEndret(
         val oppgjoersAar: Expression<Year>,
@@ -273,7 +298,7 @@ object AfpEtteroppgjoerInnhold {
 
     /**
      * Paragrafen «På {url} finner du et skjema...». Identisk mellom
-     * PE_AF_04_100 og PE_AF_04_102.
+     * PE_AF_04_100, PE_AF_04_101 og PE_AF_04_102.
      */
     object SkjemaForDokumentasjon : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {

@@ -266,18 +266,7 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
-            paragraph {
-                text(
-                    bokmal {
-                        +"Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende " +
-                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
-                    },
-                    nynorsk {
-                        +"Opplysningar frå Skatteetaten viser at du har hatt ei samla pensjonsgivande " +
-                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pgi, oppgjoersAar = oppgjoersAar))
 
             // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
             // Delt med PE_AF_04_101 (etterbetaling). Se phrase for detaljer.

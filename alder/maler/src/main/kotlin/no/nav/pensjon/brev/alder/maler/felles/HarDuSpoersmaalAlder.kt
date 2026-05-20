@@ -42,7 +42,7 @@ data class HarDuSpoersmaal(val merInformasjonUrl: String) : OutlinePhrase<LangBo
         val alder = HarDuSpoersmaal(Constants.PENSJON_URL)
         val gjenlevendepensjon = HarDuSpoersmaal(Constants.GJENLEVENDEPENSJON_URL)
         val afpPrivat = HarDuSpoersmaal(Constants.AFP_PRIVAT_URL)
-        val afpEtteroppgjoer = HarDuSpoersmaal(Constants.AFP_OFFENTLIG_URL + "#etteroppgjor")
+        val afpEtteroppgjoer = HarDuSpoersmaal(Constants.AFP_ETTEROPPGJOER_URL)
     }
 }
 

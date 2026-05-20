@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.*
@@ -213,19 +214,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
 
             // Dine rettigheter.
             includePhrase(AfpOffentligSektorInnhold.DineRettigheterInnsyn)
-            paragraph {
-                text(
-                    bokmal {
-                        +"Hvis du mener at vedtaket ikke er i samsvar med det du har søkt om, kan du klage på vedtaket. Fristen for å " +
-                            "klage er seks uker fra du mottar dette brevet."
-                    },
-                    nynorsk {
-                        +"Dersom du meiner at vedtaket ikkje er i samsvar med det du har søkt om, kan du klage. Fristen for å klage er " +
-                            "seks veker frå du får dette brevet."
-                    },
-                )
-            }
-
+            includePhrase(AfpPrivatFraser.KlagerettFolketrygdloven2112)
             includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(

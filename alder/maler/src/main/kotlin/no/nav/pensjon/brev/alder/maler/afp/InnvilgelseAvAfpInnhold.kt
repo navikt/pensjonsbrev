@@ -467,24 +467,6 @@ data class InnvilgelseAvAfpInnhold(
         includePhrase(AfpPrivatFraser.InnsynForvaltningsloven18)
 
         // Klagerett.
-        paragraph {
-            text(
-                bokmal {
-                    +"Hvis du mener at vedtaket ikke er i samsvar med det du har søkt om, kan du klage på vedtaket " +
-                        "etter bestemmelsene i folketrygdloven paragraf 21-12. Fristen for å klage er seks uker " +
-                        "fra du mottar dette brevet."
-                },
-                nynorsk {
-                    +"Dersom du meiner at vedtaket ikkje er i samsvar med det du har søkt om, kan du klage på " +
-                        "vedtaket etter føresegnene i folketrygdlova paragraf 21-12. Fristen for å klage er seks " +
-                        "veker frå du får dette brevet."
-                },
-                english {
-                    +"If you believe that the decision is not in accordance with what you applied for, you can " +
-                        "appeal the decision pursuant to section 21-12 of the National Insurance Act. The time " +
-                        "limit for filing an appeal is six weeks from the date you received this letter."
-                },
-            )
-        }
+        includePhrase(AfpPrivatFraser.KlagerettFolketrygdloven2112)
     }
 }
