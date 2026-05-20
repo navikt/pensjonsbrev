@@ -232,6 +232,20 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const freeze =
     oppdaterBrevMutation.isPending || attesterMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
   const error = oppdaterBrevMutation.isError || attesterMutation.isError;
+
+  const saveDirtyLetter = (state: {
+    redigertBrev: typeof editorState.redigertBrev;
+    saksbehandlerValg: typeof editorState.saksbehandlerValg;
+  }) =>
+    oppdaterBrev({
+      saksId: Number.parseInt(props.saksId, 10),
+      brevId: props.brev.info.id,
+      frigiReservasjon: false,
+      request: {
+        redigertBrev: state.redigertBrev,
+        saksbehandlerValg: state.saksbehandlerValg,
+      },
+    });
   // TODO: disable BrevmalAlternativer during SAVE_PENDING
 
   useEffect(() => {
@@ -334,17 +348,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
               brev={props.brev}
               error={error}
               freeze={freeze}
-              saveDirtyLetter={(state) =>
-                oppdaterBrev({
-                  saksId: Number.parseInt(props.saksId, 10),
-                  brevId: props.brev.info.id,
-                  frigiReservasjon: false,
-                  request: {
-                    redigertBrev: state.redigertBrev,
-                    saksbehandlerValg: state.saksbehandlerValg,
-                  },
-                })
-              }
+              saveDirtyLetter={saveDirtyLetter}
               showDebug={showDebug}
             />
             {/* Modal som ikke tar opp plass i DOM her */}

@@ -387,6 +387,20 @@ function RedigerBrev({
 
   const error = oppdaterBrevMutation.isError;
 
+  const saveDirtyLetter = (state: {
+    redigertBrev: typeof editorState.redigertBrev;
+    saksbehandlerValg: typeof editorState.saksbehandlerValg;
+  }) =>
+    oppdaterBrev({
+      saksId: Number.parseInt(saksId, 10),
+      brevId: brev.info.id,
+      frigiReservasjon: false,
+      request: {
+        redigertBrev: state.redigertBrev,
+        saksbehandlerValg: state.saksbehandlerValg,
+      },
+    });
+
   // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
@@ -431,17 +445,7 @@ function RedigerBrev({
                   brev={brev}
                   error={error}
                   freeze={freeze}
-                  saveDirtyLetter={(state) =>
-                    oppdaterBrev({
-                      saksId: Number.parseInt(saksId, 10),
-                      brevId: brev.info.id,
-                      frigiReservasjon: false,
-                      request: {
-                        redigertBrev: state.redigertBrev,
-                        saksbehandlerValg: state.saksbehandlerValg,
-                      },
-                    })
-                  }
+                  saveDirtyLetter={saveDirtyLetter}
                   showDebug={showDebug}
                 />
               </InsertedTekstValgHighlightProvider>
