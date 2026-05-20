@@ -66,7 +66,7 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
-    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering
+    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, Any?> = emptyMap()): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
@@ -293,14 +293,15 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering =
+    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, Any?>): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,
             redigertBrevHash = redigertBrevHash,
             saksbehandlerValg = saksbehandlerValg,
             propertyUsage = coverage,
-            valgteVedlegg = valgteVedlegg
+            valgteVedlegg = valgteVedlegg,
+            ekstraSaksbehandlervalg = ekstraSaksbehandlervalg,
         )
 
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo =

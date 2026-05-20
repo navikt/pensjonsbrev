@@ -23,7 +23,8 @@ object Dto {
         val redigertBrevHash: Hash<Edit.Letter>,
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
-        val valgteVedlegg: List<AlltidValgbartVedleggKode>?
+        val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
+        val ekstraSaksbehandlervalg: Map<String, Any?>,
     )
 
     data class BrevInfo(

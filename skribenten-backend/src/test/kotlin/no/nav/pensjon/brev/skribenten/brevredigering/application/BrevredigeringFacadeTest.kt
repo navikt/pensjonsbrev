@@ -181,6 +181,7 @@ class BrevredigeringFacadeTest {
         saksbehandlerValg = SaksbehandlerValg(),
         propertyUsage = null,
         valgteVedlegg = emptyList(),
+        ekstraSaksbehandlervalg = emptyMap(),
     )
 
     private val reservasjon = Reservasjon(

@@ -50,7 +50,7 @@ class OppdaterBrevHandler(
             brev.frigiReservasjon()
         }
 
-        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, rendretBrev.saksbehandlervalg))
     }
 
     override fun requiresReservasjon(request: Request) = true

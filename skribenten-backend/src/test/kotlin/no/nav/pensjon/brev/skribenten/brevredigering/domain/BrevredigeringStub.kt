@@ -1,10 +1,6 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Brevredigering
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.BrevreservasjonPolicy
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.P1Data
-import no.nav.pensjon.brev.skribenten.brevredigering.domain.Reservasjon
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -53,6 +49,6 @@ open class BrevredigeringStub : Brevredigering {
     override fun mergeRendretBrev(rendretBrev: LetterMarkup): Unit = notYetStubbed()
     override fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?) = notYetStubbed()
     override fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification) = notYetStubbed()
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?): Dto.Brevredigering = notYetStubbed()
+    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, Any?>): Dto.Brevredigering = notYetStubbed()
     override fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo = notYetStubbed()
 }
