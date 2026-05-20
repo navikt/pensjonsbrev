@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
@@ -36,25 +37,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * representert som [Begrunnelse]. Brevkroppen viser standardteksten for
  * den begrunnelsen pluss tilhørende hjemmelshenvisning til
  * AFP-tilskottsloven.
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - Originalens 13 (delvis duplikate) `showIf`-blokker fordeler én og
- *    samme tekst per språk på hver sin paragraf i kilden; her er bokmål,
- *    nynorsk og engelsk samlet i én `paragraph { text(...) }` per
- *    begrunnelse. Rekkefølgen følger kilden.
- *  - "Begrunnelse for vedtaket" / "Grunngiving for vedtaket" /
- *    "Reason for decision" er løftet ut til en egen `title1`. I kilden
- *    var det første bokstavene av samme paragraf som intro-teksten om
- *    AFP-tilskottsloven.
- *  - "Du kan klage på avslaget … seks uker. Vedlagt finner du en
- *    orientering om klage- og ankebehandling" er beholdt inline (med
- *    `title1` "Din rett til innsyn og klage" + forvaltningsloven § 18 og
- *    folketrygdloven § 21-12). Det vedlagte orienteringsdokumentet er
- *    [vedleggFolketrygden].
- *  - "Har du spørsmål?" gjenbruker fellesfrasen [HarDuSpoersmaal.afpPrivat].
- *  - "Vennlig hilsen" + avsenderenhet og setningen "Vedlegg: Orientering
- *    om klage- og ankebehandling" er fjernet — brevbaker-rammeverket
- *    håndterer signatur og vedleggsliste automatisk.
  */
 @TemplateModelHelpers
 object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
@@ -104,13 +86,7 @@ object AvslagAfpPrivat : RedigerbarTemplate<AvslagAfpPrivatDto> {
                 )
             }
 
-            title1 {
-                text(
-                    bokmal { +"Begrunnelse for vedtaket" },
-                    nynorsk { +"Grunngiving for vedtaket" },
-                    english { +"Reason for decision" },
-                )
-            }
+            includePhrase(Vedtak.BegrunnelseOverskrift)
 
             paragraph {
                 text(

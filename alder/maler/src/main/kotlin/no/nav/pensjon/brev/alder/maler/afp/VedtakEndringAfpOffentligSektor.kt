@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggInformasjonOmAfp
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggOpplysningerOmBeregningenAfp
@@ -133,13 +134,8 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 )
             )
 
-            // Begrunnelse for vedtaket.
-            title1 {
-                text(
-                    bokmal { +"Begrunnelse for vedtaket" },
-                    nynorsk { +"Grunngiving for vedtaket" },
-                )
-            }
+            includePhrase(Vedtak.BegrunnelseOverskrift)
+
             paragraph {
                 text(
                     bokmal { +fritekst("Årsak til endring") },

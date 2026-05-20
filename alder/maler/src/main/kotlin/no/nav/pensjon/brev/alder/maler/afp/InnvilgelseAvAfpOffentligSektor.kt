@@ -4,6 +4,7 @@ import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.*
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
@@ -115,13 +116,8 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 )
             )
 
-            // Begrunnelse for vedtaket.
-            title1 {
-                text(
-                    bokmal { +"Begrunnelse for vedtaket" },
-                    nynorsk { +"Grunngiving for vedtaket" },
-                )
-            }
+            includePhrase(Vedtak.BegrunnelseOverskrift)
+
             paragraph {
                 text(
                     bokmal { +"AFP gis etter bestemmelsene i lov om avtalefestet pensjon for medlemmer av Statens pensjonskasse med tilhørende forskrifter." },
