@@ -11,7 +11,7 @@ export type TekstvalgHistorySnapshot = {
   saksbehandlerValg: SaksbehandlerValg;
 };
 
-export function createTekstvalgSnapshotFromEditorState(state: {
+export function createLetterSnapshot(state: {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
@@ -20,18 +20,6 @@ export function createTekstvalgSnapshotFromEditorState(state: {
     redigertBrev: structuredClone(state.redigertBrev),
     redigertBrevHash: state.redigertBrevHash,
     saksbehandlerValg: structuredClone(state.saksbehandlerValg),
-  };
-}
-
-export function createTekstvalgSnapshotFromResponse(response: {
-  redigertBrev: EditedLetter;
-  redigertBrevHash: string;
-  saksbehandlerValg: SaksbehandlerValg;
-}): TekstvalgHistorySnapshot {
-  return {
-    redigertBrev: structuredClone(response.redigertBrev),
-    redigertBrevHash: response.redigertBrevHash,
-    saksbehandlerValg: structuredClone(response.saksbehandlerValg),
   };
 }
 

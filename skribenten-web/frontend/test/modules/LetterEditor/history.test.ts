@@ -2,9 +2,8 @@ import { describe, expect, test } from "vitest";
 
 import {
   addHistoryEntry,
+  createLetterSnapshot,
   createTekstvalgHistoryEntry,
-  createTekstvalgSnapshotFromEditorState,
-  createTekstvalgSnapshotFromResponse,
   type History,
 } from "~/Brevredigering/LetterEditor/history";
 import { type EditedLetter } from "~/types/brevbakerTypes";
@@ -56,9 +55,9 @@ describe("history", () => {
     expect(result.entryPointer).toBe(1);
   });
 
-  test("createTekstvalgSnapshotFromEditorState clones redigertBrev and saksbehandlerValg", () => {
+  test("createLetterSnapshot clones redigertBrev and saksbehandlerValg", () => {
     const state = makeSnapshot("original");
-    const snapshot = createTekstvalgSnapshotFromEditorState(state);
+    const snapshot = createLetterSnapshot(state);
 
     expect(snapshot).toEqual(state);
 
@@ -67,19 +66,6 @@ describe("history", () => {
 
     expect((state.redigertBrev as unknown as { text: string }).text).toBe("original");
     expect((state.saksbehandlerValg as Record<string, string>).ytelse).toBe("original");
-  });
-
-  test("createTekstvalgSnapshotFromResponse clones redigertBrev and saksbehandlerValg", () => {
-    const response = makeSnapshot("response");
-    const snapshot = createTekstvalgSnapshotFromResponse(response);
-
-    expect(snapshot).toEqual(response);
-
-    (snapshot.redigertBrev as unknown as { text: string }).text = "mutated";
-    (snapshot.saksbehandlerValg as Record<string, string>).ytelse = "mutated";
-
-    expect((response.redigertBrev as unknown as { text: string }).text).toBe("response");
-    expect((response.saksbehandlerValg as Record<string, string>).ytelse).toBe("response");
   });
 
   test("adjacent PATCH TEXT_UPDATE entries within 1 second are merged", () => {

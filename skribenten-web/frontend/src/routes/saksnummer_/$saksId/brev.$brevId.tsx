@@ -8,11 +8,7 @@ import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
-import {
-  createTekstvalgHistoryEntry,
-  createTekstvalgSnapshotFromEditorState,
-  createTekstvalgSnapshotFromResponse,
-} from "~/Brevredigering/LetterEditor/history";
+import { createLetterSnapshot, createTekstvalgHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,
   collectNewIds,
@@ -183,7 +179,7 @@ interface RedigerBrevSidemenyFormData {
 }
 
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: ReturnType<typeof createTekstvalgSnapshotFromEditorState>;
+  historySnapshot?: ReturnType<typeof createLetterSnapshot>;
 };
 
 function RedigerBrev({
@@ -275,8 +271,7 @@ function RedigerBrev({
         response,
         historySnapshot
           ? {
-              createHistoryEntry: () =>
-                createTekstvalgHistoryEntry(historySnapshot, createTekstvalgSnapshotFromResponse(response)),
+              createHistoryEntry: () => createTekstvalgHistoryEntry(historySnapshot, createLetterSnapshot(response)),
             }
           : undefined,
       );
@@ -341,7 +336,7 @@ function RedigerBrev({
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
-          historySnapshot: createTekstvalgSnapshotFromEditorState(editorState),
+          historySnapshot: createLetterSnapshot(editorState),
         });
       }
     });

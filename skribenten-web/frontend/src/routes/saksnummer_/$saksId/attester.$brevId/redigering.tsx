@@ -11,9 +11,8 @@ import { z } from "zod";
 import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import {
+  createLetterSnapshot,
   createTekstvalgHistoryEntry,
-  createTekstvalgSnapshotFromEditorState,
-  createTekstvalgSnapshotFromResponse,
   type TekstvalgHistorySnapshot,
 } from "~/Brevredigering/LetterEditor/history";
 import { ApiError } from "~/components/ApiError";
@@ -192,8 +191,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         response,
         historySnapshot
           ? {
-              createHistoryEntry: () =>
-                createTekstvalgHistoryEntry(historySnapshot, createTekstvalgSnapshotFromResponse(response)),
+              createHistoryEntry: () => createTekstvalgHistoryEntry(historySnapshot, createLetterSnapshot(response)),
             }
           : undefined,
       );
@@ -321,7 +319,7 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                     oppdaterBrevMutation.mutate({
                       redigertBrev: editorState.redigertBrev,
                       saksbehandlerValg: form.getValues("saksbehandlerValg"),
-                      historySnapshot: createTekstvalgSnapshotFromEditorState(editorState),
+                      historySnapshot: createLetterSnapshot(editorState),
                     });
                   }}
                   withTitle
