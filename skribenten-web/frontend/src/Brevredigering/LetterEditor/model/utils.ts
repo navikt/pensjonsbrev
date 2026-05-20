@@ -12,6 +12,7 @@ import {
   type Item,
   type ItemList,
   LITERAL,
+  type ListType,
   type LiteralValue,
   NEW_LINE,
   type NewLine,
@@ -54,6 +55,10 @@ export function isNewLine(obj: Identifiable | null | undefined): obj is NewLine 
 export function isItemList(obj: Draft<Identifiable | null | undefined>): obj is Draft<ItemList>;
 export function isItemList(obj: Identifiable | null | undefined): obj is ItemList {
   return !!obj && "type" in obj && obj.type === ITEM_LIST;
+}
+
+export function effectiveListType(itemList: ItemList | Draft<ItemList>): ListType {
+  return itemList.editedListType ?? itemList.listType;
 }
 
 export function isFritekst(literal: LiteralValue): boolean {

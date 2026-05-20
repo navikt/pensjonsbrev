@@ -48,7 +48,7 @@ import {
 import { trackEvent } from "~/utils/umami";
 
 import { updateFocus } from "../actions/cursorPosition";
-import { isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
+import { effectiveListType, isTableCellIndex, ZERO_WIDTH_SPACE } from "../model/utils";
 import {
   addRow,
   adjacentTableEntryFocus,
@@ -124,7 +124,7 @@ export function ContentGroup({ literalIndex }: { literalIndex: LiteralIndex }) {
             );
           }
           case ITEM_LIST: {
-            const ListTag = content.listType === ListType.PUNKTLISTE ? "ul" : "ol";
+            const ListTag = effectiveListType(content) === ListType.PUNKTLISTE ? "ul" : "ol";
             return (
               <ListTag key={contentIndex}>
                 {content.items.map((_item, itemIndex) => (

@@ -113,6 +113,7 @@ export const ITEM_LIST = "ITEM_LIST";
 export type ItemList = Identifiable & {
   readonly type: typeof ITEM_LIST;
   readonly listType: ListType;
+  readonly editedListType: ListType | null;
   readonly items: Item[];
   readonly deletedItems: number[];
 };

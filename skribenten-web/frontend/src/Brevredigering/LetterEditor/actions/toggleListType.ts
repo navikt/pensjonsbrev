@@ -5,7 +5,7 @@ import { type ItemList, ListType } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
 import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
-import { isItemList, isTextContent } from "../model/utils";
+import { effectiveListType, isItemList, isTextContent } from "../model/utils";
 import { addElements, findAdjoiningContent, newItem, newItemList, removeElements } from "./common";
 
 export const toggleBulletList: Action<LetterEditorState, [literalIndex: LiteralIndex]> = withPatches(
@@ -27,7 +27,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
     toggleListOn(draft, literalIndex, listType);
     mergeListWithAdjacentBlocks(draft, draft.focus.blockIndex, draft.focus.contentIndex, listType);
   } else if (isItemList(blockContent) && "itemIndex" in literalIndex) {
-    if (blockContent.listType === listType) {
+    if (effectiveListType(blockContent) === listType) {
       toggleListOff(draft, literalIndex as ItemContentIndex);
     } else {
       switchListType(draft, literalIndex, listType);
@@ -55,7 +55,7 @@ const toggleList = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex,
 const switchListType = (draft: Draft<LetterEditorState>, literalIndex: LiteralIndex, listType: ListType) => {
   const block = draft.redigertBrev.blocks[literalIndex.blockIndex];
   const itemList = block.content[literalIndex.contentIndex] as Draft<ItemList>;
-  itemList.listType = listType;
+  itemList.editedListType = listType !== itemList.listType ? listType : null;
   draft.saveStatus = "DIRTY";
 };
 
@@ -93,7 +93,7 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
   const itemListIndex = findAdjoiningContent(
     textIndex.startIndex,
     block.content,
-    (c): c is ItemList => isItemList(c) && c.listType === listType,
+    (c): c is ItemList => isItemList(c) && effectiveListType(c) === listType,
   );
   const itemLists = removeElements(itemListIndex.startIndex, itemListIndex.count, {
     content: block.content,
@@ -111,7 +111,8 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
 
   const mergedList = newItemList({
     id: listWithId.id,
-    listType,
+    listType: listWithId.listType,
+    editedListType: listType !== listWithId.listType ? listType : listWithId.editedListType,
     items: allItems,
     deletedItems: allDeletedItems,
   });
@@ -143,13 +144,13 @@ const mergeAdjacentListsInBlock = (
   if (!block || block.type !== "PARAGRAPH") return { newContentIndex: contentIndex, itemIndexOffset: 0 };
 
   const currentList = block.content[contentIndex];
-  if (!isItemList(currentList) || currentList.listType !== listType)
+  if (!isItemList(currentList) || effectiveListType(currentList) !== listType)
     return { newContentIndex: contentIndex, itemIndexOffset: 0 };
 
   const itemListsIndex = findAdjoiningContent(
     contentIndex,
     block.content,
-    (c): c is ItemList => isItemList(c) && c.listType === listType,
+    (c): c is ItemList => isItemList(c) && effectiveListType(c) === listType,
   );
 
   if (itemListsIndex.count <= 1) return { newContentIndex: contentIndex, itemIndexOffset: 0 };
@@ -168,7 +169,13 @@ const mergeAdjacentListsInBlock = (
   const allItems = itemLists.flatMap((l) => [...l.items]);
   const allDeletedItems = itemLists.flatMap((l) => [...l.deletedItems]);
 
-  const mergedList = newItemList({ id: listWithId.id, listType, items: allItems, deletedItems: allDeletedItems });
+  const mergedList = newItemList({
+    id: listWithId.id,
+    listType: listWithId.listType,
+    editedListType: listType !== listWithId.listType ? listType : listWithId.editedListType,
+    items: allItems,
+    deletedItems: allDeletedItems,
+  });
   addElements([mergedList], itemListsIndex.startIndex, block.content, block.deletedContent);
 
   return { newContentIndex: itemListsIndex.startIndex, itemIndexOffset };
@@ -192,7 +199,7 @@ const mergeListWithAdjacentBlocks = (
   if (!currentBlock || currentBlock.type !== "PARAGRAPH") return;
 
   const currentList = currentBlock.content[contentIndex];
-  if (!isItemList(currentList) || currentList.listType !== listType) return;
+  if (!isItemList(currentList) || effectiveListType(currentList) !== listType) return;
 
   // Only merge across block boundaries when the current block contains nothing but this list.
   // If the block has other content (text, other lists), the list is part of a richer paragraph
@@ -204,7 +211,7 @@ const mergeListWithAdjacentBlocks = (
     const prevBlock = blocks[blockIndex - 1];
     if (prevBlock.type === "PARAGRAPH" && prevBlock.content.length > 0) {
       const lastPrevContent = prevBlock.content[prevBlock.content.length - 1];
-      if (isItemList(lastPrevContent) && lastPrevContent.listType === listType) {
+      if (isItemList(lastPrevContent) && effectiveListType(lastPrevContent) === listType) {
         const prevItems = current(lastPrevContent.items);
         const prevDeletedItems = current(lastPrevContent.deletedItems);
 
@@ -240,7 +247,7 @@ const mergeListWithAdjacentBlocks = (
     const nextBlock = blocks[nextBlockIndex];
     if (nextBlock.type === "PARAGRAPH" && nextBlock.content.length > 0) {
       const firstNextContent = nextBlock.content[0];
-      if (isItemList(firstNextContent) && firstNextContent.listType === listType) {
+      if (isItemList(firstNextContent) && effectiveListType(firstNextContent) === listType) {
         const nextItems = current(firstNextContent.items);
         const nextDeletedItems = current(firstNextContent.deletedItems);
 
@@ -303,7 +310,7 @@ const toggleListOff = (draft: Draft<LetterEditorState>, literalIndex: ItemConten
         id: itemList.id,
       });
       addElements(
-        [...itemContent, newItemList({ listType: itemList.listType, items: itemsAfter })],
+        [...itemContent, newItemList({ listType: effectiveListType(itemList), items: itemsAfter })],
         insertItemContentIndex,
         block.content,
         block.deletedContent,

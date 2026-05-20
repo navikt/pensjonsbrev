@@ -212,11 +212,17 @@ export const nyItem = (args: { id?: Nullable<number>; content?: TextContent[] })
 });
 
 //TODO - kan heller bruke newItemList fra common.ts
-export const nyItemList = (args: { id?: Nullable<number>; listType?: ListType; items?: Item[] }): ItemList => ({
+export const nyItemList = (args: {
+  id?: Nullable<number>;
+  listType?: ListType;
+  editedListType?: ListType | null;
+  items?: Item[];
+}): ItemList => ({
   type: "ITEM_LIST",
   id: args.id ?? null,
   parentId: null,
   listType: args.listType ?? ListType.PUNKTLISTE,
+  editedListType: args.editedListType ?? null,
   items: args.items ?? [nyItem({})],
   deletedItems: [],
 });

@@ -209,6 +209,7 @@ export function itemList(args: {
     parentId: args.parentId ?? null,
     type: ITEM_LIST,
     listType: args.listType ?? ListType.PUNKTLISTE,
+    editedListType: null,
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
   };

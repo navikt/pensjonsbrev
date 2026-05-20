@@ -6,6 +6,7 @@ import { ListType } from "~/types/brevbakerTypes";
 
 import Actions from "../actions";
 import { applyAction } from "../lib/actions";
+import { effectiveListType } from "../model/utils";
 import { getCursorOffset } from "../services/caretUtils";
 import { tooltipText } from "../utils";
 
@@ -17,7 +18,7 @@ const EditorListButton = ({ listType }: EditorListButtonProps) => {
   const { editorState, freeze, setEditorState } = useEditor();
   const currentContent =
     editorState.redigertBrev.blocks[editorState.focus.blockIndex]?.content[editorState.focus.contentIndex];
-  const focusedMatchesListType = currentContent?.type === "ITEM_LIST" && currentContent.listType === listType;
+  const focusedMatchesListType = currentContent?.type === "ITEM_LIST" && effectiveListType(currentContent) === listType;
 
   const action = listType === ListType.NUMMERERT_LISTE ? Actions.toggleNumberList : Actions.toggleBulletList;
   const icon =

@@ -154,7 +154,7 @@ class EditLetterWordDiff : EditLetterDiff<EditLetterWordDiff.Token> {
         }
 
         override fun visit(itemList: Edit.ParagraphContent.ItemList) {
-            emit(Token.ItemList(itemList.id, itemList.listType))
+            emit(Token.ItemList(itemList.id, itemList.editedListType ?: itemList.listType))
             super.visit(itemList)
         }
 
