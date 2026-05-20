@@ -179,7 +179,6 @@ object ProductionTemplates : AllTemplates {
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
-        InnvilgelseGjenlevendepensjonBosattNorgeEtterUtland,
         VedtakEndringGjenlevendepensjonBosattUtland,
     )
 
