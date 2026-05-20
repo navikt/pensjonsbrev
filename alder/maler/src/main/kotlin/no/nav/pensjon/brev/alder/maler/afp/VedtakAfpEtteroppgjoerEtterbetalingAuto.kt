@@ -249,24 +249,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // "etter første uttak av AFP" — kosmetisk, harmoniseres mot fellesfrasen.
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
 
-            // 101-spesifikk: «Du må dokumentere …» — formuleringen avviker fra 100 ved at
-            // 101 sier "etteroppgjøret vil bli vurdert som avsluttet" (samme som 100),
-            // men 101 har ikke samme «Du må dokumentere»-paragraf i tillegg til en
-            // skjema-paragraf med annen URL.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du må dokumentere hvilke av inntektene dine som skal holdes utenfor avkorting " +
-                            "av AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, benytter vi " +
-                            "de opplysningene vi har og etteroppgjøret vil bli vurdert som avsluttet."
-                    },
-                    nynorsk {
-                        +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
-                            "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
-                            "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
 
             // Skjema-paragraf — 101 bruker URL `nav.no/afp-offentlig` der
             // fellesfrasen [AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon] bruker

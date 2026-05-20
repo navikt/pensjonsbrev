@@ -29,25 +29,6 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * at det ikke skal tilbakekreves noe. Forklaringen til brukeren avhenger av
  * et av tre gjensidig utelukkende scenarier
  * (se [VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto.Scenario]).
- *
- * Konverterte avvik fra kilden (Step 7 i convert-exstream-letter-skill):
- *  - De tre `showIf`-blokkene som beskriver scenariene var i originalen
- *    overlappende og brukte rådata. Her uttrykkes valget som én diskriminator
- *    levert av kalleren.
- *  - "Vennlig hilsen" + avsenderenhet er fjernet — brevbaker-rammeverket setter
- *    signaturen selv via fellesAuto.
- *  - Innledningsparagrafene («Vi viser til ...») og avsluttende
- *    «Ny beregning … fører til at det ikke blir tilbakekreving» deles med
- *    PE_AF_04_103 og er trukket ut til
- *    [AfpEtteroppgjoerInnhold.HarVaertRiktigIntro] og
- *    [AfpEtteroppgjoerInnhold.NyBeregningFoererIkkeTilTilbakekreving].
- *  - Vedtaksgrunnlag § 3 d og avslutningen (Dine plikter, klage, innsyn,
- *    spørsmål) deles med PE_AF_04_102/103/107 — gjenbruker
- *    [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk] og
- *    [AfpEtteroppgjoerAvslutning]. Originalen hadde noen små
- *    nynorsk-ordlydsavvik mot fellesfrasen som harmoniseres bort her.
- *  - Bokmål/nynorsk-feiljusterte avsnitt (særlig avslutningstekstene som var
- *    konkatenert uten skille i kilden) er manuelt rettet opp.
  */
 @TemplateModelHelpers
 object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : AutobrevTemplate<VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto> {

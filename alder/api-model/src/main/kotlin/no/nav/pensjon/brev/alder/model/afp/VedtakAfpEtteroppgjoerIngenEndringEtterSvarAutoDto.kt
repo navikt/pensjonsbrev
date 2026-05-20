@@ -16,14 +16,10 @@ data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
     // (rtv-brev brev Grunnlag Persongrunnlag AFPEOGrunnlag IFU)
-    // Inntekt opptjent før uttak av AFP. Brukes i scenarier som inkluderer
-    // IFU (alle utenom [Scenario.KUN_IEO_REGISTRERT]).
     val ifu: Kroner,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
     // (rtv-brev brev Grunnlag Persongrunnlag AFPEOGrunnlag IEO)
-    // Inntekt opptjent etter opphør av AFP. Brukes i
-    // [Scenario.KUN_IEO_REGISTRERT] og [Scenario.IFU_OG_IEO_REGISTRERT].
     val ieo: Kroner,
 
     // PE_Vedtaksdata_APFEO_IIAP
@@ -39,9 +35,6 @@ data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
 
     // PE_Vedtaksdata_AFPEO_AFP_avvik
     // (rtv-brev brev Vedtaksdata AFPEO AFP avvik)
-    // Differanse mellom forventet og faktisk pensjonsgivende inntekt. Er
-    // mindre enn toleransebeløpet — det er denne testen som gjør at det
-    // ikke blir tilbakekreving i dette brevet.
     val avvik: Kroner,
 
     val scenario: Scenario,

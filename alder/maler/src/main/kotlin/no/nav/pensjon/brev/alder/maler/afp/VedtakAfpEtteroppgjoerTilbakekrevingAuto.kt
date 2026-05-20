@@ -88,21 +88,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
             // originalen har et ekstra komma før "og tilhøyrande forskrift"
             // som fellesfrasen normaliserer bort. Holdes inlinet med samme
             // ordlyd som Exstream-kilden.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
-                    },
-                    nynorsk {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhøyrande forskrift om kombinasjon av avtalefesta pensjon for " +
-                            "medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende inntekt)."
-                    },
-                )
-            }
-
+            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             showIf(periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {

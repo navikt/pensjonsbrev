@@ -74,7 +74,4 @@ data class InnvilgelseAvAfpOffentligSektorDto(
         // null når antallPerioder == 1 (vedlegget skal kun produseres ved flere perioder).
         val oversiktOverPensjonen: OversiktOverPensjonenAfpDto?,
     ) : FagsystemBrevdata
-
-    // Sivilstandsgrupperinger og Beregning-detaljer er flyttet til [AfpOffentligSektor]
-    // for deling med [VedtakEndringAfpOffentligSektorDto].
 }

@@ -77,8 +77,8 @@ val vedleggOversiktOverPensjonenAfp =
                 )
             }
 
-            forEach(perioder) { p ->
-                includePhrase(OversiktForPeriode(p))
+            forEach(perioder) {
+                includePhrase(OversiktForPeriode(it))
             }
 
             includePhrase(OversiktForSistePeriode(sistePeriode))

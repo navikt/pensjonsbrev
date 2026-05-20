@@ -22,8 +22,6 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     val ifu: Kroner,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    // Inntekt opptjent etter opphør av AFP. Vises i scenariene
-    // [Scenario.IFU_OG_IEO_OVERSTYRT] og [Scenario.KUN_IEO_OVERSTYRT].
     val ieo: Kroner,
 
     // PE_Vedtaksdata_APFEO_IIAP
@@ -31,10 +29,6 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     val iiap: Kroner,
 
     // PE_Vedtaksdata_AFPEO_AFP_avvik
-    // Forskjellen mellom forventet og faktisk pensjonsgivende inntekt;
-    // overstiger toleransebeløpet (15 000 kr). Beløpet er positivt og
-    // omtales som "lavere" i teksten — bruker har hatt mindre inntekt
-    // enn forventet, og skal derfor ha etterbetaling.
     val avvik: Kroner,
 
     // PE_Vedtaksdata_AFPEO_fullafp
@@ -56,8 +50,6 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     val uttaksdato: LocalDate,
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato
-    // Nullbart fordi Exstream-originalen sjekker mot DateValue("") for
-    // pågående AFP. Vises bare i to av periode-variantene.
     val opphorsdato: LocalDate?,
 
     val scenario: Scenario,

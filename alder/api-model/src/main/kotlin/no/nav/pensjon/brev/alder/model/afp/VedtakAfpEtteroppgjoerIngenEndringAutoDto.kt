@@ -11,9 +11,6 @@ data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
 
     // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
     // (rtv-brev brev Grunnlag Persongrunnlagsliste Persongrunnlag AFPEOGrunnlag PGI)
-    // Pensjonsgivende inntekt fra Skatteetaten. Vises i brevteksten kun for
-    // scenariene HEL_AFP_HELE_AARET_INNTEKT_FOER_UTTAK og IKKE_AFP_FULL_INNTEKT,
-    // men holdes alltid med i Dto-en for enkelhet.
     val pgi: Kroner,
 
     val scenario: Scenario,

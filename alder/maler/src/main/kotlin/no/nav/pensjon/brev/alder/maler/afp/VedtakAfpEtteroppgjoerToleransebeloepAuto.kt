@@ -180,22 +180,7 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
 
             includePhrase(AfpEtteroppgjoerInnhold.AnnenInntektInntektsproevd)
 
-            // Inlinet: «Du må dokumentere ...» — bokmål avviker fra PE_AF_04_102.
-            // TODO bokmål-ordlyd avviker fra PE_AF_04_102: 04_102 har "Du må dokumentere at inntekten er opptjent eller stammer fra arbeid eller virksomhet før uttaket av AFP. ... benytter vi de foreliggende opplysningene ...". Avklar med fag.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Du må dokumentere hvilke av inntektene dine som skal holdes utenfor avkorting " +
-                            "av AFP. Hvis du ikke sender inn ny dokumentasjon innen fristen, benytter vi " +
-                            "de opplysningene vi har, og etteroppgjøret vil bli vurdert som avsluttet."
-                    },
-                    nynorsk {
-                        +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
-                            "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
-                            "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
-                    },
-                )
-            }
+            includePhrase(AfpEtteroppgjoerInnhold.DokumenterInntekterUtenforAvkorting)
 
             includePhrase(AfpEtteroppgjoerInnhold.SkjemaForDokumentasjon)
 
