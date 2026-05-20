@@ -3,7 +3,7 @@ import { describe, expect, test } from "vitest";
 import {
   addHistoryEntry,
   createLetterSnapshot,
-  createTekstvalgHistoryEntry,
+  createSaksbehandlerValgEndretHistoryEntry,
   type History,
 } from "~/Brevredigering/LetterEditor/history";
 import { type EditedLetter } from "~/types/brevbakerTypes";
@@ -21,10 +21,10 @@ describe("history", () => {
     const before = makeSnapshot("før");
     const after = makeSnapshot("etter");
 
-    const entry = createTekstvalgHistoryEntry(before, after);
+    const entry = createSaksbehandlerValgEndretHistoryEntry(before, after);
 
     expect(entry).toMatchObject({
-      type: "TEKSTVALG",
+      type: "SAKSBEHANDLERVALG_ENDRET",
       before,
       after,
     });
@@ -47,7 +47,7 @@ describe("history", () => {
       entryPointer: 0,
     };
 
-    const nextEntry = createTekstvalgHistoryEntry(makeSnapshot("før"), makeSnapshot("etter"));
+    const nextEntry = createSaksbehandlerValgEndretHistoryEntry(makeSnapshot("før"), makeSnapshot("etter"));
 
     const result = addHistoryEntry(history, nextEntry);
 
@@ -101,11 +101,11 @@ describe("history", () => {
     let history: History = { entries: [], entryPointer: -1 };
     history = addHistoryEntry(history, patchEntry);
 
-    const tekstvalgEntry = createTekstvalgHistoryEntry(makeSnapshot("før"), makeSnapshot("etter"));
+    const tekstvalgEntry = createSaksbehandlerValgEndretHistoryEntry(makeSnapshot("før"), makeSnapshot("etter"));
     history = addHistoryEntry(history, tekstvalgEntry);
 
     expect(history.entries).toHaveLength(2);
     expect(history.entries[0].type).toBe("PATCH");
-    expect(history.entries[1].type).toBe("TEKSTVALG");
+    expect(history.entries[1].type).toBe("SAKSBEHANDLERVALG_ENDRET");
   });
 });

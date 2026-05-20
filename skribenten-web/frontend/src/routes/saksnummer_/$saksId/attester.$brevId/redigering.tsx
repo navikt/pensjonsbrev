@@ -12,8 +12,8 @@ import { getBrevAttestering, getBrevReservasjon, oppdaterBrev } from "~/api/brev
 import { attesterBrev } from "~/api/sak-api-endpoints";
 import {
   createLetterSnapshot,
-  createTekstvalgHistoryEntry,
-  type TekstvalgHistorySnapshot,
+  createSaksbehandlerValgEndretHistoryEntry,
+  type LetterSnapshot,
 } from "~/Brevredigering/LetterEditor/history";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
@@ -51,7 +51,7 @@ const vedtakSidemenySchema = z.object({
 
 type VedtakSidemenyFormData = z.infer<typeof vedtakSidemenySchema>;
 type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
-  historySnapshot?: TekstvalgHistorySnapshot;
+  historySnapshot?: LetterSnapshot;
 };
 
 const VedtakWrapper = () => {
@@ -191,7 +191,8 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         response,
         historySnapshot
           ? {
-              createHistoryEntry: () => createTekstvalgHistoryEntry(historySnapshot, createLetterSnapshot(response)),
+              createHistoryEntry: () =>
+                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
             }
           : undefined,
       );

@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
-import { createLetterSnapshot, createTekstvalgHistoryEntry } from "~/Brevredigering/LetterEditor/history";
+import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,
   collectNewIds,
@@ -271,7 +271,8 @@ function RedigerBrev({
         response,
         historySnapshot
           ? {
-              createHistoryEntry: () => createTekstvalgHistoryEntry(historySnapshot, createLetterSnapshot(response)),
+              createHistoryEntry: () =>
+                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
             }
           : undefined,
       );

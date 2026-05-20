@@ -5,7 +5,7 @@ import { type EditedLetter } from "~/types/brevbakerTypes";
 
 export type PatchKind = "TEXT_UPDATE";
 
-export type TekstvalgHistorySnapshot = {
+export type LetterSnapshot = {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
@@ -15,7 +15,7 @@ export function createLetterSnapshot(state: {
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
   saksbehandlerValg: SaksbehandlerValg;
-}): TekstvalgHistorySnapshot {
+}): LetterSnapshot {
   return {
     redigertBrev: structuredClone(state.redigertBrev),
     redigertBrevHash: state.redigertBrevHash,
@@ -31,14 +31,14 @@ export interface PatchHistoryEntry {
   timestamp?: number;
 }
 
-export interface TekstvalgHistoryEntry {
-  type: "TEKSTVALG";
-  before: TekstvalgHistorySnapshot;
-  after: TekstvalgHistorySnapshot;
+export interface SaksbehandlerValgEndretHistoryEntry {
+  type: "SAKSBEHANDLERVALG_ENDRET";
+  before: LetterSnapshot;
+  after: LetterSnapshot;
   timestamp?: number;
 }
 
-export type HistoryEntry = PatchHistoryEntry | TekstvalgHistoryEntry;
+export type HistoryEntry = PatchHistoryEntry | SaksbehandlerValgEndretHistoryEntry;
 
 export interface History {
   entries: HistoryEntry[];
@@ -71,12 +71,12 @@ function createHistoryEntry(patches: Patch[], inversePatches: Patch[]): PatchHis
   };
 }
 
-export function createTekstvalgHistoryEntry(
-  before: TekstvalgHistorySnapshot,
-  after: TekstvalgHistorySnapshot,
-): TekstvalgHistoryEntry {
+export function createSaksbehandlerValgEndretHistoryEntry(
+  before: LetterSnapshot,
+  after: LetterSnapshot,
+): SaksbehandlerValgEndretHistoryEntry {
   return {
-    type: "TEKSTVALG",
+    type: "SAKSBEHANDLERVALG_ENDRET",
     before: {
       redigertBrev: structuredClone(before.redigertBrev),
       redigertBrevHash: before.redigertBrevHash,
