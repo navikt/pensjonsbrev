@@ -231,9 +231,9 @@ class EditLetterWordTokenizer : EditLetterTokenizer<EditLetterWordTokenizer.Toke
                 this(RangeState(insertIndex), RangeState(deleteIndex))
 
         fun addEntry(entry: DiffEntry<Token.Word>): WordDiffCollector = when (entry) {
-            is DiffEntry.Insert    -> copy(inserts = inserts.extend(entry.new.word))
-            is DiffEntry.Delete    -> copy(deletes = deletes.extend(entry.old.word))
-            is DiffEntry.Replace   -> copy(inserts = inserts.extend(entry.new.word), deletes = deletes.extend(entry.old.word))
+            is DiffEntry.Insert -> copy(inserts = inserts.extend(entry.new.word))
+            is DiffEntry.Delete -> copy(deletes = deletes.extend(entry.old.word))
+            is DiffEntry.Replace -> copy(inserts = inserts.extend(entry.new.word), deletes = deletes.extend(entry.old.word))
             is DiffEntry.Unchanged -> copy(inserts = inserts.skip(entry.value.word), deletes = deletes.skip(entry.value.word))
         }
 

@@ -219,13 +219,13 @@ class EditLetterWordDiffTest {
         val (inserts, deletes) = wordDiff.diff(old, new)
         assertEquals(
             listOf(
-                DiffSegment(BlockContentIndex(0, 0), 0, 5),   // "EXTRA" in new block 0
-                DiffSegment(BlockContentIndex(1, 0), 6, 13),  // "goodbye" in new block 1
+                DiffSegment(BlockContentIndex(0, 0), 0, 5), // "EXTRA" in new block 0
+                DiffSegment(BlockContentIndex(1, 0), 6, 13), // "goodbye" in new block 1
             ),
             inserts,
         )
         assertEquals(
-            listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)),  // "world" in old block 0
+            listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), // "world" in old block 0
             deletes,
         )
     }
