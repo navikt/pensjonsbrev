@@ -1,5 +1,4 @@
 import { current, type Draft } from "immer";
-import { isEqual } from "lodash";
 
 import { type ItemList, ListType } from "~/types/brevbakerTypes";
 
@@ -118,8 +117,9 @@ const toggleListOn = (draft: Draft<LetterEditorState>, literalIndex: LiteralInde
   });
   addElements([mergedList], itemListIndex.startIndex, block.content, block.deletedContent);
 
-  // update focus
-  const newItemIndex = mergedList.items.findIndex((i) => isEqual(i.content, text));
+  // update focus — the new item's position is determined by items from lists that preceded it
+  const newListPosition = textIndex.startIndex - itemListIndex.startIndex;
+  const newItemIndex = itemLists.slice(0, newListPosition).reduce((sum, l) => sum + l.items.length, 0);
   draft.focus = {
     blockIndex: literalIndex.blockIndex,
     contentIndex: itemListIndex.startIndex,

@@ -338,3 +338,154 @@ test.describe("mixed list types", () => {
     }
   });
 });
+
+test.describe("undo/redo of list type conversion", () => {
+  const undoShortcut = "Control+z";
+  const redoShortcut = "Control+y";
+
+  test("undo reverts a bullet-to-numbered conversion", async ({ page }) => {
+    const letter = makeLetter([makeBlock(10, [makeItemList(11, [makeItem(111, "punkt1"), makeItem(112, "punkt2")])])]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await page.locator("ul li span").filter({ hasText: "punkt1" }).click();
+    await page.getByTestId("editor-number-list").click();
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ul")).toHaveCount(0);
+
+    await page.keyboard.press(undoShortcut);
+    await expect(page.locator("ul")).toHaveCount(1);
+    await expect(page.locator("ol")).toHaveCount(0);
+    await expect(page.locator("ul li")).toHaveCount(2);
+  });
+
+  test("redo re-applies a bullet-to-numbered conversion after undo", async ({ page }) => {
+    const letter = makeLetter([makeBlock(10, [makeItemList(11, [makeItem(111, "punkt1"), makeItem(112, "punkt2")])])]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await page.locator("ul li span").filter({ hasText: "punkt1" }).click();
+    await page.getByTestId("editor-number-list").click();
+    await expect(page.locator("ol")).toHaveCount(1);
+
+    await page.keyboard.press(undoShortcut);
+    await expect(page.locator("ul")).toHaveCount(1);
+
+    await page.keyboard.press(redoShortcut);
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ul")).toHaveCount(0);
+    await expect(page.locator("ol li")).toHaveCount(2);
+  });
+});
+
+test.describe("cross-block merge with numbered lists", () => {
+  test("converting a single-list block between two blocks with numbered lists merges all into one block", async ({
+    page,
+  }) => {
+    const letter = makeLetter([
+      makeBlock(10, [makeItemList(11, [makeItem(111, "top1"), makeItem(112, "top2")], ListType.NUMMERERT_LISTE)]),
+      makeBlock(20, [makeLiteral(21, "middle text")]),
+      makeBlock(30, [makeItemList(31, [makeItem(311, "bot1"), makeItem(312, "bot2")], ListType.NUMMERERT_LISTE)]),
+    ]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await expect(page.locator("ol")).toHaveCount(2);
+
+    await page.getByText("middle text").click();
+    await page.getByTestId("editor-number-list").click();
+
+    // All items should merge into one numbered list
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ol li")).toHaveCount(5);
+    for (const [i, text] of ["top1", "top2", "middle text", "bot1", "bot2"].entries()) {
+      await expect(page.locator("ol li").nth(i)).toContainText(text);
+    }
+  });
+
+  test("a block with only a numbered list merges with adjacent numbered list in previous block", async ({ page }) => {
+    const letter = makeLetter([
+      makeBlock(10, [
+        makeLiteral(11, "text before"),
+        makeItemList(12, [makeItem(121, "prev1"), makeItem(122, "prev2")], ListType.NUMMERERT_LISTE),
+      ]),
+      makeBlock(20, [makeLiteral(21, "standalone")]),
+    ]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await page.getByText("standalone").click();
+    await page.getByTestId("editor-number-list").click();
+
+    // The standalone block should merge with the numbered list in the previous block
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ol li")).toHaveCount(3);
+    await expect(page.locator("ol li").nth(2)).toContainText("standalone");
+  });
+});
+
+test.describe("split (Enter) in numbered list", () => {
+  test("pressing Enter in a numbered list creates a new item in the same numbered list", async ({ page }) => {
+    const letter = makeLetter([
+      makeBlock(10, [makeItemList(11, [makeItem(111, "first item")], ListType.NUMMERERT_LISTE)]),
+    ]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await expect(page.locator("ol li")).toHaveCount(1);
+    await page.locator("ol li span").filter({ hasText: "first item" }).click();
+    // Move cursor to end and press Enter
+    await page.keyboard.press("End");
+    await page.keyboard.press("Enter");
+
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ol li")).toHaveCount(2);
+    await expect(page.locator("ol li").nth(0)).toContainText("first item");
+  });
+
+  test("pressing Enter in the middle of a numbered list item splits the text", async ({ page }) => {
+    const letter = makeLetter([
+      makeBlock(10, [makeItemList(11, [makeItem(111, "helloworld")], ListType.NUMMERERT_LISTE)]),
+    ]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await page.locator("ol li span").filter({ hasText: "helloworld" }).click();
+    // Place cursor after "hello" (5 chars from start)
+    await page.keyboard.press("Home");
+    for (let i = 0; i < 5; i++) {
+      await page.keyboard.press("ArrowRight");
+    }
+    await page.keyboard.press("Enter");
+
+    await expect(page.locator("ol")).toHaveCount(1);
+    await expect(page.locator("ol li")).toHaveCount(2);
+    await expect(page.locator("ol li").nth(0)).toContainText("hello");
+    await expect(page.locator("ol li").nth(1)).toContainText("world");
+  });
+});
+
+test.describe("deleteSelection across different list types", () => {
+  test("deleting all content in a numbered list removes the list element", async ({ page }) => {
+    const letter = makeLetter([
+      makeBlock(10, [
+        makeLiteral(11, "before"),
+        makeItemList(12, [makeItem(121, "delete me")], ListType.NUMMERERT_LISTE),
+        { ...makeLiteral(13, "after"), parentId: 10 } as Content,
+      ]),
+    ]);
+    await setupBrevRoute(page, makeBrevResponse(letter));
+    await navigateToEditor(page);
+
+    await expect(page.locator("ol")).toHaveCount(1);
+
+    // Select all text in the list item and delete
+    await page.locator("ol li span").filter({ hasText: "delete me" }).click();
+    await page.keyboard.press("Control+a");
+    await page.keyboard.press("Backspace");
+
+    // The list should be gone (or have empty item), and surrounding text preserved
+    await expect(page.getByText("before")).toBeVisible();
+    await expect(page.getByText("after")).toBeVisible();
+  });
+});
