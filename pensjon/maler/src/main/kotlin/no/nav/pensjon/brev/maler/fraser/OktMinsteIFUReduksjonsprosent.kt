@@ -15,7 +15,6 @@ import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.ifNull
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -23,19 +22,17 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 object OktMinsteIFUReduksjonsprosent {
 
     data class Brevdata(
+        val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetillegg: Expression<Kroner?>,
-        val nettoGjenlevendetillegg: Expression<Kroner?>,
         val etterbetalingJuli: Expression<Kroner>,
         val reduksjonsprosent: Expression<Double>,
         val inntektstak: Expression<Kroner>,
         val ifu: Expression<Kroner>,
         val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
         val endringNettoBarnetillegg: Expression<Boolean>,
-        val endringNettoGjenlevendetillegg: Expression<Boolean>,
-        val endringReduksjonsprosent: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
-        val endringIfu: Expression<Boolean>,
+        val erInntektsavkortet: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
         val hjemler: Expression<Set<String>>,
         val visOktMinsteIFU: Expression<Boolean>,
@@ -44,7 +41,6 @@ object OktMinsteIFUReduksjonsprosent {
 
     data class Outline(val data: Brevdata) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
-            val sumUtOgTillegg = data.nettoUforetrygdUtenTillegg + data.nettoBarnetillegg.ifNull(Kroner(0)) + data.nettoGjenlevendetillegg.ifNull(Kroner(0))
 
             title1 {
                 text(
@@ -94,20 +90,18 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
-                    showIf(data.endringReduksjonsprosent) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Ny reduksjonsprosent" },
-                                    nynorsk { +"Ny reduksjonsprosent" },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +data.reduksjonsprosent.format() + " prosent" },
-                                    nynorsk { +data.reduksjonsprosent.format() + " prosent" },
-                                )
-                            }
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Ny reduksjonsprosent" },
+                                nynorsk { +"Ny reduksjonsprosent" },
+                            )
+                        }
+                        cell {
+                            text(
+                                bokmal { +data.reduksjonsprosent.format() + " prosent" },
+                                nynorsk { +data.reduksjonsprosent.format() + " prosent" },
+                            )
                         }
                     }
                     showIf(data.endringInntektstak) {
@@ -126,7 +120,7 @@ object OktMinsteIFUReduksjonsprosent {
                             }
                         }
                     }
-                    showIf(data.endringIfu) {
+                    showIf(data.visOktMinsteIFU) {
                         row {
                             cell {
                                 text(
@@ -161,11 +155,11 @@ object OktMinsteIFUReduksjonsprosent {
             paragraph {
                 text(
                     bokmal {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
                         +" per måned før skatt fra 1. juli 2026."
                     },
                     nynorsk {
-                        +"Du får " + sumUtOgTillegg.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
+                        +"Du får " + data.totalbelop.format() + " i " + data.tillegg.format(UTOgTilleggMapper)
                         +" per månad før skatt frå 1. juli 2026."
                     },
                 )
