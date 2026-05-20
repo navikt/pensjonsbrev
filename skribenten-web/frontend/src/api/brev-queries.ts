@@ -115,7 +115,7 @@ export const getBrevReservasjon = {
     const response = await axios
       .get<ReservasjonResponse>(`${SKRIBENTEN_API_BASE_PATH}/brev/${brevId}/reservasjon`)
       .catch((error) => {
-        if (error.response.status === 423) {
+        if (error.response?.status === 423) {
           return error.response as AxiosResponse<ReservasjonResponse>;
         } else {
           throw error;
