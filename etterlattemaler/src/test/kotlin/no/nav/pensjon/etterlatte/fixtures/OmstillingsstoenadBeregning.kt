@@ -4,6 +4,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.etterlatte.maler.BeregningsMetode
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregning
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedlegg
+import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningRedigerbartVedleggData
 import no.nav.pensjon.etterlatte.maler.OmstillingsstoenadBeregningsperiode
 import no.nav.pensjon.etterlatte.maler.Periode
 import no.nav.pensjon.etterlatte.maler.Trygdetid
@@ -13,12 +14,13 @@ import java.time.LocalDate
 
 fun createTomOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
     return OmstillingsstoenadBeregningRedigerbartVedlegg(
-        innhold = emptyList()
+        data = null
     )
 }
 
 fun createOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBeregningRedigerbartVedlegg {
         return OmstillingsstoenadBeregningRedigerbartVedlegg(
+        data = OmstillingsstoenadBeregningRedigerbartVedleggData(
         innhold = emptyList(),
         omstillingsstoenadBeregning = OmstillingsstoenadBeregning(
             innhold = emptyList(),
@@ -104,7 +106,8 @@ fun createOmstillingsstoenadBeregningRedigerbartVedlegg(): OmstillingsstoenadBer
             opphoerNesteAar = true,
             erYrkesskade = false
         ),
-        erInnvilgelsesAar = true
+        erInnvilgelsesAar = true,
+        )
     )
 }
 

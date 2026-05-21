@@ -1,14 +1,15 @@
 import { useMutation } from "@tanstack/react-query";
 import { type AxiosError } from "axios";
+import isEqual from "lodash/isEqual";
 import { useEffect } from "react";
 
 import { oppdaterBrevtekst } from "~/api/brev-queries";
 import Actions from "~/Brevredigering/LetterEditor/actions";
 import { LetterEditor } from "~/Brevredigering/LetterEditor/LetterEditor";
+import { type LetterEditorState } from "~/Brevredigering/LetterEditor/model/state";
 import { getCursorOffset } from "~/Brevredigering/LetterEditor/services/caretUtils";
 import { useManagedLetterEditorContext } from "~/components/ManagedLetterEditor/ManagedLetterEditorContext";
 import { type BrevResponse } from "~/types/brev";
-import { type EditedLetter } from "~/types/brevbakerTypes";
 
 import { AUTOSAVE_TIMER } from "./autosave_timer";
 
@@ -17,24 +18,40 @@ import { AUTOSAVE_TIMER } from "./autosave_timer";
  *
  * <ManagedLetterEditor /> krever at har <ManagedLetterEditorContextProvider /> som parent.
  */
-const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error: boolean; showDebug?: boolean }) => {
+const ManagedLetterEditor = (props: {
+  brev: BrevResponse;
+  freeze: boolean;
+  error: boolean;
+  showDebug?: boolean;
+  saveDirtyLetter?: (editorState: LetterEditorState) => Promise<BrevResponse>;
+}) => {
   const { editorState, setEditorState, onSaveSuccess } = useManagedLetterEditorContext();
 
-  const { mutate, isError } = useMutation<BrevResponse, AxiosError, EditedLetter>({
-    mutationFn: (redigertBrev: EditedLetter) => {
+  const { mutate, isError } = useMutation<BrevResponse, AxiosError, LetterEditorState>({
+    mutationFn: (state) => {
+      const stateWithCursor = Actions.cursorPosition(state, getCursorOffset());
+
       setEditorState((previousState) => ({
-        ...Actions.cursorPosition(previousState, getCursorOffset()),
+        ...previousState,
         saveStatus: "SAVE_PENDING",
       }));
-      return oppdaterBrevtekst(props.brev.info.id, redigertBrev);
+      // oppdaterBrevtekst only saves redigertBrev; tekstvalg changes require saveDirtyLetter.
+      if (isEqual(stateWithCursor.saksbehandlerValg, props.brev.saksbehandlerValg)) {
+        return oppdaterBrevtekst(props.brev.info.id, stateWithCursor.redigertBrev);
+      }
+      if (!props.saveDirtyLetter) {
+        throw new Error("saveDirtyLetter is required when saksbehandlerValg has changed");
+      }
+      return props.saveDirtyLetter(stateWithCursor);
     },
     onSuccess: (response) => onSaveSuccess(response),
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   useEffect(() => {
     const timoutId = setTimeout(() => {
       if (editorState.saveStatus === "DIRTY") {
-        mutate(editorState.redigertBrev);
+        mutate(editorState);
       }
     }, AUTOSAVE_TIMER);
     return () => clearTimeout(timoutId);
@@ -46,11 +63,13 @@ const ManagedLetterEditor = (props: { brev: BrevResponse; freeze: boolean; error
         ...previousState,
         redigertBrev: props.brev.redigertBrev,
         redigertBrevHash: props.brev.redigertBrevHash,
+        saksbehandlerValg: props.brev.saksbehandlerValg,
       }));
     }
   }, [
     props.brev.redigertBrev,
     props.brev.redigertBrevHash,
+    props.brev.saksbehandlerValg,
     editorState.redigertBrevHash,
     setEditorState,
     editorState.saveStatus,

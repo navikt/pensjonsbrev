@@ -207,8 +207,8 @@ object Innvilgelse {
             showIf((instoppholdType.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_true() and instoppholdAnvendt)){
                 paragraph {
                     text (
-                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men den kommer ikke til utbetaling fordi du er under straffegjennomføring." },
-                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men ho blir ikkje betalt ut fordi du er under straffegjennomføring." },
+                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men den kommer ikke til utbetaling fordi du er under straffegjennomføring." },
+                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men ho blir ikkje betalt ut fordi du er under straffegjennomføring." },
                     )
                 }
             }
@@ -216,8 +216,8 @@ object Innvilgelse {
             showIf((instoppholdType.equalTo("reduksjon_hs") and pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().notEqualTo(totalNettoUforeberegning) and instoppholdAnvendt)){
                 paragraph {
                     text (
-                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + totalNettoUforeberegning.format() + " kroner." },
-                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + totalNettoUforeberegning.format() + " kroner." },
+                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men utbetalingen er redusert fordi du er innlagt på institusjon. I denne perioden vil du få utbetalt " + totalNettoUforeberegning.format() + "." },
+                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men utbetalinga er redusert fordi du er innlagd på institusjon. I denne perioden får du betalt ut " + totalNettoUforeberegning.format() + "." },
                     )
                 }
             }
@@ -225,8 +225,8 @@ object Innvilgelse {
             showIf((instoppholdType.equalTo("reduksjon_fo") and pe.ut_forsorgeransvar_ingen_er_false() and instoppholdAnvendt)){
                 paragraph {
                     text (
-                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + totalNettoUforeberegning.format() + " kroner." },
-                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " kroner i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + totalNettoUforeberegning.format() + " kroner." },
+                        bokmal { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men utbetalingen er redusert fordi du er under straffegjennomføring. I denne perioden vil du få utbetalt " + totalNettoUforeberegning.format() + "." },
+                        nynorsk { + "Du har rett til å få " + pe.vedtaksdata_beregningsdata_beregningsresultattilrevurderingtotalnetto().format() + " i uføretrygd, men utbetalinga er redusert fordi du er under straffegjennomføring. I denne perioden får du betalt ut " + totalNettoUforeberegning.format() + "." },
                     )
                 }
             }
@@ -671,8 +671,8 @@ object Innvilgelse {
                 ifNotNull(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_skadetidspunkt()) { skadetidspunkt ->
                     paragraph {
                         text(
-                            bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + " kroner." },
-                            nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + " kroner." },
+                            bokmal { +"Skadetidspunktet ditt har vi fastsatt til " + skadetidspunkt.format() + ". Din årlige inntekt på dette tidspunktet er fastsatt til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
+                            nynorsk { +"Skadetidspunktet ditt har vi fastsett til " + skadetidspunkt.format() + ". Den årlege inntekta di på dette tidspunktet er fastsett til " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_ytelsesgrunnlag_inntektvedskadetidspunktet().format() + "." },
                         )
                     }
                 }
@@ -810,13 +810,13 @@ object Innvilgelse {
             showIf(((ifuBegrunnelse).equalTo("stdbegr_12_8_2_1") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + " kroner. " + fritekst("begrunnelse for fastsatt IFU") + "." },
-                        nynorsk { +"Inntekta di før du blei ufør er fastsett til " + ifuInntekt.format() + " kroner. " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        nynorsk { +"Inntekta di før du blei ufør er fastsett til " + ifuInntekt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
-                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + " kroner." },
-                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + " kroner." },
+                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + "." },
+                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + "." },
                         )
                     }
                 }
@@ -825,13 +825,13 @@ object Innvilgelse {
             showIf(((ungUforResultat.equalTo("oppfylt")) and ((ifuBegrunnelse).equalTo("stdbegr_12_8_2_4")) and ((ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3")))) {
                 paragraph {
                     text(
-                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + " kroner. Vi har innvilget deg rettighet som ung ufør, og inntekten din før du ble ufør skal derfor tilsvare minst 4,5 ganger grunnbeløpet." },
-                        nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + " kroner. Vi har innvilga deg rettar som ung ufør, og inntekta di før du blei ufør skal derfor svare til minst 4,5 gonger grunnbeløpet." },
+                        bokmal { +"Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + ". Vi har innvilget deg rettighet som ung ufør, og inntekten din før du ble ufør skal derfor tilsvare minst 4,5 ganger grunnbeløpet." },
+                        nynorsk { +"Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + ". Vi har innvilga deg rettar som ung ufør, og inntekta di før du blei ufør skal derfor svare til minst 4,5 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
-                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + " kroner." },
-                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + " kroner." },
+                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + "." },
+                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + "." },
                         )
                     }
                 }
@@ -840,13 +840,13 @@ object Innvilgelse {
             showIf(((ifuBegrunnelse).equalTo("stdbegr_12_8_2_3") and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + " kroner. Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + " kroner. Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,3 ganger folketrygdens grunnbeløp." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,3 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
-                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + " kroner." },
-                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + " kroner." },
+                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + "." },
+                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + "." },
                         )
                     }
                 }
@@ -855,13 +855,13 @@ object Innvilgelse {
             showIf(((ifuBegrunnelse).equalTo("stdbegr_12_8_2_5") and (ifuBegrunnelse).notEqualTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + " kroner. Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
-                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + " kroner. Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
+                        bokmal { +"Du hadde begrenset yrkesaktivitet og inntekt før du ble ufør. Inntekten din før du ble ufør er fastsatt til " + ifuInntekt.format() + ". Dette er for å garantere deg et minstenivå på inntekt før uførhet. Dette minstenivået skal tilsvare 3,5 ganger folketrygdens grunnbeløp." },
+                        nynorsk { +"Du hadde avgrensa yrkesaktivitet og inntekt før du blei ufør. Inntekta di før du blei ufør, er fastsett til " + ifuInntekt.format() + ". Dette er for å garantere deg eit minstenivå på inntekt før uførleik. Dette minstenivået skal svare til 3,5 gonger grunnbeløpet." },
                     )
                     showIf(oifuMerEnnIfu) {
                         text(
-                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + " kroner." },
-                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + " kroner." },
+                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + "." },
+                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + "." },
                         )
                     }
                 }
@@ -879,8 +879,8 @@ object Innvilgelse {
             showIf((((ifuBegrunnelse).notEqualTo("") or (ieuBegrunnelse).notEqualTo("")) and ((uforegrad.greaterThan(0) and uforegrad.lessThan(100)) or (uforegrad.equalTo(100) and (ieuInntekt).greaterThan(0))) and (ieuBegrunnelse).notEqualTo("stdbegr_12_8_1_3") and (ifuBegrunnelse).notEqualTo("stdbegr_12_8_2_2") and (ifuBegrunnelse).notEqualTo("stdbegr_12_8_2_9"))) {
                 paragraph {
                     text(
-                        bokmal { +"Du har en inntekt på " + ieuInntekt.format() + " kroner, og vi har derfor fastsatt uføregraden din til " + uforegrad.format() + " prosent." },
-                        nynorsk { +"Du har ei inntekt på " + ieuInntekt.format() + " kroner, og vi har derfor fastsett uføregraden din til " + uforegrad.format() + " prosent." },
+                        bokmal { +"Du har en inntekt på " + ieuInntekt.format() + ", og vi har derfor fastsatt uføregraden din til " + uforegrad.format() + " prosent." },
+                        nynorsk { +"Du har ei inntekt på " + ieuInntekt.format() + ", og vi har derfor fastsett uføregraden din til " + uforegrad.format() + " prosent." },
                     )
                 }
             }
@@ -888,14 +888,14 @@ object Innvilgelse {
             showIf(((ieuBegrunnelse).equalTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuInntekt.format() + " kroner. " + fritekst("begrunnelse for fastsatt IFU") + "." },
-                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuInntekt.format() + " kroner. " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuInntekt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
+                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuInntekt.format() + ". " + fritekst("begrunnelse for fastsatt IFU") + "." },
                     )
 
                     showIf(oifuMerEnnIfu) {
                         text(
-                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + " kroner." },
-                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + " kroner." },
+                            bokmal { +" Oppjustert til virkningstidspunktet tilsvarer dette en inntekt på " + oifuKroner.format() + "." },
+                            nynorsk { +" Oppjustert til verknadstidspunktet svarer dette til ei inntekt på " + oifuKroner.format() + "." },
                         )
                     }
                 }
@@ -904,8 +904,8 @@ object Innvilgelse {
             showIf(((ieuBegrunnelse).equalTo("stdbegr_12_8_1_3"))) {
                 paragraph {
                     text(
-                        bokmal { +"Det er dokumentert at du har inntektsmuligheter som du ikke benytter. Disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + ieuInntekt.format() + " kroner, og uføregraden din er derfor fastsatt til " + uforegrad.format() + " prosent." },
-                        nynorsk { +"Det er dokumentert at du har inntektsmoglegheiter som du ikkje nyttar. Desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + ieuInntekt.format() + " kroner, og uføregraden din er derfor fastsett til " + uforegrad.format() + " prosent." },
+                        bokmal { +"Det er dokumentert at du har inntektsmuligheter som du ikke benytter. Disse tar vi med når vi fastsetter inntekten din etter at du ble ufør. Inntekten din etter at du ble ufør er fastsatt til " + ieuInntekt.format() + ", og uføregraden din er derfor fastsatt til " + uforegrad.format() + " prosent." },
+                        nynorsk { +"Det er dokumentert at du har inntektsmoglegheiter som du ikkje nyttar. Desse tek vi med når vi fastset inntekta di etter at du blei ufør. Inntekta di etter at du blei ufør, er fastsett til " + ieuInntekt.format() + ", og uføregraden din er derfor fastsett til " + uforegrad.format() + " prosent." },
                     )
                 }
             }
@@ -913,8 +913,8 @@ object Innvilgelse {
             showIf(((ifuBegrunnelse).equalTo("stdbegr_12_8_2_2") or (ifuBegrunnelse).equalTo("stdbegr_12_8_2_9"))) {
                 paragraph {
                     text(
-                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuInntekt.format() + " kroner. Inntekten din før du ble ufør er fastsatt ut fra stillingsandelen din, og forventet inntekt på " + ieuInntekt.format() + " kroner. Inntekten din etter at du ble ufør er derfor fastsatt til " + ieuInntekt.format() + " kroner og uføregraden din blir " + uforegrad.format() + " prosent." },
-                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuInntekt.format() + " kroner. Inntekta di før du blei ufør, er fastsett ut frå stillingsdelen din og forventa inntekt på " + ieuInntekt.format() + " kroner. Inntekta di etter at du blei ufør, er derfor fastsett til " + ieuInntekt.format() + " kroner, og uføregraden din blir " + uforegrad.format() + " prosent." },
+                        bokmal { +"Vi har fastsatt inntekten din før du ble ufør til " + ifuInntekt.format() + ". Inntekten din før du ble ufør er fastsatt ut fra stillingsandelen din, og forventet inntekt på " + ieuInntekt.format() + ". Inntekten din etter at du ble ufør er derfor fastsatt til " + ieuInntekt.format() + " og uføregraden din blir " + uforegrad.format() + " prosent." },
+                        nynorsk { +"Vi har fastsett inntekta di før du blei ufør til " + ifuInntekt.format() + ". Inntekta di før du blei ufør, er fastsett ut frå stillingsdelen din og forventa inntekt på " + ieuInntekt.format() + ". Inntekta di etter at du blei ufør, er derfor fastsett til " + ieuInntekt.format() + ", og uføregraden din blir " + uforegrad.format() + " prosent." },
                     )
                 }
             }
@@ -1137,8 +1137,8 @@ object Innvilgelse {
                 showIf((instoppholdAnvendt and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().notEqualTo(0))) {
                     paragraph {
                         text(
-                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + totalNettoUforeberegning.format() + " kroner." },
-                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + totalNettoUforeberegning.format() + " kroner." },
+                            bokmal { +"Du har dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at utbetalingen din skal reduseres til " + totalNettoUforeberegning.format() + "." },
+                            nynorsk { +"Du har dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har kome fram til at utbetalinga di skal reduserast til " + totalNettoUforeberegning.format() + "." },
                         )
                     }
                 }
@@ -1146,8 +1146,8 @@ object Innvilgelse {
                 showIf((instoppholdAnvendt and pe.vedtaksbrev_grunnlag_persongrunnlagsliste_instopphfasteutgifterperiodeliste_instopphfasteutgifterperiode_fasteutgifter().equalTo(0) and pe.ut_forsorgeransvar_ingen_er_true())) {
                     paragraph {
                         text(
-                            bokmal { +"Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + totalNettoUforeberegning.format() + " kroner." },
-                            nynorsk { +"Du forsørgjer ikkje barn" + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + totalNettoUforeberegning.format() + " kroner." },
+                            bokmal { +"Du forsørger ikke barn" + txtOgEllerEktefelle + ", og det er ikke dokumentert at du har faste og nødvendige utgifter til bolig under oppholdet ditt på institusjon. Vi har derfor kommet fram til at uføretrygden din skal reduseres til " + totalNettoUforeberegning.format() + "." },
+                            nynorsk { +"Du forsørgjer ikkje barn" + txtOgEllerEktefelle + ", og det er ikkje dokumentert at du har faste og nødvendige utgifter til bustad under opphaldet ditt på institusjon. Vi har derfor kome fram til at uføretrygda di skal reduserast til " + totalNettoUforeberegning.format() + "." },
                         )
                     }
                 }
@@ -1239,14 +1239,14 @@ object Innvilgelse {
             showIf((pe.vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumutbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_barnetilleggregelverktype().notEqualTo("overgangsregler_2016") and pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 1, 1)))) {
                 paragraph {
                     text(
-                        bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
-                        nynorsk { +"Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + " kroner. Uføretrygda di og barnetillegget ditt er til saman høgare enn dette. Brutto årleg barnetillegg før reduksjon ut frå inntekt blir " },
+                        bokmal { +"Uføretrygden og barnetillegget ditt kan til sammen ikke utgjøre mer enn 95 prosent av inntekten din før du ble ufør. 95 prosent av den inntekten du hadde før du ble ufør tilsvarer i dag en inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + ". Uføretrygden og barnetillegget ditt er til sammen høyere enn dette. Årlig barnetillegg før reduksjon ut fra inntekt blir " },
+                        nynorsk { +"Uføretrygda di og barnetillegget ditt kan til saman ikkje utgjere meir enn 95 prosent av inntekta di før du blei ufør. 95 prosent av den inntekta du hadde før du blei ufør, tilsvarer i dag ei inntekt på " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_gradertoppjustertifu().format() + ". Uføretrygda di og barnetillegget ditt er til saman høgare enn dette. Brutto årleg barnetillegg før reduksjon ut frå inntekt blir " },
                     )
 
                     showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoforreduksjonbt().greaterThan(pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt()) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().greaterThan(0))) {
                         text(
-                            bokmal { +"derfor redusert til " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + " kroner. " },
-                            nynorsk { +"derfor redusert til " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + " kroner.  " },
+                            bokmal { +"derfor redusert til " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + ". " },
+                            nynorsk { +"derfor redusert til " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_reduksjonsgrunnlag_sumbruttoetterreduksjonbt().format() + ".  " },
                         )
                     }
 
@@ -1295,21 +1295,21 @@ object Innvilgelse {
                 showIf(((btFellesInnvilget))) {
                     paragraph {
                         text(
-                            bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
-                            nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + " kroner, og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + " kroner. " },
+                            bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + ", og inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + ". " },
+                            nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbrukersinntekttilavkortning().format() + ", og inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din er " + pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbinntektannenforelder().format() + ". " },
                         )
 
                         showIf((pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbbelopfratrukketannenforeldersinntekt().greaterThan(0))) {
                             text(
-                                bokmal { +"Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er holdt utenfor inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". " },
-                                nynorsk { +"Grunnbeløpet i folketrygda på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " kroner er halde utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. " },
+                                bokmal { +"Folketrygdens grunnbeløp på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " er holdt utenfor inntekten til din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + ". " },
+                                nynorsk { +"Grunnbeløpet i folketrygda på inntil " + pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_grunnbelop().format() + " er halde utanfor inntekta til " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din. " },
                             )
                         }
 
                         showIf(((not(btSerkullInnvilget) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0)))) {
                             text(
-                                bokmal { +"Til sammen er inntektene " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner. " },
-                                nynorsk { +"Til saman er inntektene " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner. " },
+                                bokmal { +"Til sammen er inntektene " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ". " },
+                                nynorsk { +"Til saman er inntektene " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ". " },
                             )
                             showIf(pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_btfbfradrag().equalTo(0)) {
                                 text(
@@ -1344,8 +1344,8 @@ object Innvilgelse {
                     paragraph {
                         showIf(((pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().greaterThan(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and pe.ut_btsbinnvilget_ikke_btfbinnvilget()))) {
                             text(
-                                bokmal { +"Inntekten din på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner. Barnetillegget ditt er derfor " },
-                                nynorsk { +"Inntekta di på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner. Barnetillegget ditt er derfor " },
+                                bokmal { +"Inntekten din på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ". Barnetillegget ditt er derfor " },
+                                nynorsk { +"Inntekta di på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn fribeløpet ditt på " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ". Barnetillegget ditt er derfor " },
                             )
                         }
 
@@ -1365,15 +1365,15 @@ object Innvilgelse {
 
                         showIf(((btSerkullNetto0 and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0) and pe.ut_btsbinnvilget_ikke_btfbinnvilget()))) {
                             text(
-                                bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner. " },
-                                nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner." },
+                                bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + ". " },
+                                nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + "." },
                             )
                         }
 
                         showIf(((pe.ut_btsbinnvilget_og_justbeloppa()))) {
                             text(
-                                bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner. Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
-                                nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + " kroner. Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
+                                bokmal { +"Inntekten din er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + ". Det du har fått utbetalt i barnetillegg tidligere i år har også betydning for hva du får i barnetillegg framover. Dette ble tatt hensyn til da vi endret barnetillegget. " },
+                                nynorsk { +"Inntekta di er " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbinntektbruktiavkortning().format() + ". Det du har fått utbetalt i barnetillegg tidlegare i år har også noko å seie for kva du får i barnetillegg framover. Dette har vi teke omsyn til når vi endra barnetillegget. " },
                             )
                         }
 
@@ -1391,8 +1391,8 @@ object Innvilgelse {
 
                         showIf((pe.ut_tbu1286_del1() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbnetto().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggserkull_avkortningsinformasjon_justeringsbelopperar().equalTo(0))) {
                             text(
-                                bokmal { +"Inntekten din er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. " },
-                                nynorsk { +"Inntekta di er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra. " },
+                                bokmal { +"Inntekten din er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikke bor sammen med begge foreldrene. " },
+                                nynorsk { +"Inntekta di er " + pe.ut_btsb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggserkull_btsbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_serkull() + " som ikkje bur saman med begge foreldra. " },
                             )
                         }
 
@@ -1419,8 +1419,8 @@ object Innvilgelse {
 
                         showIf((pe.ut_tbu1286_del1() and pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbnetto().notEqualTo(0) and pe.vedtaksbrev_vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_barnetilleggfelles_avkortningsinformasjon_justeringsbelopperar().equalTo(0))) {
                             text(
-                                bokmal { +"inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
-                                nynorsk { +"inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + " kroner, som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
+                                bokmal { +"inntektene til deg og din " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut() + " " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bor med begge sine foreldre. " },
+                                nynorsk { +"inntektene til deg og " + pe.sivilstand_ektefelle_partner_samboer_bormed_ut_nn_entall() + " din " + pe.ut_btfb_inntekt_hoyere_lavere() + " enn " + pe.vedtaksdata_beregningsdata_beregning_beregningytelsekomp_barnetilleggfelles_btfbfribelop().format() + ", som er fribeløpet for barnetillegget til " + pe.ut_barnet_barna_felles() + " som bur saman med begge foreldra sine. " },
                             )
                         }
 

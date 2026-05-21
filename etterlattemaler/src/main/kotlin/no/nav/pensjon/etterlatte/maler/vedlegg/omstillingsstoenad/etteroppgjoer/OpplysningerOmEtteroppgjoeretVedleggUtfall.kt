@@ -25,7 +25,7 @@ data class EtteroppgjoerBeregningVedleggInnholdDTO(
     val erVedtak: Boolean,
 )
 data class EtteroppgjoerBeregningVedleggRedigerbartUtfallBrevDTO(
-    val data: EtteroppgjoerBeregningVedleggInnholdDTO
+    override val data: EtteroppgjoerBeregningVedleggInnholdDTO
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers

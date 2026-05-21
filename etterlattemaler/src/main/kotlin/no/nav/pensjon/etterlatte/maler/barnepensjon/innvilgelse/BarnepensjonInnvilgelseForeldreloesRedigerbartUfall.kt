@@ -12,20 +12,21 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.ForskjelligAvdoedPeriode
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erGjenoppretting
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.erSluttbehandling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.flerePerioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.forskjelligAvdoedPeriode
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.sisteBeregningsperiodeBeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.sisteBeregningsperiodeDatoFom
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.vedtattIPesys
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erGjenoppretting
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.flerePerioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.forskjelligAvdoedPeriode
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.sisteBeregningsperiodeBeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.sisteBeregningsperiodeDatoFom
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.vedtattIPesys
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonForeldreloesRedigerbarDataSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonForeldreloesFraser
 import java.time.LocalDate
 
-data class BarnepensjonForeldreloesRedigerbarDTO(
+data class BarnepensjonForeldreloesRedigerbarData(
     val virkningsdato: LocalDate,
     val sisteBeregningsperiodeBeloep: Kroner,
     val sisteBeregningsperiodeDatoFom: LocalDate,
@@ -36,6 +37,10 @@ data class BarnepensjonForeldreloesRedigerbarDTO(
     val vedtattIPesys: Boolean,
     val forskjelligAvdoedPeriode: ForskjelligAvdoedPeriode? = null,
     val erSluttbehandling: Boolean = false
+)
+
+data class BarnepensjonForeldreloesRedigerbarDTO(
+    override val data: BarnepensjonForeldreloesRedigerbarData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -56,19 +61,19 @@ object BarnepensjonInnvilgelseForeldreloesRedigerbartUfall :
         outline {
             includePhrase(
                 BarnepensjonForeldreloesFraser.Vedtak(
-                    virkningstidspunkt = virkningsdato,
-                    sistePeriodeBeloep = sisteBeregningsperiodeBeloep,
-                    sistePeriodeFom = sisteBeregningsperiodeDatoFom,
-                    flerePerioder = flerePerioder,
-                    harUtbetaling = harUtbetaling,
-                    vedtattIPesys = vedtattIPesys,
-                    erGjenoppretting = erGjenoppretting,
-                    forskjelligAvdoedPeriode = forskjelligAvdoedPeriode,
-                    erSluttbehandling = erSluttbehandling,
+                    virkningstidspunkt = data.virkningsdato,
+                    sistePeriodeBeloep = data.sisteBeregningsperiodeBeloep,
+                    sistePeriodeFom = data.sisteBeregningsperiodeDatoFom,
+                    flerePerioder = data.flerePerioder,
+                    harUtbetaling = data.harUtbetaling,
+                    vedtattIPesys = data.vedtattIPesys,
+                    erGjenoppretting = data.erGjenoppretting,
+                    forskjelligAvdoedPeriode = data.forskjelligAvdoedPeriode,
+                    erSluttbehandling = data.erSluttbehandling,
                 )
             )
             includePhrase(
-                BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling, vedtattIPesys),
+                BarnepensjonForeldreloesFraser.BegrunnelseForVedtaketRedigerbart(data.erEtterbetaling, data.vedtattIPesys),
             )
         }
     }

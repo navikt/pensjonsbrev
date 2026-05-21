@@ -12,14 +12,19 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.borIUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.erOver18aar
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDataSelectors.borIUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.informasjon.BarnepensjonInnhentingAvOpplysningerDataSelectors.erOver18aar
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonFellesFraser
 import no.nav.pensjon.etterlatte.maler.fraser.common.Felles
 
-data class BarnepensjonInnhentingAvOpplysningerDTO(
+data class BarnepensjonInnhentingAvOpplysningerData(
     val erOver18aar: Boolean,
     val borIUtlandet: Boolean,
+)
+
+data class BarnepensjonInnhentingAvOpplysningerDTO(
+    override val data: BarnepensjonInnhentingAvOpplysningerData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -56,7 +61,7 @@ object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInn
                     )
                 }
 
-                showIf(erOver18aar.not()) {
+                showIf(data.erOver18aar.not()) {
                     title2 {
                         text(
                             bokmal { +"Hvordan sende opplysninger til oss?" },
@@ -80,11 +85,11 @@ object BarnepensjonInnhentingAvOpplysninger : EtterlatteTemplate<BarnepensjonInn
                                 "If you want to send us something, you must use our mailing address:" },
                         )
                     }
-                    includePhrase(Felles.AdresseMedMellomrom(borIUtlandet))
+                    includePhrase(Felles.AdresseMedMellomrom(data.borIUtlandet))
                 }.orShow {
-                    includePhrase(Felles.HvordanSendeOpplysninger(borIUtlandet))
+                    includePhrase(Felles.HvordanSendeOpplysninger(data.borIUtlandet))
                 }
-                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(erOver18aar.not(), borIUtlandet))
+                includePhrase(BarnepensjonFellesFraser.HarDuSpoersmaal(data.erOver18aar.not(), data.borIUtlandet))
             }
         }
 }

@@ -12,19 +12,20 @@ import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.Avdoed
 import no.nav.pensjon.etterlatte.maler.Delmal
 import no.nav.pensjon.etterlatte.maler.RedigerbartUtfallBrevDTO
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.avdoed
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erEtterbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erGjenoppretting
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.erSluttbehandling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harFlereUtbetalingsperioder
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.harUtbetaling
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeBeloep
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.sisteBeregningsperiodeDatoFom
-import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.virkningsdato
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.avdoed
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.erEtterbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.erGjenoppretting
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.erSluttbehandling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.harFlereUtbetalingsperioder
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.harUtbetaling
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.sisteBeregningsperiodeBeloep
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.sisteBeregningsperiodeDatoFom
+import no.nav.pensjon.etterlatte.maler.barnepensjon.innvilgelse.BarnepensjonInnvilgelseRedigerbartUtfallDataSelectors.virkningsdato
 import no.nav.pensjon.etterlatte.maler.fraser.barnepensjon.BarnepensjonInnvilgelseFraser
 import java.time.LocalDate
 
-data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
+data class BarnepensjonInnvilgelseRedigerbartUtfallData(
     val virkningsdato: LocalDate,
     val avdoed: Avdoed?,
     val sisteBeregningsperiodeDatoFom: LocalDate,
@@ -34,6 +35,10 @@ data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
     val erGjenoppretting: Boolean,
     val harUtbetaling: Boolean,
     val erSluttbehandling: Boolean = false
+)
+
+data class BarnepensjonInnvilgelseRedigerbartUtfallDTO(
+    override val data: BarnepensjonInnvilgelseRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -54,18 +59,18 @@ object BarnepensjonInnvilgelseRedigerbartUfall : EtterlatteTemplate<Barnepensjon
         outline {
             includePhrase(
                 BarnepensjonInnvilgelseFraser.Foerstegangsbehandlingsvedtak(
-                    avdoed,
-                    virkningsdato,
-                    sisteBeregningsperiodeDatoFom,
-                    sisteBeregningsperiodeBeloep,
-                    erEtterbetaling,
-                    harFlereUtbetalingsperioder,
-                    erGjenoppretting,
-                    harUtbetaling,
-                    erSluttbehandling
+                    data.avdoed,
+                    data.virkningsdato,
+                    data.sisteBeregningsperiodeDatoFom,
+                    data.sisteBeregningsperiodeBeloep,
+                    data.erEtterbetaling,
+                    data.harFlereUtbetalingsperioder,
+                    data.erGjenoppretting,
+                    data.harUtbetaling,
+                    data.erSluttbehandling
                 ),
             )
-            includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(erEtterbetaling))
+            includePhrase(BarnepensjonInnvilgelseFraser.BegrunnelseForVedtaketRedigerbart(data.erEtterbetaling))
         }
     }
 }

@@ -1,8 +1,12 @@
 package no.nav.pensjon.etterlatte.maler
 
+data class ManueltBrevMedTittelData(
+    val tittel: String? = null,
+)
+
 data class ManueltBrevMedTittelDTO(
     override val innhold: List<Element> = emptyList(),
-    val tittel: String? = null,
+    override val data: ManueltBrevMedTittelData = ManueltBrevMedTittelData(),
 ) : FerdigstillingBrevDTO
 
 data class ManueltBrevDTO(

@@ -1,6 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
-import no.nav.pensjon.brev.api.model.maler.legacy.Tillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.UTTillegg
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.UTOgTilleggMapper
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
@@ -19,6 +19,7 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.template.dsl.expression.and
+import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object LavereMinstesats {
@@ -35,7 +36,7 @@ object LavereMinstesats {
         val harMinstesats: Expression<Boolean>,
         val tidligereMinstesats: Expression<Kroner>,
         val nyMinstesats: Expression<Kroner>,
-        val tillegg: Expression<Collection<Tillegg>>,
+        val tillegg: Expression<Collection<UTTillegg>>,
         val egenopptjentUforetrygd: Expression<Kroner>,
         val avkortetPgaRedusertTrygdetid: Expression<Boolean>,
         val harGradertUfoeretrygd: Expression<Boolean>,
@@ -135,11 +136,13 @@ object LavereMinstesats {
                     },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
-                    nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
-                )
+            showIf(sumUtOgTillegg.greaterThan(0)) {
+                paragraph {
+                    text(
+                        bokmal { +"Uføretrygden blir utbetalt senest den 20. hver måned." },
+                        nynorsk { +"Uføretrygda blir utbetalt seinast den 20. kvar månad." },
+                    )
+                }
             }
             paragraph {
                 text(

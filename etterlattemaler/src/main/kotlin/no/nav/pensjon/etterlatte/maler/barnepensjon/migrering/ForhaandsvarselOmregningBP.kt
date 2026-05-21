@@ -9,8 +9,9 @@ import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erBosattUtlandet
-import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.erForeldreloes
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.erBosattUtlandet
+import no.nav.pensjon.etterlatte.maler.barnepensjon.migrering.BarnepensjonOmregnetNyttRegelverkDataSelectors.erForeldreloes
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants
 import no.nav.pensjon.etterlatte.maler.fraser.common.kontakttelefonPensjon
 
@@ -29,7 +30,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
     ) {
 
         title {
-            showIf(erForeldreloes) {
+            showIf(data.erForeldreloes) {
                 text(
                     bokmal { +"Forhåndsvarsel om mulig endring av barnepensjon" },
                     nynorsk { +"Førehandsvarsel om mulig endring av barnepensjon" },
@@ -51,7 +52,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                     english { +"This is an advance notice that Nav will be considering adjustments to the children's pensions because the Storting has adopted new rules for this type of pension. The new rules will apply from 1 January 2024." }
                 )
             }
-            showIf(erForeldreloes) {
+            showIf(data.erForeldreloes) {
                 paragraph {
                     text(
                         bokmal { +"Beregningen av barnepensjon til foreldreløse barn er annerledes fra 1. januar 2024. Det vil vurderes om pensjonen din vil bli høyere med nytt regelverk enn det du har i dag. Du vil få det som gir høyest utbetaling hver måned. Du trenger ikke å gi beskjed til Nav om hvilken beregning du ønsker." },
@@ -165,7 +166,7 @@ object ForhaandsvarselOmregningBP : EtterlatteTemplate<BarnepensjonOmregnetNyttR
                     nynorsk { +"Les meir på ${Constants.BARNEPENSJON_URL}. Dersom du ikkje finn svar på spørsmålet ditt der, kan du ringje oss på telefon " },
                     english { +"For more information, visit us online: ${Constants.Engelsk.BARNEPENSJON_URL}. If you cannot find the answer to your question, you can call us by phone " }
                 )
-                kontakttelefonPensjon(erBosattUtlandet)
+                kontakttelefonPensjon(data.erBosattUtlandet)
                 text(
                     bokmal { +" hverdager mellom kl. 09.00-15.00." },
                     nynorsk { +", kvardagar mellom kl. 09.00–15.00. " },

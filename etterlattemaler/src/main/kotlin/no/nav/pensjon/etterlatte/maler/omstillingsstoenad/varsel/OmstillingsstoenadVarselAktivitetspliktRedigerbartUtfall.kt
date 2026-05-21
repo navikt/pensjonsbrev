@@ -9,10 +9,15 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 import no.nav.pensjon.etterlatte.EtterlatteBrevKode
 import no.nav.pensjon.etterlatte.EtterlatteTemplate
 import no.nav.pensjon.etterlatte.maler.*
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTOSelectors.er12MndVarsel
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.varsel.OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDataSelectors.er12MndVarsel
+
+data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallData(
+    val er12MndVarsel: Boolean,
+)
 
 data class OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallDTO(
-    val er12MndVarsel: Boolean
+    override val data: OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -38,7 +43,7 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                 )
             }
             outline {
-                showIf(er12MndVarsel) {
+                showIf(data.er12MndVarsel) {
                     paragraph {
                         text(
                             bokmal { +
@@ -132,7 +137,7 @@ object OmstillingsstoenadVarselAktivitetspliktRedigerbartUtfall :
                     )
                 }
 
-                showIf(er12MndVarsel) {
+                showIf(data.er12MndVarsel) {
                     paragraph {
                         text(
                             bokmal { +

@@ -17,12 +17,17 @@ import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.GRUNNBELOEP_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_ANDRE_STOENADER_URL
 import no.nav.pensjon.etterlatte.maler.fraser.common.Constants.OMS_URL
 import no.nav.pensjon.etterlatte.maler.fraser.omstillingsstoenad.OmstillingsstoenadFellesFraser
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.avdoedNavn
-import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.borIutland
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDTOSelectors.data
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDataSelectors.avdoedNavn
+import no.nav.pensjon.etterlatte.maler.omstillingsstoenad.informasjon.OmstillingstoenadInformasjonDoedsfallDataSelectors.borIutland
 
-data class OmstillingstoenadInformasjonDoedsfallDTO(
+data class OmstillingstoenadInformasjonDoedsfallData(
     val avdoedNavn: String,
     val borIutland: Boolean,
+)
+
+data class OmstillingstoenadInformasjonDoedsfallDTO(
+    override val data: OmstillingstoenadInformasjonDoedsfallData,
 ) : RedigerbartUtfallBrevDTO
 
 @TemplateModelHelpers
@@ -50,9 +55,9 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
             outline {
                 paragraph {
                     text(
-                        bokmal { +"Vi skriver til deg fordi vi har fått melding om at " + avdoedNavn + " er død, og du kan ha rett til omstillingsstønad." },
-                        nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + avdoedNavn + " er død, og du kan ha rett til omstillingsstønad. " },
-                        english { +"We are writing to you because we have received notice that " + avdoedNavn + " has died, and you may have rights as a surviving spouse." },
+                        bokmal { +"Vi skriver til deg fordi vi har fått melding om at " + data.avdoedNavn + " er død, og du kan ha rett til omstillingsstønad." },
+                        nynorsk { +"Vi skriv til deg fordi vi har fått melding om at " + data.avdoedNavn + " er død, og du kan ha rett til omstillingsstønad. " },
+                        english { +"We are writing to you because we have received notice that " + data.avdoedNavn + " has died, and you may have rights as a surviving spouse." },
                     )
                 }
 
@@ -175,7 +180,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         english { +"How do you apply" },
                     )
                 }
-                showIf(borIutland.not()) {
+                showIf(data.borIutland.not()) {
                     paragraph {
                         text(
                             bokmal { +"Du finner informasjon og søknad på $OMS_URL." },
@@ -184,7 +189,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                         )
                     }
                 }
-                showIf(borIutland) {
+                showIf(data.borIutland) {
                     paragraph {
                         text(
                             bokmal { +"Vi har informasjon om at du bor i utlandet. Bor du i et land Norge har trygdeavtale med, må du kontakte trygdemyndigheten i bostedslandet ditt før du søker omstillingsstønad. Du finner informasjon om hvilke land Norge har avtale med på ${Constants.Utland.OMS}." },
@@ -216,7 +221,7 @@ object OmstillingsstoenadInformasjonDoedsfall : EtterlatteTemplate<Omstillingsto
                     )
                 }
 
-                showIf(borIutland.not()) {
+                showIf(data.borIutland.not()) {
                     title2 {
                         text(
                             bokmal { +"Andre stønader til gjenlevende" },
