@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler
 
 import no.nav.brev.brevbaker.AllTemplates
+import no.nav.pensjon.brev.alder.maler.brev.soknadkvittering.ApSoknadKvitteringAuto
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAFPInformasjonOekningToleransebeloep
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocAlderspensjonFraFolketrygden2
@@ -78,6 +79,7 @@ object AlderTemplates : AllTemplates {
             AdhocTidligereUfoereGradertAP,
             AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
             AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+            ApSoknadKvitteringAuto,
             AvslagGradsendringFoerNormertPensjonsalder2016Auto,
             AvslagGradsendringFoerNormertPensjonsalderAuto,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,

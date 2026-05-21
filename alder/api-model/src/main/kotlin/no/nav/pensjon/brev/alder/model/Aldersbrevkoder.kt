@@ -7,6 +7,7 @@ import no.nav.pensjon.brevbaker.api.model.LanguageCode
 
 object Aldersbrevkoder {
     enum class AutoBrev : Automatisk {
+        AP_SOKNAD_KVITTERING,
         GJP_VARSEL_FORLENGELSE_60_61,
         GJP_VARSEL_FORLENGELSE_60_61_UTLAND,
         GJP_VARSEL_FORLENGELSE_62_70,
