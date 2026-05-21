@@ -11,6 +11,7 @@ import {
 } from "~/Brevredigering/LetterEditor/model/utils";
 import { type BrevResponse } from "~/types/brev";
 import {
+  type AnyBlock,
   type Cell,
   type ColumnSpec,
   type Content,
@@ -593,6 +594,96 @@ export function insertEmptyParagraphAfterBlock(draft: Draft<LetterEditorState>, 
     contentIndex: 0,
     cursorPosition: 0,
   };
+}
+
+/**
+ * Breaks out of an empty list item by removing it and splitting the list into separate blocks
+ * with a new blank line block inserted at the empty item's position.
+ *
+ * This ensures the "list as sole block content" principle: each resulting list
+ * ends up as the only content in its own paragraph block.
+ */
+export function breakOutEmptyItem(
+  draft: Draft<LetterEditorState>,
+  literalIndex: ItemContentIndex,
+  itemList: Draft<ItemList>,
+  block: Draft<AnyBlock>,
+) {
+  const blocks = draft.redigertBrev.blocks;
+  const blockIndex = literalIndex.blockIndex;
+  const itemIndex = literalIndex.itemIndex;
+  const contentIndex = literalIndex.contentIndex;
+
+  // Content before and after the list in the same block
+  const contentBeforeList = block.content.slice(0, contentIndex);
+  const contentAfterList = block.content.slice(contentIndex + 1);
+
+  const itemsBefore = itemList.items.slice(0, itemIndex);
+  const itemsAfter = itemList.items.slice(itemIndex + 1);
+
+  // Build the new blocks to replace the current block
+  const newBlocks: ParagraphBlock[] = [];
+
+  // If there was content before the list in the block, keep it in its own block
+  if (contentBeforeList.length > 0) {
+    newBlocks.push(newParagraph({ content: contentBeforeList as Content[] }));
+  }
+
+  // Block for items before the empty item
+  if (itemsBefore.length > 0) {
+    newBlocks.push(
+      newParagraph({
+        content: [
+          newItemList({
+            listType: itemList.listType,
+            editedListType: itemList.editedListType,
+            items: itemsBefore as Item[],
+            deletedItems: [...itemList.deletedItems],
+          }),
+        ],
+      }),
+    );
+  }
+
+  // The blank line block (always inserted)
+  const blankLineBlockIndex = newBlocks.length;
+  newBlocks.push(newParagraph({ content: [newLiteral()] }));
+
+  // Block for items after the empty item
+  if (itemsAfter.length > 0) {
+    newBlocks.push(
+      newParagraph({
+        content: [
+          newItemList({
+            listType: itemList.listType,
+            editedListType: itemList.editedListType,
+            items: itemsAfter as Item[],
+          }),
+        ],
+      }),
+    );
+  }
+
+  // If there was content after the list in the block, keep it in its own block
+  if (contentAfterList.length > 0) {
+    newBlocks.push(newParagraph({ content: contentAfterList as Content[] }));
+  }
+
+  // Replace the current block with the new blocks
+  removeElements(blockIndex, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+
+  // Insert all new blocks at the position. We use splice directly here because addElements
+  // attempts literal merging at boundaries which is inappropriate for block-level insertion.
+  blocks.splice(blockIndex, 0, ...newBlocks);
+
+  // Focus the blank line
+  draft.focus = {
+    blockIndex: blockIndex + blankLineBlockIndex,
+    contentIndex: 0,
+    cursorPosition: 0,
+  };
+
+  draft.saveStatus = "DIRTY";
 }
 
 export function newCell(text?: TextContent[]): Cell {

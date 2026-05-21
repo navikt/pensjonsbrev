@@ -10,10 +10,11 @@ import {
 } from "~/types/brevbakerTypes";
 
 import { type Action, withPatches } from "../lib/actions";
-import { type LetterEditorState, type LiteralIndex } from "../model/state";
+import { type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
 import { isEmptyBlock, isEmptyContent, isEmptyItem, isItemList, isLiteral, isVariable } from "../model/utils";
 import {
   addElements,
+  breakOutEmptyItem,
   isAtStartOfBlock,
   newItem,
   newLiteral,
@@ -98,22 +99,9 @@ function splitItemList(
     const previousItem = content.items[literalIndex.itemIndex - 1];
     const nextItem = content.items[literalIndex.itemIndex + 1];
 
-    const isAtLastItem = literalIndex.itemIndex === content.items.length - 1;
-    if (isAtLastItem && isEmptyItem(thisItem)) {
-      // We're at the last item, and it's empty, so the split should result in converting it to content in the same block after the ItemList (or move focus to ít).
-      removeElements(literalIndex.itemIndex, 1, {
-        content: content.items,
-        deletedContent: content.deletedItems,
-        id: content.id,
-      });
-      if (literalIndex.contentIndex >= block.content.length - 1) {
-        addElements([newLiteral()], block.content.length, block.content, block.deletedContent);
-      }
-      draft.focus = {
-        blockIndex: literalIndex.blockIndex,
-        contentIndex: literalIndex.contentIndex + 1,
-        cursorPosition: 0,
-      };
+    if (isEmptyItem(thisItem)) {
+      // Empty item: break out of list into separate blocks with a blank line
+      breakOutEmptyItem(draft, literalIndex as ItemContentIndex, content, block);
     } else {
       // Validate that splitting should be performed
       const itemContent = thisItem.content[literalIndex.itemContentIndex];
@@ -125,13 +113,11 @@ function splitItemList(
 
       if (
         !isLiteral(itemContent) ||
-        isEmptyItem(thisItem) ||
         (nextItemIsEmpty && splittingAtEndOfItem) ||
         (previousItemIsEmpty && splittingAtBeginningOfItem)
       ) {
         // Will not split due to either:
         // - Cannot split non-literal
-        // - Item splitting from is empty (prevent multiple consecutive empty items)
         // - Next item is empty (prevent multiple consecutive empty items)
         // - Previous item is empty (prevent multiple consecutive empty items)
         return;
@@ -162,8 +148,8 @@ function splitItemList(
         itemIndex: literalIndex.itemIndex + 1,
         itemContentIndex: 0,
       };
+      draft.saveStatus = "DIRTY";
     }
-    draft.saveStatus = "DIRTY";
   } else {
     console.warn("Can't split an ItemList without itemIndex");
   }

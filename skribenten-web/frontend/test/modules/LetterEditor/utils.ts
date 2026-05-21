@@ -200,6 +200,7 @@ export function itemList(args: {
   id?: Nullable<number>;
   parentId?: Nullable<number>;
   listType?: ListType;
+  editedListType?: ListType | null;
   items: Item[];
   deletedItems?: number[];
 }): ItemList {
@@ -209,7 +210,7 @@ export function itemList(args: {
     parentId: args.parentId ?? null,
     type: ITEM_LIST,
     listType: args.listType ?? ListType.PUNKTLISTE,
-    editedListType: null,
+    editedListType: args.editedListType ?? null,
     items: withParent(args.items, id),
     deletedItems: args.deletedItems ?? [],
   };

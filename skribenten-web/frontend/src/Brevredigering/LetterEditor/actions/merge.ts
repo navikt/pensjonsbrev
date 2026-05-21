@@ -2,6 +2,7 @@ import { type Draft, type WritableDraft } from "immer";
 
 import {
   addElements,
+  breakOutEmptyItem,
   getMergeIds,
   isValidIndex,
   mergeLiteralsIfPossible,
@@ -26,7 +27,15 @@ import {
 
 import { type Action, withPatches } from "../lib/actions";
 import { type Focus, type ItemContentIndex, type LetterEditorState, type LiteralIndex } from "../model/state";
-import { isEmptyBlock, isEmptyContent, isEmptyItem, isLiteral, isTextContent } from "../model/utils";
+import {
+  effectiveListType,
+  isEmptyBlock,
+  isEmptyContent,
+  isEmptyItem,
+  isItemList,
+  isLiteral,
+  isTextContent,
+} from "../model/utils";
 
 export enum MergeTarget {
   PREVIOUS = "PREVIOUS",
@@ -149,37 +158,155 @@ function mergeBlocks(draft: Draft<LetterEditorState>, literalIndex: LiteralIndex
     if (isEmptyBlock(first)) {
       removeElements(firstId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
       draft.focus = { contentIndex: 0, cursorPosition: 0, blockIndex: firstId };
+      // After removing the empty block, try to merge adjacent list blocks
+      mergeAdjacentListBlocks(draft, firstId - 1);
     } else if (isEmptyBlock(second)) {
       removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
       if (first.content.at(-1)?.type === VARIABLE) {
         first.content.push(newLiteral());
       }
       draft.focus = focusEndOfBlock(firstId, first);
+      // After removing the empty block, try to merge adjacent list blocks
+      mergeAdjacentListBlocks(draft, firstId);
     } else {
       const lastContentOfFirst = first.content.at(-1);
 
-      const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === LITERAL ? 1 : 0);
-      const nextStartOffset = lastContentOfFirst?.type === LITERAL ? text(lastContentOfFirst).length : 0;
-      draft.focus = {
-        contentIndex: nextContentIndexFocus,
-        cursorPosition: nextStartOffset,
-        blockIndex: firstId,
-      };
+      if (isItemList(lastContentOfFirst)) {
+        // Previous block ends with a list: merge text into last item, then merge adjacent lists
+        mergeBlockIntoList(draft, firstId, secondId, lastContentOfFirst);
+      } else {
+        const nextContentIndexFocus = first.content.length - (lastContentOfFirst?.type === LITERAL ? 1 : 0);
+        const nextStartOffset = lastContentOfFirst?.type === LITERAL ? text(lastContentOfFirst).length : 0;
+        draft.focus = {
+          contentIndex: nextContentIndexFocus,
+          cursorPosition: nextStartOffset,
+          blockIndex: firstId,
+        };
 
-      addElements(second.content, first.content.length, first.content, first.deletedContent);
-      removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+        addElements(second.content, first.content.length, first.content, first.deletedContent);
+        removeElements(secondId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+      }
     }
+  }
+}
+
+/**
+ * Merges the content of the second block into the last item of the list that ends the first block.
+ * Then tries to merge adjacent same-type lists (without overriding focus).
+ */
+function mergeBlockIntoList(
+  draft: Draft<LetterEditorState>,
+  firstBlockId: number,
+  secondBlockId: number,
+  targetList: Draft<ItemList>,
+) {
+  const blocks = draft.redigertBrev.blocks;
+  const secondBlock = blocks[secondBlockId];
+  const firstBlock = blocks[firstBlockId];
+  const listContentIndex = firstBlock.content.findIndex((c) => c === targetList);
+
+  const lastItemIndex = targetList.items.length - 1;
+  const lastItem = targetList.items[lastItemIndex];
+  const lastContentOfLastItem = lastItem.content.at(-1);
+  const cursorPosition = isLiteral(lastContentOfLastItem) ? text(lastContentOfLastItem).length : 0;
+  const cursorItemContentIndex = lastItem.content.length - 1;
+
+  // Extract leading text content from the second block to merge into the last item
+  const firstNonTextIndex = secondBlock.content.findIndex((c) => !isTextContent(c));
+  const textEndIndex = firstNonTextIndex === -1 ? secondBlock.content.length : firstNonTextIndex;
+
+  // Add text content to the last item of the list (before removing the block, to avoid Immer proxy revocation)
+  if (textEndIndex > 0) {
+    const textToMerge = removeElements(0, textEndIndex, {
+      content: secondBlock.content,
+      deletedContent: secondBlock.deletedContent,
+      id: secondBlock.id,
+    }).filter(isTextContent);
+    if (textToMerge.length > 0) {
+      addElements(textToMerge, lastItem.content.length, lastItem.content, lastItem.deletedContent);
+    }
+  }
+
+  // Remaining content stays in secondBlock. If empty, remove the block entirely.
+  if (secondBlock.content.length === 0) {
+    removeElements(secondBlockId, 1, { content: blocks, deletedContent: draft.redigertBrev.deletedBlocks, id: null });
+  } else {
+    // Leave the remaining non-text content as its own block (already in place)
+  }
+
+  // Set focus at the merge point (end of original last item content, before merged text)
+  draft.focus = {
+    blockIndex: firstBlockId,
+    contentIndex: listContentIndex,
+    cursorPosition: cursorPosition,
+    itemIndex: lastItemIndex,
+    itemContentIndex: cursorItemContentIndex,
+  };
+
+  // Try to merge adjacent same-type lists without overwriting focus
+  mergeAdjacentListBlocks(draft, firstBlockId, false);
+}
+
+/**
+ * After removing a block, check if the blocks at prevBlockIndex and prevBlockIndex+1
+ * are both single-list blocks of the same type, and if so merge them into one.
+ */
+function mergeAdjacentListBlocks(draft: Draft<LetterEditorState>, prevBlockIndex: number, setFocus: boolean = true) {
+  const blocks = draft.redigertBrev.blocks;
+  const prevBlock = blocks[prevBlockIndex];
+  const nextBlock = blocks[prevBlockIndex + 1];
+
+  if (!prevBlock || !nextBlock) return;
+
+  // Both blocks must contain exactly one item: an ItemList
+  if (prevBlock.content.length !== 1 || nextBlock.content.length !== 1) return;
+  const prevContent = prevBlock.content[0];
+  const nextContent = nextBlock.content[0];
+  if (!isItemList(prevContent) || !isItemList(nextContent)) return;
+
+  // Lists must have the same effective type
+  if (effectiveListType(prevContent) !== effectiveListType(nextContent)) return;
+
+  // Merge: add all items from nextContent into prevContent
+  const lastItemIndexOfFirst = prevContent.items.length - 1;
+  addElements(nextContent.items, prevContent.items.length, prevContent.items, prevContent.deletedItems);
+
+  // Remove the next block
+  removeElements(prevBlockIndex + 1, 1, {
+    content: blocks,
+    deletedContent: draft.redigertBrev.deletedBlocks,
+    id: null,
+  });
+
+  if (setFocus) {
+    // Focus at end of the last item of the FIRST list (the merge boundary)
+    const lastItemOfFirst = prevContent.items[lastItemIndexOfFirst];
+    const lastContentOfItem = lastItemOfFirst?.content.at(-1);
+    draft.focus = {
+      blockIndex: prevBlockIndex,
+      contentIndex: 0,
+      cursorPosition: lastContentOfItem ? text(lastContentOfItem).length : 0,
+      itemIndex: lastItemIndexOfFirst,
+      itemContentIndex: (lastItemOfFirst?.content.length ?? 1) - 1,
+    };
   }
 }
 
 function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemContentIndex, target: MergeTarget) {
   const blocks = draft.redigertBrev.blocks;
+  const block = blocks[literalIndex.blockIndex];
 
-  const itemList = blocks[literalIndex.blockIndex].content[literalIndex.contentIndex];
+  const itemList = block.content[literalIndex.contentIndex];
   if (itemList.type === ITEM_LIST) {
     const [firstId, secondId] = getMergeIds(literalIndex.itemIndex, target);
     const first = itemList.items[firstId];
     const second = itemList.items[secondId];
+
+    // Backspace on an empty item: break out of list into separate blocks
+    if (target === MergeTarget.PREVIOUS && second != null && isEmptyItem(second)) {
+      breakOutEmptyItem(draft, literalIndex, itemList, block);
+      return;
+    }
 
     if (first != null && second != null) {
       if (isEmptyItem(first)) {
@@ -218,29 +345,6 @@ function mergeFromItemList(draft: Draft<LetterEditorState>, literalIndex: ItemCo
           deletedContent: itemList.deletedItems,
           id: itemList.id,
         });
-      }
-    } else if (target === MergeTarget.PREVIOUS && isEmptyItem(second) && itemList.items.length === 1) {
-      // TODO: burde kanskje generaliseres slik at det fungerer som toggling av et hvilket som helst punkt
-      // We have a list with one empty element. That means that we want to break out of the list.
-      const block = blocks[literalIndex.blockIndex];
-      const contentBeforeItemList = block.content[literalIndex.contentIndex - 1];
-
-      removeElements(literalIndex.contentIndex, 1, block);
-
-      // TODO: Denne burde nok være en switch, slik at vi får håndtert andre typer content.
-      if (contentBeforeItemList?.type === VARIABLE || contentBeforeItemList === undefined) {
-        addElements([newLiteral()], literalIndex.contentIndex, block.content, block.deletedContent);
-        draft.focus = {
-          blockIndex: literalIndex.blockIndex,
-          contentIndex: literalIndex.contentIndex,
-          cursorPosition: 0,
-        };
-      } else if (contentBeforeItemList?.type === LITERAL) {
-        draft.focus = {
-          blockIndex: literalIndex.blockIndex,
-          contentIndex: Math.max(0, literalIndex.contentIndex - 1),
-          cursorPosition: text(contentBeforeItemList).length,
-        };
       }
     }
   } else {
