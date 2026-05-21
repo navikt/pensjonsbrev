@@ -6,25 +6,54 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Percent
 import no.nav.pensjon.brevbaker.api.model.DisplayText
+import java.time.LocalDate
 
 data class ApSimuleringDto(
-    @DisplayText("placeholder")
-    val alderspensjonListe: List<Alderspensjon>,
-    @DisplayText("placeholder")
-    val livsvarigOffentligAfpListe: List<LivsvarigOffentligAfp>?,
-    @DisplayText("placeholder")
-    val tidsbegrensetOffentligAfp: TidsbegrensetOffentligAfp?,
-    @DisplayText("placeholder")
-    val privatAfpListe: List<PrivatAfp>?,
-    @DisplayText("placeholder")
-    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
-    @DisplayText("placeholder")
-    val trygdetid: Trygdetid?,
-    @DisplayText("placeholder")
-    val pensjonsgivendeInntektListe: List<AarligBeloep>?,
+    @DisplayText("Simulering")
+    val simulering: Simulering,
     @DisplayText("Simuleringsinformasjon")
-    val simuleringsinformasjon: Simuleringsinformasjon?
-) : SaksbehandlerValgBrevdata
+    val simuleringsinformasjon: Simuleringsinformasjon,
+    @DisplayText("Vilkårsprøvingsresultat")
+    val vilkaarsproevingsresultat: Vilkaarsproevingsresultat?,
+    @DisplayText("Trygdetid")
+    val trygdetid: Trygdetid?,
+    @DisplayText("Pensjonsgivende inntekt")
+    val pensjonsgivendeInntektListe: List<AarligBeloep>?,
+) : SaksbehandlerValgBrevdata, VedleggData
+
+data class Simulering(
+    @DisplayText("Alderspensjon")
+    val alderspensjonListe: List<Alderspensjon>,
+    @DisplayText("Månedlig alderspensjon for knekkpunkter")
+    val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?,
+    @DisplayText("AFP privat")
+    val afpPrivat: AfpPrivatSimulering?,
+    @DisplayText("AFP offentlig livsvarig")
+    val afpOffentligLivsvarig: AfpOffentligLivsvarigSimulering?,
+    @DisplayText("AFP offentlig tidsbegrenset")
+    val afpOffentligTidsbegrenset: AfpOffentligTidsbegrensetSimulering?,
+)
+
+data class AfpPrivatSimulering(
+    @DisplayText("Ved gradert uttak")
+    val vedGradertUttak: PrivatAfp?,
+    @DisplayText("Ved helt uttak")
+    val vedHeltUttak: PrivatAfp,
+)
+
+data class AfpOffentligLivsvarigSimulering(
+    @DisplayText("Ved gradert uttak")
+    val vedGradertUttak: LivsvarigOffentligAfp?,
+    @DisplayText("Ved helt uttak")
+    val vedHeltUttak: LivsvarigOffentligAfp,
+)
+
+data class AfpOffentligTidsbegrensetSimulering(
+    @DisplayText("Ved gradert uttak")
+    val vedGradertUttak: TidsbegrensetOffentligAfp?,
+    @DisplayText("Ved helt uttak")
+    val vedHeltUttak: TidsbegrensetOffentligAfp,
+)
 
 data class Alderspensjon(
     @DisplayText("placeholder")
@@ -41,7 +70,7 @@ data class LivsvarigOffentligAfp(
     @DisplayText("placeholder")
     val aarligBeloep: Kroner,
     @DisplayText("placeholder")
-    val maanedligBeloep: Kroner?
+    val maanedligBeloep: Kroner
 )
 
 data class TidsbegrensetOffentligAfp(
@@ -87,7 +116,7 @@ data class PrivatAfp(
     @DisplayText("placeholder")
     val livsvarig: Kroner,
     @DisplayText("placeholder")
-    val maanedligBeloep: Kroner?
+    val maanedligBeloep: Kroner
 )
 
 data class Vilkaarsproevingsresultat(
@@ -131,13 +160,9 @@ data class Simuleringsinformasjon(
     @DisplayText("Gradert uttaksalder")
     val gradertUttaksalder: Alder?,
     @DisplayText("Helt uttaksalder")
-    val heltUttaksalder: Alder?,
-    @DisplayText("Månedlig alderspensjon for knekkpunkter")
-    val maanedligAlderspensjonForKnekkpunkter: SimuleringV1MaanedligAlderspensjonForKnekkpunkter?,
-    @DisplayText("Privat AFP ved gradert uttak")
-    val privatAfpVedGradertUttak: PrivatAfp?,
-    @DisplayText("Privat AFP ved helt uttak")
-    val privatAfpVedHeltUttak: PrivatAfp?
+    val heltUttaksalder: Alder,
+    val sivilstatus: Sivilstatus,
+    val utenlandsperioder: List<SimuleringUtenlandsperiode>
 ) : VedleggData
 
 data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
@@ -205,3 +230,25 @@ data class SimuleringV1MaanedligAlderspensjon(
     @DisplayText("Grunnbeløp")
     val grunnbeloep: Kroner?
 )
+
+data class SimuleringUtenlandsperiode(
+    val fom: LocalDate,
+    val tom: LocalDate? = null,
+    val landkode: String,
+    val arbeidetUtenlands: Boolean
+)
+
+enum class Sivilstatus(val value: String = "test") {
+    UNKNOWN,
+    UOPPGITT,
+    UGIFT("Ugift"),
+    GIFT,
+    ENKE_ELLER_ENKEMANN,
+    SKILT,
+    SEPARERT,
+    REGISTRERT_PARTNER,
+    SEPARERT_PARTNER,
+    SKILT_PARTNER,
+    GJENLEVENDE_PARTNER,
+    SAMBOER
+}
