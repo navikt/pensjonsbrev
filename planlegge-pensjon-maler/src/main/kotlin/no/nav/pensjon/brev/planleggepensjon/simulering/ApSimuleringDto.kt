@@ -19,6 +19,8 @@ data class ApSimuleringDto(
     val trygdetid: Trygdetid?,
     @DisplayText("Pensjonsgivende inntekt")
     val pensjonsgivendeInntektListe: List<AarligBeloep>?,
+    @DisplayText("Forbehold")
+    val forbehold: ForbeholdInnhold,
 ) : SaksbehandlerValgBrevdata, VedleggData
 
 data class Simulering(
@@ -252,3 +254,22 @@ enum class Sivilstatus(val value: String = "test") {
     GJENLEVENDE_PARTNER,
     SAMBOER
 }
+
+data class ForbeholdInnhold(
+    @DisplayText("Seksjoner")
+    val seksjoner: List<ForbeholdSeksjon>,
+) : VedleggData
+
+data class ForbeholdSeksjon(
+    @DisplayText("Tittel")
+    val tittel: String?,
+    @DisplayText("Avsnitt")
+    val avsnitt: List<ForbeholdAvsnitt>,
+)
+
+data class ForbeholdAvsnitt(
+    @DisplayText("Tekst")
+    val tekst: String,
+    @DisplayText("Punktliste")
+    val punktliste: List<String>?,
+)

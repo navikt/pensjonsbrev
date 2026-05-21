@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.planleggepensjon.Brevkategori
 import no.nav.pensjon.brev.planleggepensjon.FeatureToggles
 import no.nav.pensjon.brev.planleggepensjon.PlanleggePensjonBrevkoder
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringBrevDtoSelectors.saksbehandlerValg
+import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.forbehold
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simulering
 import no.nav.pensjon.brev.planleggepensjon.simulering.ApSimuleringDtoSelectors.simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringSelectors.afpOffentligLivsvarig
@@ -103,7 +104,7 @@ object ApSimuleringBrev : RedigerbarTemplate<ApSimuleringBrevDto> {
             saksbehandlerValg,
         )
 
-        includeAttachment(forbeholdVedlegg)
+        includeAttachment(forbeholdVedlegg, saksbehandlerValg.forbehold)
 
         includeAttachment(
             grunnlagVedlegg,
