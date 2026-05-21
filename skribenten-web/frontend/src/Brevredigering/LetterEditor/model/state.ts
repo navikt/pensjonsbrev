@@ -1,4 +1,4 @@
-import { type BrevInfo } from "~/types/brev";
+import { type BrevInfo, type SaksbehandlerValg } from "~/types/brev";
 import { type Content, type EditedLetter } from "~/types/brevbakerTypes";
 
 import { type History } from "../history";
@@ -25,6 +25,7 @@ export type LetterEditorState = {
   info: BrevInfo;
   redigertBrev: EditedLetter;
   redigertBrevHash: string;
+  saksbehandlerValg: SaksbehandlerValg;
   saveStatus: "DIRTY" | "SAVE_PENDING" | "SAVED";
   focus: Focus;
   history: History;
