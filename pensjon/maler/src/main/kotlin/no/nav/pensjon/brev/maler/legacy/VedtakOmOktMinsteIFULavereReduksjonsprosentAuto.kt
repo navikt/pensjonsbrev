@@ -40,7 +40,7 @@ object VedtakOmOktMinsteIFULavereReduksjonsprosentAuto : AutobrevTemplate<Vedtak
     override val template = createTemplate(
         languages = languages(Language.Bokmal, Language.Nynorsk),
         letterMetadata = LetterMetadata(
-            displayTitle = "Vedtak - økt minste IFU og lavere reduksjonsprosent fom 1. juli 2026",
+            displayTitle = "Vedtak - økt minste IFU og lavere reduksjonsprosent fom 1. januar 2026",
             distribusjonstype = LetterMetadata.Distribusjonstype.VEDTAK,
             brevtype = LetterMetadata.Brevtype.VEDTAKSBREV
         )
