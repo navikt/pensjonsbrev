@@ -221,7 +221,7 @@ object OktMinsteIFUReduksjonsprosent {
                 paragraph {
                     text(
                         bokmal { +"Fram til 1. juli i år har vi brukt din gamle IFU i beregningene av uføretrygd. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år." },
-                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle IFU i berekningane av uføretrygd. Når lovendringa trer i kraft, skal den ha verknad tilbake i tid frå 1. januar i år." },
+                        nynorsk { +"Fram til 1. juli i år har vi brukt din gamle IFU i berekningane av uføretrygd. Når lovendringa trer i kraft, skal regelen ha tilbakeverkande kraft frå 1. januar i år." },
                     )
                 }
                 paragraph {
@@ -273,7 +273,7 @@ object OktMinsteIFUReduksjonsprosent {
                         item {
                             text(
                                 bokmal { +"Reduksjonsprosent har bare betydning for deg som har inntekt over inntektsgrensen ved siden av uføretrygden. " },
-                                nynorsk { +"Reduksjonsprosent har berre tyding for deg som har inntekt over inntektsgrensa ved sida av uføretrygda. " },
+                                nynorsk { +"Reduksjonsprosenten er berre relevant for deg som har inntekt over inntektsgrensa i tillegg til uføretrygda. " },
                             )
                         }
                         item {
@@ -306,7 +306,7 @@ object OktMinsteIFUReduksjonsprosent {
                     paragraph {
                         text(
                             bokmal { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i beregningene av uføretrygden din hvis du har hatt inntekt over inntektsgrensen. Når lovendringen trer i kraft, skal den ha virkning tilbake i tid fra 1. januar i år." },
-                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di dersom du har hatt inntekt over inntektsgrensa. Når lovendringa trer i kraft, skal den ha verknad tilbake i tid frå 1. januar i år." },
+                            nynorsk { +"Fram til 1. juli i år har vi brukt din gamle reduksjonsprosent i berekningane av uføretrygda di dersom du har hatt inntekt over inntektsgrensa. Når lovendringa trer i kraft, skal regelen ha tilbakeverkande kraft frå 1. januar i år." },
                         )
                     }
                     paragraph {
