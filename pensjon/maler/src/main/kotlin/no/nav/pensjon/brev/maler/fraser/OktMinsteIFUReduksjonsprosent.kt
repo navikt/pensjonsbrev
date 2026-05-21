@@ -348,11 +348,11 @@ object OktMinsteIFUReduksjonsprosent {
                     text(
                         bokmal {
                             +"Regelverksendringene fører til at du får en endret utbetaling av uføretrygd. Uføretrygden regnes med som inntekt når vi beregner barnetillegg. " +
-                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Derfor får du en endret utbetaling av barnetillegg. Ny beregning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + " per måned."
                         },
                         nynorsk {
                             +"Regelverksendringane fører til at du får ei endra utbetaling av uføretrygd. Uføretrygda vert rekna med som inntekt når vi reknar ut barnetillegg. " +
-                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + "."
+                                    "Difor får du ei endra utbetaling av barnetillegg. Ny berekning av barnetillegg (før skatt) er " + data.nettoBarnetillegg.ifNull(Kroner(0)).format() + " per månad."
                         },
                     )
                 }
