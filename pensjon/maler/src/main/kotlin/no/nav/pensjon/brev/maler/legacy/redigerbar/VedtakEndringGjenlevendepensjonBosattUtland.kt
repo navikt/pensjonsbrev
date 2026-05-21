@@ -50,6 +50,8 @@ import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensSto
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
@@ -190,7 +192,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 }
             }.orShowIf(saksbehandlerValg.aarsakEndring.equalTo(AarsakEndring.FRITEKST)) {
                 paragraph {
-                    text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") })
+                    text(bokmal { +fritekst("Egen tekst") }, english { +fritekst("Egen tekst") })
                 }
             }
 
@@ -208,46 +210,44 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     )
                 }
                 paragraph {
-                    text(
-                        bokmal {
-                            +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                    pesysData.beregning.grunnbeloep.format() +
-                                    ". Framtidig årlig inntekt benyttet i beregningen er " +
-                                    pesysData.beregning.framtidigAarligInntekt.format() +
-                                    "."
-                        },
-                        english {
-                            +"The national insurance basic amount (G) used in the calculation is " +
-                                    pesysData.beregning.grunnbeloep.format() +
-                                    ". Expected future earned income used in the calculation is " +
-                                    pesysData.beregning.framtidigAarligInntekt.format() +
-                                    "."
-                        },
-                    )
+                    list {
+                        item {
+                            text(
+                                bokmal {
+                                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
+                                            pesysData.beregning.grunnbeloep.format() +
+                                            "."
+                                },
+                                english {
+                                    +"The national insurance basic amount (G) used in the calculation is " +
+                                            pesysData.beregning.grunnbeloep.format() + "."
+                                })
+                        }
+                        item {
+                            text(
+                                bokmal { +"Framtidig årlig inntekt benyttet i beregningen er " + pesysData.beregning.framtidigAarligInntekt.format() + "." },
+                                english { +"Expected future earned income used in the calculation is " + pesysData.beregning.framtidigAarligInntekt.format() + "." }
+                            )
+                        }
+                    }
                 }
                 paragraph {
                     table(
                         header = {
-                            column(columnSpan = 2) {}
-                            column(
-                                columnSpan = 1,
-                                alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT,
-                            ) {
+                            column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
+                            column(columnSpan = 1, alignment = RIGHT) {
                                 text(
-                                    bokmal { +"Pensjon per måned før fradrag for inntekt" },
-                                    english { +"Pension per month before reduction due to income" },
+                                    bokmal { +"Pensjon per måned før fradrag for inntekt (kr)" },
+                                    english { +"Pension per month before deduction for income (NOK)" },
                                 )
                             }
-                            column(
-                                columnSpan = 1,
-                                alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT,
-                            ) {
+                            column(columnSpan = 1, alignment = RIGHT) {
                                 text(
-                                    bokmal { +"Pensjon per måned etter fradrag for inntekt" },
-                                    english { +"Pension per month after reduction due to income" },
+                                    bokmal { +"Pensjon per måned etter fradrag for inntekt (kr)" },
+                                    english { +"Pension per month after deduction for income (NOK)" },
                                 )
                             }
-                        }
+                        },
                     ) {
                         row {
                             cell {
@@ -255,14 +255,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
+                                    english { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -273,14 +273,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.brutto.format(denominator = false) },
+                                        bokmal { +tp.brutto.format(denominator = false) },
+                                        english { +tp.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.netto.format(denominator = false) },
+                                        bokmal { +tp.netto.format(denominator = false) },
+                                        english { +tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -292,14 +292,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.brutto.format(denominator = false) },
+                                        bokmal { +st.brutto.format(denominator = false) },
+                                        english { +st.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.netto.format(denominator = false) },
+                                        bokmal { +st.netto.format(denominator = false) },
+                                        english { +st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -314,14 +314,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.brutto.format(denominator = false) },
+                                        bokmal { +fu.brutto.format(denominator = false) },
+                                        english { +fu.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.netto.format(denominator = false) },
+                                        bokmal { +fu.netto.format(denominator = false) },
+                                        english { +fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -333,14 +333,14 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.brutto.format(denominator = false) },
+                                        bokmal { +ft.brutto.format(denominator = false) },
+                                        english { +ft.brutto.format(denominator = false) },
                                     )
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.netto.format(denominator = false) },
+                                        bokmal { +ft.netto.format(denominator = false) },
+                                        english { +ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -349,19 +349,19 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             cell {
                                 text(
                                     bokmal { +"Sum pensjon før skatt" },
-                                    english { +"Total pension before tax" },
+                                    english { +"Total pension before tax" }, BOLD
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.brutto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) },
+                                    english { +pesysData.beregning.brutto.format(denominator = false) }, BOLD
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.netto.format(denominator = false) }, BOLD
                                 )
                             }
                         }
@@ -383,24 +383,26 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     )
                 }
                 paragraph {
-                    text(
-                        bokmal {
-                            +"Din månedlige gjenlevendepensjon fra " + pesysData.beregning.virkDatoFom.format() +
-                                    ". Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                    pesysData.beregning.grunnbeloep.format() +
-                                    ". Framtidig årlig inntekt benyttet i beregningen er " +
-                                    pesysData.beregning.framtidigAarligInntekt.format() +
-                                    "."
-                        },
-                        english {
-                            +"Your monthly survivor's pension from " + pesysData.beregning.virkDatoFom.format() +
-                                    ". The national insurance basic amount (G) used in the calculation is " +
-                                    pesysData.beregning.grunnbeloep.format() +
-                                    ". Expected future earned income used in the calculation is " +
-                                    pesysData.beregning.framtidigAarligInntekt.format() +
-                                    "."
-                        },
-                    )
+                    list {
+                        item {
+                            text(
+                                bokmal {
+                                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
+                                            pesysData.beregning.grunnbeloep.format() +
+                                            "."
+                                },
+                                english {
+                                    +"The national insurance basic amount (G) used in the calculation is " +
+                                            pesysData.beregning.grunnbeloep.format() + "."
+                                })
+                        }
+                        item {
+                            text(
+                                bokmal { +"Framtidig årlig inntekt benyttet i beregningen er " + pesysData.beregning.framtidigAarligInntekt.format() + "." },
+                                english { +"Expected future earned income used in the calculation is " + pesysData.beregning.framtidigAarligInntekt.format() + "." }
+                            )
+                        }
+                    }
                 }
                 paragraph {
                     table(
@@ -408,11 +410,11 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             column(columnSpan = 2) {}
                             column(
                                 columnSpan = 1,
-                                alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT,
+                                alignment = RIGHT,
                             ) {
                                 text(
-                                    bokmal { +"Pensjon per måned" },
-                                    english { +"Pension per month" },
+                                    bokmal { +"Pensjon per måned (kr)" },
+                                    english { +"Pension per month (NOK)" },
                                 )
                             }
                         }
@@ -423,8 +425,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -435,8 +437,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.netto.format(denominator = false) },
+                                        bokmal { +tp.netto.format(denominator = false) },
+                                        english { +tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -448,8 +450,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.netto.format(denominator = false) },
+                                        bokmal { +st.netto.format(denominator = false) },
+                                        english { +st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -464,8 +466,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.netto.format(denominator = false) },
+                                        bokmal { +fu.netto.format(denominator = false) },
+                                        english { +fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -477,8 +479,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.netto.format(denominator = false) },
+                                        bokmal { +ft.netto.format(denominator = false) },
+                                        english { +ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -487,13 +489,13 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             cell {
                                 text(
                                     bokmal { +"Sum pensjon før skatt" },
-                                    english { +"Total pension before tax" },
+                                    english { +"Total pension before tax" }, BOLD
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.netto.format(denominator = false) }, BOLD
                                 )
                             }
                         }

@@ -98,6 +98,7 @@ import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.ITALIC
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.and
@@ -110,6 +111,7 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
+import java.time.Year
 
 /**
  * Vedlegg "Opplysninger om beregningen" som henges på vedtak om gjenlevendepensjon (utland).
@@ -130,68 +132,13 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
         includeSakspart = false,
     ) {
         // ---- Innledning ----
-        paragraph {
+        title2 {
             text(
                 bokmal { +"Opplysninger som ligger til grunn for beregningen fra " + pesysData.virkDatoFom.format() },
                 english { +"Information that provides the basis for the calculation starting " + pesysData.virkDatoFom.format() },
             )
         }
-
         // ---- Opplysninger om deg ----
-        title2 {
-            text(
-                bokmal { +"Opplysninger om deg" },
-                english { +"Information about you" },
-            )
-        }
-        showIf(pesysData.bruker.brukerFlyktning) {
-            paragraph {
-                text(
-                    bokmal { +"Du er registrert med flyktningstatus: Ja" },
-                    english { +"You are registered as having refugee status: Yes" },
-                )
-            }
-        }
-        paragraph {
-            text(
-                bokmal { +"Forventet inntekt: " + pesysData.bruker.forventetInntekt.format() },
-                english { +"Future income: NOK" + pesysData.bruker.forventetInntekt.format() },
-            )
-        }
-        showIf(pesysData.bruker.samboer3_2) {
-            paragraph {
-                text(
-                    bokmal {
-                        +"Samboer mottar pensjon fra folketrygden eller AFP som det godskrives pensjonspoeng for: " +
-                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Ja", "Nei")
-                    },
-                    english {
-                        +"Cohabiter is receiving a pension from the National Insurance Scheme or AFP for which he/she is being credited with pension points: " +
-                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Yes", "No")
-                    },
-                )
-            }
-            paragraph {
-                text(
-                    bokmal {
-                        +"Samboer har inntekt over 2 G: " +
-                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Ja", "Nei")
-                    },
-                    english {
-                        +"Cohabiter has an income of more than 2 G: " +
-                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Yes", "No")
-                    },
-                )
-            }
-        }
-
-        // ---- Opplysninger om avdøde ----
-        title2 {
-            text(
-                bokmal { +"Opplysninger om avdøde" },
-                english { +"Information about the deceased" },
-            )
-        }
         paragraph {
             table(
                 header = {
@@ -199,6 +146,78 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     column(columnSpan = 1, alignment = LEFT) {}
                 },
             ) {
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Opplysninger om deg" },
+                            english { +"Information about you" }, ITALIC
+                        )
+                    }
+                    cell { }
+                }
+                showIf(pesysData.bruker.brukerFlyktning) {
+                    row {
+                        cell {
+                            text(
+                                bokmal { +"Du er registrert med flyktningstatus: Ja" },
+                                english { +"You are registered as having refugee status: Yes" },
+                            )
+                        }
+                        cell { }
+                    }
+                }
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Forventet inntekt: " + pesysData.bruker.forventetInntekt.format() },
+                            english { +"Future income: NOK" + pesysData.bruker.forventetInntekt.format() },
+                        )
+                    }
+                    cell { }
+                }
+                showIf(pesysData.bruker.samboer3_2) {
+                    row {
+                        cell {
+                            text(
+                                bokmal {
+                                    +"Samboer mottar pensjon fra folketrygden eller AFP som det godskrives pensjonspoeng for: " +
+                                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Ja", "Nei")
+                                },
+                                english {
+                                    +"Cohabiter is receiving a pension from the National Insurance Scheme or AFP for which he/she is being credited with pension points: " +
+                                            ifElse(pesysData.bruker.ektefelleMottarPensjon, "Yes", "No")
+                                },
+                            )
+                        }
+                        cell { }
+                    }
+                    row {
+                        cell {
+                            text(
+                                bokmal {
+                                    +"Samboer har inntekt over 2 G: " +
+                                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Ja", "Nei")
+                                },
+                                english {
+                                    +"Cohabiter has an income of more than 2 G: " +
+                                            ifElse(pesysData.bruker.ektefelleInntektOver2g, "Yes", "No")
+                                },
+                            )
+                        }
+                        cell { }
+                    }
+                }
+
+                // ---- Opplysninger om avdøde ----
+                row {
+                    cell {
+                        text(
+                            bokmal { +"Opplysninger om avdøde" },
+                            english { +"Information about the deceased" }, ITALIC
+                        )
+                    }
+                    cell { }
+                }
                 row {
                     cell {
                         text(
@@ -279,11 +298,11 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
             text(
                 bokmal {
                     +"Trygdetid er en faktor som benyttes til å beregne pensjon. Ved beregningen får man godskrevet trygdetid i de årene man har bodd og/eller arbeidet i Norge fra fylte 16 år og frem til og med det året vedkommende fylte 66 år." +
-                        " År med pensjonspoeng regnes som et helt års trygdetid. Ved beregning av gjenlevendepensjon regnes framtidig trygdetid fra dødsfallet eller avdødes uføretidspunkt fram til det året avdøde ville fylt 66 år."
+                            " År med pensjonspoeng regnes som et helt års trygdetid. Ved beregning av gjenlevendepensjon regnes framtidig trygdetid fra dødsfallet eller avdødes uføretidspunkt fram til det året avdøde ville fylt 66 år."
                 },
                 english {
                     +"The period of national insurance cover is one of the factors used to calculate your pension. In the pension calculation you are credited with periods of national insurance coverage for the years during which you have lived and/or worked in Norway from the age of 16 and up to and including the year you turn 66." +
-                        " Years of earned pension points are considered full years of national insurance coverage. When survivor's pension is calculated, a future period of national insurance coverage from the time of death or from the time from which the deceased was disabled and until the year the deceased would have turned 66 is included."
+                            " Years of earned pension points are considered full years of national insurance coverage. When survivor's pension is calculated, a future period of national insurance coverage from the time of death or from the time from which the deceased was disabled and until the year the deceased would have turned 66 is included."
                 },
             )
         }
@@ -292,11 +311,11 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                 text(
                     bokmal {
                         +"Avdødes framtidige trygdetid er redusert etter artikkel 10 i nordisk konvensjon om trygd. Det innebærer at den framtidige trygdetiden er fordelt forholdsmessig mellom Norge og øvrige nordiske land hvor avdøde har fått beregnet pensjon med framtidig trygdetid." +
-                            " Den framtidige trygdetiden er beregnet etter forholdet mellom norsk faktisk trygdetid og samlet faktisk trygdetid i Norge og de øvrige aktuelle land."
+                                " Den framtidige trygdetiden er beregnet etter forholdet mellom norsk faktisk trygdetid og samlet faktisk trygdetid i Norge og de øvrige aktuelle land."
                     },
                     english {
                         +"The deceased's future period of national insurance cover has been reduced in accordance with section 10 of the Nordic Convention on Social Security. This means that the future period of national insurance cover has been proportionately distributed between Norway and the other Nordic countries in which the deceased has had a pension that was calculated to include a future period of national insurance cover." +
-                            " The future period of national insurance cover is calculated in accordance with the ratio of the actual period of national insurance coverage in Norway and the total period of national insurance cover in Norway and the other relevant countries."
+                                " The future period of national insurance cover is calculated in accordance with the ratio of the actual period of national insurance coverage in Norway and the total period of national insurance cover in Norway and the other relevant countries."
                     },
                 )
             }
@@ -370,18 +389,18 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
         // Bilateral perioder
         showIf(
             pesysData.beregning.beregningsmetode.notEqualTo(Beregningsmetode.EOS)
-                and pesysData.beregning.beregningsmetode.notEqualTo(Beregningsmetode.NORDISK)
-                and pesysData.beregning.beregningsmetode.notEqualTo(Beregningsmetode.FOLKETRYGD),
+                    and pesysData.beregning.beregningsmetode.notEqualTo(Beregningsmetode.NORDISK)
+                    and pesysData.beregning.beregningsmetode.notEqualTo(Beregningsmetode.FOLKETRYGD),
         ) {
             paragraph {
                 text(
                     bokmal {
                         +"Avdødes trygdetid i " + pesysData.avdoed.avtaleland +
-                            " er fastsatt på grunnlag av følgende perioder:"
+                                " er fastsatt på grunnlag av følgende perioder:"
                     },
                     english {
                         +"The deceased's period of national insurance cover in " + pesysData.avdoed.avtaleland +
-                            " is based on the following periods:"
+                                " is based on the following periods:"
                     },
                 )
             }
@@ -416,13 +435,13 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                 text(
                     bokmal {
                         +"Avdødes trygdetid i øvrige land som anvender artikkel 10 i nordisk konvensjon om trygd ved beregning av grunnpensjon, er fastsatt til " +
-                            pesysData.avdoed.ttNordiskAar.format() + " år og " +
-                            pesysData.avdoed.ttNordiskMnd.format() + " måneder."
+                                pesysData.avdoed.ttNordiskAar.format() + " år og " +
+                                pesysData.avdoed.ttNordiskMnd.format() + " måneder."
                     },
                     english {
                         +"The deceased's period of national insurance cover in other countries that use section 10 of the Nordic Convention on Social Security has been determined to be " +
-                            pesysData.avdoed.ttNordiskAar.format() + " years and " +
-                            pesysData.avdoed.ttNordiskMnd.format() + " months."
+                                pesysData.avdoed.ttNordiskAar.format() + " years and " +
+                                pesysData.avdoed.ttNordiskMnd.format() + " months."
                     },
                 )
             }
@@ -434,15 +453,15 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                 text(
                     bokmal {
                         +"Pensjonspoengene til avdøde. Nedenfor følger oversikt over pensjonsgivende inntekt og poengtall for de enkelte år." +
-                            " Pensjonsgivende inntekt og pensjonspoeng blir fastsatt fra 1967 da folketrygden ble innført." +
-                            " Det kreves minst 40 poengår for full opptjening av tilleggspensjon. Nav mottar opplysninger om pensjonsgivende inntekt fra Skattedirektoratet." +
-                            " Hvis du mener at denne inntekten er feil, må du ta kontakt med skattekontoret."
+                                " Pensjonsgivende inntekt og pensjonspoeng blir fastsatt fra 1967 da folketrygden ble innført." +
+                                " Det kreves minst 40 poengår for full opptjening av tilleggspensjon. Nav mottar opplysninger om pensjonsgivende inntekt fra Skattedirektoratet." +
+                                " Hvis du mener at denne inntekten er feil, må du ta kontakt med skattekontoret."
                     },
                     english {
                         +"The deceased's pension points. Below is an overview of pensionable income and pension points per year." +
-                            " Pensionable income and pension points can be accumulated from 1967, when the National Insurance Scheme was introduced." +
-                            " At least 40 pension point earning years are required to earn a full supplementary pension. Nav receives information about pensionable income from the Norwegian Tax Administration." +
-                            " If you believe the income information presented below is wrong, you must contact the Tax Office."
+                                " Pensionable income and pension points can be accumulated from 1967, when the National Insurance Scheme was introduced." +
+                                " At least 40 pension point earning years are required to earn a full supplementary pension. Nav receives information about pensionable income from the Norwegian Tax Administration." +
+                                " If you believe the income information presented below is wrong, you must contact the Tax Office."
                     },
                 )
             }
@@ -450,12 +469,12 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                 text(
                     bokmal {
                         +"Sluttpoengtallet er beregnet som gjennomsnittet av de 20 beste poengårene, eller eventuelt alle poengår hvis det er færre enn 20 år." +
-                            " Det er bare de årene da poengtallene er større enn null som regnes som poengår." +
-                            " For år der egen opptjening er høyere enn omsorgspoengene, vil egen opptjening være gjeldende i beregningen av pensjonen."
+                                " Det er bare de årene da poengtallene er større enn null som regnes som poengår." +
+                                " For år der egen opptjening er høyere enn omsorgspoengene, vil egen opptjening være gjeldende i beregningen av pensjonen."
                     },
                     english {
                         +"The final pension point score is calculated as the average of the 20 best pension point earning years or of all pension point earning years if there are less than 20 years." +
-                            " When calculating the pension, your own pension points will be used in years when they are higher than the points credited for care work."
+                                " When calculating the pension, your own pension points will be used in years when they are higher than the points credited for care work."
                     },
                 )
             }
@@ -484,7 +503,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                 ) {
                     forEach(pesysData.beregning.poengrekke.aar) { ar ->
                         row {
-                            cell { text(bokmal { +ar.aarstall }, english { +ar.aarstall }) }
+                            cell { text(bokmal { +ar.aarstall.format() }, english { +ar.aarstall.format() }) }
                             cell {
                                 text(
                                     bokmal { +ar.pensjonsgivendeInntekt.format(denominator = false) },
@@ -506,14 +525,14 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                             cell {
                                 showIf(
                                     ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_J)
-                                        or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_K)
-                                        or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_L),
+                                            or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_K)
+                                            or ar.poengtallstype.equalTo(Poengtallstype.OMSORGSPOENG_L),
                                 ) {
                                     text(
                                         bokmal { +"Omsorgspoeng godskrevet" },
                                         english { +"Credited acquired rights for care work" },
                                     )
-                                }.orShowIf(ar.poengtallstype.equalTo(Poengtallstype.FRAMTIDIG_POENGPOENG)) {
+                                }.orShowIf(ar.poengtallstype.equalTo(Poengtallstype.FRAMTIDIG_POENG)) {
                                     text(
                                         bokmal { +"Framtidig pensjonspoeng" },
                                         english { +"Future pension point score" },
@@ -531,13 +550,13 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     text(
                         bokmal {
                             +"Avdøde har fått godskrevet " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
-                                " poengår i øvrige EØS-land ved beregning av tilleggspensjon."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
+                                    " poengår i øvrige EØS-land ved beregning av tilleggspensjon."
                         },
                         english {
                             +"The deceased has been credited " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
-                                " pension point earning years for their years of pensionable income in other EEA countries."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
+                                    " pension point earning years for their years of pensionable income in other EEA countries."
                         },
                     )
                 }
@@ -546,13 +565,13 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     text(
                         bokmal {
                             +"Avdøde har fått godskrevet " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() +
-                                " poengår i øvrige land som anvender artikkel 10 i nordisk konvensjon om trygd ved beregning av tilleggspensjon."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() +
+                                    " poengår i øvrige land som anvender artikkel 10 i nordisk konvensjon om trygd ved beregning av tilleggspensjon."
                         },
                         english {
                             +"The deceased has been credited " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() +
-                                " pension point earning years in other countries that use article 10 of the Nordic Convention on Social Security in the determination of supplementary pensions."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.format() +
+                                    " pension point earning years in other countries that use article 10 of the Nordic Convention on Social Security in the determination of supplementary pensions."
                         },
                     )
                 }
@@ -561,15 +580,15 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                     text(
                         bokmal {
                             +"Avdøde har fått godskrevet " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
-                                " poengår i " + pesysData.avdoed.avtaleland +
-                                " ved beregning av tilleggspensjon."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
+                                    " poengår i " + pesysData.avdoed.avtaleland +
+                                    " ved beregning av tilleggspensjon."
                         },
                         english {
                             +"The deceased has been credited " +
-                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
-                                " pension point earning years in " + pesysData.avdoed.avtaleland +
-                                " in the calculation of your supplementary pension."
+                                    pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.format() +
+                                    " pension point earning years in " + pesysData.avdoed.avtaleland +
+                                    " in the calculation of your supplementary pension."
                         },
                     )
                 }
@@ -581,11 +600,11 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
             text(
                 bokmal {
                     +"Hvis du mener at opplysningene vi har lagt til grunn ved beregningen inneholder feil, ber vi deg ta kontakt på telefon " +
-                        Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
+                            Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
                 },
                 english {
                     +"If you think that the information we have taken as the base for the calculation contains errors, please contact us by phone +47 " +
-                        Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
+                            Constants.NAV_KONTAKTSENTER_TELEFON_PENSJON + "."
                 },
             )
         }
@@ -599,7 +618,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
 private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.folketrygdSeksjon() {
     showIf(
         pesysData.beregning.sluttpoengtall.sptUtenOk.notEqualTo(0.0)
-            and pesysData.beregning.sluttpoengtall.optMedOk.equalTo(0.0),
+                and pesysData.beregning.sluttpoengtall.optMedOk.equalTo(0.0),
     ) {
         row {
             cell {
@@ -925,7 +944,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.trygdetid.ttNevnerEos.notEqualTo(0)
-            and pesysData.beregning.trygdetid.ttTellerEos.notEqualTo(0),
+                and pesysData.beregning.trygdetid.ttTellerEos.notEqualTo(0),
     ) {
         row {
             cell {
@@ -938,11 +957,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerEos.format()
+                                pesysData.beregning.trygdetid.ttNevnerEos.format()
                     },
                     english {
                         +pesysData.beregning.trygdetid.ttTellerEos.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerEos.format()
+                                pesysData.beregning.trygdetid.ttNevnerEos.format()
                     },
                 )
             }
@@ -982,7 +1001,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-            and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
+                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1017,7 +1036,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
-            and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
+                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1030,11 +1049,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
                     },
                     english {
                         +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
                     },
                 )
             }
@@ -1042,7 +1061,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.tpInnvilget
-            and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
+                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
     ) {
         row {
             cell {
@@ -1075,12 +1094,12 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
             }
         }
     }
-        showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
-            row {
-                cell {
-                    text(
-                        bokmal { +"Sluttpoengtall uten overkompensasjon (EØS)" },
-                        english { +"Final points without over-compensation (EEA)" },
+    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
+        row {
+            cell {
+                text(
+                    bokmal { +"Sluttpoengtall uten overkompensasjon (EØS)" },
+                    english { +"Final points without over-compensation (EEA)" },
                 )
             }
             cell {
@@ -1096,7 +1115,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
 private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, OpplysningerOmBeregningenGPUtlandDto>.nordiskSeksjon() {
     showIf(
         pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)
-            and pesysData.beregning.sluttpoengtall.optMedOkNordisk.equalTo(0.0),
+                and pesysData.beregning.sluttpoengtall.optMedOkNordisk.equalTo(0.0),
     ) {
         row {
             cell {
@@ -1129,12 +1148,12 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
             }
         }
     }
-        showIf(pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)) {
-            row {
-                cell {
-                    text(
-                        bokmal { +"Sluttpoengtall uten overkompensasjon (nordisk)" },
-                        english { +"Final points without over-compensation (Nordic)" },
+    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkNordisk.notEqualTo(0.0)) {
+        row {
+            cell {
+                text(
+                    bokmal { +"Sluttpoengtall uten overkompensasjon (nordisk)" },
+                    english { +"Final points without over-compensation (Nordic)" },
                 )
             }
             cell {
@@ -1227,7 +1246,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.trygdetid.ttNevnerNordisk.notEqualTo(0)
-            and pesysData.beregning.trygdetid.ttTellerNordisk.notEqualTo(0),
+                and pesysData.beregning.trygdetid.ttTellerNordisk.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1240,11 +1259,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerNordisk.format()
+                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
                     },
                     english {
                         +pesysData.beregning.trygdetid.ttTellerNordisk.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerNordisk.format()
+                                pesysData.beregning.trygdetid.ttNevnerNordisk.format()
                     },
                 )
             }
@@ -1252,7 +1271,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
-            and pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.notEqualTo(0),
+                and pesysData.beregning.trygdetid.faTTNorgePlusFaTTA10Netto.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1319,7 +1338,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-            and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0),
+                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorden.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1332,11 +1351,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
+                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
                     },
                     english {
                         +pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
+                                pesysData.beregning.poengrekke.poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2.format()
                     },
                 )
             }
@@ -1344,7 +1363,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-            and pesysData.beregning.poengrekke.framtidigPoengaarNordenNetto.notEqualTo(0),
+                and pesysData.beregning.poengrekke.framtidigPoengaarNordenNetto.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1414,7 +1433,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.trygdetid.faTTNorge.notEqualTo(0)
-            and pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0),
+                and pesysData.beregning.trygdetid.faTTBilateral.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1465,7 +1484,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.trygdetid.ttNevnerBilateral.notEqualTo(0)
-            and pesysData.beregning.trygdetid.ttTellerBilateral.notEqualTo(0),
+                and pesysData.beregning.trygdetid.ttTellerBilateral.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1478,11 +1497,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerBilateral.format()
+                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
                     },
                     english {
                         +pesysData.beregning.trygdetid.ttTellerBilateral.format() + "/" +
-                            pesysData.beregning.trygdetid.ttNevnerBilateral.format()
+                                pesysData.beregning.trygdetid.ttNevnerBilateral.format()
                     },
                 )
             }
@@ -1522,7 +1541,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeNorge.notEqualTo(0)
-            and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
+                and pesysData.beregning.poengrekke.poengaarUtenOkFaktiskeEos.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1557,7 +1576,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.poengrekke.poengaarTellerEos.notEqualTo(0)
-            and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
+                and pesysData.beregning.poengrekke.poengaarNevnerEos.notEqualTo(0),
     ) {
         row {
             cell {
@@ -1570,11 +1589,11 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
                 text(
                     bokmal {
                         +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
                     },
                     english {
                         +pesysData.beregning.poengrekke.poengaarTellerEos.format() + "/" +
-                            pesysData.beregning.poengrekke.poengaarNevnerEos.format()
+                                pesysData.beregning.poengrekke.poengaarNevnerEos.format()
                     },
                 )
             }
@@ -1582,7 +1601,7 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
     }
     showIf(
         pesysData.beregning.tpInnvilget
-            and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
+                and pesysData.beregning.sluttpoengtall.optMedOkEos.equalTo(0.0),
     ) {
         row {
             cell {
@@ -1615,12 +1634,12 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
             }
         }
     }
-        showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
-            row {
-                cell {
-                    text(
-                        bokmal { +"Sluttpoengtall uten overkompensasjon (avtaleland)" },
-                        english { +"Final points figure without over-compensation (Other country)" },
+    showIf(pesysData.beregning.sluttpoengtall.sptUtenOkEos.notEqualTo(0.0)) {
+        row {
+            cell {
+                text(
+                    bokmal { +"Sluttpoengtall uten overkompensasjon (avtaleland)" },
+                    english { +"Final points figure without over-compensation (Other country)" },
                 )
             }
             cell {

@@ -15,8 +15,10 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagEosPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.YrkesskadeBeregning
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 fun createOpplysningerOmBeregningGPUtlandDto() =
@@ -92,14 +94,14 @@ fun createOpplysningerOmBeregningGPUtlandDto() =
                     poengaarUtenOkFaktiskNorgePlusFaktiskeNorden2 = 20,
                     aar = listOf(
                         PoengAar(
-                            aarstall = "1990",
+                            aarstall = Year(1990),
                             pensjonsgivendeInntekt = Kroner(250_000),
                             grunnbeloepVeiet = Kroner(60_000),
                             pensjonspoeng = 4.5,
                             poengtallstype = Poengtallstype.ANNET,
                         ),
                         PoengAar(
-                            aarstall = "1991",
+                            aarstall = Year(1991),
                             pensjonsgivendeInntekt = Kroner(180_000),
                             grunnbeloepVeiet = Kroner(62_000),
                             pensjonspoeng = 3.0,

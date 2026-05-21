@@ -60,7 +60,7 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Endring i sivilstand")
         SAMBOER_12_AV_18_MAANEDER,
 
-        @DisplayText("Fritekst")
+        @DisplayText("Egen tekst")
         FRITEKST
     }
 
