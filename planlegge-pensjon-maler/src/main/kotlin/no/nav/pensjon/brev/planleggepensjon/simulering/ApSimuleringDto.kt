@@ -164,7 +164,7 @@ data class Simuleringsinformasjon(
     @DisplayText("Helt uttaksalder")
     val heltUttaksalder: Alder,
     val sivilstatus: Sivilstatus,
-    val utenlandsperioder: List<SimuleringUtenlandsperiode>
+    val utenlandsperioder: List<SimuleringUtenlandsperiode>?
 ) : VedleggData
 
 data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
