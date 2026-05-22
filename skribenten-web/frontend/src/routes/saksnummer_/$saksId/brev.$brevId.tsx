@@ -8,6 +8,7 @@ import { z } from "zod";
 
 import { getBrev, getBrevmetadata, getBrevReservasjon, oppdaterBrev } from "~/api/brev-queries";
 import { WarnModal, type WarnModalKind } from "~/Brevredigering/LetterEditor/components/warnModal";
+import { createLetterSnapshot, createSaksbehandlerValgEndretHistoryEntry } from "~/Brevredigering/LetterEditor/history";
 import {
   collectAllIds,
   collectNewIds,
@@ -177,6 +178,10 @@ interface RedigerBrevSidemenyFormData {
   saksbehandlerValg: SaksbehandlerValg;
 }
 
+type OppdaterBrevMutationVariables = OppdaterBrevRequest & {
+  historySnapshot?: ReturnType<typeof createLetterSnapshot>;
+};
+
 function RedigerBrev({
   brev,
   doReload,
@@ -211,8 +216,11 @@ function RedigerBrev({
 
   useEffect(() => {
     lastSeenIdsRef.current = collectAllIds(brev.redigertBrev);
-    previousValgRef.current = brev.saksbehandlerValg;
-  }, [brev.redigertBrev, brev.saksbehandlerValg]);
+  }, [brev.redigertBrev]);
+
+  useEffect(() => {
+    previousValgRef.current = editorState.saksbehandlerValg;
+  }, [editorState.saksbehandlerValg]);
 
   useEffect(
     () => () => {
@@ -240,7 +248,7 @@ function RedigerBrev({
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
   });
 
-  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevRequest>({
+  const oppdaterBrevMutation = useMutation<BrevResponse, AxiosError, OppdaterBrevMutationVariables>({
     mutationFn: (values) => {
       // Mark the editor as saving so onSaveSuccess will apply the response
       // (it ignores responses while the editor is DIRTY).
@@ -254,11 +262,20 @@ function RedigerBrev({
         },
       });
     },
-    onSuccess: (response) => {
+    onSuccess: (response, variables) => {
       const previousIds = previousIdsRef.current;
+      const historySnapshot = variables.historySnapshot;
       previousIdsRef.current = null;
 
-      onSaveSuccess(response);
+      onSaveSuccess(
+        response,
+        historySnapshot
+          ? {
+              createHistoryEntry: () =>
+                createSaksbehandlerValgEndretHistoryEntry(historySnapshot, createLetterSnapshot(response)),
+            }
+          : undefined,
+      );
 
       // The editor went DIRTY while the request was in flight (user typed);
       // onSaveSuccess discarded the response, so do not flash or move the cursor based on a letter the user is not seeing.
@@ -285,15 +302,16 @@ function RedigerBrev({
       if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
       highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
     },
+    onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
 
   const defaultValuesModelEditor = useMemo(
     () => ({
       saksbehandlerValg: {
-        ...brev.saksbehandlerValg,
+        ...editorState.saksbehandlerValg,
       },
     }),
-    [brev.saksbehandlerValg],
+    [editorState.saksbehandlerValg],
   );
 
   const form = useForm<RedigerBrevSidemenyFormData>({
@@ -319,6 +337,7 @@ function RedigerBrev({
         oppdaterBrevMutation.mutate({
           redigertBrev: editorState.redigertBrev,
           saksbehandlerValg: updatedValg,
+          historySnapshot: createLetterSnapshot(editorState),
         });
       }
     });
@@ -366,9 +385,25 @@ function RedigerBrev({
     form.reset(defaultValuesModelEditor);
   }, [defaultValuesModelEditor, form]);
 
-  const freeze = oppdaterBrevMutation.isPending;
+  const freeze = oppdaterBrevMutation.isPending || editorState.saveStatus === "SAVE_PENDING";
 
   const error = oppdaterBrevMutation.isError;
+
+  const saveDirtyLetter = (state: {
+    redigertBrev: typeof editorState.redigertBrev;
+    saksbehandlerValg: typeof editorState.saksbehandlerValg;
+  }) =>
+    oppdaterBrev({
+      saksId: Number.parseInt(saksId, 10),
+      brevId: brev.info.id,
+      frigiReservasjon: false,
+      request: {
+        redigertBrev: state.redigertBrev,
+        saksbehandlerValg: state.saksbehandlerValg,
+      },
+    });
+
+  // TODO: disable SaksbehandlerValgModelEditor during SAVE_PENDING
 
   // TODO: Trenger form å være helt ytterst her? Kunne vi hatt det lenger inn i hierarkiet, f.eks i OpprettetBrevSidemenyForm.
   return (
@@ -408,7 +443,13 @@ function RedigerBrev({
                 </VStack>
               </Box>
               <InsertedTekstValgHighlightProvider ids={highlightedIds}>
-                <ManagedLetterEditor brev={brev} error={error} freeze={freeze} showDebug={showDebug} />
+                <ManagedLetterEditor
+                  brev={brev}
+                  error={error}
+                  freeze={freeze}
+                  saveDirtyLetter={saveDirtyLetter}
+                  showDebug={showDebug}
+                />
               </InsertedTekstValgHighlightProvider>
             </HGrid>
             <Box

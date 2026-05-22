@@ -108,7 +108,7 @@ object InnvilgelseUforetrygdUtland : RedigerbarTemplate<InnvilgelseUfoeretrygdUt
         title {
             text(
                 bokmal { +"Nav har innvilget søknaden din om uføretrygd" },
-                nynorsk { +"Nav har innvilget søknaden din om uføretrygd " },
+                nynorsk { +"Nav har innvilga søknaden din om uføretrygd " },
             )
         }
 

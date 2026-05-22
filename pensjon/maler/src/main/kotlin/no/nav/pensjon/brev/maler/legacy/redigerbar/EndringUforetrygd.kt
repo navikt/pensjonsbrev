@@ -529,7 +529,7 @@ object EndringUforetrygd : RedigerbarTemplate<EndringUfoeretrygdDto> {
                         }
                     }
 
-                showIf(pesysData.opphortGjenlevendetillegg and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed_ektefelle", "bormed_registrert_partner")) {
+                showIf(pesysData.opphortGjenlevendetillegg and pe.vedtaksdata_beregningsdata_beregning_beregningsivilstandanvendt().isOneOf("bormed 1-5", "bormed 3-2", "bormed ektefelle", "bormed registrert partner")) {
                     paragraph {
                         text(
                             bokmal { +"Som en følge av din endrede sivilstand, opphører din rett til gjenlevendetillegg." },
