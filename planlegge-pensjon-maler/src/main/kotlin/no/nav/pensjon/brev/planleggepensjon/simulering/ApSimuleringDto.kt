@@ -237,7 +237,7 @@ data class SimuleringUtenlandsperiode(
     val fom: LocalDate,
     val tom: LocalDate? = null,
     val landkode: String,
-    val arbeidetUtenlands: Boolean
+    val arbeidetUtenlands: Boolean?
 )
 
 enum class Sivilstatus(val value: String = "None") {
@@ -257,7 +257,7 @@ enum class Sivilstatus(val value: String = "None") {
 
 data class ForbeholdInnhold(
     @DisplayText("Seksjoner")
-    val seksjoner: List<ForbeholdSeksjon>,
+    val seksjoner: List<ForbeholdSeksjon>?,
 ) : VedleggData
 
 data class ForbeholdSeksjon(
