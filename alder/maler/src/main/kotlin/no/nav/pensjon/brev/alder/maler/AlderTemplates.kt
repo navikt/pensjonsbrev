@@ -44,6 +44,8 @@ import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUnder5AartrygdetidAuto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAP2016Auto
 import no.nav.pensjon.brev.alder.maler.avslag.uttak.AvslagUttakFoerNormertPensjonsalderAuto
+import no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp.AfpEtteroppgjoerVedtakIngenEndring
+import no.nav.pensjon.brev.alder.maler.etteroppgjoer.afp.AfpEtteroppgjoerVedtakIngenEndringAuto
 import no.nav.pensjon.brev.alder.maler.sivilstand.EndringAvAlderspensjonAvdodAuto
 import no.nav.pensjon.brev.alder.maler.info.BekreftelseAvUtsendtKravTilUtlandet
 import no.nav.pensjon.brev.alder.maler.info.afpprivatutforetrygdbrev.AfpPrivatSokerUforeTrygd
@@ -78,41 +80,44 @@ object AlderTemplates : AllTemplates {
             AdhocTidligereUfoereGradertAP,
             AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling,
             AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling,
+            AfpEtteroppgjoerVedtakIngenEndringAuto,
             AvslagGradsendringFoerNormertPensjonsalder2016Auto,
             AvslagGradsendringFoerNormertPensjonsalderAuto,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAarAuto,
+            AvslagUnder5AartrygdetidAuto,
             AvslagUttakFoerNormertPensjonsalderAP2016Auto,
             AvslagUttakFoerNormertPensjonsalderAuto,
-            AvslagUnder5AartrygdetidAuto,
             EndringAvAlderspensjonAvdodAuto,
-            EndringAvAlderspensjonSivilstandAuto,
             EndringAvAlderspensjonFordiDuFyller75AarAuto,
-            OmregningAlderUfore2016Auto,
+            EndringAvAlderspensjonSivilstandAuto,
             FeilUtsendingAvGjenlevenderett,
+            InfoAldersovergang67AarAuto,
+            InfoAldersovergangEps60AarAuto,
+            InfoAldersovergangEps62AarAuto,
+            InfoFyller67AarSaerskiltSats,
+            OmregningAlderUfore2016Auto,
             VarselGjpForlengetArskull6061,
             VarselGjpForlengetArskull6061Utland,
             VarselGjpForlengetArskull6270,
             VarselGjpForlengetArskull6270Utland,
             VarselGjpOpphorArskull6070,
             VarselGjpOpphorArskull6070Utland,
+            VedtakAldersovergang67AarGarantitilleggAuto,
+            VedtakEndringAFPEndretOpptjeningAuto,
             VedtakGjpForlengetArskull6061,
             VedtakGjpForlengetArskull6061Utland,
             VedtakGjpForlengetArskull6270,
             VedtakGjpForlengetArskull6270Utland,
             VedtakGjpOpphorArskull6070,
             VedtakGjpOpphorArskull6070Utland,
-            InfoAldersovergangEps60AarAuto,
-            InfoAldersovergangEps62AarAuto,
-            InfoAldersovergang67AarAuto,
-            InfoFyller67AarSaerskiltSats,
-            VedtakAldersovergang67AarGarantitilleggAuto,
-            VedtakEndringAFPEndretOpptjeningAuto,
             VedtakOmregningAFPTilEnsligPensjonistAuto,
             VedtakOmregningGjenlevendepensjonTilAlderspensjonAuto,
         )
 
     override fun hentRedigerbareMaler(): Set<RedigerbarTemplate<out RedigerbarBrevdata<*, *>>> =
         setOf(
+            AfpEtteroppgjoerVedtakIngenEndring,
+            AfpPrivatSokerUforeTrygd,
             AvslagGradsendringFoerNormertPensjonsalder,
             AvslagGradsendringFoerNormertPensjonsalderAP2016,
             AvslagGradsendringFoerNormertPensjonsalderFoerEttAar,
@@ -123,9 +128,8 @@ object AlderTemplates : AllTemplates {
             EndringAvAlderspensjonSivilstand,
             EndringAvAlderspensjonSivilstandSaerskiltSats,
             OmregningAlderUfore2016,
-            VedtakStansAlderspensjonFlyttingMellomLand,
-            AfpPrivatSokerUforeTrygd,
             UforetrygdSokerAfpPrivat,
+            VedtakStansAlderspensjonFlyttingMellomLand,
         )
 
     override fun hentAlltidValgbareVedlegg(): Set<AlltidValgbartVedlegg<*>> = setOf(
