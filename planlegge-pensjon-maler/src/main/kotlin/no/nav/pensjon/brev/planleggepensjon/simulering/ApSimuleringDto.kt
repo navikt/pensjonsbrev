@@ -166,7 +166,7 @@ data class Simuleringsinformasjon(
     val sivilstatus: Sivilstatus,
     val utenlandsperioder: List<SimuleringUtenlandsperiode>?,
     val kull: Kull,
-    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering
+    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering?
 ) : VedleggData
 
 enum class NormertPensjonsalderPlassering {
