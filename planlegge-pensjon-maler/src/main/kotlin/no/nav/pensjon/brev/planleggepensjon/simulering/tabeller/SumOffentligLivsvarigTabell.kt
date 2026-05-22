@@ -1,10 +1,8 @@
 package no.nav.pensjon.brev.planleggepensjon.simulering.tabeller
 
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kompensasjonstillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.kronetillegg
-import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfpSelectors.livsvarig
+import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
+import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfpSelectors.maanedligBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantipensjonBeloep
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjonSelectors.garantitilleggBeloep
@@ -25,9 +23,9 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
-data class SumTabell(
+data class SumOffentligLivsvarigTabell(
     val alderspensjon: Expression<SimuleringV1MaanedligAlderspensjon>,
-    val privatAfp: Expression<PrivatAfp>,
+    val afp: Expression<LivsvarigOffentligAfp>,
 ) : OutlinePhrase<LangBokmal>() {
     override fun OutlineOnlyScope<LangBokmal, Unit>.template() {
         paragraph {
@@ -54,12 +52,9 @@ data class SumTabell(
                     }
                 }
                 row {
-                    cell { text(bokmal { +"AFP i privat sektor" }) }
+                    cell { text(bokmal { +"AFP i offentlig sektor" }) }
                     cell {
-                        val sumAfp = privatAfp.kronetillegg.ifNull(Kroner(0)) +
-                                privatAfp.livsvarig.ifNull(Kroner(0)) +
-                                privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
-                        text(bokmal { +sumAfp.format() })
+                        text(bokmal { +afp.maanedligBeloep.format() })
                     }
                 }
                 row {
@@ -73,10 +68,7 @@ data class SumTabell(
                                 alderspensjon.garantitilleggBeloep.ifNull(Kroner(0)) +
                                 alderspensjon.skjermingstillegg.ifNull(Kroner(0)) +
                                 alderspensjon.gjenlevendetillegg.ifNull(Kroner(0))
-                        val sumAfp = privatAfp.kronetillegg.ifNull(Kroner(0)) +
-                                privatAfp.livsvarig.ifNull(Kroner(0)) +
-                                privatAfp.kompensasjonstillegg.ifNull(Kroner(0))
-                        val sumPensjon = sumAlderspensjon + sumAfp
+                        val sumPensjon = sumAlderspensjon + afp.maanedligBeloep.ifNull(Kroner(0))
                         text(bokmal { +sumPensjon.format() }, fontType = BOLD)
                     }
                 }
