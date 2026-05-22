@@ -164,8 +164,15 @@ data class Simuleringsinformasjon(
     @DisplayText("Helt uttaksalder")
     val heltUttaksalder: Alder,
     val sivilstatus: Sivilstatus,
-    val utenlandsperioder: List<SimuleringUtenlandsperiode>?
+    val utenlandsperioder: List<SimuleringUtenlandsperiode>?,
+    val kull: Kull,
+    val normertPensjonsalderPlassering: NormertPensjonsalderPlassering
 ) : VedleggData
+
+enum class NormertPensjonsalderPlassering {
+    MELLOM_GRADERT_OG_HELT,
+    ETTER_HELT
+}
 
 data class SimuleringV1MaanedligAlderspensjonForKnekkpunkter(
     @DisplayText("Ved gradert uttak")
@@ -253,6 +260,12 @@ enum class Sivilstatus(val value: String = "None") {
     SKILT_PARTNER,
     GJENLEVENDE_PARTNER,
     SAMBOER("Samboer")
+}
+
+enum class Kull {
+    KAP19,
+    KAP20,
+    OVERGANG
 }
 
 data class ForbeholdInnhold(

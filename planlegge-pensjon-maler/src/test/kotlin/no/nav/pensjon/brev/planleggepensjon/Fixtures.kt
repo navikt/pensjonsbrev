@@ -18,6 +18,8 @@ import no.nav.pensjon.brev.planleggepensjon.simulering.ForbeholdSeksjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.LivsvarigOffentligAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.PrivatAfp
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simulering
+import no.nav.pensjon.brev.planleggepensjon.simulering.Kull
+import no.nav.pensjon.brev.planleggepensjon.simulering.NormertPensjonsalderPlassering
 import no.nav.pensjon.brev.planleggepensjon.simulering.Simuleringsinformasjon
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringUtenlandsperiode
 import no.nav.pensjon.brev.planleggepensjon.simulering.SimuleringV1MaanedligAlderspensjon
@@ -243,6 +245,8 @@ object Fixtures : LetterDataFactory {
                 arbeidetUtenlands = false,
             ),
         ),
+        kull = Kull.OVERGANG,
+        normertPensjonsalderPlassering = NormertPensjonsalderPlassering.ETTER_HELT,
     )
 
     private fun createSimuleringV1MaanedligAlderspensjon() = SimuleringV1MaanedligAlderspensjon(
