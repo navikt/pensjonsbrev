@@ -61,6 +61,7 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
+  const { enhetsId } = Route.useSearch();
   const startTime = useRef(0);
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export function BrevvelgerPage() {
       trackEvent("tid brukt i brevvelger", {
         varighetSekunder,
         varighetMinutter: Math.round(varighetSekunder / 60),
+        enhetsId,
       });
     };
   }, []);
