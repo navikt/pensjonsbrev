@@ -43,15 +43,14 @@ export default function BrevmalForExstream({
 }) {
   const { vedtaksId, idTSSEkstern } = Route.useSearch();
   const formRef = useRef<HTMLFormElement>(null);
-  const selectedEnhetsIdRef = useRef<string>(defaultValues.enhetsId);
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
-    onSuccess: (callbackUrl) => {
+    onSuccess: (callbackUrl, variables) => {
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
         brevtype: "exstream",
-        enhetsId: selectedEnhetsIdRef.current,
+        enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
     },
@@ -88,7 +87,6 @@ export default function BrevmalForExstream({
         <BrevmalFormWrapper
           formRef={formRef}
           onSubmit={methods.handleSubmit((submittedValues) => {
-            selectedEnhetsIdRef.current = submittedValues.enhetsId;
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
