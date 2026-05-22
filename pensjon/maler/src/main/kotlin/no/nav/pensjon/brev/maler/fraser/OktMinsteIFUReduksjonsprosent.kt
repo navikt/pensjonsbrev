@@ -26,12 +26,14 @@ object OktMinsteIFUReduksjonsprosent {
         val totalbelop: Expression<Kroner>,
         val nettoUforetrygdUtenTillegg: Expression<Kroner>,
         val nettoBarnetillegg: Expression<Kroner?>,
+        val nettoGjenlevendetillegg: Expression<Kroner?>,
         val etterbetalingJuli: Expression<Kroner>,
         val reduksjonsprosent: Expression<Double>,
         val inntektstak: Expression<Kroner>,
         val ifu: Expression<Kroner>,
         val endringNettoUforetrygdUtenTillegg: Expression<Boolean>,
         val endringNettoBarnetillegg: Expression<Boolean>,
+        val endringNettoGjenlevendetillegg: Expression<Boolean>,
         val endringInntektstak: Expression<Boolean>,
         val erInntektsavkortet: Expression<Boolean>,
         val tillegg: Expression<Collection<UTTillegg>>,
@@ -87,6 +89,22 @@ object OktMinsteIFUReduksjonsprosent {
                                 text(
                                     bokmal { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
                                     nynorsk { +data.nettoBarnetillegg.ifNull(Kroner(0)).format() },
+                                )
+                            }
+                        }
+                    }
+                    showIf(data.endringNettoGjenlevendetillegg) {
+                        row {
+                            cell {
+                                text(
+                                    bokmal { +"Nytt gjenlevendetillegg" },
+                                    nynorsk { +"Nytt gjenlevendetillegg" },
+                                )
+                            }
+                            cell {
+                                text(
+                                    bokmal { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
+                                    nynorsk { +data.nettoGjenlevendetillegg.ifNull(Kroner(0)).format() },
                                 )
                             }
                         }

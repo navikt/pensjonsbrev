@@ -35,6 +35,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             vedtakData = VedtakOmIFUReduksjonsprosentData(
                 nettoUforetrygdUtenTillegg = Kroner(28066),
                 nettoBarnetillegg = Kroner(4000),
+                nettoGjenlevendetillegg = Kroner(1461),
                 totalbelop = Kroner(33527),
                 etterbetalingJuli = Kroner(1500),
                 reduksjonsprosent = 62.65,
@@ -43,6 +44,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 tillegg = listOf(UTTillegg.BT),
                 endringNettoUforetrygdUtenTillegg = true,
                 endringNettoBarnetillegg = true,
+                endringNettoGjenlevendetillegg = true,
                 endringInntektstak = true,
                 erInntektsavkortet = false,
                 hjemler = setOf("12-8", "12-9", "12-10", "12-11", "12-12", "12-13", "12-14", "22-12"),
@@ -58,6 +60,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
             vedtakData = VedtakOmIFUReduksjonsprosentData(
                 nettoUforetrygdUtenTillegg = Kroner(20000),
                 nettoBarnetillegg = Kroner(3000),
+                nettoGjenlevendetillegg = Kroner(0),
                 totalbelop = Kroner(23000),
                 etterbetalingJuli = Kroner(800),
                 reduksjonsprosent = 62.65,
@@ -66,6 +69,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
                 tillegg = listOf(UTTillegg.BT),
                 endringNettoUforetrygdUtenTillegg = true,
                 endringNettoBarnetillegg = true,
+                endringNettoGjenlevendetillegg = false,
                 endringInntektstak = true,
                 erInntektsavkortet = true,
                 hjemler = setOf("12-8", "12-13", "12-16", "22-12"),
@@ -137,4 +141,3 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
         ).renderTestPDF("OKT_MINSTE_IFU_LAVERE_REDUKSJON_FULL_NN")
     }
 }
-

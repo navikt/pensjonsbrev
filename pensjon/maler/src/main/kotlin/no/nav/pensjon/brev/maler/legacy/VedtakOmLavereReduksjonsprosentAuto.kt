@@ -5,6 +5,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAu
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentAutoDtoSelectors.vedtakData
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringInntektstak
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.endringNettoUforetrygdUtenTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.erInntektsavkortet
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.etterbetalingJuli
@@ -13,6 +14,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDa
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.inntektstak
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.maanedligUfoeretrygdFoerSkatt
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.nettoBarnetillegg
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.nettoGjenlevendetillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.nettoUforetrygdUtenTillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.orienteringOmRettigheterUfoere
 import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.pe
@@ -60,12 +62,14 @@ object VedtakOmLavereReduksjonsprosentAuto : AutobrevTemplate<VedtakOmIFUReduksj
                         totalbelop = data.totalbelop,
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg,
                         nettoBarnetillegg = data.nettoBarnetillegg,
+                        nettoGjenlevendetillegg = data.nettoGjenlevendetillegg,
                         etterbetalingJuli = data.etterbetalingJuli,
                         reduksjonsprosent = data.reduksjonsprosent,
                         inntektstak = data.inntektstak,
                         ifu = data.ifu,
                         endringNettoUforetrygdUtenTillegg = data.endringNettoUforetrygdUtenTillegg,
                         endringNettoBarnetillegg = data.endringNettoBarnetillegg,
+                        endringNettoGjenlevendetillegg = data.endringNettoGjenlevendetillegg,
                         endringInntektstak = data.endringInntektstak,
                         erInntektsavkortet = data.erInntektsavkortet,
                         tillegg = data.tillegg,

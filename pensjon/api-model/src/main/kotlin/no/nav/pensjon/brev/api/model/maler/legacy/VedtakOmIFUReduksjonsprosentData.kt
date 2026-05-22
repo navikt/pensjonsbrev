@@ -8,6 +8,7 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 data class VedtakOmIFUReduksjonsprosentData(
     val nettoUforetrygdUtenTillegg: Kroner,
     val nettoBarnetillegg: Kroner?,
+    val nettoGjenlevendetillegg: Kroner?,
     val totalbelop: Kroner,
     val etterbetalingJuli: Kroner,
     val reduksjonsprosent: Double,
@@ -16,6 +17,7 @@ data class VedtakOmIFUReduksjonsprosentData(
     val tillegg: Collection<UTTillegg>,
     val endringNettoUforetrygdUtenTillegg: Boolean,
     val endringNettoBarnetillegg: Boolean,
+    val endringNettoGjenlevendetillegg: Boolean,
     val endringInntektstak: Boolean,
     val erInntektsavkortet: Boolean,
     val hjemler: Set<String>,
