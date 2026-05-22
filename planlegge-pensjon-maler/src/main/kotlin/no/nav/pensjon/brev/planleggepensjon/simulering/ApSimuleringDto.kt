@@ -240,19 +240,19 @@ data class SimuleringUtenlandsperiode(
     val arbeidetUtenlands: Boolean
 )
 
-enum class Sivilstatus(val value: String = "test") {
+enum class Sivilstatus(val value: String = "None") {
     UNKNOWN,
     UOPPGITT,
     UGIFT("Ugift"),
-    GIFT,
+    GIFT("Gift"),
     ENKE_ELLER_ENKEMANN,
-    SKILT,
-    SEPARERT,
+    SKILT("Skilt"),
+    SEPARERT("Separert"),
     REGISTRERT_PARTNER,
     SEPARERT_PARTNER,
     SKILT_PARTNER,
     GJENLEVENDE_PARTNER,
-    SAMBOER
+    SAMBOER("Samboer")
 }
 
 data class ForbeholdInnhold(
