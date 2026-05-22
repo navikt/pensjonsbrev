@@ -184,7 +184,7 @@ function Brevmaler({
   handleOpenAccordionChange: (categoryKey: string) => void;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId } = Route.useSearch();
+  const { templateId, enhetsId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -335,7 +335,15 @@ function Brevmaler({
                           }
                           icon={<BrevSystemIcon brevsystem={template.brevsystem} />}
                           key={template.id}
-                          onClick={() =>
+                          onClick={() => {
+                            if (template.brevsystem === BrevSystem.Exstream) {
+                              trackEvent("exstream brev valgt", {
+                                brevkode: template.id,
+                                brevtittel: template.name,
+                                enhetsId,
+                              });
+                            }
+
                             navigate({
                               to: "/saksnummer/$saksId/brevvelger",
                               search: (s) => ({
@@ -343,8 +351,8 @@ function Brevmaler({
                                 templateId: template.id,
                                 brevId: undefined,
                               }),
-                            })
-                          }
+                            });
+                          }}
                           title={template.name}
                         />
                       ))}
