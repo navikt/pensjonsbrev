@@ -11,11 +11,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Poengtallstype
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.Sluttpoengtall
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidScalars
-import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagBilateralPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagEosPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.TrygdetidsgrunnlagPeriode
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDto.YrkesskadeBeregning
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -26,7 +24,7 @@ fun createOpplysningerOmBeregningGPUtlandDto() =
         pesysData = PesysData(
             virkDatoFom = LocalDate.of(2026, 1, 1),
             bruker = Bruker(
-                flyktning = false,
+                flyktning = true,
                 forventetInntekt = Kroner(250_000),
                 samboer3_2 = true,
                 ektefelleMottarPensjon = false,

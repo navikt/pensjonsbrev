@@ -49,7 +49,6 @@ import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningen
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
@@ -883,6 +882,9 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
+                    //Jeg har sjekket kontakt informasjon ut hos Skatteetaten. Telefonummer er riktig - +47 22 07 70 00.
+                    // Postadressen er gammel og bør være Skatteetaten, Postboks 9200 Grønland, 0134 Oslo.
+                    // Ellers kan brukere skrive til Skatteetaten ved å logge inn på www.skatteetaten.no/min-side
                 }
             }
 
