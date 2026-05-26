@@ -11,12 +11,12 @@ import no.nav.pensjon.brevbaker.api.model.ElementTags
 class FerdigRedigertPolicy {
 
     suspend fun erFerdigRedigert(brev: Brevredigering): Outcome<Unit, IkkeFerdigRedigert> {
-        val ikkeredigerteFritekstfelter = brev.redigertBrev.ikkeredigerteFritekstfelter()
+        val uredigerteFritekstfelter = brev.redigertBrev.uredigerteFritekstfelter()
         val alleDuplikateAvsnittErHaandtert = (!Features.hindreDuplikateAvsnitt.isEnabled()) || brev.redigertBrev.alleDuplikateAvsnittErHaandtert()
-        return if (ikkeredigerteFritekstfelter.none() && alleDuplikateAvsnittErHaandtert) {
+        return if (uredigerteFritekstfelter.none() && alleDuplikateAvsnittErHaandtert) {
             success(Unit)
-        } else if (ikkeredigerteFritekstfelter.isNotEmpty()) {
-            failure(IkkeFerdigRedigert.FritekstFelterUredigert(ikkeredigerteFritekstfelter))
+        } else if (uredigerteFritekstfelter.isNotEmpty()) {
+            failure(IkkeFerdigRedigert.FritekstFelterUredigert(uredigerteFritekstfelter))
         } else {
             failure(IkkeFerdigRedigert.DuplikatAvsnittUhaandtert)
         }
@@ -27,8 +27,8 @@ class FerdigRedigertPolicy {
         data object DuplikatAvsnittUhaandtert : IkkeFerdigRedigert
     }
 
-    private fun Edit.Letter.ikkeredigerteFritekstfelter(): List<Edit.ParagraphContent.Text.Literal> =
-        literals.filterNot { !it.tags.contains(ElementTags.FRITEKST) || it.editedText != null }
+    private fun Edit.Letter.uredigerteFritekstfelter(): List<Edit.ParagraphContent.Text.Literal> =
+        literals.filter { it.tags.contains(ElementTags.FRITEKST) && it.editedText == null }
 
     private fun Edit.Letter.alleDuplikateAvsnittErHaandtert(): Boolean =
         blocks.all { it.missingFromTemplate != true }
