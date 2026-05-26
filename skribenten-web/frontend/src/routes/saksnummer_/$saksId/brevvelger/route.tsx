@@ -353,7 +353,6 @@ function Brevmaler({
                                 ...s,
                                 templateId: template.id,
                                 brevId: undefined,
-                                enhetsId: undefined,
                               }),
                             });
                           }}
