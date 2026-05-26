@@ -12,10 +12,12 @@
 .p1-modal::-webkit-scrollbar {
   width: 10px;
 }
+
 .p1-modal::-webkit-scrollbar-track {
   background: var(--ax-bg-neutral-soft);
   border-radius: 8px;
 }
+
 .p1-modal::-webkit-scrollbar-thumb {
   background-color: var(--ax-border-neutral);
   border-radius: 8px;
