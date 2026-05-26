@@ -44,7 +44,7 @@ object InnvilgelseAvAfpAuto : AutobrevTemplate<InnvilgelseAvAfpAutoDto> {
         title {
             text(
                 bokmal { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilget – melding om vedtak" },
-                nynorsk { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
+                nynorsk { +"Søknaden din om avtalefesta pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
             )
         }
 

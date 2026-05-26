@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
@@ -15,8 +16,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -203,7 +202,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                                     +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina."
                                 },
                                 nynorsk {
-                                    +"Inntekt som skriv seg frå arbeid i forbindelse med fordrivne frå Ukraina."
+                                    +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina."
                                 },
                             )
                         }
@@ -214,7 +213,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                                 "Ukraina nedenfor."
                         },
                         nynorsk {
-                            +"Sjå meir informasjon om arbeid i forbindelse med covid-19 og fordrivne frå " +
+                            +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå " +
                                 "Ukraina nedanfor."
                         },
                     )
@@ -290,43 +289,6 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
 
                 // Seksjon 3: Spesielt om unntak ... fordrevne fra Ukraina.
                 includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
-
-                // Inlinet: Ukraina-dokumentasjonslisten — avviker fra PE_AF_04_100.
-                // TODO dokumentasjonslisten avviker fra PE_AF_04_100: 04_100 bokmål bruker "inntekter" (ikke "feriepenger") i første punkt, og 04_100 nynorsk har "feriepengane er tent opp" i tidsperiode-punktet. Avklar med fag.
-                paragraph {
-                    text(
-                        bokmal {
-                            +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                                "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                        },
-                        nynorsk {
-                            +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                                "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting frå " +
-                                "arbeidsgivaren din om følgjande:"
-                        },
-                    )
-                    list {
-                        item {
-                            text(
-                                bokmal { +"hvor mye du har hatt i feriepenger fra slikt ekstra arbeid" },
-                                nynorsk { +"kor mykje du har hatt i inntekter frå slikt ekstra arbeid" },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                                nynorsk { +"i kva for tidsperiode (-periodar) dette gjeld" },
-                            )
-                        }
-                        item {
-                            text(
-                                bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                                nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                            )
-                        }
-                    }
-                }
             }
 
 

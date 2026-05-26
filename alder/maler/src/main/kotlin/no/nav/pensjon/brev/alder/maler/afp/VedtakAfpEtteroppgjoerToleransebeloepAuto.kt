@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
@@ -161,7 +162,7 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
                                 +"Inntekt som stammer fra arbeid i forbindelse med fordrevne fra Ukraina."
                             },
                             nynorsk {
-                                +"Inntekt som skriv seg frå arbeid i forbindelse med fordrivne frå Ukraina."
+                                +"Inntekt som skriv seg frå arbeid i samband med fordrivne frå Ukraina."
                             },
                         )
                     }
@@ -172,7 +173,7 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
                             "Ukraina nedenfor."
                     },
                     nynorsk {
-                        +"Sjå meir informasjon om arbeid i forbindelse med covid-19 og fordrivne frå " +
+                        +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå " +
                             "Ukraina nedanfor."
                     },
                 )
@@ -226,44 +227,6 @@ object VedtakAfpEtteroppgjoerToleransebeloepAuto : AutobrevTemplate<VedtakAfpEtt
 
             // Seksjon 3: Spesielt om unntak ... fordrevne fra Ukraina.
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
-
-            // Inlinet: Ukraina-dokumentasjonslisten — avviker fra PE_AF_04_102.
-            // TODO dokumentasjonslisten avviker fra PE_AF_04_102: 04_102 bokmål bruker "feriepenger" (ikke "inntekter") i første punkt, og 04_102 nynorsk har "dette gjeld" i tidsperiode-punktet. Avklar med fag.
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                            "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                            "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting frå " +
-                            "arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i inntekter frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) feriepengane er tent opp" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
-
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pgi, oppgjoersAar = oppgjoersAar))

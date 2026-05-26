@@ -60,7 +60,7 @@ object InnvilgelseAvAfp : RedigerbarTemplate<InnvilgelseAvAfpDto> {
         title {
             text(
                 bokmal { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilget – melding om vedtak" },
-                nynorsk { +"Søknaden din om avtalefestet pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
+                nynorsk { +"Søknaden din om avtalefesta pensjon (AFP) i privat sektor er innvilga – melding om vedtak" },
                 english { +"Your application for contractual pension (AFP) in the private sector has been granted - notification of decision" },
             )
         }

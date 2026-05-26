@@ -143,25 +143,7 @@ object VedtakEndringAfpOffentligSektor : RedigerbarTemplate<VedtakEndringAfpOffe
                 )
             }
             showIf(pesysData.beregning.ektefelletillegg.notNull()) {
-                paragraph {
-                    // TODO denne frasen er gaanske lik en annen, men mindre tekstlige forskjeller. Kunne de vært samstillt?
-                    text(
-                        bokmal {
-                            +"Ektefelletillegget gis som et tillegg i AFP til den som forsørger ektefelle, partner eller " +
-                                "samboer over 60 år. I følge folketrygdloven paragraf 3-24 kan du få ektefelletillegg så lenge " +
-                                "den du forsørger ikke har uføretrygd, egen pensjon eller inntekt, inkludert kapitalinntekt, " +
-                                "som overstiger folketrygdens grunnbeløp. Ektefelletillegget vil falle bort når den som blir " +
-                                "forsørget får rett til egen hel alderspensjon, selv om pensjonen ikke blir tatt ut."
-                        },
-                        nynorsk {
-                            +"Ektefelletillegg blir gitt som eit tillegg i AFP til den som forsørgjer ektefelle, partnar eller " +
-                                "sambuar over 60 år. Ifølgje folketrygdlova paragraf 3-24 kan du få ektefelletillegg dersom " +
-                                "den du forsørgjer, ikkje har eigen pensjon eller eiga inntekt, inkludert kapitalinntekt, som " +
-                                "overstig grunnbeløpet i folketrygda. Ektefelletillegget vil falle bort når den som blir " +
-                                "forsørgja får rett til eigen heil alderspensjon, sjølv om pensjonen ikkje blir teken ut."
-                        },
-                    )
-                }
+                includePhrase(AfpOffentligSektorInnhold.EktefelletilleggOpplysning)
             }
 
             // Utbetaling og skatt.

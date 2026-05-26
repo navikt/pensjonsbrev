@@ -185,6 +185,36 @@ object AfpOffentligSektorInnhold {
     }
 
     /**
+     * Generell forklaring av vilkårene for ektefelletillegg i AFP — hvem det gis til,
+     * hvilke inntekts-/pensjonsforhold som påvirker retten, og når tillegget faller bort.
+     *
+     * Kaller wraps i `showIf(pesysData.beregning.ektefelletillegg.notNull()) { includePhrase(...) }`.
+     */
+    object EktefelletilleggOpplysning : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Ektefelletillegget gis som et tillegg i AFP til den som forsørger ektefelle, partner eller " +
+                            "samboer over 60 år. I følge folketrygdloven paragraf 3-24, kan du få ektefelletillegg så lenge" +
+                            "den du forsørger ikke har egen pensjon eller uføretrygd, og ikke har egen inntekt som overstiger " +
+                            "folketrygdens grunnbeløp. Som egen inntekt inngår også kapitalinntekt. Ektefelletillegget vil falle " +
+                            "bort når den som blir forsørget får rett til egen hel alderspensjon. Dette gjelder selv om pensjonen " +
+                            "ikke blir tatt ut."
+                    },
+                    nynorsk {
+                        +"Ektefelletillegg blir gitt som eit tillegg i AFP til den som forsørgjer ektefelle, partnar eller " +
+                            "sambuar over 60 år. Ifølgje folketrygdlova paragraf 3-24 kan du få ektefelletillegg dersom " +
+                            "den du forsørgjer, ikkje har eigen pensjon eller eiga inntekt, inkludert kapitalinntekt, som " +
+                            "overstig grunnbeløpet i folketrygda. Ektefelletillegget vil falle bort når den som blir " +
+                            "forsørgt får rett til eigen heil alderspensjon, sjølv om pensjonen ikkje blir tatt ut."
+                    },
+                )
+            }
+        }
+    }
+
+    /**
      * Seksjonen «Ektefelletillegg og inntekt». Forklarer at AFP og ektefelletillegg
      * inntektsprøves forskjellig og refererer til den inntekten som er brukt i avkortninga.
      *

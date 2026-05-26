@@ -1,12 +1,11 @@
 package no.nav.pensjon.brev.alder.maler.afp.fraser
 
+import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -183,7 +182,7 @@ object AfpEtteroppgjoerForklaringer {
                             "i periodar der du ikkje samtidig har hatt rett til AFP. Arbeidsinntekta " +
                             "di for denne perioden er endra i samsvar med desse opplysningane til " +
                             "høvesvis " + ifu.format() + " for perioden før uttak av AFP og " +
-                            ieo.format() + " for perioden etter opphør av AFP tok slutt. Desse " +
+                            ieo.format() + " for perioden etter at AFP tok slutt. Desse " +
                             "beløpa skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
                             "."
                     },

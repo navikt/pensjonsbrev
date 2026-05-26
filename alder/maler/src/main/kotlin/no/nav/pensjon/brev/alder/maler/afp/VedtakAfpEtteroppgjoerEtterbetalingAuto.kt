@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_OFFENTLIG_URL
@@ -300,43 +301,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // Ukraina-seksjon: tittel + forklarende paragraf (felles), så
             // 101-spesifikk bekreftelseliste.
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
-
-            // TODO Ukraina-bekreftelseslisten avviker fra PE_AF_04_100/102.
-            //  Avklar med fag om listene skal harmoniseres.
-            paragraph {
-                text(
-                    bokmal {
-                        +"For at Nav skal kunne holde slike inntekter utenfor avkorting, må du sende oss " +
-                            "dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                            "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
-                    },
-                    nynorsk {
-                        +"For at Nav skal kunne halde slike inntekter utanfor avkorting, må du sende oss " +
-                            "dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL om korleis du sender " +
-                            "dokumentasjon. Vi treng stadfesting frå arbeidsgivaren din om følgjande:"
-                    },
-                )
-                list {
-                    item {
-                        text(
-                            bokmal { +"hvor mye du har hatt i inntekter fra slikt ekstra arbeid" },
-                            nynorsk { +"kor mykje du har hatt i inntekter frå slikt ekstra arbeid" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"i hvilken tidsperiode(-r) dette gjelder" },
-                            nynorsk { +"i kva for tidsperiode (-periodar) dette gjeld" },
-                        )
-                    }
-                    item {
-                        text(
-                            bokmal { +"om utbetalingen er gjort etter særskilt sats for pensjonistavlønning" },
-                            nynorsk { +"om utbetalinga er gjort etter særskilt sats for pensjonistavlønning" },
-                        )
-                    }
-                }
-            }
 
             // «Inntekten din i {år}»-tittel + PGI-paragraf.
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))

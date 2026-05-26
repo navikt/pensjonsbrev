@@ -188,7 +188,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                                 "samband med covid-19-pandemien. Du har heller ikkje lagt fram nye " +
                                 "opplysningar om inntekt frå arbeid med fordrivne frå Ukraina. " +
                                 "Arbeidsinntekta di for perioden før uttak av AFP er sett til " +
-                                ifu.format() + ". Arbeidsinntekta di for perioden etter opphør av AFP er " +
+                                ifu.format() + ". Arbeidsinntekta di for perioden etter opphøyr av AFP er " +
                                 "sett til " + ieo.format() + ". Desse beløpa skal haldast utanfor " +
                                 "etteroppgjeret for " + oppgjoersAar.format() + " i samsvar med den " +
                                 "tidlegare berekninga."

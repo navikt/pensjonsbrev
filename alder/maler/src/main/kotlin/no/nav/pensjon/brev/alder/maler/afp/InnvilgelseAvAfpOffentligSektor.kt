@@ -140,27 +140,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 )
             }
             showIf(pesysData.beregning.ektefelletillegg.notNull()) {
-                paragraph {
-                    // TODO denne frasen er gaanske lik en annen, men mindre tekstlige forskjeller. Kunne de vært samstillt?
-                    text(
-                        bokmal {
-                            +"Ektefelletillegget gis som et tillegg i AFP til den som forsørger ektefelle, partner eller " +
-                                "samboer over 60 år. I følge folketrygdloven paragraf 3-24, kan du få ektefelletillegg dersom " +
-                                "den du forsørger ikke har egen pensjon eller uføretrygd, og ikke har egen inntekt som overstiger " +
-                                "folketrygdens grunnbeløp. Som egen inntekt inngår også kapitalinntekt. Ektefelletillegget vil falle " +
-                                "bort når den som blir forsørget får rett til egen hel alderspensjon. Dette gjelder selv om pensjonen " +
-                                "ikke blir tatt ut."
-                        },
-                        nynorsk {
-                            +"Ektefelletillegg vert gitt som eit tillegg i AFP til den som forsørgjer ektefelle, partnar eller " +
-                                "sambuar over 60 år. I fylgje folketrygdlova paragraf 3-24, kan du få ektefelletillegg dersom den du " +
-                                "forsørgjer ikkje har eigen pensjon eller uføretrygd, og ikkje har eiga inntekt som er større enn " +
-                                "grunnbeløpet i folketrygda. Som eiga inntekt skal det også reknast med kapitalinntekt. Ein vil ikkje " +
-                                "lenger få ektefelletillegget når den som vert forsørgd får rett til eigen heil alderspensjon. Dette " +
-                                "gjeld sjølv om pensjonen ikkje vert nytta."
-                        },
-                    )
-                }
+                includePhrase(AfpOffentligSektorInnhold.EktefelletilleggOpplysning)
             }
 
             // Utbetaling og skatt.
