@@ -1,5 +1,6 @@
 package no.nav.brev.brevbaker
 
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brev.template.Letter
 import no.nav.pensjon.brev.template.LetterTemplate
@@ -10,5 +11,5 @@ data class LetterTestImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlervalg: Map<String, Any> = emptyMap(),
+    override val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi> = emptyMap(),
 ) : Letter<ParameterType>

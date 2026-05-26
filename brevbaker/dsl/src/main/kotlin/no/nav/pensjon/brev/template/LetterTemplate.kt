@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.template
 
 import no.nav.brev.InternKonstruktoer
 import no.nav.brev.Listetype
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.vedlegg.IncludeAttachmentPDF
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.IntValue
@@ -18,7 +19,7 @@ class LetterTemplate<Lang : LanguageSupport, out LetterData : Any> internal cons
     val outline: List<OutlineElement<Lang>>,
     val attachments: List<IncludeAttachment<Lang, *>> = emptyList(),
     val pdfAttachments: List<IncludeAttachmentPDF<Lang,*>> = emptyList(),
-    val saksbehandlervalg: Map<String, Any?> = emptyMap(),
+    val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi> = emptyMap(),
     val letterMetadata: LetterMetadata,
 ) {
     init {
@@ -107,7 +108,7 @@ sealed class Expression<out Out> : StableHash {
 
         class Saksbehandlervalg<out Out> @InternKonstruktoer constructor(val displayText: String, val default: Out): FromScope<Out> () {
             @Suppress("UNCHECKED_CAST")
-            override fun eval(scope: ExpressionScope<*>) = (scope.saksbehandlervalg[displayText] as Out) ?: default
+            override fun eval(scope: ExpressionScope<*>) = (scope.saksbehandlervalg[displayText]?.unwrap() as Out) ?: default
             override fun equals(other: Any?): Boolean = other is Saksbehandlervalg<*>
             override fun hashCode(): Int = javaClass.hashCode()
             override fun stableHashCode(): Int = "FromScope.Saksbehandlervalg".hashCode()

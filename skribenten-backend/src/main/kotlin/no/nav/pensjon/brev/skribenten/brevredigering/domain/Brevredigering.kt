@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.skribenten.brevredigering.domain
 
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.common.Outcome
 import no.nav.pensjon.brev.skribenten.db.*
 import no.nav.pensjon.brev.skribenten.letter.Edit
@@ -66,7 +67,7 @@ interface Brevredigering {
     fun mergeRendretBrev(rendretBrev: LetterMarkup)
     fun settMottaker(mottakerDto: Dto.Mottaker?, annenMottakerNavn: String?)
     fun tilbakestillSaksbehandlerValg(modelSpec: TemplateModelSpecification)
-    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, Any?> = emptyMap()): Dto.Brevredigering
+    fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, SaksbehandlervalgVerdi> = emptyMap()): Dto.Brevredigering
     fun toBrevInfo(brevreservasjonPolicy: BrevreservasjonPolicy): Dto.BrevInfo
 }
 
@@ -293,7 +294,7 @@ class BrevredigeringEntity(id: EntityID<BrevId>) : Entity<BrevId>(id), Brevredig
         }
     }
 
-    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, Any?>): Dto.Brevredigering =
+    override fun toDto(brevreservasjonPolicy: BrevreservasjonPolicy, coverage: Set<LetterMarkupWithDataUsage.Property>?, ekstraSaksbehandlervalg: Map<String, SaksbehandlervalgVerdi>): Dto.Brevredigering =
         Dto.Brevredigering(
             info = toBrevInfo(brevreservasjonPolicy),
             redigertBrev = redigertBrev,

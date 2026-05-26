@@ -2,10 +2,12 @@ package no.nav.pensjon.brev.skribenten.serialize
 
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonDeserializer
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.brev.InterneDataklasser
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.brevbaker.BrevbakerServiceException
 import no.nav.pensjon.brev.skribenten.services.addAbstractTypeMapping
 import no.nav.pensjon.brevbaker.api.model.LetterMarkup
@@ -22,6 +24,7 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
         addDeserializer(LetterMarkup.Block::class.java, blockDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent::class.java, paragraphContentDeserializer())
         addDeserializer(LetterMarkup.ParagraphContent.Text::class.java, textContentDeserializer())
+        addDeserializer(SaksbehandlervalgVerdi::class.java, saksbehandlervalgDeserializer())
 
         addAbstractTypeMapping<LetterMarkup.Sakspart, LetterMarkupImpl.SakspartImpl>()
         addAbstractTypeMapping<LetterMarkup.Signatur, LetterMarkupImpl.SignaturImpl>()
@@ -43,6 +46,21 @@ internal object LetterMarkupJacksonModule : SimpleModule() {
         addAbstractTypeMapping<LetterMarkupWithDataUsage, LetterMarkupWithDataUsageImpl>()
         addAbstractTypeMapping<LetterMarkupWithDataUsage.Property, LetterMarkupWithDataUsageImpl.PropertyImpl>()
     }
+
+
+
+    private fun saksbehandlervalgDeserializer() =
+        object : StdDeserializer<SaksbehandlervalgVerdi>(SaksbehandlervalgVerdi::class.java) {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi {
+                val node = p.codec.readTree<JsonNode>(p)
+                val type = when (SaksbehandlervalgVerdi.Type.valueOf(node.get("type").textValue())) {
+                    SaksbehandlervalgVerdi.Type.BOOL -> SaksbehandlervalgVerdi.Bool::class.java
+                    SaksbehandlervalgVerdi.Type.INTEGER -> SaksbehandlervalgVerdi.Integer::class.java
+                    SaksbehandlervalgVerdi.Type.ENUM -> SaksbehandlervalgVerdi.Enum::class.java
+                }
+                return p.codec.treeToValue(node, type)
+            }
+        }
 
     private fun blockDeserializer() =
         object : StdDeserializer<LetterMarkup.Block>(LetterMarkup.Block::class.java) {

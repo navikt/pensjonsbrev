@@ -941,15 +941,11 @@ public final class no/nav/pensjon/brev/template/SBWrapper {
 	public fun <init> (Ljava/lang/String;Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;)V
 	public final fun bool (Z)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun bool$default (Lno/nav/pensjon/brev/template/SBWrapper;ZILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-	public final fun enum (Lno/nav/pensjon/brev/template/SaksbehandlerValgEnum;)Lno/nav/pensjon/brev/template/Expression;
+	public final fun enum (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;)Lno/nav/pensjon/brev/template/Expression;
 	public final fun getDisplayText ()Ljava/lang/String;
 	public final fun getScope ()Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;
 	public final fun int (Ljava/lang/Integer;)Lno/nav/pensjon/brev/template/Expression;
 	public static synthetic fun int$default (Lno/nav/pensjon/brev/template/SBWrapper;Ljava/lang/Integer;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/Expression;
-}
-
-public abstract interface class no/nav/pensjon/brev/template/SaksbehandlerValgEnum {
-	public abstract fun getDisplayText ()Ljava/lang/String;
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {

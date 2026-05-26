@@ -271,11 +271,54 @@ public final class no/nav/pensjon/brev/api/model/maler/RedigerbarBrevkode : no/n
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 }
 
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum {
+	public abstract fun getDisplayText ()Ljava/lang/String;
+}
+
 public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
 	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
 	public fun equals (Ljava/lang/Object;)Z
 	public fun hashCode ()I
 	public fun toString ()Ljava/lang/String;
+}
+
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public abstract fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public fun unwrap ()Ljava/lang/Object;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Bool : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public fun <init> (Z)V
+	public final fun getBool ()Z
+	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public fun unwrap ()Ljava/lang/Object;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$DefaultImpls {
+	public static fun unwrap (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi;)Ljava/lang/Object;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Enum : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public fun <init> (Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;)V
+	public final fun getEnum ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlerValgEnum;
+	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public fun unwrap ()Ljava/lang/Object;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Integer : no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
+	public fun <init> (Ljava/lang/Integer;)V
+	public final fun getInt ()Ljava/lang/Integer;
+	public fun getType ()Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public fun unwrap ()Ljava/lang/Object;
+}
+
+public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type : java/lang/Enum {
+	public static final field BOOL Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public static final field ENUM Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public static final field INTEGER Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public static fun getEntries ()Lkotlin/enums/EnumEntries;
+	public static fun valueOf (Ljava/lang/String;)Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
+	public static fun values ()[Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi$Type;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/VedleggData {

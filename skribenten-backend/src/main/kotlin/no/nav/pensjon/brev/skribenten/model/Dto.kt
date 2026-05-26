@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.skribenten.model
 
 import no.nav.brev.BrevLandmodell.Landkode
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.skribenten.brevredigering.domain.MottakerType
 import no.nav.pensjon.brev.skribenten.db.Hash
 import no.nav.pensjon.brev.skribenten.fagsystem.pesys.BrevdataResponse
@@ -24,7 +25,7 @@ object Dto {
         val saksbehandlerValg: SaksbehandlerValg,
         val propertyUsage: Set<LetterMarkupWithDataUsage.Property>?,
         val valgteVedlegg: List<AlltidValgbartVedleggKode>?,
-        val ekstraSaksbehandlervalg: Map<String, Any?>,
+        val ekstraSaksbehandlervalg: Map<String, SaksbehandlervalgVerdi>,
     )
 
     data class BrevInfo(
