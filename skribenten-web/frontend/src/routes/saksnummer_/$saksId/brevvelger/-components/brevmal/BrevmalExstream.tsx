@@ -45,11 +45,12 @@ export default function BrevmalForExstream({
   const formRef = useRef<HTMLFormElement>(null);
   const orderLetterMutation = useMutation<string, AxiosError<Error> | Error, OrderExstreamLetterRequest>({
     mutationFn: (payload) => orderExstreamLetter(saksId, payload),
-    onSuccess: (callbackUrl) => {
+    onSuccess: (callbackUrl, variables) => {
       trackEvent("brev opprettet", {
         brevkode: letterTemplate.id,
         brevtittel: letterTemplate.name,
         brevtype: "exstream",
+        enhetsId: variables.enhetsId,
       });
       window.open(callbackUrl);
     },
@@ -85,7 +86,7 @@ export default function BrevmalForExstream({
       <FormProvider {...methods}>
         <BrevmalFormWrapper
           formRef={formRef}
-          onSubmit={methods.handleSubmit((submittedValues) =>
+          onSubmit={methods.handleSubmit((submittedValues) => {
             orderLetterMutation.mutate(
               byggExstreamOnSubmitRequest({
                 template: letterTemplate,
@@ -97,8 +98,8 @@ export default function BrevmalForExstream({
                   brevtittel: submittedValues.brevtittel ?? null,
                 },
               }),
-            ),
-          )}
+            );
+          })}
         >
           {/*Special case to hide mottaker for "Notat" & "Posteringsgrunnlag" */}
           {templateId !== "PE_IY_03_156" && templateId !== "PE_OK_06_101" && <EndreMottaker saksId={saksId} />}

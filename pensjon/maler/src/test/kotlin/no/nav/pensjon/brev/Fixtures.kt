@@ -125,6 +125,7 @@ object Fixtures : LetterDataFactory {
             VedtakOmIFUReduksjonsprosentAutoDto::class -> createVedtakOmIFUReduksjonsprosentAutoDto() as T
             VedtakOmInnvilgelseAvOmsorgspoengDto::class -> createVedtakOmInnvilgelseAvOmsorgspoengDto() as T
             VedtakOmLavereMinstesatsAutoDto::class -> createVedtakOmLavereMinstesatsAutoDto() as T
+            VedtakOmIFUReduksjonsprosentRedigerbarDto::class -> createVedtakOmIFUReduksjonsprosentRedigerbarDto() as T
             VedtakOmLavereMinstesatsRedigerbarDto::class -> createVedtakOmLavereMinstesatsRedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
