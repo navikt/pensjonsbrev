@@ -790,25 +790,35 @@ object DelvisEksportAvUforetrygd : RedigerbarTemplate<EndringUfoeretrygdFlytting
                     )
                 }
                 paragraph {
-                    text (
-                        bokmal { + "Du mottar ektefelletillegg i uføretrygden din. Dette tillegget blir ikke endret som følge av endring i uføretrygden din." },
-                        nynorsk { + "Du får ektefelletillegg i uføretrygda di. Dette tillegget blir ikkje endra som følgje av endring i uføretrygda di." },
+                    text(
+                        bokmal { +"Du mottar ektefelletillegg i uføretrygden din. Dette tillegget blir ikke endret som følge av endring i uføretrygden din." },
+                        nynorsk { +"Du får ektefelletillegg i uføretrygda di. Dette tillegget blir ikkje endra som følgje av endring i uføretrygda di." },
                     )
-                    text (
-                        bokmal { + "For å ha rett til ektefelletillegg fra 1. juli 2020 " },
-                        nynorsk { + "For å ha rett til ektefelletillegg frå 1. juli 2020 " },
+                }
+                paragraph {
+                    text(
+                        bokmal { +"For å ha rett til ektefelletillegg fra 1. juli 2020 " },
+                        nynorsk { +"For å ha rett til ektefelletillegg frå 1. juli 2020 " },
                     )
-                    text (
-                        bokmal { + "må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
-                        nynorsk { + "må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
-                    )
-                    text (
-                        bokmal { + "må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
-                        nynorsk { + "må også ektefellen/sambuaren din vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
-                    )
-                    text (
-                        bokmal { + "Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjelder også hvis ektefellen/samboeren din du forsørger skal oppholde seg i et annet land." },
-                            nynorsk { + "Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjeld også om ektefellen/sambuaren du forsørgjer skal opphalde seg i eit anna land." },
+                    list {
+                        item {
+                            text(
+                                bokmal { +"må du enten bo i Norge, innenfor EØS-området eller i et annet land Norge har trygdeavtale med" },
+                                nynorsk { +"må du enten bu i Noreg, innanfor EØS-området eller i eit anna land Noreg har trygdeavtale med" },
+                            )
+                        }
+                        item {
+                            text(
+                                bokmal { +"må også ektefellen/samboeren din være bosatt og oppholde seg i Norge, innenfor EØS-området eller et annet land Norge har trygdeavtale med" },
+                                nynorsk { +"må også ektefellen/sambuaren din vere busett og opphalde seg i Noreg, innanfor EØS-området eller eit anna land Noreg har trygdeavtale med" },
+                            )
+                        }
+                    }
+                }
+                paragraph {
+                    text(
+                        bokmal { +"Hvis du planlegger å flytte eller oppholde deg i et annet land, må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjelder også hvis ektefellen/samboeren din du forsørger skal oppholde seg i et annet land." },
+                        nynorsk { +"Om du planlegg å flytte eller opphalde deg i eit anna land må du kontakte oss slik at vi kan ta stilling til om du fortsatt har rett til ektefelletillegg. Dette gjeld også om ektefellen/sambuaren du forsørgjer skal opphalde seg i eit anna land." },
                     )
                 }
             }
