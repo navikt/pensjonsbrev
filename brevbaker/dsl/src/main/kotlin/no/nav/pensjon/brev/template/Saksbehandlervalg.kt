@@ -8,11 +8,11 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.also
 
 internal sealed class SaksbehandlervalgWrapper<T> {
-    abstract val displayText: String
-    abstract val default: T?
-    internal abstract fun expr(scope: TemplateRootScope<*, *>): Expression<T>
-    internal abstract fun saksbehandlervalgVerdi(): SaksbehandlervalgVerdi
-    fun doExpr(scope: TemplateRootScope<*, *>) = expr(scope).also { scope.saksbehandlervalg[displayText] = saksbehandlervalgVerdi() }
+    protected abstract val displayText: String
+    protected abstract val default: T?
+    protected abstract fun expr(scope: TemplateRootScope<*, *>): Expression<T>
+    protected abstract fun saksbehandlervalgVerdi(): SaksbehandlervalgVerdi
+    internal fun doExpr(scope: TemplateRootScope<*, *>) = expr(scope).also { scope.saksbehandlervalg[displayText] = saksbehandlervalgVerdi() }
 
     class Bool(override val displayText: String, override val default: Boolean) : SaksbehandlervalgWrapper<Boolean>() {
         override fun expr(scope: TemplateRootScope<*, *>): Expression<Boolean> = Expression.FromScope.Saksbehandlervalg(displayText, default)
@@ -31,7 +31,7 @@ internal sealed class SaksbehandlervalgWrapper<T> {
 class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
     fun bool(default: Boolean = false) = SaksbehandlervalgWrapper.Bool(displayText, default).doExpr(scope)
     fun int(default: Int? = null) = SaksbehandlervalgWrapper.Integer(displayText, default).doExpr(scope)
-    fun <T : SaksbehandlerValgEnum> enum(default: T?) = SaksbehandlervalgWrapper.Enum<T>(displayText, default).doExpr(scope)
+    fun <T : SaksbehandlerValgEnum> enum(default: T?) = SaksbehandlervalgWrapper.Enum(displayText, default).doExpr(scope)
 }
 
 fun <LetterData: RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(displayText: String) = SBWrapper(displayText, this)
