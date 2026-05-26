@@ -203,6 +203,7 @@ function mergeBlockIntoList(
   const blocks = draft.redigertBrev.blocks;
   const secondBlock = blocks[secondBlockId];
   const firstBlock = blocks[firstBlockId];
+  // biome-ignore lint/complexity/useIndexOf: targetList is ItemList, not assignable to Content — findIndex avoids the type mismatch
   const listContentIndex = firstBlock.content.findIndex((c) => c === targetList);
 
   const lastItemIndex = targetList.items.length - 1;
