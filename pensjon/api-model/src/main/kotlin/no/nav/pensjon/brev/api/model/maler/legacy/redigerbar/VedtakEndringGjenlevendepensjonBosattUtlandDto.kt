@@ -37,16 +37,16 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Årsak til endring - velg et alternativ:")
         val aarsakEndring: AarsakEndring,
         // Kilde: <FRITEKST: VELG ET ALTERNATIV …> for forventet inntekt (Alt 1/2/3)
-        @DisplayText("Forventet inntekt - velg et alternativ:")
+        @DisplayText("Forventet inntekt - velg et alternativ. Gi eventuell nærmere begrunnelse for hvorfor inntekten er hypotetisk fastsatt, eller andre vurderinger gjort i forbinelse med fastsettelsen av forventet inntekt.")
         val forventetInntektNivaa: ForventetInntektNivaa,
         // Kilde: <FRITEKST: FORSLAG TEKST - BEHOV FOR OPPFØLGING – inkluder oppfølgingsavsnittet?
-        @DisplayText("Inkluder avsnitt om behov for oppfølging?")
+        @DisplayText("Behov for oppfølging - inkluder oppfølgingsavsnittet?")
         val harBehovForOppfoelging: Boolean,
         // Kilde: <FRITEKST: fjern overskrifter og de alternativer som ikke passer> for skatt (Alt 1/2)
-        @DisplayText("Inkluder avsnitt om skatt?")
+        @DisplayText("Skatt - fjern alternativer som ikke passer. (Dersom kildeskatt og etterbetaling tilpasses avsnittet om etterbetaling siden det ikke vil bli trukket 30 årosent)")
         val skattAlternativ: SkattAlternativ,
         // Kilde: <FRITEKST: Etterbetaling/Feilutbetaling - stryk om det ikke passer> (Alt 1/2)
-        @DisplayText("Inkluder avsnitt om etterbetaling eller feilutbetaling?")
+        @DisplayText("Etterbetaling/Feilutbetaling - fjern alternativer som ikke passer")
         val utbetalingAlternativ: UtbetalingAlternativ,
     ) : SaksbehandlerValgBrevdata
 
@@ -65,38 +65,38 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
     }
 
     enum class ForventetInntektNivaa {
-        @DisplayText("Under halv G")
+        @DisplayText("Lagt til grunn inntekt under halv G")
         UNDER_HALV_G,
 
-        @DisplayText("Over halv G")
+        @DisplayText("Lagt til grunn inntekt over halv G")
         OVER_HALV_G,
 
-        @DisplayText("Redusert til null")
+        @DisplayText("Som følge av inntekt, er pensjonen redusert til null kroner")
         REDUSERT_TIL_NULL,
 
-        @DisplayText("Fritekst")
+        @DisplayText("Fritekst: Forslag tekst - behov for oppfølging")
         FRITEKST
     }
 
     enum class SkattAlternativ {
-        @DisplayText("Skatt")
+        @DisplayText("Fjern informasjon om skatt")
         INFORMASJON_OM_SKATT,
 
-        @DisplayText("Kildeskatt")
+        @DisplayText("Fjern kildeskatt")
         KILDESKATT,
 
-        @DisplayText("Ikke inkluder informasjon om skatt")
+        @DisplayText("Fjern begge alternativer om skatt")
         INGEN_INFORMASJON_OM_SKATT,
     }
 
     enum class UtbetalingAlternativ {
-        @DisplayText("Etterbetaling")
+        @DisplayText("Fjern etterbetaling")
         ETTERBETALING,
 
-        @DisplayText("Feilutbetaling")
+        @DisplayText("Fjern feilutbetaling")
         FEILUTBETALING,
 
-        @DisplayText("Ikke inkluder etterbetaling/feilutbetaling")
+        @DisplayText("Fjern begger alternativer etterbetaling/feilutbetaling")
         INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING,
     }
 

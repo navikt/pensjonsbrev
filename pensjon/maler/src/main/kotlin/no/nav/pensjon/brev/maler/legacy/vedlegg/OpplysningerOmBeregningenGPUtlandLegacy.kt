@@ -94,10 +94,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtl
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.poengaarYrkeF92
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.YrkesskadeBeregningSelectors.sluttpoengtallYrke
 import no.nav.pensjon.brev.api.model.maler.legacy.OpplysningerOmBeregningenGPUtlandDtoSelectors.pesysData
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.PesysDataSelectors.trygdeperioderNorge
-import no.nav.pensjon.brev.api.model.maler.redigerbar.AvslagForLiteTrygdetidAPDtoSelectors.pesysData
 import no.nav.pensjon.brev.maler.fraser.common.Constants
-import no.nav.pensjon.brev.maler.fraser.vedlegg.opplysningerbruktiberegningenalder.OpplysningerBruktIBeregningenTrygdetidTabeller
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
@@ -114,8 +111,6 @@ import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
-import java.time.Year
 
 /**
  * Vedlegg "Opplysninger om beregningen" som henges på vedtak om gjenlevendepensjon (utland).
@@ -143,6 +138,7 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
             )
         }
         // ---- Opplysninger om deg ----
+        // TODO(Redigerbare informasjon i 'Opplsninger om deg' i vedlegget må enten fjernes fra malen eller legges i hovedbrevet)
         paragraph {
             table(
                 header = {
@@ -489,12 +485,12 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                         }
                         column(columnSpan = 1, alignment = RIGHT) {
                             text(
-                                bokmal { +"Pensjonsgivende inntekt (kr)" },
-                                english { +"Pensionable income (NOK)" },
+                                bokmal { +"Pensjonsgivende inntekt" },
+                                english { +"Pensionable income" },
                             )
                         }
                         column(columnSpan = 1, alignment = RIGHT) {
-                            text(bokmal { +"Gj.snittlig G (kr)" }, english { +"Average G (NOK)" })
+                            text(bokmal { +"Gj.snittlig G" }, english { +"Average G" })
                         }
                         column(columnSpan = 1, alignment = RIGHT) {
                             text(bokmal { +"Pensjonspoeng" }, english { +"Pension points" })
@@ -509,14 +505,14 @@ val vedleggOpplysningerOmBeregningenGPUtlandLegacy =
                             cell { text(bokmal { +ar.aarstall.format() }, english { +ar.aarstall.format() }) }
                             cell {
                                 text(
-                                    bokmal { +ar.pensjonsgivendeInntekt.format(denominator = false) },
-                                    english { +ar.pensjonsgivendeInntekt.format(denominator = false) },
+                                    bokmal { +ar.pensjonsgivendeInntekt.format(denominator = false) + " kr" },
+                                    english { +"NOK " + ar.pensjonsgivendeInntekt.format(denominator = false) },
                                 )
                             }
                             cell {
                                 text(
-                                    bokmal { +ar.grunnbeloepVeiet.format(denominator = false) },
-                                    english { +ar.grunnbeloepVeiet.format(denominator = false) },
+                                    bokmal { +ar.grunnbeloepVeiet.format(denominator = false) + " kr" },
+                                    english { +"NOK " + ar.grunnbeloepVeiet.format(denominator = false) },
                                 )
                             }
                             cell {
@@ -1161,8 +1157,16 @@ private fun no.nav.pensjon.brev.template.dsl.TableScope<LangBokmalEnglish, Opply
             }
             cell {
                 text(
-                    bokmal { +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(denominator = false) },
-                    english { +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(denominator = false) },
+                    bokmal {
+                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
+                            denominator = false
+                        )
+                    },
+                    english {
+                        +pesysData.beregning.sluttpoengtall.sptUtenOkNordiskMinusOptMedOkNordisk2.format(
+                            denominator = false
+                        )
+                    },
                 )
             }
         }
