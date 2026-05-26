@@ -74,7 +74,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
             NumberFormat.getNumberInstance(second.locale())
                 .apply { maximumFractionDigits = 0 }
                 .format(first.value)
-                .let {
+                .replace(' ', NON_BREAKING_SPACE).let {
                     if (denominator) {
                         when (second) {
                             Language.Bokmal, Language.Nynorsk -> "$it kroner"

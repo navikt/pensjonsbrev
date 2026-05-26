@@ -90,12 +90,12 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                 paragraph {
                     text(
                         bokmal {
-                            +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + periode.grunnbeloep.format(denominator = false) +
-                                    " kroner. Forventet årlig inntekt benyttet i beregningen er " + periode.forventetAarligInntekt.format(denominator = false) + " kroner."
+                            +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + periode.grunnbeloep.format() +
+                                    ". Forventet årlig inntekt benyttet i beregningen er " + periode.forventetAarligInntekt.format() + "."
                         },
                         english {
-                            +"The National Insurance basic amount (G) used in the calculation is NOK " + periode.grunnbeloep.format(denominator = false) +
-                                    ". Future annual income used in the calculation is NOK " + periode.forventetAarligInntekt.format(denominator = false) + "."
+                            +"The National Insurance basic amount (G) used in the calculation is " + periode.grunnbeloep.format() +
+                                    ". Future annual income used in the calculation is NOK " + periode.forventetAarligInntekt.format() + "."
                         },
                     )
                 }
@@ -358,12 +358,12 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
         paragraph {
             text(
                 bokmal {
-                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + pesysData.beregning.grunnbeloep.format(denominator = false) +
-                            " kroner. Forventet årlig inntekt benyttet i beregningen er " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + " kroner."
+                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " + pesysData.beregning.grunnbeloep.format() +
+                            ". Forventet årlig inntekt benyttet i beregningen er " + pesysData.beregning.forventetAarligInntekt.format() + "."
                 },
                 english {
-                    +"The National Insurance basic amount (G) used in the calculation is " + pesysData.beregning.grunnbeloep.format(denominator = false) +
-                            " NOK. Future annual income used in the calculation is NOK " + pesysData.beregning.forventetAarligInntekt.format(denominator = false) + "."
+                    +"The National Insurance basic amount (G) used in the calculation is " + pesysData.beregning.grunnbeloep.format() +
+                            ". Future annual income used in the calculation is NOK " + pesysData.beregning.forventetAarligInntekt.format() + "."
                 },
             )
         }
