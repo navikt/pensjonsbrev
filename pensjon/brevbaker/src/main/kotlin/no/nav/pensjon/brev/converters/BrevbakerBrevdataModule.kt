@@ -8,6 +8,8 @@ import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgBrevdata
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 
 object BrevbakerBrevdataModule : SimpleModule() {
     private fun readResolve(): Any = BrevbakerBrevdataModule
@@ -19,6 +21,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
     init {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
+        addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -27,5 +30,13 @@ object BrevbakerBrevdataModule : SimpleModule() {
     private object RedigerbarBrevdataDeserializer : JsonDeserializer<RedigerbarBrevdata<*,*>>() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): RedigerbarBrevdata<*,*> =
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
+    }
+    private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
+            val readValue = ctxt.readValue(parser, Any::class.java)
+            return object : SaksbehandlervalgIDSL {
+                override val verdier = readValue as Map<String, SaksbehandlervalgVerdi>
+            }
+        }
     }
 }

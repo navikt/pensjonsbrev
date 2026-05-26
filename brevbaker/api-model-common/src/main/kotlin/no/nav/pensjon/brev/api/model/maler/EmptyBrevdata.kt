@@ -15,4 +15,6 @@ data object EmptyRedigerbarBrevdata : RedigerbarBrevdata<EmptySaksbehandlerValg,
 
 data object EmptyVedleggData : VedleggData
 
-data object SaksbehandlervalgIDSL : SaksbehandlerValgBrevdata
+interface SaksbehandlervalgIDSL : SaksbehandlerValgBrevdata {
+    val verdier: Map<String, SaksbehandlervalgVerdi>
+}

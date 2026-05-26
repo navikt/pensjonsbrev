@@ -67,7 +67,15 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         template: LetterTemplate<*, BrevbakerBrevdata>,
     ): BrevbakerBrevdata =
         try {
-            objectMapper.convertValue(letterData, template.letterDataType.java)
+            // TODO: Trur dette er ein for enkel if. Utfordringa er at vi ikkje veit typen på letterData her utan reflection, det er eit enkelt map
+            if (template.saksbehandlervalg.isNotEmpty()) {
+                objectMapper.convertValue(mapOf(
+                    "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
+                    "saksbehandlerValg" to mapOf("verdier" to template.saksbehandlervalg)
+                ), template.letterDataType.java)
+            } else {
+                objectMapper.convertValue(letterData, template.letterDataType.java)
+            }
         } catch (e: IllegalArgumentException) {
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }

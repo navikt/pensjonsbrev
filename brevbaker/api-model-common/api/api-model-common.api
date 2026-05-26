@@ -275,11 +275,8 @@ public abstract interface class no/nav/pensjon/brev/api/model/maler/Saksbehandle
 	public abstract fun getDisplayText ()Ljava/lang/String;
 }
 
-public final class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
-	public static final field INSTANCE Lno/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL;
-	public fun equals (Ljava/lang/Object;)Z
-	public fun hashCode ()I
-	public fun toString ()Ljava/lang/String;
+public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgIDSL : no/nav/pensjon/brev/api/model/maler/SaksbehandlerValgBrevdata {
+	public abstract fun getVerdier ()Ljava/util/Map;
 }
 
 public abstract interface class no/nav/pensjon/brev/api/model/maler/SaksbehandlervalgVerdi {
