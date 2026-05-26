@@ -41,6 +41,9 @@ import no.nav.pensjon.brev.maler.legacy.redigerbar.OpphoerGjenlevendepensjon
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvAlderspensjonGjenlevenderettigheter
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakEndringAvUttaksgrad
 import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereMinstesatsRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmLavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar
+import no.nav.pensjon.brev.maler.legacy.redigerbar.VedtakOmOktMinsteIFURedigerbar
 import no.nav.pensjon.brev.maler.redigerbar.AvslagForLiteTrygdetidAP
 import no.nav.pensjon.brev.maler.redigerbar.AvslagPaaGjenlevenderettIAlderspensjon
 import no.nav.pensjon.brev.maler.redigerbar.BekreftelsePaaFlyktningstatus
@@ -178,6 +181,9 @@ object ProductionTemplates : AllTemplates {
         VedtakOmFjerningAvOmsorgsopptjening,
         VedtakOmInnvilgelseAvOmsorgspoeng,
         VedtakOmLavereMinstesatsRedigerbar,
+        VedtakOmOktMinsteIFURedigerbar,
+        VedtakOmLavereReduksjonsprosentRedigerbar,
+        VedtakOmOktMinsteIFULavereReduksjonsprosentRedigerbar,
     )
 
     override fun hentAutobrevmaler() = autobrev

@@ -41,6 +41,8 @@ const brevvelgerSearchSchema = baseSearchSchema.extend({
   brevId: z.coerce.number().optional(),
   idTSSEkstern: z.coerce.string().optional(),
   templateId: z.coerce.string().optional(),
+  enhetsId: z.coerce.string().optional(),
+  vedtaksId: z.coerce.string().optional(),
 });
 
 type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
@@ -62,6 +64,7 @@ export interface SubmitTemplateOptions {
 
 export function BrevvelgerPage() {
   const { saksId } = Route.useParams();
+  const { enhetsId } = Route.useSearch();
   const startTime = useRef(0);
 
   useEffect(() => {
@@ -71,6 +74,7 @@ export function BrevvelgerPage() {
       trackEvent("tid brukt i brevvelger", {
         varighetSekunder,
         varighetMinutter: Math.round(varighetSekunder / 60),
+        enhetsId,
       });
     };
   }, []);
@@ -183,7 +187,7 @@ function Brevmaler({
   handleOpenAccordionChange: (categoryKey: string) => void;
 }) {
   const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
-  const { templateId } = Route.useSearch();
+  const { templateId, enhetsId } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const favoritter = useQuery(getFavoritter).data ?? [];
@@ -334,7 +338,15 @@ function Brevmaler({
                           }
                           icon={<BrevSystemIcon brevsystem={template.brevsystem} />}
                           key={template.id}
-                          onClick={() =>
+                          onClick={() => {
+                            if (template.brevsystem === BrevSystem.Exstream) {
+                              trackEvent("exstream brev valgt", {
+                                brevkode: template.id,
+                                brevtittel: template.name,
+                                enhetsId,
+                              });
+                            }
+
                             navigate({
                               to: "/saksnummer/$saksId/brevvelger",
                               search: (s) => ({
@@ -343,8 +355,8 @@ function Brevmaler({
                                 brevId: undefined,
                                 enhetsId: undefined,
                               }),
-                            })
-                          }
+                            });
+                          }}
                           title={template.name}
                         />
                       ))}

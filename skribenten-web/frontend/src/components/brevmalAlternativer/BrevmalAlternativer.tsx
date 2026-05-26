@@ -91,26 +91,15 @@ const BrevmalAlternativer = (props: {
             <Tabs
               css={css`
                 width: 100%;
-
                 display: flex;
                 flex-direction: column;
                 gap: var(--ax-space-20);
-
-                .aksel-tabs__scroll-button {
-                  /* vi har bare 2 tabs, så det gir ikke mening tab listen skal være scrollbar. Den tar i tillegg mye ekstra plass når skjermen er <1024px */
-                  display: none;
-                }
               `}
               defaultValue={BrevAlternativTab.TEKSTER}
               fill
               size="small"
             >
-              <Tabs.List
-                css={css`
-                  display: grid;
-                  grid-template-columns: repeat(2, 1fr);
-                `}
-              >
+              <Tabs.List>
                 <Tabs.Tab label="Tekster" value={BrevAlternativTab.TEKSTER} />
                 <Tabs.Tab label="Overstyring" value={BrevAlternativTab.OVERSTYRING} />
               </Tabs.List>
