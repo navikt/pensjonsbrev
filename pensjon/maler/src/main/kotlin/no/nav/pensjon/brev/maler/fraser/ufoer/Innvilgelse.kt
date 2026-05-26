@@ -1,12 +1,15 @@
 package no.nav.pensjon.brev.maler.fraser.ufoer
 
 import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10
+import no.nav.pensjon.brev.api.model.maler.legacy.pegruppe10.PEgruppe10Selectors.personsak
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.BarnetilleggUTDto
+import no.nav.pensjon.brev.api.model.maler.legacy.personsak.PersonSakSelectors.foedselsdato
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
 import no.nav.pensjon.brev.maler.fraser.common.Constants.UFOERE_SOK_URL
 import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.maler.legacy.*
 import no.nav.pensjon.brev.maler.legacy.fraser.*
+import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerBruktIBeregningUTLegacy
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AttachmentTemplate
 import no.nav.pensjon.brev.template.Expression
@@ -348,6 +351,15 @@ object Innvilgelse {
                 }
             }
 
+            showIf(ungUforResultat.equalTo("oppfylt") and pe.vedtaksdata_beregningsdata_beregningufore_uforetrygdberegning_mottarminsteytelse()) {
+                paragraph {
+                    text(
+                        bokmal { +"Du får minsteytelsen som ung ufør som hovedregel bare så lenge du bor i Norge. Hvis du flytter ut av Norge og mister medlemskapet i folketrygden, er det opptjeningen din i folketrygden som bestemmer hvor mye du får i uføretrygd. Hvis du flytter tilbake til Norge får du tilbake minsteytelsen som ung ufør." },
+                        nynorsk { +"Du får minsteyting som ung ufør som hovudregel berre så lenge du bur i Noreg. Dersom du flyttar ut av Noreg og mistar medlemskapen i folketrygda, er det oppteninga di i folketrygda som avgjer kor mykje du får i uføretrygd. Dersom du flyttar tilbake til Noreg, får du tilbake minsteyting som ung ufør." },
+                    )
+                }
+            }
+
             showIf((ungUforResultat.equalTo("oppfylt"))) {
                 paragraph {
                     text(
@@ -421,16 +433,7 @@ object Innvilgelse {
                 }
             }
 
-            showIf(((pe.grunnlag_persongrunnlagsliste_brukerflyktning()) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
-                paragraph {
-                    text(
-                        bokmal { +"Du er innvilget flyktningstatus fra Utlendingsdirektoratet, og oppfyller derfor vilkåret om medlemskap i folketrygden. " },
-                        nynorsk { +"Du er innvilga flyktningstatus frå Utlendingsdirektoratet, og oppfyller derfor vilkåret om medlemskap i folketrygda." },
-                    )
-                }
-            }
-
-            showIf(((yrkesskadeResultat).equalTo("oppfylt") and not((pe.grunnlag_persongrunnlagsliste_brukerflyktning())) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
+            showIf(yrkesskadeResultat.equalTo("oppfylt") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()) {
                 paragraph {
                     text(
                         bokmal { +"Du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, og oppfyller derfor vilkåret om medlemskap i folketrygden." },
@@ -439,7 +442,7 @@ object Innvilgelse {
                 }
             }
 
-            showIf((ungUforResultat.equalTo("oppfylt") and (yrkesskadeResultat).notEqualTo("oppfylt") and not((pe.grunnlag_persongrunnlagsliste_brukerflyktning())) and (pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()))) {
+            showIf(ungUforResultat.equalTo("oppfylt") and yrkesskadeResultat.notEqualTo("oppfylt") and pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()) {
                 paragraph {
                     text(
                         bokmal { +"Du ble ufør før du fylte 26 år. Du var medlem i folketrygden, og hadde vært det i minst ett år før du søkte om uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden." },
@@ -460,9 +463,106 @@ object Innvilgelse {
             showIf(pe.vedtaksbrev_vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_inngangunntak().equalTo("halv_minpen_ufp_ut")) {
                 paragraph {
                     text(
-                        bokmal { +"Du var medlem i folketrygden på uføretidspunktet og har tjent opp rett til minst halvparten av full minsteytelse for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden." },
-                        nynorsk { +"Du var medlem i folketrygda på uføretidspunktet og har tent opp rett til minst halvparten av full minsteyting for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygda." },
+                        bokmal { +"Du var medlem i folketrygden på uføretidspunktet og har tjent opp rett til minst halvparten av full minsteytelse for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden. " },
+                        nynorsk { +"Du var medlem i folketrygda på uføretidspunktet og har tent opp rett til minst halvparten av full minsteyting for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygda. " },
                     )
+                }
+            }
+        }
+    }
+
+    data class UnntaksregelMedlemskapUtland(
+        val pe: Expression<PEgruppe10>,
+        val oppfyltvedsammenlegging: Expression<Boolean>,
+        val yrkesskadeResultat: Expression<String>,
+        val innvilgetEtter12_2_andreledd: Expression<Boolean> = false.expr(),
+        val innvilgetEtter12_2_tredjeledd: Expression<Boolean> = false.expr(),
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            showIf(oppfyltvedsammenlegging){
+                title1 {
+                    text (
+                        bokmal { +"Du oppfyller vilkår om medlemskap gjennom sammenlegging"},
+                        nynorsk { +"Du oppfyller vilkår om medlemskap gjennom samanslåing" },
+                    )
+                }
+                paragraph {
+                    text (
+                        bokmal { + "Et vilkår for rett til uføretrygd er at du har vært medlem i folketrygden de siste " + pe.aars_trygdetid() + " årene fram til uføretidspunktet. Dette vilkåret kan oppfylles ved å regne med trygdeperioder i andre EØS-land. Du fyller dette vilkåret gjennom sammenlegging med " + fritekst("land") + " tid." },
+                        nynorsk { + "Eit vilkår for rett til uføretrygd er at du har vore medlem i folketrygda dei siste " + pe.aars_trygdetid() + " åra fram til uføretidspunktet. Dette vilkåret kan oppfyllast ved å rekne med trygdeperiodar i andre EØS-land. Du fyller dette vilkåret gjennom samanslåing med " + fritekst("land") + " tid." },
+                    )
+                }
+            }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_vilkar_forutgaendemedlemskap_unntakfraforutgaendemedlemskap()) {
+                title1 {
+                    text(
+                        bokmal { +"Du oppfyller unntaksregel om medlemskap" },
+                        nynorsk { +"Du oppfyller unntaksregel om medlemskap" },
+                    )
+                }
+
+                showIf(yrkesskadeResultat.equalTo("oppfylt")) {
+                    paragraph {
+                        text(
+                            bokmal { +"Du er innvilget uføretrygd etter særbestemmelser for yrkesskade eller yrkessykdom, og oppfyller derfor vilkåret om medlemskap i folketrygden." },
+                            nynorsk { +"Du er innvilga uføretrygd etter særreglar for yrkesskade eller yrkessjukdom, og oppfyller derfor vilkåret om medlemskap i folketrygda." },
+                        )
+                    }
+                }
+
+                showIf(innvilgetEtter12_2_andreledd) {
+                    paragraph {
+                        text(
+                            bokmal { +"Ut fra opplysninger vi har fått fra utenlandske trygdemyndigheter, oppfyller du ikke vilkåret om å ha vært medlem av folketrygden og/eller medlem i avtaleland de siste fem årene fram til uføretidspunktet. " },
+                            nynorsk { +"Ut fra opplysningar vi har fått frå utanlandske trygdemyndigheiter, oppfyller du ikkje vilkåret om å ha vore medlem av folketrygda og/eller medlem i avtaleland dei siste fem åra fram til uføretidspunktet. " },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i §12-2 andre ledd, du ble ufør før du fylte 26 år og da var medlem av folketrygden eller avtaleland, eller du ble ufør etter fylte 16 år og har vært medlem av folketrygden eller avtaleland med unntak av maksimum fem år. " },
+                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i §12-2 andre ledd, du blei ufør før du fylte 26 år og da var medlem av folketrygda eller avtaleland, eller du blei ufør etter fylte 16 år og har vært medlem av folketrygda eller avtaleland med unntak av maksimum fem år. " },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget " },
+                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget " },
+                        )
+                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                        text(
+                            bokmal { +"."},
+                            nynorsk { +"." }
+                        )
+                    }
+                }.orShowIf(innvilgetEtter12_2_tredjeledd) {
+                    paragraph {
+                        text(
+                            bokmal { +"Ut fra opplysninger vi har fått fra utenlandske trygdemyndigheter, oppfyller du ikke vilkåret om å ha vært medlem av folketrygden og/eller medlem i avtaleland de siste fem årene fram til uføretidspunktet. " },
+                            nynorsk { +"Ut fra opplysningar vi har fått frå utanlandske trygdemyndigheiter, oppfyller du ikkje vilkåret om å ha vore medlem av folketrygda og/eller medlem i avtaleland dei siste fem åra fram til uføretidspunktet. " },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du var medlem i folketrygden eller avtaleland på uføretidspunktet og har tjent opp rett til minst halvparten av full minsteytelse for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygden. " },
+                            nynorsk { +"Du var medlem i folketrygda eller avtaleland på uføretidspunktet og har tent opp rett til minst halvparten av full minsteyting for uføretrygd. Du oppfyller derfor vilkåret om medlemskap i folketrygda. " },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Uføretrygden din er innvilget etter unntaksregelen i § 12-2 tredje ledd. Denne regelen sier at du ikke får beregnet fremtidig trygdetid, jf. folketrygdloven § 12-2 fjerde ledd. " },
+                            nynorsk { +"Uføretrygda di er innvilga etter unntaksregelen i § 12-2 tredje ledd. Denne regelen seier at du ikkje får berekna framtidig trygdetid, jf. folketrygdlova § 12-2 fjerde ledd. " },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du er innvilget uføretrygd gjennom sammenlegging av tilsvarende perioder i EØS-land/land Norge har trygdeavtale med. Uføretrygden din er derfor beregnet etter egne regler i avtalen. Det at din uføretrygd ikke er beregnet utelukkende ut fra opptjeningen din i Norge, påvirker størrelsen på beløpet. Du kan lese mer om hvordan uføretrygden din er beregnet i vedlegget "},
+                            nynorsk { +"Du er innvilga uføretrygd gjennom samanslåing av tilsvarande periodar i EØS-land/land Noreg har trygdeavtale med. Uføretrygda di er derfor berekna etter eigne reglar i avtalen. Det at uføretrygda di ikkje er berekna utelukkande ut fra oppteninga di i Noreg, påverkar storleiken på beløpet. Du kan lese meir om korleis uføretrygda di er berekna i vedlegget " },
+                        )
+                        namedReference(vedleggOpplysningerBruktIBeregningUTLegacy)
+                        text(
+                            bokmal { +"."},
+                            nynorsk { +"." }
+                        )
+                    }
                 }
             }
         }
@@ -616,6 +716,12 @@ object Innvilgelse {
                         text(
                             bokmal { +"Du har fått innvilget uføretrygd fra " + virkningsdato.format() + ". Dette kaller vi virkningstidspunktet. Fram til dette vil du få arbeidsavklaringspenger." },
                             nynorsk { +"Du har fått innvilga uføretrygd frå " + virkningsdato.format() + ". Dette kallar vi verknadstidspunktet. Fram til dette kjem du til å få arbeidsavklaringspengar." },
+                        )
+                    }
+                    paragraph {
+                        text(
+                            bokmal { +"Du må huske å sende meldekort ut inneværende måned." },
+                            nynorsk { +"Du må hugse å sende meldekort ut inneverande månad." },
                         )
                     }
                 }
@@ -1561,8 +1667,12 @@ object Innvilgelse {
     data class Uforetidspunkt(
         val pe: Expression<PEgruppe10>,
         val uforetidspunkt: Expression<LocalDate>,
-    ) : OutlinePhrase<LangBokmalNynorsk>() {
+    ) : RedigerbarOutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            val foedselsdato = pe.personsak.foedselsdato
+            val erMndEtterFoedsel = erUforetidspunktMaanedEtterFoedsel(uforetidspunkt, foedselsdato)
+            val visUforetidspunkt = ifElse(erMndEtterFoedsel, foedselsdato.formatMonthYear(), uforetidspunkt.formatMonthYear())
+
             title1 {
                 text(
                     bokmal { +"Dette er uføretidspunktet ditt" },
@@ -1573,29 +1683,35 @@ object Innvilgelse {
             showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst halvparten." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst halvparten." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 50 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 50 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
                     )
                 }
             }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
                 paragraph {
                     text(
-                        bokmal { +"Du ble ufør i " + uforetidspunkt.formatMonthYear() + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
-                        nynorsk { +"Du blei ufør i " + uforetidspunkt.formatMonthYear() + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
+                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
+                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
                     )
                 }
             }
             paragraph {
                 text(
-                    bokmal { +"Dette er uføretidspunktet ditt, og avgjør hvilke inntektsår vi legger til grunn for beregningen din." },
-                    nynorsk { +"Dette er uføretidspunktet ditt, og det avgjer kva inntektsår vi legg til grunn for berekninga di." },
+                    bokmal { +"Vi ser på hvordan helseutfordringene påvirker inntektsevnen din og om de fører til at inntektsevnen blir varig nedsatt. " },
+                    nynorsk { +"Vi ser på korleis helseutfordringane påverkar inntektsevna di og om dei fører til at inntektsevna blir varig sett ned. " },
+                )
+            }
+            paragraph {
+                text(
+                    bokmal { +"Uføretidspunktet ditt er blant annet avgjørende for vurderingen av om du har rett til uføretrygd og for hvilke år som legges til grunn for beregningen av uføretrygden din. " },
+                    nynorsk { +"Uføretidspunktet ditt er mellom anna avgjerande for vurderinga av om du har rett til uføretrygd og for kva år som blir lagt til grunn for utrekninga av uføretrygda di. " },
                 )
             }
         }

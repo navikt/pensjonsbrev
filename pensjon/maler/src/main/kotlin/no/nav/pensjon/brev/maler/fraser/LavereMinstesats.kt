@@ -18,6 +18,7 @@ import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brev.maler.fraser.common.Felles
+import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 object LavereMinstesats {
@@ -185,12 +186,12 @@ object LavereMinstesats {
             showIf(!data.harMinstesats) {
                 paragraph {
                     text(
-                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Dette gir deg en høyere uføretrygd. Din egenopptjening er kroner " + data.egenopptjentUforetrygd.format() + ". " },
-                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Dette gir deg ei høgare uføretrygd. Eigenoppteninga di er kroner " + data.egenopptjentUforetrygd.format() + ". " },
+                        bokmal { +"Siden din egenopptjening er høyere enn minstesatsen (2,329 G), bruker vi din opptjening i beregningen. Din egenopptjening er kroner " + data.egenopptjentUforetrygd.format() + ". " },
+                        nynorsk { +"Sidan eigenoppteninga di er høgare enn minstesatsen (2,329 G), brukar vi oppteninga di i berekninga. Eigenoppteninga di er kroner " + data.egenopptjentUforetrygd.format() + ". " },
                     )
                 }
             }
-            showIf(data.avkortetPgaRedusertTrygdetid) {
+            showIf(data.avkortetPgaRedusertTrygdetid and data.harMinstesats) {
                 paragraph {
                     text(
                         bokmal { +"Du har avkortet uføretrygd på grunn av redusert trygdetid. Derfor er minstesatsen din lavere enn 2,329 G." },
