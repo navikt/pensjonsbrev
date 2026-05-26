@@ -81,7 +81,7 @@ abstract class LocalizedFormatter<in T>(doc: Documentation? = null) : BinaryOper
                             Language.English -> "NOK $it"
                         }
                     } else it
-                }.replace(' ', NON_BREAKING_SPACE)
+                }
     }
 
     object TelefonnummerFormat : LocalizedFormatter<Telefonnummer>() {
