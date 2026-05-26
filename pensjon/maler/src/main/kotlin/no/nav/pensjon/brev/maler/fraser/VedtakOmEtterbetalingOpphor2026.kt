@@ -70,17 +70,6 @@ class VedtakOmEtterbetalingOpphor2026 {
                             "${Constants.KLAGE_URL}." },
                 )
             }
-            paragraph {
-                text(
-                    bokmal { +"I vedlegget " },
-                    nynorsk { +"I vedlegget " },
-                )
-                namedReference(vedleggDineRettigheterOgPlikterUfoere)
-                text(
-                    bokmal { +" får du vite mer om hvordan du går fram for å klage." },
-                    nynorsk { +" får du vite meir om korleis du går fram for å klage." },
-                )
-            }
         }
     }
 }
