@@ -30,10 +30,13 @@ class ReplaceAwareEditScriptCursor<T : Any>(editScript: EditScript<T>) {
                 deleteCursor.requireAndConsume<E>()
                 Delete(deletePeek.first)
             }
-            insertPeek != null || deletePeek != null -> {
-                if (insertPeek != null) insertCursor.requireAndConsume<E>()
-                if (deletePeek != null) deleteCursor.requireAndConsume<E>()
-                Unchanged((insertPeek ?: deletePeek)!!.first)
+            insertPeek != null && deletePeek != null -> {
+                require(insertPeek.first == deletePeek.first) {
+                    "Cursors desynchronized: Unchanged tokens must be equal, but got insert=${insertPeek.first} and delete=${deletePeek.first}"
+                }
+                insertCursor.requireAndConsume<E>()
+                deleteCursor.requireAndConsume<E>()
+                Unchanged(insertPeek.first)
             }
             else -> null
         }

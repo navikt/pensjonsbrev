@@ -225,7 +225,7 @@ class EditLetterWordDiffTest {
             inserts,
         )
         assertEquals(
-            listOf(DiffSegment(BlockContentIndex(0, 0), 6, 11)), // "world" in old block 0
+            listOf(DiffSegment(BlockContentIndex(1, 0), 6, 11)), // "world" in old block 0
             deletes,
         )
     }
