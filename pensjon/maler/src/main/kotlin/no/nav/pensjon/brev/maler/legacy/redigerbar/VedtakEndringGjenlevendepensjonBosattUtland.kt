@@ -44,6 +44,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
+import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
@@ -52,10 +53,13 @@ import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
+import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
+import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
@@ -67,6 +71,7 @@ import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
+import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // PE_GP_04_029 Vedtak endring av gjenlevendepensjon (bosatt utland)
@@ -236,114 +241,28 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
                             column(columnSpan = 1, alignment = RIGHT) {
                                 text(
-                                    bokmal { +"Pensjon per måned før fradrag for inntekt" },
-                                    english { +"Pension per month before deduction for income" },
+                                    bokmal { +"Pensjon per måned før fradrag for inntekt (kr)" },
+                                    english { +"Pension per month before deduction for income (NOK)" },
                                 )
                             }
                             column(columnSpan = 1, alignment = RIGHT) {
                                 text(
-                                    bokmal { +"Pensjon per måned etter fradrag for inntekt" },
-                                    english { +"Pension per month after deduction for income" },
+                                    bokmal { +"Pensjon per måned etter fradrag for inntekt (kr)" },
+                                    english { +"Pension per month after deduction for income (NOK)" },
                                 )
                             }
                         },
                     ) {
-                        row {
-                            cell {
-                                text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" })
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.brutto.format(denominator = false) },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
-                                )
-                            }
-                        }
+                        bruttoNettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.grunnpensjon)
                         ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +tp.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.brutto.format(denominator = false) },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
+                            bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tp)
                         }
-                        ifNotNull(pesysData.beregning.saertillegg) { st ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Særtillegg" }, english { +"Special supplement" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +st.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.brutto.format(denominator = false) },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                        english { +"Fixed costs when institutionalised" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +fu.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.brutto.format(denominator = false) },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.familietillegg) { ft ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Familietillegg" }, english { +"Family supplement" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +ft.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.brutto.format(denominator = false) },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
+                        bruttoNettoRadIfNotNull(this.pesysData.beregning.saertillegg, "Særtillegg", "Special supplement")
+
+                        bruttoNettoRadIfNotNull(pesysData.beregning.fasteUtgifter, "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised")
+
+                        bruttoNettoRadIfNotNull(pesysData.beregning.familietillegg, "Familietillegg", "Family supplement")
+
                         row {
                             cell {
                                 text(
@@ -352,16 +271,10 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 )
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.brutto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.brutto.format(denominator = false) }, BOLD
-                                )
+                                includePhrase(KronerText(pesysData.beregning.brutto, BOLD))
                             }
                             cell {
-                                text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) }, BOLD
-                                )
+                                includePhrase(KronerText(pesysData.beregning.netto, BOLD))
                             }
                         }
                     }
@@ -412,8 +325,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 alignment = RIGHT,
                             ) {
                                 text(
-                                    bokmal { +"Pensjon per måned" },
-                                    english { +"Pension per month" },
+                                    bokmal { +"Pensjon per måned (kr)" },
+                                    english { +"Pension per month (NOK)" },
                                 )
                             }
                         }
@@ -424,8 +337,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
                                 )
                             }
                         }
@@ -436,8 +349,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +tp.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + tp.netto.format(denominator = false) },
+                                        bokmal { +tp.netto.format(denominator = false) },
+                                        english { +tp.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -449,8 +362,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +st.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + st.netto.format(denominator = false) },
+                                        bokmal { +st.netto.format(denominator = false) },
+                                        english { +st.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -465,8 +378,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +fu.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + fu.netto.format(denominator = false) },
+                                        bokmal { +fu.netto.format(denominator = false) },
+                                        english { +fu.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -478,8 +391,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                                 }
                                 cell {
                                     text(
-                                        bokmal { +ft.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + ft.netto.format(denominator = false) },
+                                        bokmal { +ft.netto.format(denominator = false) },
+                                        english { +ft.netto.format(denominator = false) },
                                     )
                                 }
                             }
@@ -493,8 +406,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             }
                             cell {
                                 text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.netto.format(denominator = false) }, BOLD
+                                    bokmal { +pesysData.beregning.netto.format(denominator = false) },
+                                    english { +pesysData.beregning.netto.format(denominator = false) }, BOLD
                                 )
                             }
                         }
@@ -773,24 +686,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                     )
                 }
             }.orShowIf(saksbehandlerValg.forventetInntektNivaa.equalTo(ForventetInntektNivaa.FRITEKST)) {
-                paragraph {
-                    text(
-                        bokmal {
-                            +fritekst(
-                                "Nav har som en av sine hovedoppgaver å bistå mottakere av trygdeytelser til å komme i arbeid og aktivitet. " +
-                                        "Har du behov for hjelp til å komme i arbeid, forbedre din kompetanse, eller øke din stillingsprosent, " +
-                                        "kan du ta kontakt med ditt lokale Nav kontor."
-                            )
-                        },
-                        english {
-                            +fritekst(
-                                "One of the main tasks of <FF01_NAV> is to assist recipients of national insurance benefits in getting work or starting work-related activities. " +
-                                        "Contact your local <FF01_NAV> office if you need help in finding work, " +
-                                        "improving your skills or increasing your labour market participation."
-                            )
-                        }
-                    )
-                }
+                paragraph { text(bokmal { +fritekst("Fritekst") }, english { +fritekst("Fritekst") }) }
             }
 
             // Behov for oppfølging — valgfritt avsnitt (Saksbehandlervalg.harBehovForOppfoelging)
@@ -845,7 +741,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                 }
 
                 // Skatt-fork (Saksbehandlervalg.skattAlternativ)
-                showIf(saksbehandlerValg.skattAlternativ.notEqualTo(SkattAlternativ.INFORMASJON_OM_SKATT)) {
+                showIf(saksbehandlerValg.skattAlternativ.equalTo(SkattAlternativ.INFORMASJON_OM_SKATT)) {
                     paragraph {
                         text(
                             bokmal {
@@ -865,7 +761,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.skattAlternativ.notEqualTo(SkattAlternativ.KILDESKATT)) {
+                }.orShowIf(saksbehandlerValg.skattAlternativ.equalTo(SkattAlternativ.KILDESKATT)) {
                     paragraph {
                         text(
                             bokmal {
@@ -899,7 +795,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                    //TODO Jeg har sjekket kontakt informasjon ut hos Skatteetaten. Telefonummer er riktig - +47 22 07 70 00.
+                    //Jeg har sjekket kontakt informasjon ut hos Skatteetaten. Telefonummer er riktig - +47 22 07 70 00.
                     // Postadressen er gammel og bør være Skatteetaten, Postboks 9200 Grønland, 0134 Oslo.
                     // Ellers kan brukere skrive til Skatteetaten ved å logge inn på www.skatteetaten.no/min-side
                 }
@@ -907,7 +803,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // ---- PE_GP_04_028_tekst6: etterbetaling / feilutbetaling (kun når netto >= 0) ----
             showIf(pesysData.beregning.netto.greaterThanOrEqual(0)) {
-                showIf(saksbehandlerValg.utbetalingAlternativ.notEqualTo(UtbetalingAlternativ.ETTERBETALING)) {
+                showIf(saksbehandlerValg.utbetalingAlternativ.equalTo(UtbetalingAlternativ.ETTERBETALING)) {
                     title1 {
                         text(
                             bokmal { +"Etterbetaling" },
@@ -946,7 +842,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShowIf(saksbehandlerValg.utbetalingAlternativ.notEqualTo(UtbetalingAlternativ.FEILUTBETALING)) {
+                }.orShow {
                     // FEILUTBETALING
                     title1 {
                         text(
@@ -1111,6 +1007,26 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
         includeAttachmentIfNotNull(vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy, pesysData.oversiktOverPensjonensStoerrelse)
         includeAttachment(vedleggFolketrygdenBokmalEnglish)
     }
+
+    private fun TableScope<LanguageSupport.Double<Bokmal, English>, VedtakEndringGjenlevendepensjonBosattUtlandDto>.bruttoNettoRadIfNotNull(
+        ytelseskomponent: Expression<VedtakEndringGjenlevendepensjonBosattUtlandDto.Komponent?>,
+        bokmal: String, english: String
+    ) {
+        ifNotNull(ytelseskomponent) {
+            bruttoNettoRad(bokmal, english, it)
+        }
+    }
+
+    private fun TableScope<LanguageSupport.Double<Bokmal, English>, VedtakEndringGjenlevendepensjonBosattUtlandDto>.bruttoNettoRad(bokmal: String, english: String, ytelseskomponent: Expression<VedtakEndringGjenlevendepensjonBosattUtlandDto.Komponent>) {
+        row {
+            cell {
+                text(bokmal { +bokmal }, english { +english })
+            }
+            cell { includePhrase(KronerText(ytelseskomponent.brutto)) }
+            cell { includePhrase(KronerText(ytelseskomponent.netto)) }
+        }
+    }
+
 }
 
 

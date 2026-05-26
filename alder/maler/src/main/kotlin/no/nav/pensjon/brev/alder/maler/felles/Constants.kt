@@ -16,12 +16,17 @@ object Constants {
     const val NAV_KONTAKTSENTER_OPEN_HOURS = "09:00-15:00"
     private val navKontaktsenterPensjon = Telefonnummer("55553334")
     val NAV_KONTAKTSENTER_TELEFON_PENSJON = navKontaktsenterPensjon.format()
+    private val skattKontaktTelefonnummer = Telefonnummer("80080000")
+    val SKATT_KONTAKT_TLF = skattKontaktTelefonnummer.format()
     const val FAMILIEPLEIER_URL = "$NAV_URL/tidligere-familiepleier"
     const val NAV_KONTAKTSENTER_TELEFON = "55 55 33 33"
     const val GJENLEVENDEPENSJON_URL = "$NAV_URL/gjenlevendepensjon"
     const val UFOERETRYGD_URL = "$NAV_URL/uforetrygd"
     const val OMSORGSOPPTJENING_URL = "$NAV_URL/omsorgsopptjening"
     const val AFP_OFFENTLIG_URL = "$NAV_URL/afp-offentlig"
+    const val AFP_PRIVAT_URL = "$NAV_URL/afpprivat"
+    const val AFP_PRIVAT_UFORETRYGD_URL = "$NAV_URL/afpprivat-uføretrygd"
+    const val AFP_ETTEROPPGJOER_URL = "$NAV_URL/afp-etteroppgjor"
     const val ALDERSPENSJON_GJENLEVENDE_URL = "$NAV_URL/alderspensjon-gjenlevende"
     const val FORSOERGINGSTILLEGG_URL = "$NAV_URL/forsorgingstillegg"
     const val PERSONVERNERKLAERING_URL = "$NAV_URL/personvernerklaering"

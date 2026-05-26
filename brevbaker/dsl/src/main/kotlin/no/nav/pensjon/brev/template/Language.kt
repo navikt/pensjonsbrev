@@ -1,6 +1,7 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.TextOnlyScope
 import java.util.Locale
 
 sealed class Language : StableHash {
@@ -27,4 +28,10 @@ fun <Lang1 : Language, Lang2 : Language, LetterData : Any> OutlineOnlyScope<Lang
     // Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
     @Suppress("UNCHECKED_CAST")
     (phrase as OutlinePhrase<LanguageSupport.Double<Lang1, Lang2>>).apply(this)
+}
+
+fun <Lang1 : Language, Lang2 : Language, LetterData : Any> TextOnlyScope<LanguageSupport.Double<Lang1, Lang2>, LetterData>.includePhrase(phrase: TextOnlyPhrase<out LanguageSupport.Triple<Lang1, *, Lang2>>) {
+    // Det er trygt å caste her fordi receiver og phrase begge har Lang1 og Lang2.
+    @Suppress("UNCHECKED_CAST")
+    (phrase as TextOnlyPhrase<LanguageSupport.Double<Lang1, Lang2>>).apply(this)
 }
