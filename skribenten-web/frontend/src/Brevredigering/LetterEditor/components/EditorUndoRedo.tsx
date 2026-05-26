@@ -16,6 +16,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
     <HStack gap="space-8">
       <Tooltip content={tooltipText.undo}>
         <Button
+          aria-label="Angre (Undo)"
           data-color="neutral"
           disabled={!canUndo}
           icon={<ArrowUndoIcon fontSize="1.5rem" title="Angre (Undo)" />}
@@ -29,6 +30,7 @@ export const EditorUndoRedo: React.FC<EditorUndoRedoProps> = ({ undo, redo, canU
     <HStack gap="space-8">
       <Tooltip content={tooltipText.redo}>
         <Button
+          aria-label="Gjør om (Redo)"
           data-color="neutral"
           disabled={!canRedo}
           icon={<ArrowRedoIcon fontSize="1.5rem" title="Gjør om (Redo)" />}
