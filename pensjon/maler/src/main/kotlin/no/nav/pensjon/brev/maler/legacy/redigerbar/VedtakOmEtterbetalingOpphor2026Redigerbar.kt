@@ -7,7 +7,9 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetali
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.etterbetaling
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.PesysDataSelectors.hjemler
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmEtterbetalingOpphor2026RedigerbarDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.VedtakOmEtterbetalingOpphor2026
+import no.nav.pensjon.brev.maler.fraser.common.Felles
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
@@ -20,7 +22,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 @TemplateModelHelpers
 object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEtterbetalingOpphor2026RedigerbarDto> {
-
+    override val featureToggle = FeatureToggles.vedtakOmOktMinsteIFUOgReduksjonsprosent.toggle
     override val kode = Pesysbrevkoder.Redigerbar.UT_VEDTAK_ETTERBETALING_OPPHOR_2026_RED
     override val kategori = Brevkategori.VEDTAK_ENDRING_OG_REVURDERING
     override val brevkontekst = TemplateDescription.Brevkontekst.VEDTAK
@@ -42,6 +44,9 @@ object VedtakOmEtterbetalingOpphor2026Redigerbar : RedigerbarTemplate<VedtakOmEt
         }
         outline {
             includePhrase(VedtakOmEtterbetalingOpphor2026.Outline(etterbetaling = pesysData.etterbetaling, hjemler = pesysData.hjemler))
+            includePhrase(VedtakOmEtterbetalingOpphor2026.RettTilAAKlage)
+            includePhrase(Felles.RettTilInnsynRedigerbarebrev)
+            includePhrase(Felles.HarDuSpoersmaal.ufoeretrygd)
         }
     }
 }

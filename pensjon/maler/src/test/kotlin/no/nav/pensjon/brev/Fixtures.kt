@@ -125,6 +125,7 @@ object Fixtures : LetterDataFactory {
             HvilendeRettUforetrygdDto::class -> createHvilendeRettUforetrygdDto() as T
             AvslagUfoerepensjonDto::class -> createAvslagUfoerepensjonDto() as T
             VedtakOmEtterbetalingOpphor2026AutoDto::class -> createVedtakOmEtterbetalingOpphor2026AutoDto() as T
+            VedtakOmEtterbetalingOpphor2026RedigerbarDto::class -> createVedtakOmEtterbetalingOpphor2026RedigerbarDto() as T
 
             else -> throw IllegalArgumentException("Don't know how to construct: ${letterDataType.qualifiedName}")
         }
