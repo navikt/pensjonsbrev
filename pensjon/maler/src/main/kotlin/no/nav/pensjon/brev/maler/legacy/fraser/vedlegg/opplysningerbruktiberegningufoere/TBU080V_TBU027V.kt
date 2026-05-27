@@ -32,7 +32,6 @@ data class TBU080V_TBU027V(
                 //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom < DateValue("01/09/2016") AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato >=  DateValue("01/07/2024") AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true  AND  PE_UT_VilkarGjelderPersonAlder < 20  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true ))   ) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1)) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1)))
-                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20))
                 ) {
                     //[TBU080V-TBU027V]
 
@@ -41,21 +40,13 @@ data class TBU080V_TBU027V(
                             bokmal { +"Du er sikret minsteytelse fordi beregningen ut fra din egenopptjente inntekt er lavere enn minstenivået for uføretrygd. Minste årlige ytelse er 2,329 ganger folketrygdens grunnbeløp for personer som lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Er du enslig utgjør minste årlige ytelse 2,529 ganger grunnbeløpet. " },
                             nynorsk { +"Du er sikra minsteyting fordi berekninga ut frå den eigenopptente inntekta di er lågare enn minstenivået for uføretrygd. Minste årlege yting er 2,329 gonger grunnbeløpet i folketrygda for personar som lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av dei siste 18 månadene. Er du einsleg, utgjer minste årlege yting 2,529 gonger grunnbeløpet. " },
                         )
-
-                        //IF(PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true AND PE_UT_VilkarGjelderPersonAlder < 20 AND PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true) THEN      INCLUDE ENDIF
-                        showIf((pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20))) {
-                            text(
-                                bokmal { +"Er du innvilget rettighet som ung ufør, er minste årlige ytelse, fra fylte 20 år, 2,709 ganger folketrygdens grunnbeløp hvis du lever sammen med ektefelle, partner eller er i et samboerforhold som har vart i minst 12 av de siste 18 månedene. Er du enslig utgjør minste årlige ytelse 2,959 ganger grunnbeløpet." },
-                                nynorsk { +"Er du innvilga rett som ung ufør, er minste årlege yting, frå fylte 20 år, 2,709 gonger grunnbeløpet i folketrygda dersom du lever saman med ektefelle, partnar eller er i eit sambuarforhold som har vart i minst 12 av de siste 18 månadene. Er du einsleg, utgjer minste årlege yting 2,959 gonger grunnbeløpet." },
-                            )
-                        }
                     }
                 }
 
                 //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom < DateValue("01/09/2016") AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato <  DateValue("01/07/2024") AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true  AND  PE_UT_VilkarGjelderPersonAlder < 20  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true ))   ) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyLessThan(LocalDate.of(2016, 9, 1)) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1)))
-                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20))
+                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1)))
                 ) {
                     //[TBU080V-TBU027V]
 
@@ -78,7 +69,7 @@ data class TBU080V_TBU027V(
                 //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/09/2016") AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato >=  DateValue("01/07/2024") AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true  AND  PE_UT_VilkarGjelderPersonAlder < 20  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true ))   ) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1)) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1)))
-                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20))
+                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyGreaterThanOrEqual(LocalDate.of(2024, 7, 1)))
                 ) {
                     //[TBU080V-TBU027V]
 
@@ -129,7 +120,7 @@ data class TBU080V_TBU027V(
                 //IF( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningVirkningDatoFom >= DateValue("01/09/2016") AND PE_Vedtaksdata_Kravhode_onsketVirkningsDato <  DateValue("01/07/2024") AND (PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true OR ( PE_Vedtaksdata_BeregningsData_BeregningUfore_BeregningYtelsesKomp_UforetrygdOrdiner_Minsteytelse_OppfyltUngUfor = true  AND  PE_UT_VilkarGjelderPersonAlder < 20  AND  PE_Vedtaksdata_BeregningsData_BeregningUfore_Uforetrygdberegning_Mottarminsteytelse = true ))   ) THEN      INCLUDE ENDIF
                 showIf(
                     (pe.vedtaksdata_beregningsdata_beregningufore_beregningvirkningdatofom().legacyGreaterThanOrEqual(LocalDate.of(2016, 9, 1)) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1)))
-                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20))
+                            or (pe.vedtaksdata_beregningsdata_beregningufore_beregningytelseskomp_uforetrygdordiner_minsteytelse_oppfyltungufor() and pe.ut_vilkargjelderpersonalder().lessThan(20) and pe.vedtaksdata_kravhode_onsketvirkningsdato().legacyLessThan(LocalDate.of(2024, 7, 1)))
                 ) {
                     //[TBU080V-TBU027V]
 
