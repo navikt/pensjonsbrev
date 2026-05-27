@@ -5,8 +5,6 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
-import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -62,9 +60,9 @@ object AfpTilbakekrevingBody {
      * fradrag for ny inntekt) gjengitt som tre linjer i én paragraf.
      */
     data class NyPensjonsberegningEquation(
-        val fullafp: Expression<Kroner>,
-        val fradragberegnetai: Expression<Kroner>,
-        val korrigertafp: Expression<Kroner>,
+        val fullAfp: Expression<Kroner>,
+        val fradragBeregnetArbeidsInntekt: Expression<Kroner>,
+        val korrigertAfp: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -75,18 +73,18 @@ object AfpTilbakekrevingBody {
             }
             paragraph {
                 text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
+                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragberegnetai.format(denominator = false) + " kr" },
-                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragberegnetai.format(denominator = false) + " kr" },
+                    bokmal { +"− Nytt beregnet inntektsfradrag: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
+                    nynorsk { +"− Nytt berekna inntektsfrådrag: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertafp.format(denominator = false) + " kr" },
-                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertafp.format(denominator = false) + " kr" },
+                    bokmal { +"= AFP etter fradrag for den nye inntekten: " + korrigertAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"= AFP etter frådrag for den nye inntekta: " + korrigertAfp.format(denominator = false) + " kr" },
                 )
             }
         }
@@ -97,25 +95,25 @@ object AfpTilbakekrevingBody {
      * arbeidsinntekt × full AFP. Brukes rett etter [NyPensjonsberegningEquation].
      */
     data class InntektsfradragetFormel(
-        val fradragberegnetai: Expression<Kroner>,
-        val iiap: Expression<Kroner>,
-        val tpiberegnet: Expression<Kroner>,
-        val fullafp: Expression<Kroner>,
+        val fradragBeregnetArbeidsInntekt: Expression<Kroner>,
+        val inntektIAfpPerioden: Expression<Kroner>,
+        val tidligereArbeidsInntektBeregnet: Expression<Kroner>,
+        val fullAfp: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
                     bokmal {
-                        +"Inntektsfradraget i AFP for den nye inntekten på " + fradragberegnetai.format(denominator = false) +
-                            " kr beregnes slik: " + iiap.format(denominator = false) + " kr (ny beregnet inntekt) / " +
-                            tpiberegnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
-                            fullafp.format(denominator = false) + " kr (full AFP)."
+                        +"Inntektsfradraget i AFP for den nye inntekten på " + fradragBeregnetArbeidsInntekt.format(denominator = false) +
+                            " kr beregnes slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
+                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                            fullAfp.format(denominator = false) + " kr (full AFP)."
                     },
                     nynorsk {
-                        +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragberegnetai.format(denominator = false) +
-                            " kr blir berekna slik: " + iiap.format(denominator = false) + " kr (ny berekna inntekt) / " +
-                            tpiberegnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
-                            fullafp.format(denominator = false) + " kr (full AFP)."
+                        +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragBeregnetArbeidsInntekt.format(denominator = false) +
+                            " kr blir berekna slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
+                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                            fullAfp.format(denominator = false) + " kr (full AFP)."
                     },
                 )
                 newline()
@@ -133,8 +131,8 @@ object AfpTilbakekrevingBody {
      * i én paragraf.
      */
     data class AfpForMyeEquation(
-        val utbetaltafp: Expression<Kroner>,
-        val korrigertafp: Expression<Kroner>,
+        val utbetaltAfp: Expression<Kroner>,
+        val korrigertAfp: Expression<Kroner>,
         val formyebetalt: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -158,13 +156,13 @@ object AfpTilbakekrevingBody {
             }
             paragraph {
                 text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
+                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertafp.format(denominator = false) + " kr" },
-                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertafp.format(denominator = false) + " kr" },
+                    bokmal { +"− AFP fratrukket nytt beregnet inntektsfradrag: " + korrigertAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"− AFP fråtrekt nytt berekna inntektsfrådrag: " + korrigertAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
