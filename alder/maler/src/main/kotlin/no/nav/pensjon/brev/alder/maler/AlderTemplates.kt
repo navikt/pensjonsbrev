@@ -13,9 +13,9 @@ import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerForsoergingstilleggIkkeTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocVarselTilBrukerMedForsoergingstilleggTilUtbetaling
 import no.nav.pensjon.brev.alder.maler.adhoc.FeilUtsendingAvGjenlevenderett
-import no.nav.pensjon.brev.alder.maler.afp.AvslagAfpPrivat
-import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfp
-import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpAuto
+import no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp
+import no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto
 import no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto
 import no.nav.pensjon.brev.alder.maler.afp.VedtakAfpEtteroppgjoerEtterbetalingAuto
