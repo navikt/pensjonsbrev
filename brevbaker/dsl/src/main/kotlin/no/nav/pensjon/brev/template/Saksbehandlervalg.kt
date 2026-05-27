@@ -27,22 +27,17 @@ fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *
     propertyName = displayText,
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
     selector = { saksbehandlerValg.get(displayText) }
-) // todo ordentleg deserialisering av også SaksbehandlervalgVerdi.Bool til objekt igjen, ikkje berre til hashmap
+)
 
 fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Boolean> {
     val selector1: TemplateModelSelector<SaksbehandlervalgVerdi, Boolean> = object : TemplateModelSelector<SaksbehandlervalgVerdi, Boolean> {
         override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
         override val propertyName = "bool"
-        override val propertyType = "kotlin.Boolean"
+        override val propertyType = "kotlian.Boolean"
         override val selector: SaksbehandlervalgVerdi.() -> Boolean = { this.unwrap() as Boolean }
     }
-    val operation: UnaryOperation.Select<SaksbehandlervalgVerdi, Boolean> = UnaryOperation.Select(
-        selector1
-    )
-    return Expression.UnaryInvoke(
-        this,
-        operation
-    )
+    val operation: UnaryOperation.Select<SaksbehandlervalgVerdi, Boolean> = UnaryOperation.Select(selector1)
+    return Expression.UnaryInvoke(this, operation)
 }
 
 
