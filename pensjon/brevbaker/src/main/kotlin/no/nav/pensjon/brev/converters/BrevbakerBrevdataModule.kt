@@ -52,5 +52,5 @@ object BrevbakerBrevdataModule : SimpleModule() {
 }
 
 class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL {
-    override fun get(key: String) = verdier[key]!!
+    override fun <T : SaksbehandlervalgVerdi> get(key: String) = verdier[key]!! as T
 }

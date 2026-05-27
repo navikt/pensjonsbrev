@@ -17,5 +17,5 @@ data object EmptyVedleggData : VedleggData
 
 interface SaksbehandlervalgIDSL : SaksbehandlerValgBrevdata {
     val verdier: Map<String, SaksbehandlervalgVerdi>
-    fun get(key: String): SaksbehandlervalgVerdi
+    fun <T : SaksbehandlervalgVerdi> get(key: String): T
 }
