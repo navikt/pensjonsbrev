@@ -7,6 +7,8 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
+import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
+import no.nav.pensjon.brev.converters.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
@@ -69,10 +71,13 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         try {
             // TODO: Trur dette er ein for enkel if. Utfordringa er at vi ikkje veit typen på letterData her utan reflection, det er eit enkelt map
             if (template.saksbehandlervalg.isNotEmpty()) {
-                objectMapper.convertValue(mapOf(
-                    "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
-                    "saksbehandlerValg" to template.saksbehandlervalg
-                ), template.letterDataType.java)
+//                val pesysData = objectMapper.convertValue(letterData, Map::class.java)
+                val newInstance: Any? = template.letterDataType.java.constructors.first().newInstance(EmptyFagsystemdata, SaksbehandlervalgIDSLImpl(template.saksbehandlervalg))
+                return (newInstance as BrevbakerBrevdata)
+//                objectMapper.convertValue(mapOf(
+//                    "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
+//                    "saksbehandlerValg" to template.saksbehandlervalg
+//                ), template.letterDataType.java)
             } else {
                 objectMapper.convertValue(letterData, template.letterDataType.java)
             }

@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.converters
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonDeserializer
+import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.module.SimpleModule
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.FagsystemBrevdata
@@ -22,6 +23,7 @@ object BrevbakerBrevdataModule : SimpleModule() {
         addDeserializer(BrevbakerBrevdata::class.java, BrevdataDeserializer)
         addDeserializer(RedigerbarBrevdata::class.java, RedigerbarBrevdataDeserializer)
         addDeserializer(SaksbehandlervalgIDSL::class.java, SaksbehandlervalgIDSLDeserializer)
+        addDeserializer(SaksbehandlervalgVerdi::class.java, SaksbehandlervalgDeserializer)
     }
 
     private object BrevdataDeserializer : JsonDeserializer<BrevbakerBrevdata>() {
@@ -35,6 +37,20 @@ object BrevbakerBrevdataModule : SimpleModule() {
         override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL =
             SaksbehandlervalgIDSLImpl(ctxt.readValue(parser, Map::class.java) as Map<String, SaksbehandlervalgVerdi>)
     }
+
+    private object SaksbehandlervalgDeserializer : JsonDeserializer<SaksbehandlervalgVerdi>() {
+            override fun deserialize(p: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgVerdi {
+                val node = p.codec.readTree<JsonNode>(p)
+                val type = when (SaksbehandlervalgVerdi.Type.valueOf(node.get("type").textValue())) {
+                    SaksbehandlervalgVerdi.Type.BOOL -> SaksbehandlervalgVerdi.Bool::class.java
+                    SaksbehandlervalgVerdi.Type.INTEGER -> SaksbehandlervalgVerdi.Integer::class.java
+                    SaksbehandlervalgVerdi.Type.ENUM -> SaksbehandlervalgVerdi.Enum::class.java
+                }
+                return p.codec.treeToValue(node, type)
+            }
+        }
 }
 
-class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL
+class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL {
+    override fun get(key: String) = verdier[key]!!
+}
