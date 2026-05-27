@@ -78,7 +78,7 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto : AutobrevTemplate<Vedtak
 
             showIf(scenario.equalTo(Scenario.IFU_OG_IEO_REGISTRERT)) {
                 includePhrase(AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer, oppgjoersAar = oppgjoersAar))
-                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOppohoer = inntektEtterOpphoer))
+                includePhrase(AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(inntektIAfpPerioden = inntektIAfpPerioden, oppgjoersAar = oppgjoersAar, pensjonsgivendeInntekt = pensjonsgivendeInntekt, inntektFoerUttak = inntektFoerUttak, inntektEtterOpphoer = inntektEtterOpphoer))
             }
 
             showIf(scenario.equalTo(Scenario.KUN_IEO_REGISTRERT)) {

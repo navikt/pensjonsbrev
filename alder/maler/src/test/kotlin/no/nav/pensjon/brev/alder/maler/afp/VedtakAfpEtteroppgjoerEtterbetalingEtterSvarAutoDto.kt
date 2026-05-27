@@ -11,7 +11,7 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(): VedtakAfpEttero
         forlitebetalt = Kroner(28_500),
         pensjonsgivendeInntekt = Kroner(412_500),
         inntektFoerUttak = Kroner(85_000),
-        inntektEtterOppohoer = Kroner(120_000),
+        inntektEtterOpphoer = Kroner(120_000),
         inntektIAfpPerioden = Kroner(207_500),
         avvik = Kroner(35_000),
         fullAfp = Kroner(220_000),

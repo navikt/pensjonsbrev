@@ -196,7 +196,7 @@ object AfpEtteroppgjoerForklaringer {
         val oppgjoersAar: Expression<Year>,
         val pensjonsgivendeInntekt: Expression<Kroner>,
         val inntektFoerUttak: Expression<Kroner>,
-        val inntektEtterOppohoer: Expression<Kroner>,
+        val inntektEtterOpphoer: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
@@ -206,14 +206,14 @@ object AfpEtteroppgjoerForklaringer {
                             inntektIAfpPerioden.format() + ". Dette beløpet utgjør differansen mellom din " +
                             "pensjonsgivende inntekt for " + oppgjoersAar.format() + " på " +
                             pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " +
-                            inntektFoerUttak.format() + " og etter opphør av AFP på " + inntektEtterOppohoer.format() + "."
+                            inntektFoerUttak.format() + " og etter opphør av AFP på " + inntektEtterOpphoer.format() + "."
                     },
                     nynorsk {
                         +"Den faktiske arbeidsinntekta i den perioden du har fått AFP, er " +
                             inntektIAfpPerioden.format() + ". Dette beløpet utgjer differansen mellom den " +
                             "pensjonsgivande inntekta di for " + oppgjoersAar.format() + " på " +
                             pensjonsgivendeInntekt.format() + " og summen av arbeidsinntektene før uttak av AFP på " +
-                            inntektFoerUttak.format() + " og etter at AFP tok slutt, på " + inntektEtterOppohoer.format() + "."
+                            inntektFoerUttak.format() + " og etter at AFP tok slutt, på " + inntektEtterOpphoer.format() + "."
                     },
                 )
             }

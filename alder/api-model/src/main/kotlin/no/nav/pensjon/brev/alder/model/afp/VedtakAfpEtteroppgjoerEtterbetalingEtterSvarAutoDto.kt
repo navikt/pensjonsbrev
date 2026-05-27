@@ -10,7 +10,7 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     val forlitebetalt: Kroner,
     val pensjonsgivendeInntekt: Kroner,
     val inntektFoerUttak: Kroner,
-    val inntektEtterOppohoer: Kroner,
+    val inntektEtterOpphoer: Kroner,
     val inntektIAfpPerioden: Kroner,
     val avvik: Kroner,
     val fullAfp: Kroner,
