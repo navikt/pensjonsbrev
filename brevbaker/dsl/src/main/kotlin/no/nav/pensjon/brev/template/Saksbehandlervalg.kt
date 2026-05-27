@@ -7,19 +7,17 @@ import no.nav.pensjon.brev.template.dsl.TemplateRootScope
 import kotlin.also
 
 class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
-    fun bool(default: Boolean = false): Expression<Boolean> = generisk { SaksbehandlervalgVerdi.Bool(default) }
+    fun bool(default: Boolean = false): Expression<Boolean> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selectorTake2(displayText)))
         .bool()
         .also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
 
-    fun int(default: Int? = null): Expression<Int> = generisk { SaksbehandlervalgVerdi.Integer(default) }
+    fun int(default: Int? = null): Expression<Int> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selectorTake2(displayText)))
         .int()
         .also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Integer(default) }
-
-    fun <T: SaksbehandlervalgVerdi> generisk(factory: () -> T): Expression<T> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selectorTake2(displayText, factory())))
 }
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg3(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
 
-fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selectorTake2(displayText: String, type: T) = SaksbehandlervalgSelector<D, T>(
+fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selectorTake2(displayText: String) = SaksbehandlervalgSelector<D, T>(
     propertyName = displayText,
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
     selector = { saksbehandlerValg.get(displayText) as T }
