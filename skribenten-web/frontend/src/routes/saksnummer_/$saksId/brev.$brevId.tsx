@@ -1,4 +1,4 @@
-import { BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Skeleton, Tabs, VStack } from "@navikt/ds-react";
+import { Alert, BodyLong, Box, Button, Heading, HGrid, HStack, Label, Modal, Tabs, VStack } from "@navikt/ds-react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { type AxiosError } from "axios";
@@ -21,6 +21,7 @@ import {
   usePartitionedModelSpecification,
 } from "~/Brevredigering/ModelEditor/ModelEditor";
 import { ApiError } from "~/components/ApiError";
+import { CenteredLoader } from "~/components/CenteredLoader";
 import ManagedLetterEditor from "~/components/ManagedLetterEditor/ManagedLetterEditor";
 import {
   ManagedLetterEditorContextProvider,
@@ -35,6 +36,7 @@ import {
   type ReservasjonResponse,
   type SaksbehandlerValg,
 } from "~/types/brev";
+import { getErrorMessage } from "~/utils/errorUtils";
 import { queryFold } from "~/utils/tanstackUtils";
 import { trackEvent } from "~/utils/umami";
 
@@ -44,6 +46,23 @@ export const Route = createFileRoute("/saksnummer_/$saksId/brev/$brevId")({
   },
   component: () => <RedigerBrevPage />,
 });
+
+const queryRetries = 3;
+const specialCaseErrorStatuses = [404, 409, 423] as const;
+
+const getErrorStatus = (error: AxiosError) => error.response?.status;
+const isSpecialCaseErrorStatus = (status: number | undefined): status is (typeof specialCaseErrorStatuses)[number] =>
+  status != null && specialCaseErrorStatuses.includes(status as (typeof specialCaseErrorStatuses)[number]);
+const shouldRetryBrevQuery = (failureCount: number, error: AxiosError) =>
+  failureCount < queryRetries && !isSpecialCaseErrorStatus(getErrorStatus(error));
+const shouldThrowBrevQueryError = (error: AxiosError) => !isSpecialCaseErrorStatus(getErrorStatus(error));
+const formatRetryErrorMessage = (error: AxiosError) => {
+  const errorMessage = getErrorMessage(error).trim();
+  if (!errorMessage || errorMessage === "Noe gikk galt") {
+    return undefined;
+  }
+  return /[.!?]$/.test(errorMessage) ? errorMessage : `${errorMessage}.`;
+};
 
 function RedigerBrevPage() {
   const { brevId, saksId } = Route.useParams();
@@ -56,8 +75,8 @@ function RedigerBrevPage() {
     queryKey: getBrev.queryKey(brevId),
     queryFn: () => getBrev.queryFn(saksId, brevId),
     staleTime: Number.POSITIVE_INFINITY,
-    retry: (_, error: AxiosError) => error && error.response?.status !== 423 && error.response?.status !== 409,
-    throwOnError: (error: AxiosError) => error.response?.status !== 423 && error.response?.status !== 409,
+    retry: shouldRetryBrevQuery,
+    throwOnError: shouldThrowBrevQueryError,
   });
 
   useEffect(() => {
@@ -86,18 +105,35 @@ function RedigerBrevPage() {
     pending: () => (
       <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
         <HStack align="stretch" flexGrow="1" gap="space-16" justify="space-around" padding="space-16" wrap={false}>
-          <Skeleton height="auto" variant="rectangle" width="33%" />
-          <Skeleton height="auto" variant="rectangle" width="66%" />
+          <CenteredLoader label="Henter brev..." />
         </HStack>
       </Box>
     ),
+    retrying: (failureCount, failureReason) => {
+      const retryErrorMessage = formatRetryErrorMessage(failureReason);
+
+      return (
+        <Box asChild background="default" marginInline="auto" maxWidth="1106px" minWidth="945px">
+          <VStack align="center" flexGrow="1" gap="space-8" justify="center" padding="space-16">
+            <CenteredLoader label="Henter brev..." />
+            <Alert size="small" variant="warning">
+              Klarte ikke hente brevet (forsøk {failureCount} av {queryRetries}).{" "}
+              {retryErrorMessage ? `${retryErrorMessage} ` : ""}
+              Prøver på nytt...
+            </Alert>
+          </VStack>
+        </Box>
+      );
+    },
     error: (error) => {
-      if (error.response?.status === 423 && error.response?.data) {
+      const errorStatus = getErrorStatus(error);
+
+      if (errorStatus === 423 && error.response?.data) {
         return (
           <ReservertBrevError doRetry={brevQuery.refetch} reservasjon={error.response.data as ReservasjonResponse} />
         );
       }
-      if (error.response?.status === 409) {
+      if (errorStatus === 409) {
         return (
           <Box asChild background="default">
             <VStack align="start" flexGrow="1" gap="space-8" padding="space-24">
@@ -119,6 +155,41 @@ function RedigerBrevPage() {
               </Box>
             </VStack>
           </Box>
+        );
+      }
+      if (errorStatus === 404) {
+        return (
+          <VStack align="center" flexGrow="1" gap="space-8" padding="space-24">
+            <ApiError error={error} title="Finner ikke brevet i databasen" />
+            <HStack gap="space-8">
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevvelger",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevvelger
+              </Button>
+              <Button
+                onClick={() =>
+                  navigate({
+                    to: "/saksnummer/$saksId/brevbehandler",
+                    params: { saksId },
+                    search: { enhetsId, vedtaksId },
+                  })
+                }
+                size="small"
+                variant="secondary"
+              >
+                Gå til brevbehandler
+              </Button>
+            </HStack>
+          </VStack>
         );
       }
       return <ApiError error={error} title="En feil skjedde ved henting av brev" />;
