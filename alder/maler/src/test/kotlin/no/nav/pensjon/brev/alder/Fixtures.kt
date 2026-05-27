@@ -3,9 +3,9 @@ package no.nav.pensjon.brev.alder
 import no.nav.brev.brevbaker.FellesFactory
 import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatDto
-import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpAutoDto
-import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createAvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpAutoDto
+import no.nav.pensjon.brev.alder.maler.afpprivat.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingAutoDto
@@ -49,9 +49,9 @@ import no.nav.pensjon.brev.alder.maler.vedlegg.createOrienteringOmRettigheterOgP
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
-import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto

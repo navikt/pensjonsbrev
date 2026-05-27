@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.afp.fraser
+package no.nav.pensjon.brev.alder.maler.afpprivat.fraser
 
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -6,11 +6,10 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.text
 
 /**
- * Felles fraser for AFP-brev (privat og offentlig sektor).
+ * Felles fraser for AFP privat-brev.
  *
- * Brukes av [no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpInnhold],
- * [no.nav.pensjon.brev.alder.maler.afp.AvslagAfpPrivat] og
- * [no.nav.pensjon.brev.alder.maler.afp.InnvilgelseAvAfpOffentligSektor].
+ * Brukes av [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold],
+ * [no.nav.pensjon.brev.alder.maler.afpprivat.AvslagAfpPrivat].
  */
 object AfpPrivatFraser {
 
