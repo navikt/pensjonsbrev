@@ -7,7 +7,7 @@ import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.saksbehandlervalg3
+import no.nav.pensjon.brev.template.saksbehandlervalg
 import no.nav.pensjon.brev.ufore.api.model.Ufoerebrevkoder.Redigerbar.UT_INNH_OPPL_OPPGITT_SAMBOER
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.InnhentingOpplysningerSamboerDto
@@ -37,7 +37,7 @@ object OppgittSamboer : RedigerbarTemplate<InnhentingOpplysningerSamboerDto> {
         ),
     )
     {
-        val ukjentSamboer = saksbehandlervalg3("Ukjent samboer").bool()
+        val ukjentSamboer = saksbehandlervalg("Ukjent samboer").bool()
 
         title {
             text (bokmal { + "Du må sende flere opplysninger" })

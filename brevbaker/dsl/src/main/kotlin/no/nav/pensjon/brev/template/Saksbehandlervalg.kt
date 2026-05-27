@@ -17,7 +17,7 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         .int()
         .also { scope.saksbehandlervalg(SaksbehandlervalgVerdi.Integer(default)) }
 }
-fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg3(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
+fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
 
 private fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selector(displayText: String) = SaksbehandlervalgSelector<D, T>(
     propertyName = displayText,
