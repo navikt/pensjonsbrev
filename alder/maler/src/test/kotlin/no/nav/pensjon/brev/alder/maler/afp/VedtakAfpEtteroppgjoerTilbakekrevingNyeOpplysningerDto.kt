@@ -23,5 +23,7 @@ fun createVedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(): VedtakAfpEtt
             utbetaltAfp = Kroner(195_000),
             formyebetalt = Kroner(38_500),
             scenario = Scenario.IFU_OG_IEO_OVERSTYRT,
+            medlemAvApotekerordningen = false,
+            toleranseBeloep = Kroner(15001),
         ),
     )

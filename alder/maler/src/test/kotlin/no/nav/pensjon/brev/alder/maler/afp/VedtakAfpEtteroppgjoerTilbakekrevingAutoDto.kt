@@ -19,4 +19,6 @@ fun createVedtakAfpEtteroppgjoerTilbakekrevingAutoDto(): VedtakAfpEtteroppgjoerT
         tidligereArbeidsInntektBeregnet = Kroner(300_000),
         utbetaltAfp = Kroner(195_000),
         periode = VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
     )

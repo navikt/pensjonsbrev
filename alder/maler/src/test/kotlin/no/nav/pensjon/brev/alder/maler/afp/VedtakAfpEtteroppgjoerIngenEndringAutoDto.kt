@@ -17,4 +17,6 @@ fun createVedtakAfpEtteroppgjoerIngenEndringAutoDto(): VedtakAfpEtteroppgjoerIng
         uttaksdato = LocalDate.of(2024, 4, 1),
         opphorsdato = LocalDate.of(2024, 11, 30),
         periode = VedtakAfpEtteroppgjoerIngenEndringAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
     )

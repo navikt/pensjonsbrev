@@ -16,10 +16,12 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingA
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingAutoDtoSelectors.utbetaltAfp
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -75,12 +77,11 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 )
             }
 
-            // Inlinet hjemmelshenvisning. Bokmål er identisk med
-            // [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk], men nynorsk i
-            // originalen har et ekstra komma før "og tilhøyrande forskrift"
-            // som fellesfrasen normaliserer bort. Holdes inlinet med samme
-            // ordlyd som Exstream-kilden.
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             showIf(periode.equalTo(Periode.HEL_AFP_HELE_AARET)) {
@@ -165,7 +166,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingAuto : AutobrevTemplate<VedtakAfpEtte
                 }
             }
 
-            includePhrase(AfpTilbakekrevingBody.ToleransebeloepOverskrider(avvik = avvik, oppgjoersAar = oppgjoersAar))
+            includePhrase(AfpTilbakekrevingBody.ToleransebeloepOverskrider(avvik = avvik, oppgjoersAar = oppgjoersAar, toleranseBeloep = toleranseBeloep))
             includePhrase(AfpTilbakekrevingBody.NyPensjonsberegningEquation(fullAfp = fullAfp, fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt, korrigertAfp = korrigertAfp))
             includePhrase(AfpTilbakekrevingBody.InntektsfradragetFormel(fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt, inntektIAfpPerioden = inntektIAfpPerioden, tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet, fullAfp = fullAfp))
             includePhrase(AfpTilbakekrevingBody.AfpForMyeEquation(utbetaltAfp = utbetaltAfp, korrigertAfp = korrigertAfp, formyebetalt = formyebetalt))

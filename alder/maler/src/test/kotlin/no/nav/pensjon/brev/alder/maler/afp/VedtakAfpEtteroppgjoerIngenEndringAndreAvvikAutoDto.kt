@@ -9,4 +9,6 @@ fun createVedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto(): VedtakAfpEttero
         oppgjoersAar = Year(2024),
         pensjonsgivendeInntekt = Kroner(412_500),
         scenario = VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto.Scenario.IKKE_AFP_FULL_INNTEKT,
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
     )

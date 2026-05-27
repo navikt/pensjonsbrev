@@ -6,9 +6,11 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto.Scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDtoSelectors.scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
@@ -52,7 +54,11 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto : AutobrevTemplate<Vedta
         outline {
             includePhrase(AfpEtteroppgjoerInnhold.EtteroppgjoerIntro)
             includePhrase(AfpEtteroppgjoerInnhold.IkkeFunnetGrunnlagForAaEndre(oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
             // Scenario A — 100% AFP, all inntekt før uttak
@@ -102,10 +108,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAuto : AutobrevTemplate<Vedta
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " + "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " + "overstiger godkjent toleransebeløp på 15 000 kroner i perioden med AFP. " + "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " + "pensjonsgivende inntekt i " + oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " + "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " + "overstiger godkjent toleransebeløp på " + toleranseBeloep.format() + " i perioden med AFP. " + "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " + "pensjonsgivende inntekt i " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " + "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " + "oversteig det godkjende toleransebeløpet på 15 000 kroner i perioden med " + "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " + "pensjonsgivande inntekt i " + oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " + "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " + "oversteig det godkjende toleransebeløpet på " + toleranseBeloep.format() + " i perioden med " + "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " + "pensjonsgivande inntekt i " + oppgjoersAar.format() + "."
                         },
                     )
                 }

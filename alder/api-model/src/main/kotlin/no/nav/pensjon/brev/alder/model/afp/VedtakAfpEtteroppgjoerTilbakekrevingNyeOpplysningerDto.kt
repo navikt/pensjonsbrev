@@ -57,6 +57,8 @@ data class VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto(
         val tidligereArbeidsInntektBeregnet: Kroner,
         val utbetaltAfp: Kroner,
         val formyebetalt: Kroner,
+        val medlemAvApotekerordningen: Boolean,
+        val toleranseBeloep: Kroner,
         val scenario: Scenario,
     ) : FagsystemBrevdata
 }

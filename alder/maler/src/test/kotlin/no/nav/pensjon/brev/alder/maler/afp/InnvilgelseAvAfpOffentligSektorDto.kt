@@ -114,5 +114,6 @@ fun createInnvilgelseAvAfpOffentligSektorDto(): InnvilgelseAvAfpOffentligSektorD
                 harOmsorgspoeng = true,
             ),
             oversiktOverPensjonen = createOversiktOverPensjonenAfpDto(),
+            toleranseBeloep = Kroner(15001),
         ),
     )

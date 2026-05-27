@@ -93,6 +93,21 @@ object AfpEtteroppgjoerInnhold {
         }
     }
 
+    object VedtaksgrunnlagAfpApotekerordningen : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Apotekerne XXX."
+                    },
+                    nynorsk {
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av  Apotekerne XXX."
+                    },
+                )
+            }
+        }
+    }
+
     /** Title1 «Inntekten din i {oppgjørsår}». */
     data class InntektenDinIAarTittel(
         val oppgjoersAar: Expression<Year>,

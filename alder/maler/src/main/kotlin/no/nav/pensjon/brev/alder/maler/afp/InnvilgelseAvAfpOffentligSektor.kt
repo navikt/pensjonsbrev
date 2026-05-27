@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSel
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.tidligereArbeidsinntekt
+import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.virkningFom
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -176,6 +177,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 AfpOffentligSektorInnhold.HvordanAfpBeregnes(
                     tidligereArbeidsinntekt = pesysData.tidligereArbeidsinntekt,
                     framtidigArligInntekt = pesysData.framtidigArligInntekt,
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 
@@ -189,6 +191,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 AfpOffentligSektorInnhold.DinePlikterAfpOffentlig(
                     sivilstand = pesysData.sivilstand,
                     harEktefelletillegg = pesysData.beregning.ektefelletillegg.notNull(),
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 

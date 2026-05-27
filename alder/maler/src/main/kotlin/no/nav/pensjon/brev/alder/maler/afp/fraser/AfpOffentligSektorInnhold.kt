@@ -111,6 +111,7 @@ object AfpOffentligSektorInnhold {
     data class HvordanAfpBeregnes(
         val tidligereArbeidsinntekt: Expression<Kroner>,
         val framtidigArligInntekt: Expression<Kroner>,
+        val toleranseBeloep: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -153,14 +154,14 @@ object AfpOffentligSektorInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har oppgitt at din antatte framtidige arbeidsinntekt ikke vil overstige toleransebeløpet på 15 000 " +
-                                "kroner per år. AFP er derfor beregnet uten fradrag for arbeidsinntekt. I den framtidige arbeidsinntekten " +
+                            +"Du har oppgitt at din antatte framtidige arbeidsinntekt ikke vil overstige toleransebeløpet på " + toleranseBeloep.format() +
+                                " per år. AFP er derfor beregnet uten fradrag for arbeidsinntekt. I den framtidige arbeidsinntekten " +
                                 "skal både lønnsinntekt, feriepenger, fordel av forsikringspremier betalt av arbeidsgiver, personinntekt " +
                                 "fra næring, honorar og lignende regnes med."
                         },
                         nynorsk {
                             +"Du har oppgitt at den forventa framtidige arbeidsinntekta di ikkje kjem til å overstige toleransebeløpet " +
-                                "på 15 000 kroner per år. AFP er derfor berekna utan frådrag for arbeidsinntekt. I den framtidige " +
+                                "på " + toleranseBeloep.format() + " per år. AFP er derfor berekna utan frådrag for arbeidsinntekt. I den framtidige " +
                                 "arbeidsinntekta skal både lønnsinntekt, feriepengar, fordel av forsikringspremiar betalte av " +
                                 "arbeidsgivar, personinntekt frå næring, honorar og liknande reknast med."
                         },
@@ -272,6 +273,7 @@ object AfpOffentligSektorInnhold {
     data class DinePlikterAfpOffentlig(
         val sivilstand: Expression<AfpOffentligSektor.Sivilstand>,
         val harEktefelletillegg: Expression<Boolean>,
+        val toleranseBeloep: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             title1 {
@@ -290,11 +292,11 @@ object AfpOffentligSektorInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Det vil si når arbeidsinntekten din endrer seg med mer enn 15 000 kroner pr. år i forhold til den " +
+                            +"Det vil si når arbeidsinntekten din endrer seg med mer enn " + toleranseBeloep.format() + " per år i forhold til den " +
                                 "inntekten som pensjonen er beregnet etter."
                         },
                         nynorsk {
-                            +"Det vil seie når arbeidsinntekta di endrar seg med meir enn 15 000 kroner per år i forhold til den " +
+                            +"Det vil seie når arbeidsinntekta di endrar seg med meir enn " + toleranseBeloep.format() + " per år i forhold til den " +
                                 "inntekta som pensjonen er berekna etter."
                         },
                     )

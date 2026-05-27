@@ -14,4 +14,6 @@ fun createVedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(): VedtakAfpEtterop
         forventetPensjonsgivendeInntektBeregnet = Kroner(210_000),
         avvik = Kroner(12_500),
         scenario = VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto.Scenario.IFU_OG_IEO_REGISTRERT,
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
     )

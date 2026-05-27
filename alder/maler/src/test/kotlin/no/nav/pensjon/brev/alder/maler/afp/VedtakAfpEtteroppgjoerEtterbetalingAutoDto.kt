@@ -22,4 +22,6 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingAutoDto(): VedtakAfpEtteroppgjoerEt
         uttaksdato = LocalDate.of(2024, 3, 1),
         opphorsdato = LocalDate.of(2024, 10, 31),
         periode = VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
-    )
+        medlemAvApotekerordningen = true,
+        toleranseBeloep = Kroner(15001),
+        )

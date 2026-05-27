@@ -12,6 +12,8 @@ data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
     val inntektIAfpPerioden: Kroner,
     val forventetPensjonsgivendeInntektBeregnet: Kroner,
     val avvik: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val scenario: Scenario,
 ) : AutobrevData {
 

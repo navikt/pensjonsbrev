@@ -20,10 +20,12 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingN
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -103,20 +105,28 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
                 )
             }
 
-            // Hjemmelshenvisning inlinet — nynorsk har meningsfullt annen
-            // setningsstruktur enn [AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk]
-            // ("Vedtaket er fatta etter reglane om kombinasjon av AFP og
-            // arbeidsinntekt i lov ...") og kan ikke harmoniseres uten å endre
-            // meningen.
-            paragraph {
-                text(
-                    bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " + "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " + "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " + "inntekt)."
-                    },
-                    nynorsk {
-                        +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " + "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
-                    },
-                )
+            showIf(pesysData.medlemAvApotekerordningen) {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vedtaket er gjort etter lov om AFP for medlemmer av Apotekerne XXX."
+                        },
+                        nynorsk {
+                            +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Apotekerne XXX."
+                        },
+                    )
+                }
+            }.orShow {
+                paragraph {
+                    text(
+                        bokmal {
+                            +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " + "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " + "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " + "inntekt)."
+                        },
+                        nynorsk {
+                            +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " + "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
+                        },
+                    )
+                }
             }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
@@ -204,7 +214,7 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<
             // Tilbakekrevings-likninger og forklaringer — identisk med 107.
             includePhrase(
                 AfpTilbakekrevingBody.ToleransebeloepOverskrider(
-                    avvik = pesysData.avvik, oppgjoersAar = pesysData.oppgjoersAar
+                    avvik = pesysData.avvik, oppgjoersAar = pesysData.oppgjoersAar, toleranseBeloep = pesysData.toleranseBeloep,
                 )
             )
             includePhrase(

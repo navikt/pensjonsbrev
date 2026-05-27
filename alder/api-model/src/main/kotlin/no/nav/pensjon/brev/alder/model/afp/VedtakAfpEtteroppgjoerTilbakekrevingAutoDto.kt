@@ -17,6 +17,8 @@ data class VedtakAfpEtteroppgjoerTilbakekrevingAutoDto(
     val korrigertAfp: Kroner,
     val tidligereArbeidsInntektBeregnet: Kroner,
     val utbetaltAfp: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val periode: Periode,
 ) : AutobrevData {
 
