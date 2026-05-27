@@ -95,8 +95,7 @@ class ExternalAPIServiceTest {
                 redigertBrevHash = TODO(),
                 saksbehandlerValg = TODO(),
                 propertyUsage = TODO(),
-                valgteVedlegg = TODO(),
-                ekstraSaksbehandlervalg = TODO(),
+                valgteVedlegg = TODO()
             ))
         }
     )

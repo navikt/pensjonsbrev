@@ -39,7 +39,7 @@ class HentBrevHandler(
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.mergeRendretBrev(rendretBrev.markup)
 
-        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, rendretBrev.saksbehandlervalg))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 
     override fun requiresReservasjon(request: Request): Boolean =

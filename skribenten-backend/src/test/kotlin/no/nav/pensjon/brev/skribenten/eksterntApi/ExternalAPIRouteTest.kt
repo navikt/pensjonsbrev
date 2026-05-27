@@ -100,8 +100,7 @@ class ExternalAPIRouteTest {
         redigertBrevHash = Hash("abc"),
         saksbehandlerValg = Api.GeneriskBrevdata(),
         propertyUsage = null,
-        valgteVedlegg = null,
-        ekstraSaksbehandlervalg = emptyMap(),
+        valgteVedlegg = null
     )
 
     private val opprettBrevRequestJson = """

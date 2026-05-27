@@ -36,7 +36,7 @@ class TilbakestillBrevHandler(
         val rendretBrev = brevmalService.renderMarkup(brev, pesysdata)
         brev.oppdaterRedigertBrev(rendretBrev.markup.toEdit(), principal.navIdent)
 
-        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage, rendretBrev.saksbehandlervalg))
+        return success(brev.toDto(brevreservasjonPolicy, rendretBrev.letterDataUsage))
     }
 
     override fun requiresReservasjon(request: Request) = true
