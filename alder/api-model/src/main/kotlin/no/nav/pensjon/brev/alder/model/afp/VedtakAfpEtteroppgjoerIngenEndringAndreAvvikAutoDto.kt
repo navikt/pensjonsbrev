@@ -7,6 +7,8 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 data class VedtakAfpEtteroppgjoerIngenEndringAndreAvvikAutoDto(
     val oppgjoersAar: Year,
     val pensjonsgivendeInntekt: Kroner,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val scenario: Scenario,
 ) : AutobrevData {
 

@@ -16,6 +16,8 @@ data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
     val avvik: Kroner,
     val uttaksdato: LocalDate,
     val opphorsdato: LocalDate?,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val periode: Periode,
 ) : AutobrevData {
 

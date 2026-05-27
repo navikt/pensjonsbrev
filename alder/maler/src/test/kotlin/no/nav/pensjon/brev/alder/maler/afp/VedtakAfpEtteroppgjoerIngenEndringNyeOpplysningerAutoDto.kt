@@ -9,4 +9,6 @@ fun createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto(): VedtakAfpE
         oppgjoersAar = Year(2024),
         inntektFoerUttak = Kroner(412_500),
         scenario = VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto.Scenario.HEL_AFP_INNTEKT_INNEN_TOLERANSE,
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
     )

@@ -23,4 +23,6 @@ fun createVedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(): VedtakAfpEttero
         opphorsdato = LocalDate.of(2024, 10, 31),
         scenario = VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto.Scenario.IFU_OG_IEO_OVERSTYRT,
         periode = VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto.NyPensjonsberegningPeriode.UTTAK_OG_OPPHOR_I_AARET,
-    )
+        medlemAvApotekerordningen = false,
+        toleranseBeloep = Kroner(15001),
+        )

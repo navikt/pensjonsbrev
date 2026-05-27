@@ -30,25 +30,26 @@ object AfpTilbakekrevingBody {
     data class ToleransebeloepOverskrider(
         val avvik: Expression<Kroner>,
         val oppgjoersAar: Expression<Year>,
+        val toleranseBeloep: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             paragraph {
                 text(
                     bokmal {
                         +"Den arbeidsinntekten du har hatt i perioden med AFP er " + avvik.format() +
-                            " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
-                            "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
-                            "enn toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner, " +
-                            "er pensjonen din beregnet på ny og avregnet mot den pensjonen du allerede " +
-                            "har fått utbetalt i perioden."
+                                " høyere enn den forventede arbeidsinntekten som ble lagt til grunn ved " +
+                                "utbetalingen av pensjonen din i det aktuelle tidsrommet. Fordi dette er mer " +
+                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
+                                "er pensjonen din beregnet på ny og avregnet mot den pensjonen du allerede " +
+                                "har fått utbetalt i perioden."
                     },
                     nynorsk {
                         +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() +
-                            " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
-                            "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
-                            "enn toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner, " +
-                            "er pensjonen din berekna på nytt og avrekna mot den pensjonen du allereie " +
-                            "har fått utbetalt i perioden."
+                                " høgare enn den forventa arbeidsinntekta som blei lagd til grunn ved " +
+                                "utbetalinga av pensjonen din i det aktuelle tidsrommet. Fordi dette er meir " +
+                                "enn toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ", " +
+                                "er pensjonen din berekna på nytt og avrekna mot den pensjonen du allereie " +
+                                "har fått utbetalt i perioden."
                     },
                 )
             }
@@ -105,15 +106,15 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Inntektsfradraget i AFP for den nye inntekten på " + fradragBeregnetArbeidsInntekt.format(denominator = false) +
-                            " kr beregnes slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
-                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
-                            fullAfp.format(denominator = false) + " kr (full AFP)."
+                                " kr beregnes slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
+                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                                fullAfp.format(denominator = false) + " kr (full AFP)."
                     },
                     nynorsk {
                         +"Inntektsfrådraget i AFP for den nye inntekta på " + fradragBeregnetArbeidsInntekt.format(denominator = false) +
-                            " kr blir berekna slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
-                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
-                            fullAfp.format(denominator = false) + " kr (full AFP)."
+                                " kr blir berekna slik: " + inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
+                                tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                                fullAfp.format(denominator = false) + " kr (full AFP)."
                     },
                 )
                 newline()
@@ -146,11 +147,11 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Dette beløpet er differansen mellom tidligere utbetalt AFP og AFP etter fradrag " +
-                            "for den nye inntekten."
+                                "for den nye inntekten."
                     },
                     nynorsk {
                         +"Dette beløpet er differansen mellom tidlegare utbetalt AFP og AFP etter frådrag " +
-                            "for den nye inntekta."
+                                "for den nye inntekta."
                     },
                 )
             }
@@ -186,11 +187,11 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Nav sender kravet til Skatteetaten for videre oppfølging. Dette skjer først når " +
-                            "klagefristen på 6 uker er gått ut og vanligvis innen 12 uker."
+                                "klagefristen på 6 uker er gått ut og vanligvis innen 12 uker."
                     },
                     nynorsk {
                         +"Nav sender kravet til Skatteetaten for vidare oppfølging. Dette skjer først når " +
-                            "klagefristen på 6 veker er gått ut og vanlegvis innan 12 veker."
+                                "klagefristen på 6 veker er gått ut og vanlegvis innan 12 veker."
                     },
                 )
             }
@@ -198,14 +199,14 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Du vil motta et eget brev med betalingsinformasjon. Beløpet skal som hovedregel " +
-                            "betales tilbake i løpet av 12 kalendermåneder, og vil trekkes i den månedlige " +
-                            "utbetalingen din av AFP eller alderspensjon fra folketrygden."
+                                "betales tilbake i løpet av 12 kalendermåneder, og vil trekkes i den månedlige " +
+                                "utbetalingen din av AFP eller alderspensjon fra folketrygden."
                     },
                     nynorsk {
                         +"Du vil få eit eige brev frå Skatteetaten med betalingsinformasjon. Beløpet skal " +
-                            "som hovudregel betalast tilbake i løpet av 12 kalendermånadar, og vil " +
-                            "trekkast i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
-                            "folketrygda."
+                                "som hovudregel betalast tilbake i løpet av 12 kalendermånadar, og vil " +
+                                "trekkast i den månadlege utbetalinga di av AFP eller alderspensjon frå " +
+                                "folketrygda."
                     },
                 )
             }
@@ -213,11 +214,11 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Etter du har mottatt brevet fra Skatteetaten kan du ta kontakt med dem for å " +
-                            "endre trekkbeløpet."
+                                "endre trekkbeløpet."
                     },
                     nynorsk {
                         +"Etter du har fått brevet frå Skatteetaten kan du ta kontakt med dei for å endre " +
-                            "trekkbeløpet."
+                                "trekkbeløpet."
                     },
                 )
             }
@@ -233,13 +234,13 @@ object AfpTilbakekrevingBody {
                 text(
                     bokmal {
                         +"Nav rapporterer endringen til Skatteetaten. De vil foreta en korrigering av " +
-                            "skatteoppgjøret ditt for " + oppgjoersAar.format() + " basert på denne " +
-                            "endringen av utbetalt AFP."
+                                "skatteoppgjøret ditt for " + oppgjoersAar.format() + " basert på denne " +
+                                "endringen av utbetalt AFP."
                     },
                     nynorsk {
                         +"Nav rapporterer endringa til Skatteetaten. Dei vil gjere ei korrigering av " +
-                            "skatteoppgjeret ditt for " + oppgjoersAar.format() + " basert på denne " +
-                            "endringa."
+                                "skatteoppgjeret ditt for " + oppgjoersAar.format() + " basert på denne " +
+                                "endringa."
                     },
                 )
             }

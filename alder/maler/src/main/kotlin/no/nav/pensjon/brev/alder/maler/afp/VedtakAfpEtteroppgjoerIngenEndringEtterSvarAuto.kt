@@ -11,15 +11,18 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektEtterOpphoer
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.scenario
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
+import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -58,7 +61,11 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto : AutobrevTemplate<Vedtak
 
         outline {
             includePhrase(AfpEtteroppgjoerInnhold.HarVaertRiktigIntro(oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
@@ -89,10 +96,10 @@ object VedtakAfpEtteroppgjoerIngenEndringEtterSvarAuto : AutobrevTemplate<Vedtak
             paragraph {
                 text(
                     bokmal {
-                        +"Ved beregningen av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha en forventet arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " + "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var 15 000 kroner."
+                        +"Ved beregningen av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha en forventet arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidligere medregnede arbeidsinntekten og den " + "arbeidsinntekten du etter vår nye beregning har hatt i perioden, utgjør " + avvik.format() + ". Denne differansen er ikke større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + "."
                     },
                     nynorsk {
-                        +"Ved berekninga av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha ei forventa arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " + "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var 15 000 kroner."
+                        +"Ved berekninga av pensjonen din for " + oppgjoersAar.format() + " la vi til " + "grunn at du ville ha ei forventa arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Differansen mellom denne tidlegare medrekna arbeidsinntekta og den " + "arbeidsinntekta du etter vår nye berekning har hatt i perioden, utgjer " + avvik.format() + ". Denne differansen er ikkje større enn toleransebeløpet " + "som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + "."
                     },
                 )
             }

@@ -95,5 +95,6 @@ fun createVedtakEndringAfpOffentligSektorDto(): VedtakEndringAfpOffentligSektorD
                 harOmsorgspoeng = true,
             ),
             oversiktOverPensjonen = createOversiktOverPensjonenAfpDto(),
+            toleranseBeloep = Kroner(15001),
         ),
     )

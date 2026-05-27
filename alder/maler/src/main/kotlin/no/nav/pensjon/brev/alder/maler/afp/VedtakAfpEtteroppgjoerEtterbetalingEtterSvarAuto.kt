@@ -16,12 +16,14 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.opphorsdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDtoSelectors.uttaksdato
 import no.nav.pensjon.brev.model.format
@@ -83,7 +85,11 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                 )
             }
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
@@ -183,17 +189,13 @@ object VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAuto : AutobrevTemplate<Vedta
                 }
             }
 
-            // Toleransebeløp-paragrafen — 105 sier "lavere" (etterbetaling)
-            // der [AfpTilbakekrevingBody.ToleransebeloepOverskrider] sier
-            // "høyere" (tilbakekreving), og avslutter med kortere setning.
-            // Inlinet.
             paragraph {
                 text(
                     bokmal {
-                        +"Den arbeidsinntekten du har hatt i perioden med AFP, er " + avvik.format() + " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved " + "utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner. " + "Vi har derfor beregnet ny pensjon for perioden."
+                        +"Den arbeidsinntekten du har hatt i perioden med AFP, er " + avvik.format() + " lavere enn den forventede arbeidsinntekten som ble lagt til grunn ved " + "utbetalingen av pensjonen din i det aktuelle tidsrommet. Dette er mer enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " + "Vi har derfor beregnet ny pensjon for perioden."
                     },
                     nynorsk {
-                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() + " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved " + "utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner. " + "Vi har derfor berekna ny pensjon for perioden."
+                        +"Den arbeidsinntekta du har hatt i perioden med AFP, er " + avvik.format() + " lågare enn den forventa arbeidsinntekta som blei lagd til grunn ved " + "utbetalinga av pensjonen din i det aktuelle tidsrommet. Dette er meir enn " + "toleransebeløpet som i " + oppgjoersAar.format() + " var " + toleranseBeloep.format() + ". " + "Vi har derfor berekna ny pensjon for perioden."
                     },
                 )
             }

@@ -20,6 +20,8 @@ data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
     val utbetaltAfp: Kroner,
     val uttaksdato: LocalDate,
     val opphorsdato: LocalDate?,
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val scenario: Scenario,
     val periode: NyPensjonsberegningPeriode,
 ) : AutobrevData {

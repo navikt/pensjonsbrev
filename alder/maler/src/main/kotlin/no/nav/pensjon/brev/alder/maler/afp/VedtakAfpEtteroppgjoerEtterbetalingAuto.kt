@@ -15,11 +15,13 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAu
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektIAfpPerioden
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.opphorsdato
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.uttaksdato
 import no.nav.pensjon.brev.model.format
@@ -169,7 +171,11 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 )
             }
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             // Melding om endringer av inntekten + de to delte innledende paragrafene.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
@@ -322,9 +328,6 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 ),
             )
 
-            // Toleransebeløp-paragrafen — 101 sier "lavere" (etterbetaling).
-            // Originalens hardkodede "som i 2024 var på 15 000 kroner" er
-            // parametrisert med {oppgjørsår} (samme tilpasning som 105/107).
             paragraph {
                 text(
                     bokmal {
@@ -333,7 +336,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                             "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
                             "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "beregnet på ny for perioden."
                     },
                     nynorsk {
@@ -342,7 +345,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                             "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
                             "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "berekna på nytt for perioden."
                     },
                 )
