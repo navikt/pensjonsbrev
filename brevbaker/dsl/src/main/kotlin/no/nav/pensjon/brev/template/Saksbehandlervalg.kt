@@ -5,7 +5,6 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
-import no.nav.pensjon.brev.template.selectorTake2
 import kotlin.also
 
 class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
@@ -13,24 +12,15 @@ class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
 }
 
 class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
-    fun bool(default: Boolean = false): Expression<Boolean> {
-        val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi.Bool> = selectorTake2<SaksbehandlervalgVerdi.Bool, LetterData>(displayText, SaksbehandlervalgVerdi.Bool(default))
-        val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi.Bool> = UnaryOperation.Select(selector)
-        val unaryInvoke: Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi.Bool> = Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi.Bool>(
-            scope.argument,
-            selected
-        )
-        return unaryInvoke.bool().also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
-    }
-    fun int(default: Int? = null): Expression<Int> {
-        val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi.Integer> = selectorTake2<SaksbehandlervalgVerdi.Integer, LetterData>(displayText, SaksbehandlervalgVerdi.Integer(default))
-        val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi.Integer> = UnaryOperation.Select(selector)
-        val unaryInvoke: Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi.Integer> = Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi.Integer>(
-            scope.argument,
-            selected
-        )
-        return unaryInvoke.int().also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Integer(default) }
-    }
+    fun bool(default: Boolean = false): Expression<Boolean> = generisk { SaksbehandlervalgVerdi.Bool(default) }
+        .bool()
+        .also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
+
+    fun int(default: Int? = null): Expression<Int> = generisk { SaksbehandlervalgVerdi.Integer(default) }
+        .int()
+        .also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Integer(default) }
+
+    fun <T: SaksbehandlervalgVerdi> generisk(factory: () -> T): Expression<T> = Expression.UnaryInvoke(scope.argument, UnaryOperation.Select(selectorTake2(displayText, factory())))
 }
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg3(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
 
