@@ -60,7 +60,6 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             argument = parseArgument(brevdata, template),
             language = language,
             felles = felles,
-            saksbehandlervalg = template.saksbehandlervalg,
         )
     }
 

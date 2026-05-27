@@ -618,13 +618,12 @@ public abstract interface class no/nav/pensjon/brev/template/ExpressionScope {
 	public abstract fun getArgument ()Ljava/lang/Object;
 	public abstract fun getFelles ()Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;
 	public abstract fun getLanguage ()Lno/nav/pensjon/brev/template/Language;
-	public abstract fun getSaksbehandlervalg ()Ljava/util/Map;
 	public abstract fun markUsage (Lno/nav/pensjon/brev/template/TemplateModelSelector;)V
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$Companion {
-	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Ljava/util/Map;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
-	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Ljava/util/Map;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public final fun invoke (Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;)Lno/nav/pensjon/brev/template/ExpressionScope;
+	public static synthetic fun invoke$default (Lno/nav/pensjon/brev/template/ExpressionScope$Companion;Ljava/lang/Object;Lno/nav/pensjon/brevbaker/api/model/BrevbakerFelles;Lno/nav/pensjon/brev/template/Language;Lno/nav/pensjon/brev/template/expression/SelectorUsage;ILjava/lang/Object;)Lno/nav/pensjon/brev/template/ExpressionScope;
 }
 
 public final class no/nav/pensjon/brev/template/ExpressionScope$DefaultImpls {

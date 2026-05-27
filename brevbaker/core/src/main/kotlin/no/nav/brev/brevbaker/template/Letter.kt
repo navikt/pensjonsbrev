@@ -1,7 +1,6 @@
 package no.nav.pensjon.brev.template
 
 import no.nav.brev.InterneDataklasser
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerFelles
 
 // TODO: Look at * projections for LetterTemplate, we have to have it for the API endpoint, but perhaps not for internal usage.
@@ -14,7 +13,6 @@ data class LetterImpl<ParameterType : Any>(
     override val argument: ParameterType,
     override val language: Language,
     override val felles: BrevbakerFelles,
-    override val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi> = emptyMap(),
 ) : Letter<ParameterType> {
 
     init {
@@ -29,5 +27,4 @@ interface Letter<ParameterType : Any> {
     val argument: ParameterType
     val language: Language
     val felles: BrevbakerFelles
-    val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi>
 }
