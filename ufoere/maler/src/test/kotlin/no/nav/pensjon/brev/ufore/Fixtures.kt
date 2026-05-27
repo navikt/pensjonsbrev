@@ -8,6 +8,7 @@ import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.EmptyRedigerbarBrevdata
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
+import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.ufore.api.model.maler.Sakstype
 import no.nav.pensjon.brev.ufore.api.model.maler.info.InfoEndretUTPgaInntektDto
 import no.nav.pensjon.brev.ufore.api.model.maler.redigerbar.*
@@ -71,7 +72,10 @@ object Fixtures : LetterDataFactory {
 
     private fun lagInnhentingOpplysningerSamboer() = InnhentingOpplysningerSamboerDto(
         pesysData = EmptyFagsystemdata,
-        saksbehandlerValg = object : SaksbehandlervalgIDSL {}
+        saksbehandlerValg = object : SaksbehandlervalgIDSL {
+            override val verdier = emptyMap<String, SaksbehandlervalgVerdi>()
+            override fun <T : SaksbehandlervalgVerdi> get(key: String): T= SaksbehandlervalgVerdi.Bool(false) as T
+        }
     )
 
     private fun lagUforeAvslagUtenVurderingDto() = UforeAvslagUtenVurderingDto(

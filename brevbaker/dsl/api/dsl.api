@@ -929,7 +929,7 @@ public final class no/nav/pensjon/brev/template/RedigerbarTemplate$DefaultImpls 
 public final class no/nav/pensjon/brev/template/SaksbehandlervalgKt {
 	public static final fun bool (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
 	public static final fun int (Lno/nav/pensjon/brev/template/Expression;)Lno/nav/pensjon/brev/template/Expression$UnaryInvoke;
-	public static final fun saksbehandlervalg3 (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;
+	public static final fun saksbehandlervalg (Lno/nav/pensjon/brev/template/dsl/TemplateRootScope;Ljava/lang/String;)Lno/nav/pensjon/brev/template/SaksbehandlervalgWrapper;
 }
 
 public final class no/nav/pensjon/brev/template/SaksbehandlervalgSelector : no/nav/pensjon/brev/template/TemplateModelSelector {
