@@ -24,6 +24,15 @@ class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<Saksbehandlervalg
         )
         return unaryInvoke.bool().also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
     }
+    fun int(default: Int? = null): Expression<Int> {
+        val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi> = selectorTake2<SaksbehandlervalgVerdi.Integer, LetterData>(displayText, SaksbehandlervalgVerdi.Integer(default))
+        val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi> = UnaryOperation.Select(selector)
+        val unaryInvoke: Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi> = Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi>(
+            scope.argument,
+            selected
+        )
+        return unaryInvoke.int().also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Integer(default) }
+    }
 }
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg3(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
 
@@ -54,6 +63,17 @@ fun Expression<SaksbehandlervalgVerdi>.bool(): Expression.UnaryInvoke<Saksbehand
         override val selector: SaksbehandlervalgVerdi.() -> Boolean = { this.unwrap() as Boolean }
     }
     val operation: UnaryOperation.Select<SaksbehandlervalgVerdi, Boolean> = UnaryOperation.Select(selector1)
+    return Expression.UnaryInvoke(this, operation)
+}
+
+fun Expression<SaksbehandlervalgVerdi>.int(): Expression.UnaryInvoke<SaksbehandlervalgVerdi, Int> {
+    val selector1: TemplateModelSelector<SaksbehandlervalgVerdi, Int> = object : TemplateModelSelector<SaksbehandlervalgVerdi, Int> {
+        override val className = SaksbehandlervalgVerdi::class.qualifiedName!!
+        override val propertyName = "int"
+        override val propertyType = "Int"
+        override val selector: SaksbehandlervalgVerdi.() -> Int = { this.unwrap() as Int }
+    }
+    val operation: UnaryOperation.Select<SaksbehandlervalgVerdi, Int> = UnaryOperation.Select(selector1)
     return Expression.UnaryInvoke(this, operation)
 }
 
