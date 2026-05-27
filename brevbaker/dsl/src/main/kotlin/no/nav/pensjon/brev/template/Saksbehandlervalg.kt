@@ -13,6 +13,7 @@ class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
 }
 
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(displayText: String) = SBWrapper(displayText, this)
+
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg2(displayText: String, default: Boolean = false): Expression<Boolean> {
     val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi> = this.argument.selectorTake2(displayText, SaksbehandlervalgVerdi.Bool(default))
     val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi> = UnaryOperation.Select(selector)
