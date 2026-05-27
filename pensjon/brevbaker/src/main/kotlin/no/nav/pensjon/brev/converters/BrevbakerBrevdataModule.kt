@@ -32,11 +32,9 @@ object BrevbakerBrevdataModule : SimpleModule() {
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
     }
     private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
-            val readValue = ctxt.readValue(parser, Any::class.java)
-            return object : SaksbehandlervalgIDSL {
-                override val verdier = readValue as Map<String, SaksbehandlervalgVerdi>
-            }
-        }
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL =
+            SaksbehandlervalgIDSLImpl(ctxt.readValue(parser, Map::class.java) as Map<String, SaksbehandlervalgVerdi>)
     }
 }
+
+class SaksbehandlervalgIDSLImpl(override val verdier: Map<String, SaksbehandlervalgVerdi>) : SaksbehandlervalgIDSL

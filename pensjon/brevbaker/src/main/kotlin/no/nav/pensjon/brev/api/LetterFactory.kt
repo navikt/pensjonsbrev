@@ -71,7 +71,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
             if (template.saksbehandlervalg.isNotEmpty()) {
                 objectMapper.convertValue(mapOf(
                     "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
-                    "saksbehandlerValg" to mapOf("verdier" to template.saksbehandlervalg)
+                    "saksbehandlerValg" to template.saksbehandlervalg
                 ), template.letterDataType.java)
             } else {
                 objectMapper.convertValue(letterData, template.letterDataType.java)
