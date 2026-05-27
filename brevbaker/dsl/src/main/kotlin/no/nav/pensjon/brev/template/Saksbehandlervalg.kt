@@ -5,6 +5,8 @@ import no.nav.pensjon.brev.api.model.maler.SaksbehandlerValgEnum
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgIDSL
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brev.template.dsl.TemplateRootScope
+import no.nav.pensjon.brev.template.selectorTake2
+import kotlin.also
 
 class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
     fun bool(default: Boolean = false) = Expression.FromScope.Saksbehandlervalg(displayText, default).also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
@@ -12,9 +14,23 @@ class SBWrapper(val displayText: String, val scope: TemplateRootScope<*, *>) {
     fun <T : SaksbehandlerValgEnum> enum(default: T?) = Expression.FromScope.Saksbehandlervalg(displayText, default).also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Enum(default) }
 }
 
+class SaksbehandlervalgWrapper<LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>>(val displayText: String, val scope: TemplateRootScope<*, LetterData>) {
+    fun bool(default: Boolean = false): Expression<Boolean> {
+        val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi> = selectorTake2<SaksbehandlervalgVerdi.Bool, LetterData>(displayText, SaksbehandlervalgVerdi.Bool(default))
+        val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi> = UnaryOperation.Select(selector)
+        val unaryInvoke: Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi> = Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi>(
+            scope.argument,
+            selected
+        )
+        return unaryInvoke.bool().also { scope.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
+    }
+}
+fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg3(displayText: String) = SaksbehandlervalgWrapper(displayText, this)
+
 fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg(displayText: String) = SBWrapper(displayText, this)
 
-fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg2(displayText: String, default: Boolean = false): Expression<Boolean> {
+
+/*fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScope<*, LetterData>.saksbehandlervalg2(displayText: String, default: Boolean = false): Expression<Boolean> {
     val selector: SaksbehandlervalgSelector<LetterData, SaksbehandlervalgVerdi> = this.argument.selectorTake2(displayText, SaksbehandlervalgVerdi.Bool(default))
     val selected: UnaryOperation.Select<LetterData, SaksbehandlervalgVerdi> = UnaryOperation.Select(selector)
     val unaryInvoke: Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi> = Expression.UnaryInvoke<LetterData, SaksbehandlervalgVerdi>(
@@ -22,9 +38,9 @@ fun <LetterData : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> TemplateRootScop
         selected
     )
     return unaryInvoke.bool().also { this.saksbehandlervalg[displayText] = SaksbehandlervalgVerdi.Bool(default) }
-}
+}*/
 
-fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> Expression<D>.selectorTake2(displayText: String, type: T) = SaksbehandlervalgSelector<D, SaksbehandlervalgVerdi>(
+fun <T : SaksbehandlervalgVerdi, D : RedigerbarBrevdata<SaksbehandlervalgIDSL, *>> selectorTake2(displayText: String, type: T) = SaksbehandlervalgSelector<D, SaksbehandlervalgVerdi>(
     propertyName = displayText,
     propertyType = SaksbehandlervalgVerdi::class.qualifiedName!!,
     selector = { saksbehandlerValg.get(displayText) }
