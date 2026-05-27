@@ -5,6 +5,13 @@ import no.nav.brev.brevbaker.LetterDataFactory
 import no.nav.pensjon.brev.alder.maler.adhoc.AdhocTidligereUfoereGradertAP
 import no.nav.pensjon.brev.alder.maler.adhoc.createAdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpGammelDto
+import no.nav.pensjon.brev.alder.maler.afp.createAvslagAfpPrivatAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpPrivatEndringOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerToleransebeloepDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerEtterbetalingDto
+import no.nav.pensjon.brev.alder.maler.afp.createVedtakAfpEtteroppgjoerIngenEndringDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.maler.afp.createInnvilgelseAvAfpOffentligSektorDto
@@ -52,6 +59,13 @@ import no.nav.pensjon.brev.alder.model.adhoc.AdhocAlderspensjonGjtOppryddingAuto
 import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDto
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
+import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpAutoDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpDto
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDto
@@ -125,6 +139,13 @@ object Fixtures : LetterDataFactory {
             EndringAvAlderspensjonSivilstandSaerskiltSatsDto::class -> createEndringAvAlderspensjonSivilstandSaerskiltSatsDto() as T
             InnvilgelseAvAfpAutoDto::class -> createInnvilgelseAvAfpAutoDto() as T
             AvslagAfpPrivatDto::class -> createAvslagAfpPrivatDto() as T
+            AvslagAfpPrivatAutoDto::class -> createAvslagAfpPrivatAutoDto() as T
+            AvslagAfpGammelDto::class -> createAvslagAfpGammelDto() as T
+            VedtakAfpPrivatEndringOpptjeningAutoDto::class -> createVedtakAfpPrivatEndringOpptjeningAutoDto() as T
+            VedtakAfpPrivatEndringDto::class -> createVedtakAfpPrivatEndringDto() as T
+            VedtakAfpEtteroppgjoerToleransebeloepDto::class -> createVedtakAfpEtteroppgjoerToleransebeloepDto() as T
+            VedtakAfpEtteroppgjoerEtterbetalingDto::class -> createVedtakAfpEtteroppgjoerEtterbetalingDto() as T
+            VedtakAfpEtteroppgjoerIngenEndringDto::class -> createVedtakAfpEtteroppgjoerIngenEndringDto() as T
             InnvilgelseAvAfpDto::class -> createInnvilgelseAvAfpDto() as T
             InnvilgelseAvAfpOffentligSektorDto::class -> createInnvilgelseAvAfpOffentligSektorDto() as T
             VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto::class -> createVedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto() as T
