@@ -1,7 +1,6 @@
 package no.nav.pensjon.brevbaker.api.model
 
 import no.nav.brev.Listetype
-import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Foedselsnummer
 import java.time.LocalDate
 
@@ -9,7 +8,6 @@ interface LetterMarkupWithDataUsage {
     val markup: LetterMarkup
     val letterDataUsage: Set<Property>
     val brevtype: LetterMetadata.Brevtype
-    val saksbehandlervalg: Map<String, SaksbehandlervalgVerdi>
 
     interface Property {
         val typeName: String

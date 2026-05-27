@@ -801,7 +801,6 @@ public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupW
 	public abstract fun getBrevtype ()Lno/nav/pensjon/brevbaker/api/model/LetterMetadata$Brevtype;
 	public abstract fun getLetterDataUsage ()Ljava/util/Set;
 	public abstract fun getMarkup ()Lno/nav/pensjon/brevbaker/api/model/LetterMarkup;
-	public abstract fun getSaksbehandlervalg ()Ljava/util/Map;
 }
 
 public abstract interface class no/nav/pensjon/brevbaker/api/model/LetterMarkupWithDataUsage$Property {
