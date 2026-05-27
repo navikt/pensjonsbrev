@@ -582,16 +582,6 @@ public final class no/nav/pensjon/brev/template/Expression$FromScope$Language : 
 	public fun stableHashCode ()I
 }
 
-public final class no/nav/pensjon/brev/template/Expression$FromScope$Saksbehandlervalg : no/nav/pensjon/brev/template/Expression$FromScope {
-	public fun <init> (Ljava/lang/String;Ljava/lang/Object;)V
-	public fun equals (Ljava/lang/Object;)Z
-	public fun eval (Lno/nav/pensjon/brev/template/ExpressionScope;)Ljava/lang/Object;
-	public final fun getDefault ()Ljava/lang/Object;
-	public final fun getDisplayText ()Ljava/lang/String;
-	public fun hashCode ()I
-	public fun stableHashCode ()I
-}
-
 public final class no/nav/pensjon/brev/template/Expression$Literal : no/nav/pensjon/brev/template/Expression {
 	public fun <init> (Ljava/lang/Object;)V
 	public fun equals (Ljava/lang/Object;)Z

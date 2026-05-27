@@ -106,14 +106,6 @@ sealed class Expression<out Out> : StableHash {
             override fun stableHashCode(): Int = "FromScope.Argument".hashCode()
         }
 
-        class Saksbehandlervalg<out Out> @InternKonstruktoer constructor(val displayText: String, val default: Out): FromScope<Out> () {
-            @Suppress("UNCHECKED_CAST")
-            override fun eval(scope: ExpressionScope<*>) = (scope.saksbehandlervalg[displayText]?.unwrap() as Out) ?: default
-            override fun equals(other: Any?): Boolean = other is Saksbehandlervalg<*>
-            override fun hashCode(): Int = javaClass.hashCode()
-            override fun stableHashCode(): Int = "FromScope.Saksbehandlervalg".hashCode()
-        }
-
         class Assigned<out Out> internal constructor(val id: Int) : FromScope<Out>() {
             override fun eval(scope: ExpressionScope<*>): Out =
                 if (scope is AssignmentExpressionScope<*, *>) {

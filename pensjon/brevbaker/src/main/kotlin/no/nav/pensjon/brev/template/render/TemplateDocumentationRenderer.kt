@@ -183,7 +183,6 @@ object TemplateDocumentationRenderer {
             is Expression.FromScope.Language -> LetterData("language")
             is Expression.FromScope.Felles -> LetterData("felles")
             is Expression.FromScope.Argument -> LetterData("argument")
-            is Expression.FromScope.Saksbehandlervalg -> LetterData("saksbehandlervalg")
             is Expression.FromScope.Assigned ->
                 assignments[expr]
                     ?.let { renderExpression(it, assignments) }
