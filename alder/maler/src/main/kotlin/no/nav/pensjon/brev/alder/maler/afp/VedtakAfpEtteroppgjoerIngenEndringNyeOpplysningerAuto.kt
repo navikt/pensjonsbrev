@@ -5,7 +5,7 @@ import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDto.Scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.ifu
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.inntektFoerUttak
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAutoDtoSelectors.scenario
 import no.nav.pensjon.brev.model.format
@@ -14,7 +14,6 @@ import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -60,16 +59,10 @@ object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : AutobrevTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger i saken er hele din pensjonsgivende inntekt opptjent i " +
-                                "perioden før du tok ut pensjon. Den vil derfor bli holdt utenfor " +
-                                "etteroppgjøret."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " + "opplysninger i saken er hele din pensjonsgivende inntekt opptjent i " + "perioden før du tok ut pensjon. Den vil derfor bli holdt utenfor " + "etteroppgjøret."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar i saka er heile den pensjonsgivande inntekta di opptent i " +
-                                "perioden før du tok ut pensjon. Ho vil derfor bli halden utanfor " +
-                                "etteroppgjeret."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " + "opplysningar i saka er heile den pensjonsgivande inntekta di opptent i " + "perioden før du tok ut pensjon. Ho vil derfor bli halden utanfor " + "etteroppgjeret."
                         },
                     )
                 }
@@ -79,18 +72,10 @@ object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : AutobrevTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger i saken er " + ifu.format() + " opptjent i perioden " +
-                                "før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " +
-                                "pensjonen overstiger ikke toleransebeløpet som i " + oppgjoersAar.format() +
-                                " var 15 000 kroner."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " + "opplysninger i saken er " + inntektFoerUttak.format() + " opptjent i perioden " + "før du tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " + "pensjonen overstiger ikke toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar i saka er " + ifu.format() + " opptente i perioden " +
-                                "før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " +
-                                "pensjonen, overstig ikkje toleransebeløpet som i " + oppgjoersAar.format() +
-                                " var 15 000 kroner."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " + "opplysningar i saka er " + inntektFoerUttak.format() + " opptente i perioden " + "før du tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " + "pensjonen, overstig ikkje toleransebeløpet som i " + oppgjoersAar.format() + " var 15 000 kroner."
                         },
                     )
                 }
@@ -100,18 +85,10 @@ object VedtakAfpEtteroppgjoerIngenEndringNyeOpplysningerAuto : AutobrevTemplate<
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " +
-                                "opplysninger er " + ifu.format() + " opptjent i perioden før du " +
-                                "tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " +
-                                "pensjonen, svarer til det som tidligere har vært lagt til grunn ved " +
-                                "utbetalingen av AFP."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. Ifølge nye " + "opplysninger er " + inntektFoerUttak.format() + " opptjent i perioden før du " + "tok ut AFP. Den faktiske arbeidsinntekten du har hatt sammen med " + "pensjonen, svarer til det som tidligere har vært lagt til grunn ved " + "utbetalingen av AFP."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " +
-                                "opplysningar er " + ifu.format() + " opptente i perioden før du " +
-                                "tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " +
-                                "pensjonen, svarer til det som tidlegare har vore lagt til grunn ved " +
-                                "utbetalinga av AFP."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Ifølgje nye " + "opplysningar er " + inntektFoerUttak.format() + " opptente i perioden før du " + "tok ut AFP. Den faktiske arbeidsinntekta du har hatt saman med " + "pensjonen, svarer til det som tidlegare har vore lagt til grunn ved " + "utbetalinga av AFP."
                         },
                     )
                 }

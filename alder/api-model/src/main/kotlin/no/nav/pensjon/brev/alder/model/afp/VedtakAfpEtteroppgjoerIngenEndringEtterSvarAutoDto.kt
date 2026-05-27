@@ -5,38 +5,13 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class VedtakAfpEtteroppgjoerIngenEndringEtterSvarAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
-    // (rtv-brev brev Vedtaksdata Oppgjorsar)
     val oppgjoersAar: Year,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    // (rtv-brev brev Grunnlag Persongrunnlag AFPEOGrunnlag PGI)
-    // Samlet pensjonsgivende inntekt fra Skatteetaten for oppgjørsåret.
-    val pgi: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-    // (rtv-brev brev Grunnlag Persongrunnlag AFPEOGrunnlag IFU)
-    val ifu: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    // (rtv-brev brev Grunnlag Persongrunnlag AFPEOGrunnlag IEO)
-    val ieo: Kroner,
-
-    // PE_Vedtaksdata_APFEO_IIAP
-    // (rtv-brev brev Vedtaksdata APFEO IIAP)
-    // Faktisk arbeidsinntekt i perioden med AFP (= PGI − IFU − IEO).
-    val iiap: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fpiberegnet
-    // (rtv-brev brev Vedtaksdata AFPEO fpiberegnet)
-    // Forventet pensjonsgivende inntekt som ble lagt til grunn da pensjonen
-    // ble utbetalt.
-    val fpiberegnet: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_AFP_avvik
-    // (rtv-brev brev Vedtaksdata AFPEO AFP avvik)
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val forventetPensjonsgivendeInntektBeregnet: Kroner,
     val avvik: Kroner,
-
     val scenario: Scenario,
 ) : AutobrevData {
 

@@ -5,14 +5,8 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 
 data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
-    // (rtv-brev brev Vedtaksdata Oppgjorsar)
     val oppgjoersAar: Year,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    // (rtv-brev brev Grunnlag Persongrunnlagsliste Persongrunnlag AFPEOGrunnlag PGI)
-    val pgi: Kroner,
-
+    val pensjonsgivendeInntekt: Kroner,
     val scenario: Scenario,
 ) : AutobrevData {
 
@@ -30,7 +24,7 @@ data class VedtakAfpEtteroppgjoerIngenEndringAutoDto(
         // AND UtbetaltAFP = fullAFP AND PGI = 0
         HEL_AFP_HELE_AARET_INGEN_INNTEKT,
 
-        // UtbetaltAFP = 0 AND PGI >= TPIberegnet
+        // UtbetaltAFP = 0 AND PGI >= tidligereArbeidsInntektBeregnet
         IKKE_AFP_FULL_INNTEKT,
 
         // AFP_Uttaksdato < Dato0102 AND Opphorsdato < Dato3112

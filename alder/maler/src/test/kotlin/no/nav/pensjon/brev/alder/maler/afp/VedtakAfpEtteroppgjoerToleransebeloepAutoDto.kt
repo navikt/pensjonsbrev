@@ -8,11 +8,11 @@ import java.time.LocalDate
 fun createVedtakAfpEtteroppgjoerToleransebeloepAutoDto(): VedtakAfpEtteroppgjoerToleransebeloepAutoDto =
     VedtakAfpEtteroppgjoerToleransebeloepAutoDto(
         oppgjoersAar = Year(2024),
-        pgi = Kroner(412_500),
-        ifu = Kroner(85_000),
-        ieo = Kroner(120_000),
-        iiap = Kroner(207_500),
-        fpiberegnet = Kroner(400_000),
+        pensjonsgivendeInntekt = Kroner(412_500),
+        inntektFoerUttak = Kroner(85_000),
+        inntektEtterOpphoer = Kroner(120_000),
+        inntektIAfpPerioden = Kroner(207_500),
+        forventetPensjonsgivendeInntektBeregnet = Kroner(400_000),
         avvik = Kroner(12_500),
         uttaksdato = LocalDate.of(2024, 4, 1),
         opphorsdato = LocalDate.of(2024, 11, 30),

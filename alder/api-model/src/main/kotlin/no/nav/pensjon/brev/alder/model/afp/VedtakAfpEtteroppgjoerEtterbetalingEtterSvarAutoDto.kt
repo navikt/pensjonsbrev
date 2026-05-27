@@ -6,54 +6,21 @@ import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
 import java.time.LocalDate
 
 data class VedtakAfpEtteroppgjoerEtterbetalingEtterSvarAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,
-
-    // PE_Vedtaksdata_AFPEO_forlitebetalt
-    // For lite utbetalt AFP — totalbeløpet som etterbetales.
     val forlitebetalt: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    val pgi: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-    // Inntekt opptjent før uttak av AFP. Vises i alle scenarier unntatt
-    // [Scenario.KUN_IEO_OVERSTYRT].
-    val ifu: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    val ieo: Kroner,
-
-    // PE_Vedtaksdata_APFEO_IIAP
-    // Inntekt antatt opptjent i perioden med AFP.
-    val iiap: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_AFP_avvik
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOppohoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
     val avvik: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fullafp
-    val fullafp: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fradragberegnetai
-    val fradragberegnetai: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_korrigertafp
-    val korrigertafp: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_tpiberegnet
-    val tpiberegnet: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_utbetaltafp
-    val utbetaltafp: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_Uttaksdato
+    val fullAfp: Kroner,
+    val fradragBeregnetArbeidsInntekt: Kroner,
+    val korrigertAfp: Kroner,
+    val tidligereArbeidsInntektBeregnet: Kroner,
+    val utbetaltAfp: Kroner,
     val uttaksdato: LocalDate,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato
     val opphorsdato: LocalDate?,
-
     val scenario: Scenario,
-
     val periode: NyPensjonsberegningPeriode,
 ) : AutobrevData {
 

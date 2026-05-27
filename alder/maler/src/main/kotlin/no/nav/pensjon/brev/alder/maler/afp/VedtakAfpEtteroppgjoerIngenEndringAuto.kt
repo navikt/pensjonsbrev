@@ -1,14 +1,13 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDtoSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDtoSelectors.pgi
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDtoSelectors.scenario
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -61,18 +60,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har fått utbetalt 100 prosent AFP. Opplysninger fra Skatteetaten viser at du " +
-                                "har hatt en samlet pensjonsgivende inntekt på " + pgi.format() + " for " +
-                                "inntektsåret " + oppgjoersAar.format() + ". Vi antar at hele denne inntekten " +
-                                "er opptjent i perioden før du tok ut pensjon, og den blir derfor holdt utenfor " +
-                                "etteroppgjøret."
+                            +"Du har fått utbetalt 100 prosent AFP. Opplysninger fra Skatteetaten viser at du " + "har hatt en samlet pensjonsgivende inntekt på " + pensjonsgivendeInntekt.format() + " for " + "inntektsåret " + oppgjoersAar.format() + ". Vi antar at hele denne inntekten " + "er opptjent i perioden før du tok ut pensjon, og den blir derfor holdt utenfor " + "etteroppgjøret."
                         },
                         nynorsk {
-                            +"Du har fått utbetalt 100 prosent AFP. Opplysningar frå Skatteetaten viser at du " +
-                                "har hatt ei samla pensjonsgivande inntekt på " + pgi.format() + " for " +
-                                "inntektsåret " + oppgjoersAar.format() + ". Vi reknar med at heile denne " +
-                                "inntekta er opptent i perioden før du tok ut pensjon, og ho blir derfor halden " +
-                                "utanfor etteroppgjeret."
+                            +"Du har fått utbetalt 100 prosent AFP. Opplysningar frå Skatteetaten viser at du " + "har hatt ei samla pensjonsgivande inntekt på " + pensjonsgivendeInntekt.format() + " for " + "inntektsåret " + oppgjoersAar.format() + ". Vi reknar med at heile denne " + "inntekta er opptent i perioden før du tok ut pensjon, og ho blir derfor halden " + "utanfor etteroppgjeret."
                         },
                     )
                 }
@@ -83,16 +74,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har fått utbetalt 100 prosent AFP. Ved beregningen av pensjonen har vi lagt " +
-                                "til grunn at du ikke ville ha arbeidsinntekt. Ifølge opplysninger fra " +
-                                "Skatteetaten har du ikke hatt pensjonsgivende inntekt for inntektsåret " +
-                                oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP. Ved beregningen av pensjonen har vi lagt " + "til grunn at du ikke ville ha arbeidsinntekt. Ifølge opplysninger fra " + "Skatteetaten har du ikke hatt pensjonsgivende inntekt for inntektsåret " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har fått utbetalt 100 prosent AFP. Ved berekninga av pensjonen har vi lagt " +
-                                "til grunn at du ikkje ville ha arbeidsinntekt. Ifølgje opplysningar frå " +
-                                "Skatteetaten har du ikkje hatt pensjonsgivande inntekt for inntektsåret " +
-                                oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP. Ved berekninga av pensjonen har vi lagt " + "til grunn at du ikkje ville ha arbeidsinntekt. Ifølgje opplysningar frå " + "Skatteetaten har du ikkje hatt pensjonsgivande inntekt for inntektsåret " + oppgjoersAar.format() + "."
                         },
                     )
                 }
@@ -103,18 +88,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har ikke fått utbetalt pensjon fra AFP-ordningen for året " +
-                                oppgjoersAar.format() + " som følge av at du har vært i fullt inntektsgivende " +
-                                "arbeid. Opplysninger fra Skatteetaten viser at du har hatt en pensjonsgivende " +
-                                "inntekt på " + pgi.format() + " for " + oppgjoersAar.format() + ". " +
-                                "Dette samsvarer med det som tidligere er lagt til grunn ved pensjonsberegningen."
+                            +"Du har ikke fått utbetalt pensjon fra AFP-ordningen for året " + oppgjoersAar.format() + " som følge av at du har vært i fullt inntektsgivende " + "arbeid. Opplysninger fra Skatteetaten viser at du har hatt en pensjonsgivende " + "inntekt på " + pensjonsgivendeInntekt.format() + " for " + oppgjoersAar.format() + ". " + "Dette samsvarer med det som tidligere er lagt til grunn ved pensjonsberegningen."
                         },
                         nynorsk {
-                            +"Du har ikkje fått utbetalt pensjon frå AFP-ordninga for året " +
-                                oppgjoersAar.format() + " som følgje av at du har vore i fullt inntektsgivande " +
-                                "arbeid. Opplysningar frå Skatteetaten viser at du har hatt ei pensjonsgivande " +
-                                "inntekt på " + pgi.format() + " for " + oppgjoersAar.format() + ". " +
-                                "Det samsvarer med det som tidlegare er lagt til grunn ved pensjonsberekninga."
+                            +"Du har ikkje fått utbetalt pensjon frå AFP-ordninga for året " + oppgjoersAar.format() + " som følgje av at du har vore i fullt inntektsgivande " + "arbeid. Opplysningar frå Skatteetaten viser at du har hatt ei pensjonsgivande " + "inntekt på " + pensjonsgivendeInntekt.format() + " for " + oppgjoersAar.format() + ". " + "Det samsvarer med det som tidlegare er lagt til grunn ved pensjonsberekninga."
                         },
                     )
                 }
@@ -125,18 +102,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " +
-                                "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " +
-                                "overstiger godkjent toleransebeløp på 15 000 kroner i perioden med AFP. " +
-                                "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " +
-                                "pensjonsgivende inntekt i " + oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP for deler av året. Ved beregningen av " + "pensjonen har vi lagt til grunn at du ikke ville ha arbeidsinntekt som " + "overstiger godkjent toleransebeløp på 15 000 kroner i perioden med AFP. " + "Ifølge opplysninger fra Skatteetaten har du heller ikke hatt slik " + "pensjonsgivende inntekt i " + oppgjoersAar.format() + "."
                         },
                         nynorsk {
-                            +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " +
-                                "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " +
-                                "oversteig det godkjende toleransebeløpet på 15 000 kroner i perioden med " +
-                                "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " +
-                                "pensjonsgivande inntekt i " + oppgjoersAar.format() + "."
+                            +"Du har fått utbetalt 100 prosent AFP for delar av året. Ved berekninga av " + "pensjonen har vi lagt til grunn at du ikkje ville ha arbeidsinntekt som " + "oversteig det godkjende toleransebeløpet på 15 000 kroner i perioden med " + "AFP. Ifølgje opplysningar frå Skatteetaten har du heller ikkje hatt slik " + "pensjonsgivande inntekt i " + oppgjoersAar.format() + "."
                         },
                     )
                 }
@@ -165,24 +134,20 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                         item {
                             text(
                                 bokmal {
-                                    +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " +
-                                        "eller virksomhet før første uttak av AFP."
+                                    +"Honorar, royalty, bonus eller andre inntekter som stammer fra arbeid " + "eller virksomhet før første uttak av AFP."
                                 },
                                 nynorsk {
-                                    +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
-                                        "eller verksemd før det første uttaket av AFP."
+                                    +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " + "eller verksemd før det første uttaket av AFP."
                                 },
                             )
                         }
                         item {
                             text(
                                 bokmal {
-                                    +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble " +
-                                        "tatt ut."
+                                    +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble " + "tatt ut."
                                 },
                                 nynorsk {
-                                    +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart " +
-                                        "tatt ut."
+                                    +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart " + "tatt ut."
                                 },
                             )
                         }
@@ -191,8 +156,7 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                             text(
                                 bokmal { +"Feriepenger som stammer fra arbeid med covid-19." },
                                 nynorsk {
-                                    +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med " +
-                                        "covid-19-pandemien."
+                                    +"Feriepengar som skriv seg frå enkelte typar arbeid i samband med " + "covid-19-pandemien."
                                 },
                             )
                         }
@@ -209,12 +173,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                     }
                     text(
                         bokmal {
-                            +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra " +
-                                "Ukraina nedenfor."
+                            +"Se mer informasjon om arbeid i forbindelse med covid-19 og fordrevne fra " + "Ukraina nedenfor."
                         },
                         nynorsk {
-                            +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå " +
-                                "Ukraina nedanfor."
+                            +"Sjå meir informasjon om arbeid i samband med covid-19 og fordrivne frå " + "Ukraina nedanfor."
                         },
                     )
                 }
@@ -226,15 +188,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"Du må dokumentere at inntekten er opptjent eller stammer fra arbeid eller " +
-                                "virksomhet før uttaket av AFP. Hvis du ikke sender inn ny dokumentasjon innen " +
-                                "fristen, benytter vi de foreliggende opplysningene vi har, og etteroppgjøret " +
-                                "vil bli vurdert som avsluttet."
+                            +"Du må dokumentere at inntekten er opptjent eller stammer fra arbeid eller " + "virksomhet før uttaket av AFP. Hvis du ikke sender inn ny dokumentasjon innen " + "fristen, benytter vi de foreliggende opplysningene vi har, og etteroppgjøret " + "vil bli vurdert som avsluttet."
                         },
                         nynorsk {
-                            +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " +
-                                "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " +
-                                "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
+                            +"Du må dokumentere kva delar av inntektene dine som skal haldast utanfor " + "avkorting av AFP. Dersom du ikkje sender inn ny dokumentasjon innan fristen, " + "nyttar vi dei opplysningane vi har, og etteroppgjeret blir rekna som avslutta."
                         },
                     )
                 }
@@ -249,14 +206,10 @@ object VedtakAfpEtteroppgjoerIngenEndringAuto : AutobrevTemplate<VedtakAfpEttero
                 paragraph {
                     text(
                         bokmal {
-                            +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " +
-                                "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " +
-                                "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
+                            +"For at NAV skal kunne holde slike inntekter utenfor avkorting, må du sende " + "oss dokumentasjon. Se mer på $AFP_ETTEROPPGJOER_URL om hvordan du sender " + "dokumentasjon. Vi trenger bekreftelse fra arbeidsgiveren din om følgende:"
                         },
                         nynorsk {
-                            +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " +
-                                "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " +
-                                "frå arbeidsgivaren din om følgjande:"
+                            +"For at NAV skal kunne halde slike inntekter utanfor avkorting, må du sende " + "oss dokumentasjon. Sjå meir på $AFP_ETTEROPPGJOER_URL. Vi treng stadfesting " + "frå arbeidsgivaren din om følgjande:"
                         },
                     )
                     list {

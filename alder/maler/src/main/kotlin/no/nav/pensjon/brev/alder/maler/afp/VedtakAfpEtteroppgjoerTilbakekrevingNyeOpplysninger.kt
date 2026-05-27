@@ -2,11 +2,11 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
-import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
-import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpTilbakekrevingBody
+import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
+import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
@@ -14,17 +14,17 @@ import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingN
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.Scenario
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.avvik
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.formyebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.fradragberegnetai
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.fullafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.iiap
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.korrigertafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.korrigertAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.oppgjoersAar
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.pgi
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.scenario
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.tpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.utbetaltafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.PesysDataSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
@@ -54,8 +54,7 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * [VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto.Scenario].
  */
 @TemplateModelHelpers
-object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
-    RedigerbarTemplate<VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto> {
+object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger : RedigerbarTemplate<VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysningerDto> {
 
     override val kode = Aldersbrevkoder.Redigerbar.PE_AFP_ETTEROPPGJOER_TILBAKEKREV_NYE_OPPL
 
@@ -86,14 +85,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             paragraph {
                 text(
                     bokmal {
-                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon " +
-                            "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " +
-                            "etteroppgjøret viser at du har fått for mye utbetalt."
+                        +"Vi viser til vårt forhåndsvarsel om etteroppgjør av avtalefestet pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjøret viser at du har fått for mye utbetalt."
                     },
                     nynorsk {
-                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon " +
-                            "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " +
-                            "etteroppgjeret viser at du har fått for mykje utbetalt."
+                        +"Vi viser til førehandsvarselet vårt om etteroppgjer av avtalefesta pensjon " + "(AFP) for " + pesysData.oppgjoersAar.format() + ". Resultatet av " + "etteroppgjeret viser at du har fått for mykje utbetalt."
                     },
                 )
             }
@@ -116,15 +111,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             paragraph {
                 text(
                     bokmal {
-                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " +
-                            "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " +
-                            "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " +
-                            "inntekt)."
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Statens pensjonskasse § 3 " + "bokstav d, og tilhørende forskrift om kombinasjon av avtalefestet pensjon " + "for medlemmer av Statens pensjonskasse og arbeidsinntekt (pensjonsgivende " + "inntekt)."
                     },
                     nynorsk {
-                        +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " +
-                            "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " +
-                            "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
+                        +"Vedtaket er fatta etter reglane om kombinasjon av AFP og arbeidsinntekt i lov " + "om AFP for medlemmer av Statens pensjonskasse paragraf 3 første ledd bokstav " + "d og tilhøyrande forskrift om kombinasjon av AFP og arbeidsinntekt."
                     },
                 )
             }
@@ -137,20 +127,10 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
                 paragraph {
                     text(
                         bokmal {
-                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. " +
-                                "Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å " +
-                                "godkjenne at din pensjonsgivende inntekt på " + pesysData.pgi.format() +
-                                " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer " +
-                                "fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden " +
-                                "du har mottatt AFP, er satt til " + pesysData.iiap.format() + "."
+                            +"Du har lagt fram nye opplysninger om inntektsforholdene dine. " + "Dokumentasjonen som foreligger gir ikke tilstrekkelig grunnlag for å " + "godkjenne at din pensjonsgivende inntekt på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " helt eller delvis stammer " + "fra før uttak av AFP. Den faktiske arbeidsinntekten din i den perioden " + "du har mottatt AFP, er satt til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " +
-                                "som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den " +
-                                "pensjonsgivande inntekta di på " + pesysData.pgi.format() + " for " +
-                                pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du " +
-                                "tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått " +
-                                "AFP, er sett til " + pesysData.iiap.format() + "."
+                            +"Du har lagt fram nye opplysningar om inntektsforholda dine. Dokumentasjonen " + "som ligg føre, gir ikkje godt nok grunnlag for å godkjenne at den " + "pensjonsgivande inntekta di på " + pesysData.pensjonsgivendeInntekt.format() + " for " + pesysData.oppgjoersAar.format() + " heilt eller delvis stammar frå før du " + "tok ut AFP. Den faktiske arbeidsinntekta di i den perioden du har fått " + "AFP, er sett til " + pesysData.inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -159,12 +139,12 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             showIf(pesysData.scenario.equalTo(Scenario.INGEN_OVERSTYRING_UTTAK_I_AARET)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IngenNyeOpplysningerOmEndretInntektFoerUttak(
-                        ifu = pesysData.ifu, oppgjoersAar = pesysData.oppgjoersAar,
+                        inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
                     )
                 )
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(
-                        iiap = pesysData.iiap, oppgjoersAar = pesysData.oppgjoersAar, pgi = pesysData.pgi, ifu = pesysData.ifu,
+                        inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
             }
@@ -172,12 +152,12 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             showIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_UTTAK_I_AARET)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakIAaret(
-                        ifu = pesysData.ifu, oppgjoersAar = pesysData.oppgjoersAar,
+                        inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
                     )
                 )
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(
-                        iiap = pesysData.iiap, oppgjoersAar = pesysData.oppgjoersAar, pgi = pesysData.pgi, ifu = pesysData.ifu,
+                        inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
             }
@@ -185,12 +165,12 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             showIf(pesysData.scenario.equalTo(Scenario.IFU_OVERSTYRT_HEL_AFP)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOverstyrtUttakFoerAaret(
-                        ifu = pesysData.ifu, oppgjoersAar = pesysData.oppgjoersAar,
+                        inntektFoerUttak = pesysData.inntektFoerUttak, oppgjoersAar = pesysData.oppgjoersAar,
                     )
                 )
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIfu(
-                        iiap = pesysData.iiap, oppgjoersAar = pesysData.oppgjoersAar, pgi = pesysData.pgi, ifu = pesysData.ifu,
+                        inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak,
                     )
                 )
             }
@@ -198,12 +178,12 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             showIf(pesysData.scenario.equalTo(Scenario.IFU_OG_IEO_OVERSTYRT)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.IfuOgIeoOverstyrt(
-                        ifu = pesysData.ifu, ieo = pesysData.ieo, oppgjoersAar = pesysData.oppgjoersAar,
+                        inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar,
                     )
                 )
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenIfuOgIeo(
-                        iiap = pesysData.iiap, oppgjoersAar = pesysData.oppgjoersAar, pgi = pesysData.pgi, ifu = pesysData.ifu, ieo = pesysData.ieo,
+                        inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektFoerUttak = pesysData.inntektFoerUttak, inntektEtterOppohoer = pesysData.inntektEtterOpphoer,
                     )
                 )
             }
@@ -211,37 +191,37 @@ object VedtakAfpEtteroppgjoerTilbakekrevingNyeOpplysninger :
             showIf(pesysData.scenario.equalTo(Scenario.KUN_IEO_OVERSTYRT)) {
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.KunIeoOverstyrt(
-                        ieo = pesysData.ieo, oppgjoersAar = pesysData.oppgjoersAar,
+                        inntektEtterOpphoer = pesysData.inntektEtterOpphoer, oppgjoersAar = pesysData.oppgjoersAar,
                     )
                 )
                 includePhrase(
                     AfpEtteroppgjoerForklaringer.DenFaktiskeArbeidsinntektenKunIeo(
-                        iiap = pesysData.iiap, oppgjoersAar = pesysData.oppgjoersAar, pgi = pesysData.pgi, ieo = pesysData.ieo,
+                        inntektIAfpPerioden = pesysData.inntektIAfpPerioden, oppgjoersAar = pesysData.oppgjoersAar, pensjonsgivendeInntekt = pesysData.pensjonsgivendeInntekt, inntektEtterOpphoer = pesysData.inntektEtterOpphoer,
                     )
                 )
             }
 
             // Tilbakekrevings-likninger og forklaringer — identisk med 107.
-            includePhrase(AfpTilbakekrevingBody.ToleransebeloepOverskrider(
-                avvik = pesysData.avvik,
-                oppgjoersAar = pesysData.oppgjoersAar
-            ))
-            includePhrase(AfpTilbakekrevingBody.NyPensjonsberegningEquation(
-                fullafp = pesysData.fullafp,
-                fradragberegnetai = pesysData.fradragberegnetai,
-                korrigertafp = pesysData.korrigertafp
-            ))
-            includePhrase(AfpTilbakekrevingBody.InntektsfradragetFormel(
-                fradragberegnetai = pesysData.fradragberegnetai,
-                iiap = pesysData.iiap,
-                tpiberegnet = pesysData.tpiberegnet,
-                fullafp = pesysData.fullafp
-            ))
-            includePhrase(AfpTilbakekrevingBody.AfpForMyeEquation(
-                utbetaltafp = pesysData.utbetaltafp,
-                korrigertafp = pesysData.korrigertafp,
-                formyebetalt = pesysData.formyebetalt
-            ))
+            includePhrase(
+                AfpTilbakekrevingBody.ToleransebeloepOverskrider(
+                    avvik = pesysData.avvik, oppgjoersAar = pesysData.oppgjoersAar
+                )
+            )
+            includePhrase(
+                AfpTilbakekrevingBody.NyPensjonsberegningEquation(
+                    fullAfp = pesysData.fullAfp, fradragBeregnetArbeidsInntekt = pesysData.fradragBeregnetArbeidsInntekt, korrigertAfp = pesysData.korrigertAfp
+                )
+            )
+            includePhrase(
+                AfpTilbakekrevingBody.InntektsfradragetFormel(
+                    fradragBeregnetArbeidsInntekt = pesysData.fradragBeregnetArbeidsInntekt, inntektIAfpPerioden = pesysData.inntektIAfpPerioden, tidligereArbeidsInntektBeregnet = pesysData.tidligereArbeidsInntektBeregnet, fullAfp = pesysData.fullAfp
+                )
+            )
+            includePhrase(
+                AfpTilbakekrevingBody.AfpForMyeEquation(
+                    utbetaltAfp = pesysData.utbetaltAfp, korrigertAfp = pesysData.korrigertAfp, formyebetalt = pesysData.formyebetalt
+                )
+            )
 
             // «Beløpet du skal betale tilbake etter fradrag for innbetalt skatt»
             // — unikt for 104 (107 har ingen netto/skatt-fradrag fordi det er

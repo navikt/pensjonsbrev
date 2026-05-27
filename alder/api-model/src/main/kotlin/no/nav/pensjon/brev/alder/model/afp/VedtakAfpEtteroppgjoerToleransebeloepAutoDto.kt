@@ -7,47 +7,15 @@ import java.time.LocalDate
 
 
 data class VedtakAfpEtteroppgjoerToleransebeloepAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    // Samlet pensjonsgivende inntekt fra Skatteetaten for oppgjørsåret.
-    val pgi: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-    // Inntekt opptjent før uttak av AFP. Brukes i [Periode.UTTAK_I_AARET] og
-    // [Periode.UTTAK_OG_OPPHOER_I_AARET].
-    val ifu: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    // Inntekt opptjent etter opphør av AFP. Brukes i [Periode.OPPHOER_I_AARET] og
-    // [Periode.UTTAK_OG_OPPHOER_I_AARET].
-    val ieo: Kroner,
-
-    // PE_Vedtaksdata_APFEO_IIAP
-    // Inntekt antatt opptjent i perioden med AFP.
-    val iiap: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_FPIberegnet
-    // Forventet pensjonsgivende inntekt brukt ved beregningen av pensjonen.
-    val fpiberegnet: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_AFP_avvik
-    // Forskjellen mellom forventet og faktisk pensjonsgivende inntekt. Skal
-    // ligge innenfor toleransebeløpet — det er denne testen som gir grunnlaget
-    // for «ingen endring» i dette brevet.
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val forventetPensjonsgivendeInntektBeregnet: Kroner,
     val avvik: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_Uttaksdato
-    // Vises i fritekst kun for [Periode.UTTAK_I_AARET]; alltid med i Dto for
-    // enkel selektering.
     val uttaksdato: LocalDate,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato
-    // Vises i fritekst kun for [Periode.OPPHOER_I_AARET]; null hvis AFP ikke
-    // har opphørt i oppgjørsåret.
     val opphorsdato: LocalDate?,
-
     val periode: Periode,
 ) : AutobrevData {
 
