@@ -269,7 +269,7 @@ object InnvilgelseUforetrygdMellombehandling : RedigerbarTemplate<InnvilgelseUfo
                 vedleggOpplysningerBruktIBeregningUT = vedleggOpplysningerBruktIBeregningUTLegacy,
             ))
 
-            paragraph {
+            title1 {
                 text (
                     bokmal { + "Dette skjer videre med søknaden din" },
                     nynorsk { + "Dette skjer vidare med søknaden din" },
