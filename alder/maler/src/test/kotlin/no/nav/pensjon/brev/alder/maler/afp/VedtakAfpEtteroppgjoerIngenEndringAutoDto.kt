@@ -3,10 +3,18 @@ package no.nav.pensjon.brev.alder.maler.afp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
+import java.time.LocalDate
 
 fun createVedtakAfpEtteroppgjoerIngenEndringAutoDto(): VedtakAfpEtteroppgjoerIngenEndringAutoDto =
     VedtakAfpEtteroppgjoerIngenEndringAutoDto(
         oppgjoersAar = Year(2024),
         pensjonsgivendeInntekt = Kroner(412_500),
-        scenario = VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario.IKKE_AFP_FULL_INNTEKT,
+        inntektFoerUttak = Kroner(85_000),
+        inntektEtterOpphoer = Kroner(120_000),
+        inntektIAfpPerioden = Kroner(207_500),
+        forventetPensjonsgivendeInntektBeregnet = Kroner(400_000),
+        avvik = Kroner(12_500),
+        uttaksdato = LocalDate.of(2024, 4, 1),
+        opphorsdato = LocalDate.of(2024, 11, 30),
+        periode = VedtakAfpEtteroppgjoerIngenEndringAutoDto.Periode.UTTAK_OG_OPPHOER_I_AARET,
     )
