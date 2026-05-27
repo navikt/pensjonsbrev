@@ -3,6 +3,7 @@ package no.nav.pensjon.brev.maler.legacy.redigerbar
 import no.nav.pensjon.brev.api.model.Sakstype
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.maler.Pesysbrevkoder
+import no.nav.pensjon.brev.api.model.maler.legacy.VedtakOmIFUReduksjonsprosentDataSelectors.beregningFomDato
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakOmIFUReduksjonsprosentRedigerbarDtoSelectors.PesysDataSelectors.vedtakData
@@ -71,6 +72,7 @@ object VedtakOmLavereReduksjonsprosentRedigerbar : RedigerbarTemplate<VedtakOmIF
             includePhrase(
                 OktMinsteIFUReduksjonsprosent.Outline(
                     OktMinsteIFUReduksjonsprosent.Brevdata(
+                        beregningFomDato = data.beregningFomDato,
                         totalbelop = data.totalbelop,
                         nettoUforetrygdUtenTillegg = data.nettoUforetrygdUtenTillegg,
                         nettoBarnetillegg = data.nettoBarnetillegg,
