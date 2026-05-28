@@ -41,8 +41,6 @@ const brevvelgerSearchSchema = baseSearchSchema.extend({
   brevId: z.coerce.number().optional(),
   idTSSEkstern: z.coerce.string().optional(),
   templateId: z.coerce.string().optional(),
-  enhetsId: z.coerce.string().optional(),
-  vedtaksId: z.coerce.string().optional(),
 });
 
 type BrevvelgerSearch = z.infer<typeof brevvelgerSearchSchema>;
