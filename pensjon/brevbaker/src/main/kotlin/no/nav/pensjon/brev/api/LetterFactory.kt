@@ -71,15 +71,12 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         try {
             // TODO: Trur dette er ein for enkel if. Utfordringa er at vi ikkje veit typen på letterData her utan reflection, det er eit enkelt map
             if (template.saksbehandlervalg.isNotEmpty()) {
-//                val pesysData = objectMapper.convertValue(letterData, Map::class.java)
                 val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
                 saksbehandlervalg.putAll(template.saksbehandlervalg)
                 if (letterData is Map<*,*> && letterData.containsKey("saksbehandlerValg")) {
                     val nyeSaksbehandlervalg = letterData["saksbehandlerValg"] as Map<String, Any?>
                     nyeSaksbehandlervalg.entries.forEach { nye ->
-                        val nyKey = nye.key.replace(Regex("(?<!^)([A-Z])"), " $1")
-                            .lowercase()
-                            .replaceFirstChar { it.uppercase() }
+                        val nyKey = nye.key.replace(Regex("(?<!^)([A-Z])"), " $1").lowercase().replaceFirstChar { it.uppercase() } // TODO: Dette tar frontend sin ukjentSamboer og gjer om til Ukjent samboer
                         when (nye.value) {
                             is Boolean -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean)
                             is Int -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Integer(nye.value as Int)
@@ -88,7 +85,7 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
                         }.let { saksbehandlervalg[nye.key] = saksbehandlervalg[nyKey]!! }
                     }
                 }
-                val newInstance: Any? = template.letterDataType.java.constructors.first().newInstance(EmptyFagsystemdata, SaksbehandlervalgIDSLImpl(saksbehandlervalg))
+                val newInstance: Any? = template.letterDataType.java.constructors.first().newInstance(EmptyFagsystemdata, SaksbehandlervalgIDSLImpl(saksbehandlervalg)) // TODO: Må hente og type pesysdata ordentleg her
                 return (newInstance as BrevbakerBrevdata)
 //                objectMapper.convertValue(mapOf(
 //                    "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
