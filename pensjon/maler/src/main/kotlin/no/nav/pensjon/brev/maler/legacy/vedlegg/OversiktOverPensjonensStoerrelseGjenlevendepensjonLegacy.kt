@@ -28,10 +28,13 @@ import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrel
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.PesysDataSelectors.beregningPerioder
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.PesysDataSelectors.virkningFom
 import no.nav.pensjon.brev.api.model.maler.legacy.OversiktOverPensjonensStoerrelseGjenlevendepensjonDtoSelectors.pesysData
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.bruttoNettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.nettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.sumBruttoNettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.sumNettoRad
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.LangBokmalEnglish
 import no.nav.pensjon.brev.template.createAttachment
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
@@ -51,6 +54,9 @@ import no.nav.pensjon.brev.template.dsl.text
  * Vedlegget er IKKE redigerbart. Exstream-kilden hadde flere FRITEKST-markoerer for fri
  * saksbehandlerforklaring per periodeaarsak; disse er bevisst utelatt - kun de tre periode-
  * aarsakene som hadde fast tekst beholdes (se EndringAarsak).
+ *
+ * Tabell- og radoppsett deles med fraser/gjenlevende via bruttoNettoRad, nettoRad,
+ * sumBruttoNettoRad og sumNettoRad.
  */
 @TemplateModelHelpers
 val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
@@ -136,7 +142,6 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                     }
                 }
 
-                //showIf(periode.ytelser.brutto.notEqualTo(periode.ytelser.netto))
                 showIf(periode.ytelser.brutto.notEqualTo(periode.ytelser.netto)) {
                     paragraph {
                         table(
@@ -156,115 +161,37 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 }
                             },
                         ) {
-                            row {
-                                cell { text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" }) }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + periode.ytelser.grunnpensjon.brutto.format(denominator = false) },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + periode.ytelser.grunnpensjon.netto.format(denominator = false) },
-                                    )
-                                }
+                            bruttoNettoRad(
+                                "Grunnpensjon", "Basic pension",
+                                periode.ytelser.grunnpensjon.brutto, periode.ytelser.grunnpensjon.netto,
+                            )
+                            ifNotNull(periode.ytelser.tilleggspensjon) { tilleggspensjon ->
+                                bruttoNettoRad(
+                                    "Tilleggspensjon", "Supplementary pension",
+                                    tilleggspensjon.brutto, tilleggspensjon.netto,
+                                )
                             }
-                            ifNotNull(periode.ytelser.tilleggspensjon) {
-                                row {
-                                    cell { text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.tilleggspensjon.brutto.format(denominator = false) + " kr"},
-                                            english { +"NOK " + periode.ytelser.tilleggspensjon.brutto.format(denominator = false) },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.tilleggspensjon.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.saertillegg) { saertillegg ->
+                                bruttoNettoRad(
+                                    "Særtillegg", "Special supplement",
+                                    saertillegg.brutto, saertillegg.netto,
+                                )
                             }
-                            ifNotNull(periode.ytelser.saertillegg) {
-                                row {
-                                    cell { text(bokmal { +"Særtillegg" }, english { +"Special supplement" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.saertillegg.brutto.format(denominator = false) + " kr"},
-                                            english { +"NOK " + periode.ytelser.saertillegg.brutto.format(denominator = false) },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.saertillegg.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.fasteUtgifter) { fasteUtgifter ->
+                                bruttoNettoRad(
+                                    "Faste utgifter ved institusjonsopphold",
+                                    "Fixed costs when institutionalised",
+                                    fasteUtgifter.brutto, fasteUtgifter.netto,
+                                )
                             }
-                            ifNotNull(periode.ytelser.fasteUtgifter) {
-                                row {
-                                    cell {
-                                        text(
-                                            bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                            english { +"Fixed costs when institutionalised" },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.fasteUtgifter.brutto.format(denominator = false) + " kr"},
-                                            english { +"NOK " + periode.ytelser.fasteUtgifter.brutto.format(denominator = false) },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.fasteUtgifter.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.familietillegg) { familietillegg ->
+                                bruttoNettoRad(
+                                    "Familietillegg", "Family supplement",
+                                    familietillegg.brutto, familietillegg.netto,
+                                )
                             }
-                            ifNotNull(periode.ytelser.familietillegg) {
-                                row {
-                                    cell { text(bokmal { +"Familietillegg" }, english { +"Family supplement" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.familietillegg.brutto.format(denominator = false) + " kr" },
-                                            english { + "NOK " + periode.ytelser.familietillegg.brutto.format(denominator = false) },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                            english { + "NOK " + periode.ytelser.familietillegg.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
-                            }
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Sum pensjon før skatt" },
-                                        english { +"Total pension before tax" },
-                                        BOLD
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.brutto.format(denominator = false) + " kr"},
-                                        english { + "NOK " + periode.ytelser.brutto.format(denominator = false) }, BOLD
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + periode.ytelser.netto.format(denominator = false) }, BOLD
-                                    )
-                                }
-                            }
+                            // Bevarer Exstream-kildens fete sumrad for periode-bruttoNetto-tabellen.
+                            sumBruttoNettoRad(periode.ytelser.brutto, periode.ytelser.netto, bold = true)
                         }
                     }
                 }
@@ -282,77 +209,24 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                                 }
                             },
                         ) {
-                            row {
-                                cell { text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" }) }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + periode.ytelser.grunnpensjon.netto.format(denominator = false) },
-                                    )
-                                }
+                            nettoRad("Grunnpensjon", "Basic pension", periode.ytelser.grunnpensjon.netto)
+                            ifNotNull(periode.ytelser.tilleggspensjon) { tilleggspensjon ->
+                                nettoRad("Tilleggspensjon", "Supplementary pension", tilleggspensjon.netto)
                             }
-                            ifNotNull(periode.ytelser.tilleggspensjon) {
-                                row {
-                                    cell { text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.tilleggspensjon.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.saertillegg) { saertillegg ->
+                                nettoRad("Særtillegg", "Special supplement", saertillegg.netto)
                             }
-                            ifNotNull(periode.ytelser.saertillegg) {
-                                row {
-                                    cell { text(bokmal { +"Særtillegg" }, english { +"Special supplement" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.saertillegg.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.fasteUtgifter) { fasteUtgifter ->
+                                nettoRad(
+                                    "Faste utgifter ved institusjonsopphold",
+                                    "Fixed costs when institutionalised",
+                                    fasteUtgifter.netto,
+                                )
                             }
-                            ifNotNull(periode.ytelser.fasteUtgifter) {
-                                row {
-                                    cell {
-                                        text(
-                                            bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                            english { +"Fixed costs when institutionalised" },
-                                        )
-                                    }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.fasteUtgifter.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
+                            ifNotNull(periode.ytelser.familietillegg) { familietillegg ->
+                                nettoRad("Familietillegg", "Family supplement", familietillegg.netto)
                             }
-                            ifNotNull(periode.ytelser.familietillegg) {
-                                row {
-                                    cell { text(bokmal { +"Familietillegg" }, english { +"Family supplement" }) }
-                                    cell {
-                                        text(
-                                            bokmal { +periode.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                            english { +"NOK " + periode.ytelser.familietillegg.netto.format(denominator = false) },
-                                        )
-                                    }
-                                }
-                            }
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Sum pensjon før skatt" },
-                                        english { +"Total pension before tax" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +periode.ytelser.netto.format(denominator = false) + " kr" },
-                                        english { +"NOK " + periode.ytelser.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
+                            sumNettoRad(periode.ytelser.netto, bold = true)
                         }
                     }
                 }
@@ -425,137 +299,37 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         }
                     },
                 ) {
-                    row {
-                        cell { text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" }) }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.grunnpensjon.brutto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.brutto.format(denominator = false) },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) },
-                            )
-                        }
+                    bruttoNettoRad(
+                        "Grunnpensjon", "Basic pension",
+                        pesysData.beregning.ytelser.grunnpensjon.brutto,
+                        pesysData.beregning.ytelser.grunnpensjon.netto,
+                    )
+                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) { tilleggspensjon ->
+                        bruttoNettoRad(
+                            "Tilleggspensjon", "Supplementary pension",
+                            tilleggspensjon.brutto, tilleggspensjon.netto,
+                        )
                     }
-                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) {
-                        row {
-                            cell { text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.tilleggspensjon.brutto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.brutto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.saertillegg) { saertillegg ->
+                        bruttoNettoRad(
+                            "Særtillegg", "Special supplement",
+                            saertillegg.brutto, saertillegg.netto,
+                        )
                     }
-                    ifNotNull(pesysData.beregning.ytelser.saertillegg) {
-                        row {
-                            cell { text(bokmal { +"Særtillegg" }, english { +"Special supplement" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.saertillegg.brutto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.saertillegg.brutto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) { fasteUtgifter ->
+                        bruttoNettoRad(
+                            "Faste utgifter ved institusjonsopphold",
+                            "Fixed costs when institutionalised",
+                            fasteUtgifter.brutto, fasteUtgifter.netto,
+                        )
                     }
-                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                    english { +"Fixed costs when institutionalised" },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.fasteUtgifter.brutto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.brutto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.familietillegg) { familietillegg ->
+                        bruttoNettoRad(
+                            "Familietillegg", "Family supplement",
+                            familietillegg.brutto, familietillegg.netto,
+                        )
                     }
-                    ifNotNull(pesysData.beregning.ytelser.familietillegg) {
-                        row {
-                            cell { text(bokmal { +"Familietillegg" }, english { +"Family supplement" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.familietillegg.brutto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.familietillegg.brutto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.familietillegg.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
-                    }
-                    row {
-                        cell { text(bokmal { +"Sum pensjon før skatt" }, english { +"Total pension before tax" }) }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.brutto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.brutto.format(denominator = false) },
-                            )
-                        }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.netto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.netto.format(denominator = false) },
-                            )
-                        }
-                    }
+                    sumBruttoNettoRad(pesysData.beregning.ytelser.brutto, pesysData.beregning.ytelser.netto, bold = true)
                 }
             }
         }
@@ -573,85 +347,24 @@ val vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy =
                         }
                     },
                 ) {
-                    row {
-                        cell { text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" }) }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.grunnpensjon.netto.format(denominator = false) },
-                            )
-                        }
+                    nettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.ytelser.grunnpensjon.netto)
+                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) { tilleggspensjon ->
+                        nettoRad("Tilleggspensjon", "Supplementary pension", tilleggspensjon.netto)
                     }
-                    ifNotNull(pesysData.beregning.ytelser.tilleggspensjon) {
-                        row {
-                            cell { text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.tilleggspensjon.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.tilleggspensjon.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.saertillegg) { saertillegg ->
+                        nettoRad("Særtillegg", "Special supplement", saertillegg.netto)
                     }
-                    ifNotNull(pesysData.beregning.ytelser.saertillegg) {
-                        row {
-                            cell { text(bokmal { +"Særtillegg" }, english { +"Special supplement" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) + " kr" },
-                                    english { +"NOK " + pesysData.beregning.ytelser.saertillegg.netto.format(denominator = false) },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) { fasteUtgifter ->
+                        nettoRad(
+                            "Faste utgifter ved institusjonsopphold",
+                            "Fixed costs when institutionalised",
+                            fasteUtgifter.netto,
+                        )
                     }
-                    ifNotNull(pesysData.beregning.ytelser.fasteUtgifter) {
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                    english { +"Fixed costs when institutionalised" },
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.fasteUtgifter.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.fasteUtgifter.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.ytelser.familietillegg) { familietillegg ->
+                        nettoRad("Familietillegg", "Family supplement", familietillegg.netto)
                     }
-                    ifNotNull(pesysData.beregning.ytelser.familietillegg) {
-                        row {
-                            cell { text(bokmal { +"Familietillegg" }, english { +"Family supplement" }) }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.ytelser.familietillegg.netto.format(denominator = false) + " kr" },
-                                    english {
-                                        +"NOK " + pesysData.beregning.ytelser.familietillegg.netto.format(
-                                            denominator = false
-                                        )
-                                    },
-                                )
-                            }
-                        }
-                    }
-                    row {
-                        cell { text(bokmal { +"Sum pensjon før skatt" }, english { +"Total pension before tax" }) }
-                        cell {
-                            text(
-                                bokmal { +pesysData.beregning.ytelser.netto.format(denominator = false) + " kr" },
-                                english { +"NOK " + pesysData.beregning.ytelser.netto.format(denominator = false) },
-                            )
-                        }
-                    }
+                    sumNettoRad(pesysData.beregning.ytelser.netto, bold = true)
                 }
             }
         }

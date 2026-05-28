@@ -9,6 +9,7 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.SkattAlternativ
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.Sivilstand
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.UtbetalingAlternativ
+import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDto.UtbetalingAlternativ.*
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.BeregningSelectors.brutto
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.BeregningSelectors.familietillegg
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.BeregningSelectors.fasteUtgifter
@@ -44,34 +45,32 @@ import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenle
 import no.nav.pensjon.brev.api.model.maler.legacy.redigerbar.VedtakEndringGjenlevendepensjonBosattUtlandDtoSelectors.saksbehandlerValg
 import no.nav.pensjon.brev.maler.FeatureToggles
 import no.nav.pensjon.brev.maler.fraser.common.Constants.NAV_URL
-import no.nav.pensjon.brev.maler.fraser.common.KronerText
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.bruttoNettoRad
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.gjenlevendepensjonBeregningTabellBruttoNetto
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.gjenlevendepensjonBeregningTabellKunNetto
+import no.nav.pensjon.brev.maler.fraser.gjenlevende.nettoRad
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggFolketrygdenBokmalEnglish
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOpplysningerOmBeregningenGPUtlandLegacy
 import no.nav.pensjon.brev.maler.legacy.vedlegg.vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy
 import no.nav.pensjon.brev.model.Brevkategori
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
-import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.Language.English
-import no.nav.pensjon.brev.template.LanguageSupport
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
-import no.nav.pensjon.brev.template.dsl.TableScope
 import no.nav.pensjon.brev.template.dsl.expression.and
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.greaterThan
 import no.nav.pensjon.brev.template.dsl.expression.greaterThanOrEqual
+import no.nav.pensjon.brev.template.dsl.expression.isNotAnyOf
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.expression.notEqualTo
 import no.nav.pensjon.brev.template.dsl.expression.or
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.includePhrase
 import no.nav.pensjon.brevbaker.api.model.LetterMetadata
 
 // PE_GP_04_029 Vedtak endring av gjenlevendepensjon (bosatt utland)
@@ -203,80 +202,31 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             // ---- PE_GP_tabellA1_utland (brutto != netto) ----
             // Tre kolonner: komponent, brutto, netto.
             showIf(pesysData.beregning.brutto.notEqualTo(pesysData.beregning.netto)) {
-                title1 {
-                    text(
-                        bokmal {
-                            +"Din månedlige gjenlevendepensjon fra " + pesysData.beregning.virkDatoFom.format()
-                        },
-                        english {
-                            +"Your survivor's pension from " + pesysData.beregning.virkDatoFom.format()
-                        },
+                gjenlevendepensjonBeregningTabellBruttoNetto(
+                    virkDatoFom = pesysData.beregning.virkDatoFom,
+                    grunnbeloep = pesysData.beregning.grunnbeloep,
+                    framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
+                    sumBrutto = pesysData.beregning.brutto,
+                    sumNetto = pesysData.beregning.netto,
+                ) {
+                    bruttoNettoRad(
+                        "Grunnpensjon", "Basic pension",
+                        pesysData.beregning.grunnpensjon.brutto, pesysData.beregning.grunnpensjon.netto,
                     )
-                }
-                paragraph {
-                    list {
-                        item {
-                            text(
-                                bokmal {
-                                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                            pesysData.beregning.grunnbeloep.format() +
-                                            "."
-                                },
-                                english {
-                                    +"The national insurance basic amount (G) used in the calculation is " +
-                                            pesysData.beregning.grunnbeloep.format() + "."
-                                })
-                        }
-                        item {
-                            text(
-                                bokmal { +"Framtidig årlig inntekt benyttet i beregningen er " + pesysData.beregning.framtidigAarligInntekt.format() + "." },
-                                english { +"Expected future earned income used in the calculation is " + pesysData.beregning.framtidigAarligInntekt.format() + "." }
-                            )
-                        }
+                    ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
+                        bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tp.brutto, tp.netto)
                     }
-                }
-                paragraph {
-                    table(
-                        header = {
-                            column(columnSpan = 2, alignment = LEFT) { text(bokmal { +"" }, english { +"" }) }
-                            column(columnSpan = 1, alignment = RIGHT) {
-                                text(
-                                    bokmal { +"Pensjon per måned før fradrag for inntekt (kr)" },
-                                    english { +"Pension per month before deduction for income (NOK)" },
-                                )
-                            }
-                            column(columnSpan = 1, alignment = RIGHT) {
-                                text(
-                                    bokmal { +"Pensjon per måned etter fradrag for inntekt (kr)" },
-                                    english { +"Pension per month after deduction for income (NOK)" },
-                                )
-                            }
-                        },
-                    ) {
-                        bruttoNettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.grunnpensjon)
-                        ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
-                            bruttoNettoRad("Tilleggspensjon", "Supplementary pension", tp)
-                        }
-                        bruttoNettoRadIfNotNull(this.pesysData.beregning.saertillegg, "Særtillegg", "Special supplement")
-
-                        bruttoNettoRadIfNotNull(pesysData.beregning.fasteUtgifter, "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised")
-
-                        bruttoNettoRadIfNotNull(pesysData.beregning.familietillegg, "Familietillegg", "Family supplement")
-
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Sum pensjon før skatt" },
-                                    english { +"Total pension before tax" }, BOLD
-                                )
-                            }
-                            cell {
-                                includePhrase(KronerText(pesysData.beregning.brutto, BOLD))
-                            }
-                            cell {
-                                includePhrase(KronerText(pesysData.beregning.netto, BOLD))
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.saertillegg) { st ->
+                        bruttoNettoRad("Særtillegg", "Special supplement", st.brutto, st.netto)
+                    }
+                    ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
+                        bruttoNettoRad(
+                            "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised",
+                            fu.brutto, fu.netto,
+                        )
+                    }
+                    ifNotNull(pesysData.beregning.familietillegg) { ft ->
+                        bruttoNettoRad("Familietillegg", "Family supplement", ft.brutto, ft.netto)
                     }
                 }
             }
@@ -284,133 +234,27 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
             // ---- PE_GP_tabellA2_utland (brutto = netto) ----
             // To kolonner: komponent, netto.
             showIf(pesysData.beregning.brutto.equalTo(pesysData.beregning.netto)) {
-                title1 {
-                    text(
-                        bokmal {
-                            +"Din månedlige gjenlevendepensjon fra " + pesysData.beregning.virkDatoFom.format()
-                        },
-                        english {
-                            +"Your monthly survivor's pension from " + pesysData.beregning.virkDatoFom.format()
-                        },
-                    )
-                }
-                paragraph {
-                    list {
-                        item {
-                            text(
-                                bokmal {
-                                    +"Folketrygdens grunnbeløp (G) benyttet i beregningen er " +
-                                            pesysData.beregning.grunnbeloep.format() +
-                                            "."
-                                },
-                                english {
-                                    +"The national insurance basic amount (G) used in the calculation is " +
-                                            pesysData.beregning.grunnbeloep.format() + "."
-                                })
-                        }
-                        item {
-                            text(
-                                bokmal { +"Framtidig årlig inntekt benyttet i beregningen er " + pesysData.beregning.framtidigAarligInntekt.format() + "." },
-                                english { +"Expected future earned income used in the calculation is " + pesysData.beregning.framtidigAarligInntekt.format() + "." }
-                            )
-                        }
+                gjenlevendepensjonBeregningTabellKunNetto(
+                    virkDatoFom = pesysData.beregning.virkDatoFom,
+                    grunnbeloep = pesysData.beregning.grunnbeloep,
+                    framtidigAarligInntekt = pesysData.beregning.framtidigAarligInntekt,
+                    sumNetto = pesysData.beregning.netto,
+                ) {
+                    nettoRad("Grunnpensjon", "Basic pension", pesysData.beregning.grunnpensjon.netto)
+                    ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
+                        nettoRad("Tilleggspensjon", "Supplementary pension", tp.netto)
                     }
-                }
-                paragraph {
-                    table(
-                        header = {
-                            column(columnSpan = 2) {}
-                            column(
-                                columnSpan = 1,
-                                alignment = RIGHT,
-                            ) {
-                                text(
-                                    bokmal { +"Pensjon per måned (kr)" },
-                                    english { +"Pension per month (NOK)" },
-                                )
-                            }
-                        }
-                    ) {
-                        row {
-                            cell {
-                                text(bokmal { +"Grunnpensjon" }, english { +"Basic pension" })
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
-                                    english { +pesysData.beregning.grunnpensjon.netto.format(denominator = false) },
-                                )
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.tilleggspensjon) { tp ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Tilleggspensjon" }, english { +"Supplementary pension" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +tp.netto.format(denominator = false) },
-                                        english { +tp.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.saertillegg) { st ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Særtillegg" }, english { +"Special supplement" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +st.netto.format(denominator = false) },
-                                        english { +st.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
-                            row {
-                                cell {
-                                    text(
-                                        bokmal { +"Faste utgifter ved institusjonsopphold" },
-                                        english { +"Fixed costs when institutionalised" },
-                                    )
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +fu.netto.format(denominator = false) },
-                                        english { +fu.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        ifNotNull(pesysData.beregning.familietillegg) { ft ->
-                            row {
-                                cell {
-                                    text(bokmal { +"Familietillegg" }, english { +"Family supplement" })
-                                }
-                                cell {
-                                    text(
-                                        bokmal { +ft.netto.format(denominator = false) },
-                                        english { +ft.netto.format(denominator = false) },
-                                    )
-                                }
-                            }
-                        }
-                        row {
-                            cell {
-                                text(
-                                    bokmal { +"Sum pensjon før skatt" },
-                                    english { +"Total pension before tax" }, BOLD
-                                )
-                            }
-                            cell {
-                                text(
-                                    bokmal { +pesysData.beregning.netto.format(denominator = false) },
-                                    english { +pesysData.beregning.netto.format(denominator = false) }, BOLD
-                                )
-                            }
-                        }
+                    ifNotNull(pesysData.beregning.saertillegg) { st ->
+                        nettoRad("Særtillegg", "Special supplement", st.netto)
+                    }
+                    ifNotNull(pesysData.beregning.fasteUtgifter) { fu ->
+                        nettoRad(
+                            "Faste utgifter ved institusjonsopphold", "Fixed costs when institutionalised",
+                            fu.netto,
+                        )
+                    }
+                    ifNotNull(pesysData.beregning.familietillegg) { ft ->
+                        nettoRad("Familietillegg", "Family supplement", ft.netto)
                     }
                 }
             }
@@ -803,7 +647,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
 
             // ---- PE_GP_04_028_tekst6: etterbetaling / feilutbetaling (kun når netto >= 0) ----
             showIf(pesysData.beregning.netto.greaterThanOrEqual(0)) {
-                showIf(saksbehandlerValg.utbetalingAlternativ.equalTo(UtbetalingAlternativ.ETTERBETALING)) {
+                showIf(saksbehandlerValg.utbetalingAlternativ.isNotAnyOf(ETTERBETALING, INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING)) {
                     title1 {
                         text(
                             bokmal { +"Etterbetaling" },
@@ -842,7 +686,7 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
                             },
                         )
                     }
-                }.orShow {
+                }.orShowIf(saksbehandlerValg.utbetalingAlternativ.isNotAnyOf(FEILUTBETALING, INGEN_AVSNITT_OM_ETTERBETALING_FEILUTBETALING)) {
                     // FEILUTBETALING
                     title1 {
                         text(
@@ -1007,27 +851,8 @@ object VedtakEndringGjenlevendepensjonBosattUtland : RedigerbarTemplate<VedtakEn
         includeAttachmentIfNotNull(vedleggOversiktOverPensjonensStoerrelseGjenlevendepensjonLegacy, pesysData.oversiktOverPensjonensStoerrelse)
         includeAttachment(vedleggFolketrygdenBokmalEnglish)
     }
-
-    private fun TableScope<LanguageSupport.Double<Bokmal, English>, VedtakEndringGjenlevendepensjonBosattUtlandDto>.bruttoNettoRadIfNotNull(
-        ytelseskomponent: Expression<VedtakEndringGjenlevendepensjonBosattUtlandDto.Komponent?>,
-        bokmal: String, english: String
-    ) {
-        ifNotNull(ytelseskomponent) {
-            bruttoNettoRad(bokmal, english, it)
-        }
-    }
-
-    private fun TableScope<LanguageSupport.Double<Bokmal, English>, VedtakEndringGjenlevendepensjonBosattUtlandDto>.bruttoNettoRad(bokmal: String, english: String, ytelseskomponent: Expression<VedtakEndringGjenlevendepensjonBosattUtlandDto.Komponent>) {
-        row {
-            cell {
-                text(bokmal { +bokmal }, english { +english })
-            }
-            cell { includePhrase(KronerText(ytelseskomponent.brutto)) }
-            cell { includePhrase(KronerText(ytelseskomponent.netto)) }
-        }
-    }
-
 }
+
 
 
 

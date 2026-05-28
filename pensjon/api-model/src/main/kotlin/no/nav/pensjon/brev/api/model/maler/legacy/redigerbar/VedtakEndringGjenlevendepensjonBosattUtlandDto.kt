@@ -57,10 +57,10 @@ data class VedtakEndringGjenlevendepensjonBosattUtlandDto(
         @DisplayText("Reduksjon av inntekt")
         REDUKSJON_AV_INNTEKT,
 
-        @DisplayText("Endring i sivilstand")
+        @DisplayText("Samboer i 12 av de siste 18 månedene")
         SAMBOER_12_AV_18_MAANEDER,
 
-        @DisplayText("Egen tekst")
+        @DisplayText("Fritekst: Egen tekst")
         FRITEKST
     }
 
