@@ -14,6 +14,8 @@ import no.nav.pensjon.brev.template.Language
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
+import java.time.LocalDate
+import java.time.Month
 
 /**
  * Felles testklasse for brev om endring i IFU (inntektsfradrag for uføretrygd) og reduksjonsprosent fom 1. juli 2026.
@@ -33,6 +35,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
     private fun fullDataDto() =
         VedtakOmIFUReduksjonsprosentAutoDto(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
+                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
                 nettoUforetrygdUtenTillegg = Kroner(28066),
                 nettoBarnetillegg = Kroner(4000),
                 nettoGjenlevendetillegg = Kroner(1461),
@@ -58,6 +61,7 @@ class VedtakOmIFUReduksjonsprosentAutoTest {
     private fun inntektsavkortetDto() =
         VedtakOmIFUReduksjonsprosentAutoDto(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
+                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
                 nettoUforetrygdUtenTillegg = Kroner(20000),
                 nettoBarnetillegg = Kroner(3000),
                 nettoGjenlevendetillegg = Kroner(0),

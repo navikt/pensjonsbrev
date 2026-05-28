@@ -9,10 +9,13 @@ import no.nav.pensjon.brev.fixtures.createMaanedligUfoeretrygdFoerSkattDto
 import no.nav.pensjon.brev.fixtures.createOrienteringOmRettigheterUfoereDto
 import no.nav.pensjon.brev.fixtures.createPEgruppe10
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import java.time.LocalDate
+import java.time.Month
 
 fun createVedtakOmIFUReduksjonsprosentAutoDto() =
     VedtakOmIFUReduksjonsprosentAutoDto(
         vedtakData = VedtakOmIFUReduksjonsprosentData(
+            beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
             nettoUforetrygdUtenTillegg = Kroner(26000),
             nettoBarnetillegg = Kroner(4000),
             nettoGjenlevendetillegg = Kroner(0),
@@ -39,6 +42,7 @@ fun createVedtakOmIFUReduksjonsprosentRedigerbarDto() =
         saksbehandlerValg = EmptySaksbehandlerValg,
         pesysData = VedtakOmIFUReduksjonsprosentRedigerbarDto.PesysData(
             vedtakData = VedtakOmIFUReduksjonsprosentData(
+                beregningFomDato = LocalDate.of(2026, Month.JULY, 1),
                 nettoUforetrygdUtenTillegg = Kroner(26000),
                 nettoBarnetillegg = Kroner(4000),
                 nettoGjenlevendetillegg = Kroner(0),

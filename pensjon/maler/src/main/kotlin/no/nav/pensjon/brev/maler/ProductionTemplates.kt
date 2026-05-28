@@ -19,6 +19,8 @@ import no.nav.pensjon.brev.maler.alder.omregning.opptjening.EndringPgaOpptjening
 import no.nav.pensjon.brev.maler.legacy.EndretBarnetilleggUfoerertrygd
 import no.nav.pensjon.brev.maler.legacy.EndretUforetrygdPGAOpptjeningLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026Auto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto
+import no.nav.pensjon.brev.maler.legacy.VedtakOmEtterbetalingOpphor2026OktIfuAuto
 import no.nav.pensjon.brev.maler.legacy.EtteroppgjoerEtterbetalingAutoLegacy
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereMinstesatsAuto
 import no.nav.pensjon.brev.maler.legacy.VedtakOmLavereReduksjonsprosentAuto
@@ -110,6 +112,8 @@ object ProductionTemplates : AllTemplates {
         EndringPgaOpptjeningAuto,
         EndringAvUttaksgradAuto,
         VedtakOmEtterbetalingOpphor2026Auto,
+        VedtakOmEtterbetalingOpphor2026OktIfuAuto,
+        VedtakOmEtterbetalingOpphor2026LavereReduksjonsprosentAuto,
         EtteroppgjoerEtterbetalingAutoLegacy,
         ForhaandsvarselEtteroppgjoerUfoeretrygdAuto,
         InnvilgelseAvAlderspensjonAuto,
