@@ -29,13 +29,13 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         } else if (!(from.isData || from.isValue)) {
             throw TemplateModelSpecificationError("Cannot create specification from a regular class: must be data or value class")
         } else {
-            val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from))
+            val objectTypes = mutableMapOf(from.qualifiedName!! to createObjectTypeSpecification(from.primaryConstructor?.parameters?.map { Parameter(it.name!!, it.type, it.annotations) }, from.isSubclassOf(SaksbehandlerValgBrevdata::class)))
 
             while (toProcess.isNotEmpty()) {
                 val current = toProcess.removeFirst()
                 val name = current.qualifiedName!!
                 if (!objectTypes.containsKey(name)) {
-                    objectTypes[name] = createObjectTypeSpecification(current)
+                    objectTypes[name] = createObjectTypeSpecification(current.primaryConstructor?.parameters?.map { Parameter(it.name!!, it.type, it.annotations) }, current.isSubclassOf(SaksbehandlerValgBrevdata::class))
                 }
             }
 
@@ -67,9 +67,11 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         }
     }
 
-    private fun createObjectTypeSpecification(type: KClass<*>): ObjectTypeSpecification =
-        type.primaryConstructor?.parameters?.associate { it.name!! to it.type.toFieldType(it.annotations, type.isSubclassOf(SaksbehandlerValgBrevdata::class), it.name!!) }
-            ?: emptyMap()
+    private fun createObjectTypeSpecification(parameters: List<Parameter>?, isSaksbehandlervalg: Boolean): ObjectTypeSpecification =
+        parameters?.associate { it.name to it.type.toFieldType(it.annotations, isSaksbehandlervalg, it.name) }
+        ?: emptyMap()
+
+    private data class Parameter(val name: String, val type: KType, val annotations: List<Annotation>)
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
         val theClassifier = classifier
