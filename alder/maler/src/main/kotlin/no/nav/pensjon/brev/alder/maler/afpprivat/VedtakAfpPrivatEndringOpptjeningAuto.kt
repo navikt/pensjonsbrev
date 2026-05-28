@@ -2,6 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
+import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
 import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kronetillegg
@@ -13,6 +14,7 @@ import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjenin
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.brukerAlder
 import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.virkningFom
 import no.nav.pensjon.brev.template.AutobrevTemplate
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.model.format
@@ -88,24 +90,24 @@ object VedtakAfpPrivatEndringOpptjeningAuto : AutobrevTemplate<VedtakAfpPrivatEn
                     ifNotNull(beregning.livsvarig) { livsvarigBeloep ->
                         row {
                             cell { text(bokmal { +"AFP livsvarig del" }) }
-                            cell { text(bokmal { +livsvarigBeloep.format(false) + " kroner" }) }
+                            cell { includePhrase(KronerText(livsvarigBeloep)) }
                         }
                     }
                     ifNotNull(beregning.kronetillegg) { kroneBeloep ->
                         row {
                             cell { text(bokmal { +"AFP kronetillegg" }) }
-                            cell { text(bokmal { +kroneBeloep.format(false) + " kroner" }) }
+                            cell { includePhrase(KronerText(kroneBeloep)) }
                         }
                     }
                     ifNotNull(beregning.kompensasjonstillegg) { kompBeloep ->
                         row {
                             cell { text(bokmal { +"AFP kompensasjonstillegg (skattefritt)" }) }
-                            cell { text(bokmal { +kompBeloep.format(false) + " kroner" }) }
+                            cell { includePhrase(KronerText(kompBeloep)) }
                         }
                     }
                     row {
-                        cell { text(bokmal { +"Sum AFP før skatt" }) }
-                        cell { text(bokmal { +beregning.sumAfpFoerSkatt.format(false) + " kroner" }) }
+                        cell { text(bokmal { +"Sum AFP før skatt" }, BOLD) }
+                        cell { includePhrase(KronerText(beregning.sumAfpFoerSkatt, BOLD)) }
                     }
                 }
             }
