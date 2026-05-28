@@ -42,7 +42,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                 }
                 if (isSaksbehandlervalg) {
                     objectTypes[name] = createObjectTypeSpecification(saksbehandlervalg.map { Parameter(
-                        name = it.key,
+                        name = it.key, //.lowercase().split(" ").joinToString("") { it.replaceFirstChar { f -> f.uppercase() } }.replaceFirstChar { f -> f.lowercase() },
                         type = when (it.value.type) {
                             SaksbehandlervalgVerdi.Type.BOOL -> Boolean::class
                             SaksbehandlervalgVerdi.Type.INTEGER -> Int::class
