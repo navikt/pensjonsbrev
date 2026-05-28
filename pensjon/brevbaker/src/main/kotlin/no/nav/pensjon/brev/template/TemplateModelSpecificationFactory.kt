@@ -9,6 +9,7 @@ import no.nav.pensjon.brevbaker.api.model.DisplayText
 import no.nav.pensjon.brevbaker.api.model.ObjectTypeSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification
 import no.nav.pensjon.brevbaker.api.model.TemplateModelSpecification.FieldType
+import java.time.LocalDate
 import java.time.Period
 import kotlin.reflect.KClass
 import kotlin.reflect.KType
@@ -81,23 +82,23 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         }
 
         return when (val qname = theClassifier.qualifiedName) {
-            "kotlin.String" ->
+            String::class.qualifiedName ->
                 FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.STRING, displayText = displayedText)
 
-            "kotlin.Int", "kotlin.Long" ->
+            Int::class.qualifiedName, Long::class.qualifiedName ->
                 FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.NUMBER, displayText = displayedText)
 
-            "kotlin.Double", "kotlin.Float" ->
+            Double::class.qualifiedName, Float::class.qualifiedName ->
                 FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DOUBLE, displayText = displayedText)
 
-            "kotlin.Boolean" ->
+            Boolean::class.qualifiedName ->
                 FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.BOOLEAN, displayText = displayedText)
 
-            "kotlin.collections.List" -> {
+            List::class.qualifiedName -> {
                 FieldType.Array(isMarkedNullable, arguments.first().type!!.toFieldType(listOf(), false, name))
             }
 
-            "java.time.LocalDate" ->
+            LocalDate::class.qualifiedName ->
                 FieldType.Scalar(isMarkedNullable, FieldType.Scalar.Kind.DATE, displayText = displayedText)
 
             Broek::class.qualifiedName, Period::class.qualifiedName -> {
