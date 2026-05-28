@@ -15,6 +15,13 @@ import {
   createSaksbehandlerValgEndretHistoryEntry,
   type LetterSnapshot,
 } from "~/Brevredigering/LetterEditor/history";
+import {
+  collectAllIds,
+  collectNewIds,
+  findLastInsertedFocus,
+  hasAnyTekstvalgBeenToggledOn,
+  InsertedTekstValgHighlightProvider,
+} from "~/Brevredigering/LetterEditor/InsertedTekstValgHighlight";
 import { ApiError } from "~/components/ApiError";
 import ArkivertBrev from "~/components/ArkivertBrev";
 import AttestForbiddenModal from "~/components/AttestForbiddenModal";
@@ -148,6 +155,29 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
   const [forbidReason, setForbidReason] = useState<AttestForbiddenReason | null>(null);
   const [unexpectedError, setUnexpectedError] = useState<AxiosError | null>(null);
 
+  const lastSeenIdsRef = useRef<ReadonlySet<number>>(collectAllIds(props.brev.redigertBrev));
+  const previousValgRef = useRef(props.brev.saksbehandlerValg);
+  const previousIdsRef = useRef<ReadonlySet<number> | null>(null);
+  const highlightTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [highlightedIds, setHighlightedIds] = useState<ReadonlySet<number>>(() => new Set<number>());
+
+  useEffect(() => {
+    lastSeenIdsRef.current = collectAllIds(props.brev.redigertBrev);
+  }, [props.brev.redigertBrev]);
+
+  useEffect(() => {
+    previousValgRef.current = editorState.saksbehandlerValg;
+  }, [editorState.saksbehandlerValg]);
+
+  useEffect(
+    () => () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    },
+    [],
+  );
+
   const showDebug = useSearch({
     strict: false,
     select: (search: Record<string, unknown>) => search?.debug === "true" || search?.debug === true,
@@ -186,7 +216,10 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
       });
     },
     onSuccess: (response, variables) => {
+      const previousIds = previousIdsRef.current;
       const historySnapshot = variables.historySnapshot;
+      previousIdsRef.current = null;
+
       onSaveSuccess(
         response,
         historySnapshot
@@ -196,6 +229,28 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
             }
           : undefined,
       );
+
+      let responseWasApplied = true;
+      setEditorState((current) => {
+        responseWasApplied = current.saveStatus !== "DIRTY";
+        return current;
+      });
+      if (!previousIds || !responseWasApplied) return;
+
+      const lastSeenIds = lastSeenIdsRef.current;
+      const newIds = new Set<number>();
+      for (const id of collectNewIds(previousIds, response.redigertBrev)) {
+        if (!lastSeenIds.has(id)) newIds.add(id);
+      }
+      if (newIds.size === 0) return;
+
+      setHighlightedIds(newIds);
+      const focus = findLastInsertedFocus(response.redigertBrev, newIds);
+      if (focus) {
+        setEditorState((s) => ({ ...s, focus }));
+      }
+      if (highlightTimerRef.current) clearTimeout(highlightTimerRef.current);
+      highlightTimerRef.current = setTimeout(() => setHighlightedIds(new Set<number>()), 2200);
     },
     onError: () => setEditorState((s) => ({ ...s, saveStatus: "DIRTY" })),
   });
@@ -333,9 +388,14 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
                 <BrevmalAlternativer
                   brevkode={props.brev.info.brevkode}
                   submitOnChange={() => {
+                    const updatedValg = form.getValues("saksbehandlerValg");
+                    if (hasAnyTekstvalgBeenToggledOn(previousValgRef.current, updatedValg)) {
+                      previousIdsRef.current = collectAllIds(editorState.redigertBrev);
+                    }
+                    previousValgRef.current = updatedValg;
                     oppdaterBrevMutation.mutate({
                       redigertBrev: editorState.redigertBrev,
-                      saksbehandlerValg: form.getValues("saksbehandlerValg"),
+                      saksbehandlerValg: updatedValg,
                       historySnapshot: createLetterSnapshot(editorState),
                     });
                   }}
@@ -347,13 +407,15 @@ const Vedtak = (props: { saksId: string; brev: BrevResponse; doReload: () => voi
         }
         right={
           <>
-            <ManagedLetterEditor
-              brev={props.brev}
-              error={error}
-              freeze={freeze}
-              saveDirtyLetter={saveDirtyLetter}
-              showDebug={showDebug}
-            />
+            <InsertedTekstValgHighlightProvider ids={highlightedIds}>
+              <ManagedLetterEditor
+                brev={props.brev}
+                error={error}
+                freeze={freeze}
+                saveDirtyLetter={saveDirtyLetter}
+                showDebug={showDebug}
+              />
+            </InsertedTekstValgHighlightProvider>
             {/* Modal som ikke tar opp plass i DOM her */}
             <ReservertBrevError
               doRetry={props.doReload}
