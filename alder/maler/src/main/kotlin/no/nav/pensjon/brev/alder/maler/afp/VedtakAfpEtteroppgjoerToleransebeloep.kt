@@ -8,7 +8,7 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepAutoDto.Periode
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.avvik
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDtoSelectors.PesysDataSelectors.fpiberegnet
@@ -29,7 +29,6 @@ import no.nav.pensjon.brev.template.Language.Nynorsk
 import no.nav.pensjon.brev.template.RedigerbarTemplate
 import no.nav.pensjon.brev.template.createTemplate
 import no.nav.pensjon.brev.template.dsl.expression.equalTo
-import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.helpers.TemplateModelHelpers
 import no.nav.pensjon.brev.template.dsl.languages
 import no.nav.pensjon.brev.template.dsl.text
@@ -201,7 +200,7 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
 
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
@@ -212,9 +211,9 @@ object VedtakAfpEtteroppgjoerToleransebeloep : RedigerbarTemplate<VedtakAfpEtter
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    ifu = pesysData.ifu,
-                    ieo = pesysData.ieo,
-                    iiap = pesysData.iiap,
+                    inntektFoerUttak = pesysData.ifu,
+                    inntektEtterOpphoer = pesysData.ieo,
+                    inntektIAfpPerioden = pesysData.iiap,
                 ),
             )
 

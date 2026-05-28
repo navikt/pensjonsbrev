@@ -2,9 +2,7 @@ package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
@@ -24,7 +22,7 @@ fun createVedtakAfpEtteroppgjoerToleransebeloepDto(): VedtakAfpEtteroppgjoerTole
             avvik = Kroner(10_000),
             uttaksdato = LocalDate.of(2024, 3, 1),
             opphorsdato = null,
-            periode = VedtakAfpEtteroppgjoerToleransebeloepAutoDto.Periode.UTTAK_I_AARET,
+            periode = VedtakAfpEtteroppgjoerToleransebeloepDto.Periode.UTTAK_I_AARET,
         ),
     )
 
@@ -56,6 +54,6 @@ fun createVedtakAfpEtteroppgjoerIngenEndringDto(): VedtakAfpEtteroppgjoerIngenEn
         pesysData = VedtakAfpEtteroppgjoerIngenEndringDto.PesysData(
             oppgjoersAar = Year(2024),
             pgi = Kroner(280_000),
-            scenario = VedtakAfpEtteroppgjoerIngenEndringAutoDto.Scenario.IKKE_AFP_FULL_INNTEKT,
+            scenario = VedtakAfpEtteroppgjoerIngenEndringDto.Scenario.IKKE_AFP_FULL_INNTEKT,
         ),
     )

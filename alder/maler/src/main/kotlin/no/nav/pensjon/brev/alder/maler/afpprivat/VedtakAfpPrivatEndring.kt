@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
@@ -6,16 +6,16 @@ import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.kronetillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.livsvarig
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.sumAfpFoerSkatt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.beregning
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.borIForNorge
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.brukerAlder
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.virkningFom
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kronetillegg
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.livsvarig
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.sumAfpFoerSkatt
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.beregning
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.borIForNorge
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.brukerAlder
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.PesysDataSelectors.virkningFom
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal

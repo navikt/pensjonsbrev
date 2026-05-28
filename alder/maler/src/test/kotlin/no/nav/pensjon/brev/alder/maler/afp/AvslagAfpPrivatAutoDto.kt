@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatAutoDto
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
 import java.time.LocalDate
 
 fun createAvslagAfpPrivatAutoDto(): AvslagAfpPrivatAutoDto =

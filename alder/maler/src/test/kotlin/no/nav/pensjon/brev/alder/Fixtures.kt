@@ -58,9 +58,9 @@ import no.nav.pensjon.brev.alder.model.adhoc.AdhocTidligereUfoereGradertAPAutoDt
 import no.nav.pensjon.brev.alder.model.adhoc.gjenlevenderett2027.Gjenlevenderett2027Dto
 import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
 import no.nav.pensjon.brev.alder.model.afp.AvslagAfpGammelDto
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerToleransebeloepDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerIngenEndringDto

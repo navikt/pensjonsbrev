@@ -1,17 +1,17 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.kronetillegg
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.livsvarig
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndringSelectors.sumAfpFoerSkatt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDto
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.beregning
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.borIForNorge
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.brukerAlder
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.virkningFom
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kompensasjonstillegg
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.kronetillegg
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.livsvarig
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndringSelectors.sumAfpFoerSkatt
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDto
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.beregning
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.borIForNorge
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.brukerAlder
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringOpptjeningAutoDtoSelectors.virkningFom
 import no.nav.pensjon.brev.template.AutobrevTemplate
 import no.nav.pensjon.brev.template.Language.Bokmal
 import no.nav.pensjon.brev.template.createTemplate

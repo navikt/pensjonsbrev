@@ -268,7 +268,7 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
 
             includePhrase(AfpEtteroppgjoerInnhold.SpesieltOmUkrainaUnntak)
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(pesysData.oppgjoersAar))
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pesysData.pgi, oppgjoersAar = pesysData.oppgjoersAar))
 
             includePhrase(
                 AfpEtteroppgjoerInnhold.IfuIeoFordelingPerPeriode(
@@ -279,9 +279,9 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    ifu = pesysData.ifu,
-                    ieo = pesysData.ieo,
-                    iiap = pesysData.iiap,
+                    inntektFoerUttak = pesysData.ifu,
+                    inntektEtterOpphoer = pesysData.ieo,
+                    inntektIAfpPerioden = pesysData.iiap,
                 ),
             )
 
@@ -317,12 +317,12 @@ object VedtakAfpEtteroppgjoerEtterbetaling : RedigerbarTemplate<VedtakAfpEtterop
                     uttaksdato = pesysData.uttaksdato,
                     opphorsdato = pesysData.opphorsdato,
                     oppgjoersAar = pesysData.oppgjoersAar,
-                    fullafp = pesysData.fullafp,
-                    fradragberegnetai = pesysData.fradragberegnetai,
-                    iiap = pesysData.iiap,
-                    tpiberegnet = pesysData.tpiberegnet,
-                    korrigertafp = pesysData.korrigertafp,
-                    utbetaltafp = pesysData.utbetaltafp,
+                    fullAfp = pesysData.fullafp,
+                    fradragBeregnetArbeidsInntekt = pesysData.fradragberegnetai,
+                    inntektIAfpPerioden = pesysData.iiap,
+                    tidligereArbeidsInntektBeregnet = pesysData.tpiberegnet,
+                    korrigertAfp = pesysData.korrigertafp,
+                    utbetaltAfp = pesysData.utbetaltafp,
                     forlitebetalt = pesysData.forlitebetalt,
                 ),
             )

@@ -1,7 +1,7 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
-import no.nav.pensjon.brev.alder.model.afp.AfpPrivatBeregningEndring
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpPrivatEndringDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AfpPrivatBeregningEndring
+import no.nav.pensjon.brev.alder.model.afpprivat.VedtakAfpPrivatEndringDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import java.time.LocalDate
