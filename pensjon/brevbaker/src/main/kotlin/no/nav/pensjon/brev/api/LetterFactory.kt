@@ -7,9 +7,7 @@ import no.nav.pensjon.brev.api.model.BestillBrevRequest
 import no.nav.pensjon.brev.api.model.BestillRedigertBrevRequest
 import no.nav.pensjon.brev.api.model.maler.BrevbakerBrevdata
 import no.nav.pensjon.brev.api.model.maler.Brevkode
-import no.nav.pensjon.brev.api.model.maler.EmptyFagsystemdata
 import no.nav.pensjon.brev.api.model.maler.SaksbehandlervalgVerdi
-import no.nav.pensjon.brev.converters.SaksbehandlervalgIDSLImpl
 import no.nav.pensjon.brev.template.AlltidValgbartVedlegg
 import no.nav.pensjon.brev.template.BrevTemplate
 import no.nav.pensjon.brev.template.Letter
@@ -69,32 +67,33 @@ class LetterFactory<Kode: Brevkode<Kode>>(alltidValgbareVedlegg: Set<AlltidValgb
         template: LetterTemplate<*, BrevbakerBrevdata>,
     ): BrevbakerBrevdata =
         try {
-            // TODO: Trur dette er ein for enkel if. Utfordringa er at vi ikkje veit typen på letterData her utan reflection, det er eit enkelt map
-            if (template.saksbehandlervalg.isNotEmpty()) {
-                val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
-                saksbehandlervalg.putAll(template.saksbehandlervalg)
-                if (letterData is Map<*,*> && letterData.containsKey("saksbehandlerValg")) {
-                    val nyeSaksbehandlervalg = letterData["saksbehandlerValg"] as Map<String, Any?>
-                    nyeSaksbehandlervalg.entries.forEach { nye ->
-                        val nyKey = nye.key.replace(Regex("(?<!^)([A-Z])"), " $1").lowercase().replaceFirstChar { it.uppercase() } // TODO: Dette tar frontend sin ukjentSamboer og gjer om til Ukjent samboer
-                        when (nye.value) {
-                            is Boolean -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean)
-                            is Int -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Integer(nye.value as Int)
-//                            is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
-                            else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
-                        }.let { saksbehandlervalg[nye.key] = saksbehandlervalg[nyKey]!! }
-                    }
-                }
-                val newInstance: Any? = template.letterDataType.java.constructors.first().newInstance(EmptyFagsystemdata, SaksbehandlervalgIDSLImpl(saksbehandlervalg)) // TODO: Må hente og type pesysdata ordentleg her
-                return (newInstance as BrevbakerBrevdata)
-//                objectMapper.convertValue(mapOf(
-//                    "pesysData" to (letterData as? Map<String, Any?> ?: emptyMap()),
-//                    "saksbehandlerValg" to template.saksbehandlervalg
-//                ), template.letterDataType.java)
+            val data = if (letterData is Map<*, *> && template.saksbehandlervalg.isNotEmpty()) {
+                letterData.toMutableMap().also { it["saksbehandlerValg"] = oppdaterSaksbehandlervalg(template, letterData) }
             } else {
-                objectMapper.convertValue(letterData, template.letterDataType.java)
+                letterData
             }
+            return objectMapper.convertValue(data, template.letterDataType.java)
         } catch (e: IllegalArgumentException) {
             throw ParseLetterDataException("Could not deserialize letterData: ${e.message}", e)
         }
+
+    private fun oppdaterSaksbehandlervalg(
+        template: LetterTemplate<*, BrevbakerBrevdata>,
+        letterData: BrevbakerBrevdata,
+    ): Map<String, SaksbehandlervalgVerdi> {
+        val saksbehandlervalg = mutableMapOf<String, SaksbehandlervalgVerdi>()
+        saksbehandlervalg.putAll(template.saksbehandlervalg)
+        if (letterData is Map<*, *> && letterData.containsKey("saksbehandlerValg")) {
+            (letterData["saksbehandlerValg"] as Map<String, Any?>).entries.forEach { nye ->
+                val nyKey = nye.key.replace(Regex("(?<!^)([A-Z])"), " $1").lowercase().replaceFirstChar { it.uppercase() } // TODO: Dette tar frontend sin ukjentSamboer og gjer om til Ukjent samboer
+                when (nye.value) {
+                    is Boolean -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Bool(nye.value as Boolean)
+                    is Int -> saksbehandlervalg[nyKey] = SaksbehandlervalgVerdi.Integer(nye.value as Int)
+//                  is Enum<*> -> saksbehandlervalg[it.key] = SaksbehandlervalgVerdi.Enum<Any>(it.value as Enum<String>) // TODO: typing
+                    else -> throw IllegalArgumentException("Unsupported type for saksbehandlervalg: ${nye.value?.javaClass}")
+                }.let { saksbehandlervalg[nye.key] = saksbehandlervalg[nyKey]!! }
+            }
+        }
+        return saksbehandlervalg
+    }
 }

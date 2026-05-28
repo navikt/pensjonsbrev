@@ -34,8 +34,18 @@ object BrevbakerBrevdataModule : SimpleModule() {
             ctxt.readValue(parser, GenericRedigerbarBrevdata::class.java)
     }
     private object SaksbehandlervalgIDSLDeserializer : JsonDeserializer<SaksbehandlervalgIDSL>() {
-        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL =
-            SaksbehandlervalgIDSLImpl(ctxt.readValue(parser, Map::class.java) as Map<String, SaksbehandlervalgVerdi>)
+        override fun deserialize(parser: JsonParser, ctxt: DeserializationContext): SaksbehandlervalgIDSL {
+            val verdier = ctxt.readValue(parser, Map::class.java) as Map<String, Map<String, Any>>
+            val typa = verdier.map { it.key to
+                when (it.value["type"]) {
+                    "BOOL" -> SaksbehandlervalgVerdi.Bool(it.value["bool"] as Boolean)
+                    "INTEGER" -> SaksbehandlervalgVerdi.Integer(it.value["integer"] as Int)
+//                    "ENUM" -> SaksbehandlervalgVerdi.Enum(it.value["enum"] as String // TODO for enkel
+                    else -> throw IllegalArgumentException("Ukjent type: ${it.value["type"]}")
+                }
+            }.associate { it.first to it.second }
+            return SaksbehandlervalgIDSLImpl(typa)
+        }
     }
 
     private object SaksbehandlervalgDeserializer : JsonDeserializer<SaksbehandlervalgVerdi>() {
