@@ -1,9 +1,9 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
+import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpOffentligSektorInnhold
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.*
@@ -25,6 +25,7 @@ import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSel
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.oversiktOverPensjonen
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.sivilstand
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.tidligereArbeidsinntekt
+import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.toleranseBeloep
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.PesysDataSelectors.virkningFom
 import no.nav.pensjon.brev.alder.model.afp.InnvilgelseAvAfpOffentligSektorDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
@@ -45,8 +46,8 @@ import no.nav.pensjon.brevbaker.api.model.LetterMetadata
  * Vedtak — innvilgelse av avtalefestet pensjon (AFP) i offentlig sektor (gammel AFP).
  *
  * Konvertert fra Exstream-malen `PE_AF_04_001`. Privat-sektor varianten av
- * AFP (`PE_AF_04_111` / `PE_AF_04_115`) ligger i [InnvilgelseAvAfp] /
- * [InnvilgelseAvAfpAuto] og bruker felles innhold [InnvilgelseAvAfpInnhold].
+ * AFP (`PE_AF_04_111` / `PE_AF_04_115`) ligger i [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfp] /
+ * [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpAuto] og bruker felles innhold [no.nav.pensjon.brev.alder.maler.afpprivat.InnvilgelseAvAfpInnhold].
  *
  * Brevet er redigerbart og styres av saksbehandler i Skribenten.
  */
@@ -176,6 +177,7 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 AfpOffentligSektorInnhold.HvordanAfpBeregnes(
                     tidligereArbeidsinntekt = pesysData.tidligereArbeidsinntekt,
                     framtidigArligInntekt = pesysData.framtidigArligInntekt,
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 
@@ -189,12 +191,13 @@ object InnvilgelseAvAfpOffentligSektor : RedigerbarTemplate<InnvilgelseAvAfpOffe
                 AfpOffentligSektorInnhold.DinePlikterAfpOffentlig(
                     sivilstand = pesysData.sivilstand,
                     harEktefelletillegg = pesysData.beregning.ektefelletillegg.notNull(),
+                    toleranseBeloep = pesysData.toleranseBeloep,
                 ),
             )
 
             // Dine rettigheter.
             includePhrase(AfpOffentligSektorInnhold.DineRettigheterInnsyn)
-            includePhrase(AfpPrivatFraser.KlagerettFolketrygdloven2112)
+            includePhrase(AfpFraser.KlagerettFolketrygdloven2112)
             includePhrase(HarDuSpoersmaal.alder)
         }
         includeAttachment(

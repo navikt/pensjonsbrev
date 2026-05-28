@@ -1,4 +1,4 @@
-package no.nav.pensjon.brev.alder.model.afp
+package no.nav.pensjon.brev.alder.model.afpprivat
 
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import no.nav.pensjon.brev.api.model.maler.RedigerbarBrevdata

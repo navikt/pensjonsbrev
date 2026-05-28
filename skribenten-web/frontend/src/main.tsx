@@ -34,7 +34,7 @@ const router = createRouter({
    * Ideelt sett skal denne være 'fuzzy', så kan hver route håndtere NotFound selv.
    */
   notFoundMode: "root",
-  defaultErrorComponent: ({ error }) => <ApiError error={error} title="Noe gikk galt." />,
+  defaultErrorComponent: ({ error }) => <ApiError error={error} title="Noe gikk galt" />,
   context: {
     queryClient,
   },

@@ -1,28 +1,28 @@
 package no.nav.pensjon.brev.alder.maler.afp
 
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerAvslutning
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerForklaringer
 import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpEtteroppgjoerInnhold
 import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_ETTEROPPGJOER_URL
-import no.nav.pensjon.brev.alder.maler.felles.Constants.AFP_OFFENTLIG_URL
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDto.Periode
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forlitebetalt
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fradragberegnetai
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fullafp
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.ieo
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.ifu
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.iiap
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.korrigertafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.forventetPensjonsgivendeInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fradragBeregnetArbeidsInntekt
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.fullAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektEtterOpphoer
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektFoerUttak
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.inntektIAfpPerioden
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.korrigertAfp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.medlemAvApotekerordningen
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.oppgjoersAar
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.opphorsdato
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.pensjonsgivendeInntekt
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.periode
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.pgi
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.tpiberegnet
-import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.utbetaltafp
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.tidligereArbeidsInntektBeregnet
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.toleranseBeloep
+import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.utbetaltAfp
 import no.nav.pensjon.brev.alder.model.afp.VedtakAfpEtteroppgjoerEtterbetalingAutoDtoSelectors.uttaksdato
 import no.nav.pensjon.brev.model.format
 import no.nav.pensjon.brev.template.AutobrevTemplate
@@ -171,7 +171,11 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 )
             }
 
-            includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            showIf(medlemAvApotekerordningen) {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpApotekerordningen)
+            }.orShow {
+                includePhrase(AfpEtteroppgjoerInnhold.VedtaksgrunnlagAfpSpk)
+            }
 
             // Melding om endringer av inntekten + de to delte innledende paragrafene.
             includePhrase(AfpEtteroppgjoerInnhold.MeldingOmEndringerInnledning)
@@ -305,7 +309,7 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             // «Inntekten din i {år}»-tittel + PGI-paragraf.
             includePhrase(AfpEtteroppgjoerInnhold.InntektenDinIAarTittel(oppgjoersAar))
 
-            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pgi = pgi, oppgjoersAar = oppgjoersAar))
+            includePhrase(AfpEtteroppgjoerInnhold.SamletPgiOpplysning(pensjonsgivendeInntekt = pensjonsgivendeInntekt, oppgjoersAar = oppgjoersAar))
 
             // Periode-diskriminert fordeling av PGI på periodene med/uten AFP.
             // Delt med PE_AF_04_107 (toleransebeløp). Se phrase for detaljer.
@@ -318,33 +322,30 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
-                    ifu = ifu,
-                    ieo = ieo,
-                    iiap = iiap,
+                    inntektFoerUttak = inntektFoerUttak,
+                    inntektEtterOpphoer = inntektEtterOpphoer,
+                    inntektIAfpPerioden = inntektIAfpPerioden,
                 ),
             )
 
-            // Toleransebeløp-paragrafen — 101 sier "lavere" (etterbetaling).
-            // Originalens hardkodede "som i 2024 var på 15 000 kroner" er
-            // parametrisert med {oppgjørsår} (samme tilpasning som 105/107).
             paragraph {
                 text(
                     bokmal {
                         +"Ved beregningen av pensjonen din la vi til grunn at du ville ha en forventet " +
-                            "arbeidsinntekt på " + fpiberegnet.format() + ". Etter våre nye beregninger " +
+                            "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter våre nye beregninger " +
                             "har du hatt en arbeidsinntekt i den perioden du har mottatt AFP som er " +
                             "lavere enn den arbeidsinntekten som ble lagt til grunn ved utbetalingen av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "beregnet på ny for perioden."
                     },
                     nynorsk {
                         +"Ved berekninga av pensjonen din la vi til grunn at du ville ha ei forventa " +
-                            "arbeidsinntekt på " + fpiberegnet.format() + ". Etter dei nye berekningane " +
+                            "arbeidsinntekt på " + forventetPensjonsgivendeInntektBeregnet.format() + ". Etter dei nye berekningane " +
                             "våre har du hatt ei arbeidsinntekt i den perioden du har fått AFP, som er " +
                             "lågare enn den arbeidsinntekta som blei lagd til grunn ved utbetalinga av " +
                             "pensjon. Denne forskjellen er større enn toleransebeløpet som i " +
-                            oppgjoersAar.format() + " var på 15 000 kroner. Pensjonen din er derfor " +
+                            oppgjoersAar.format() + " var på " + toleranseBeloep.format() + ". Pensjonen din er derfor " +
                             "berekna på nytt for perioden."
                     },
                 )
@@ -361,12 +362,12 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     uttaksdato = uttaksdato,
                     opphorsdato = opphorsdato,
                     oppgjoersAar = oppgjoersAar,
-                    fullafp = fullafp,
-                    fradragberegnetai = fradragberegnetai,
-                    iiap = iiap,
-                    tpiberegnet = tpiberegnet,
-                    korrigertafp = korrigertafp,
-                    utbetaltafp = utbetaltafp,
+                    fullAfp = fullAfp,
+                    fradragBeregnetArbeidsInntekt = fradragBeregnetArbeidsInntekt,
+                    inntektIAfpPerioden = inntektIAfpPerioden,
+                    tidligereArbeidsInntektBeregnet = tidligereArbeidsInntektBeregnet,
+                    korrigertAfp = korrigertAfp,
+                    utbetaltAfp = utbetaltAfp,
                     forlitebetalt = forlitebetalt,
                 ),
             )

@@ -1,7 +1,7 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
 import no.nav.pensjon.brev.alder.maler.Brevkategori
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
 import no.nav.pensjon.brev.alder.maler.brev.FeatureToggles
 import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.HarDuSpoersmaal
@@ -9,11 +9,11 @@ import no.nav.pensjon.brev.alder.maler.felles.Vedtak
 import no.nav.pensjon.brev.alder.maler.vedlegg.vedleggFolketrygden
 import no.nav.pensjon.brev.alder.model.Aldersbrevkoder
 import no.nav.pensjon.brev.alder.model.Sakstype
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto.Begrunnelse
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.begrunnelse
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.kravMottattDato
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDtoSelectors.pesysData
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto.Begrunnelse
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.begrunnelse
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.PesysDataSelectors.kravMottattDato
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDtoSelectors.pesysData
 import no.nav.pensjon.brev.api.model.TemplateDescription
 import no.nav.pensjon.brev.api.model.TemplateDescription.ISakstype
 import no.nav.pensjon.brev.template.Language.Bokmal
