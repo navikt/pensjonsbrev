@@ -62,7 +62,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
             )
         }
 
-    private fun parameters(from: KClass<*>): List<Parameter> = from.primaryConstructor?.parameters?.map { Parameter(it.name!!, it.type, it.annotations, null) } ?: emptyList()
+    private fun parameters(from: KClass<*>): List<Parameter> = from.primaryConstructor?.parameters?.map { Parameter(it.name!!, it.type, it.annotations, it.annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()) } ?: emptyList()
 
     private fun validate(spec: TemplateModelSpecification): TemplateModelSpecification {
         spec.types.forEach { (name, fieldType) -> validateTypes(spec, listOf(name), fieldType) }
@@ -128,7 +128,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
 
             else -> {
                 if (theClassifier.isValue) {
-                    val parameter = theClassifier.primaryConstructor!!.parameters.first().let { Parameter(it.name!!, it.type, it.annotations, null) }
+                    val parameter = theClassifier.primaryConstructor!!.parameters.first().let { Parameter(it.name!!, it.type, it.annotations, displayedText ?: it.annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()) }
                     parameter.type.toFieldType(parameter, paakrevDisplayText)
                         .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
                 } else if (theClassifier.isData || theClassifier.java.isInterface) {
