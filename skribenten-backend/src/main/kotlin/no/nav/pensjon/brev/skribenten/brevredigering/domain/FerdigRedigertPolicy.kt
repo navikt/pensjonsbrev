@@ -15,7 +15,7 @@ class FerdigRedigertPolicy {
         val alleDuplikateAvsnittErHaandtert = (!Features.hindreDuplikateAvsnitt.isEnabled()) || brev.redigertBrev.alleDuplikateAvsnittErHaandtert()
         return if (uredigerteFritekstfelter.none() && alleDuplikateAvsnittErHaandtert) {
             success(Unit)
-        } else if (uredigerteFritekstfelter.isNotEmpty()) {
+        } else if (uredigerteFritekstfelter.any()) {
             failure(IkkeFerdigRedigert.FritekstFelterUredigert(uredigerteFritekstfelter))
         } else {
             failure(IkkeFerdigRedigert.DuplikatAvsnittUhaandtert)
