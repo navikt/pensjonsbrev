@@ -1,5 +1,6 @@
 package no.nav.pensjon.brev.maler.fraser
 
+import no.nav.pensjon.brev.maler.SamletMeldingOmPensjonsvedtak.fritekst
 import no.nav.pensjon.brev.maler.fraser.common.Constants
 import no.nav.pensjon.brev.maler.legacy.HjemmelFormatter
 import no.nav.pensjon.brev.maler.vedlegg.vedleggDineRettigheterOgPlikterUfoere
@@ -9,12 +10,12 @@ import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
+import no.nav.pensjon.brev.template.dsl.expression.expr
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brev.template.namedReference
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 
 class VedtakOmEtterbetalingOpphor2026 {
-    data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>) : OutlinePhrase<LangBokmalNynorsk>() {
+    data class Outline(private val etterbetaling: Expression<Kroner>, private val hjemler: Expression<Collection<String>>, private val erRedigerbar: Expression<Boolean> = false.expr()) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
 
             paragraph {
@@ -41,14 +42,25 @@ class VedtakOmEtterbetalingOpphor2026 {
             }
             paragraph {
                 text(
-                bokmal {  +"Fra 1. januar 2026 og frem til uføretrygden din opphørte, hadde du inntekt over inntektsgrensen. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygden for mye, og du har fått utbetalt for lite uføretrygd." },
-                nynorsk { +"Frå 1. januar 2026 og fram til uføretrygda di opphørte, hadde du inntekt over inntektsgrensa. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygda for mykje, og du har fått utbetalt for lite uføretrygd." }
+                    bokmal { +"Fra 1. januar 2026 og frem til uføretrygden din opphørte, hadde du inntekt over inntektsgrensen. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygden for mye, og du har fått utbetalt for lite uføretrygd." },
+                    nynorsk { +"Frå 1. januar 2026 og fram til uføretrygda di opphørte, hadde du inntekt over inntektsgrensa. I denne perioden brukte vi den gamle reduksjonsprosenten din. Det har ført til at vi har redusert uføretrygda for mykje, og du har fått utbetalt for lite uføretrygd." }
                 )
             }
             paragraph {
                 text(
-                    bokmal { +"Vedtaket har vi gjort etter " + hjemler.format(HjemmelFormatter(true)) + "." },
-                    nynorsk { +"Vedtaket har vi gjort etter " + hjemler.format(HjemmelFormatter(true)) + "." },
+                    bokmal { +"Vedtaket har vi gjort etter " },
+                    nynorsk { +"Vedtaket har vi gjort etter " },
+                )
+                showIf(erRedigerbar) {
+                    text(
+                        bokmal { +fritekst("Legg inn 12-9(IFU) eller 12-14(reduksjonsprosent)") + " " },
+                        nynorsk { +fritekst("Legg inn 12-9(IFU) eller 12-14(reduksjonsprosent)") + " " },
+                    )
+
+                }
+                text(
+                    bokmal { +hjemler.format(HjemmelFormatter(true)) + "." },
+                    nynorsk { +hjemler.format(HjemmelFormatter(true)) + "." },
                 )
             }
         }
@@ -64,10 +76,14 @@ class VedtakOmEtterbetalingOpphor2026 {
             }
             paragraph {
                 text(
-                    bokmal { +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
-                            "${Constants.KLAGE_URL}." },
-                    nynorsk { +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
-                            "${Constants.KLAGE_URL}." },
+                    bokmal {
+                        +"Hvis du mener vedtaket er feil, kan du klage. Fristen for å klage er seks uker fra den datoen vedtaket har kommet fram til deg. Du finner skjema og informasjon på " +
+                                "${Constants.KLAGE_URL}."
+                    },
+                    nynorsk {
+                        +"Om du meiner vedtaket er feil, kan du klage. Fristen for å klage er seks veker frå den datoen vedtaket har kome fram til deg. Du finn skjema og informasjon på " +
+                                "${Constants.KLAGE_URL}."
+                    },
                 )
             }
         }
