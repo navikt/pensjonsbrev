@@ -5,8 +5,10 @@ import { Controller } from "react-hook-form";
 
 import { getEnheter } from "~/api/skribenten-api-endpoints";
 
+import { Route } from "../../../route";
+
 function SelectEnhet() {
-  const navigate = useNavigate({ from: "/saksnummer/$saksId/brevvelger" });
+  const navigate = useNavigate({ from: Route.fullPath });
   const enheterQuery = useQuery(getEnheter);
   const options = enheterQuery.data ?? [];
 
@@ -21,13 +23,11 @@ function SelectEnhet() {
           name={field.name}
           onBlur={field.onBlur}
           onChange={(event) => {
-            field.onChange(event);
+            const enhetsId = event.currentTarget.value || undefined;
 
+            field.onChange(event);
             navigate({
-              search: (search) => ({
-                ...search,
-                enhetsId: event.target.value || undefined,
-              }),
+              search: (search) => ({ ...search, enhetsId }),
               replace: true,
             });
           }}
