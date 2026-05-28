@@ -72,12 +72,14 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
 
     private fun KType.toFieldType(annotations: List<Annotation>, paakrevDisplayText: Boolean, name: String): FieldType {
         val theClassifier = classifier
-        return if (theClassifier is KClass<*>) {
+        return if (theClassifier !is KClass<*>) {
+            throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
+        } else {
             val displayText = annotations.filterIsInstance<DisplayText>().map { it.text }
             val displayedText = displayText.firstOrNull()
             if (paakrevDisplayText && displayedText == null) {
                 throw TemplateModelSpecificationError("Missing required DisplayText annotation on $name")
-                }
+            }
 
             when (val qname = theClassifier.qualifiedName) {
                 "kotlin.String" ->
@@ -103,6 +105,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname, displayText = displayedText)
                 }
+
                 Broek::class.qualifiedName, Period::class.qualifiedName -> {
                     toProcess.add(theClassifier)
                     FieldType.Object(isMarkedNullable, qname!!, displayText = displayedText)
@@ -113,8 +116,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                         val parameter = theClassifier.primaryConstructor!!.parameters.first()
                         parameter.type.toFieldType(annotations, paakrevDisplayText, parameter.name!!)
                             .takeIf { it is FieldType.Scalar } ?: throw TemplateModelSpecificationError("Expected value class to be scalar, but was not")
-                    }
-                    else if (theClassifier.isData || theClassifier.java.isInterface) {
+                    } else if (theClassifier.isData || theClassifier.java.isInterface) {
                         toProcess.add(theClassifier)
                         FieldType.Object(isMarkedNullable, qname!!, displayText = displayedText)
                     } else if (theClassifier.java.isEnum) {
@@ -124,8 +126,6 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
                     }
                 }
             }
-        } else {
-            throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
     }
 
