@@ -53,8 +53,8 @@ class VedtakOmEtterbetalingOpphor2026 {
                 )
                 showIf(erRedigerbar) {
                     text(
-                        bokmal { +fritekst("Legg inn 12-9(IFU) eller 12-14(reduksjonsprosent)") + " " },
-                        nynorsk { +fritekst("Legg inn 12-9(IFU) eller 12-14(reduksjonsprosent)") + " " },
+                        bokmal { +fritekst("Evt legg inn 12-9(IFU)") + " " },
+                        nynorsk { +fritekst("Evt legg inn 12-9(IFU)") + " " },
                     )
 
                 }
