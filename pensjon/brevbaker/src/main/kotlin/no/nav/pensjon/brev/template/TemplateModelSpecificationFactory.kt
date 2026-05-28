@@ -75,8 +75,7 @@ class TemplateModelSpecificationFactory(private val from: KClass<*>) {
         if (theClassifier !is KClass<*>) {
             throw TemplateModelSpecificationError("Unable to create FieldType of: $this")
         }
-        val displayText = annotations.filterIsInstance<DisplayText>().map { it.text }
-        val displayedText = displayText.firstOrNull()
+        val displayedText = annotations.filterIsInstance<DisplayText>().map { it.text }.firstOrNull()
         if (paakrevDisplayText && displayedText == null) {
             throw TemplateModelSpecificationError("Missing required DisplayText annotation on $name")
         }
