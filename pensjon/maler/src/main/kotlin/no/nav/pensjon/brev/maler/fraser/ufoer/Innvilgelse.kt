@@ -1679,27 +1679,26 @@ object Innvilgelse {
                     nynorsk { +"Dette er uføretidspunktet ditt" },
                 )
             }
-
-            showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 50 prosent." },
-                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 50 prosent." },
-                    )
-                }
-            }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
-                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 40 prosent." },
-                    )
-                }
-            }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
-                paragraph {
-                    text(
-                        bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
-                        nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + ". Då blei inntektsevna di varig sett ned med minst 30 prosent." },
-                    )
+            paragraph {
+                text(
+                    bokmal { +"Vi har satt uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + "." },
+                    nynorsk { +"Vi har sett uføretidspunktet ditt til " + visUforetidspunkt + ", fordi " + fritekst("begrunn uføretidspunktet") + "." },
+                )
+                showIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_1")) {
+                        text(
+                            bokmal { +" Da ble inntektsevnen din varig nedsatt med minst 50 prosent." },
+                            nynorsk { +" Då blei inntektsevna di varig sett ned med minst 50 prosent." },
+                        )
+                }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_2")) {
+                        text(
+                            bokmal { +" Da ble inntektsevnen din varig nedsatt med minst 40 prosent." },
+                            nynorsk { +" Då blei inntektsevna di varig sett ned med minst 40 prosent." },
+                        )
+                }.orShowIf(pe.vedtaksdata_vilkarsvedtaklist_vilkarsvedtak_beregningsvilkar_uforetidspunktbegrunnelse().equalTo("stdbegr_12_7_1_3")) {
+                        text(
+                            bokmal { +" Da ble inntektsevnen din varig nedsatt med minst 30 prosent." },
+                            nynorsk { +" Då blei inntektsevna di varig sett ned med minst 30 prosent." },
+                        )
                 }
             }
             paragraph {

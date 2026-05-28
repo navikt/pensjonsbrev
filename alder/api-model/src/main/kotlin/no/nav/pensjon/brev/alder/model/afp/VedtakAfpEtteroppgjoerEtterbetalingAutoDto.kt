@@ -9,65 +9,24 @@ import java.time.LocalDate
  * Vedtak — AFP etteroppgjør med etterbetaling, fase 1 / varsel (autobrev).
  */
 data class VedtakAfpEtteroppgjoerEtterbetalingAutoDto(
-    // PE_Vedtaksdata_Oppgjorsar
     val oppgjoersAar: Year,
-
-    // PE_Vedtaksdata_AFPEO_forlitebetalt
-    // For lite utbetalt AFP — totalbeløpet som etterbetales.
     val forlitebetalt: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_PGI
-    // Samlet pensjonsgivende inntekt fra Skatteetaten for oppgjørsåret.
-    val pgi: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IFU
-    // Inntekt opptjent før uttak av AFP. Brukes i [Periode.UTTAK_I_AARET]
-    // og [Periode.UTTAK_OG_OPPHOER_I_AARET].
-    val ifu: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_IEO
-    // Inntekt opptjent etter opphør av AFP. Brukes i
-    // [Periode.OPPHOER_I_AARET] og [Periode.UTTAK_OG_OPPHOER_I_AARET].
-    val ieo: Kroner,
-
-    // PE_Vedtaksdata_APFEO_IIAP
-    // Inntekt antatt opptjent i perioden med AFP.
-    val iiap: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fpiberegnet
-    // Forventet pensjonsgivende inntekt som ble lagt til grunn ved
-    // utbetalingen av pensjon — vises i toleransebeløp-paragrafen.
-    val fpiberegnet: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fullafp
-    val fullafp: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_fradragberegnetai
-    val fradragberegnetai: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_korrigertafp
-    val korrigertafp: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_tpiberegnet
-    // Tidligere arbeidsinntekt som ble lagt til grunn ved utbetaling av
-    // pensjon; nevneren i formelen for inntektsfradraget.
-    val tpiberegnet: Kroner,
-
-    // PE_Vedtaksdata_AFPEO_utbetaltafp
-    val utbetaltafp: Kroner,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_Uttaksdato
+    val pensjonsgivendeInntekt: Kroner,
+    val inntektFoerUttak: Kroner,
+    val inntektEtterOpphoer: Kroner,
+    val inntektIAfpPerioden: Kroner,
+    val forventetPensjonsgivendeInntektBeregnet: Kroner,
+    val fullAfp: Kroner,
+    val fradragBeregnetArbeidsInntekt: Kroner,
+    val korrigertAfp: Kroner,
+    val tidligereArbeidsInntektBeregnet: Kroner,
+    val utbetaltAfp: Kroner,
     val uttaksdato: LocalDate,
-
-    // PE_Grunnlag_Persongrunnlag_AFPEOGrunnlag_AFP_opphorsdato
-    // Nullbart fordi Exstream-originalen sjekker mot DateValue("") for
-    // pågående AFP. Brukes i [Periode.OPPHOER_I_AARET] og
-    // [Periode.UTTAK_OG_OPPHOER_I_AARET].
     val opphorsdato: LocalDate?,
-
+    val medlemAvApotekerordningen: Boolean,
+    val toleranseBeloep: Kroner,
     val periode: Periode,
 ) : AutobrevData {
-
     /**
      * Periodevariant av forklaringen. Samme inndeling som
      * [VedtakAfpEtteroppgjoerTilbakekrevingAutoDto.Periode] (PE_AF_04_107).

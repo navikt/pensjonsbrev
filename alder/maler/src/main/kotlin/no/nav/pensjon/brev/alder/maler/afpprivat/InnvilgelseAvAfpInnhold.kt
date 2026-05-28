@@ -1,11 +1,10 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
-import no.nav.pensjon.brev.alder.maler.afp.fraser.AfpPrivatFraser
-import no.nav.pensjon.brev.alder.maler.felles.Constants.NAV_URL
+import no.nav.pensjon.brev.alder.maler.afpprivat.fraser.AfpPrivatFraser
+import no.nav.pensjon.brev.alder.maler.felles.Constants
 import no.nav.pensjon.brev.alder.maler.felles.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment
-import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalNynorskEnglish
 import no.nav.pensjon.brev.template.OutlinePhrase
@@ -13,7 +12,7 @@ import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
 import no.nav.pensjon.brev.template.dsl.expression.not
 import no.nav.pensjon.brev.template.dsl.text
-import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
+import no.nav.pensjon.brevbaker.api.model.BrevbakerType
 import java.time.LocalDate
 
 /**
@@ -27,10 +26,10 @@ import java.time.LocalDate
 data class InnvilgelseAvAfpInnhold(
     val kravMottattDato: Expression<LocalDate>,
     val virkningFom: Expression<LocalDate>,
-    val totalPensjon: Expression<Kroner>,
-    val livsvarigBrutto: Expression<Kroner?>,
-    val kronetilleggBrutto: Expression<Kroner?>,
-    val kompensasjonstilleggBrutto: Expression<Kroner?>,
+    val totalPensjon: Expression<BrevbakerType.Kroner>,
+    val livsvarigBrutto: Expression<BrevbakerType.Kroner?>,
+    val kronetilleggBrutto: Expression<BrevbakerType.Kroner?>,
+    val kompensasjonstilleggBrutto: Expression<BrevbakerType.Kroner?>,
     val brukerUnder70Aar: Expression<Boolean>,
     val bosattINorge: Expression<Boolean>,
 ) : OutlinePhrase<LangBokmalNynorskEnglish>() {
@@ -106,7 +105,7 @@ data class InnvilgelseAvAfpInnhold(
                             english { +"Amount per month" },
                         )
                     }
-                    column(alignment = ColumnAlignment.RIGHT) {
+                    column(alignment = Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT) {
                         text(bokmal { +"" }, nynorsk { +"" }, english { +"" })
                     }
                 },
@@ -153,10 +152,15 @@ data class InnvilgelseAvAfpInnhold(
                             bokmal { +"Sum AFP før skatt" },
                             nynorsk { +"Sum AFP før skatt" },
                             english { +"Total contractual pension before tax" },
-                            BOLD,
+                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                         )
                     }
-                    cell { includePhrase(KronerText(totalPensjon, BOLD)) }
+                    cell { includePhrase(
+                        KronerText(
+                            totalPensjon,
+                            Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
+                        )
+                    ) }
                 }
             }
         }
@@ -167,18 +171,18 @@ data class InnvilgelseAvAfpInnhold(
                 bokmal {
                     +"AFP justeres i forhold til forventet levealder ved tidspunkt for uttak. Levealdersjustering " +
                         "er en mekanisme som tar høyde for økt levealder i befolkningen og er innført for å sikre " +
-                        "at pensjonssystemet forblir bærekraftig. Du kan lese mer om levealdersjustering på $NAV_URL."
+                        "at pensjonssystemet forblir bærekraftig. Du kan lese mer om levealdersjustering på ${Constants.NAV_URL}."
                 },
                 nynorsk {
                     +"AFP blir justert i forhold til forventa levealder ved tidspunktet for uttak. Levealdersjustering " +
                         "er ein mekanisme som tek høgd for auka levealder i befolkninga, og er innført for å sikre " +
-                        "at pensjonssystemet held seg berekraftig. Du kan lese meir om levealdersjustering på $NAV_URL."
+                        "at pensjonssystemet held seg berekraftig. Du kan lese meir om levealdersjustering på ${Constants.NAV_URL}."
                 },
                 english {
                     +"Contractual pension is adjusted according to your life expectancy on the pension date. " +
                         "Adjusting for life expectancy is a mechanism to cope with the increased age of the " +
                         "population and has been introduced to make sure that the pension system remains " +
-                        "sustainable. You can find more information about life expectancy adjustment on $NAV_URL."
+                        "sustainable. You can find more information about life expectancy adjustment on ${Constants.NAV_URL}."
                 },
             )
         }
@@ -190,7 +194,7 @@ data class InnvilgelseAvAfpInnhold(
                     bokmal { +"AFP livsvarig del" },
                     nynorsk { +"AFP livsvarig del" },
                     english { +"The contractual pension, lifelong amount," },
-                    fontType = BOLD,
+                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
                 text(
                     bokmal {
@@ -214,7 +218,7 @@ data class InnvilgelseAvAfpInnhold(
                     bokmal { +"AFP kronetillegg" },
                     nynorsk { +"AFP-kronetillegg" },
                     english { +"The contractual pension NOK supplement" },
-                    fontType = BOLD,
+                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
                 text(
                     bokmal {
@@ -241,7 +245,7 @@ data class InnvilgelseAvAfpInnhold(
                     bokmal { +"AFP kompensasjonstillegg" },
                     nynorsk { +"AFP-kompensasjonstillegg" },
                     english { +"The contractual pension compensation supplement" },
-                    fontType = BOLD,
+                    fontType = Element.OutlineContent.ParagraphContent.Text.FontType.BOLD,
                 )
                 text(
                     bokmal {
@@ -349,17 +353,17 @@ data class InnvilgelseAvAfpInnhold(
                 bokmal {
                     +"Din AFP blir vanligvis utbetalt den 20. hver måned. Når den 20. er en lørdag eller offentlig " +
                         "fridag blir pensjonen utbetalt senest siste virkedag før den 20. Oversikt over " +
-                        "utbetalingsdatoer finner du på $NAV_URL."
+                        "utbetalingsdatoer finner du på ${Constants.NAV_URL}."
                 },
                 nynorsk {
                     +"AFP-en din blir vanlegvis utbetalt den 20. kvar månad. Når den 20. er ein laurdag eller " +
                         "offentleg fridag, blir pensjonen utbetalt seinast siste yrkedagen før den 20. Oversikt " +
-                        "over utbetalingsdatoar finn du på $NAV_URL."
+                        "over utbetalingsdatoar finn du på ${Constants.NAV_URL}."
                 },
                 english {
                     +"Your contractual pension will normally be paid on the 20th of each month. When the 20th is " +
                         "a Saturday or public holiday, your pension will be paid at latest on the last business " +
-                        "day before the 20th. You can find a list of payment dates on $NAV_URL."
+                        "day before the 20th. You can find a list of payment dates on ${Constants.NAV_URL}."
                 },
             )
         }
@@ -442,15 +446,15 @@ data class InnvilgelseAvAfpInnhold(
         paragraph {
             text(
                 bokmal {
-                    +"På nettjenesten Din pensjon på $NAV_URL kan du se hvilket skattetrekk som er registrert " +
+                    +"På nettjenesten Din pensjon på ${Constants.NAV_URL} kan du se hvilket skattetrekk som er registrert " +
                         "hos Nav og legge inn eventuelt tilleggstrekk om du ønsker det."
                 },
                 nynorsk {
-                    +"På nettenesta Din pensjon på $NAV_URL kan du sjå kva skattetrekk som er registrert hos Nav " +
+                    +"På nettenesta Din pensjon på ${Constants.NAV_URL} kan du sjå kva skattetrekk som er registrert hos Nav " +
                         "og leggje inn eventuelt tilleggstrekk om du ønskjer det."
                 },
                 english {
-                    +"The website Din pensjon on $NAV_URL shows the tax deduction rate registered at Nav. Here " +
+                    +"The website Din pensjon on ${Constants.NAV_URL} shows the tax deduction rate registered at Nav. Here " +
                         "you can enter any desired supplementary deduction."
                 },
             )

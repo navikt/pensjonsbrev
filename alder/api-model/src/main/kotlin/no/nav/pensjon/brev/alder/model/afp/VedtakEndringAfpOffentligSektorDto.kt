@@ -17,40 +17,18 @@ data class VedtakEndringAfpOffentligSektorDto(
 ) : RedigerbarBrevdata<EmptySaksbehandlerValg, VedtakEndringAfpOffentligSektorDto.PesysData> {
 
     data class PesysData(
-        // PE_Vedtaksdata_VirkningFOM
         val virkningFom: LocalDate,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_VirkDatoFOM
         val beregningVirkDatoFom: LocalDate,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_AFPpensjonsgrad
         val afpPensjonsgrad: Percent,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_Grunnbelop
         val grunnbeloep: Kroner,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningsSammendragBruker_BrukerFPI
         val framtidigArligInntekt: Kroner,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningNokkelinfo_BeregningNokkelinfo1_SPT_Poengrekke_PoengarUtenOKTPI
         val tidligereArbeidsinntekt: Kroner,
-
-        // PE_Vedtaksdata_BeregningsData_BeregningAntallPerioder > 1
         val flerePerioder: Boolean,
-
-        // PE_VedtaksData_Etterbetaling
         val etterbetaling: Boolean,
-
-        // PE_Vedtaksdata_BeregningsData_Beregning_BeregningSivilstandAnvendt grupperinger
         val sivilstand: AfpOffentligSektor.Sivilstand,
-
         val beregning: AfpOffentligSektor.Beregning,
-
-        // Data til vedlegget «Opplysninger om beregningen» (PE_AF_opplysninger_om_beregningen_MR71).
         val opplysningerOmBeregningen: OpplysningerOmBeregningenAfpDto,
-
-        // Data til vedlegget «Oversikt over pensjonens størrelse» (PE_AF_oversikt_over_pensjonen_MR71).
-        // null når antallPerioder == 1 (vedlegget skal kun produseres ved flere perioder).
         val oversiktOverPensjonen: OversiktOverPensjonenAfpDto?,
+        val toleranseBeloep: Kroner,
     ) : FagsystemBrevdata
 }

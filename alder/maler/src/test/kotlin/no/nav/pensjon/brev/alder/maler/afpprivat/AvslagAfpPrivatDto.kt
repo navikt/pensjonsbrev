@@ -1,6 +1,6 @@
-package no.nav.pensjon.brev.alder.maler.afp
+package no.nav.pensjon.brev.alder.maler.afpprivat
 
-import no.nav.pensjon.brev.alder.model.afp.AvslagAfpPrivatDto
+import no.nav.pensjon.brev.alder.model.afpprivat.AvslagAfpPrivatDto
 import no.nav.pensjon.brev.api.model.maler.EmptySaksbehandlerValg
 import java.time.LocalDate
 

@@ -8,7 +8,6 @@ import no.nav.pensjon.brev.template.LangBokmalNynorsk
 import no.nav.pensjon.brev.template.OutlinePhrase
 import no.nav.pensjon.brev.template.dsl.OutlineOnlyScope
 import no.nav.pensjon.brev.template.dsl.expression.format
-import no.nav.pensjon.brev.template.dsl.expression.plus
 import no.nav.pensjon.brev.template.dsl.text
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Kroner
 import no.nav.pensjon.brevbaker.api.model.BrevbakerType.Year
@@ -94,6 +93,21 @@ object AfpEtteroppgjoerInnhold {
         }
     }
 
+    object VedtaksgrunnlagAfpApotekerordningen : OutlinePhrase<LangBokmalNynorsk>() {
+        override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
+            paragraph {
+                text(
+                    bokmal {
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av Apotekerne XXX."
+                    },
+                    nynorsk {
+                        +"Vedtaket er gjort etter lov om AFP for medlemmer av  Apotekerne XXX."
+                    },
+                )
+            }
+        }
+    }
+
     /** Title1 «Inntekten din i {oppgjørsår}». */
     data class InntektenDinIAarTittel(
         val oppgjoersAar: Expression<Year>,
@@ -114,7 +128,7 @@ object AfpEtteroppgjoerInnhold {
      * Identisk mellom PE_AF_04_101 og PE_AF_04_102.
      */
     data class SamletPgiOpplysning(
-        val pgi: Expression<Kroner>,
+        val pensjonsgivendeInntekt: Expression<Kroner>,
         val oppgjoersAar: Expression<Year>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -122,11 +136,11 @@ object AfpEtteroppgjoerInnhold {
                 text(
                     bokmal {
                         +"Opplysninger fra Skatteetaten viser at du har hatt en samlet pensjonsgivende " +
-                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                            "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
                     },
                     nynorsk {
                         +"Opplysningar frå Skatteetaten viser at du har hatt ei samla pensjonsgivande " +
-                            "inntekt på " + pgi.format() + " i inntektsåret " + oppgjoersAar.format() + "."
+                            "inntekt på " + pensjonsgivendeInntekt.format() + " i inntektsåret " + oppgjoersAar.format() + "."
                     },
                 )
             }
@@ -468,9 +482,9 @@ object AfpEtteroppgjoerInnhold {
         val uttaksdato: Expression<LocalDate>,
         val opphorsdato: Expression<LocalDate?>,
         val oppgjoersAar: Expression<Year>,
-        val ifu: Expression<Kroner>,
-        val ieo: Expression<Kroner>,
-        val iiap: Expression<Kroner>,
+        val inntektFoerUttak: Expression<Kroner>,
+        val inntektEtterOpphoer: Expression<Kroner>,
+        val inntektIAfpPerioden: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
             showIf(erHelAfpHeleAaret) {
@@ -501,18 +515,18 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Vi har lagt til grunn at " + ifu.format() + " er opptjent før du tok ut AFP. " +
+                            +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " er opptjent før du tok ut AFP. " +
                                 "Dette beløpet skal holdes utenfor etteroppgjøret for " +
                                 oppgjoersAar.format() + ". Den delen av inntekten som regnes for å være " +
                                 "opptjent i den perioden du har mottatt AFP, er beregnet til " +
-                                iiap.format() + "."
+                                inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Vi har lagt til grunn at " + ifu.format() + " er opptente før du tok ut AFP. " +
+                            +"Vi har lagt til grunn at " + inntektFoerUttak.format() + " er opptente før du tok ut AFP. " +
                                 "Dette beløpet skal haldast utanfor etteroppgjeret for " +
                                 oppgjoersAar.format() + ". Den delen av inntekta som blir rekna for å vere " +
                                 "opptent i den perioden du har fått AFP, er berekna til " +
-                                iiap.format() + "."
+                                inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -539,18 +553,18 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Vi har lagt til grunn at " + ieo.format() + " er opptjent etter at du gikk " +
+                            +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptjent etter at du gikk " +
                                 "over fra AFP til annen pensjon, eventuelt etter opphør av AFP. Dette " +
                                 "beløpet skal holdes utenfor etteroppgjøret for " + oppgjoersAar.format() +
                                 ". Den delen av inntekten som regnes for å være opptjent i den perioden du " +
-                                "har mottatt AFP, er beregnet til " + iiap.format() + "."
+                                "har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Vi har lagt til grunn at " + ieo.format() + " er opptente etter at du gjekk " +
+                            +"Vi har lagt til grunn at " + inntektEtterOpphoer.format() + " er opptente etter at du gjekk " +
                                 "over frå AFP til annan pensjon, eventuelt etter at AFP er avslutta. Dette " +
                                 "beløpet skal haldast utanfor etteroppgjeret for " + oppgjoersAar.format() +
                                 ". Den delen av inntekta som blir rekna for å vere opptent i den perioden " +
-                                "du har fått AFP, er berekna til " + iiap.format() + "."
+                                "du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -575,18 +589,18 @@ object AfpEtteroppgjoerInnhold {
                 paragraph {
                     text(
                         bokmal {
-                            +"Vi har lagt til grunn at du tjente " + ifu.format() + " før du tok ut AFP og " +
-                                ieo.format() + " etter at du gikk over fra AFP til annen pensjon, " +
+                            +"Vi har lagt til grunn at du tjente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
+                                inntektEtterOpphoer.format() + " etter at du gikk over fra AFP til annen pensjon, " +
                                 "eventuelt etter opphør av AFP. Det samlede beløpet holdes utenfor " +
                                 "etteroppgjøret. Den delen av inntekten som regnes for å være opptjent i " +
-                                "den perioden du har mottatt AFP, er beregnet til " + iiap.format() + "."
+                                "den perioden du har mottatt AFP, er beregnet til " + inntektIAfpPerioden.format() + "."
                         },
                         nynorsk {
-                            +"Vi har lagt til grunn at du tente " + ifu.format() + " før du tok ut AFP og " +
-                                ieo.format() + " etter at du gjekk over frå AFP til annan pensjon, " +
+                            +"Vi har lagt til grunn at du tente " + inntektFoerUttak.format() + " før du tok ut AFP og " +
+                                inntektEtterOpphoer.format() + " etter at du gjekk over frå AFP til annan pensjon, " +
                                 "eventuelt etter at AFP tok slutt. Det samla beløpet blir halde utanfor " +
                                 "etteroppgjeret. Den delen av inntekta som blir rekna for å vere opptent i " +
-                                "den perioden du har fått AFP, er berekna til " + iiap.format() + "."
+                                "den perioden du har fått AFP, er berekna til " + inntektIAfpPerioden.format() + "."
                         },
                     )
                 }
@@ -605,12 +619,12 @@ object AfpEtteroppgjoerInnhold {
         val uttaksdato: Expression<LocalDate>,
         val opphorsdato: Expression<LocalDate?>,
         val oppgjoersAar: Expression<Year>,
-        val fullafp: Expression<Kroner>,
-        val fradragberegnetai: Expression<Kroner>,
-        val iiap: Expression<Kroner>,
-        val tpiberegnet: Expression<Kroner>,
-        val korrigertafp: Expression<Kroner>,
-        val utbetaltafp: Expression<Kroner>,
+        val fullAfp: Expression<Kroner>,
+        val fradragBeregnetArbeidsInntekt: Expression<Kroner>,
+        val inntektIAfpPerioden: Expression<Kroner>,
+        val tidligereArbeidsInntektBeregnet: Expression<Kroner>,
+        val korrigertAfp: Expression<Kroner>,
+        val utbetaltAfp: Expression<Kroner>,
         val forlitebetalt: Expression<Kroner>,
     ) : OutlinePhrase<LangBokmalNynorsk>() {
         override fun OutlineOnlyScope<LangBokmalNynorsk, Unit>.template() {
@@ -688,36 +702,36 @@ object AfpEtteroppgjoerInnhold {
 
             paragraph {
                 text(
-                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
-                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullafp.format(denominator = false) + " kr" },
+                    bokmal { +"Full AFP (uten fradrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"Full AFP (utan frådrag for inntekt): " + fullAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"Inntektsfradraget i AFP for den nye inntekten: " + fradragberegnetai.format(denominator = false) + " kr" },
-                    nynorsk { +"Inntektsfrådraget i AFP for den nye inntekta: " + fradragberegnetai.format(denominator = false) + " kr" },
+                    bokmal { +"Inntektsfradraget i AFP for den nye inntekten: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
+                    nynorsk { +"Inntektsfrådraget i AFP for den nye inntekta: " + fradragBeregnetArbeidsInntekt.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
                     bokmal {
-                        +iiap.format(denominator = false) + " kr (ny beregnet inntekt) / " +
-                            tpiberegnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
-                            fullafp.format(denominator = false) + " kr (full AFP)"
+                        +inntektIAfpPerioden.format(denominator = false) + " kr (ny beregnet inntekt) / " +
+                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidligere arbeidsinntekt*) x " +
+                            fullAfp.format(denominator = false) + " kr (full AFP)"
                     },
                     nynorsk {
-                        +iiap.format(denominator = false) + " kr (ny berekna inntekt) / " +
-                            tpiberegnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
-                            fullafp.format(denominator = false) + " kr (full AFP)"
+                        +inntektIAfpPerioden.format(denominator = false) + " kr (ny berekna inntekt) / " +
+                            tidligereArbeidsInntektBeregnet.format(denominator = false) + " kr (tidlegare arbeidsinntekt*) x " +
+                            fullAfp.format(denominator = false) + " kr (full AFP)"
                     },
                 )
                 newline()
                 text(
-                    bokmal { +"AFP etter fradrag for den nye inntekten: " + korrigertafp.format(denominator = false) + " kr" },
-                    nynorsk { +"AFP etter frådrag for den nye inntekta: " + korrigertafp.format(denominator = false) + " kr" },
+                    bokmal { +"AFP etter fradrag for den nye inntekten: " + korrigertAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"AFP etter frådrag for den nye inntekta: " + korrigertAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
-                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
-                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltafp.format(denominator = false) + " kr" },
+                    bokmal { +"Tidligere utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
+                    nynorsk { +"Tidlegare utbetalt AFP: " + utbetaltAfp.format(denominator = false) + " kr" },
                 )
                 newline()
                 text(
