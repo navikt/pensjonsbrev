@@ -2,9 +2,9 @@ package no.nav.pensjon.brev.maler.fraser.gjenlevende
 
 import no.nav.pensjon.brev.maler.fraser.common.KronerText
 import no.nav.pensjon.brev.model.format
-import no.nav.pensjon.brev.template.Element
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.LEFT
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Table.ColumnAlignment.RIGHT
+import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType
 import no.nav.pensjon.brev.template.Element.OutlineContent.ParagraphContent.Text.FontType.BOLD
 import no.nav.pensjon.brev.template.Expression
 import no.nav.pensjon.brev.template.LangBokmalEnglish
@@ -179,7 +179,7 @@ internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumBru
     netto: Expression<Kroner>,
     bold: Boolean = true,
 ) {
-    val font = if (bold) BOLD else Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
+    val font = if (bold) BOLD else FontType.PLAIN
     row {
         cell {
             text(
@@ -197,7 +197,7 @@ internal fun <LetterData : Any> TableScope<LangBokmalEnglish, LetterData>.sumNet
     netto: Expression<Kroner>,
     bold: Boolean = true,
 ) {
-    val font = if (bold) BOLD else Element.OutlineContent.ParagraphContent.Text.FontType.PLAIN
+    val font = if (bold) BOLD else FontType.PLAIN
     row {
         cell {
             text(
