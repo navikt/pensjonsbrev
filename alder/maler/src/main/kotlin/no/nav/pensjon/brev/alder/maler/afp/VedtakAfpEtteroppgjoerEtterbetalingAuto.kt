@@ -187,18 +187,18 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                 list {
                     item {
                         text(
-                            bokmal { +"Feriepenger og lønn som er opptjent før første uttak av AFP" },
-                            nynorsk { +"Feriepengar og lønn som er opptente før første uttaket av AFP" },
+                            bokmal { +"feriepenger og lønn som er opptjent før første uttak av AFP" },
+                            nynorsk { +"feriepengar og lønn som er opptente før første uttaket av AFP" },
                         )
                     }
                     item {
                         text(
                             bokmal {
-                                +"Honorar, royalty, bonus eller andre inntekter som kommer fra arbeid " +
+                                +"honorar, royalty, bonus eller andre inntekter som kommer fra arbeid " +
                                         "eller virksomhet før første uttak av AFP"
                             },
                             nynorsk {
-                                +"Honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
+                                +"honorar, royalty, bonus eller andre inntekter som stammar frå arbeid " +
                                         "eller verksemd før det første uttaket av AFP"
                             },
                         )
@@ -206,26 +206,17 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
                     item {
                         text(
                             bokmal {
-                                +"Etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut"
+                                +"etterbetaling av trygdeytelser som gjelder for tidsrom før AFP ble tatt ut"
                             },
                             nynorsk {
-                                +"Etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut"
+                                +"etterbetaling av trygdeytingar som gjeld for tidsrom før AFP vart tatt ut"
                             },
                         )
                     }
-                }
-            }
-            paragraph {
-                text(
-                    bokmal { +"Inntekt fra arbeid med fordrevne fra Ukraina som skal holdes utenfor etteroppgjøret " },
-                    nynorsk { +"" }
-
-                )
-                list {
                     item {
                         text(
                             bokmal {
-                                +"Feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
+                                +"feriepenger etter særskilt sats for pensjonistavlønning fra arbeid med fordrevne fra Ukraina. Dette gjelder bare feriepenger fra arbeid til og med 31. desember 2024."
                             },
                             nynorsk {
                                 +""
@@ -236,13 +227,13 @@ object VedtakAfpEtteroppgjoerEtterbetalingAuto : AutobrevTemplate<VedtakAfpEtter
             }
             paragraph {
                 text(
-                    bokmal { +"Vi trenger bekreftelse fra arbeidsgiveren din om: " },
+                    bokmal { +"Vi trenger bekreftelse fra arbeidsgiveren din om Ukraina-arbeid: " },
                     nynorsk { +"" }
                 )
                 list {
                     item {
                         text(
-                            bokmal { +"hvor mye du har hatt i feriepenger fra inntekter fra slikt ekstra arbeid" },
+                            bokmal { +"hvor mye du har hatt i feriepenger fra inntekter fra Ukraina-arbeid" },
                             nynorsk { +"" }
                         )
                     }
